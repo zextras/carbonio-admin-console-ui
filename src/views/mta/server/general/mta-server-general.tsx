@@ -548,7 +548,7 @@ const MTAServerGeneral: FC = () => {
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -567,7 +567,7 @@ const MTAServerGeneral: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

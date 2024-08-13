@@ -323,7 +323,7 @@ const MTAStatsMail: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -377,7 +377,7 @@ const MTAStatsMail: FC<{
 				setIsMailQueueLoading(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,

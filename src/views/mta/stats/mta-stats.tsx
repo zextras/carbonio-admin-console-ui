@@ -220,7 +220,7 @@ const MTAStats: FC = () => {
 					setRequestInprogress(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -256,7 +256,7 @@ const MTAStats: FC = () => {
 				setRequestInprogress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -322,7 +322,7 @@ const MTAStats: FC = () => {
 					setMailServerStats(updatedItem);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('mta.mail_queue_flush_successfully', 'Mail queue flush successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,

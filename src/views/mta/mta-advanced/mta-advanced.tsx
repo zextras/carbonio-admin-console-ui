@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,7 +15,7 @@ import {
 	Switch,
 	Select,
 	Input,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find, isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +44,7 @@ import { isValidProxy } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
@@ -353,7 +353,7 @@ const MTAAdvanced: FC = () => {
 				.then(() => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -364,7 +364,7 @@ const MTAAdvanced: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -452,7 +452,7 @@ const MTAAdvanced: FC = () => {
 		if (isErrorInSmtpdProxy) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t('mta.smtpd_not_valid_error', 'Smtpd sender login maps is not valid'),
 				autoHideTimeout: 3000,
 				hideButton: true,

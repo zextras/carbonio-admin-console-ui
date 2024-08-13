@@ -14,9 +14,9 @@ import {
 	Table,
 	Button,
 	Dropdown,
-	SnackbarManagerContext,
 	Select,
-	ChipInput
+	ChipInput,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,7 @@ import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../
 const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(AclListContext);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isValidQuery, setIsValidQuery] = useState<boolean>(true);
 	const { aclListDetail, setAclListDetail } = context;
 	const [dynamicListMember, setDynamicListMember] = useState<Array<any>>(
@@ -230,7 +230,7 @@ const AclListSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -246,7 +246,7 @@ const AclListSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
 					autoHideTimeout: 3000,
 					hideButton: true,

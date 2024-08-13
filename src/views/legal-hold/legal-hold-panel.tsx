@@ -113,10 +113,10 @@ const LegalHoldPanel: FC = () => {
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
-		(key, type, msg) => {
+		(key, severity, msg) => {
 			createSnackbar({
 				key,
-				type,
+				severity,
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,

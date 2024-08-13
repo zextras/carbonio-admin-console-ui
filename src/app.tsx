@@ -220,7 +220,7 @@ const App: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t(
 							'label.error_rights_message',
 							'Error obtaining Rights. Please try again later.'

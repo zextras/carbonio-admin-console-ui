@@ -868,7 +868,7 @@ const QuarantineList: FC = () => {
 						.then(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.account_created_successfully',
 									'The account has been created successfully'
@@ -890,7 +890,7 @@ const QuarantineList: FC = () => {
 						.catch((error) => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error?.message
 									? error?.message
 									: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -907,7 +907,7 @@ const QuarantineList: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -936,7 +936,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'info',
-						type: 'info',
+						severity: 'info',
 						label: t('quarantine.message_deleted', 'Message deleted'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -947,7 +947,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -972,7 +972,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'info',
-						type: 'info',
+						severity: 'info',
 						label: t('quarantine.message_delivered', 'Message delivered'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -984,7 +984,7 @@ const QuarantineList: FC = () => {
 					setOpenDeliverDialog(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1013,7 +1013,7 @@ const QuarantineList: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
@@ -1026,7 +1026,7 @@ const QuarantineList: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

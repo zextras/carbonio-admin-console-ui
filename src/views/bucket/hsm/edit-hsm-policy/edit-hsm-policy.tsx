@@ -124,7 +124,7 @@ const EditHsmPolicy: FC<{
 		(msg) => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,

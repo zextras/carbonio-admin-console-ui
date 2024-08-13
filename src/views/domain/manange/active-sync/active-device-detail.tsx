@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -12,9 +12,9 @@ import {
 	Row,
 	Text,
 	Input,
-	SnackbarManagerContext,
 	IconButton,
-	Select
+	Select,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -63,7 +63,7 @@ const ActiveDeviceDetail: FC<{
 	setRefreshDeviceList: any;
 }> = ({ setIsShowDeviceDetail, selectedMobileDeviceDetail, setRefreshDeviceList }) => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [mobileDeviceDetail, setMobileDeviceDetail] = useState<MobileDeviceDetail>();
 	const [isShowConfirmBox, setIsShowConfirmBox] = useState<boolean>(false);
 	const [operationType, setOperationType] = useState<string>('');
@@ -134,7 +134,7 @@ const ActiveDeviceDetail: FC<{
 					setIsDetailRequestInProgess(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -175,7 +175,7 @@ const ActiveDeviceDetail: FC<{
 					if (content?.response && content?.ok) {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 							autoHideTimeout: 3000,
@@ -190,7 +190,7 @@ const ActiveDeviceDetail: FC<{
 				setIsOperationRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -215,7 +215,7 @@ const ActiveDeviceDetail: FC<{
 					if (content?.ok) {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -229,7 +229,7 @@ const ActiveDeviceDetail: FC<{
 				setIsOperationRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -255,7 +255,7 @@ const ActiveDeviceDetail: FC<{
 					if (content?.ok) {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -269,7 +269,7 @@ const ActiveDeviceDetail: FC<{
 				setIsOperationRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

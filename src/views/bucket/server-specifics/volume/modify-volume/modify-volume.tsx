@@ -261,7 +261,7 @@ const ModifyVolume: FC<{
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
-							type: 'success',
+							severity: 'success',
 							label: t('label.volume_detail_success', 'All changes have been saved successfully')
 						});
 						getAllVolumesRequest();
@@ -270,7 +270,7 @@ const ModifyVolume: FC<{
 					} else {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_detail_error', '{{message}}', {
 								// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -285,7 +285,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -331,7 +331,7 @@ const ModifyVolume: FC<{
 						).catch(() => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: t('label.volume_detail_error', '{{message}}', {
 									message: 'Something went wrong, please try again'
 								}),
@@ -342,7 +342,7 @@ const ModifyVolume: FC<{
 					}
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: t('label.volume_detail_success', 'All changes have been saved successfully')
 					});
 					getAllVolumesRequest();
@@ -352,7 +352,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -695,7 +695,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),

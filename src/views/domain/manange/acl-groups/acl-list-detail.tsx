@@ -397,7 +397,7 @@ const AclListDetail: FC<any> = ({
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -425,7 +425,7 @@ const AclListDetail: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -469,7 +469,7 @@ const AclListDetail: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -507,7 +507,7 @@ const AclListDetail: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

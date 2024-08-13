@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,7 +15,7 @@ import {
 	Switch,
 	Table,
 	Padding,
-	SnackbarManagerContext,
+	useSnackbar,
 	Icon,
 	IconButton,
 	Tooltip
@@ -56,7 +56,7 @@ const DomainSaml: FC = () => {
 	const [samlTableRows, setSamlTableRows] = useState<any[]>([]);
 	const [isAllowUnsecure, setIsAllowUnsecure] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name) || '';
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
 	const [samlAttrValue, setSamlAttrValue] = useState<any>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
@@ -104,7 +104,7 @@ const DomainSaml: FC = () => {
 		(error): void => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: error?.message
 					? error?.message
 					: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -123,7 +123,7 @@ const DomainSaml: FC = () => {
 					download(JSON.stringify(data), SAML_METADATA_JSON_FILE, CONTENT_TYPE_TEXT_PLAIN);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.you_have_exported_the_configuration',
 							'You have exported the configuration'
@@ -209,7 +209,7 @@ const DomainSaml: FC = () => {
 						setSAMLAttributes(data);
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.you_have_imported_the_configuration',
 								'You have imported the configuration'
@@ -238,7 +238,7 @@ const DomainSaml: FC = () => {
 						setSAMLAttributes(data);
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.you_have_generated_the_sp_certificate',
 								'You have generated the SP Certificate'
@@ -272,7 +272,7 @@ const DomainSaml: FC = () => {
 						if (isUpdate) {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t('label.you_have_updated_attribute', {
 									attributeName,
 									defaultValue: 'You have updated the {{ attributeName }} attribute'
@@ -284,7 +284,7 @@ const DomainSaml: FC = () => {
 						} else {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t('label.you_have_added_attribute', {
 									attributeName,
 									defaultValue: 'You have added the {{ attributeName }} attribute'
@@ -317,7 +317,7 @@ const DomainSaml: FC = () => {
 						const attributeName = key;
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t('label.you_have_removed_attribute', {
 								attributeName,
 								defaultValue: 'You have removed the {{ attributeName }} attribute'
@@ -346,7 +346,7 @@ const DomainSaml: FC = () => {
 						setSAMLAttributes(data);
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.you_have_deleted_the_configuration',
 								'You have deleted the configuration'

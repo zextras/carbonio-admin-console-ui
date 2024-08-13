@@ -65,7 +65,7 @@ const BackupServerConfig: FC = () => {
 					setGlobalConfig(initbackupDetail);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
@@ -77,7 +77,7 @@ const BackupServerConfig: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label:
 							data?.errors?.[0]?.error ||
 							data?.statusText ||
@@ -91,7 +91,7 @@ const BackupServerConfig: FC = () => {
 			.catch((err) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label:
 						err?.errors?.[0]?.error ||
 						err?.statusText ||

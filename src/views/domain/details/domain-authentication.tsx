@@ -457,7 +457,7 @@ const DomainAuthentication: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -474,7 +474,7 @@ const DomainAuthentication: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -552,7 +552,7 @@ const DomainAuthentication: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 5000,
 						hideButton: true,
@@ -564,7 +564,7 @@ const DomainAuthentication: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

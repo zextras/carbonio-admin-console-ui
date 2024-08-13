@@ -11,7 +11,7 @@ import {
 	Padding,
 	Switch,
 	Table,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -40,7 +40,7 @@ const EditHsmPolicyVolumesSection: FC<{
 	const [selectedSourceVolume, setSelectedSourceVolume] = useState<any>(
 		hsmDetail?.sourceVolume.map((item: any) => item?.id)
 	);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 
 	const headers = useMemo(
 		() => [
@@ -234,7 +234,7 @@ const EditHsmPolicyVolumesSection: FC<{
 								if (available.length > 0) {
 									createSnackbar({
 										key: 'error',
-										type: 'error',
+										severity: 'error',
 										label: t(
 											'hsm.volume_already_selected_in_destination',
 											'Volume already selected in destination volume'
@@ -303,7 +303,7 @@ const EditHsmPolicyVolumesSection: FC<{
 								if (available.length > 0) {
 									createSnackbar({
 										key: 'error',
-										type: 'error',
+										severity: 'error',
 										label: t(
 											'hsm.volume_already_selected_in_source',
 											'Volume already selected in source volume'

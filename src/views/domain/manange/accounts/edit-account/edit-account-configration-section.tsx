@@ -13,7 +13,7 @@ import {
 	Icon,
 	Divider,
 	Input,
-	SnackbarManagerContext,
+	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
@@ -31,7 +31,7 @@ import { AccountType } from '../account-types/account-types';
 
 const EditAccountConfigrationSection: FC = () => {
 	const context = useContext(AccountContext);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 	const { accountDetail, setAccountDetail, setInitAccountDetail, accSpecificDetail, cosDetail } =
 		context;
@@ -110,7 +110,7 @@ const EditAccountConfigrationSection: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

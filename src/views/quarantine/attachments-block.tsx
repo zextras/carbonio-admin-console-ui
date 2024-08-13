@@ -414,7 +414,7 @@ const Attachment: FC<AttachmentType> = ({
 			.then(() => {
 				createSnackbar({
 					key: 'info',
-					type: 'info',
+					severity: 'info',
 					label: t('quarantine.attachment_deleted', 'Attachment deleted'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -427,7 +427,7 @@ const Attachment: FC<AttachmentType> = ({
 				setMessageViewLoading(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

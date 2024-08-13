@@ -11,7 +11,7 @@ import {
 	Text,
 	Button,
 	Table,
-	SnackbarManagerContext,
+	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -39,7 +39,7 @@ const MailingListMembersSection: FC<any> = () => {
 	);
 	const [member, setMember] = useState<string>('');
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -97,7 +97,7 @@ const MailingListMembersSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -113,7 +113,7 @@ const MailingListMembersSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
 					autoHideTimeout: 3000,
 					hideButton: true,

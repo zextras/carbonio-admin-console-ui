@@ -84,10 +84,10 @@ const RestoreAccountView: FC<{
 	);
 
 	const showSnackbar = useCallback(
-		(key, type, msg) => {
+		(key, severity, msg) => {
 			createSnackbar({
 				key,
-				type,
+				severity,
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,

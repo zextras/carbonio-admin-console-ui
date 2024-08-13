@@ -669,7 +669,7 @@ const DomainGalSettings: FC = () => {
 				setIsDirty(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -687,7 +687,7 @@ const DomainGalSettings: FC = () => {
 				}).catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -971,7 +971,7 @@ const DomainGalSettings: FC = () => {
 				if (res) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.create_galsync_account_success_msg',
 							'You have created the GALSync account name'
@@ -987,7 +987,7 @@ const DomainGalSettings: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1012,7 +1012,7 @@ const DomainGalSettings: FC = () => {
 				if (res) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.changes_save_success_msg', 'Your changes has been saved!'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -1025,7 +1025,7 @@ const DomainGalSettings: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1045,7 +1045,7 @@ const DomainGalSettings: FC = () => {
 			);
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -1054,7 +1054,7 @@ const DomainGalSettings: FC = () => {
 		} catch (error: any) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 				autoHideTimeout: 5000,
 				hideButton: true,

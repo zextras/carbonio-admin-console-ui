@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -13,9 +13,9 @@ import {
 	Button,
 	Switch,
 	Input,
-	SnackbarManagerContext,
 	Padding,
-	Select
+	Select,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -74,7 +74,7 @@ const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
 	const [t] = useTranslation();
 	const allServers = useServerStore((state) => state.serverList);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [moduleEnableStartup, setModuleEnableStartup] = useState<boolean>(false);
 	const [enableRealtimeScanner, setEnableRealtimeScanner] = useState<boolean>(false);
 	const [runSmartScanStartup, setRunSmartScanStartup] = useState<boolean>(false);
@@ -341,7 +341,7 @@ const BackupConfiguration: FC = () => {
 						setIsDirty(false);
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: error?.message
 								? error?.message
 								: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -458,7 +458,7 @@ const BackupConfiguration: FC = () => {
 					}
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -482,7 +482,7 @@ const BackupConfiguration: FC = () => {
 					setIsDirty(false);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
@@ -512,7 +512,7 @@ const BackupConfiguration: FC = () => {
 				setIsDirty(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t(
 						'label.the_last_changes_has_been_saved_successfully',
 						'Changes have been saved successfully'
@@ -665,7 +665,7 @@ const BackupConfiguration: FC = () => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -690,7 +690,7 @@ const BackupConfiguration: FC = () => {
 					if (res && res?.error && res?.error?.message) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: res?.error?.details?.cause || res?.error?.message,
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -702,7 +702,7 @@ const BackupConfiguration: FC = () => {
 					setIsRequestInProgress(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -725,7 +725,7 @@ const BackupConfiguration: FC = () => {
 				if (res && res?.error && res?.error?.message) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: res?.error?.details?.cause || res?.error?.message,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -737,7 +737,7 @@ const BackupConfiguration: FC = () => {
 				setIsPurgeRequestRunning(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -760,7 +760,7 @@ const BackupConfiguration: FC = () => {
 					if (res?.error && res?.error?.details) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: res?.error
 								? res?.error?.message || res?.error?.details?.cause
 								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -793,7 +793,7 @@ const BackupConfiguration: FC = () => {
 						setIsManageExternalVolumeEnable(false);
 						createSnackbar({
 							key: 'info',
-							type: 'info',
+							severity: 'info',
 							label: t('label.operation_now_in_queue', 'The operation is now in the queue'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -805,7 +805,7 @@ const BackupConfiguration: FC = () => {
 					setIsExternalVolumeRequestRunning(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 
-import { Container, SnackbarManagerContext, IconButton } from '@zextras/carbonio-design-system';
+import { Container, useSnackbar, IconButton } from '@zextras/carbonio-design-system';
 import { pushHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
 import { SECONDARY_ROUTE } from '../../constants';
 
 const SecondaryRouteIconView: FC = () => {
-	const createSnackbar = useContext(SnackbarManagerContext) as any;
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 	return (
 		<Container>
@@ -23,7 +23,7 @@ const SecondaryRouteIconView: FC = () => {
 					createSnackbar({
 						key: 'snackbar',
 						replace: true,
-						type: 'info',
+						severity: 'info',
 						label: t('label.app_clicked', 'You have clicked a button'),
 						autoHideTimeout: 1000,
 						hideButton: true

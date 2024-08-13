@@ -397,7 +397,7 @@ const EditAccountSecuritySection: FC = () => {
 				setSelectedRows([]);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.otp_deleted_successfully', 'OTP has been deleted successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -407,7 +407,7 @@ const EditAccountSecuritySection: FC = () => {
 			} else {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,

@@ -312,7 +312,7 @@ const EditAccount: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -342,7 +342,7 @@ const EditAccount: FC<{
 							if (data) {
 								createSnackbar({
 									key: 'success',
-									type: 'success',
+									severity: 'success',
 									label: t(
 										'account_details.right_for_selected_user_deleted_successfully',
 										'Right for selected user deleted successfully'
@@ -356,7 +356,7 @@ const EditAccount: FC<{
 						.catch((error: any) => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error?.message
 									? error?.message
 									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -375,7 +375,7 @@ const EditAccount: FC<{
 		(label: string): void => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -438,7 +438,7 @@ const EditAccount: FC<{
 					.then(() => {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'label.the_last_changes_has_been_saved_successfully',
@@ -557,7 +557,7 @@ const EditAccount: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: `error${aliasName}`,
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -579,7 +579,7 @@ const EditAccount: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: `error${aliasName}`,
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -636,7 +636,7 @@ const EditAccount: FC<{
 							if (modifiedKeys?.length === 0) {
 								createSnackbar({
 									key: 'success',
-									type: 'success',
+									severity: 'success',
 									label: t(
 										'label.the_last_changes_has_been_saved_successfully',
 										'Changes have been saved successfully'
@@ -653,7 +653,7 @@ const EditAccount: FC<{
 						if (modifiedKeys?.length === 0) {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.the_last_changes_has_been_saved_successfully',
 									'Changes have been saved successfully'
@@ -699,7 +699,7 @@ const EditAccount: FC<{
 						}
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.the_last_changes_has_been_saved_successfully',
 								'Changes have been saved successfully'
@@ -793,7 +793,7 @@ const EditAccount: FC<{
 			if (isPasswordChange) {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('account_details.user_password_set', 'User password set successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -837,7 +837,7 @@ const EditAccount: FC<{
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
@@ -850,7 +850,7 @@ const EditAccount: FC<{
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -929,7 +929,7 @@ const EditAccount: FC<{
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -955,7 +955,7 @@ const EditAccount: FC<{
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -976,7 +976,7 @@ const EditAccount: FC<{
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

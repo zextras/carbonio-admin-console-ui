@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import {
 	Container,
 	Row,
 	Button,
 	Text,
-	SnackbarManagerContext,
+	useSnackbar,
 	Input,
 	Padding,
 	Divider
@@ -45,7 +45,7 @@ const ovelayStyle = styled(Container)`
 
 const CreateCos: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const history = useHistory();
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
@@ -56,7 +56,7 @@ const CreateCos: FC = () => {
 	const showSuccessSnackBar = (): void => {
 		createSnackbar({
 			key: 'success',
-			type: 'success',
+			severity: 'success',
 			label: t('label.create_cos_success_msg', {
 				cosName,
 				defaultValue: '{{cosName}} has been created successfully'
@@ -108,7 +108,7 @@ const CreateCos: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

@@ -3,16 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo, useContext } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
-import {
-	Container,
-	Icon,
-	Row,
-	Padding,
-	Text,
-	SnackbarManagerContext
-} from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -95,7 +88,7 @@ interface ManageOptions {
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics

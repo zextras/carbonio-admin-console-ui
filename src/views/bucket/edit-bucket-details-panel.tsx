@@ -330,7 +330,7 @@ const EditBucketDetailPanel: FC<{
 				setToggleBtn(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.changes_have_been_updated', '{{message}}', {
 						message: updateResData?.response?.message || updateResData?.message
 					}),
@@ -343,7 +343,7 @@ const EditBucketDetailPanel: FC<{
 			} else {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.error', '{{message}}', {
 						message: updateResData?.error?.message || updateResData?.error
 					}),

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -16,8 +16,8 @@ import {
 	Select,
 	Button,
 	Padding,
-	SnackbarManagerContext,
-	Modal
+	Modal,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
 import moment from 'moment';
@@ -69,7 +69,7 @@ const ResourceEditDetailView: FC<any> = ({
 	setIsUpdateRecord
 }) => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const cosList = useDomainStore((state) => state.cosList);
 	const [resourceInformation, setResourceInformation]: any = useState([]);
 	const [resourceDetailData, setResourceDetailData]: any = useState({});
@@ -506,7 +506,7 @@ const ResourceEditDetailView: FC<any> = ({
 		Promise.all(requests).then(() => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('label.changes_have_been_saved', 'The changes have been saved'),
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -521,7 +521,7 @@ const ResourceEditDetailView: FC<any> = ({
 		(label: string): void => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -624,7 +624,7 @@ const ResourceEditDetailView: FC<any> = ({
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -656,7 +656,7 @@ const ResourceEditDetailView: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message ? error.message : errorMessage,
 
 					autoHideTimeout: 3000,
@@ -698,7 +698,7 @@ const ResourceEditDetailView: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message ? error?.message : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -725,7 +725,7 @@ const ResourceEditDetailView: FC<any> = ({
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: errorMessage,
 						autoHideTimeout: 3000,
@@ -738,7 +738,7 @@ const ResourceEditDetailView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message ? error?.message : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,

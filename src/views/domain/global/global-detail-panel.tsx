@@ -179,7 +179,7 @@ const GlobalDetailPanel: FC = () => {
 					);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -196,7 +196,7 @@ const GlobalDetailPanel: FC = () => {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.mandatory_disclaimer_are_enable_for_all_domain',
 									'The mandatory disclaimers are enabled for all domains'
@@ -217,7 +217,7 @@ const GlobalDetailPanel: FC = () => {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
 									'The mandatory disclaimers are enabled only for outbound deliveries'
@@ -232,7 +232,7 @@ const GlobalDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,

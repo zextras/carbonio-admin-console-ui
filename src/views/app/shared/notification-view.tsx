@@ -4,26 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState
-} from 'react';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
 	DefaultTabBarItem,
 	Text,
 	TabBar,
-	SnackbarManagerContext,
 	Table,
 	Icon,
-	Divider
+	Divider,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { orderBy } from 'lodash';
 import moment from 'moment';
@@ -103,7 +94,7 @@ const NotificationView: FC<{
 	const [t] = useTranslation();
 	const [change, setChange] = useState(NOTIFICATION_ALL);
 	const [setClick] = useState('');
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [notificationList, setNotificationList] = useState<Array<Notification>>([]);
 	const [filterdNotification, setFilterdNotification] = useState<Array<Notification>>([]);
 	const [notificationRows, setNotificationRows] = useState<Array<any>>([]);
@@ -228,7 +219,7 @@ const NotificationView: FC<{
 			.catch((error: any) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -310,7 +301,7 @@ const NotificationView: FC<{
 						if (isShowMessage) {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: message,
 								autoHideTimeout: 3000,
 								hideButton: true,
@@ -331,7 +322,7 @@ const NotificationView: FC<{
 					setIsRequestInProgress(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -433,7 +424,7 @@ const NotificationView: FC<{
 			copyTextToClipboard(notificationItem);
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('notification.copy_notification_successfully', 'Notification copied successfully'),
 				autoHideTimeout: 3000,
 				hideButton: true,

@@ -185,7 +185,7 @@ const CreateDomain: FC = () => {
 	const showSuccessSnackBar = (): void => {
 		createSnackbar({
 			key: 'success',
-			type: 'success',
+			severity: 'success',
 			label: t('label.create_domain_success_msg', {
 				domainName,
 				defaultValue: '{{domainName}} has been created successfully'
@@ -218,7 +218,7 @@ const CreateDomain: FC = () => {
 			.then((res: objectType) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: res?.message
 						? res?.message
 						: t(
@@ -233,7 +233,7 @@ const CreateDomain: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -346,7 +346,7 @@ const CreateDomain: FC = () => {
 						} else {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: data?.Body?.Fault?.Reason?.Text,
 								autoHideTimeout: 3000,
 								hideButton: true,
@@ -359,7 +359,7 @@ const CreateDomain: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

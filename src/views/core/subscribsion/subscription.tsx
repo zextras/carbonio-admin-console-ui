@@ -284,14 +284,14 @@ const Subscription: FC = () => {
 				if (response.ok) {
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: response.message,
 						replace: true
 					});
 				} else {
 					createSnackbar({
 						key: '1',
-						type: 'error',
+						severity: 'error',
 						label:
 							response.message ||
 							// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -315,7 +315,7 @@ const Subscription: FC = () => {
 			if (response.ok) {
 				createSnackbar({
 					key: '1',
-					type: 'success',
+					severity: 'success',
 					label:
 						response.message ||
 						t('core.subscription.license_activated_successfully', 'License activated successfully'),
@@ -324,7 +324,7 @@ const Subscription: FC = () => {
 			} else {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label:
 						response.message ||
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -362,7 +362,7 @@ const Subscription: FC = () => {
 				setIsLoader(false);
 				createSnackbar({
 					key: '1',
-					type: 'success',
+					severity: 'success',
 					label: response.message,
 					replace: true
 				});
@@ -370,7 +370,7 @@ const Subscription: FC = () => {
 				setIsLoader(false);
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label:
 						response.message ||
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

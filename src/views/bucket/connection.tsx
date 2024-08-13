@@ -369,7 +369,7 @@ const Connection: FC<{
 			);
 			createSnackbar({
 				key: '1',
-				type: 'error',
+				severity: 'error',
 				label: t('label.verify_error', '{{name}}', {
 					name: bothFail
 				}),

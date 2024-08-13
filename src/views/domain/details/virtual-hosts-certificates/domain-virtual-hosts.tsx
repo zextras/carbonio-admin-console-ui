@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,8 +15,8 @@ import {
 	Input,
 	Button,
 	Table,
-	SnackbarManagerContext,
-	Icon
+	Icon,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
@@ -48,7 +48,7 @@ import { isValidVirtualHostname } from '../../../utility/utils';
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
 	const { domainId }: { domainId: string } = useParams();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domainInformation: any = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [selectedRows, setSelectedRows] = useState<any>([]);
@@ -200,7 +200,7 @@ const DomainVirtualHosts: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -217,7 +217,7 @@ const DomainVirtualHosts: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -277,7 +277,7 @@ const DomainVirtualHosts: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -311,7 +311,7 @@ const DomainVirtualHosts: FC = () => {
 				setDomainCertificate(null);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('domain.certificate_removed', `The certificates has been removed`),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -329,7 +329,7 @@ const DomainVirtualHosts: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

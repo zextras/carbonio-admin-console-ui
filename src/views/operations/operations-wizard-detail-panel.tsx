@@ -82,7 +82,7 @@ const OperationsWizardDetailPanel: FC<{
 		copyTextToClipboard(operationItem);
 		createSnackbar({
 			key: 'success',
-			type: 'success',
+			severity: 'success',
 			label: t('operations.copy_operation_successfully', 'Operation details copied successfully'),
 			autoHideTimeout: 3000,
 			hideButton: true,

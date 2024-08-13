@@ -109,7 +109,7 @@ export const ServicesPassphrase: FC = () => {
 				});
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t(
 						'account_details.services_passphrase_created_successfully',
 						'Services Passphrase created successfully'
@@ -122,7 +122,7 @@ export const ServicesPassphrase: FC = () => {
 			} else {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -155,7 +155,7 @@ export const ServicesPassphrase: FC = () => {
 					getCredentialList(`${accountDetail?.uid}@${domainName}`);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'account_details.services_passphrase_deleted_successfully',
 							'Services Passphrase deleted successfully'
@@ -167,7 +167,7 @@ export const ServicesPassphrase: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,

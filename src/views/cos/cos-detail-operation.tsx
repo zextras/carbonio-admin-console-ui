@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
-import { SnackbarManagerContext } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ import { useCosStore } from '../../store/cos/store';
 
 const CosDetailOperation: FC = () => {
 	const { operation, cosId }: { operation: string; cosId: string } = useParams();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 	const setCos = useCosStore((state) => state.setCos);
 	const setTotalAccount = useCosStore((state) => state.setTotalAccount);
@@ -69,7 +69,7 @@ const CosDetailOperation: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error.message
 							? error.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
