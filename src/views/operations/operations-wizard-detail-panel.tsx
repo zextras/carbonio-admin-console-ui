@@ -10,7 +10,6 @@ import {
 	Container,
 	Input,
 	Row,
-	IconButton,
 	Divider,
 	Padding,
 	Button,
@@ -106,9 +105,10 @@ const OperationsWizardDetailPanel: FC<{
 					</Text>
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						icon="CloseOutline"
-						color="gray1"
 						onClick={(): void => setWizardDetailToggle(false)}
 					/>
 				</Row>

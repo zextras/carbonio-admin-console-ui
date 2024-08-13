@@ -14,7 +14,6 @@ import {
 	Row,
 	Padding,
 	Icon,
-	IconButton,
 	Divider,
 	TabBar,
 	Button
@@ -202,7 +201,9 @@ const EditHsmPolicy: FC<{
 							</Row>
 						)}
 						{!isDirty && (
-							<IconButton
+							<Button
+								type="ghost"
+								color={'text'}
 								size="medium"
 								icon="CloseOutline"
 								onClick={(): void => setShowEditHsmPolicyView(false)}

@@ -11,7 +11,6 @@ import {
 	Text,
 	Button,
 	Divider,
-	IconButton,
 	DefaultTabBarItem,
 	TabBar,
 	Table,
@@ -522,7 +521,13 @@ const MTAStatsMail: FC<{
 				</Row>
 				<Row></Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
-					<IconButton size="medium" icon="CloseOutline" onClick={(): void => closeDialog(true)} />
+					<Button
+						type="ghost"
+						color={'text'}
+						size="medium"
+						icon="CloseOutline"
+						onClick={(): void => closeDialog(true)}
+					/>
 				</Row>
 			</Row>
 			<Container>

@@ -604,8 +604,8 @@ const App: FC = () => {
 				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				type="ghost"
-				size="large"
-				backgroundColor="transparent"
+				size={'extralarge'}
+				color={'text'}
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
 			/>
 		),

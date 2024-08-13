@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Modal,
 	Padding,
@@ -1849,7 +1848,9 @@ const EditAclListView: FC<any> = ({
 						)}
 					</Row>
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => setShowEditAclList(false)}

@@ -17,7 +17,6 @@ import {
 	Padding,
 	useSnackbar,
 	Icon,
-	IconButton,
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -502,7 +501,9 @@ const DomainSaml: FC = () => {
 										</Tooltip>
 									</Row>
 									<Row width="4%" mainAlignment="flex-start">
-										<IconButton
+										<Button
+											type="ghost"
+											color={'text'}
 											icon="CloseOutline"
 											size="large"
 											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type

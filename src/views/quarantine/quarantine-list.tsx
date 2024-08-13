@@ -14,7 +14,6 @@ import {
 	Divider,
 	Modal,
 	Table,
-	IconButton,
 	Padding,
 	Collapse,
 	Icon,
@@ -695,7 +694,7 @@ const QuarantineList: FC = () => {
 						}
 						const data = response?.Body?.SearchResponse?.m;
 						const messageListArr: any = [];
-						data.forEach((item: any): any =>
+						data?.forEach((item: any): any =>
 							messageListArr.push({
 								_jsns: 'urn:zimbraMail',
 								m: {
@@ -1344,7 +1343,9 @@ const QuarantineList: FC = () => {
 								</Text>
 							</Row>
 							<Row padding={{ right: 'extrasmall' }}>
-								<IconButton
+								<Button
+									type="ghost"
+									color={'text'}
 									size="medium"
 									icon="CloseOutline"
 									onClick={(): void => setShowMessageView(false)}
@@ -1509,7 +1510,7 @@ const QuarantineList: FC = () => {
 									</Row>
 								</Row>
 								<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="fill">
-									<IconButton
+									<Button
 										icon={showTextMsgView ? 'ChevronUpOutline' : 'ChevronDownOutline'}
 										size="small"
 										onClick={setToggleView}

@@ -10,7 +10,6 @@ import {
 	Input,
 	Row,
 	Text,
-	IconButton,
 	Icon,
 	Divider,
 	Select,
@@ -818,7 +817,9 @@ const ResourceEditDetailView: FC<any> = ({
 					)}
 				</Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						size="medium"
 						icon="CloseOutline"
 						onClick={(): void => {

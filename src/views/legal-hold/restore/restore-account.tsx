@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
-	IconButton,
 	Text,
 	Divider,
 	Input,
@@ -444,7 +443,9 @@ const RestoreAccountView: FC<{
 					</Row>
 
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => {

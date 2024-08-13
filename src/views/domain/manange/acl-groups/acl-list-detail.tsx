@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Input,
 	Table,
@@ -554,7 +553,9 @@ const AclListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						size="medium"
 						icon="CloseOutline"
 						onClick={(): void => setShowAclListDetailView(false)}

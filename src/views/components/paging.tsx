@@ -5,7 +5,7 @@
  */
 import React, { FC, useEffect, useState } from 'react';
 
-import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
+import { Container, Text, Row, Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { FIRST_PAGE } from '../../constants';
@@ -120,19 +120,21 @@ const Paging: FC<{
 			padding={{ top: 'medium' }}
 		>
 			<Row padding={{ right: 'small' }}>
-				<IconButton
+				<Button
 					size="large"
+					type="ghost"
 					icon="GoFirstOutline"
-					iconColor="primary"
+					color="primary"
 					onClick={onFirstPage}
 					disabled={isFirstPageDisabled}
 				/>
 			</Row>
 			<Row padding={{ right: 'small' }}>
-				<IconButton
+				<Button
 					size="large"
+					type="ghost"
 					icon="ChevronLeft"
-					iconColor="primary"
+					color="primary"
 					onClick={onPreviousPage}
 					disabled={isPreviousPageDisabled}
 				/>
@@ -154,19 +156,21 @@ const Paging: FC<{
 				{t('label.of', 'of')} {totalPages}
 			</Text>
 			<Row padding={{ left: 'small' }}>
-				<IconButton
+				<Button
 					size="large"
+					type="ghost"
 					icon="ChevronRight"
-					iconColor="primary"
+					color="primary"
 					onClick={onNextPage}
 					disabled={isNextPageDisabled || currentPage === totalPages}
 				/>
 			</Row>
 			<Row padding={{ left: 'small' }}>
-				<IconButton
+				<Button
 					size="large"
+					type="ghost"
 					icon="GoLastOutline"
-					iconColor="primary"
+					color="primary"
 					onClick={onLastPage}
 					disabled={isLastPageDisabled || currentPage === totalPages}
 				/>

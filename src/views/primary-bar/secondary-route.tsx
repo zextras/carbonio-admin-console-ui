@@ -6,7 +6,7 @@
 
 import React, { FC } from 'react';
 
-import { Container, useSnackbar, IconButton } from '@zextras/carbonio-design-system';
+import { Container, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { pushHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,9 @@ const SecondaryRouteIconView: FC = () => {
 	const [t] = useTranslation();
 	return (
 		<Container>
-			<IconButton
+			<Button
+				type="ghost"
+				color={'text'}
 				icon="Activity"
 				onClick={(): void => {
 					createSnackbar({

@@ -22,7 +22,6 @@ import {
 	DefaultTabBarItem,
 	Text,
 	Row,
-	IconButton,
 	Divider,
 	Padding,
 	Modal,
@@ -1039,8 +1038,10 @@ const EditAccount: FC<{
 						)}
 					</Row>
 					<Row padding={{ right: 'extrasmall' }}>
-						<IconButton
+						<Button
 							size="medium"
+							type="ghost"
+							color={'text'}
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);

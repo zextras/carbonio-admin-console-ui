@@ -13,7 +13,6 @@ import {
 	Padding,
 	Row,
 	Input,
-	IconButton,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
@@ -140,10 +139,11 @@ const DeleteHsmPolicy: FC<{
 						label={t('hsm.hsm_policy', 'HSM Policy')}
 						value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
 						CustomIcon={(): any => (
-							<IconButton
+							<Button
+								type="ghost"
+								color={'grey'}
 								icon="CopyOutline"
 								size="large"
-								iconColor="grey"
 								onClick={copyToClipboard}
 							/>
 						)}

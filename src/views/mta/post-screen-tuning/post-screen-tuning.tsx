@@ -14,7 +14,6 @@ import {
 	Button,
 	Divider,
 	Icon,
-	IconButton,
 	Select,
 	Input,
 	Switch
@@ -820,7 +819,9 @@ const MTAPostScreenTuning: FC = () => {
 						</Container>
 
 						<Container width="auto" padding={{ right: 'small' }}>
-							<IconButton
+							<Button
+								type="ghost"
+								color={'text'}
 								icon="CloseOutline"
 								size="large"
 								onClick={(): void => {

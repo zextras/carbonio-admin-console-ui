@@ -12,7 +12,6 @@ import {
 	Padding,
 	Text,
 	Button,
-	IconButton,
 	Divider,
 	Switch,
 	Select,
@@ -750,7 +749,12 @@ const ModifyVolume: FC<{
 						{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
 					</Row>
 					<Row padding={{ horizontal: 'small' }}>
-						<IconButton icon="CloseOutline" onClick={(): void => setmodifyVolumeToggle(false)} />
+						<Button
+							type="ghost"
+							color={'text'}
+							icon="CloseOutline"
+							onClick={(): void => setmodifyVolumeToggle(false)}
+						/>
 					</Row>
 				</Row>
 				<Divider />

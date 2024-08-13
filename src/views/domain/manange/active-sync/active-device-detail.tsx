@@ -12,9 +12,9 @@ import {
 	Row,
 	Text,
 	Input,
-	IconButton,
 	Select,
-	useSnackbar
+	useSnackbar,
+	Button
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -372,7 +372,9 @@ const ActiveDeviceDetail: FC<{
 					{selectedMobileDeviceDetail?.accountName}
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						size="medium"
 						icon="CloseOutline"
 						onClick={(): void => setIsShowDeviceDetail(false)}

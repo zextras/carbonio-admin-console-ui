@@ -10,7 +10,6 @@ import {
 	Container,
 	Input,
 	Row,
-	IconButton,
 	Divider,
 	Padding,
 	PasswordInput,
@@ -575,7 +574,12 @@ const EditBucketDetailPanel: FC<{
 					{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton icon="CloseOutline" onClick={(): any => setShowEditDetailView(false)} />
+					<Button
+						type="ghost"
+						color={'text'}
+						icon="CloseOutline"
+						onClick={(): any => setShowEditDetailView(false)}
+					/>
 				</Row>
 			</Row>
 			<Divider />

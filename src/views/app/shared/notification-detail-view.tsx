@@ -6,7 +6,7 @@
 
 import React, { FC } from 'react';
 
-import { Container, Text, Row, IconButton, Divider, Input } from '@zextras/carbonio-design-system';
+import { Container, Text, Row, Divider, Input, Button } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -84,8 +84,10 @@ const NotificationDetail: FC<{
 					</Text>
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
+					<Button
 						size="medium"
+						type="ghost"
+						color={'text'}
 						icon="CloseOutline"
 						onClick={(): void => {
 							setShowNotificationDetail(false);

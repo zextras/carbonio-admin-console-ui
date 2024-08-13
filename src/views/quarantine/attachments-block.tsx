@@ -6,10 +6,10 @@
 import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
+	Button,
 	Container,
 	getColor,
 	Icon,
-	IconButton,
 	Link,
 	Padding,
 	Row,
@@ -489,7 +489,13 @@ const Attachment: FC<AttachmentType> = ({
 							key={`${message.id}-DownloadOutline`}
 							label={t('label.download_one', 'Download')}
 						>
-							<IconButton size="medium" icon="DownloadOutline" onClick={downloadAttachment} />
+							<Button
+								type="ghost"
+								color={'text'}
+								size="medium"
+								icon="DownloadOutline"
+								onClick={downloadAttachment}
+							/>
 						</Tooltip>
 					</Padding>
 					{!isExternalMessage && (
@@ -498,7 +504,9 @@ const Attachment: FC<AttachmentType> = ({
 								key={`${message.id}-DeletePermanentlyOutline`}
 								label={t('label.delete', 'Delete')}
 							>
-								<IconButton
+								<Button
+									type="ghost"
+									color={'text'}
 									size="medium"
 									icon="DeletePermanentlyOutline"
 									onClick={onDeleteAttachment}

@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Button,
 	Icon,
@@ -679,12 +678,7 @@ const DomainAclList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<IconButton
-								iconColor="gray6"
-								backgroundColor="primary"
-								icon="Plus"
-								onClick={onAddClick}
-							/>
+							<Button color="primary" icon="Plus" onClick={onAddClick} />
 						</Row>
 					</Row>
 				</Container>

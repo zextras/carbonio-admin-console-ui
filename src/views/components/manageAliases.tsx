@@ -7,7 +7,6 @@ import React, { FC, useState } from 'react';
 
 import {
 	Container,
-	IconButton,
 	Text,
 	Row,
 	Modal,
@@ -165,10 +164,10 @@ const ManageAliases: FC<{
 							/>
 						</Container>
 						<Container width="10%">
-							<IconButton
+							<Button
 								type="outlined"
 								icon="PlusOutline"
-								iconColor="primary"
+								color="primary"
 								size="extralarge"
 								onClick={(): void => {
 									if (!aliasNameValue.trim()) return;

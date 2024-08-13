@@ -10,7 +10,6 @@ import {
 	Input,
 	Text,
 	Select,
-	IconButton,
 	Padding,
 	Checkbox,
 	Table,
@@ -644,9 +643,9 @@ const EditHsmPolicyDetailSection: FC<{
 						height="fit"
 						style={{ border: '0.063rem solid #d74942', margin: '0.25rem 0 0 0' }}
 					>
-						<IconButton
-							iconColor="error"
-							backgroundColor="gray6"
+						<Button
+							type="ghost"
+							color="error"
 							icon="Trash2Outline"
 							size="large"
 							onClick={onDeletePolicy}
