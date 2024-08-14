@@ -738,10 +738,73 @@ const QuarantineList: FC = () => {
 		return scoreValueArr.length > 1 ? scoreValueArr[1]?.split(' ')?.[0] || '' : '';
 	};
 
+	type MailPart = any; // Define the appropriate type here
+	type Flags = string | undefined;
+
+	interface BodyContent {
+		contentType: string;
+		content: string;
+	}
+
+	const normalizeParticipants = useCallback(
+		(participants: Participant[]): any =>
+			participants ? map(participants, normalizeParticipantsFromSoap) : [],
+		[normalizeParticipantsFromSoap]
+	);
+
+	const normalizeMailParts = useCallback(
+		(parts: MailPart[]): MailPart[] => (parts ? map(parts, normalizeMailPartMapFn) : []),
+		[normalizeMailPartMapFn]
+	);
+
+	const getAttachments = useCallback(
+		(parts: MailPart[]): any[] => (parts ? getAttachmentsFromParts(parts) : []),
+		[getAttachmentsFromParts]
+	);
+
+	const generateBodyContent = useCallback(
+		(parts: MailPart[], id: string): BodyContent =>
+			parts ? generateBody(parts, id) : { contentType: '', content: '' },
+		[generateBody]
+	);
+
+	interface ParsedFlags {
+		read: boolean;
+		hasAttachment: boolean;
+		flagged: boolean;
+		urgent: boolean;
+		isDeleted: boolean;
+		isDraft: boolean;
+		isForwarded: boolean;
+		isSentByMe: boolean;
+		isInvite: boolean;
+		isReplied: boolean;
+		isReadReceiptRequested: boolean;
+	}
+
+	const parseFlags = useCallback(
+		(flags: Flags): ParsedFlags => ({
+			read: !isNil(flags) ? !/u/.test(flags) : true,
+			hasAttachment: !isNil(flags) ? /a/.test(flags) : false,
+			flagged: !isNil(flags) ? /f/.test(flags) : false,
+			urgent: !isNil(flags) ? /!/.test(flags) : false,
+			isDeleted: !isNil(flags) ? /x/.test(flags) : false,
+			isDraft: !isNil(flags) ? /d/.test(flags) : false,
+			isForwarded: !isNil(flags) ? /w/.test(flags) : false,
+			isSentByMe: !isNil(flags) ? /s/.test(flags) : false,
+			isInvite: !isNil(flags) ? /v/.test(flags) : false,
+			isReplied: !isNil(flags) ? /r/.test(flags) : false,
+			isReadReceiptRequested: !isNil(flags) ? !/n/.test(flags) : true
+		}),
+		[]
+	);
+
+	const sanitizeEmail = (email: string | undefined): string => replace(email || '', /[<>]/g, '');
+
 	const normalizeMessage = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(m: any) => {
 			const attrs = processMessageAttributes(m?._attrs || {});
+			const flags = parseFlags(m.f);
 			const scoreValueString = extractScoreValue(attrs['X-Spam-Status']);
 
 			return {
@@ -752,39 +815,40 @@ const QuarantineList: FC = () => {
 				parent: m.l,
 				fragment: m.fr,
 				subject: m.su,
-				participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+				participants: normalizeParticipants(m.e),
 				tags: getTagIds(m.t, m.tn),
-				parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
-				attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
+				parts: normalizeMailParts(m.mp),
+				attachments: getAttachments(m.mp),
 				invite: m.inv,
 				shr: m.shr,
-				body: m.mp ? generateBody(m.mp || [], m.id) : { contentType: '', content: '' },
+				body: generateBodyContent(m.mp, m.id),
 				isComplete: true,
 				isScheduled: !!m.autoSendTime,
 				autoSendTime: m.autoSendTime,
-				read: !isNil(m.f) ? !/u/.test(m.f) : true,
-				hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
-				flagged: !isNil(m.f) ? /f/.test(m.f) : false,
-				urgent: !isNil(m.f) ? /!/.test(m.f) : false,
-				isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
-				isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
-				isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
-				isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
-				isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
-				isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
-				isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
+				read: flags.read,
+				hasAttachment: flags.hasAttachment,
+				flagged: flags.flagged,
+				urgent: flags.urgent,
+				isDeleted: flags.isDeleted,
+				isDraft: flags.isDraft,
+				isForwarded: flags.isForwarded,
+				isSentByMe: flags.isSentByMe,
+				isInvite: flags.isInvite,
+				isReplied: flags.isReplied,
+				isReadReceiptRequested: flags.isReadReceiptRequested,
 				score: attrs['X-Spam-Score'] || scoreValueString || '',
 				reason: attrs['X-Amavis-Alert'] || '',
-				envelopeFrom: replace(attrs['X-Envelope-From'] || '', /[<>]/g, ''),
-				envelopeTo: replace(attrs['X-Envelope-To'] || '', /[<>]/g, '')
+				envelopeFrom: sanitizeEmail(attrs['X-Envelope-From']),
+				envelopeTo: sanitizeEmail(attrs['X-Envelope-To'])
 			};
 		},
 		[
-			generateBody,
-			getAttachmentsFromParts,
+			generateBodyContent,
+			getAttachments,
 			getTagIds,
-			normalizeMailPartMapFn,
-			normalizeParticipantsFromSoap
+			normalizeMailParts,
+			normalizeParticipants,
+			parseFlags
 		]
 	);
 
