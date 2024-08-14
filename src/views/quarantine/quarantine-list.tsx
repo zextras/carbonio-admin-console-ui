@@ -738,7 +738,6 @@ const QuarantineList: FC = () => {
 		return scoreValueArr.length > 1 ? scoreValueArr[1]?.split(' ')?.[0] || '' : '';
 	};
 
-	type MailPart = any; // Define the appropriate type here
 	type Flags = string | undefined;
 
 	interface BodyContent {
@@ -753,17 +752,17 @@ const QuarantineList: FC = () => {
 	);
 
 	const normalizeMailParts = useCallback(
-		(parts: MailPart[]): MailPart[] => (parts ? map(parts, normalizeMailPartMapFn) : []),
+		(parts: MailMessagePart[]): any[] => (parts ? map(parts, normalizeMailPartMapFn) : []),
 		[normalizeMailPartMapFn]
 	);
 
 	const getAttachments = useCallback(
-		(parts: MailPart[]): any[] => (parts ? getAttachmentsFromParts(parts) : []),
+		(parts: AttachmentPart[]): AttachmentPart[] => (parts ? getAttachmentsFromParts(parts) : []),
 		[getAttachmentsFromParts]
 	);
 
 	const generateBodyContent = useCallback(
-		(parts: MailPart[], id: string): BodyContent =>
+		(parts: SoapMailMessagePart[], id: string): BodyContent =>
 			parts ? generateBody(parts, id) : { contentType: '', content: '' },
 		[generateBody]
 	);
@@ -799,7 +798,7 @@ const QuarantineList: FC = () => {
 		[]
 	);
 
-	const sanitizeEmail = (email: string | undefined): string => replace(email || '', /[<>]/g, '');
+	const sanitizeEmail = (email: string | undefined): string => replace(email ?? '', /[<>]/g, '');
 
 	const normalizeMessage = useCallback(
 		(m: any) => {
