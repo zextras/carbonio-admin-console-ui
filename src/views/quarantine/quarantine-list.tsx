@@ -666,6 +666,54 @@ const QuarantineList: FC = () => {
 		},
 		[getAttachmentsAnchoredOnHtmlBody]
 	);
+
+	const messageListArrayData = (messages: any): [] => {
+		const data = messages;
+		const messageListArr: any = [];
+		data?.forEach((item: any): any =>
+			messageListArr.push({
+				_jsns: 'urn:zimbraMail',
+				m: {
+					html: 1,
+					id: item.id,
+					needExp: 1,
+					header: [
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Envelope-From'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Envelope-To'
+						},
+						{
+							n: 'X-Envelope-To-Blocked'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Amavis-Alert'
+						},
+						{
+							n: 'X-Spam-Flag'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Spam-Score'
+						},
+						{
+							n: 'X-Spam-Level'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Spam-Status'
+						}
+					]
+				}
+			})
+		);
+		return messageListArr;
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
@@ -688,54 +736,12 @@ const QuarantineList: FC = () => {
 				setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1));
 				if (res?.account?.[0]?.id) {
 					setQuarantineAccountId(res.account[0].id);
-					// eslint-disable-next-line sonarjs/cognitive-complexity
 					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
 						if (!response?.Body?.SearchResponse?.m) {
 							setRequestInprogress(false);
 						}
-						const data = response?.Body?.SearchResponse?.m;
-						const messageListArr: any = [];
-						data?.forEach((item: any): any =>
-							messageListArr.push({
-								_jsns: 'urn:zimbraMail',
-								m: {
-									html: 1,
-									id: item.id,
-									needExp: 1,
-									header: [
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Envelope-From'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Envelope-To'
-										},
-										{
-											n: 'X-Envelope-To-Blocked'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Amavis-Alert'
-										},
-										{
-											n: 'X-Spam-Flag'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Spam-Score'
-										},
-										{
-											n: 'X-Spam-Level'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Spam-Status'
-										}
-									]
-								}
-							})
-						);
+
+						const messageListArr: any = messageListArrayData(response?.Body?.SearchResponse?.m);
 
 						batchService({
 							GetMsgRequest: messageListArr,
