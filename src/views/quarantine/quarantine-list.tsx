@@ -715,6 +715,97 @@ const QuarantineList: FC = () => {
 	};
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const getMessageResponses = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(messageListArr: any): void => {
+			batchService({
+				GetMsgRequest: messageListArr,
+				_jsns: 'urn:zimbra'
+			})
+				.then((msgBatchData) => {
+					const normalizedMessageList: any = [];
+					msgBatchData?.GetMsgResponse?.forEach((item: any) => {
+						const m = item.m?.[0];
+						if (Array.isArray(m?._attrs?.['X-Spam-Status'])) {
+							m._attrs['X-Spam-Status'] = m._attrs['X-Spam-Status'].pop();
+						}
+						if (Array.isArray(m?._attrs?.['X-Spam-Score'])) {
+							m._attrs['X-Spam-Score'] = m?._attrs?.['X-Spam-Score'].pop();
+						}
+						if (Array.isArray(m?._attrs?.['X-Amavis-Alert'])) {
+							m._attrs['X-Amavis-Alert'] = m?._attrs?.['X-Amavis-Alert'].pop();
+						}
+						if (Array.isArray(m?._attrs?.['X-Envelope-From'])) {
+							m._attrs['X-Envelope-From'] = m?._attrs?.['X-Envelope-From'].pop();
+						}
+						if (Array.isArray(m?._attrs?.['X-Envelope-To'])) {
+							m._attrs['X-Envelope-To'] = m?._attrs?.['X-Envelope-To'].pop();
+						}
+						const scoreValueArr: any[] = (m?._attrs?.['X-Spam-Status'] || '')?.split('score=');
+						let scoreValueString = '';
+						if (scoreValueArr?.length > 1) {
+							scoreValueString = scoreValueArr[1]?.toString() || '';
+							scoreValueString = scoreValueString.split(' ')?.[0] || '';
+						}
+
+						const normalizedMessage: IncompleteMessage = {
+							conversation: m.cid,
+							id: m.id,
+							date: m.d,
+							size: m.s,
+							parent: m.l,
+							fragment: m.fr,
+							subject: m.su,
+							participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+							tags: getTagIds(m.t, m.tn),
+							parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
+							attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
+							// attachments: undefined,
+							invite: m.inv,
+							shr: m.shr,
+							body: m.mp
+								? generateBody(m.mp || [], m.id)
+								: {
+										contentType: '',
+										content: ''
+								  },
+							isComplete: true,
+							isScheduled: !!m.autoSendTime,
+							autoSendTime: m.autoSendTime,
+							read: !isNil(m.f) ? !/u/.test(m.f) : true,
+							hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
+							flagged: !isNil(m.f) ? /f/.test(m.f) : false,
+							urgent: !isNil(m.f) ? /!/.test(m.f) : false,
+							isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
+							isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
+							isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
+							isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
+							isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
+							isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
+							isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
+							score: m?._attrs?.['X-Spam-Score'] || scoreValueString || '',
+							reason: m?._attrs?.['X-Amavis-Alert'] || '',
+							envelopeFrom: replace(m?._attrs?.['X-Envelope-From'] || '', /[<>]/g, ''),
+							envelopeTo: replace(m?._attrs?.['X-Envelope-To'] || '', /[<>]/g, '')
+						};
+						normalizedMessageList.push(normalizedMessage);
+					});
+					setMessageListData(normalizedMessageList);
+					setMessageViewLoading(false);
+					setRequestInprogress(false);
+				})
+				.catch(() => setRequestInprogress(false));
+		},
+		[
+			generateBody,
+			getAttachmentsFromParts,
+			getTagIds,
+			normalizeMailPartMapFn,
+			normalizeParticipantsFromSoap
+		]
+	);
+
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
 		setMessageListData([]);
@@ -743,85 +834,7 @@ const QuarantineList: FC = () => {
 
 						const messageListArr: any = messageListArrayData(response?.Body?.SearchResponse?.m);
 
-						batchService({
-							GetMsgRequest: messageListArr,
-							_jsns: 'urn:zimbra'
-						})
-							.then((msgBatchData) => {
-								const normalizedMessageList: any = [];
-								msgBatchData?.GetMsgResponse?.forEach((item: any) => {
-									const m = item.m?.[0];
-									if (Array.isArray(m?._attrs?.['X-Spam-Status'])) {
-										m._attrs['X-Spam-Status'] = m._attrs['X-Spam-Status'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Spam-Score'])) {
-										m._attrs['X-Spam-Score'] = m?._attrs?.['X-Spam-Score'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Amavis-Alert'])) {
-										m._attrs['X-Amavis-Alert'] = m?._attrs?.['X-Amavis-Alert'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Envelope-From'])) {
-										m._attrs['X-Envelope-From'] = m?._attrs?.['X-Envelope-From'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Envelope-To'])) {
-										m._attrs['X-Envelope-To'] = m?._attrs?.['X-Envelope-To'].pop();
-									}
-									const scoreValueArr: any[] = (m?._attrs?.['X-Spam-Status'] || '')?.split(
-										'score='
-									);
-									let scoreValueString = '';
-									if (scoreValueArr?.length > 1) {
-										scoreValueString = scoreValueArr[1]?.toString() || '';
-										scoreValueString = scoreValueString.split(' ')?.[0] || '';
-									}
-
-									const normalizedMessage: IncompleteMessage = {
-										conversation: m.cid,
-										id: m.id,
-										date: m.d,
-										size: m.s,
-										parent: m.l,
-										fragment: m.fr,
-										subject: m.su,
-										participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
-										tags: getTagIds(m.t, m.tn),
-										parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
-										attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
-										// attachments: undefined,
-										invite: m.inv,
-										shr: m.shr,
-										body: m.mp
-											? generateBody(m.mp || [], m.id)
-											: {
-													contentType: '',
-													content: ''
-											  },
-										isComplete: true,
-										isScheduled: !!m.autoSendTime,
-										autoSendTime: m.autoSendTime,
-										read: !isNil(m.f) ? !/u/.test(m.f) : true,
-										hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
-										flagged: !isNil(m.f) ? /f/.test(m.f) : false,
-										urgent: !isNil(m.f) ? /!/.test(m.f) : false,
-										isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
-										isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
-										isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
-										isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
-										isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
-										isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
-										isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
-										score: m?._attrs?.['X-Spam-Score'] || scoreValueString || '',
-										reason: m?._attrs?.['X-Amavis-Alert'] || '',
-										envelopeFrom: replace(m?._attrs?.['X-Envelope-From'] || '', /[<>]/g, ''),
-										envelopeTo: replace(m?._attrs?.['X-Envelope-To'] || '', /[<>]/g, '')
-									};
-									normalizedMessageList.push(normalizedMessage);
-								});
-								setMessageListData(normalizedMessageList);
-								setMessageViewLoading(false);
-								setRequestInprogress(false);
-							})
-							.catch(() => setRequestInprogress(false));
+						getMessageResponses(messageListArr);
 					});
 				} else {
 					setRequestInprogress(false);
@@ -832,14 +845,7 @@ const QuarantineList: FC = () => {
 			setQuarantineDomaintName(obj.zimbraDefaultDomainName.toString());
 		}
 		setConfigDataLoaded(true);
-	}, [
-		config,
-		generateBody,
-		getAttachmentsFromParts,
-		getTagIds,
-		normalizeMailPartMapFn,
-		normalizeParticipantsFromSoap
-	]);
+	}, [config, getMessageResponses]);
 	useEffect(() => {
 		getQuarantineMsgData();
 	}, [getQuarantineMsgData]);
