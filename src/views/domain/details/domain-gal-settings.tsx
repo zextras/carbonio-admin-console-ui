@@ -20,7 +20,8 @@ import {
 	Icon,
 	Tooltip,
 	Table,
-	useSnackbar
+	useSnackbar,
+	DropdownItem
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -267,12 +268,13 @@ const DomainGalSettings: FC = () => {
 		setOpenDistroyModel(false);
 	};
 
-	const changeGalModeBtnItems = [
+	const changeGalModeBtnItems: DropdownItem[] = [
 		{
 			id: 'internal',
 			label: t('domain.gal_change_mode_internal', 'Internal'),
-			value: 'zimbra',
-			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
+			selected: domainData?.zimbraGalMode === 'zimbra',
+			onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
+				const ev = e as React.ChangeEvent<HTMLInputElement>;
 				setDomainData({ ...domainData, zimbraGalMode: 'zimbra' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -282,8 +284,9 @@ const DomainGalSettings: FC = () => {
 		{
 			id: 'external',
 			label: t('domain.gal_change_mode_external', 'External'),
-			value: 'ldap',
-			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
+			selected: domainData?.zimbraGalMode === 'ldap',
+			onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
+				const ev = e as React.ChangeEvent<HTMLInputElement>;
 				setDomainData({ ...domainData, zimbraGalMode: 'ldap' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);

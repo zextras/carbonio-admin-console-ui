@@ -878,7 +878,7 @@ const App: FC = () => {
 				id: 'new-domain',
 				label: t('label.create_new_domain', 'Create New Domain'),
 				icon: '',
-				click: (ev: any): void => {
+				onClick: (ev: any): void => {
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
 					setDomain({});
 					setTimeout(() => {
@@ -897,7 +897,7 @@ const App: FC = () => {
 				id: 'new-cos',
 				label: t('label.create_new_cos', 'Create New COS'),
 				icon: '',
-				click: (ev: any): void => {
+				onClick: (ev: any): void => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
 					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
