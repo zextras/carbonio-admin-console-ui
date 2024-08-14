@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import {
 	Container,
@@ -14,7 +14,7 @@ import {
 	Divider,
 	Padding,
 	Button,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _, { isEqual, reduce, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,7 @@ import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const cosName = useCosStore((state) => state.cos?.name);
 	const [initCosData, setInitCosData]: any = useState({});
@@ -79,7 +79,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -146,7 +146,7 @@ const CosFeatures: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -160,7 +160,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -180,7 +180,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

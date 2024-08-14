@@ -292,7 +292,7 @@ const ManageDelegates: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -325,7 +325,7 @@ const ManageDelegates: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -560,7 +560,7 @@ const ManageDelegates: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -691,7 +691,7 @@ const ManageDelegates: FC = () => {
 				);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: res?.message
 						? res?.message
 						: t(
@@ -707,7 +707,7 @@ const ManageDelegates: FC = () => {
 				setLoading(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -735,7 +735,7 @@ const ManageDelegates: FC = () => {
 							if (data) {
 								createSnackbar({
 									key: 'success',
-									type: 'success',
+									severity: 'success',
 									label: t(
 										'account_details.right_for_selected_user_deleted_successfully',
 										'Right for selected user deleted successfully'
@@ -750,7 +750,7 @@ const ManageDelegates: FC = () => {
 						.catch((error) => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error?.message
 									? error?.message
 									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

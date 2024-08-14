@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -13,7 +13,7 @@ import {
 	Button,
 	Divider,
 	Switch,
-	SnackbarManagerContext,
+	useSnackbar,
 	Input,
 	Select,
 	Table,
@@ -54,7 +54,7 @@ import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
@@ -147,7 +147,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -158,7 +158,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -618,7 +618,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		if (isSpaceAvailableInString(antiVirusMirrorsAddText)) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t(
 					'mta.space_not_allowed_in_antivirus_mirror',
 					'Space not allowed in antivirus mirror'
@@ -633,7 +633,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		if (!isValidHostname(antiVirusMirrorsAddText)) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t('mta.allowed_valid_antivirus_mirror', 'Antivirus mirror is not valid'),
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -715,7 +715,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		if (!additionalAntiVirusDefinitionAddText.startsWith('http')) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t(
 					'mta.additional_virus_definition_start_with_http_https',
 					'Additional Virus Definition should start with http'

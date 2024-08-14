@@ -350,7 +350,7 @@ const EditAccountGeneralSection: FC<{
 				if (data) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('account_details.user_password_deleted', 'User password deleted successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -361,7 +361,7 @@ const EditAccountGeneralSection: FC<{
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -572,7 +572,7 @@ const EditAccountGeneralSection: FC<{
 								setSelectedSession([]);
 								createSnackbar({
 									key: 'success',
-									type: 'success',
+									severity: 'success',
 									label: t('label.session_end_success', 'Session end successfully'),
 									autoHideTimeout: 3000,
 									hideButton: true,
@@ -584,7 +584,7 @@ const EditAccountGeneralSection: FC<{
 							setIsRequestInProgress(false);
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error.message
 									? error.message
 									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -600,7 +600,7 @@ const EditAccountGeneralSection: FC<{
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -852,7 +852,6 @@ const EditAccountGeneralSection: FC<{
 							value={accountDetail?.displayName}
 							onChange={changeAccDetail}
 							inputName="displayName"
-							name="descriptiveName"
 							autoComplete="new-password"
 						/>
 					</Row>
@@ -1002,7 +1001,6 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							backgroundColor="gray6"
-							readOnly
 							value={
 								accountDetail?.zimbraCreateTimestamp
 									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
@@ -1016,7 +1014,6 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.last_access', 'Last Access')}
 							backgroundColor="gray6"
-							readOnly
 							value={
 								accountDetail?.zimbraLastLogonTimestamp
 									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(

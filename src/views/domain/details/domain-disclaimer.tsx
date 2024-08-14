@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -13,7 +13,7 @@ import {
 	Padding,
 	Divider,
 	Text,
-	SnackbarManagerContext,
+	useSnackbar,
 	Switch,
 	TextArea
 } from '@zextras/carbonio-design-system';
@@ -58,7 +58,7 @@ const DomainDisclaimer: FC = () => {
 	const domainId = useDomainStore((state) => state.domain?.id);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [Composer] = useIntegratedComponent('composer');
 	const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
@@ -186,7 +186,7 @@ const DomainDisclaimer: FC = () => {
 			.then((responseData) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -199,7 +199,7 @@ const DomainDisclaimer: FC = () => {
 					setTimeout(() => {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.mandatory_disclaimer_is_enable_for_this_domain',
 								'The mandatory disclaimers is enabled for this domain'
@@ -218,7 +218,7 @@ const DomainDisclaimer: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

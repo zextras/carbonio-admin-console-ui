@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Input,
 	Table,
@@ -16,14 +15,13 @@ import {
 	Switch,
 	Padding,
 	Icon,
-	SnackbarManagerContext,
 	Modal,
-	Button
+	Button,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation, Trans } from 'react-i18next';
 
-import { CreateSnackbarType } from '../../../../../types';
 import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
@@ -58,7 +56,7 @@ const AclListDetail: FC<any> = ({
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [totalGrantRights, setTotalGrantRights] = useState(0);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
@@ -398,7 +396,7 @@ const AclListDetail: FC<any> = ({
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -426,7 +424,7 @@ const AclListDetail: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -470,7 +468,7 @@ const AclListDetail: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -508,7 +506,7 @@ const AclListDetail: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -555,7 +553,9 @@ const AclListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						size="medium"
 						icon="CloseOutline"
 						onClick={(): void => setShowAclListDetailView(false)}
@@ -735,7 +735,6 @@ const AclListDetail: FC<any> = ({
 								label={t('label.list_url', "Acl List's URL")}
 								value={memberURL}
 								backgroundColor="gray6"
-								readOnly
 								CustomIcon={(): any => (
 									<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
 								)}
@@ -745,7 +744,7 @@ const AclListDetail: FC<any> = ({
 				)}
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} backgroundColor="gray6" readOnly />
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} backgroundColor="gray6" />
 					</Container>
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
@@ -820,7 +819,6 @@ const AclListDetail: FC<any> = ({
 							value={zimbraNotes}
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
-							readOnly
 						/>
 					</Container>
 				</ListRow>

@@ -12,7 +12,7 @@ import {
 	Row,
 	Icon,
 	Table,
-	SnackbarManagerContext,
+	useSnackbar,
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
@@ -40,7 +40,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const [accountLimit, setAccountLimit] = useState<number>(10);
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const context = useContext(RestoreDeleteAccountContext);
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [searchString, setSearchString] = useState<string>();
@@ -118,7 +118,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					if (error) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: error,
 							autoHideTimeout: 3000,
 							hideButton: true,

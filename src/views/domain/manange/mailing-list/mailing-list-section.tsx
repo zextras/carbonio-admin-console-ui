@@ -15,9 +15,9 @@ import {
 	Table,
 	Padding,
 	Button,
-	SnackbarManagerContext,
 	Select,
-	ChipInput
+	ChipInput,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -40,7 +40,7 @@ import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [domainList, setDomainList] = useState([]);
 	const [isValidQuery, setIsValidQuery] = useState<boolean>(true);
 	const { mailingListDetail, setMailingListDetail } = context;
@@ -310,7 +310,7 @@ const MailingListSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						security: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -326,7 +326,7 @@ const MailingListSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -456,7 +456,6 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('domain.type_here_a_domain', 'Type here a domain')}
 							value={mailingListDetail?.suffixName}
-							readOnly
 							backgroundColor="gray5"
 						/>
 					</Container>

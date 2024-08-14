@@ -6,7 +6,7 @@
  */
 import React, { FC } from 'react';
 
-import { Container, Divider, Text, Row, IconButton } from '@zextras/carbonio-design-system';
+import { Container, Divider, Text, Row, Button } from '@zextras/carbonio-design-system';
 
 export const SectionHeader: FC<any> = ({
 	title,
@@ -27,7 +27,7 @@ export const SectionHeader: FC<any> = ({
 			</Row>
 			{showClose && (
 			<Row padding={{ horizontal: 'small' }}>
-				<IconButton data-testid="close-button" icon="CloseOutline" onClick={onClose} size="large" />
+				<Button type="ghost" color={'text'} data-testid="close-button" icon="CloseOutline" onClick={onClose} size="large" />
 			</Row>
 				)}
 		</Row>

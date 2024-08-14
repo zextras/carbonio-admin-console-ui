@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -11,14 +11,14 @@ import {
 	Text,
 	Button,
 	Divider,
-	SnackbarManagerContext,
-	Table
+	Table,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import MTAStatsMail from './mta-stats-mail';
-import { CreateSnackbarType, MtaStats } from '../../../../types';
+import { MtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
 import { getAllServerByService } from '../../../services/get-all-servers-service';
@@ -31,7 +31,7 @@ import ListRow from '../../list/list-row';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [serverTableRow, setServerTableRow] = useState<Array<any>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
@@ -220,7 +220,7 @@ const MTAStats: FC = () => {
 					setRequestInprogress(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -256,7 +256,7 @@ const MTAStats: FC = () => {
 				setRequestInprogress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -322,7 +322,7 @@ const MTAStats: FC = () => {
 					setMailServerStats(updatedItem);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('mta.mail_queue_flush_successfully', 'Mail queue flush successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import {
 	Container,
@@ -13,8 +13,7 @@ import {
 	Padding,
 	Row,
 	Input,
-	IconButton,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -36,7 +35,7 @@ const DeleteHsmPolicy: FC<{
 	policies
 }) => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const getHSMType = useCallback(
 		(query: string): string => {
 			const hsmType: Array<any> = policies.find((item: any) => item?.hsmQuery === query)?.hsmType;
@@ -69,7 +68,7 @@ const DeleteHsmPolicy: FC<{
 		if (navigator) {
 			navigator.clipboard.writeText(`${getHSMType(selectedPolicies)}${selectedPolicies}`);
 			createSnackbar({
-				type: 'info',
+				severity: 'info',
 				label: t('hsm.policy_has_been_coppied', 'HSM Policy has been copied to the clipboard'),
 				autoHideTimeout: 2000,
 				actionLabel: ''
@@ -140,10 +139,11 @@ const DeleteHsmPolicy: FC<{
 						label={t('hsm.hsm_policy', 'HSM Policy')}
 						value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
 						CustomIcon={(): any => (
-							<IconButton
+							<Button
+								type="ghost"
+								color={'grey'}
 								icon="CopyOutline"
 								size="large"
-								iconColor="grey"
 								onClick={copyToClipboard}
 							/>
 						)}

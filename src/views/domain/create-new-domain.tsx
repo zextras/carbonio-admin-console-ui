@@ -4,21 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
 	Row,
 	Button,
 	Text,
-	SnackbarManagerContext,
 	Input,
 	Select,
 	Padding,
 	Divider,
 	Tooltip,
 	Switch,
-	ChipInput
+	ChipInput,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { map, some } from 'lodash';
@@ -26,13 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-	Attribute,
-	CreateSnackbarType,
-	DomainResponse,
-	SelectItem,
-	objectType
-} from '../../../types';
+import { Attribute, DomainResponse, SelectItem, objectType } from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,
@@ -78,7 +72,7 @@ export enum GAL_MODE {
 
 const CreateDomain: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const history = useHistory();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
@@ -191,7 +185,7 @@ const CreateDomain: FC = () => {
 	const showSuccessSnackBar = (): void => {
 		createSnackbar({
 			key: 'success',
-			type: 'success',
+			severity: 'success',
 			label: t('label.create_domain_success_msg', {
 				domainName,
 				defaultValue: '{{domainName}} has been created successfully'
@@ -224,7 +218,7 @@ const CreateDomain: FC = () => {
 			.then((res: objectType) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: res?.message
 						? res?.message
 						: t(
@@ -239,7 +233,7 @@ const CreateDomain: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -352,7 +346,7 @@ const CreateDomain: FC = () => {
 						} else {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: data?.Body?.Fault?.Reason?.Text,
 								autoHideTimeout: 3000,
 								hideButton: true,
@@ -365,7 +359,7 @@ const CreateDomain: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

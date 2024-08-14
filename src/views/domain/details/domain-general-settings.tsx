@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { FC, useEffect, useMemo, useState, useCallback } from 'react';
 
 import {
 	Container,
@@ -17,9 +17,9 @@ import {
 	Padding,
 	Icon,
 	Shimmer,
-	SnackbarManagerContext,
 	Modal,
-	ChipInput
+	ChipInput,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { replaceHistory, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
@@ -81,7 +81,7 @@ const DomainGeneralSettings: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const removeDomain = useDomainStore((state) => state.removeDomain);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
 	useEffect(() => {
@@ -584,7 +584,7 @@ const DomainGeneralSettings: FC = () => {
 					}
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -599,7 +599,7 @@ const DomainGeneralSettings: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -626,7 +626,7 @@ const DomainGeneralSettings: FC = () => {
 			});
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('label.delete_domain_success_msg', 'Domain has been deleted successfully'),
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -672,7 +672,7 @@ const DomainGeneralSettings: FC = () => {
 				res?.Fault?.forEach((item: any) =>
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: item?.Reason?.Text,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -790,7 +790,7 @@ const DomainGeneralSettings: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.domain_close_success_msg', 'Domain has been closed successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -813,7 +813,7 @@ const DomainGeneralSettings: FC = () => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -877,9 +877,7 @@ const DomainGeneralSettings: FC = () => {
 						width="fill"
 						crossAlignment="flex-start"
 					>
-						<Shimmer.FormSection>
-							<Shimmer.FormSubSection />
-						</Shimmer.FormSection>
+						<Shimmer.FormSubSection variant="dark" />
 					</Container>
 				) : (
 					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -895,7 +893,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.name', 'Name')}
 										value={domainName}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -903,7 +900,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 							</ListRow>
@@ -928,7 +924,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.creation_date', 'Creation Date')}
 										value={domainCreationDate}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 							</ListRow>

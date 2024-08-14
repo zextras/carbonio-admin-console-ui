@@ -279,7 +279,7 @@ const EditAccountDelegatesSection: FC = () => {
 			if (!editMode) {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t(
 						'account_details.delegate_deleted_successfully',
 						'Delegate`s rights deleted successfully'
@@ -339,7 +339,7 @@ const EditAccountDelegatesSection: FC = () => {
 				setShowCreateIdentity(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: editMode
 						? t(
 								// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -397,7 +397,7 @@ const EditAccountDelegatesSection: FC = () => {
 				setShowCreateIdentity(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: editMode
 						? t(
 								'account_details.delegate_updated_successfully',
@@ -647,7 +647,7 @@ const EditAccountDelegatesSection: FC = () => {
 					setShowCreateIdentity(false);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: editMode
 							? t('account_details.delegate_updated_successfully', 'Delegate updated successfully')
 							: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
@@ -776,7 +776,7 @@ const EditAccountDelegatesSection: FC = () => {
 					}
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'account_details.delegate_deleted_successfully',
 							'Delegate deleted successfully'

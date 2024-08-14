@@ -15,7 +15,6 @@ import {
 	Icon,
 	Padding,
 	Button,
-	IconButton,
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
@@ -586,7 +585,7 @@ const ManageAccounts: FC = () => {
 					setShowEditAccountView(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -631,7 +630,7 @@ const ManageAccounts: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1143,9 +1142,8 @@ const ManageAccounts: FC = () => {
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding all={'0'}>
-								<IconButton
-									iconColor="gray6"
-									backgroundColor="primary"
+								<Button
+									color="primary"
 									icon="Plus"
 									onClick={(): void => setShowCreateAccountView(true)}
 								/>

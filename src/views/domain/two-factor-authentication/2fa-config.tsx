@@ -22,14 +22,16 @@ import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 
+type TwoFactorPolicy = {
+	label: string;
+	keyToGet: string;
+};
+
 export const TwoFactorAuthencationConfig: FC<{
 	policies: TwoFactorAuthPolicyValues[];
 	modifyPolicies: any;
 	arrPoliciesToModify: TwoFactorAuthPolicyValues[];
-	twoFactorPolicyArray: Array<{
-		label?: string;
-		keyToGet: string;
-	}>;
+	twoFactorPolicyArray: Array<TwoFactorPolicy>;
 }> = ({ modifyPolicies, arrPoliciesToModify, twoFactorPolicyArray }) => {
 	const [t] = useTranslation();
 	const WHAT_TO_TRUST: any = useMemo(() => TwoFactorWhatToTrust(t), [t]);
@@ -82,6 +84,17 @@ export const TwoFactorAuthencationConfig: FC<{
 		});
 		modifyPolicies(modifiedPolicy);
 	};
+
+	const hasValidIpCheck = (cVal: TwoFactorPolicy): boolean =>
+		some(
+			map(
+				arrPoliciesToModify.find(
+					(obj: TwoFactorAuthPolicyValues) => obj?.[cVal.keyToGet]?.trustedIpRange
+				)?.[cVal.keyToGet]?.trustedIpRange,
+				(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+			) || [],
+			{ error: true }
+		);
 
 	return (
 		<Container
@@ -138,7 +151,11 @@ export const TwoFactorAuthencationConfig: FC<{
 								}}
 								hasError={some(applyAllValues.ipRange || [], { error: true })}
 								value={applyAllValues.ipRange}
-								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+								description={
+									some(applyAllValues.ipRange || [], { error: true })
+										? t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+										: ''
+								}
 								ChipComponent={CustomChip}
 								maxChips={null}
 							/>
@@ -153,75 +170,68 @@ export const TwoFactorAuthencationConfig: FC<{
 							onClick={applyToAll}
 						/>
 					</ListRow>
-					{twoFactorPolicyArray &&
-						twoFactorPolicyArray.map((cVal, cInd) => (
-							<>
-								<ListRow
-									padding={{ top: 'large' }}
-									orientation="horizontal"
-									crossAlignment="center"
-								>
-									<Container
-										crossAlignment="flex-start"
-										width="15%"
-										mainAlignment="flex-start"
-										height="fill"
-									>
-										<Text>{cVal.label}</Text>
-									</Container>
+					{twoFactorPolicyArray?.map((cVal) => (
+						<ListRow
+							key={`${cVal.label}-${cVal.keyToGet}`}
+							padding={{ top: 'large' }}
+							orientation="horizontal"
+							crossAlignment="center"
+						>
+							<Container
+								crossAlignment="flex-start"
+								width="15%"
+								mainAlignment="flex-start"
+								height="fill"
+							>
+								<Text>{cVal.label}</Text>
+							</Container>
 
-									<Padding right="large" width="30%">
-										<Select
-											items={WHAT_TO_TRUST}
-											label={t('label.what_to_trust', 'What to trust?')}
-											onChange={(v: any): void => {
-												applyToIndividual(cVal.keyToGet, v);
-											}}
-											selection={WHAT_TO_TRUST.find((item: any) => {
-												const tmpObj = arrPoliciesToModify.find((obj) =>
-													Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-												);
-												return item.value === tmpObj?.[cVal.keyToGet]?.trustedDevice;
-											})}
-											showCheckbox={false}
-										/>
-									</Padding>
-									<Padding right="0" width="65%">
-										<ChipInput
-											background="gray5"
-											placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-											onChange={(ips): void => {
-												const data: any = [];
-												map(ips, (ip: IpRangeValue) => {
-													isValidIpRange(ip.label ?? '')
-														? data.push(ip)
-														: data.push({ ...ip, error: true });
-												});
-												applyToIndividual(cVal.keyToGet, undefined, data);
-											}}
-											hasError={some(
-												map(
-													arrPoliciesToModify.find((obj: any) =>
-														Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-													)?.[cVal.keyToGet]?.trustedIpRange,
-													(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-												) || [],
-												{ error: true }
-											)}
-											value={map(
-												arrPoliciesToModify.find((obj: any) =>
-													Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-												)?.[cVal.keyToGet]?.trustedIpRange,
-												(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-											)}
-											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
-											ChipComponent={CustomChip}
-											maxChips={null}
-										/>
-									</Padding>
-								</ListRow>
-							</>
-						))}
+							<Padding right="large" width="30%">
+								<Select
+									items={WHAT_TO_TRUST}
+									label={t('label.what_to_trust', 'What to trust?')}
+									onChange={(v: any): void => {
+										applyToIndividual(cVal.keyToGet, v);
+									}}
+									selection={WHAT_TO_TRUST.find((item: any) => {
+										const tmpObj = arrPoliciesToModify.find((obj) =>
+											Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
+										);
+										return item.value === tmpObj?.[cVal.keyToGet]?.trustedDevice;
+									})}
+									showCheckbox={false}
+								/>
+							</Padding>
+							<Padding right="0" width="65%">
+								<ChipInput
+									background="gray5"
+									placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
+									onChange={(ips): void => {
+										const data: any = [];
+										map(ips, (ip: IpRangeValue) => {
+											isValidIpRange(ip.label ?? '')
+												? data.push(ip)
+												: data.push({ ...ip, error: true });
+										});
+										applyToIndividual(cVal.keyToGet, undefined, data);
+									}}
+									hasError={hasValidIpCheck(cVal)}
+									value={map(
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+										arrPoliciesToModify.find((obj: any) => Object.hasOwn(obj, cVal.keyToGet))?.[
+											cVal.keyToGet
+										]?.trustedIpRange,
+										(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+									)}
+									{...(hasValidIpCheck(cVal) && {
+										description: t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+									})}
+									ChipComponent={CustomChip}
+									maxChips={null}
+								/>
+							</Padding>
+						</ListRow>
+					))}
 				</Container>
 			</Row>
 		</Container>

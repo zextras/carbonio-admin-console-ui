@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import {
 	Container,
@@ -14,7 +14,7 @@ import {
 	Divider,
 	Switch,
 	ChipInput,
-	SnackbarManagerContext,
+	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, uniq } from 'lodash';
@@ -51,7 +51,7 @@ import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
@@ -328,7 +328,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -339,7 +339,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

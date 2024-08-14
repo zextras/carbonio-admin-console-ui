@@ -134,7 +134,6 @@ const AdvancedMailstoresConfig: FC<{
 						label={t('label.volume_server_name', 'Server')}
 						backgroundColor="gray6"
 						value={externalData}
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
@@ -142,7 +141,6 @@ const AdvancedMailstoresConfig: FC<{
 						label={t('label.storage_type', 'Storage Type')}
 						backgroundColor="gray6"
 						value={advancedVolumeDetail?.volumeAllocation}
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
@@ -150,7 +148,6 @@ const AdvancedMailstoresConfig: FC<{
 						label={t('label.volume_name', 'Volume Name')}
 						value={advancedVolumeDetail?.volumeName}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 				<ListRow>
@@ -163,7 +160,6 @@ const AdvancedMailstoresConfig: FC<{
 							label={t('label.bucket_name', 'Bucket Name')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.bucketName}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -175,7 +171,6 @@ const AdvancedMailstoresConfig: FC<{
 							label={t('label.type', 'Type')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.unusedBucketType}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -187,7 +182,6 @@ const AdvancedMailstoresConfig: FC<{
 							label={t('label.ID', 'ID')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.bucketId}
-							readOnly
 						/>
 					</Container>
 				</ListRow>

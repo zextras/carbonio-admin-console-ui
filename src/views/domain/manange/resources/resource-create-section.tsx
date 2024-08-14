@@ -49,7 +49,6 @@ const ResourceCreateSection: FC = () => {
 							label={t('label.resource_name', 'ResourceName')}
 							backgroundColor="gray6"
 							value={resourceDetail?.displayName}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -65,7 +64,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.name', 'Name')}
 								backgroundColor="gray6"
 								value={resourceDetail?.name}
-								readOnly
 							/>
 						</Row>
 						<Row width="10%" style={{ padding: '12px' }}>
@@ -76,7 +74,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.domain', 'Domain')}
 								backgroundColor="gray6"
 								value={resourceDetail?.domain}
-								readOnly
 							/>
 						</Row>
 					</Container>
@@ -93,7 +90,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.type', 'Type')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCalResType?.label}
-								readOnly
 							/>
 						</Container>
 						<Container padding={{ right: 'large' }}>
@@ -101,7 +97,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.status', 'Status')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraAccountStatus?.label}
-								readOnly
 							/>
 						</Container>
 						<Container>
@@ -109,7 +104,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.class_of_service', 'Class of Service')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCOSId?.label}
-								readOnly
 							/>
 						</Container>
 					</Container>
@@ -126,7 +120,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCalResAutoDeclineRecurring?.label}
-								readOnly
 							/>
 						</Container>
 						<Container padding={{ right: 'large' }}>
@@ -134,7 +127,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.maximum_conflict', 'Maximum Conflict')}
 								backgroundColor="gray6"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
-								readOnly
 							/>
 						</Container>
 						<Container>
@@ -142,7 +134,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
 								backgroundColor="gray6"
 								value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
-								readOnly
 							/>
 						</Container>
 					</Container>
@@ -158,7 +149,6 @@ const ResourceCreateSection: FC = () => {
 							label={t('label.schedule_policy', 'Set Policy')}
 							backgroundColor="gray6"
 							value={resourceDetail?.schedulePolicyType?.label}
-							readOnly
 						/>
 					</Container>
 				</ListRow>

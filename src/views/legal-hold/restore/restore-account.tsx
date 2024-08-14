@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
-	IconButton,
 	Text,
 	Divider,
 	Input,
@@ -84,10 +83,10 @@ const RestoreAccountView: FC<{
 	);
 
 	const showSnackbar = useCallback(
-		(key, type, msg) => {
+		(key, severity, msg) => {
 			createSnackbar({
 				key,
-				type,
+				severity,
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -444,7 +443,9 @@ const RestoreAccountView: FC<{
 					</Row>
 
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => {

@@ -12,7 +12,6 @@ import {
 	Padding,
 	Text,
 	Button,
-	IconButton,
 	Divider,
 	Switch,
 	Select,
@@ -261,7 +260,7 @@ const ModifyVolume: FC<{
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
-							type: 'success',
+							severity: 'success',
 							label: t('label.volume_detail_success', 'All changes have been saved successfully')
 						});
 						getAllVolumesRequest();
@@ -270,7 +269,7 @@ const ModifyVolume: FC<{
 					} else {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_detail_error', '{{message}}', {
 								// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -285,7 +284,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -331,7 +330,7 @@ const ModifyVolume: FC<{
 						).catch(() => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: t('label.volume_detail_error', '{{message}}', {
 									message: 'Something went wrong, please try again'
 								}),
@@ -342,7 +341,7 @@ const ModifyVolume: FC<{
 					}
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: t('label.volume_detail_success', 'All changes have been saved successfully')
 					});
 					getAllVolumesRequest();
@@ -352,7 +351,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -695,7 +694,7 @@ const ModifyVolume: FC<{
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -750,7 +749,12 @@ const ModifyVolume: FC<{
 						{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
 					</Row>
 					<Row padding={{ horizontal: 'small' }}>
-						<IconButton icon="CloseOutline" onClick={(): void => setmodifyVolumeToggle(false)} />
+						<Button
+							type="ghost"
+							color={'text'}
+							icon="CloseOutline"
+							onClick={(): void => setmodifyVolumeToggle(false)}
+						/>
 					</Row>
 				</Row>
 				<Divider />
@@ -980,7 +984,6 @@ const ModifyVolume: FC<{
 									label={t('label.bucket_name', 'Bucket Name')}
 									backgroundColor="gray6"
 									value={bucketName}
-									readOnly
 								/>
 							</Container>
 							<Container
@@ -988,12 +991,7 @@ const ModifyVolume: FC<{
 								crossAlignment="flex-start"
 								padding={{ top: 'large', right: 'large' }}
 							>
-								<Input
-									label={t('label.type', 'Type')}
-									backgroundColor="gray6"
-									value={storeType}
-									readOnly
-								/>
+								<Input label={t('label.type', 'Type')} backgroundColor="gray6" value={storeType} />
 							</Container>
 							<Container
 								mainAlignment="flex-start"
@@ -1004,7 +1002,6 @@ const ModifyVolume: FC<{
 									label={t('label.ID', 'ID')}
 									backgroundColor="gray6"
 									value={bucketConfigurationId}
-									readOnly
 								/>
 							</Container>
 						</ListRow>

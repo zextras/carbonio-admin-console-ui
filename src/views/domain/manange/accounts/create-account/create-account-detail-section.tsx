@@ -228,7 +228,6 @@ const CreateAccountDetailSection: FC = () => {
 						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
-						name="descriptiveName"
 						autoComplete="new-password"
 					/>
 				</Row>

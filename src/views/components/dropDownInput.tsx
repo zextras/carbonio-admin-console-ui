@@ -43,14 +43,12 @@ interface DropDownInputType {
 
 const DropDownInput: FC<DropDownInputType> = ({
 	items,
-	placement,
 	maxWidth,
 	width,
 	disableAutoFocus,
 	dropdownOnClick,
 	inputLabel,
 	onChange,
-	size,
 	inputValue,
 	backgroundColor,
 	hasError,
@@ -60,7 +58,6 @@ const DropDownInput: FC<DropDownInputType> = ({
 }) => (
 	<Dropdown
 		items={items}
-		placement={placement || 'bottom-start'}
 		maxWidth={maxWidth || '300px'}
 		disableAutoFocus={disableAutoFocus || true}
 		width={width || '265px'}
