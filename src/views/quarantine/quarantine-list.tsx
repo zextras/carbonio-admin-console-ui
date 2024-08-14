@@ -724,6 +724,7 @@ const QuarantineList: FC = () => {
 			})
 				.then((msgBatchData) => {
 					const normalizedMessageList: any = [];
+					// eslint-disable-next-line sonarjs/cognitive-complexity
 					msgBatchData?.GetMsgResponse?.forEach((item: any) => {
 						const m = item.m?.[0];
 						if (Array.isArray(m?._attrs?.['X-Spam-Status'])) {
