@@ -26,6 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import { DEFAULT, COS, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
+import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -248,6 +249,7 @@ const CosGeneralInformation: FC = () => {
 		body.id = id;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',

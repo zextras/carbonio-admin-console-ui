@@ -23,6 +23,7 @@ import { isEqual, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { COS } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
@@ -979,6 +980,7 @@ const CosPreferences: FC = () => {
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',

@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { DISABLED, ENABLED, COS } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
@@ -281,6 +282,7 @@ const CosServerPools: FC = () => {
 				.then((data) => {
 					const cos: any = data?.cos[0];
 					if (cos) {
+						flushCache('cos', 'id', body.id._content);
 						createSnackbar({
 							key: 'success',
 							severity: 'success',
