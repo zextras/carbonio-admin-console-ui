@@ -1223,6 +1223,7 @@
         "enable_secure_connection": "Enable Secure Connection (StartTLS/SSL)",
         "enable_the_mobile_dos_protection_service": "Enable the Mobile DOS Protection Service",
         "enable_toaster_notification_for_new_calendar_events": "enable toaster notification for new calendar events",
+        "enable_wsc": "Enable WSC",
         "enabled": "Enabled",
         "end_session": "End Session",
         "end_user_theme_description": "In this section you can customize the WebApp with your company logo and image.",
