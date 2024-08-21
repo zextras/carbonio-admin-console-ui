@@ -244,9 +244,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.carbonioFeatureChatsEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureChatsEnabled}
 								inputName={'carbonioFeatureChatsEnabled'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('carbonioFeatureChatsEnabled')
-								}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsEnabled')}
 							/>
 						</Row>
 					</Container>
