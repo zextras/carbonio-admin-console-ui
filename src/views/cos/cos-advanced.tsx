@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -1120,6 +1121,7 @@ const CosAdvanced: FC = () => {
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Features } from './features';
 import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
@@ -144,6 +145,7 @@ const CosFeatures: FC = () => {
 	const modifyCosRequest = (body: any): void => {
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
