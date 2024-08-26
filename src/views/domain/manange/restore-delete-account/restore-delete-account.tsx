@@ -6,7 +6,7 @@
 
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 
-import { Container, SnackbarManagerContext } from '@zextras/carbonio-design-system';
+import { Container, useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ import { useDomainStore } from '../../../../store/domain/store';
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [showRestoreAccountWizard, setShowRestoreAccountWizard] = useState<boolean>(false);
 	const context = useContext(RestoreDeleteAccountContext);
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
@@ -96,7 +96,7 @@ const RestoreDeleteAccount: FC = () => {
 					if (error) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: error,
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -106,7 +106,7 @@ const RestoreDeleteAccount: FC = () => {
 					if (success) {
 						createSnackbar({
 							key: 'success',
-							type: 'success',
+							severity: 'success',
 							label: t(
 								'label.restore_account_has_added_operation_queue',
 								'The restore of the account has been added to the operation queue successfully'
@@ -121,7 +121,7 @@ const RestoreDeleteAccount: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

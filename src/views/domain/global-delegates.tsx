@@ -265,7 +265,7 @@ const GlobalDelegates: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -298,7 +298,7 @@ const GlobalDelegates: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

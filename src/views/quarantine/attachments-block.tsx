@@ -3,19 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
+	Button,
 	Container,
 	getColor,
 	Icon,
-	IconButton,
 	Link,
 	Padding,
 	Row,
-	SnackbarManagerContext,
 	Text,
 	Tooltip,
+	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
 import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
@@ -390,7 +390,7 @@ const Attachment: FC<AttachmentType> = ({
 	const sizeLabel = useMemo(() => humanFileSize(size), [size]);
 	const inputRef = useRef<HTMLAnchorElement>(null);
 	const inputRef2 = useRef<HTMLAnchorElement>(null);
-	const createSnackbar = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 
 	const downloadAttachment = useCallback(() => {
@@ -414,7 +414,7 @@ const Attachment: FC<AttachmentType> = ({
 			.then(() => {
 				createSnackbar({
 					key: 'info',
-					type: 'info',
+					severity: 'info',
 					label: t('quarantine.attachment_deleted', 'Attachment deleted'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -427,7 +427,7 @@ const Attachment: FC<AttachmentType> = ({
 				setMessageViewLoading(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -489,7 +489,13 @@ const Attachment: FC<AttachmentType> = ({
 							key={`${message.id}-DownloadOutline`}
 							label={t('label.download_one', 'Download')}
 						>
-							<IconButton size="medium" icon="DownloadOutline" onClick={downloadAttachment} />
+							<Button
+								type="ghost"
+								color={'text'}
+								size="medium"
+								icon="DownloadOutline"
+								onClick={downloadAttachment}
+							/>
 						</Tooltip>
 					</Padding>
 					{!isExternalMessage && (
@@ -498,7 +504,9 @@ const Attachment: FC<AttachmentType> = ({
 								key={`${message.id}-DeletePermanentlyOutline`}
 								label={t('label.delete', 'Delete')}
 							>
-								<IconButton
+								<Button
+									type="ghost"
+									color={'text'}
 									size="medium"
 									icon="DeletePermanentlyOutline"
 									onClick={onDeleteAttachment}

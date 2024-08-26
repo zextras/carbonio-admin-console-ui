@@ -393,55 +393,6 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="32%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.allow_user_check_minimum_interval',
-							'Allow the user to change the minimum checking interval'
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
-						fromSubValue={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
-						inputName={'zimbraPrefMailLocalDeliveryDisabled'}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefMailLocalDeliveryDisabled')}
-					/>
-				</Row>
-				<Row width="32%" mainAlignment="flex-start">
-					<InheritedInput
-						label={t(
-							'account_details.min_new_check_interval_value',
-							'Min new check interval (value)'
-						)}
-						subValue={accountDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
-						inheritedValue={cosDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
-						fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
-						background="gray5"
-						inputName="zimbraPrefMailPollingInterval"
-						onChange={onPrefMailPollingIntervalNumChange}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
-						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
-						pref={{ type: 'number' }}
-					/>
-				</Row>
-				<Row width="32%" mainAlignment="flex-start">
-					<InheritedSelect
-						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
-						items={TIME_TYPES}
-						subValue={accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''}
-						inheritedValue={cosDetail.zimbraPrefMailPollingInterval?.slice(-1) || ''}
-						fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
-						background="gray5"
-						selectName="zimbraPrefMailPollingInterval"
-						onChange={onPollingIntervalChange}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
-						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
-					/>
-				</Row>
-			</Row>
-
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraPrefOutOfOfficeReplyEnabled}

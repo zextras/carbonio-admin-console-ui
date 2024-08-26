@@ -4,18 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, {
-	FC,
-	lazy,
-	Suspense,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IconButton, Icon, SnackbarManagerContext } from '@zextras/carbonio-design-system';
+import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -109,7 +100,6 @@ import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
-import { CreateSnackbarType } from '../types';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -119,7 +109,7 @@ const AppView: FC = (props) => (
 	</Suspense>
 );
 
-const PrimaryBarIconButton = styled(IconButton)`
+const PrimaryBarIconButton = styled(Button)`
 	&:hover {
 		background: transparent;
 	}
@@ -160,9 +150,9 @@ const App: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
-	const hasConfigRights = useMemo(() => {
+	const hasAllConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
@@ -230,7 +220,7 @@ const App: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t(
 							'label.error_rights_message',
 							'Error obtaining Rights. Please try again later.'
@@ -613,7 +603,9 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
-				size="large"
+				type="ghost"
+				size={'extralarge'}
+				color={'text'}
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
 			/>
 		),
@@ -667,7 +659,7 @@ const App: FC = () => {
 			});
 		}
 
-		if (hasConfigRights) {
+		if (hasAllConfigRights) {
 			addRoute({
 				route: MTA_ROUTE_ID,
 				position: 3,
@@ -726,7 +718,7 @@ const App: FC = () => {
 			});
 		} else {
 			removeRoute(BACKUP_ROUTE_ID);
-			removeRoute(LEGAL_HOLD_ROUTE_ID);
+
 			removeRoute(MTA_ROUTE_ID);
 			removeRoute(PRIVACY_ROUTE_ID);
 		}
@@ -737,7 +729,7 @@ const App: FC = () => {
 		PrivacyTooltipView,
 		StorageTooltipView,
 		backupPrimaryBar,
-		hasConfigRights,
+		hasAllConfigRights,
 		hasListServerRights,
 		isAdvanced,
 		managementSection,
@@ -793,7 +785,7 @@ const App: FC = () => {
 		}
 
 		if (isAdvanced) {
-			if (hasConfigRights) {
+			if (hasAllConfigRights) {
 				addRoute({
 					route: SUBSCRIPTIONS_ROUTE_ID,
 					position: 5,
@@ -807,8 +799,23 @@ const App: FC = () => {
 					tooltip: SubscriptionTooltipView,
 					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
 				});
+
+				addRoute({
+					route: LEGAL_HOLD_ROUTE_ID,
+					position: 2,
+					visible: true,
+					label: t('label.legal_hold', 'Legal Hold') || '',
+					primaryBar: 'LockOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: LegalHoldTooltipView,
+					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
+				});
 			} else {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
+				removeRoute(LEGAL_HOLD_ROUTE_ID);
 			}
 
 			addRoute({
@@ -859,7 +866,7 @@ const App: FC = () => {
 		hasListServerRights,
 		MTATooltipView,
 		showCOS,
-		hasConfigRights,
+		hasAllConfigRights,
 		cosPrimaryBar,
 		LegalHoldTooltipView,
 		setConfigRightsRoute
@@ -871,7 +878,7 @@ const App: FC = () => {
 				id: 'new-domain',
 				label: t('label.create_new_domain', 'Create New Domain'),
 				icon: '',
-				click: (ev: any): void => {
+				onClick: (ev: any): void => {
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
 					setDomain({});
 					setTimeout(() => {
@@ -890,7 +897,7 @@ const App: FC = () => {
 				id: 'new-cos',
 				label: t('label.create_new_cos', 'Create New COS'),
 				icon: '',
-				click: (ev: any): void => {
+				onClick: (ev: any): void => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
 					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},

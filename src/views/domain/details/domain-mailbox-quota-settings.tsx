@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useContext, useCallback } from 'react';
+import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 
 import {
 	Container,
@@ -13,9 +13,9 @@ import {
 	Select,
 	Button,
 	Padding,
-	SnackbarManagerContext,
 	Table,
-	Divider
+	Divider,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { divide } from 'lodash';
@@ -49,7 +49,7 @@ import { BytesToGB, GbToBytes } from '../../utility/utils';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -315,7 +315,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					setIsRequestInProgress(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label:
 							error?.message ??
 							// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -511,7 +511,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -528,7 +528,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

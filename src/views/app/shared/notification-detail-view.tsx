@@ -6,7 +6,7 @@
 
 import React, { FC } from 'react';
 
-import { Container, Text, Row, IconButton, Divider, Input } from '@zextras/carbonio-design-system';
+import { Container, Text, Row, Divider, Input, Button } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -84,8 +84,10 @@ const NotificationDetail: FC<{
 					</Text>
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
+					<Button
 						size="medium"
+						type="ghost"
+						color={'text'}
 						icon="CloseOutline"
 						onClick={(): void => {
 							setShowNotificationDetail(false);
@@ -105,7 +107,6 @@ const NotificationDetail: FC<{
 						label={t('label.date', 'Date')}
 						value={moment(notification?.date).format('DD-MM-YYYY - HH:mm A')}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 				<Container padding={{ bottom: 'large', left: 'small', right: 'extralarge' }}>
@@ -113,7 +114,6 @@ const NotificationDetail: FC<{
 						label={t('label.type', 'Type')}
 						value={notification?.level}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 			</ListRow>
@@ -125,7 +125,6 @@ const NotificationDetail: FC<{
 						label={t('label.what_inside', 'What’s inside?')}
 						value={notification?.subject}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 			</ListRow>

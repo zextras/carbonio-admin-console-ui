@@ -5,15 +5,7 @@
  */
 import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import {
-	Button,
-	Container,
-	Icon,
-	IconButton,
-	Padding,
-	Row,
-	Text
-} from '@zextras/carbonio-design-system';
+import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -421,13 +413,11 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 								setShowExternalImage(true);
 							}}
 						/>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							icon="CloseOutline"
 							onClick={(): void => setDisplayBanner(false)}
-							customSize={{
-								iconSize: 'large',
-								paddingSize: 'small'
-							}}
 							size="small"
 						/>
 					</Row>

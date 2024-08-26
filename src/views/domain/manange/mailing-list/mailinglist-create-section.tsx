@@ -124,7 +124,6 @@ const MailingListCreateSection: FC<any> = () => {
 							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray6"
 							value={mailingListDetail?.displayName}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -137,7 +136,6 @@ const MailingListCreateSection: FC<any> = () => {
 							label={t('label.address', 'Address')}
 							backgroundColor="gray6"
 							value={`${mailingListDetail?.prefixName}@${mailingListDetail?.suffixName}`}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -153,7 +151,6 @@ const MailingListCreateSection: FC<any> = () => {
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							value={mailingListDetail?.zimbraNotes}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -201,7 +198,6 @@ const MailingListCreateSection: FC<any> = () => {
 											? t('label.yes', 'Yes')
 											: t('label.no', 'No')
 									}
-									readOnly
 								/>
 							</Container>
 						)}
@@ -217,7 +213,6 @@ const MailingListCreateSection: FC<any> = () => {
 								value={
 									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -235,7 +230,6 @@ const MailingListCreateSection: FC<any> = () => {
 								value={
 									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 					</ListRow>
@@ -253,7 +247,6 @@ const MailingListCreateSection: FC<any> = () => {
 									label={t('label.distribution_list_url', "Distribution List's URL")}
 									backgroundColor="gray6"
 									value={mailingListDetail?.memberURL}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -301,7 +294,6 @@ const MailingListCreateSection: FC<any> = () => {
 						label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
 						backgroundColor="gray6"
 						value={grantEmailType}
-						readOnly
 					/>
 				</ListRow>
 
@@ -334,7 +326,6 @@ const MailingListCreateSection: FC<any> = () => {
 											? t('label.yes', 'Yes')
 											: t('label.no', 'No')
 									}
-									readOnly
 								/>
 							</Container>
 						)}
@@ -350,7 +341,6 @@ const MailingListCreateSection: FC<any> = () => {
 								value={
 									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -365,7 +355,6 @@ const MailingListCreateSection: FC<any> = () => {
 								value={
 									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 					</ListRow>

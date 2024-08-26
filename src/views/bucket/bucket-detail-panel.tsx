@@ -249,7 +249,7 @@ const BucketDetailPanel: FC = () => {
 				getBucketListType();
 				createSnackbar({
 					key: '1',
-					type: 'success',
+					severity: 'success',
 					label: t('label.delete_bucket_sucess', 'The {{name}} has been removed', {
 						name: bucketDeleteName?.bucketName
 					}),
@@ -259,7 +259,7 @@ const BucketDetailPanel: FC = () => {
 			} else {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
 						name: bucketDeleteName?.bucketName
 					}),

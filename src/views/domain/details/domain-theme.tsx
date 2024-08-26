@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -12,7 +12,7 @@ import {
 	Divider,
 	Text,
 	Button,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, isEqual, reduce } from 'lodash';
@@ -50,7 +50,7 @@ const ovelayStyle = styled(Container)`
 const DomainTheme: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
 	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
 	const configInformation = useConfigStore((state) => state.config);
@@ -110,7 +110,7 @@ const DomainTheme: FC = () => {
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -134,7 +134,7 @@ const DomainTheme: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -150,7 +150,7 @@ const DomainTheme: FC = () => {
 		(msg) => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,

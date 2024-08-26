@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -16,7 +16,7 @@ import {
 	Padding,
 	Table,
 	Icon,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -53,7 +53,7 @@ const ActiveSync: FC = () => {
 	const [t] = useTranslation();
 	const [allMobileDevices, setAllMobileDevices] = useState<Array<MobileDevice>>([]);
 	const [allDeviceRow, setAllDeviceRow] = useState<Array<any>>([]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isShowDeviceDetail, setIsShowDeviceDetail] = useState<boolean>(false);
 	const [selectedMobileDevice, setSelectedMobileDevice] = useState<Array<any>>([]);
 	const [selectedMobileDeviceDetail, setSelectedMobileDeviceDetail] = useState<any>();

@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Modal,
 	Padding,
@@ -18,8 +17,8 @@ import {
 	Switch,
 	Dropdown,
 	Button,
-	SnackbarManagerContext,
-	Icon
+	Icon,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -89,7 +88,7 @@ const EditAclListView: FC<any> = ({
 	getAclLists
 }) => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [memberOffset, setMemberOffset] = useState<number>(0);
 	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
@@ -809,7 +808,7 @@ const EditAclListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -964,7 +963,7 @@ const EditAclListView: FC<any> = ({
 				if (isError) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -975,7 +974,7 @@ const EditAclListView: FC<any> = ({
 				} else {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.changes_have_been_saved', 'The changes have been saved'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -989,7 +988,7 @@ const EditAclListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1628,7 +1627,7 @@ const EditAclListView: FC<any> = ({
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -1637,7 +1636,7 @@ const EditAclListView: FC<any> = ({
 			getAclLists();
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowEditAclList(false)(false);
+			setShowEditAclList(false);
 			setIsUpdateRecord(true);
 		},
 		[closeHandler, createSnackbar, setIsUpdateRecord, setShowEditAclList, getAclLists]
@@ -1656,8 +1655,8 @@ const EditAclListView: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
-					label: error.message
+					severity: 'error',
+					label: error?.message
 						? error.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1849,7 +1848,9 @@ const EditAclListView: FC<any> = ({
 						)}
 					</Row>
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => setShowEditAclList(false)}
@@ -1921,7 +1922,6 @@ const EditAclListView: FC<any> = ({
 							<Input
 								label={t('domain.domain_name', 'Domain Name')}
 								value={distributionDomain}
-								readOnly
 								backgroundColor="gray5"
 							/>
 						</Container>
@@ -1942,7 +1942,6 @@ const EditAclListView: FC<any> = ({
 										? t('label.yes', 'Yes')
 										: t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -1955,7 +1954,6 @@ const EditAclListView: FC<any> = ({
 								label={t('label.hidden_from_gal', 'Hidden from GAL')}
 								backgroundColor="gray6"
 								value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -1970,7 +1968,6 @@ const EditAclListView: FC<any> = ({
 								value={
 									zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 					</ListRow>

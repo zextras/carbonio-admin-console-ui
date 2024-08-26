@@ -10,7 +10,6 @@ import {
 	Container,
 	Input,
 	Row,
-	IconButton,
 	Divider,
 	Padding,
 	PasswordInput,
@@ -330,7 +329,7 @@ const EditBucketDetailPanel: FC<{
 				setToggleBtn(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.changes_have_been_updated', '{{message}}', {
 						message: updateResData?.response?.message || updateResData?.message
 					}),
@@ -343,7 +342,7 @@ const EditBucketDetailPanel: FC<{
 			} else {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.error', '{{message}}', {
 						message: updateResData?.error?.message || updateResData?.error
 					}),
@@ -575,7 +574,12 @@ const EditBucketDetailPanel: FC<{
 					{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton icon="CloseOutline" onClick={(): any => setShowEditDetailView(false)} />
+					<Button
+						type="ghost"
+						color={'text'}
+						icon="CloseOutline"
+						onClick={(): any => setShowEditDetailView(false)}
+					/>
 				</Row>
 			</Row>
 			<Divider />
@@ -587,7 +591,6 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.bucket_type', 'Bucket Type')}
 						inputName="label"
 						value={bucketDetail?.storeType || ''}
-						readOnly
 					/>
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -681,14 +684,12 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.prefix', 'Prefix')}
 						inputName="label"
 						value={bucketDetail?.prefix || ''}
-						readOnly
 					/>
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
-						name="notes"
 						value={bucketNotes}
 						onChange={(ev): void => {
 							setBucketNotes(ev.target.value);

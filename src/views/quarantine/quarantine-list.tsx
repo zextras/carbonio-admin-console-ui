@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 
 import {
 	Container,
@@ -12,17 +12,16 @@ import {
 	Text,
 	Button,
 	Divider,
-	SnackbarManagerContext,
 	Modal,
 	Table,
-	IconButton,
 	Padding,
 	Collapse,
 	Icon,
-	Tooltip
+	Tooltip,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { getTags } from '@zextras/carbonio-shell-ui';
-import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
+import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -333,7 +332,7 @@ const MessageListTable: FC<{
 
 const QuarantineList: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [quarantineAccountName, setQuarantineAccountName] = useState<string>('');
 	const [quarantineAccountId, setQuarantineAccountId] = useState<string>('');
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
@@ -667,6 +666,213 @@ const QuarantineList: FC = () => {
 		},
 		[getAttachmentsAnchoredOnHtmlBody]
 	);
+
+	const messageListArrayData = (messages: any): [] => {
+		const data = messages;
+		const messageListArr: any = [];
+		data?.forEach((item: any): any =>
+			messageListArr.push({
+				_jsns: 'urn:zimbraMail',
+				m: {
+					html: 1,
+					id: item.id,
+					needExp: 1,
+					header: [
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Envelope-From'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Envelope-To'
+						},
+						{
+							n: 'X-Envelope-To-Blocked'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Amavis-Alert'
+						},
+						{
+							n: 'X-Spam-Flag'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Spam-Score'
+						},
+						{
+							n: 'X-Spam-Level'
+						},
+						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
+							n: 'X-Spam-Status'
+						}
+					]
+				}
+			})
+		);
+		return messageListArr;
+	};
+
+	const processMessageAttributes = (args: any): any => {
+		const attrs = cloneDeep(args);
+		const singleValueKeys = [
+			'X-Spam-Status',
+			'X-Spam-Score',
+			'X-Amavis-Alert',
+			'X-Envelope-From',
+			'X-Envelope-To'
+		];
+
+		singleValueKeys.forEach((key) => {
+			if (Array.isArray(attrs[key])) {
+				attrs[key] = attrs[key].pop();
+			}
+		});
+
+		return attrs;
+	};
+
+	const extractScoreValue = (spamStatus: string): any => {
+		const scoreValueArr = (spamStatus || '')?.split('score=');
+		return scoreValueArr.length > 1 ? scoreValueArr[1]?.split(' ')?.[0] || '' : '';
+	};
+
+	type Flags = string | undefined;
+
+	interface BodyContent {
+		contentType: string;
+		content: string;
+	}
+
+	const normalizeParticipants = useCallback(
+		(participants: Participant[]): any =>
+			participants ? map(participants, normalizeParticipantsFromSoap) : [],
+		[normalizeParticipantsFromSoap]
+	);
+
+	const normalizeMailParts = useCallback(
+		(parts: MailMessagePart[]): any[] => (parts ? map(parts, normalizeMailPartMapFn) : []),
+		[normalizeMailPartMapFn]
+	);
+
+	const getAttachments = useCallback(
+		(parts: AttachmentPart[]): AttachmentPart[] => (parts ? getAttachmentsFromParts(parts) : []),
+		[getAttachmentsFromParts]
+	);
+
+	const generateBodyContent = useCallback(
+		(parts: SoapMailMessagePart[], id: string): BodyContent =>
+			parts ? generateBody(parts, id) : { contentType: '', content: '' },
+		[generateBody]
+	);
+
+	interface ParsedFlags {
+		read: boolean;
+		hasAttachment: boolean;
+		flagged: boolean;
+		urgent: boolean;
+		isDeleted: boolean;
+		isDraft: boolean;
+		isForwarded: boolean;
+		isSentByMe: boolean;
+		isInvite: boolean;
+		isReplied: boolean;
+		isReadReceiptRequested: boolean;
+	}
+
+	const parseFlags = useCallback(
+		(flags: Flags): ParsedFlags => ({
+			read: !isNil(flags) ? !/u/.test(flags) : true,
+			hasAttachment: !isNil(flags) ? /a/.test(flags) : false,
+			flagged: !isNil(flags) ? /f/.test(flags) : false,
+			urgent: !isNil(flags) ? /!/.test(flags) : false,
+			isDeleted: !isNil(flags) ? /x/.test(flags) : false,
+			isDraft: !isNil(flags) ? /d/.test(flags) : false,
+			isForwarded: !isNil(flags) ? /w/.test(flags) : false,
+			isSentByMe: !isNil(flags) ? /s/.test(flags) : false,
+			isInvite: !isNil(flags) ? /v/.test(flags) : false,
+			isReplied: !isNil(flags) ? /r/.test(flags) : false,
+			isReadReceiptRequested: !isNil(flags) ? !/n/.test(flags) : true
+		}),
+		[]
+	);
+
+	const sanitizeEmail = (email: string | undefined): string => replace(email ?? '', /[<>]/g, '');
+
+	const normalizeMessage = useCallback(
+		(m: any) => {
+			const attrs = processMessageAttributes(m?._attrs || {});
+			const flags = parseFlags(m.f);
+			const scoreValueString = extractScoreValue(attrs['X-Spam-Status']);
+
+			return {
+				conversation: m.cid,
+				id: m.id,
+				date: m.d,
+				size: m.s,
+				parent: m.l,
+				fragment: m.fr,
+				subject: m.su,
+				participants: normalizeParticipants(m.e),
+				tags: getTagIds(m.t, m.tn),
+				parts: normalizeMailParts(m.mp),
+				attachments: getAttachments(m.mp),
+				invite: m.inv,
+				shr: m.shr,
+				body: generateBodyContent(m.mp, m.id),
+				isComplete: true,
+				isScheduled: !!m.autoSendTime,
+				autoSendTime: m.autoSendTime,
+				read: flags.read,
+				hasAttachment: flags.hasAttachment,
+				flagged: flags.flagged,
+				urgent: flags.urgent,
+				isDeleted: flags.isDeleted,
+				isDraft: flags.isDraft,
+				isForwarded: flags.isForwarded,
+				isSentByMe: flags.isSentByMe,
+				isInvite: flags.isInvite,
+				isReplied: flags.isReplied,
+				isReadReceiptRequested: flags.isReadReceiptRequested,
+				score: attrs['X-Spam-Score'] || scoreValueString || '',
+				reason: attrs['X-Amavis-Alert'] || '',
+				envelopeFrom: sanitizeEmail(attrs['X-Envelope-From']),
+				envelopeTo: sanitizeEmail(attrs['X-Envelope-To'])
+			};
+		},
+		[
+			generateBodyContent,
+			getAttachments,
+			getTagIds,
+			normalizeMailParts,
+			normalizeParticipants,
+			parseFlags
+		]
+	);
+
+	const getMessageResponses = useCallback(
+		(messageListArr: any): void => {
+			batchService({
+				GetMsgRequest: messageListArr,
+				_jsns: 'urn:zimbra'
+			})
+				.then((msgBatchData) => {
+					const normalizedMessageList =
+						msgBatchData?.GetMsgResponse?.map((item: any) => {
+							const m = item.m?.[0];
+							return normalizeMessage(m);
+						}) || [];
+
+					setMessageListData(normalizedMessageList);
+					setMessageViewLoading(false);
+					setRequestInprogress(false);
+				})
+				.catch(() => setRequestInprogress(false));
+		},
+		[normalizeMessage]
+	);
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
@@ -693,129 +899,10 @@ const QuarantineList: FC = () => {
 						if (!response?.Body?.SearchResponse?.m) {
 							setRequestInprogress(false);
 						}
-						const data = response?.Body?.SearchResponse?.m;
-						const messageListArr: any = [];
-						data.forEach((item: any): any =>
-							messageListArr.push({
-								_jsns: 'urn:zimbraMail',
-								m: {
-									html: 1,
-									id: item.id,
-									needExp: 1,
-									header: [
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Envelope-From'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Envelope-To'
-										},
-										{
-											n: 'X-Envelope-To-Blocked'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Amavis-Alert'
-										},
-										{
-											n: 'X-Spam-Flag'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Spam-Score'
-										},
-										{
-											n: 'X-Spam-Level'
-										},
-										{
-											// eslint-disable-next-line sonarjs/no-duplicate-string
-											n: 'X-Spam-Status'
-										}
-									]
-								}
-							})
-						);
 
-						batchService({
-							GetMsgRequest: messageListArr,
-							_jsns: 'urn:zimbra'
-						})
-							.then((msgBatchData) => {
-								const normalizedMessageList: any = [];
-								msgBatchData?.GetMsgResponse?.forEach((item: any) => {
-									const m = item.m?.[0];
-									if (Array.isArray(m?._attrs?.['X-Spam-Status'])) {
-										m._attrs['X-Spam-Status'] = m._attrs['X-Spam-Status'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Spam-Score'])) {
-										m._attrs['X-Spam-Score'] = m?._attrs?.['X-Spam-Score'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Amavis-Alert'])) {
-										m._attrs['X-Amavis-Alert'] = m?._attrs?.['X-Amavis-Alert'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Envelope-From'])) {
-										m._attrs['X-Envelope-From'] = m?._attrs?.['X-Envelope-From'].pop();
-									}
-									if (Array.isArray(m?._attrs?.['X-Envelope-To'])) {
-										m._attrs['X-Envelope-To'] = m?._attrs?.['X-Envelope-To'].pop();
-									}
-									const scoreValueArr: any[] = (m?._attrs?.['X-Spam-Status'] || '')?.split(
-										'score='
-									);
-									let scoreValueString = '';
-									if (scoreValueArr?.length > 1) {
-										scoreValueString = scoreValueArr[1]?.toString() || '';
-										scoreValueString = scoreValueString.split(' ')?.[0] || '';
-									}
+						const messageListArr: any = messageListArrayData(response?.Body?.SearchResponse?.m);
 
-									const normalizedMessage: IncompleteMessage = {
-										conversation: m.cid,
-										id: m.id,
-										date: m.d,
-										size: m.s,
-										parent: m.l,
-										fragment: m.fr,
-										subject: m.su,
-										participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
-										tags: getTagIds(m.t, m.tn),
-										parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
-										attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
-										// attachments: undefined,
-										invite: m.inv,
-										shr: m.shr,
-										body: m.mp
-											? generateBody(m.mp || [], m.id)
-											: {
-													contentType: '',
-													content: ''
-											  },
-										isComplete: true,
-										isScheduled: !!m.autoSendTime,
-										autoSendTime: m.autoSendTime,
-										read: !isNil(m.f) ? !/u/.test(m.f) : true,
-										hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
-										flagged: !isNil(m.f) ? /f/.test(m.f) : false,
-										urgent: !isNil(m.f) ? /!/.test(m.f) : false,
-										isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
-										isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
-										isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
-										isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
-										isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
-										isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
-										isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
-										score: m?._attrs?.['X-Spam-Score'] || scoreValueString || '',
-										reason: m?._attrs?.['X-Amavis-Alert'] || '',
-										envelopeFrom: replace(m?._attrs?.['X-Envelope-From'] || '', /[<>]/g, ''),
-										envelopeTo: replace(m?._attrs?.['X-Envelope-To'] || '', /[<>]/g, '')
-									};
-									normalizedMessageList.push(normalizedMessage);
-								});
-								setMessageListData(normalizedMessageList);
-								setMessageViewLoading(false);
-								setRequestInprogress(false);
-							})
-							.catch(() => setRequestInprogress(false));
+						getMessageResponses(messageListArr);
 					});
 				} else {
 					setRequestInprogress(false);
@@ -826,14 +913,7 @@ const QuarantineList: FC = () => {
 			setQuarantineDomaintName(obj.zimbraDefaultDomainName.toString());
 		}
 		setConfigDataLoaded(true);
-	}, [
-		config,
-		generateBody,
-		getAttachmentsFromParts,
-		getTagIds,
-		normalizeMailPartMapFn,
-		normalizeParticipantsFromSoap
-	]);
+	}, [config, getMessageResponses]);
 	useEffect(() => {
 		getQuarantineMsgData();
 	}, [getQuarantineMsgData]);
@@ -868,7 +948,7 @@ const QuarantineList: FC = () => {
 						.then(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.account_created_successfully',
 									'The account has been created successfully'
@@ -890,7 +970,7 @@ const QuarantineList: FC = () => {
 						.catch((error) => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error?.message
 									? error?.message
 									: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -907,7 +987,7 @@ const QuarantineList: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -936,7 +1016,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'info',
-						type: 'info',
+						severity: 'info',
 						label: t('quarantine.message_deleted', 'Message deleted'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -947,7 +1027,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -972,7 +1052,7 @@ const QuarantineList: FC = () => {
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'info',
-						type: 'info',
+						severity: 'info',
 						label: t('quarantine.message_delivered', 'Message delivered'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -984,7 +1064,7 @@ const QuarantineList: FC = () => {
 					setOpenDeliverDialog(false);
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1013,7 +1093,7 @@ const QuarantineList: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
@@ -1026,7 +1106,7 @@ const QuarantineList: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1152,7 +1232,6 @@ const QuarantineList: FC = () => {
 													label={t('label.retention_period', 'Retention Period (value)')}
 													backgroundColor="gray5"
 													value={zimbraMailMessageLifetimeNum}
-													readOnly
 													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>
@@ -1173,7 +1252,6 @@ const QuarantineList: FC = () => {
 																	(item: any) => item.value === zimbraMailMessageLifetimeType
 															  ).label
 													}
-													readOnly
 													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>
@@ -1346,7 +1424,9 @@ const QuarantineList: FC = () => {
 								</Text>
 							</Row>
 							<Row padding={{ right: 'extrasmall' }}>
-								<IconButton
+								<Button
+									type="ghost"
+									color={'text'}
 									size="medium"
 									icon="CloseOutline"
 									onClick={(): void => setShowMessageView(false)}
@@ -1511,7 +1591,7 @@ const QuarantineList: FC = () => {
 									</Row>
 								</Row>
 								<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="fill">
-									<IconButton
+									<Button
 										icon={showTextMsgView ? 'ChevronUpOutline' : 'ChevronDownOutline'}
 										size="small"
 										onClick={setToggleView}

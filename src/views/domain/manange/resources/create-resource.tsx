@@ -95,7 +95,7 @@ const CreateResource: FC<{
 		(label: string): void => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label,
 				autoHideTimeout: 3000,
 				hideButton: true,

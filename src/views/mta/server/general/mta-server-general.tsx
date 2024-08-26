@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,13 +14,13 @@ import {
 	Padding,
 	Divider,
 	Tooltip,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { CreateSnackbarType, IpRangeValue, MtaServerGeneral } from '../../../../../types';
+import { IpRangeValue, MtaServerGeneral } from '../../../../../types';
 import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
 	CONFIG,
@@ -53,7 +53,7 @@ import { validateIpAddress } from '../../../utility/utils';
 const MTAServerGeneral: FC = () => {
 	const [t] = useTranslation();
 	const { server }: { server: string } = useParams();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [serverAttributes, setServerAttributes] = useState<{ n: string; _content: string }[]>([]);
@@ -548,7 +548,7 @@ const MTAServerGeneral: FC = () => {
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -567,7 +567,7 @@ const MTAServerGeneral: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

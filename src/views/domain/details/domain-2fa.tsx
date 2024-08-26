@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Text,
@@ -12,7 +12,7 @@ import {
 	Button,
 	Padding,
 	Divider,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { differenceWith, isEqual, map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,7 @@ import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-co
 const DomainTwoFactorAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [arrPolicies, setArrPolicies] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const [arrPoliciesToModify, setArrPoliciesToModify] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -49,7 +49,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 			.catch((error: any) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error
 						? error?.error
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -105,7 +105,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 					} else {
 						createSnackbar({
 							key: 'policy-error',
-							type: 'error',
+							severity: 'error',
 							label: response?.error
 								? response?.error
 								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -118,7 +118,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error
 							? error?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

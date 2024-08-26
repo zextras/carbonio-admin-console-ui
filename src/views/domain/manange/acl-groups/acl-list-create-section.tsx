@@ -169,7 +169,6 @@ const AclListCreateSection: FC = () => {
 							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray6"
 							value={aclListDetail?.displayName}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -182,7 +181,6 @@ const AclListCreateSection: FC = () => {
 							label={t('label.address', 'Address')}
 							backgroundColor="gray6"
 							value={`${aclListDetail?.prefixName}@${aclListDetail?.suffixName}`}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -201,7 +199,6 @@ const AclListCreateSection: FC = () => {
 									? t('label.yes', 'Yes')
 									: t('label.no', 'No')
 							}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -214,7 +211,6 @@ const AclListCreateSection: FC = () => {
 							label={t('label.hidden_from_gal', 'Hidden from GAL')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -227,7 +223,6 @@ const AclListCreateSection: FC = () => {
 							label={t('label.this_list_can_receive_email', 'This list can receive Emails')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -242,7 +237,6 @@ const AclListCreateSection: FC = () => {
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraNotes}
-							readOnly
 						/>
 					</Container>
 				</ListRow>

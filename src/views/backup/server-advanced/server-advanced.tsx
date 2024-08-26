@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import {
 	Container,
@@ -13,7 +13,7 @@ import {
 	Button,
 	Switch,
 	Input,
-	SnackbarManagerContext,
+	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
 import {
@@ -37,7 +37,7 @@ const ServerAdvanced: FC = () => {
 	const { server }: { server: string } = useParams();
 	const allServers = useServerStore((state) => state.serverList);
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [ldapDumpEnabled, setLdapDumpEnabled] = useState<boolean>(false);
 	const [serverConfiguration, setServerConfiguration] = useState<boolean>(false);
@@ -228,7 +228,7 @@ const ServerAdvanced: FC = () => {
 						setIsDirty(false);
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: error?.message
 								? error?.message
 								: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -481,7 +481,7 @@ const ServerAdvanced: FC = () => {
 				if (data?.errors && Array.isArray(data?.errors)) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: data?.errors[0]?.error
 							? data?.errors[0]?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -510,7 +510,7 @@ const ServerAdvanced: FC = () => {
 					setIsDirty(false);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
@@ -525,7 +525,7 @@ const ServerAdvanced: FC = () => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -562,7 +562,7 @@ const ServerAdvanced: FC = () => {
 				if (data?.ok && data?.ok === true) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('backup.ldap_working_properly', 'Ldap working properly'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -571,7 +571,7 @@ const ServerAdvanced: FC = () => {
 				} else {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -583,7 +583,7 @@ const ServerAdvanced: FC = () => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

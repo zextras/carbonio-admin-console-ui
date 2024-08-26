@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Modal,
 	Padding,
@@ -18,7 +17,7 @@ import {
 	Select,
 	Switch,
 	Button,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
@@ -95,7 +94,7 @@ const EditMailingListView: FC<any> = ({
 		'label.search_for_user_and_clic_to_add',
 		'Search for a user and click on the ADD button.'
 	);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [memberOffset, setMemberOffset] = useState<number>(0);
 	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
@@ -838,7 +837,7 @@ const EditMailingListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -982,7 +981,7 @@ const EditMailingListView: FC<any> = ({
 				if (isError) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -993,7 +992,7 @@ const EditMailingListView: FC<any> = ({
 				} else {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.changes_have_been_saved', 'The changes have been saved'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -1007,7 +1006,7 @@ const EditMailingListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1694,7 +1693,7 @@ const EditMailingListView: FC<any> = ({
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -1713,7 +1712,7 @@ const EditMailingListView: FC<any> = ({
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${grantEmailItem}`,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -1788,7 +1787,7 @@ const EditMailingListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1826,7 +1825,7 @@ const EditMailingListView: FC<any> = ({
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1846,7 +1845,7 @@ const EditMailingListView: FC<any> = ({
 		(message) => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -1874,7 +1873,7 @@ const EditMailingListView: FC<any> = ({
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error.message
 						? error.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1969,7 +1968,9 @@ const EditMailingListView: FC<any> = ({
 						)}
 					</Row>
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => setShowMailingListDetailView(false)}
@@ -2183,7 +2184,6 @@ const EditMailingListView: FC<any> = ({
 										label={t('label.distribution_lists', 'Distribution Lists')}
 										value={dlMembershipListNames}
 										backgroundColor="gray5"
-										readOnly
 									/>
 								</Container>
 							</ListRow>

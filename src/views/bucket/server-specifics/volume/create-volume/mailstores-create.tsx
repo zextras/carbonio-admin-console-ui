@@ -220,7 +220,6 @@ const MailstoresCreate: FC<{
 					label={t('label.volume_server', 'Server')}
 					backgroundColor="gray6"
 					value={externalData}
-					readOnly
 				/>
 			</Row>
 			{!isAdvanced && (
@@ -256,7 +255,6 @@ const MailstoresCreate: FC<{
 					backgroundColor="gray5"
 					value={volumeDetail?.volumeName}
 					onChange={onVolNamechange}
-					readOnly
 					hasError={!errName}
 				/>
 				{!errName && (

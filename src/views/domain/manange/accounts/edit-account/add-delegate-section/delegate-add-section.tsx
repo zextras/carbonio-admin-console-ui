@@ -73,7 +73,6 @@ const DelegateAddSection: FC = () => {
 							}
 							// onChange={changeAccDetail}
 							inputName="displayName"
-							name="descriptiveName"
 						/>
 					</Row>
 				</Row>
@@ -110,7 +109,6 @@ const DelegateAddSection: FC = () => {
 									}
 								)}
 								inputName="displayName"
-								name="descriptiveName"
 							/>
 						</Row>
 					</Row>

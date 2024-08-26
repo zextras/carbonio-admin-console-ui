@@ -71,7 +71,7 @@ const DoneDetailPanel: FC = () => {
 			.catch((err) => {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label: t('label.operation.get_done_operation_error', '{{name}}', {
 						name: err
 					})

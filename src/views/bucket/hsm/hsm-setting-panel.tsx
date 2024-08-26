@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
@@ -17,7 +17,7 @@ import {
 	Switch,
 	Input,
 	Table,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -65,7 +65,7 @@ const HSMsettingPanel: FC = () => {
 		useState<boolean>(false);
 	const [oldValues, setOldValues] = useState<any>({});
 	const [volumeList, setVolumeList] = useState<any>([]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
@@ -94,10 +94,10 @@ const HSMsettingPanel: FC = () => {
 	);
 
 	const showSnackbar = useCallback(
-		(key, type, message) => {
+		(key, severity, message) => {
 			createSnackbar({
 				key,
-				type,
+				severity,
 				label: message,
 				autoHideTimeout: 3000,
 				hideButton: true,

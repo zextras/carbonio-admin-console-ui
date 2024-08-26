@@ -3,19 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Button,
 	Icon,
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -49,7 +48,7 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [aclList, setAclList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
@@ -405,7 +404,7 @@ const DomainAclList: FC = () => {
 					if (isError) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: errorMessage,
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -583,7 +582,7 @@ const DomainAclList: FC = () => {
 			}
 			createAclList(dynamic, name, attributes)
 				.then((data) => {
-					const type = 'success';
+					const severity = 'success';
 					let message = '';
 					const mlId = data?.dl[0]?.id;
 					addMemberToAclList(members, owners, mlId, allOwnersList);
@@ -595,7 +594,7 @@ const DomainAclList: FC = () => {
 					});
 					createSnackbar({
 						key: 'success',
-						type,
+						severity,
 						label: message,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -620,7 +619,7 @@ const DomainAclList: FC = () => {
 					}
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label:
 							message ||
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -679,12 +678,7 @@ const DomainAclList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<IconButton
-								iconColor="gray6"
-								backgroundColor="primary"
-								icon="Plus"
-								onClick={onAddClick}
-							/>
+							<Button color="primary" icon="Plus" onClick={onAddClick} />
 						</Row>
 					</Row>
 				</Container>

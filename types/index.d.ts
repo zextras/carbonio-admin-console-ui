@@ -11,3 +11,4 @@ export * from './volume';
 export * from './mta';
 export * from './table';
 export * from './global';
+export * from './legalholds';

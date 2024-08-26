@@ -252,7 +252,7 @@ const VolumesDetailPanel: FC = () => {
 					} else {
 						createSnackbar({
 							key: '1',
-							type: 'error',
+							severity: 'error',
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_detail_error', '{{message}}', {
 								// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -264,7 +264,7 @@ const VolumesDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -294,7 +294,7 @@ const VolumesDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -321,7 +321,7 @@ const VolumesDetailPanel: FC = () => {
 					if (deleteResponse?.ok) {
 						createSnackbar({
 							key: '1',
-							type: 'success',
+							severity: 'success',
 							label: t('label.volume_deleted', 'Volume deleted successfully')
 						});
 						getAllVolumesRequest();
@@ -330,7 +330,7 @@ const VolumesDetailPanel: FC = () => {
 					} else {
 						createSnackbar({
 							key: '1',
-							type: 'error',
+							severity: 'error',
 							label: t('label.volume_detail_error', '{{message}}', {
 								message: 'Something went wrong, please try again'
 							})
@@ -341,7 +341,7 @@ const VolumesDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -368,7 +368,7 @@ const VolumesDetailPanel: FC = () => {
 					if (typeResponse?._jsns === 'urn:zimbraAdmin') {
 						createSnackbar({
 							key: '1',
-							type: 'success',
+							severity: 'success',
 							label: t('label.volume_deleted', 'Volume deleted successfully')
 						});
 					}
@@ -379,7 +379,7 @@ const VolumesDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -495,7 +495,7 @@ const VolumesDetailPanel: FC = () => {
 						getAllVolumesRequest();
 						createSnackbar({
 							key: '1',
-							type: 'success',
+							severity: 'success',
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_created_msg', 'The volume has been created successfully')
 						});
@@ -504,7 +504,7 @@ const VolumesDetailPanel: FC = () => {
 					} else {
 						createSnackbar({
 							key: '1',
-							type: 'error',
+							severity: 'error',
 							label: t('label.volume_detail_error', '{{message}}', {
 								message: result?.response[selectedServerName]?.error?.message
 							})
@@ -513,7 +513,7 @@ const VolumesDetailPanel: FC = () => {
 				} else {
 					createSnackbar({
 						key: '1',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						})
@@ -524,7 +524,7 @@ const VolumesDetailPanel: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.volume_detail_error', '{{message}}', {
@@ -582,7 +582,7 @@ const VolumesDetailPanel: FC = () => {
 							.then(() => {
 								createSnackbar({
 									key: '1',
-									type: 'success',
+									severity: 'success',
 									label: t('label.volume_active', '{{volumeName}} is Currently active', {
 										volumeName: attr?.name
 									})
@@ -591,7 +591,7 @@ const VolumesDetailPanel: FC = () => {
 							.catch(() => {
 								createSnackbar({
 									key: 'error',
-									type: 'error',
+									severity: 'error',
 									label: t('label.volume_detail_error', '{{message}}', {
 										message: 'Something went wrong, please try again'
 									}),
@@ -602,7 +602,7 @@ const VolumesDetailPanel: FC = () => {
 					getAllVolumesRequest();
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: t('label.volume_created_msg', 'The volume has been created successfully')
 					});
 					setToggleWizardLocal(false);
@@ -610,7 +610,7 @@ const VolumesDetailPanel: FC = () => {
 				} else if (typeRes && typeRes?.ok === false && typeRes?.error) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
 							message: 'Something went wrong, please try again'
 						}),
@@ -631,7 +631,7 @@ const VolumesDetailPanel: FC = () => {
 									.then(() => {
 										createSnackbar({
 											key: '1',
-											type: 'success',
+											severity: 'success',
 											label: t('label.volume_active', '{{volumeName}} is Currently active', {
 												volumeName: attr?.name
 											})
@@ -640,7 +640,7 @@ const VolumesDetailPanel: FC = () => {
 									.catch(() => {
 										createSnackbar({
 											key: 'error',
-											type: 'error',
+											severity: 'error',
 											label: t('label.volume_detail_error', '{{message}}', {
 												message: 'Something went wrong, please try again'
 											}),
@@ -653,7 +653,7 @@ const VolumesDetailPanel: FC = () => {
 					getAllVolumesRequest();
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: t('label.volume_created_msg', 'The volume has been created successfully')
 					});
 					setToggleWizardLocal(false);
@@ -664,7 +664,7 @@ const VolumesDetailPanel: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.volume_detail_error', '{{message}}', {
