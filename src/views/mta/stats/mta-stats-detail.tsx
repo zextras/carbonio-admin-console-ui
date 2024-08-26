@@ -5,15 +5,7 @@
  */
 import React, { FC, useCallback, useState } from 'react';
 
-import {
-	Container,
-	Row,
-	Text,
-	Button,
-	Divider,
-	IconButton,
-	Input
-} from '@zextras/carbonio-design-system';
+import { Container, Row, Text, Button, Divider, Input } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import MTAStatsMail from './mta-stats-mail';
@@ -102,7 +94,9 @@ const MTAStatsDetail: FC<{
 					</Row>
 					<Row></Row>
 					<Row padding={{ right: 'extrasmall', left: 'small' }}>
-						<IconButton
+						<Button
+							type="ghost"
+							color={'text'}
 							size="medium"
 							icon="CloseOutline"
 							onClick={(): void => setSelectedServer([])}

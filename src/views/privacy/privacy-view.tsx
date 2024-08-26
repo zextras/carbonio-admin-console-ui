@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,7 +14,7 @@ import {
 	Divider,
 	Switch,
 	Button,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +40,7 @@ const PrivacyView: FC = () => {
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [lastState, setLastState]: any = useState({
 		CARBONIO_SEND_ANALYTICS: false,
 		CARBONIO_SEND_FULL_ERROR_STACK: false,
@@ -108,7 +108,7 @@ const PrivacyView: FC = () => {
 			Promise.all(req).then((response) => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,

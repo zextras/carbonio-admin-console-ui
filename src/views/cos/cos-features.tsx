@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import {
 	Container,
@@ -14,13 +14,14 @@ import {
 	Divider,
 	Padding,
 	Button,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _, { isEqual, reduce, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Features } from './features';
 import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
@@ -32,7 +33,7 @@ import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const cosName = useCosStore((state) => state.cos?.name);
 	const [initCosData, setInitCosData]: any = useState({});
@@ -79,7 +80,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -109,6 +110,8 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
 				setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
+				setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
+				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
 			}
 		},
 		[setSwitchOptionValue]
@@ -143,9 +146,10 @@ const CosFeatures: FC = () => {
 	const modifyCosRequest = (body: any): void => {
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -159,7 +163,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -179,7 +183,7 @@ const CosFeatures: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -277,6 +281,7 @@ const CosFeatures: FC = () => {
 				featuresDetail={cosFeatures}
 				setFeaturesDetail={setCosFeatures}
 				readonlyFeatures={readonlyCOS}
+				cosLevelFeaures
 			/>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>

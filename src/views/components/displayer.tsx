@@ -5,7 +5,7 @@
  */
 import React, { FC } from 'react';
 
-import { Row, Button, Padding, IconButton, Tooltip } from '@zextras/carbonio-design-system';
+import { Row, Button, Padding, Tooltip } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 const Displayer: FC<{ buttons: Array<any>; pinIcon: boolean }> = ({ buttons, pinIcon }): any => {
@@ -38,8 +38,10 @@ const Displayer: FC<{ buttons: Array<any>; pinIcon: boolean }> = ({ buttons, pin
 						}
 						key={i}
 					>
-						<IconButton
-							customSize={{ iconSize: '1.5rem', paddingSize: '0.75rem' }}
+						<Button
+							type="ghost"
+							color={'text'}
+							size={'extralarge'}
 							icon={button?.icon}
 							onClick={(): void => {
 								button?.onClick();

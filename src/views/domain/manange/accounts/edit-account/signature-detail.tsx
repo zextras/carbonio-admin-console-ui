@@ -167,7 +167,7 @@ export const SignatureDetail: FC<any> = ({
 					if (data?.Body?.Reason?.Text) {
 						createSnackbar({
 							key: 'error',
-							type: 'error',
+							severity: 'error',
 							label: data?.Body?.Fault?.Reason?.Text,
 							autoHideTimeout: 3000,
 							hideButton: true,

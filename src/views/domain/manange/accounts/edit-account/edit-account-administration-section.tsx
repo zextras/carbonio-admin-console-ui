@@ -129,7 +129,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 				if (data) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
@@ -145,7 +145,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -238,7 +238,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 							if (data) {
 								createSnackbar({
 									key: 'success',
-									type: 'success',
+									severity: 'success',
 									label: t(
 										'account_details.right_for_selected_user_deleted_successfully',
 										'Right for selected user deleted successfully'
@@ -254,7 +254,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 						.catch((error) => {
 							createSnackbar({
 								key: 'error',
-								type: 'error',
+								severity: 'error',
 								label: error?.message
 									? error?.message
 									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
@@ -13,7 +13,7 @@ import {
 	Input,
 	Button,
 	Padding,
-	SnackbarManagerContext,
+	useSnackbar,
 	Modal,
 	Icon,
 	Table,
@@ -26,6 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import { DEFAULT, COS, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
+import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -46,7 +47,7 @@ const CosGeneralInformation: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const cosDetail = useCosStore((state) => state.cos);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [cosData, setCosData]: any = useState({});
 	const [cosName, setCosName] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -248,9 +249,10 @@ const CosGeneralInformation: FC = () => {
 		body.id = id;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -265,7 +267,7 @@ const CosGeneralInformation: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -297,7 +299,7 @@ const CosGeneralInformation: FC = () => {
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -341,7 +343,7 @@ const CosGeneralInformation: FC = () => {
 				if (isCosDelete) {
 					createSnackbar({
 						key: 'info',
-						type: 'info',
+						severity: 'info',
 						label: t('label.delete_cos_succeess', {
 							cosname: cosName,
 							defaultValue: 'The {{cosname}} has been deleted successfully'
@@ -359,7 +361,7 @@ const CosGeneralInformation: FC = () => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

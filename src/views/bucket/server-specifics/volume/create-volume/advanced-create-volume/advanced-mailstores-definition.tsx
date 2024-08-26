@@ -170,7 +170,6 @@ const AdvancedMailstoresDefinition: FC<{
 						label={t('label.volume_server_name', 'Server')}
 						backgroundColor="gray6"
 						value={externalData}
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">

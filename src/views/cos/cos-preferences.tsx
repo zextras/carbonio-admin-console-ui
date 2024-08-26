@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -16,13 +16,14 @@ import {
 	Select,
 	Switch,
 	Padding,
-	SnackbarManagerContext,
+	useSnackbar,
 	Button
 } from '@zextras/carbonio-design-system';
 import { isEqual, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { COS } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
@@ -38,7 +39,7 @@ import {
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
@@ -979,9 +980,10 @@ const CosPreferences: FC = () => {
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -996,7 +998,7 @@ const CosPreferences: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

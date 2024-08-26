@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -16,13 +16,14 @@ import {
 	Input,
 	Select,
 	Icon,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -45,7 +46,7 @@ const CustomIcon = styled(Icon)`
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
@@ -1120,9 +1121,10 @@ const CosAdvanced: FC = () => {
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
+				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -1147,7 +1149,7 @@ const CosAdvanced: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1179,7 +1181,7 @@ const CosAdvanced: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string

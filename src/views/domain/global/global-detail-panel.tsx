@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -14,15 +14,15 @@ import {
 	ChipInput,
 	Padding,
 	Button,
-	SnackbarManagerContext,
 	Switch,
-	ChipItem
+	ChipItem,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { filter, isEqual, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { Attribute, CreateSnackbarType, GlobalDisclaimerType } from '../../../../types';
+import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
 	FALSE,
 	TRUE,
@@ -41,7 +41,7 @@ const RelativeContainer = styled(Container)`
 
 const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
 	const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
 		[key: string]: string | { label: string }[];
@@ -179,7 +179,7 @@ const GlobalDetailPanel: FC = () => {
 					);
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -196,7 +196,7 @@ const GlobalDetailPanel: FC = () => {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.mandatory_disclaimer_are_enable_for_all_domain',
 									'The mandatory disclaimers are enabled for all domains'
@@ -217,7 +217,7 @@ const GlobalDetailPanel: FC = () => {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
-								type: 'success',
+								severity: 'success',
 								label: t(
 									'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
 									'The mandatory disclaimers are enabled only for outbound deliveries'
@@ -232,7 +232,7 @@ const GlobalDetailPanel: FC = () => {
 				.catch(() => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,

@@ -28,7 +28,7 @@ export const generateSnackbarFromError = (
 
 	return {
 		key: 'error',
-		type: 'error',
+		severity: 'error',
 		label: errorText,
 		autoHideTimeout: 3000,
 		hideButton: true,

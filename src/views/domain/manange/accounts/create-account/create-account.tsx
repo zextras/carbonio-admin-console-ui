@@ -179,7 +179,7 @@ const CreateAccount: FC<{
 
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.account_created_successfully',
 							'The account has been created successfully'
@@ -195,7 +195,7 @@ const CreateAccount: FC<{
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -298,7 +298,7 @@ const CreateAccount: FC<{
 			if (!accountDetail?.sn?.trim()) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.surname_required', 'Surname is required'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -312,7 +312,7 @@ const CreateAccount: FC<{
 			) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.password_length_msg', 'Password should be more than 5 character'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -322,7 +322,7 @@ const CreateAccount: FC<{
 			} else if (accountDetail?.password !== accountDetail?.repeatPassword) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: t('label.password_and_repeat_password_not_match', 'Passwords do not match'),
 					autoHideTimeout: 3000,
 					hideButton: true,

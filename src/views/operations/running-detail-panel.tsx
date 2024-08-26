@@ -47,7 +47,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 				if (result?.response?.[`${serverList}`]?.ok) {
 					createSnackbar({
 						key: '1',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.stop_operation_sucess',
 							'The {{name}} operation has been stopped successfully',
@@ -62,7 +62,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 				} else {
 					createSnackbar({
 						key: '1',
-						type: 'error',
+						severity: 'error',
 						label: t('label.stop_operation_helperText', '{{message}}', {
 							message: result?.response?.[`${serverList}`]?.error?.message
 						})
@@ -74,7 +74,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 			.catch((err) => {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label: t('label.operation.stop_operation_error', '{{name}}', {
 						name: err
 					})

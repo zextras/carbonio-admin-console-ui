@@ -14,7 +14,7 @@ import {
 	Table,
 	Button,
 	Padding,
-	SnackbarManagerContext,
+	useSnackbar,
 	Divider
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -32,7 +32,7 @@ import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 const MailingListSettingsSection: FC<any> = () => {
 	const { t } = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const context = useContext(MailingListContext);
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [member, setMember] = useState<string>('');
@@ -153,7 +153,7 @@ const MailingListSettingsSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
@@ -170,7 +170,7 @@ const MailingListSettingsSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -308,7 +308,7 @@ const MailingListSettingsSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -324,7 +324,7 @@ const MailingListSettingsSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${grantEmailItem}`,
 					autoHideTimeout: 3000,
 					hideButton: true,

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,7 +14,7 @@ import {
 	Button,
 	Input,
 	Table,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -63,7 +63,7 @@ const DomainCosLink: FC<{
 	const [domainCosMaxAccountList, setDomainCosMaxAccountList] = useState<Array<any>>([]);
 	const [cosMaxAccountListRow, setCosMaxAccountListRow] = useState<Array<any>>([]);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	useEffect(() => {
@@ -192,7 +192,7 @@ const DomainCosLink: FC<{
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
@@ -211,7 +211,7 @@ const DomainCosLink: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -285,7 +285,7 @@ const DomainCosLink: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -330,7 +330,7 @@ const DomainCosLink: FC<{
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -348,7 +348,7 @@ const DomainCosLink: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -423,7 +423,7 @@ const DomainCosLink: FC<{
 				.then((data) => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -440,7 +440,7 @@ const DomainCosLink: FC<{
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

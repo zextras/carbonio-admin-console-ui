@@ -3,16 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useEffect,
-	useState,
-	useMemo,
-	useCallback,
-	useRef,
-	ReactElement,
-	useContext
-} from 'react';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
 
 import {
 	Container,
@@ -22,7 +13,7 @@ import {
 	Table,
 	Divider,
 	Icon,
-	SnackbarManagerContext,
+	useSnackbar,
 	Button
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
@@ -77,7 +68,7 @@ const CosList: FC = () => {
 	const { setCos, setCosView } = useCosStore();
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 

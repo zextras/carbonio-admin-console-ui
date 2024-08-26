@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	IconButton,
 	Divider,
 	Button,
 	Padding,
@@ -16,7 +15,7 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -40,7 +39,7 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [resourceList, setResourceList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -317,7 +316,7 @@ const DomainResources: FC = () => {
 		(resourceName: any): void => {
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('label.create_resource_success_msg', {
 					resourceName,
 					defaultValue: '{{resourceName}} has been created successfully'
@@ -334,7 +333,7 @@ const DomainResources: FC = () => {
 		(text?: any): void => {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label:
 					text || t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 				autoHideTimeout: 3000,
@@ -486,9 +485,8 @@ const DomainResources: FC = () => {
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding all={'0'}>
-								<IconButton
-									iconColor="gray6"
-									backgroundColor="primary"
+								<Button
+									color="primary"
 									icon="Plus"
 									onClick={(): void => {
 										setShowCreateResourceView(true);

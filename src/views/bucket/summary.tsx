@@ -21,47 +21,31 @@ const Summary: FC<{
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
 			<Row padding={{ top: 'extralarge' }} width="100%">
-				<Input label={t('buckets.bucket_type', 'Buckets Type')} value={'S3 AWS'} readOnly />
+				<Input label={t('buckets.bucket_type', 'Buckets Type')} value={'S3 AWS'} />
 			</Row>
 			<Row padding={{ top: 'large' }} width="100%">
-				<Input
-					label={t('buckets.connection.descriptive_name', 'Descriptive Name')}
-					value="s3aws"
-					readOnly
-				/>
+				<Input label={t('buckets.connection.descriptive_name', 'Descriptive Name')} value="s3aws" />
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<Input label={t('buckets.connection.arn_name', 'Arn / Name')} value="s3aws" readOnly />
+					<Input label={t('buckets.connection.arn_name', 'Arn / Name')} value="s3aws" />
 				</Row>
 				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
-					<Input
-						label={t('buckets.connection.arn_name', 'Arn / Name')}
-						value="EU | Milan"
-						readOnly
-					/>
+					<Input label={t('buckets.connection.arn_name', 'Arn / Name')} value="EU | Milan" />
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<PasswordInput
-						label={t('buckets.connection.access_key', 'Access Key')}
-						value=""
-						readOnly
-					/>
+					<PasswordInput label={t('buckets.connection.access_key', 'Access Key')} value="" />
 				</Row>
 				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
-					<PasswordInput
-						label={t('buckets.connection.secret_key', 'Secret Key')}
-						value=""
-						readOnly
-					/>
+					<PasswordInput label={t('buckets.connection.secret_key', 'Secret Key')} value="" />
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
-				<Input label={t('buckets.connection.notes', 'Notes')} value="This is my notes" readOnly />
+				<Input label={t('buckets.connection.notes', 'Notes')} value="This is my notes" />
 			</Row>
 		</Container>
 	);

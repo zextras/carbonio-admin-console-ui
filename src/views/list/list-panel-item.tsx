@@ -5,14 +5,7 @@
  */
 import React, { FC } from 'react';
 
-import {
-	Container,
-	Row,
-	Padding,
-	Text,
-	IconButton,
-	Divider
-} from '@zextras/carbonio-design-system';
+import { Container, Row, Padding, Text, Divider, Button } from '@zextras/carbonio-design-system';
 
 const ListPanelItem: FC<{
 	title: string;
@@ -40,7 +33,9 @@ const ListPanelItem: FC<{
 					</Text>
 				</Padding>
 				<Padding horizontal="small">
-					<IconButton
+					<Button
+						type="ghost"
+						color={'text'}
 						icon={isListExpanded ? 'ChevronUpOutline' : 'ChevronDownOutline'}
 						size="small"
 						onClick={setToggleView}

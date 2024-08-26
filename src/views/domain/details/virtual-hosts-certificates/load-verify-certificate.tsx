@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-	SnackbarManagerContext,
 	Button,
 	FileLoader,
 	Input,
 	Text,
 	Padding,
 	Select,
-	Container
+	Container,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
-import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
+import { ICertificateContent } from '../../../../../types';
 import {
 	DOMAIN_CERTIFICATE,
 	DOMAIN_CERTIFICATE_CA_CHAIN,
@@ -50,7 +50,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	const [selectedCertType, setSelectedCertType] = useState(certificateTypes[2]?.value);
 	const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
 	const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [domainCertiErr, setDomainCertiErr] = useState(true);
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
@@ -161,7 +161,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t(
 					'domain.certificate_content_error_without_ca_chain',
 					'Domain certificate , Private key is invalid'
@@ -178,7 +178,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t(
 					'domain.certificate_content_error',
 					'Domain certificate , CA Chain or Private key is invalid'
@@ -198,7 +198,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				if (data?.verifyResult) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('domain.certificate_valid', `The certificate is valid`),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -224,7 +224,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				} else if (data?.verifyResult === INVALID) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: t(
 							'domain.certificate_invalid_error',
 							`The certificate is invalid , please try with other certificate`
@@ -271,7 +271,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			.then(() => {
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('domain.certificate_saved', `The certificates have been saved`),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -286,7 +286,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -306,7 +306,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				setVerifyBtnLoading(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: res?.message[0]?._content,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -317,7 +317,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

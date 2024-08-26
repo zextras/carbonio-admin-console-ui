@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,7 +14,7 @@ import {
 	Table,
 	Button,
 	Padding,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -37,7 +37,7 @@ export const SendInviteAccounts: FC<any> = ({
 	hideHeaderBar
 }) => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
 	const [selectedSendInvite, setSelectedSendInvite] = useState<any>([]);
 	const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);

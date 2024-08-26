@@ -60,7 +60,7 @@ const BackupAdvanced: FC = () => {
 				setGlobalConfig(initbackupDetail);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t(
 						'label.the_last_changes_has_been_saved_successfully',
 						'Changes have been saved successfully'
@@ -72,7 +72,7 @@ const BackupAdvanced: FC = () => {
 			} else {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label:
 						data?.errors?.[0]?.error ||
 						data?.statusText ||

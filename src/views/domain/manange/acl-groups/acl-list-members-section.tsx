@@ -13,7 +13,7 @@ import {
 	Button,
 	Table,
 	Dropdown,
-	SnackbarManagerContext,
+	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -50,7 +50,7 @@ const AclListMembersSection: FC<any> = () => {
 	);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -149,7 +149,7 @@ const AclListMembersSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
@@ -166,7 +166,7 @@ const AclListMembersSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -309,7 +309,7 @@ const AclListMembersSection: FC<any> = () => {
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -325,7 +325,7 @@ const AclListMembersSection: FC<any> = () => {
 			} else if (allEmails === undefined) {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: `${t('label.invalid_email_address', 'Invalid email address')} ${owner}`,
 					autoHideTimeout: 3000,
 					hideButton: true,

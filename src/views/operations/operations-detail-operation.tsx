@@ -43,7 +43,7 @@ const OperationsDetailOperation: FC = () => {
 			.catch((err) => {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					severity: 'error',
 					label: t('label.operation.get_all_operation_error', '{{name}}', {
 						name: err
 					})

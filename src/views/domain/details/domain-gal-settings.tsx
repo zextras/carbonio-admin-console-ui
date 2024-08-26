@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,13 +14,14 @@ import {
 	Divider,
 	Button,
 	Padding,
-	SnackbarManagerContext,
 	Dropdown,
 	Select,
 	Switch,
 	Icon,
 	Tooltip,
-	Table
+	Table,
+	useSnackbar,
+	DropdownItem
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +32,6 @@ import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 import {
 	AccountDataType,
 	Attribute,
-	CreateSnackbarType,
 	DomainDataType,
 	IntervalType,
 	Server,
@@ -149,7 +149,7 @@ const ServerListTable: FC<{
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domain: { name?: string } = useDomainStore((state) => state.domain);
 	const { allMailstoreList } = useMailstoreListStore((state) => state);
 	const { domainId }: { domainId: string } = useParams();
@@ -268,12 +268,13 @@ const DomainGalSettings: FC = () => {
 		setOpenDistroyModel(false);
 	};
 
-	const changeGalModeBtnItems = [
+	const changeGalModeBtnItems: DropdownItem[] = [
 		{
 			id: 'internal',
 			label: t('domain.gal_change_mode_internal', 'Internal'),
-			value: 'zimbra',
-			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
+			selected: domainData?.zimbraGalMode === 'zimbra',
+			onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
+				const ev = e as React.ChangeEvent<HTMLInputElement>;
 				setDomainData({ ...domainData, zimbraGalMode: 'zimbra' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -283,8 +284,9 @@ const DomainGalSettings: FC = () => {
 		{
 			id: 'external',
 			label: t('domain.gal_change_mode_external', 'External'),
-			value: 'ldap',
-			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
+			selected: domainData?.zimbraGalMode === 'ldap',
+			onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
+				const ev = e as React.ChangeEvent<HTMLInputElement>;
 				setDomainData({ ...domainData, zimbraGalMode: 'ldap' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -670,7 +672,7 @@ const DomainGalSettings: FC = () => {
 				setIsDirty(false);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -688,7 +690,7 @@ const DomainGalSettings: FC = () => {
 				}).catch((error) => {
 					createSnackbar({
 						key: 'error',
-						type: 'error',
+						severity: 'error',
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -972,7 +974,7 @@ const DomainGalSettings: FC = () => {
 				if (res) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.create_galsync_account_success_msg',
 							'You have created the GALSync account name'
@@ -988,7 +990,7 @@ const DomainGalSettings: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1013,7 +1015,7 @@ const DomainGalSettings: FC = () => {
 				if (res) {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t('label.changes_save_success_msg', 'Your changes has been saved!'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -1026,7 +1028,7 @@ const DomainGalSettings: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1046,7 +1048,7 @@ const DomainGalSettings: FC = () => {
 			);
 			createSnackbar({
 				key: 'success',
-				type: 'success',
+				severity: 'success',
 				label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -1055,7 +1057,7 @@ const DomainGalSettings: FC = () => {
 		} catch (error: any) {
 			createSnackbar({
 				key: 'error',
-				type: 'error',
+				severity: 'error',
 				label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 				autoHideTimeout: 5000,
 				hideButton: true,
@@ -1216,7 +1218,6 @@ const DomainGalSettings: FC = () => {
 											label={t('label.gal_mode', 'GAL Mode')}
 											value={zimbraGalMode}
 											backgroundColor="gray6"
-											readOnly
 										/>
 									</Padding>
 								</Container>
