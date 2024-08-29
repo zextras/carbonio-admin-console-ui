@@ -1376,7 +1376,7 @@ const CosPreferences: FC = () => {
 											'Allow sending from any address'
 										)}
 										iconColor="primary"
-										disabled={readonlyCOS}
+										disabled
 									/>
 								</Container>
 							</ListRow>
