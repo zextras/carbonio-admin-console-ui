@@ -77,8 +77,9 @@ const InheritedSwitch: FC<{
 						icon="RefreshOutline"
 						value={false}
 						onClick={onChangeReset}
-						style={{ cursor: 'pointer' }}
+						style={{ cursor: 'pointer', pointerEvents: disabled ? 'none' : 'all' }}
 						onChange={(): null => null}
+						disabled={disabled}
 					/>
 				</Tooltip>
 			) : (

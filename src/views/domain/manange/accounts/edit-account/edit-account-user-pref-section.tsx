@@ -515,6 +515,7 @@ const EditAccountUserPrefrencesSection: FC<{
 						fromSubValue={accSpecificDetail?.zimbraAllowAnyFromAddress}
 						inputName={'zimbraAllowAnyFromAddress'}
 						onChangeReset={(): void => setEmptyValue('zimbraAllowAnyFromAddress')}
+						disabled
 					/>
 				</Row>
 				<Row width="65%" mainAlignment="flex-start">
