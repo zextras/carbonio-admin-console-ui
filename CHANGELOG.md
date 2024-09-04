@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.53](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.52...v0.9.53) (2024-09-04)
+
+
+### Bug Fixes
+
+* subscription wsc module support added ([f8beb11](https://github.com/zextras/carbonio-admin-console-ui/commit/f8beb1164c43814cf14efdbfb164f2d59dc43e51))
+
 ### [0.9.52](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.51...v0.9.52) (2024-08-26)
 
 
