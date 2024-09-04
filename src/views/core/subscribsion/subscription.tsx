@@ -22,49 +22,32 @@ import { TFunction } from 'i18next';
 import { find } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { CONFIG } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
-const CollapseText = styled(Text)`
-	cursor: pointer;
-`;
-
-const IconInfo = ({
-	icon,
-	label,
-	value
-}: {
-	icon: string;
+interface Module {
+	value: string;
 	label: string;
-	value: string | undefined;
-}): ReactElement => (
-	<Row width="50%" height="fit" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-		<Padding vertical="small" right="small">
-			<Icon size="large" color="gray0" icon={icon} />
-		</Padding>
-		<Row
-			orientation="vertical"
-			crossAlignment="flex-start"
-			takeAvailableSpace
-			padding={{ right: 'extralarge' }}
-		>
-			<Row orientation="vertical" crossAlignment="flex-start" padding={{ all: 'small' }}>
-				<Padding bottom="extrasmall">
-					<Text color="secondary" size="small">
-						{label}
-					</Text>
-				</Padding>
-				<Text>{value}</Text>
-			</Row>
-			<Divider />
-		</Row>
-	</Row>
-);
+}
+type ModuleName = {
+	[key: string]: Module;
+};
 
-const moduleName: any = {
+interface ModuleConfig {
+	name: string;
+	quantity: string;
+	enabled: boolean;
+}
+
+type AllModuleConfig = {
+	name: Module;
+	quantity: string;
+	enabled: boolean;
+};
+
+const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
 	chats_recording: { value: 'Video recording', label: 'Chats' },
 	files_basic: { value: 'Basics', label: 'Files' },
@@ -86,7 +69,8 @@ const moduleName: any = {
 	backup_ext_volume: { value: 'Export on External', label: 'Backup' },
 	storages_conn_sproxyd: { value: 'Scality SproxyD Connector', label: 'Storages' },
 	activesync_basic: { value: '', label: 'ActiveSync' },
-	backup_import_external: { value: 'Import External', label: 'Backup' }
+	backup_import_external: { value: 'Import External', label: 'Backup' },
+	wsc_basic: { value: 'WSC Chat', label: 'Chats' }
 };
 
 const getGapColorForLabel = (label: React.Key | null | undefined): string => {
@@ -202,12 +186,17 @@ const Subscription: FC = () => {
 
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	const formatAndSetModulesStats = (response: {
-		response: { features: unknown[]; authenticationToken: React.SetStateAction<string> };
+		response: { features: ModuleConfig[]; authenticationToken: React.SetStateAction<string> };
 	}) => {
-		const formatModules = response?.response?.features?.map((module: any) => ({
+		const featurs: ModuleConfig[] = response?.response?.features;
+		const allModules: AllModuleConfig[] = featurs.map((module: ModuleConfig) => ({
 			...module,
-			name: moduleName[module?.name]
+			name: moduleName[module.name]
 		}));
+
+		const formatModules: AllModuleConfig[] = allModules.filter(
+			(module: AllModuleConfig) => module.name !== undefined
+		);
 		const predefinedOrder = [
 			'Storages',
 			'HA',
@@ -220,12 +209,12 @@ const Subscription: FC = () => {
 			'Admin'
 		];
 
-		const ModuleSort = (a: { name: { label: string } }, b: { name: { label: string } }): number => {
+		const ModuleSort = (a: AllModuleConfig, b: AllModuleConfig): number => {
 			const indexA = predefinedOrder.indexOf(a.name.label);
 			const indexB = predefinedOrder.indexOf(b.name.label);
 
 			if (indexA === -1 && indexB === -1) {
-				return (formatModules.indexOf(a) as any) - (formatModules.indexOf(b) as any);
+				return formatModules.indexOf(a) - formatModules.indexOf(b);
 			}
 
 			if (indexA === -1) return 1;
@@ -234,8 +223,10 @@ const Subscription: FC = () => {
 			return indexA - indexB;
 		};
 
-		const orderModules = formatModules.sort(ModuleSort);
-		const filterModules = orderModules.filter((module: any) => module.name.value !== 'SproxyD');
+		const orderModules: AllModuleConfig[] = formatModules.sort(ModuleSort);
+		const filterModules = orderModules.filter(
+			(module: AllModuleConfig) => module.name.value !== 'SproxyD'
+		);
 
 		setServices(response);
 		setModules(filterModules);
