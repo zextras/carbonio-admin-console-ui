@@ -21,7 +21,8 @@ import {
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	postSoapFetchRequest
+	postSoapFetchRequest,
+	useUserAccount
 } from '@zextras/carbonio-shell-ui';
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
@@ -49,6 +50,7 @@ import {
 	accountListDirectory,
 	getMailboxQuota
 } from '../../../../services/account-list-directory-service';
+import { checkRightRequest } from '../../../../services/check-right';
 import {
 	getCosGeneralInformation,
 	GetCosResponse,
@@ -114,6 +116,7 @@ const ManageAccounts: FC = () => {
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
+	const account = useUserAccount();
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -526,6 +529,13 @@ const ManageAccounts: FC = () => {
 			}),
 		[setAccDetailValue]
 	);
+	const getDeletePasswordRight = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(target): void => {
+			checkRightRequest(target, account.name, 'set.account.userPassword');
+		},
+		[account.name]
+	);
 
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -562,6 +572,9 @@ const ManageAccounts: FC = () => {
 					}
 					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
 						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+					}
+					if (!obj.zimbraId) {
+						obj.zimbraId = id;
 					}
 					setInitAccountDetail({ ...obj });
 					setSelectedAccount({ ...obj, id });
@@ -764,13 +777,15 @@ const ManageAccounts: FC = () => {
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
+			getDeletePasswordRight(acc?.name);
 		},
 		[
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
 			getIdentitiesList,
-			getAllUserSession
+			getAllUserSession,
+			getDeletePasswordRight
 		]
 	);
 
@@ -795,6 +810,7 @@ const ManageAccounts: FC = () => {
 			sortOrder
 		)
 			.then((data) => {
+				setIsRequestInProgress(false);
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
 					const accountListArr: any = [];
