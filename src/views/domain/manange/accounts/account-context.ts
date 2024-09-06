@@ -41,5 +41,7 @@ type AccountContext = {
 	setUserSessionList: (arg: any) => void;
 	defaultCOS: any;
 	setDefaultCOS: (arg: any) => void;
+	allowedDeletePassword: boolean;
+	setAllowedDeletePassword: (arg: boolean) => void;
 };
 export const AccountContext = createContext({} as AccountContext);

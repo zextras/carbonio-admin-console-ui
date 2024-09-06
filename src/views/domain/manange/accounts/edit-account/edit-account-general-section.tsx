@@ -100,7 +100,8 @@ const EditAccountGeneralSection: FC<{
 		setUserSessionList,
 		initAccountDetail,
 		defaultCOS,
-		setDefaultCOS
+		setDefaultCOS,
+		allowedDeletePassword
 	} = context;
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -1131,15 +1132,31 @@ const EditAccountGeneralSection: FC<{
 					)}
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				{isHidePassword ? (
-					<Tooltip
-						placement="top"
-						label={t(
-							'label.try_local_password_management_ldap',
-							'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
-						)}
-					>
+			{allowedDeletePassword && (
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					{isHidePassword ? (
+						<Tooltip
+							placement="top"
+							label={t(
+								'label.try_local_password_management_ldap',
+								'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+							)}
+						>
+							<Row width="100%" mainAlignment="space-between">
+								<Button
+									type="outlined"
+									label={t(
+										'account_details.delete_user_password',
+										'DELETE USER PASSWORD FROM THE LDAP'
+									)}
+									color="error"
+									width="fill"
+									onClick={(): void => setShowDeletePasswordModal(true)}
+									disabled={isHidePassword}
+								/>
+							</Row>
+						</Tooltip>
+					) : (
 						<Row width="100%" mainAlignment="space-between">
 							<Button
 								type="outlined"
@@ -1153,23 +1170,9 @@ const EditAccountGeneralSection: FC<{
 								disabled={isHidePassword}
 							/>
 						</Row>
-					</Tooltip>
-				) : (
-					<Row width="100%" mainAlignment="space-between">
-						<Button
-							type="outlined"
-							label={t(
-								'account_details.delete_user_password',
-								'DELETE USER PASSWORD FROM THE LDAP'
-							)}
-							color="error"
-							width="fill"
-							onClick={(): void => setShowDeletePasswordModal(true)}
-							disabled={isHidePassword}
-						/>
-					</Row>
-				)}
-			</Row>
+					)}
+				</Row>
+			)}
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
