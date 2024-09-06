@@ -82,6 +82,7 @@ const GlobalDelegates: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
+	const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
 
 	const headers: any = useMemo(
 		() => [
@@ -545,44 +546,32 @@ const GlobalDelegates: FC = () => {
 			allUserSessionList,
 			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			setDefaultCOS,
+			allowedDeletePassword,
+			setAllowedDeletePassword
 		}),
 		[
 			accountDetail,
 			cosDetail,
-			setAccountDetail,
 			accSpecificDetail,
-			setAccSpecificDetail,
 			directMemberList,
 			inDirectMemberList,
-			setDirectMemberList,
-			setInDirectMemberList,
 			initAccountDetail,
-			setInitAccountDetail,
-			setSignatureItems,
-			setSignatureList,
 			otpList,
 			getListOtp,
 			identitiesList,
 			deligateDetail,
-			setDeligateDetail,
 			getIdentitiesList,
 			folderList,
-			setFolderList,
 			credentialList,
 			getCredentialList,
 			initialGlobalRights,
-			setinitialGlobalRights,
 			globalRights,
-			setGlobalRights,
 			deleteAdministrationRights,
-			setDeleteAdministrationRights,
 			userSessionList,
-			setAllUserSessionList,
 			allUserSessionList,
-			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			allowedDeletePassword
 		]
 	);
 

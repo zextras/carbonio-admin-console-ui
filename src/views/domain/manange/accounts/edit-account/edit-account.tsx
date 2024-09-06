@@ -989,7 +989,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
-			{(!accountDetail?.name || isLoading) && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			{(!accountDetail?.zimbraId || isLoading) && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"

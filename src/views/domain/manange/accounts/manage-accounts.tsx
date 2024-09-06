@@ -83,6 +83,11 @@ type UserSession = {
 	service: string;
 };
 
+type CheckRightResponse = {
+	allow: true;
+	_jsns: string;
+};
+
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -116,6 +121,7 @@ const ManageAccounts: FC = () => {
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
+	const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
 	const account = useUserAccount();
 
 	const accountTypeFilter: any = useMemo(
@@ -532,7 +538,11 @@ const ManageAccounts: FC = () => {
 	const getDeletePasswordRight = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(target): void => {
-			checkRightRequest(target, account.name, 'set.account.userPassword');
+			checkRightRequest(target, account.name, 'set.account.userPassword').then(
+				(data: CheckRightResponse) => {
+					setAllowedDeletePassword(data?.allow);
+				}
+			);
 		},
 		[account.name]
 	);
@@ -1096,44 +1106,32 @@ const ManageAccounts: FC = () => {
 			allUserSessionList,
 			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			setDefaultCOS,
+			allowedDeletePassword,
+			setAllowedDeletePassword
 		}),
 		[
 			accountDetail,
 			cosDetail,
-			setAccountDetail,
 			accSpecificDetail,
-			setAccSpecificDetail,
 			directMemberList,
 			inDirectMemberList,
-			setDirectMemberList,
-			setInDirectMemberList,
 			initAccountDetail,
-			setInitAccountDetail,
-			setSignatureItems,
-			setSignatureList,
 			otpList,
 			getListOtp,
 			identitiesList,
 			deligateDetail,
-			setDeligateDetail,
 			getIdentitiesList,
 			folderList,
-			setFolderList,
 			credentialList,
 			getCredentialList,
 			initialGlobalRights,
-			setinitialGlobalRights,
 			globalRights,
-			setGlobalRights,
 			deleteAdministrationRights,
-			setDeleteAdministrationRights,
 			userSessionList,
-			setAllUserSessionList,
 			allUserSessionList,
-			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			allowedDeletePassword
 		]
 	);
 
