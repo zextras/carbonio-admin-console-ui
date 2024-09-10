@@ -36,6 +36,16 @@ import {
 	localeList
 } from '../utility/utils';
 
+const FILE_UPLOAD_MAX_SIZE_PER_FILE = '2147483648';
+
+function bytesToHumanReadable(bytes: number) {
+	if (bytes === 0) return '0 Bytes';
+	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+	return `${parseFloat((bytes / 1024 ** i).toFixed(2))} ${sizes[i]}`;
+}
+
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -83,9 +93,16 @@ const CosPreferences: FC = () => {
 		zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
 		zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
 		// zimbraPrefCalendarUseQuickAdd: 'FALSE',
-		zimbraPrefAppleIcalDelegationEnabled: 'FALSE'
+		zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
 		// zimbraPrefUseTimeZoneListInCalendar: 'FALSE'
+		zimbraFileUploadMaxSizePerFile: FILE_UPLOAD_MAX_SIZE_PER_FILE
 	});
+
+	const [
+		humanFriendlyFileUploadMaxSizePerFileLabel,
+		setHumanFriendlyFileUploadMaxSizePerFileLabel
+	] = useState(bytesToHumanReadable(cosPreferences.zimbraFileUploadMaxSizePerFile));
+
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
 		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
 	);
@@ -180,6 +197,17 @@ const CosPreferences: FC = () => {
 			}
 		],
 		[t]
+	);
+
+	const changeFileUploadMaxSizePerFile = useCallback(
+		(v): void => {
+			setCosPreferences((prev: any) => ({
+				...prev,
+				zimbraFileUploadMaxSizePerFile: v.target.value
+			}));
+			setHumanFriendlyFileUploadMaxSizePerFileLabel(bytesToHumanReadable(v.target.value));
+		},
+		[setCosPreferences]
 	);
 
 	const changeSwitchOption = useCallback(
@@ -470,10 +498,22 @@ const CosPreferences: FC = () => {
 						? obj?.zimbraPrefUseTimeZoneListInCalendar
 						: 'FALSE'
 				); */
+				setValue(
+					'zimbraFileUploadMaxSizePerFile',
+					obj?.zimbraFileUploadMaxSizePerFile
+						? obj.zimbraFileUploadMaxSizePerFile
+						: FILE_UPLOAD_MAX_SIZE_PER_FILE
+				);
 			}
 		},
 		[setValue]
 	);
+
+	useEffect(() => {
+		setHumanFriendlyFileUploadMaxSizePerFileLabel(
+			bytesToHumanReadable(cosPreferences.zimbraFileUploadMaxSizePerFile)
+		);
+	}, [cosPreferences.zimbraFileUploadMaxSizePerFile]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -582,6 +622,9 @@ const CosPreferences: FC = () => {
 			/* if (!obj.zimbraPrefUseTimeZoneListInCalendar) {
 				obj.zimbraPrefUseTimeZoneListInCalendar = 'FALSE';
 			} */
+			if (!obj.zimbraFileUploadMaxSizePerFile) {
+				obj.zimbraFileUploadMaxSizePerFile = FILE_UPLOAD_MAX_SIZE_PER_FILE;
+			}
 			setCosData(obj);
 			setInitalValues(obj);
 			setZimbraPrefMailPollingIntervalNum(obj?.zimbraMailMinPollingInterval?.slice(0, -1));
@@ -959,6 +1002,15 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefUseTimeZoneListInCalendar
 	]); */
 
+	useEffect(() => {
+		if (
+			cosData.zimbraFileUploadMaxSizePerFile !== undefined &&
+			cosData.zimbraFileUploadMaxSizePerFile !== cosPreferences.zimbraFileUploadMaxSizePerFile
+		) {
+			setIsDirty(true);
+		}
+	}, [cosData.zimbraFileUploadMaxSizePerFile, cosPreferences.zimbraFileUploadMaxSizePerFile]);
+
 	const onCancel = (): void => {
 		setInitalValues(cosData);
 		setZimbraPrefMailPollingIntervalNum(cosData?.zimbraMailMinPollingInterval?.slice(0, -1));
@@ -1199,6 +1251,22 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+							<p>{humanFriendlyFileUploadMaxSizePerFileLabel}</p>
+							<Input
+								label={t(
+									'cos.upload_max_size_per_file',
+									'Maximum size in bytes for each attachment'
+								)}
+								value={cosPreferences?.zimbraFileUploadMaxSizePerFile}
+								onChange={changeFileUploadMaxSizePerFile}
+								backgroundColor="gray5"
+								disabled={readonlyCOS}
+							/>
+						</Container>
+					</Row>
+
 					<Divider />
 				</Row>
 				<Row

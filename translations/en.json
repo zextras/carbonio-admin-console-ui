@@ -600,6 +600,7 @@
         "timeout_policy": "Timeout Policy",
         "trashed_message_lifetime": "Trashed message lifetime",
         "type_of_UI": "Type of UI",
+        "upload_max_size_per_file": "Maximum size in bytes for each attachment",
         "use_gal_to_auto_fill": "Use GAL to auto-fill",
         "use_ical_delegation_model_for_shared_calendars": "Use iCal delegation model for shared calendars",
         "use_quickadd_dialog_in_creation": "Use QuickAdd dialog in creation",
