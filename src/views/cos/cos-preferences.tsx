@@ -19,6 +19,7 @@ import {
 	useSnackbar,
 	Button
 } from '@zextras/carbonio-design-system';
+import { TFunction } from 'i18next';
 import { isEqual, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -44,6 +45,17 @@ function bytesToHumanReadable(bytes: number) {
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
 	return `${parseFloat((bytes / 1024 ** i).toFixed(2))} ${sizes[i]}`;
+}
+
+function bytesToHumanFriendlyFileUploadMaxSizePerFile(bytes: number, t: TFunction) {
+	if (bytes < 1) {
+		return t('cos.human_friendly_max_upload_per_file_label', {
+			value: t('cos.unlimited', 'Unlimited')
+		});
+	}
+	return t('cos.human_friendly_max_upload_per_file_label', {
+		value: bytesToHumanReadable(bytes)
+	});
 }
 
 const CosPreferences: FC = () => {
@@ -101,7 +113,9 @@ const CosPreferences: FC = () => {
 	const [
 		humanFriendlyFileUploadMaxSizePerFileLabel,
 		setHumanFriendlyFileUploadMaxSizePerFileLabel
-	] = useState(bytesToHumanReadable(cosPreferences.zimbraFileUploadMaxSizePerFile));
+	] = useState(
+		bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPreferences.zimbraFileUploadMaxSizePerFile, t)
+	);
 
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
 		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
@@ -200,14 +214,16 @@ const CosPreferences: FC = () => {
 	);
 
 	const changeFileUploadMaxSizePerFile = useCallback(
-		(v): void => {
+		(value): void => {
 			setCosPreferences((prev: any) => ({
 				...prev,
-				zimbraFileUploadMaxSizePerFile: v.target.value
+				zimbraFileUploadMaxSizePerFile: value
 			}));
-			setHumanFriendlyFileUploadMaxSizePerFileLabel(bytesToHumanReadable(v.target.value));
+			setHumanFriendlyFileUploadMaxSizePerFileLabel(
+				bytesToHumanFriendlyFileUploadMaxSizePerFile(value, t)
+			);
 		},
-		[setCosPreferences]
+		[setCosPreferences, t]
 	);
 
 	const changeSwitchOption = useCallback(
@@ -511,9 +527,9 @@ const CosPreferences: FC = () => {
 
 	useEffect(() => {
 		setHumanFriendlyFileUploadMaxSizePerFileLabel(
-			bytesToHumanReadable(cosPreferences.zimbraFileUploadMaxSizePerFile)
+			bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPreferences.zimbraFileUploadMaxSizePerFile, t)
 		);
-	}, [cosPreferences.zimbraFileUploadMaxSizePerFile]);
+	}, [cosPreferences.zimbraFileUploadMaxSizePerFile, t]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -1253,7 +1269,9 @@ const CosPreferences: FC = () => {
 					</Row>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-							<p>{humanFriendlyFileUploadMaxSizePerFileLabel}</p>
+							<Text size="small" color="primary">
+								{humanFriendlyFileUploadMaxSizePerFileLabel}
+							</Text>
 							<Input
 								type="number"
 								label={t(
@@ -1261,9 +1279,37 @@ const CosPreferences: FC = () => {
 									'Maximum size in bytes for each attachment'
 								)}
 								value={cosPreferences?.zimbraFileUploadMaxSizePerFile}
-								onChange={changeFileUploadMaxSizePerFile}
 								backgroundColor="gray5"
 								disabled={readonlyCOS}
+								onKeyDown={(e): void => {
+									if (
+										![
+											'Backspace',
+											'Delete',
+											'ArrowLeft',
+											'ArrowRight',
+											'0',
+											'1',
+											'2',
+											'3',
+											'4',
+											'5',
+											'6',
+											'7',
+											'8',
+											'9'
+										].includes(e.key)
+									) {
+										e.preventDefault();
+									}
+								}}
+								onChange={(e: any): any => {
+									if (e.target.value < 0) {
+										changeFileUploadMaxSizePerFile(0);
+									} else {
+										changeFileUploadMaxSizePerFile(e.target.value.toString());
+									}
+								}}
 							/>
 						</Container>
 					</Row>
