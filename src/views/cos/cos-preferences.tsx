@@ -132,7 +132,6 @@ const CosPreferences: FC = () => {
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
-			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
 			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
 		],
@@ -1051,7 +1050,7 @@ const CosPreferences: FC = () => {
 				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					severity: 'success',
+					type: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -1066,7 +1065,7 @@ const CosPreferences: FC = () => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					severity: 'error',
+					type: 'error',
 					label: error?.message
 						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
