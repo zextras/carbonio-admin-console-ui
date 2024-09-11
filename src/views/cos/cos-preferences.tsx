@@ -34,28 +34,17 @@ import {
 	charactorSet,
 	conversationGroupBy,
 	timeZoneList,
-	localeList
+	localeList,
+	bytesToHumanReadable
 } from '../utility/utils';
 
 const FILE_UPLOAD_MAX_SIZE_PER_FILE = '2147483648';
 
-function bytesToHumanReadable(bytes: number) {
-	if (bytes === 0) return '0 Bytes';
-	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-	const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-	return `${parseFloat((bytes / 1024 ** i).toFixed(2))} ${sizes[i]}`;
-}
-
-function bytesToHumanFriendlyFileUploadMaxSizePerFile(bytes: number, t: TFunction) {
+function bytesToHumanFriendlyFileUploadMaxSizePerFile(bytes: number, t: TFunction): string {
 	if (bytes < 1) {
-		return t('cos.human_friendly_max_upload_per_file_label', {
-			value: t('cos.unlimited', 'Unlimited')
-		});
+		return t('cos.unlimited', 'Unlimited');
 	}
-	return t('cos.human_friendly_max_upload_per_file_label', {
-		value: bytesToHumanReadable(bytes)
-	});
+	return `~${bytesToHumanReadable(bytes)}`;
 }
 
 const CosPreferences: FC = () => {
@@ -132,6 +121,7 @@ const CosPreferences: FC = () => {
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
 			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
 		],
@@ -1267,53 +1257,64 @@ const CosPreferences: FC = () => {
 						</Container>
 					</Row>
 					<Row mainAlignment="flex-start" width="100%">
-						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-							<Text size="small" color="primary">
-								{humanFriendlyFileUploadMaxSizePerFileLabel}
-							</Text>
-							<Input
-								type="number"
-								label={t(
-									'cos.upload_max_size_per_file',
-									'Maximum size in bytes for each attachment'
-								)}
-								value={cosPreferences?.zimbraFileUploadMaxSizePerFile}
-								backgroundColor="gray5"
-								disabled={readonlyCOS}
-								onKeyDown={(e): void => {
-									if (
-										![
-											'Backspace',
-											'Delete',
-											'ArrowLeft',
-											'ArrowRight',
-											'0',
-											'1',
-											'2',
-											'3',
-											'4',
-											'5',
-											'6',
-											'7',
-											'8',
-											'9'
-										].includes(e.key)
-									) {
-										e.preventDefault();
-									}
-								}}
-								onChange={(e: any): any => {
-									if (e.target.value < 0) {
-										changeFileUploadMaxSizePerFile(0);
-									} else {
-										changeFileUploadMaxSizePerFile(e.target.value.toString());
-									}
-								}}
-							/>
+						<Container height="fit" crossAlignment="flex-start" width="50%">
+							<Row mainAlignment="flex-start" width="100%">
+								<Container width="75%" crossAlignment="flex-start">
+									<Input
+										type="number"
+										label={t(
+											'cos.upload_max_size_per_file',
+											'Maximum file size for each attachment in bytes'
+										)}
+										value={cosPreferences?.zimbraFileUploadMaxSizePerFile}
+										backgroundColor="gray5"
+										disabled={readonlyCOS}
+										onKeyDown={(e): void => {
+											if (
+												![
+													'Backspace',
+													'Delete',
+													'ArrowLeft',
+													'ArrowRight',
+													'0',
+													'1',
+													'2',
+													'3',
+													'4',
+													'5',
+													'6',
+													'7',
+													'8',
+													'9'
+												].includes(e.key)
+											) {
+												e.preventDefault();
+											}
+										}}
+										onChange={(e: any): any => {
+											if (e.target.value < 0) {
+												changeFileUploadMaxSizePerFile(0);
+											} else {
+												changeFileUploadMaxSizePerFile(e.target.value.toString());
+											}
+										}}
+									/>
+								</Container>
+								<Container width="25%" crossAlignment="flex-start">
+									<Padding left="small">
+										<Text size="medium" color="gray1">
+											{humanFriendlyFileUploadMaxSizePerFileLabel}
+										</Text>
+									</Padding>
+								</Container>
+							</Row>
 						</Container>
 					</Row>
-
-					<Divider />
+					<Row>
+						<Padding vertical="large" />
+						<Divider />
+						<Padding vertical="large" />
+					</Row>
 				</Row>
 				<Row
 					mainAlignment="flex-start"
