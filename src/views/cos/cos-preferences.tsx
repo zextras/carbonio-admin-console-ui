@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -23,6 +23,7 @@ import { TFunction } from 'i18next';
 import { isEqual, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import { CosPreferences } from '../../../types/cos';
 import { COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -40,11 +41,20 @@ import {
 
 const FILE_UPLOAD_MAX_SIZE_PER_FILE = '2147483648';
 
-function bytesToHumanFriendlyFileUploadMaxSizePerFile(bytes: number, t: TFunction): string {
-	if (bytes < 1) {
+function bytesToHumanFriendlyFileUploadMaxSizePerFile(
+	bytes: string | number,
+	t: TFunction
+): string {
+	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
+	if (!parsedBytes) {
+		throw new Error(
+			'Invalid input: bytes must be a number or a string that can be converted to a number.'
+		);
+	}
+	if (parsedBytes < 1) {
 		return t('cos.unlimited', 'Unlimited');
 	}
-	return `~${bytesToHumanReadable(bytes)}`;
+	return `~${bytesToHumanReadable(parsedBytes)}`;
 }
 
 const CosPreferences: FC = () => {
@@ -62,7 +72,7 @@ const CosPreferences: FC = () => {
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	const [cosPreferences, setCosPreferences] = useState<any>({
+	const [cosPreferences, setCosPreferences] = useState<CosPreferences>({
 		zimbraPrefLocale: '',
 		zimbraPrefMessageViewHtmlPreferred: 'FALSE',
 		zimbraPrefGroupMailBy: '',
@@ -85,17 +95,13 @@ const CosPreferences: FC = () => {
 		zimbraPrefCalendarDefaultApptDuration: '',
 		zimbraPrefCalendarApptReminderWarningTime: '',
 		zimbraPrefCalendarShowPastDueReminders: 'FALSE',
-		// zimbraPrefCalendarToasterEnabled: 'FALSE',
 		zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
 		zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
 		zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
 		zimbraPrefCalendarAutoAddInvites: 'FALSE',
-		// zimbraPrefCalendarReminderSoundsEnabled: 'FALSE',
 		zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
 		zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
-		// zimbraPrefCalendarUseQuickAdd: 'FALSE',
 		zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
-		// zimbraPrefUseTimeZoneListInCalendar: 'FALSE'
 		zimbraFileUploadMaxSizePerFile: FILE_UPLOAD_MAX_SIZE_PER_FILE
 	});
 
@@ -216,13 +222,13 @@ const CosPreferences: FC = () => {
 	);
 
 	const changeSwitchOption = useCallback(
-		(key: string): void => {
+		(key: any): void => {
 			setCosPreferences((prev: any) => ({
 				...prev,
-				[key]: cosPreferences[key] === 'TRUE' ? 'FALSE' : 'TRUE'
+				[key]: key === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[cosPreferences, setCosPreferences]
+		[setCosPreferences]
 	);
 
 	const onGroupByChange = useCallback(
@@ -343,8 +349,7 @@ const CosPreferences: FC = () => {
 	);
 
 	const setInitalValues = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(obj: any): void => {
+		(obj: CosPreferences): void => {
 			if (obj) {
 				setValue(
 					'zimbraPrefMessageViewHtmlPreferred',
@@ -443,10 +448,6 @@ const CosPreferences: FC = () => {
 						? obj?.zimbraPrefCalendarShowPastDueReminders
 						: 'FALSE'
 				);
-				/* setValue(
-					'zimbraPrefCalendarToasterEnabled',
-					obj?.zimbraPrefCalendarToasterEnabled ? obj?.zimbraPrefCalendarToasterEnabled : 'FALSE'
-				); */
 				setValue(
 					'zimbraPrefCalendarAllowCancelEmailToSelf',
 					obj?.zimbraPrefCalendarAllowCancelEmailToSelf
@@ -469,12 +470,6 @@ const CosPreferences: FC = () => {
 					'zimbraPrefCalendarAutoAddInvites',
 					obj?.zimbraPrefCalendarAutoAddInvites ? obj?.zimbraPrefCalendarAutoAddInvites : 'FALSE'
 				);
-				/* setValue(
-					'zimbraPrefCalendarReminderSoundsEnabled',
-					obj?.zimbraPrefCalendarReminderSoundsEnabled
-						? obj?.zimbraPrefCalendarReminderSoundsEnabled
-						: 'FALSE'
-				); */
 				setValue(
 					'zimbraPrefCalendarSendInviteDeniedAutoReply',
 					obj?.zimbraPrefCalendarSendInviteDeniedAutoReply
@@ -487,22 +482,13 @@ const CosPreferences: FC = () => {
 						? obj?.zimbraPrefCalendarNotifyDelegatedChanges
 						: 'FALSE'
 				);
-				/* setValue(
-					'zimbraPrefCalendarUseQuickAdd',
-					obj?.zimbraPrefCalendarUseQuickAdd ? obj?.zimbraPrefCalendarUseQuickAdd : 'FALSE'
-				); */
+
 				setValue(
 					'zimbraPrefAppleIcalDelegationEnabled',
 					obj?.zimbraPrefAppleIcalDelegationEnabled
 						? obj?.zimbraPrefAppleIcalDelegationEnabled
 						: 'FALSE'
 				);
-				/* setValue(
-					'zimbraPrefUseTimeZoneListInCalendar',
-					obj?.zimbraPrefUseTimeZoneListInCalendar
-						? obj?.zimbraPrefUseTimeZoneListInCalendar
-						: 'FALSE'
-				); */
 				setValue(
 					'zimbraFileUploadMaxSizePerFile',
 					obj?.zimbraFileUploadMaxSizePerFile
@@ -520,7 +506,6 @@ const CosPreferences: FC = () => {
 		);
 	}, [cosPreferences.zimbraFileUploadMaxSizePerFile, t]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -594,9 +579,6 @@ const CosPreferences: FC = () => {
 			if (!obj.zimbraPrefCalendarShowPastDueReminders) {
 				obj.zimbraPrefCalendarShowPastDueReminders = 'FALSE';
 			}
-			/* if (!obj.zimbraPrefCalendarToasterEnabled) {
-				obj.zimbraPrefCalendarToasterEnabled = 'FALSE';
-			} */
 			if (!obj.zimbraPrefCalendarAllowCancelEmailToSelf) {
 				obj.zimbraPrefCalendarAllowCancelEmailToSelf = 'FALSE';
 			}
@@ -609,24 +591,16 @@ const CosPreferences: FC = () => {
 			if (!obj.zimbraPrefCalendarAutoAddInvites) {
 				obj.zimbraPrefCalendarAutoAddInvites = 'FALSE';
 			}
-			/* if (!obj.zimbraPrefCalendarReminderSoundsEnabled) {
-				obj.zimbraPrefCalendarReminderSoundsEnabled = 'FALSE';
-			} */
+
 			if (!obj.zimbraPrefCalendarSendInviteDeniedAutoReply) {
 				obj.zimbraPrefCalendarSendInviteDeniedAutoReply = 'FALSE';
 			}
 			if (!obj.zimbraPrefCalendarNotifyDelegatedChanges) {
 				obj.zimbraPrefCalendarNotifyDelegatedChanges = 'FALSE';
 			}
-			/* if (!obj.zimbraPrefCalendarUseQuickAdd) {
-				obj.zimbraPrefCalendarUseQuickAdd = 'FALSE';
-			} */
 			if (!obj.zimbraPrefAppleIcalDelegationEnabled) {
 				obj.zimbraPrefAppleIcalDelegationEnabled = 'FALSE';
 			}
-			/* if (!obj.zimbraPrefUseTimeZoneListInCalendar) {
-				obj.zimbraPrefUseTimeZoneListInCalendar = 'FALSE';
-			} */
 			if (!obj.zimbraFileUploadMaxSizePerFile) {
 				obj.zimbraFileUploadMaxSizePerFile = FILE_UPLOAD_MAX_SIZE_PER_FILE;
 			}
@@ -876,15 +850,6 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarShowPastDueReminders
 	]);
 
-	/* useEffect(() => {
-		if (
-			cosData.zimbraPrefCalendarToasterEnabled !== undefined &&
-			cosData.zimbraPrefCalendarToasterEnabled !== cosPreferences.zimbraPrefCalendarToasterEnabled
-		) {
-			setIsDirty(true);
-		}
-	}, [cosData.zimbraPrefCalendarToasterEnabled, cosPreferences.zimbraPrefCalendarToasterEnabled]); */
-
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAllowCancelEmailToSelf !== undefined &&
@@ -933,19 +898,6 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarAllowForwardedInvite
 	]);
 
-	/* useEffect(() => {
-		if (
-			cosData.zimbraPrefCalendarReminderSoundsEnabled !== undefined &&
-			cosData.zimbraPrefCalendarReminderSoundsEnabled !==
-				cosPreferences.zimbraPrefCalendarReminderSoundsEnabled
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		cosData.zimbraPrefCalendarReminderSoundsEnabled,
-		cosPreferences.zimbraPrefCalendarReminderSoundsEnabled
-	]); */
-
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarSendInviteDeniedAutoReply !== undefined &&
@@ -972,15 +924,6 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarNotifyDelegatedChanges
 	]);
 
-	/* useEffect(() => {
-		if (
-			cosData.zimbraPrefCalendarUseQuickAdd !== undefined &&
-			cosData.zimbraPrefCalendarUseQuickAdd !== cosPreferences.zimbraPrefCalendarUseQuickAdd
-		) {
-			setIsDirty(true);
-		}
-	}, [cosData.zimbraPrefCalendarUseQuickAdd, cosPreferences.zimbraPrefCalendarUseQuickAdd]); */
-
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefAppleIcalDelegationEnabled !== undefined &&
@@ -993,19 +936,6 @@ const CosPreferences: FC = () => {
 		cosData.zimbraPrefAppleIcalDelegationEnabled,
 		cosPreferences.zimbraPrefAppleIcalDelegationEnabled
 	]);
-
-	/* useEffect(() => {
-		if (
-			cosData.zimbraPrefUseTimeZoneListInCalendar !== undefined &&
-			cosData.zimbraPrefUseTimeZoneListInCalendar !==
-				cosPreferences.zimbraPrefUseTimeZoneListInCalendar
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		cosData.zimbraPrefUseTimeZoneListInCalendar,
-		cosPreferences.zimbraPrefUseTimeZoneListInCalendar
-	]); */
 
 	useEffect(() => {
 		if (
@@ -1135,7 +1065,6 @@ const CosPreferences: FC = () => {
 											cosPreferences?.zimbraPrefLocale === ''
 												? localeZone[-1]
 												: localeZone.find(
-														// eslint-disable-next-line max-len
 														(item: any) => item.value === cosPreferences?.zimbraPrefLocale
 												  )
 										}
@@ -1291,8 +1220,9 @@ const CosPreferences: FC = () => {
 												e.preventDefault();
 											}
 										}}
-										onChange={(e: any): any => {
-											if (e.target.value < 0) {
+										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+											const value = Number(e.target.value);
+											if (value < 0) {
 												changeFileUploadMaxSizePerFile(0);
 											} else {
 												changeFileUploadMaxSizePerFile(e.target.value.toString());
