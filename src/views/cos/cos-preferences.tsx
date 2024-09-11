@@ -1255,6 +1255,7 @@ const CosPreferences: FC = () => {
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 							<p>{humanFriendlyFileUploadMaxSizePerFileLabel}</p>
 							<Input
+								type="number"
 								label={t(
 									'cos.upload_max_size_per_file',
 									'Maximum size in bytes for each attachment'
