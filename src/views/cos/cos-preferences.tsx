@@ -46,10 +46,7 @@ function bytesToHumanFriendlyFileUploadMaxSizePerFile(
 	t: TFunction
 ): string {
 	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
-	if (!parsedBytes) {
-		return bytesToHumanReadable(0);
-	}
-	if (parsedBytes < 1) {
+	if (!parsedBytes || parsedBytes === 0) {
 		return t('cos.unlimited', 'Unlimited');
 	}
 	return `~${bytesToHumanReadable(parsedBytes)}`;
