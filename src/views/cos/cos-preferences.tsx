@@ -47,9 +47,7 @@ function bytesToHumanFriendlyFileUploadMaxSizePerFile(
 ): string {
 	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
 	if (!parsedBytes) {
-		throw new Error(
-			'Invalid input: bytes must be a number or a string that can be converted to a number.'
-		);
+		return bytesToHumanReadable(0);
 	}
 	if (parsedBytes < 1) {
 		return t('cos.unlimited', 'Unlimited');
@@ -109,7 +107,10 @@ const CosPreferences: FC = () => {
 		humanFriendlyFileUploadMaxSizePerFileLabel,
 		setHumanFriendlyFileUploadMaxSizePerFileLabel
 	] = useState(
-		bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t)
+		bytesToHumanFriendlyFileUploadMaxSizePerFile(
+			cosPrefAttributes.zimbraFileUploadMaxSizePerFile,
+			t
+		)
 	);
 
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
@@ -502,7 +503,10 @@ const CosPreferences: FC = () => {
 
 	useEffect(() => {
 		setHumanFriendlyFileUploadMaxSizePerFileLabel(
-			bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t)
+			bytesToHumanFriendlyFileUploadMaxSizePerFile(
+				cosPrefAttributes.zimbraFileUploadMaxSizePerFile,
+				t
+			)
 		);
 	}, [cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t]);
 
@@ -677,7 +681,10 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailPollingInterval !== undefined &&
-			!isEqual(cosData.zimbraPrefMailPollingInterval, cosPrefAttributes.zimbraPrefMailPollingInterval)
+			!isEqual(
+				cosData.zimbraPrefMailPollingInterval,
+				cosPrefAttributes.zimbraPrefMailPollingInterval
+			)
 		) {
 			setIsDirty(true);
 		}
@@ -759,11 +766,15 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefGalAutoCompleteEnabled !== undefined &&
-			cosData.zimbraPrefGalAutoCompleteEnabled !== cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled
+			cosData.zimbraPrefGalAutoCompleteEnabled !==
+				cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefGalAutoCompleteEnabled, cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled]);
+	}, [
+		cosData.zimbraPrefGalAutoCompleteEnabled,
+		cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled
+	]);
 
 	useEffect(() => {
 		if (
@@ -775,7 +786,10 @@ const CosPreferences: FC = () => {
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarFirstDayOfWeek, cosPrefAttributes.zimbraPrefCalendarFirstDayOfWeek]);
+	}, [
+		cosData.zimbraPrefCalendarFirstDayOfWeek,
+		cosPrefAttributes.zimbraPrefCalendarFirstDayOfWeek
+	]);
 
 	useEffect(() => {
 		if (
@@ -789,7 +803,10 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarInitialView !== undefined &&
-			!isEqual(cosData.zimbraPrefCalendarInitialView, cosPrefAttributes.zimbraPrefCalendarInitialView)
+			!isEqual(
+				cosData.zimbraPrefCalendarInitialView,
+				cosPrefAttributes.zimbraPrefCalendarInitialView
+			)
 		) {
 			setIsDirty(true);
 		}
@@ -805,7 +822,10 @@ const CosPreferences: FC = () => {
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarApptVisibility, cosPrefAttributes.zimbraPrefCalendarApptVisibility]);
+	}, [
+		cosData.zimbraPrefCalendarApptVisibility,
+		cosPrefAttributes.zimbraPrefCalendarApptVisibility
+	]);
 
 	useEffect(() => {
 		if (
@@ -879,11 +899,15 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAutoAddInvites !== undefined &&
-			cosData.zimbraPrefCalendarAutoAddInvites !== cosPrefAttributes.zimbraPrefCalendarAutoAddInvites
+			cosData.zimbraPrefCalendarAutoAddInvites !==
+				cosPrefAttributes.zimbraPrefCalendarAutoAddInvites
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarAutoAddInvites, cosPrefAttributes.zimbraPrefCalendarAutoAddInvites]);
+	}, [
+		cosData.zimbraPrefCalendarAutoAddInvites,
+		cosPrefAttributes.zimbraPrefCalendarAutoAddInvites
+	]);
 
 	useEffect(() => {
 		if (
@@ -962,7 +986,7 @@ const CosPreferences: FC = () => {
 		};
 		body.id = id;
 		(Object.keys(cosPrefAttributes) as (keyof CosPrefAttributes)[]).forEach((ele) =>
-				attributes.push({ n: ele, _content: cosPrefAttributes[ele] })
+			attributes.push({ n: ele, _content: cosPrefAttributes[ele] })
 		);
 		body.a = attributes;
 		modifyCos(body)
@@ -1193,7 +1217,7 @@ const CosPreferences: FC = () => {
 										type="number"
 										label={t(
 											'cos.upload_max_size_per_file',
-											'Maximum file size for each attachment in bytes'
+											'Maximum size (bytes) allowed for each attachment'
 										)}
 										value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 										backgroundColor="gray5"
@@ -1358,7 +1382,9 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPrefAttributes?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'}
+										value={
+											cosPrefAttributes?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'
+										}
 										onClick={(): void =>
 											changeSwitchOption('zimbraFeatureMailForwardingInFiltersEnabled')
 										}
@@ -1549,7 +1575,8 @@ const CosPreferences: FC = () => {
 												: DEFAULT_APPOINTMENT_DURATION.find(
 														(item: any) =>
 															// eslint-disable-next-line max-len
-															item.value === cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
+															item.value ===
+															cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
 												  )
 										}
 										onChange={onCalendarDefaultApptDurationChange}
@@ -1764,7 +1791,9 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPrefAttributes?.zimbraPrefCalendarSendInviteDeniedAutoReply === 'TRUE'}
+										value={
+											cosPrefAttributes?.zimbraPrefCalendarSendInviteDeniedAutoReply === 'TRUE'
+										}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarSendInviteDeniedAutoReply')
 										}
