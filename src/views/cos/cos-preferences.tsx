@@ -47,7 +47,7 @@ function bytesToHumanFriendlyFileUploadMaxSizePerFile(
 ): string {
 	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
 	if (!parsedBytes) {
-		bytesToHumanReadable(0);
+		return bytesToHumanReadable(0);
 	}
 	if (parsedBytes < 1) {
 		return t('cos.unlimited', 'Unlimited');
