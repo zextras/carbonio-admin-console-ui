@@ -47,9 +47,7 @@ function bytesToHumanFriendlyFileUploadMaxSizePerFile(
 ): string {
 	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
 	if (!parsedBytes) {
-		throw new Error(
-			'Invalid input: bytes must be a number or a string that can be converted to a number.'
-		);
+		bytesToHumanReadable(0);
 	}
 	if (parsedBytes < 1) {
 		return t('cos.unlimited', 'Unlimited');
@@ -1219,7 +1217,7 @@ const CosPreferences: FC = () => {
 										type="number"
 										label={t(
 											'cos.upload_max_size_per_file',
-											'Maximum file size for each attachment in bytes'
+											'Maximum size (bytes) allowed for each attachment'
 										)}
 										value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 										backgroundColor="gray5"

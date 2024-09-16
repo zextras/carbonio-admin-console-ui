@@ -2342,8 +2342,8 @@ export const formatedErrorMessage = (response: ErrorResponse): ErrorResponse => 
 
 export function bytesToHumanReadable(bytes: number): string {
 	if (bytes === 0) return '0 Bytes';
-	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-	return `${parseFloat((bytes / 1024 ** i).toFixed(2))} ${sizes[i]}`;
+	const sizeIndex = Math.min(i, sizes.length - 1);
+	return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
