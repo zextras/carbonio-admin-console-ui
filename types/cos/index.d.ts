@@ -13,7 +13,7 @@ export type Cos = {
 	a?: Array<Attribute>;
 };
 
-export type CosPreferences = {
+export type CosPrefAttributes = {
 	zimbraPrefLocale: string;
 	zimbraPrefMessageViewHtmlPreferred: string;
 	zimbraPrefGroupMailBy: string;

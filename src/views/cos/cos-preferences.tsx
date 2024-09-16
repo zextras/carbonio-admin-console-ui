@@ -23,7 +23,7 @@ import { TFunction } from 'i18next';
 import { isEqual, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { CosPreferences } from '../../../types/cos';
+import { CosPrefAttributes } from '../../../types/cos';
 import { COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -72,7 +72,7 @@ const CosPreferences: FC = () => {
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	const [cosPreferences, setCosPreferences] = useState<CosPreferences>({
+	const [cosPrefAttributes, setCosPrefAttributes] = useState<CosPrefAttributes>({
 		zimbraPrefLocale: '',
 		zimbraPrefMessageViewHtmlPreferred: 'FALSE',
 		zimbraPrefGroupMailBy: '',
@@ -109,14 +109,14 @@ const CosPreferences: FC = () => {
 		humanFriendlyFileUploadMaxSizePerFileLabel,
 		setHumanFriendlyFileUploadMaxSizePerFileLabel
 	] = useState(
-		bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPreferences.zimbraFileUploadMaxSizePerFile, t)
+		bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t)
 	);
 
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
-		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
+		cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
 	);
 	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
-		cosPreferences?.zimbraMailMinPollingInterval?.slice(-1) || ''
+		cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(-1) || ''
 	);
 	const GROUP_BY: any = useMemo(() => conversationGroupBy(t), [t]);
 	const CHARACTOR_SET: any = useMemo(() => charactorSet(), []);
@@ -210,7 +210,7 @@ const CosPreferences: FC = () => {
 
 	const changeFileUploadMaxSizePerFile = useCallback(
 		(value): void => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraFileUploadMaxSizePerFile: value
 			}));
@@ -218,61 +218,61 @@ const CosPreferences: FC = () => {
 				bytesToHumanFriendlyFileUploadMaxSizePerFile(value, t)
 			);
 		},
-		[setCosPreferences, t]
+		[setCosPrefAttributes, t]
 	);
 
 	const changeSwitchOption = useCallback(
 		(key: any): void => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				[key]: key === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onGroupByChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onCharactorSetChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onPrefLocaleChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onPollingIntervalChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onPrefMailPollingIntervalTypeChange = useCallback(
 		(v) => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraMailMinPollingInterval: zimbraPrefMailPollingIntervalNum
 					? `${zimbraPrefMailPollingIntervalNum}${v}`
 					: ''
 			}));
 		},
-		[zimbraPrefMailPollingIntervalNum, setCosPreferences]
+		[zimbraPrefMailPollingIntervalNum, setCosPrefAttributes]
 	);
 	const onPrefMailPollingIntervalNumChange = useCallback(
 		(e) => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraMailMinPollingInterval: e.target.value
 					? `${e.target.value}${prefMailPollingIntervalType}`
@@ -280,76 +280,76 @@ const CosPreferences: FC = () => {
 			}));
 			setZimbraPrefMailPollingIntervalNum(e.target.value);
 		},
-		[setCosPreferences, prefMailPollingIntervalType]
+		[setCosPrefAttributes, prefMailPollingIntervalType]
 	);
 
 	const onMailSendReadReceipts = useCallback(
 		(v) => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraPrefMailSendReadReceipts: v
 			}));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onPrefTimeZoneChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onCalendarDefaultApptDurationChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraPrefCalendarDefaultApptDuration: v
 			}));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onReminderWarningTimeChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({
+			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraPrefCalendarApptReminderWarningTime: v
 			}));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onCalendarInitialViewChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onFirstDayOfWeekChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const onAppointmentVisibilityChange = useCallback(
 		(v): void => {
-			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
-			setCosPreferences((prev: any) => ({ ...prev, [key]: value }));
+			setCosPrefAttributes((prev: any) => ({ ...prev, [key]: value }));
 		},
-		[setCosPreferences]
+		[setCosPrefAttributes]
 	);
 
 	const setInitalValues = useCallback(
-		(obj: CosPreferences): void => {
+		(obj: CosPrefAttributes): void => {
 			if (obj) {
 				setValue(
 					'zimbraPrefMessageViewHtmlPreferred',
@@ -502,9 +502,9 @@ const CosPreferences: FC = () => {
 
 	useEffect(() => {
 		setHumanFriendlyFileUploadMaxSizePerFileLabel(
-			bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPreferences.zimbraFileUploadMaxSizePerFile, t)
+			bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t)
 		);
-	}, [cosPreferences.zimbraFileUploadMaxSizePerFile, t]);
+	}, [cosPrefAttributes.zimbraFileUploadMaxSizePerFile, t]);
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
@@ -616,210 +616,210 @@ const CosPreferences: FC = () => {
 		if (
 			cosData.zimbraPrefMessageViewHtmlPreferred !== undefined &&
 			cosData.zimbraPrefMessageViewHtmlPreferred !==
-				cosPreferences.zimbraPrefMessageViewHtmlPreferred
+				cosPrefAttributes.zimbraPrefMessageViewHtmlPreferred
 		) {
 			setIsDirty(true);
 		}
 	}, [
-		cosPreferences.zimbraPrefMessageViewHtmlPreferred,
+		cosPrefAttributes.zimbraPrefMessageViewHtmlPreferred,
 		cosData.zimbraPrefMessageViewHtmlPreferred
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefLocale !== undefined &&
-			!isEqual(cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale)
+			!isEqual(cosData.zimbraPrefLocale, cosPrefAttributes.zimbraPrefLocale)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale]);
+	}, [cosData.zimbraPrefLocale, cosPrefAttributes.zimbraPrefLocale]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefGroupMailBy !== undefined &&
-			!isEqual(cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy)
+			!isEqual(cosData.zimbraPrefGroupMailBy, cosPrefAttributes.zimbraPrefGroupMailBy)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy]);
+	}, [cosData.zimbraPrefGroupMailBy, cosPrefAttributes.zimbraPrefGroupMailBy]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailDefaultCharset !== undefined &&
-			!isEqual(cosData.zimbraPrefMailDefaultCharset, cosPreferences.zimbraPrefMailDefaultCharset)
+			!isEqual(cosData.zimbraPrefMailDefaultCharset, cosPrefAttributes.zimbraPrefMailDefaultCharset)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefMailDefaultCharset, cosPreferences.zimbraPrefMailDefaultCharset]);
+	}, [cosData.zimbraPrefMailDefaultCharset, cosPrefAttributes.zimbraPrefMailDefaultCharset]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMessageIdDedupingEnabled !== undefined &&
 			cosData.zimbraPrefMessageIdDedupingEnabled !==
-				cosPreferences.zimbraPrefMessageIdDedupingEnabled
+				cosPrefAttributes.zimbraPrefMessageIdDedupingEnabled
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefMessageIdDedupingEnabled,
-		cosPreferences.zimbraPrefMessageIdDedupingEnabled
+		cosPrefAttributes.zimbraPrefMessageIdDedupingEnabled
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailToasterEnabled !== undefined &&
-			cosData.zimbraPrefMailToasterEnabled !== cosPreferences.zimbraPrefMailToasterEnabled
+			cosData.zimbraPrefMailToasterEnabled !== cosPrefAttributes.zimbraPrefMailToasterEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefMailToasterEnabled, cosPreferences.zimbraPrefMailToasterEnabled]);
+	}, [cosData.zimbraPrefMailToasterEnabled, cosPrefAttributes.zimbraPrefMailToasterEnabled]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailPollingInterval !== undefined &&
-			!isEqual(cosData.zimbraPrefMailPollingInterval, cosPreferences.zimbraPrefMailPollingInterval)
+			!isEqual(cosData.zimbraPrefMailPollingInterval, cosPrefAttributes.zimbraPrefMailPollingInterval)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefMailPollingInterval, cosPreferences.zimbraPrefMailPollingInterval]);
+	}, [cosData.zimbraPrefMailPollingInterval, cosPrefAttributes.zimbraPrefMailPollingInterval]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraMailMinPollingInterval !== undefined &&
-			cosData.zimbraMailMinPollingInterval !== cosPreferences.zimbraMailMinPollingInterval
+			cosData.zimbraMailMinPollingInterval !== cosPrefAttributes.zimbraMailMinPollingInterval
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraMailMinPollingInterval, cosPreferences.zimbraMailMinPollingInterval]);
+	}, [cosData.zimbraMailMinPollingInterval, cosPrefAttributes.zimbraMailMinPollingInterval]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailSendReadReceipts !== undefined &&
 			!isEqual(
 				cosData.zimbraPrefMailSendReadReceipts,
-				cosPreferences.zimbraPrefMailSendReadReceipts
+				cosPrefAttributes.zimbraPrefMailSendReadReceipts
 			)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefMailSendReadReceipts, cosPreferences.zimbraPrefMailSendReadReceipts]);
+	}, [cosData.zimbraPrefMailSendReadReceipts, cosPrefAttributes.zimbraPrefMailSendReadReceipts]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefSaveToSent !== undefined &&
-			cosData.zimbraPrefSaveToSent !== cosPreferences.zimbraPrefSaveToSent
+			cosData.zimbraPrefSaveToSent !== cosPrefAttributes.zimbraPrefSaveToSent
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefSaveToSent, cosPreferences.zimbraPrefSaveToSent]);
+	}, [cosData.zimbraPrefSaveToSent, cosPrefAttributes.zimbraPrefSaveToSent]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraFeatureMailForwardingEnabled !== undefined &&
 			cosData.zimbraFeatureMailForwardingEnabled !==
-				cosPreferences.zimbraFeatureMailForwardingEnabled
+				cosPrefAttributes.zimbraFeatureMailForwardingEnabled
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraFeatureMailForwardingEnabled,
-		cosPreferences.zimbraFeatureMailForwardingEnabled
+		cosPrefAttributes.zimbraFeatureMailForwardingEnabled
 	]);
 	useEffect(() => {
 		if (
 			cosData.zimbraFeatureMailForwardingInFiltersEnabled !== undefined &&
 			cosData.zimbraFeatureMailForwardingInFiltersEnabled !==
-				cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+				cosPrefAttributes.zimbraFeatureMailForwardingInFiltersEnabled
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraFeatureMailForwardingInFiltersEnabled,
-		cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+		cosPrefAttributes.zimbraFeatureMailForwardingInFiltersEnabled
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraAllowAnyFromAddress !== undefined &&
-			cosData.zimbraAllowAnyFromAddress !== cosPreferences.zimbraAllowAnyFromAddress
+			cosData.zimbraAllowAnyFromAddress !== cosPrefAttributes.zimbraAllowAnyFromAddress
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraAllowAnyFromAddress, cosPreferences.zimbraAllowAnyFromAddress]);
+	}, [cosData.zimbraAllowAnyFromAddress, cosPrefAttributes.zimbraAllowAnyFromAddress]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefAutoAddAddressEnabled !== undefined &&
-			cosData.zimbraPrefAutoAddAddressEnabled !== cosPreferences.zimbraPrefAutoAddAddressEnabled
+			cosData.zimbraPrefAutoAddAddressEnabled !== cosPrefAttributes.zimbraPrefAutoAddAddressEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefAutoAddAddressEnabled, cosPreferences.zimbraPrefAutoAddAddressEnabled]);
+	}, [cosData.zimbraPrefAutoAddAddressEnabled, cosPrefAttributes.zimbraPrefAutoAddAddressEnabled]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefGalAutoCompleteEnabled !== undefined &&
-			cosData.zimbraPrefGalAutoCompleteEnabled !== cosPreferences.zimbraPrefGalAutoCompleteEnabled
+			cosData.zimbraPrefGalAutoCompleteEnabled !== cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefGalAutoCompleteEnabled, cosPreferences.zimbraPrefGalAutoCompleteEnabled]);
+	}, [cosData.zimbraPrefGalAutoCompleteEnabled, cosPrefAttributes.zimbraPrefGalAutoCompleteEnabled]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarFirstDayOfWeek !== undefined &&
 			!isEqual(
 				cosData.zimbraPrefCalendarFirstDayOfWeek,
-				cosPreferences.zimbraPrefCalendarFirstDayOfWeek
+				cosPrefAttributes.zimbraPrefCalendarFirstDayOfWeek
 			)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarFirstDayOfWeek, cosPreferences.zimbraPrefCalendarFirstDayOfWeek]);
+	}, [cosData.zimbraPrefCalendarFirstDayOfWeek, cosPrefAttributes.zimbraPrefCalendarFirstDayOfWeek]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefTimeZoneId !== undefined &&
-			!isEqual(cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId)
+			!isEqual(cosData.zimbraPrefTimeZoneId, cosPrefAttributes.zimbraPrefTimeZoneId)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId]);
+	}, [cosData.zimbraPrefTimeZoneId, cosPrefAttributes.zimbraPrefTimeZoneId]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarInitialView !== undefined &&
-			!isEqual(cosData.zimbraPrefCalendarInitialView, cosPreferences.zimbraPrefCalendarInitialView)
+			!isEqual(cosData.zimbraPrefCalendarInitialView, cosPrefAttributes.zimbraPrefCalendarInitialView)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarInitialView, cosPreferences.zimbraPrefCalendarInitialView]);
+	}, [cosData.zimbraPrefCalendarInitialView, cosPrefAttributes.zimbraPrefCalendarInitialView]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarApptVisibility !== undefined &&
 			!isEqual(
 				cosData.zimbraPrefCalendarApptVisibility,
-				cosPreferences.zimbraPrefCalendarApptVisibility
+				cosPrefAttributes.zimbraPrefCalendarApptVisibility
 			)
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarApptVisibility, cosPreferences.zimbraPrefCalendarApptVisibility]);
+	}, [cosData.zimbraPrefCalendarApptVisibility, cosPrefAttributes.zimbraPrefCalendarApptVisibility]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarDefaultApptDuration !== undefined &&
 			!isEqual(
 				cosData.zimbraPrefCalendarDefaultApptDuration,
-				cosPreferences.zimbraPrefCalendarDefaultApptDuration
+				cosPrefAttributes.zimbraPrefCalendarDefaultApptDuration
 			)
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarDefaultApptDuration,
-		cosPreferences.zimbraPrefCalendarDefaultApptDuration
+		cosPrefAttributes.zimbraPrefCalendarDefaultApptDuration
 	]);
 
 	useEffect(() => {
@@ -827,124 +827,124 @@ const CosPreferences: FC = () => {
 			cosData.zimbraPrefCalendarApptReminderWarningTime !== undefined &&
 			!isEqual(
 				cosData.zimbraPrefCalendarApptReminderWarningTime,
-				cosPreferences.zimbraPrefCalendarApptReminderWarningTime
+				cosPrefAttributes.zimbraPrefCalendarApptReminderWarningTime
 			)
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarApptReminderWarningTime,
-		cosPreferences.zimbraPrefCalendarApptReminderWarningTime
+		cosPrefAttributes.zimbraPrefCalendarApptReminderWarningTime
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarShowPastDueReminders !== undefined &&
 			cosData.zimbraPrefCalendarShowPastDueReminders !==
-				cosPreferences.zimbraPrefCalendarShowPastDueReminders
+				cosPrefAttributes.zimbraPrefCalendarShowPastDueReminders
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarShowPastDueReminders,
-		cosPreferences.zimbraPrefCalendarShowPastDueReminders
+		cosPrefAttributes.zimbraPrefCalendarShowPastDueReminders
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAllowCancelEmailToSelf !== undefined &&
 			cosData.zimbraPrefCalendarAllowCancelEmailToSelf !==
-				cosPreferences.zimbraPrefCalendarAllowCancelEmailToSelf
+				cosPrefAttributes.zimbraPrefCalendarAllowCancelEmailToSelf
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarAllowCancelEmailToSelf,
-		cosPreferences.zimbraPrefCalendarAllowCancelEmailToSelf
+		cosPrefAttributes.zimbraPrefCalendarAllowCancelEmailToSelf
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAllowPublishMethodInvite !== undefined &&
 			cosData.zimbraPrefCalendarAllowPublishMethodInvite !==
-				cosPreferences.zimbraPrefCalendarAllowPublishMethodInvite
+				cosPrefAttributes.zimbraPrefCalendarAllowPublishMethodInvite
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarAllowPublishMethodInvite,
-		cosPreferences.zimbraPrefCalendarAllowPublishMethodInvite
+		cosPrefAttributes.zimbraPrefCalendarAllowPublishMethodInvite
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAutoAddInvites !== undefined &&
-			cosData.zimbraPrefCalendarAutoAddInvites !== cosPreferences.zimbraPrefCalendarAutoAddInvites
+			cosData.zimbraPrefCalendarAutoAddInvites !== cosPrefAttributes.zimbraPrefCalendarAutoAddInvites
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarAutoAddInvites, cosPreferences.zimbraPrefCalendarAutoAddInvites]);
+	}, [cosData.zimbraPrefCalendarAutoAddInvites, cosPrefAttributes.zimbraPrefCalendarAutoAddInvites]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarAllowForwardedInvite !== undefined &&
 			cosData.zimbraPrefCalendarAllowForwardedInvite !==
-				cosPreferences.zimbraPrefCalendarAllowForwardedInvite
+				cosPrefAttributes.zimbraPrefCalendarAllowForwardedInvite
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarAllowForwardedInvite,
-		cosPreferences.zimbraPrefCalendarAllowForwardedInvite
+		cosPrefAttributes.zimbraPrefCalendarAllowForwardedInvite
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarSendInviteDeniedAutoReply !== undefined &&
 			cosData.zimbraPrefCalendarSendInviteDeniedAutoReply !==
-				cosPreferences.zimbraPrefCalendarSendInviteDeniedAutoReply
+				cosPrefAttributes.zimbraPrefCalendarSendInviteDeniedAutoReply
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarSendInviteDeniedAutoReply,
-		cosPreferences.zimbraPrefCalendarSendInviteDeniedAutoReply
+		cosPrefAttributes.zimbraPrefCalendarSendInviteDeniedAutoReply
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarNotifyDelegatedChanges !== undefined &&
 			cosData.zimbraPrefCalendarNotifyDelegatedChanges !==
-				cosPreferences.zimbraPrefCalendarNotifyDelegatedChanges
+				cosPrefAttributes.zimbraPrefCalendarNotifyDelegatedChanges
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefCalendarNotifyDelegatedChanges,
-		cosPreferences.zimbraPrefCalendarNotifyDelegatedChanges
+		cosPrefAttributes.zimbraPrefCalendarNotifyDelegatedChanges
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefAppleIcalDelegationEnabled !== undefined &&
 			cosData.zimbraPrefAppleIcalDelegationEnabled !==
-				cosPreferences.zimbraPrefAppleIcalDelegationEnabled
+				cosPrefAttributes.zimbraPrefAppleIcalDelegationEnabled
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosData.zimbraPrefAppleIcalDelegationEnabled,
-		cosPreferences.zimbraPrefAppleIcalDelegationEnabled
+		cosPrefAttributes.zimbraPrefAppleIcalDelegationEnabled
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraFileUploadMaxSizePerFile !== undefined &&
-			cosData.zimbraFileUploadMaxSizePerFile !== cosPreferences.zimbraFileUploadMaxSizePerFile
+			cosData.zimbraFileUploadMaxSizePerFile !== cosPrefAttributes.zimbraFileUploadMaxSizePerFile
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraFileUploadMaxSizePerFile, cosPreferences.zimbraFileUploadMaxSizePerFile]);
+	}, [cosData.zimbraFileUploadMaxSizePerFile, cosPrefAttributes.zimbraFileUploadMaxSizePerFile]);
 
 	const onCancel = (): void => {
 		setInitalValues(cosData);
@@ -961,8 +961,8 @@ const CosPreferences: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		Object.keys(cosPreferences).forEach((ele: any) =>
-			attributes.push({ n: ele, _content: cosPreferences[ele] })
+		(Object.keys(cosPrefAttributes) as (keyof CosPrefAttributes)[]).forEach((ele) =>
+				attributes.push({ n: ele, _content: cosPrefAttributes[ele] })
 		);
 		body.a = attributes;
 		modifyCos(body)
@@ -1062,10 +1062,10 @@ const CosPreferences: FC = () => {
 										label={t('label.language', 'Language')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefLocale === ''
+											cosPrefAttributes?.zimbraPrefLocale === ''
 												? localeZone[-1]
 												: localeZone.find(
-														(item: any) => item.value === cosPreferences?.zimbraPrefLocale
+														(item: any) => item.value === cosPrefAttributes?.zimbraPrefLocale
 												  )
 										}
 										onChange={onPrefLocaleChange}
@@ -1094,7 +1094,7 @@ const CosPreferences: FC = () => {
 							padding={{ top: 'large' }}
 						>
 							<Switch
-								value={cosPreferences?.zimbraPrefMessageViewHtmlPreferred === 'TRUE'}
+								value={cosPrefAttributes?.zimbraPrefMessageViewHtmlPreferred === 'TRUE'}
 								onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
 								label={t('cos.view_mail_as_html', 'View mail as HTML')}
 								iconColor="primary"
@@ -1117,11 +1117,11 @@ const CosPreferences: FC = () => {
 										showCheckbox={false}
 										items={GROUP_BY}
 										selection={
-											cosPreferences?.zimbraPrefGroupMailBy === ''
+											cosPrefAttributes?.zimbraPrefGroupMailBy === ''
 												? GROUP_BY[-1]
 												: GROUP_BY.find(
 														// eslint-disable-next-line max-len
-														(item: any) => item.value === cosPreferences?.zimbraPrefGroupMailBy
+														(item: any) => item.value === cosPrefAttributes?.zimbraPrefGroupMailBy
 												  )
 										}
 										onChange={onGroupByChange}
@@ -1135,12 +1135,12 @@ const CosPreferences: FC = () => {
 										showCheckbox={false}
 										items={CHARACTOR_SET}
 										selection={
-											cosPreferences?.zimbraPrefMailDefaultCharset === ''
+											cosPrefAttributes?.zimbraPrefMailDefaultCharset === ''
 												? CHARACTOR_SET[-1]
 												: CHARACTOR_SET.find(
 														// eslint-disable-next-line max-len
 														(item: any) =>
-															item.value === cosPreferences?.zimbraPrefMailDefaultCharset
+															item.value === cosPrefAttributes?.zimbraPrefMailDefaultCharset
 												  )
 										}
 										onChange={onCharactorSetChange}
@@ -1160,7 +1160,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefMessageIdDedupingEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefMessageIdDedupingEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefMessageIdDedupingEnabled')}
 										label={t(
 											'cos.auto_delete_duplicate_messages',
@@ -1172,7 +1172,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefMailToasterEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefMailToasterEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefMailToasterEnabled')}
 										label={t(
 											'cos.enable_new_mail_toast_notification',
@@ -1195,7 +1195,7 @@ const CosPreferences: FC = () => {
 											'cos.upload_max_size_per_file',
 											'Maximum file size for each attachment in bytes'
 										)}
-										value={cosPreferences?.zimbraFileUploadMaxSizePerFile}
+										value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 										backgroundColor="gray5"
 										disabled={readonlyCOS}
 										onKeyDown={(e): void => {
@@ -1310,12 +1310,12 @@ const CosPreferences: FC = () => {
 										label={t('cos.polling_interval', 'Polling interval')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefMailPollingInterval === ''
+											cosPrefAttributes?.zimbraPrefMailPollingInterval === ''
 												? POLLING_INTERVAL[-1]
 												: POLLING_INTERVAL.find(
 														// eslint-disable-next-line max-len
 														(item: any) =>
-															item.value === cosPreferences?.zimbraPrefMailPollingInterval
+															item.value === cosPrefAttributes?.zimbraPrefMailPollingInterval
 												  )
 										}
 										onChange={onPollingIntervalChange}
@@ -1346,7 +1346,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraFeatureMailForwardingEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraFeatureMailForwardingEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraFeatureMailForwardingEnabled')}
 										label={t(
 											'cos.user_can_specify_forwarding_address',
@@ -1358,7 +1358,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraFeatureMailForwardingInFiltersEnabled')
 										}
@@ -1394,7 +1394,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start">
 									<Switch
-										value={cosPreferences?.zimbraPrefSaveToSent === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefSaveToSent === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
 										label={t('cos.save_to_Sent', `Save to sent`)}
 										iconColor="primary"
@@ -1414,7 +1414,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start">
 									<Switch
-										value={cosPreferences?.zimbraAllowAnyFromAddress === 'TRUE'}
+										value={cosPrefAttributes?.zimbraAllowAnyFromAddress === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
 										label={t(
 											'cos.allow_sending_from_any_address',
@@ -1442,12 +1442,12 @@ const CosPreferences: FC = () => {
 										label={t('cos.read_receipt_settings', 'Read Receipt settings')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
+											cosPrefAttributes?.zimbraPrefMailSendReadReceipts === ''
 												? SEND_READ_RECEIPTS[-1]
 												: SEND_READ_RECEIPTS.find(
 														(item: any) =>
 															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
+															item.value === cosPrefAttributes?.zimbraPrefMailSendReadReceipts
 												  )
 										}
 										onChange={onMailSendReadReceipts}
@@ -1478,7 +1478,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefAutoAddAddressEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefAutoAddAddressEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefAutoAddAddressEnabled')}
 										label={t('cos.enable_auto_add_contacts', `Enable auto-add contacts`)}
 										iconColor="primary"
@@ -1487,7 +1487,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefGalAutoCompleteEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefGalAutoCompleteEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
 										label={t('cos.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
 										iconColor="primary"
@@ -1523,11 +1523,11 @@ const CosPreferences: FC = () => {
 										label={t('label.time_zone', 'Time Zone')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefTimeZoneId === ''
+											cosPrefAttributes?.zimbraPrefTimeZoneId === ''
 												? timezones[-1]
 												: timezones.find(
 														// eslint-disable-next-line max-len
-														(item: any) => item.value === cosPreferences?.zimbraPrefTimeZoneId
+														(item: any) => item.value === cosPrefAttributes?.zimbraPrefTimeZoneId
 												  )
 										}
 										onChange={onPrefTimeZoneChange}
@@ -1544,12 +1544,12 @@ const CosPreferences: FC = () => {
 										)}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefCalendarDefaultApptDuration === ''
+											cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration === ''
 												? DEFAULT_APPOINTMENT_DURATION[-1]
 												: DEFAULT_APPOINTMENT_DURATION.find(
 														(item: any) =>
 															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefCalendarDefaultApptDuration
+															item.value === cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
 												  )
 										}
 										onChange={onCalendarDefaultApptDurationChange}
@@ -1577,13 +1577,13 @@ const CosPreferences: FC = () => {
 										)}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefCalendarApptReminderWarningTime === ''
+											cosPrefAttributes?.zimbraPrefCalendarApptReminderWarningTime === ''
 												? APPOINTMENT_REMINDER[-1]
 												: APPOINTMENT_REMINDER.find(
 														// eslint-disable-next-line max-len
 														(item: any) =>
 															item.value ===
-															cosPreferences?.zimbraPrefCalendarApptReminderWarningTime
+															cosPrefAttributes?.zimbraPrefCalendarApptReminderWarningTime
 												  )
 										}
 										onChange={onReminderWarningTimeChange}
@@ -1597,12 +1597,12 @@ const CosPreferences: FC = () => {
 										label={t('label.default_calendar_view', 'Default Calendar View')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefCalendarInitialView === ''
+											cosPrefAttributes?.zimbraPrefCalendarInitialView === ''
 												? DefaultViewOptions[-1]
 												: DefaultViewOptions.find(
 														// eslint-disable-next-line max-len
 														(item: any) =>
-															item.value === cosPreferences?.zimbraPrefCalendarInitialView
+															item.value === cosPrefAttributes?.zimbraPrefCalendarInitialView
 												  )
 										}
 										onChange={onCalendarInitialViewChange}
@@ -1627,12 +1627,12 @@ const CosPreferences: FC = () => {
 										label={t('label.the_week_starts_on', 'The Week starts on')}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefCalendarFirstDayOfWeek === ''
+											cosPrefAttributes?.zimbraPrefCalendarFirstDayOfWeek === ''
 												? FIRST_DAY_OF_WEEK[-1]
 												: FIRST_DAY_OF_WEEK.find(
 														(item: any) =>
 															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefCalendarFirstDayOfWeek
+															item.value === cosPrefAttributes?.zimbraPrefCalendarFirstDayOfWeek
 												  )
 										}
 										onChange={onFirstDayOfWeekChange}
@@ -1649,12 +1649,12 @@ const CosPreferences: FC = () => {
 										)}
 										showCheckbox={false}
 										selection={
-											cosPreferences?.zimbraPrefCalendarApptVisibility === ''
+											cosPrefAttributes?.zimbraPrefCalendarApptVisibility === ''
 												? APPOINTMENT_VISIBILITY[-1]
 												: APPOINTMENT_VISIBILITY.find(
 														(item: any) =>
 															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefCalendarApptVisibility
+															item.value === cosPrefAttributes?.zimbraPrefCalendarApptVisibility
 												  )
 										}
 										onChange={onAppointmentVisibilityChange}
@@ -1674,7 +1674,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarShowPastDueReminders === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarShowPastDueReminders === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarShowPastDueReminders')
 										}
@@ -1688,7 +1688,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarAllowCancelEmailToSelf')
 										}
@@ -1713,7 +1713,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarAllowForwardedInvite === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarAllowForwardedInvite === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarAllowForwardedInvite')
 										}
@@ -1727,7 +1727,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')
 										}
@@ -1752,7 +1752,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
 										label={t(
 											'cos.add_appointments_when_invited',
@@ -1764,7 +1764,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarSendInviteDeniedAutoReply === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarSendInviteDeniedAutoReply === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarSendInviteDeniedAutoReply')
 										}
@@ -1789,7 +1789,7 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarNotifyDelegatedChanges')
 										}
@@ -1803,7 +1803,7 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
+										value={cosPrefAttributes?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefAppleIcalDelegationEnabled')}
 										label={t(
 											'cos.use_ical_delegation_model_for_shared_calendars',
