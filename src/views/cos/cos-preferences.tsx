@@ -208,6 +208,9 @@ const CosPreferences: FC = () => {
 
 	const changeFileUploadMaxSizePerFile = useCallback(
 		(value): void => {
+			if (!value) {
+				value = 0;
+			}
 			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraFileUploadMaxSizePerFile: value
