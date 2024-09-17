@@ -46,12 +46,7 @@ function bytesToHumanFriendlyFileUploadMaxSizePerFile(
 	t: TFunction
 ): string {
 	const parsedBytes = typeof bytes === 'string' ? Number(bytes) : bytes;
-	if (!parsedBytes) {
-		throw new Error(
-			'Invalid input: bytes must be a number or a string that can be converted to a number.'
-		);
-	}
-	if (parsedBytes < 1) {
+	if (!parsedBytes || parsedBytes === 0) {
 		return t('cos.unlimited', 'Unlimited');
 	}
 	return `~${bytesToHumanReadable(parsedBytes)}`;
@@ -213,6 +208,9 @@ const CosPreferences: FC = () => {
 
 	const changeFileUploadMaxSizePerFile = useCallback(
 		(value): void => {
+			if (!value) {
+				value = 0;
+			}
 			setCosPrefAttributes((prev: any) => ({
 				...prev,
 				zimbraFileUploadMaxSizePerFile: value
@@ -1219,7 +1217,7 @@ const CosPreferences: FC = () => {
 										type="number"
 										label={t(
 											'cos.upload_max_size_per_file',
-											'Maximum file size for each attachment in bytes'
+											'Maximum size (bytes) allowed for each attachment'
 										)}
 										value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 										backgroundColor="gray5"
