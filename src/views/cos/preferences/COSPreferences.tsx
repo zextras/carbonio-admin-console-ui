@@ -28,7 +28,7 @@ const COSPreferences: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const setCos = useCosStore((state) => state.setCos);
 
-	const localeZone = useMemo(() => localeList(t), [t]);
+	const locales = useMemo(() => localeList(t), [t]);
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
@@ -143,8 +143,10 @@ const COSPreferences: FC = () => {
 			<SaveCancelBar isDirty={isDirty} onSave={handleSave} onCancel={handleCancel} />
 			<GeneralOptions
 				cosPrefAttributes={draftCosPrefAttributes}
-				localeZone={localeZone}
-				onPrefLocaleChange={(v): void => updateCosPrefAttribute('zimbraPrefLocale', v)}
+				locales={locales}
+				onPrefLocaleChange={(selectedItem: string): void =>
+					updateCosPrefAttribute('zimbraPrefLocale', selectedItem)
+				}
 				readonlyCOS={readonlyCOS}
 			/>
 			<MailOptions

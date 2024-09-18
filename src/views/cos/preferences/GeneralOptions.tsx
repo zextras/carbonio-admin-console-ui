@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { Container, Divider, Row, Select, Text } from '@zextras/carbonio-design-system';
+import { Container, Divider, Row, Select, SelectItem, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
@@ -13,14 +13,14 @@ import ListRow from '../../list/list-row';
 
 interface GeneralOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
-	localeZone: any[];
+	locales: SelectItem[];
 	readonlyCOS: boolean;
-	onPrefLocaleChange: (selection: any) => void;
+	onPrefLocaleChange: (selection: any) => void; // typing is hard to achieve here
 }
 
 const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 	cosPrefAttributes,
-	localeZone,
+	locales,
 	readonlyCOS,
 	onPrefLocaleChange
 }) => {
@@ -47,14 +47,13 @@ const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 					<ListRow>
 						<Container>
 							<Select
-								items={localeZone}
+								items={locales}
 								background={'gray5'}
 								label={t('label.language', 'Language')}
 								showCheckbox={false}
 								selection={
-									cosPrefAttributes?.zimbraPrefLocale === ''
-										? localeZone[-1]
-										: localeZone.find((item) => item.value === cosPrefAttributes?.zimbraPrefLocale)
+									locales.find((item) => item.value === cosPrefAttributes?.zimbraPrefLocale) ||
+									locales[0]
 								}
 								onChange={onPrefLocaleChange}
 								disabled={readonlyCOS}
