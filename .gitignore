@@ -10,5 +10,5 @@
 /e2e/output/
 .idea/jsLibraryMappings.xml
 /junit.xml
-/coverage/cobertura-coverage.xml
+/coverage/*
 .DS_Store

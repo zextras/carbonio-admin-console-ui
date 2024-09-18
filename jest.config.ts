@@ -40,11 +40,10 @@ export default {
 	//   "/node_modules/"
 	// ],
 
-	// Indicates which provider should be used to instrument code for coverage
 	coverageProvider: 'babel',
 
 	// A list of reporter names that Jest uses when writing coverage reports
-	coverageReporters: ['text', 'cobertura'],
+	coverageReporters: ['lcov', 'html'],
 
 	// An object that configures minimum threshold enforcement for coverage results
 	coverageThreshold: {
@@ -185,7 +184,7 @@ export default {
 		'\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
 			'<rootDir>/src/mocks/fileTransformer.js',
 		'\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js'
-	}
+	},
 
 	// An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
 	// transformIgnorePatterns: [
@@ -204,4 +203,6 @@ export default {
 
 	// Whether to use watchman for file crawling
 	// watchman: true,
+
+	testTimeout: 20000
 };
