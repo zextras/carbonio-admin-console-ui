@@ -12,6 +12,7 @@ import {
 	Padding,
 	Row,
 	Select,
+	SelectItem,
 	Switch,
 	Text
 } from '@zextras/carbonio-design-system';
@@ -25,6 +26,8 @@ interface MailOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadonlyCOSEntry: boolean;
 	onFileUploadMaxSizePerFileChange: (value: string) => void;
+
+	// typing is hard to achieve here
 	onGroupByChange: (value: any) => void;
 	onCharactorSetChange: (value: any) => void;
 	changeSwitchOption: (key: keyof CosPrefAttributes) => void;
@@ -39,8 +42,8 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 	changeSwitchOption
 }) => {
 	const { t } = useTranslation();
-	const GROUP_BY: any = useMemo(() => conversationGroupBy(t), [t]);
-	const CHARACTOR_SET: any = useMemo(() => charactorSet(), []);
+	const GROUP_BY: SelectItem[] = useMemo(() => conversationGroupBy(t), [t]);
+	const CHARACTOR_SET: SelectItem[] = useMemo(() => charactorSet(), []);
 
 	const bytesToHumanFriendlyFileUploadMaxSizePerFile = useCallback(
 		(bytes: string | number): string => {
@@ -119,11 +122,9 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 								showCheckbox={false}
 								items={GROUP_BY}
 								selection={
-									cosPrefAttributes?.zimbraPrefGroupMailBy === ''
-										? GROUP_BY[-1]
-										: GROUP_BY.find(
-												(item: any) => item.value === cosPrefAttributes?.zimbraPrefGroupMailBy
-										  )
+									GROUP_BY.find(
+										(item) => item.value === cosPrefAttributes?.zimbraPrefGroupMailBy
+									) || GROUP_BY[0]
 								}
 								onChange={onGroupByChange}
 								disabled={isReadonlyCOSEntry}
@@ -136,12 +137,9 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 								showCheckbox={false}
 								items={CHARACTOR_SET}
 								selection={
-									cosPrefAttributes?.zimbraPrefMailDefaultCharset === ''
-										? CHARACTOR_SET[-1]
-										: CHARACTOR_SET.find(
-												(item: any) =>
-													item.value === cosPrefAttributes?.zimbraPrefMailDefaultCharset
-										  )
+									CHARACTOR_SET.find(
+										(item) => item.value === cosPrefAttributes?.zimbraPrefMailDefaultCharset
+									) || CHARACTOR_SET[0]
 								}
 								onChange={onCharactorSetChange}
 								disabled={isReadonlyCOSEntry}
