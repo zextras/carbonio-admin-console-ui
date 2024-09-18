@@ -12,13 +12,13 @@ import { useParams } from 'react-router-dom';
 import CosAdvanced from './cos-advanced';
 import CosFeatures from './cos-features';
 import CosGeneralInformation from './cos-general-information';
-import CosPreference from './cos-preferences';
 import CosServerPools from './cos-server-pools';
+import COSPreferences from './preferences/COSPreferences';
 import {
-	GENERAL_INFORMATION,
-	FEATURES,
-	PREFERENCES,
 	ADVANCED,
+	FEATURES,
+	GENERAL_INFORMATION,
+	PREFERENCES,
 	SERVER_POOLS
 } from '../../constants';
 import { getCosGeneralInformation } from '../../services/cos-general-information-service';
@@ -95,7 +95,7 @@ const CosDetailOperation: FC = () => {
 					case FEATURES:
 						return <CosFeatures />;
 					case PREFERENCES:
-						return <CosPreference />;
+						return <COSPreferences />;
 					case ADVANCED:
 						return <CosAdvanced />;
 					case SERVER_POOLS:
