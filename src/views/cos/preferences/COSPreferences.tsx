@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import SaveCancelBar from './SaveCancelBar';
-import { CosAttributes, CosPrefAttributes } from '../../../../types';
+import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
@@ -34,7 +34,7 @@ const COSPreferences: FC = () => {
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	const [currentCosAttributes, setCurrentCosAttributes] = useState<CosAttributes>();
+	const [currentCosAttributes, setCurrentCosAttributes] = useState<Partial<CosAttributes>>();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [draftCosPrefAttributes, setDraftCosPrefAttributes] = useState<CosPrefAttributes>(
 		DEFAULT_COS_PREF_ATTRIBUTES
@@ -69,18 +69,13 @@ const COSPreferences: FC = () => {
 		}));
 	}, []);
 
-	const setInitialValues = useCallback((obj: CosPrefAttributes) => {
+	const setInitialValues = useCallback((initialCosPrefAttributes: Partial<CosAttributes>) => {
 		setDraftCosPrefAttributes((prev) => ({
 			...DEFAULT_COS_PREF_ATTRIBUTES,
 			...prev,
-			...obj
+			...initialCosPrefAttributes
 		}));
 	}, []);
-
-	useEffect(() => {
-		const hasChanges = haveChangesToSave();
-		setIsDirty(hasChanges);
-	}, [draftCosPrefAttributes, haveChangesToSave]);
 
 	const handleSave = (): void => {
 		const zimbraID = currentCosAttributes?.zimbraId;
@@ -127,13 +122,19 @@ const COSPreferences: FC = () => {
 	};
 
 	useEffect(() => {
+		const hasChanges = haveChangesToSave();
+		setIsDirty(hasChanges);
+	}, [draftCosPrefAttributes, haveChangesToSave]);
+
+	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
-			const obj: Partial<CosPrefAttributes> = {};
+			const initialCosPrefAttributes: Partial<CosAttributes> = {};
 			cosInformation.forEach((item: Attribute) => {
-				obj[item?.n] = item._content;
+				const key = item?.n as keyof CosAttributes;
+				initialCosPrefAttributes[key] = item._content;
 			});
-			setCurrentCosAttributes(obj);
-			setInitialValues(obj);
+			setCurrentCosAttributes(initialCosPrefAttributes);
+			setInitialValues(initialCosPrefAttributes);
 		}
 	}, [cosInformation, setInitialValues]);
 
