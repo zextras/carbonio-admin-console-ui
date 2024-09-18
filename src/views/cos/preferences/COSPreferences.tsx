@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import SaveCancelBar from './SaveCancelBar';
-import { CosPrefAttributes } from '../../../../types';
+import { CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
@@ -34,7 +34,7 @@ const COSPreferences: FC = () => {
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	const [currentCosAttributes, setCurrentCosAttributes]: any = useState({});
+	const [currentCosAttributes, setCurrentCosAttributes] = useState<CosAttributes>();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [draftCosPrefAttributes, setDraftCosPrefAttributes] = useState<CosPrefAttributes>(
 		DEFAULT_COS_PREF_ATTRIBUTES
@@ -42,19 +42,20 @@ const COSPreferences: FC = () => {
 
 	const haveChangesToSave = useCallback((): boolean => {
 		let hasChanges = false;
+		if (currentCosAttributes) {
+			Object.keys(currentCosAttributes).forEach((key) => {
+				const typedKey = key as keyof CosPrefAttributes;
 
-		Object.keys(currentCosAttributes).forEach((key) => {
-			const typedKey = key as keyof CosPrefAttributes;
-
-			if (draftCosPrefAttributes[typedKey] !== currentCosAttributes[typedKey]) {
-				hasChanges = true;
-			}
-		});
+				if (draftCosPrefAttributes[typedKey] !== currentCosAttributes[typedKey]) {
+					hasChanges = true;
+				}
+			});
+		}
 
 		return hasChanges;
 	}, [draftCosPrefAttributes, currentCosAttributes]);
 
-	const updateCosPrefAttribute = useCallback((key: keyof CosPrefAttributes, value: any) => {
+	const updateCosPrefAttribute = useCallback((key: keyof CosPrefAttributes, value: string) => {
 		setDraftCosPrefAttributes((prev) => ({
 			...prev,
 			[key]: value
@@ -82,9 +83,12 @@ const COSPreferences: FC = () => {
 	}, [draftCosPrefAttributes, haveChangesToSave]);
 
 	const handleSave = (): void => {
+		const zimbraID = currentCosAttributes?.zimbraId;
+		if (!zimbraID) return;
+
 		const body: ModifyCosBody = {
 			_jsns: 'urn:zimbraAdmin',
-			id: { _content: currentCosAttributes.zimbraId },
+			id: { _content: zimbraID },
 			a: Object.keys(DEFAULT_COS_PREF_ATTRIBUTES).map((key) => ({
 				n: key,
 				_content: draftCosPrefAttributes[key as keyof CosPrefAttributes]
@@ -119,17 +123,17 @@ const COSPreferences: FC = () => {
 	};
 
 	const handleCancel = (): void => {
-		setInitialValues(currentCosAttributes);
+		currentCosAttributes && setInitialValues(currentCosAttributes);
 	};
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
-			const obj: any = {};
-			cosInformation.forEach((item: any) => {
+			const obj: Partial<CosPrefAttributes> = {};
+			cosInformation.forEach((item: Attribute) => {
 				obj[item?.n] = item._content;
 			});
 			setCurrentCosAttributes(obj);
-			setInitialValues(obj as CosPrefAttributes);
+			setInitialValues(obj);
 		}
 	}, [cosInformation, setInitialValues]);
 
