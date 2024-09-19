@@ -26,7 +26,7 @@ describe('ForwardingOptions', () => {
 	};
 
 	it('should render correctly with the given props', async () => {
-		const { user } = setup(
+		setup(
 			<ForwardingOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
