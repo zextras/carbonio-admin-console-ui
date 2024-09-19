@@ -5,12 +5,14 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Container, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import ForwardingOptions from './ForwardingOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
+import ReceivingMails from './ReceivingMails';
 import SaveCancelBar from './SaveCancelBar';
 import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
@@ -141,26 +143,53 @@ const COSPreferences: FC = () => {
 	return (
 		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
 			<SaveCancelBar isDirty={isDirty} onSave={handleSave} onCancel={handleCancel} />
-			<GeneralOptions
-				cosPrefAttributes={draftCosPrefAttributes}
-				locales={locales}
-				onPrefLocaleChange={(selectedItem: string): void =>
-					updateCosPrefAttribute('zimbraPrefLocale', selectedItem)
-				}
-				readonlyCOS={readonlyCOS}
-			/>
-			<MailOptions
-				changeSwitchOption={changeSwitchOption}
-				cosPrefAttributes={draftCosPrefAttributes}
-				onFileUploadMaxSizePerFileChange={(v): void =>
-					updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', v)
-				}
-				onCharactorSetChange={(v): void =>
-					updateCosPrefAttribute('zimbraPrefMailDefaultCharset', v)
-				}
-				onGroupByChange={(v): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', v)}
-				isReadonlyCOSEntry={readonlyCOS}
-			/>
+			<Divider />
+			<Container
+				mainAlignment="flex-start"
+				width="100%"
+				orientation="vertical"
+				style={{ overflow: 'auto' }}
+				padding={{ top: 'large' }}
+			>
+				<GeneralOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					locales={locales}
+					onPrefLocaleChange={(selectedItem: string): void =>
+						updateCosPrefAttribute('zimbraPrefLocale', selectedItem)
+					}
+					readonlyCOS={readonlyCOS}
+				/>
+				<Divider />
+				<MailOptions
+					changeSwitchOption={changeSwitchOption}
+					cosPrefAttributes={draftCosPrefAttributes}
+					onFileUploadMaxSizePerFileChange={(v): void =>
+						updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', v)
+					}
+					onCharactorSetChange={(v): void =>
+						updateCosPrefAttribute('zimbraPrefMailDefaultCharset', v)
+					}
+					onGroupByChange={(v): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', v)}
+					isReadonlyCOSEntry={readonlyCOS}
+				/>
+				<Divider />
+				<ReceivingMails
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+					onPollingIntervalChange={(v): void =>
+						updateCosPrefAttribute('zimbraPrefMailPollingInterval', v)
+					}
+					onMailMinPollingIntervalChange={(v): void =>
+						updateCosPrefAttribute('zimbraMailMinPollingInterval', v)
+					}
+				/>
+				<Divider />
+				<ForwardingOptions
+					changeSwitchOption={changeSwitchOption}
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+				/>
+			</Container>
 		</Container>
 	);
 };
