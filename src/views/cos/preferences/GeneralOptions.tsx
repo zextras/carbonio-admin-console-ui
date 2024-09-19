@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { Container, Divider, Row, Select, SelectItem, Text } from '@zextras/carbonio-design-system';
+import { Container, Row, Select, SelectItem, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
@@ -62,7 +62,6 @@ const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
 		</Row>
 	);
 };
