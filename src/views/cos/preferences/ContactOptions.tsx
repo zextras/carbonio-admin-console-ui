@@ -14,8 +14,7 @@ import ListRow from '../../list/list-row';
 interface ContactOptions {
 	cosPrefAttributes: CosPrefAttributes;
 	readonlyCOS: boolean;
-	// typing is hard to achieve here
-	changeSwitchOption: (value: any) => void;
+	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
 const ContactOptions: React.FC<ContactOptions> = ({

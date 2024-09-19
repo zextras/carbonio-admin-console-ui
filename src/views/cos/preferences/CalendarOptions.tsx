@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
+import { findSelectItemWithFallback } from '../utils';
 
 interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
@@ -24,10 +25,6 @@ interface CalendarOptionsProps {
 	onFirstDayOfWeekChange: (value: any) => void;
 	onAppointmentVisibilityChange: (value: any) => void;
 	changeSwitchOption: (value: any) => void;
-}
-
-function findSelectedItemByPref(selectItems: SelectItem[], pref: string): SelectItem<string> {
-	return selectItems.find((item) => item.value === pref) || selectItems[0];
 }
 
 const CalendarOptions: React.FC<CalendarOptionsProps> = ({
@@ -107,7 +104,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								background="gray5"
 								label={t('label.time_zone', 'Time Zone')}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									TIMEZONES,
 									cosPrefAttributes?.zimbraPrefTimeZoneId
 								)}
@@ -121,7 +118,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								background="gray5"
 								label={t('label.appointments_default_duration', 'Appointment’s Default Duration')}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									DEFAULT_APPOINTMENT_DURATION,
 									cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
 								)}
@@ -149,7 +146,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									'Appointment Reminder (minutes before)'
 								)}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									APPOINTMENT_REMINDER,
 									cosPrefAttributes?.zimbraPrefCalendarApptReminderWarningTime
 								)}
@@ -163,7 +160,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								background="gray5"
 								label={t('label.default_calendar_view', 'Default Calendar View')}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									DEFAULT_VIEW_OPTIONS,
 									cosPrefAttributes?.zimbraPrefCalendarInitialView
 								)}
@@ -188,7 +185,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								background="gray5"
 								label={t('label.the_week_starts_on', 'The Week starts on')}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									FIRST_DAY_OF_WEEK,
 									cosPrefAttributes?.zimbraPrefCalendarFirstDayOfWeek
 								)}
@@ -202,7 +199,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								background="gray5"
 								label={t('label.default_appointment_visibility', 'Default appointment visibility')}
 								showCheckbox={false}
-								selection={findSelectedItemByPref(
+								selection={findSelectItemWithFallback(
 									APPOINTMENT_VISIBILITY,
 									cosPrefAttributes?.zimbraPrefCalendarApptVisibility
 								)}

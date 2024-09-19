@@ -76,22 +76,21 @@ describe('GeneralOptions', () => {
 		expect(mockOnMailSendReadReceipts).toHaveBeenCalledWith('always');
 	});
 
-	// TODO: disabled is handled by css
-	// it('should disable controls if readonlyCOS is true', () => {
-	// 	setup(
-	// 		<SendingMails
-	// 			cosPrefAttributes={cosPrefAttributes}
-	// 			readonlyCOS
-	// 			onMailSendReadReceipts={mockOnMailSendReadReceipts}
-	// 			changeSwitchOption={mockChangeSwitchOption}
-	// 		/>
-	// 	);
-	// 	expect(screen.getByText('Save to sent')).toBeDisabled();
-	// 	expect(screen.getByText('Allow sending from any address')).toBeDisabled();
+	it('should disable controls if readonlyCOS is true', async () => {
+		const { user } = setup(
+			<SendingMails
+				cosPrefAttributes={cosPrefAttributes}
+				readonlyCOS
+				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				changeSwitchOption={mockChangeSwitchOption}
+			/>
+		);
 
-	// 	expect(screen.getByText('Never send a read receipt').closest('button')).toBeDisabled();
-	// });
-
+		await user.click(screen.getByText('Save to sent'));
+		await user.click(screen.getByText('Allow sending from any address'));
+		// TODO: check also the select disabled status and align the other tests
+		expect(mockChangeSwitchOption).not.toHaveBeenCalled();
+	});
 	it('should not call changeSwitchOption when disabled switch is clicked', async () => {
 		const { user } = setup(
 			<SendingMails

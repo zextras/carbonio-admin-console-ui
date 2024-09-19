@@ -10,13 +10,14 @@ import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
+import { findSelectItemWithFallback } from '../utils';
 
 interface SendingMails {
 	cosPrefAttributes: CosPrefAttributes;
 	readonlyCOS: boolean;
 	// typing is hard to achieve here
 	onMailSendReadReceipts: (value: any) => void;
-	changeSwitchOption: (value: any) => void;
+	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
 const SendingMails: React.FC<SendingMails> = ({
@@ -79,7 +80,7 @@ const SendingMails: React.FC<SendingMails> = ({
 								onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
 								label={t('cos.allow_sending_from_any_address', 'Allow sending from any address')}
 								iconColor="primary"
-								disabled
+								disabled={readonlyCOS}
 							/>
 						</Container>
 					</ListRow>
@@ -99,11 +100,10 @@ const SendingMails: React.FC<SendingMails> = ({
 								background="gray5"
 								label={t('cos.read_receipt_settings', 'Read Receipt settings')}
 								showCheckbox={false}
-								selection={
-									SEND_READ_RECEIPTS.find(
-										(item) => item.value === cosPrefAttributes?.zimbraPrefMailSendReadReceipts
-									) || SEND_READ_RECEIPTS[0]
-								}
+								selection={findSelectItemWithFallback(
+									SEND_READ_RECEIPTS,
+									cosPrefAttributes?.zimbraPrefMailSendReadReceipts
+								)}
 								onChange={onMailSendReadReceipts}
 								disabled={readonlyCOS}
 							/>

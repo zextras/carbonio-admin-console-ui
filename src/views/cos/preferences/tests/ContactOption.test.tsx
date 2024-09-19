@@ -66,16 +66,18 @@ describe('GeneralOptions', () => {
 
 		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefGalAutoCompleteEnabled');
 	});
-	// TODO: disabled is handled by css
-	// it('should disable switches when readonlyCOS is true', () => {
-	// 	const { user } = setup(
-	// 		<ContactOptions
-	// 			cosPrefAttributes={cosPrefAttributes}
-	// 			readonlyCOS={false}
-	// 			changeSwitchOption={mockChangeSwitchOption}
-	// 		/>
-	// 	);
-	// 	expect(screen.getByText('Enable auto-add contacts')).toBeDisabled();
-	// 	expect(screen.getByText('Use GAL to auto-fill')).toBeDisabled();
-	// });
+
+	it('should disable switches when readonlyCOS is true', async () => {
+		const { user } = setup(
+			<ContactOptions
+				cosPrefAttributes={cosPrefAttributes}
+				readonlyCOS
+				changeSwitchOption={mockChangeSwitchOption}
+			/>
+		);
+		await user.click(screen.getByText('Use GAL to auto-fill'));
+		await user.click(screen.getByText('Enable auto-add contacts'));
+
+		expect(mockChangeSwitchOption).not.toHaveBeenCalled();
+	});
 });

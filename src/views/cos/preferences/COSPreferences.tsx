@@ -14,6 +14,7 @@ import ContactOptions from './ContactOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import SaveCancelBar from './SaveCancelBar';
+import SendingMails from './SendingMails';
 import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
@@ -22,7 +23,6 @@ import { useCosStore } from '../../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
-import SendingMails from './SendingMails';
 
 const COSPreferences: FC = () => {
 	const [t] = useTranslation();
