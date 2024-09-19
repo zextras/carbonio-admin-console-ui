@@ -9,6 +9,7 @@ import { Container, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import CalendarOptions from './CalendarOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import SaveCancelBar from './SaveCancelBar';
@@ -152,14 +153,38 @@ const COSPreferences: FC = () => {
 			<MailOptions
 				changeSwitchOption={changeSwitchOption}
 				cosPrefAttributes={draftCosPrefAttributes}
-				onFileUploadMaxSizePerFileChange={(v): void =>
-					updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', v)
+				onFileUploadMaxSizePerFileChange={(value): void =>
+					updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', value)
 				}
-				onCharactorSetChange={(v): void =>
-					updateCosPrefAttribute('zimbraPrefMailDefaultCharset', v)
+				onCharactorSetChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefMailDefaultCharset', value)
 				}
-				onGroupByChange={(v): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', v)}
+				onGroupByChange={(value): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', value)}
 				isReadonlyCOSEntry={readonlyCOS}
+			/>
+
+			<CalendarOptions
+				cosPrefAttributes={draftCosPrefAttributes}
+				isReadonlyCOSEntry={readonlyCOS}
+				onCalendarDefaultApptDurationChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefCalendarDefaultApptDuration', value)
+				}
+				onPrefTimeZoneChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefTimeZoneId', value)
+				}
+				onReminderWarningTimeChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefCalendarApptReminderWarningTime', value)
+				}
+				onCalendarInitialViewChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefCalendarInitialView', value)
+				}
+				onFirstDayOfWeekChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefCalendarFirstDayOfWeek', value)
+				}
+				onAppointmentVisibilityChange={(value): void =>
+					updateCosPrefAttribute('zimbraPrefCalendarApptVisibility', value)
+				}
+				changeSwitchOption={changeSwitchOption}
 			/>
 		</Container>
 	);
