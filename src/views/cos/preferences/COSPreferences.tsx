@@ -10,6 +10,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CalendarOptions from './CalendarOptions';
+import ContactOptions from './ContactOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import SaveCancelBar from './SaveCancelBar';
@@ -21,6 +22,7 @@ import { useCosStore } from '../../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
+import SendingMails from './SendingMails';
 
 const COSPreferences: FC = () => {
 	const [t] = useTranslation();
@@ -162,7 +164,19 @@ const COSPreferences: FC = () => {
 				onGroupByChange={(value): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', value)}
 				isReadonlyCOSEntry={readonlyCOS}
 			/>
-
+			<SendingMails
+				cosPrefAttributes={draftCosPrefAttributes}
+				readonlyCOS={readonlyCOS}
+				onMailSendReadReceipts={(value): void =>
+					updateCosPrefAttribute('zimbraPrefMailSendReadReceipts', value)
+				}
+				changeSwitchOption={changeSwitchOption}
+			/>
+			<ContactOptions
+				cosPrefAttributes={draftCosPrefAttributes}
+				readonlyCOS={readonlyCOS}
+				changeSwitchOption={changeSwitchOption}
+			/>
 			<CalendarOptions
 				cosPrefAttributes={draftCosPrefAttributes}
 				isReadonlyCOSEntry={readonlyCOS}
