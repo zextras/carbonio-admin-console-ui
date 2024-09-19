@@ -5,15 +5,7 @@
  */
 import React, { useMemo } from 'react';
 
-import {
-	Container,
-	Divider,
-	Row,
-	Select,
-	SelectItem,
-	Switch,
-	Text
-} from '@zextras/carbonio-design-system';
+import { Container, Row, Select, SelectItem, Switch, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
@@ -119,7 +111,6 @@ const SendingMails: React.FC<SendingMails> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
 		</Row>
 	);
 };

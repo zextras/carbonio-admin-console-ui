@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { Container, Divider, Row, Switch, Text } from '@zextras/carbonio-design-system';
+import { Container, Row, Switch, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
@@ -63,7 +63,6 @@ const ContactOptions: React.FC<ContactOptions> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
 		</Row>
 	);
 };

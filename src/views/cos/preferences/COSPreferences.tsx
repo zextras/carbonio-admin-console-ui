@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Container, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -172,11 +172,13 @@ const COSPreferences: FC = () => {
 				}
 				changeSwitchOption={changeSwitchOption}
 			/>
+			<Divider />
 			<ContactOptions
 				cosPrefAttributes={draftCosPrefAttributes}
 				readonlyCOS={readonlyCOS}
 				changeSwitchOption={changeSwitchOption}
 			/>
+			<Divider />
 			<CalendarOptions
 				cosPrefAttributes={draftCosPrefAttributes}
 				isReadonlyCOSEntry={readonlyCOS}
