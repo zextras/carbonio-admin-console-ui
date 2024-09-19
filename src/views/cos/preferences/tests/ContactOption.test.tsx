@@ -54,7 +54,7 @@ describe('GeneralOptions', () => {
 		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefAutoAddAddressEnabled');
 	});
 
-	it('should call changeSwitchOption when use GAL auto-fill switch is clicked', () => {
+	it('should call changeSwitchOption when use GAL auto-fill switch is clicked', async () => {
 		const { user } = setup(
 			<ContactOptions
 				cosPrefAttributes={cosPrefAttributes}
@@ -62,7 +62,7 @@ describe('GeneralOptions', () => {
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
-		user.click(screen.getByText('Use GAL to auto-fill'));
+		await user.click(screen.getByText('Use GAL to auto-fill'));
 
 		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefGalAutoCompleteEnabled');
 	});
