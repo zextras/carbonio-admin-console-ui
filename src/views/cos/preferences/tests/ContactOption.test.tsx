@@ -54,18 +54,18 @@ describe('GeneralOptions', () => {
 		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefAutoAddAddressEnabled');
 	});
 
-	// it('should call changeSwitchOption when use GAL auto-fill switch is clicked', () => {
-	// 	const { user } = setup(
-	// 		<ContactOptions
-	// 			cosPrefAttributes={cosPrefAttributes}
-	// 			readonlyCOS={false}
-	// 			changeSwitchOption={mockChangeSwitchOption}
-	// 		/>
-	// 	);
-	// 	user.click(screen.getByText('Use GAL to auto-fill'));
+	it('should call changeSwitchOption when use GAL auto-fill switch is clicked', () => {
+		const { user } = setup(
+			<ContactOptions
+				cosPrefAttributes={cosPrefAttributes}
+				readonlyCOS={false}
+				changeSwitchOption={mockChangeSwitchOption}
+			/>
+		);
+		user.click(screen.getByText('Use GAL to auto-fill'));
 
-	// 	expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefGalAutoCompleteEnabled');
-	// });
+		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefGalAutoCompleteEnabled');
+	});
 	// TODO: disabled is handled by css
 	// it('should disable switches when readonlyCOS is true', () => {
 	// 	const { user } = setup(
