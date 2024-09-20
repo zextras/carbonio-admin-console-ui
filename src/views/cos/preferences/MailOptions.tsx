@@ -7,7 +7,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
-	Divider,
 	Input,
 	Padding,
 	Row,
@@ -232,11 +231,6 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 						</Container>
 					</Row>
 				</Container>
-			</Row>
-			<Row>
-				<Padding vertical="large" />
-				<Divider />
-				<Padding vertical="large" />
 			</Row>
 		</Row>
 	);

@@ -11,8 +11,10 @@ import { useTranslation } from 'react-i18next';
 
 import CalendarOptions from './CalendarOptions';
 import ContactOptions from './ContactOptions';
+import ForwardingOptions from './ForwardingOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
+import ReceivingMails from './ReceivingMails';
 import SaveCancelBar from './SaveCancelBar';
 import SendingMails from './SendingMails';
 import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
@@ -144,64 +146,92 @@ const COSPreferences: FC = () => {
 	return (
 		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
 			<SaveCancelBar isDirty={isDirty} onSave={handleSave} onCancel={handleCancel} />
-			<GeneralOptions
-				cosPrefAttributes={draftCosPrefAttributes}
-				locales={locales}
-				onPrefLocaleChange={(selectedItem: string): void =>
-					updateCosPrefAttribute('zimbraPrefLocale', selectedItem)
-				}
-				readonlyCOS={readonlyCOS}
-			/>
-			<MailOptions
-				changeSwitchOption={changeSwitchOption}
-				cosPrefAttributes={draftCosPrefAttributes}
-				onFileUploadMaxSizePerFileChange={(value): void =>
-					updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', value)
-				}
-				onCharactorSetChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefMailDefaultCharset', value)
-				}
-				onGroupByChange={(value): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', value)}
-				isReadonlyCOSEntry={readonlyCOS}
-			/>
-			<SendingMails
-				cosPrefAttributes={draftCosPrefAttributes}
-				readonlyCOS={readonlyCOS}
-				onMailSendReadReceipts={(value): void =>
-					updateCosPrefAttribute('zimbraPrefMailSendReadReceipts', value)
-				}
-				changeSwitchOption={changeSwitchOption}
-			/>
 			<Divider />
-			<ContactOptions
-				cosPrefAttributes={draftCosPrefAttributes}
-				readonlyCOS={readonlyCOS}
-				changeSwitchOption={changeSwitchOption}
-			/>
-			<Divider />
-			<CalendarOptions
-				cosPrefAttributes={draftCosPrefAttributes}
-				isReadonlyCOSEntry={readonlyCOS}
-				onCalendarDefaultApptDurationChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefCalendarDefaultApptDuration', value)
-				}
-				onPrefTimeZoneChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefTimeZoneId', value)
-				}
-				onReminderWarningTimeChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefCalendarApptReminderWarningTime', value)
-				}
-				onCalendarInitialViewChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefCalendarInitialView', value)
-				}
-				onFirstDayOfWeekChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefCalendarFirstDayOfWeek', value)
-				}
-				onAppointmentVisibilityChange={(value): void =>
-					updateCosPrefAttribute('zimbraPrefCalendarApptVisibility', value)
-				}
-				changeSwitchOption={changeSwitchOption}
-			/>
+			<Container
+				mainAlignment="flex-start"
+				width="100%"
+				orientation="vertical"
+				style={{ overflow: 'auto' }}
+				padding={{ top: 'large' }}
+			>
+				<GeneralOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					locales={locales}
+					onPrefLocaleChange={(selectedItem: string): void =>
+						updateCosPrefAttribute('zimbraPrefLocale', selectedItem)
+					}
+					readonlyCOS={readonlyCOS}
+				/>
+				<Divider />
+				<MailOptions
+					changeSwitchOption={changeSwitchOption}
+					cosPrefAttributes={draftCosPrefAttributes}
+					onFileUploadMaxSizePerFileChange={(v): void =>
+						updateCosPrefAttribute('zimbraFileUploadMaxSizePerFile', v)
+					}
+					onCharactorSetChange={(v): void =>
+						updateCosPrefAttribute('zimbraPrefMailDefaultCharset', v)
+					}
+					onGroupByChange={(v): void => updateCosPrefAttribute('zimbraPrefGroupMailBy', v)}
+					isReadonlyCOSEntry={readonlyCOS}
+				/>
+				<Divider />
+				<ReceivingMails
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+					onPollingIntervalChange={(v): void =>
+						updateCosPrefAttribute('zimbraPrefMailPollingInterval', v)
+					}
+					onMailMinPollingIntervalChange={(v): void =>
+						updateCosPrefAttribute('zimbraMailMinPollingInterval', v)
+					}
+				/>
+				<Divider />
+				<ForwardingOptions
+					changeSwitchOption={changeSwitchOption}
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+				/>
+				<Divider />
+				<SendingMails
+					cosPrefAttributes={draftCosPrefAttributes}
+					readonlyCOS={readonlyCOS}
+					onMailSendReadReceipts={(value): void =>
+						updateCosPrefAttribute('zimbraPrefMailSendReadReceipts', value)
+					}
+					changeSwitchOption={changeSwitchOption}
+				/>
+				<Divider />
+				<ContactOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					readonlyCOS={readonlyCOS}
+					changeSwitchOption={changeSwitchOption}
+				/>
+				<Divider />
+				<CalendarOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+					onCalendarDefaultApptDurationChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarDefaultApptDuration', value)
+					}
+					onPrefTimeZoneChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefTimeZoneId', value)
+					}
+					onReminderWarningTimeChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarApptReminderWarningTime', value)
+					}
+					onCalendarInitialViewChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarInitialView', value)
+					}
+					onFirstDayOfWeekChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarFirstDayOfWeek', value)
+					}
+					onAppointmentVisibilityChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarApptVisibility', value)
+					}
+					changeSwitchOption={changeSwitchOption}
+				/>
+			</Container>
 		</Container>
 	);
 };
