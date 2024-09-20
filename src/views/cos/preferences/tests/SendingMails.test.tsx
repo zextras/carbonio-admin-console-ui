@@ -14,13 +14,13 @@ import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
 import SendingMails from '../SendingMails';
 
-describe('GeneralOptions', () => {
+describe('SendingMails', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 	});
 
 	const mockChangeSwitchOption = jest.fn();
-	const mockOnMailSendReadReceipts = jest.fn();
+	const mockOnCosAttributeChanged = jest.fn();
 
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
@@ -34,7 +34,7 @@ describe('GeneralOptions', () => {
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
 				readonlyCOS={false}
-				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -51,7 +51,7 @@ describe('GeneralOptions', () => {
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
 				readonlyCOS={false}
-				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -66,14 +66,17 @@ describe('GeneralOptions', () => {
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
 				readonlyCOS={false}
-				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('Never send a read receipt'));
 		await user.click(screen.getByText('Always send a read receipt'));
 
-		expect(mockOnMailSendReadReceipts).toHaveBeenCalledWith('always');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefMailSendReadReceipts',
+			'always'
+		);
 	});
 
 	it('should disable controls if readonlyCOS is true', async () => {
@@ -81,7 +84,7 @@ describe('GeneralOptions', () => {
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
 				readonlyCOS
-				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -99,7 +102,7 @@ describe('GeneralOptions', () => {
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
 				readonlyCOS
-				onMailSendReadReceipts={mockOnMailSendReadReceipts}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);

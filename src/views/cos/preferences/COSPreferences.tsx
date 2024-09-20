@@ -201,8 +201,8 @@ const COSPreferences: FC = () => {
 				<SendingMails
 					cosPrefAttributes={draftCosPrefAttributes}
 					readonlyCOS={readonlyCOS}
-					onMailSendReadReceipts={(value): void =>
-						handleCosPrefAttributeChange('zimbraPrefMailSendReadReceipts', value)
+					onCosAttributeChanged={(attribute, value): void =>
+						handleCosPrefAttributeChange(attribute, value)
 					}
 					changeSwitchOption={handleSwitchOptionChange}
 				/>

@@ -10,20 +10,20 @@ import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
+import { AttributeValue } from '../constants/types';
 import { findSelectItemWithFallback } from '../utils';
 
-interface SendingMails {
+interface SendingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	readonlyCOS: boolean;
-	// typing is hard to achieve here
-	onMailSendReadReceipts: (value: any) => void;
+	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
-const SendingMails: React.FC<SendingMails> = ({
+const SendingMails: React.FC<SendingMailsProps> = ({
 	cosPrefAttributes,
 	readonlyCOS,
-	onMailSendReadReceipts,
+	onCosAttributeChanged,
 	changeSwitchOption
 }) => {
 	const { t } = useTranslation();
@@ -104,7 +104,10 @@ const SendingMails: React.FC<SendingMails> = ({
 									SEND_READ_RECEIPTS,
 									cosPrefAttributes?.zimbraPrefMailSendReadReceipts
 								)}
-								onChange={onMailSendReadReceipts}
+								// onChange={onMailSendReadReceipts}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefMailSendReadReceipts', value)
+								}
 								disabled={readonlyCOS}
 							/>
 						</Container>
