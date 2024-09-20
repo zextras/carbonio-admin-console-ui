@@ -184,11 +184,8 @@ const COSPreferences: FC = () => {
 				<ReceivingMails
 					cosPrefAttributes={draftCosPrefAttributes}
 					isReadonlyCOSEntry={readonlyCOS}
-					onPollingIntervalChange={(v): void =>
-						handleCosPrefAttributeChange('zimbraPrefMailPollingInterval', v)
-					}
-					onMailMinPollingIntervalChange={(v): void =>
-						handleCosPrefAttributeChange('zimbraMailMinPollingInterval', v)
+					onCosAttributeChanged={(attribute, value): void =>
+						handleCosPrefAttributeChange(attribute, value)
 					}
 				/>
 				<Divider />

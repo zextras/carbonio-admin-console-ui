@@ -18,8 +18,7 @@ describe('ReceivingMails', () => {
 		jest.resetAllMocks();
 	});
 
-	const mockOnPollingIntervalChange = jest.fn();
-	const mockOnMailMinPollingIntervalChange = jest.fn();
+	const mockOnCosAttributeChanged = jest.fn();
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
 		zimbraPrefMailPollingInterval: '5m',
@@ -31,8 +30,7 @@ describe('ReceivingMails', () => {
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				onPollingIntervalChange={mockOnPollingIntervalChange}
-				onMailMinPollingIntervalChange={mockOnMailMinPollingIntervalChange}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -49,8 +47,7 @@ describe('ReceivingMails', () => {
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				onPollingIntervalChange={mockOnPollingIntervalChange}
-				onMailMinPollingIntervalChange={mockOnMailMinPollingIntervalChange}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -58,8 +55,8 @@ describe('ReceivingMails', () => {
 		await user.clear(input);
 		await user.type(input, '3'); // input event count:  1 for clear input event + 1 for each char count = 2
 
-		expect(mockOnMailMinPollingIntervalChange).toHaveBeenCalledTimes(2);
-		expect(mockOnMailMinPollingIntervalChange).toHaveBeenCalledWith('3m');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(2);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraMailMinPollingInterval', '3m');
 	});
 
 	it('should call onPollingIntervalChange when a different polling interval is selected', async () => {
@@ -67,8 +64,7 @@ describe('ReceivingMails', () => {
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				onPollingIntervalChange={mockOnPollingIntervalChange}
-				onMailMinPollingIntervalChange={mockOnMailMinPollingIntervalChange}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -77,8 +73,8 @@ describe('ReceivingMails', () => {
 		await user.click(screen.getByText('5 minutes'));
 		await user.click(screen.getByText('3 minutes'));
 
-		expect(mockOnPollingIntervalChange).toHaveBeenCalledTimes(1);
-		expect(mockOnPollingIntervalChange).toHaveBeenCalledWith('3m');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(1);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraPrefMailPollingInterval', '3m');
 	});
 
 	it('should disable input and select fields when isReadonlyCOSEntry is true', async () => {
@@ -86,17 +82,16 @@ describe('ReceivingMails', () => {
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry
-				onPollingIntervalChange={mockOnPollingIntervalChange}
-				onMailMinPollingIntervalChange={mockOnMailMinPollingIntervalChange}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
 		expect(screen.getByText('Polling interval')).toBeInTheDocument();
 		await user.click(screen.getByText('5 minutes'));
-		expect(mockOnPollingIntervalChange).not.toHaveBeenCalled();
+		expect(mockOnCosAttributeChanged).not.toHaveBeenCalled();
 
 		const minimumMailPoolingIntervalInput = screen.getByLabelText('Minimum mail polling interval');
 		await user.type(minimumMailPoolingIntervalInput, '56');
-		expect(mockOnMailMinPollingIntervalChange).not.toHaveBeenCalled();
+		expect(mockOnCosAttributeChanged).not.toHaveBeenCalled();
 	});
 });

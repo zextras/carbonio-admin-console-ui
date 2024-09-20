@@ -10,20 +10,18 @@ import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
+import { AttributeValue } from '../constants/types';
 
 interface ReceivingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadonlyCOSEntry: boolean;
-	// typing is hard to achieve here
-	onPollingIntervalChange: (value: any) => void;
-	onMailMinPollingIntervalChange: (value: any) => void;
+	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
 const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 	cosPrefAttributes,
 	isReadonlyCOSEntry,
-	onPollingIntervalChange,
-	onMailMinPollingIntervalChange
+	onCosAttributeChanged
 }) => {
 	const { t } = useTranslation();
 
@@ -72,21 +70,23 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 
 	const onPrefMailPollingIntervalNumChange = useCallback(
 		(e) => {
-			onMailMinPollingIntervalChange(
+			onCosAttributeChanged(
+				'zimbraMailMinPollingInterval',
 				e.target.value ? `${e.target.value}${prefMailPollingIntervalType}` : ''
 			);
 			setZimbraPrefMailPollingIntervalNum(e.target.value);
 		},
-		[onMailMinPollingIntervalChange, prefMailPollingIntervalType]
+		[onCosAttributeChanged, prefMailPollingIntervalType]
 	);
 
 	const onPrefMailPollingIntervalTypeChange = useCallback(
 		(v) => {
-			onMailMinPollingIntervalChange(
+			onCosAttributeChanged(
+				'zimbraMailMinPollingInterval',
 				zimbraPrefMailPollingIntervalNum ? `${zimbraPrefMailPollingIntervalNum}${v}` : ''
 			);
 		},
-		[onMailMinPollingIntervalChange, zimbraPrefMailPollingIntervalNum]
+		[onCosAttributeChanged, zimbraPrefMailPollingIntervalNum]
 	);
 
 	useEffect(() => {
@@ -168,7 +168,10 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 												(item) => item.value === cosPrefAttributes?.zimbraPrefMailPollingInterval
 										  ) || POLLING_INTERVAL[0]
 								}
-								onChange={onPollingIntervalChange}
+								// onChange={onPollingIntervalChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefMailPollingInterval', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
