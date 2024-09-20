@@ -9,11 +9,14 @@ import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import CalendarOptions from './CalendarOptions';
+import ContactOptions from './ContactOptions';
 import ForwardingOptions from './ForwardingOptions';
 import GeneralOptions from './GeneralOptions';
 import MailOptions from './MailOptions';
 import ReceivingMails from './ReceivingMails';
 import SaveCancelBar from './SaveCancelBar';
+import SendingMails from './SendingMails';
 import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
@@ -188,6 +191,45 @@ const COSPreferences: FC = () => {
 					changeSwitchOption={changeSwitchOption}
 					cosPrefAttributes={draftCosPrefAttributes}
 					isReadonlyCOSEntry={readonlyCOS}
+				/>
+				<Divider />
+				<SendingMails
+					cosPrefAttributes={draftCosPrefAttributes}
+					readonlyCOS={readonlyCOS}
+					onMailSendReadReceipts={(value): void =>
+						updateCosPrefAttribute('zimbraPrefMailSendReadReceipts', value)
+					}
+					changeSwitchOption={changeSwitchOption}
+				/>
+				<Divider />
+				<ContactOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					readonlyCOS={readonlyCOS}
+					changeSwitchOption={changeSwitchOption}
+				/>
+				<Divider />
+				<CalendarOptions
+					cosPrefAttributes={draftCosPrefAttributes}
+					isReadonlyCOSEntry={readonlyCOS}
+					onCalendarDefaultApptDurationChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarDefaultApptDuration', value)
+					}
+					onPrefTimeZoneChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefTimeZoneId', value)
+					}
+					onReminderWarningTimeChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarApptReminderWarningTime', value)
+					}
+					onCalendarInitialViewChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarInitialView', value)
+					}
+					onFirstDayOfWeekChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarFirstDayOfWeek', value)
+					}
+					onAppointmentVisibilityChange={(value): void =>
+						updateCosPrefAttribute('zimbraPrefCalendarApptVisibility', value)
+					}
+					changeSwitchOption={changeSwitchOption}
 				/>
 			</Container>
 		</Container>
