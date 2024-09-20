@@ -37,22 +37,17 @@ describe('CalendarOptions Component', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 	});
-	const mockHandlers = {
-		onCalendarDefaultApptDurationChange: jest.fn(),
-		onPrefTimeZoneChange: jest.fn(),
-		onReminderWarningTimeChange: jest.fn(),
-		onCalendarInitialViewChange: jest.fn(),
-		onFirstDayOfWeekChange: jest.fn(),
-		onAppointmentVisibilityChange: jest.fn(),
-		changeSwitchOption: jest.fn()
-	};
+
+	const mockOnCosAttributeChanged = jest.fn();
+	const mockChangeSwitchOption = jest.fn();
 
 	it('should render correctly the initial state', async () => {
 		setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 
@@ -96,13 +91,17 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('GMT -10:00 Hawaii'));
 		await user.click(screen.getByText('GMT -11:00 Samoa'));
 
-		expect(mockHandlers.onPrefTimeZoneChange).toHaveBeenCalledWith('Pacific/Midway');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefTimeZoneId',
+			'Pacific/Midway'
+		);
 	});
 
 	it('should handle default appointment duration change', async () => {
@@ -110,13 +109,17 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('30 minutes'));
 		await user.click(screen.getByText('120 minutes'));
 
-		expect(mockHandlers.onCalendarDefaultApptDurationChange).toHaveBeenCalledWith('120m');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefCalendarDefaultApptDuration',
+			'120m'
+		);
 	});
 
 	it('should handle appointment reminder change', async () => {
@@ -124,13 +127,17 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('60'));
 		await user.click(screen.getByText('30'));
 
-		expect(mockHandlers.onReminderWarningTimeChange).toHaveBeenCalledWith('30');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefCalendarApptReminderWarningTime',
+			'30'
+		);
 	});
 
 	it('should handle Default Calendar View change', async () => {
@@ -138,13 +145,17 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('Week View'));
 		await user.click(screen.getByText('Month View'));
 
-		expect(mockHandlers.onCalendarInitialViewChange).toHaveBeenCalledWith('month');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefCalendarInitialView',
+			'month'
+		);
 	});
 
 	it('should handle Week start change', async () => {
@@ -152,13 +163,14 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('Monday'));
 		await user.click(screen.getByText('Tuesday'));
 
-		expect(mockHandlers.onFirstDayOfWeekChange).toHaveBeenCalledWith('2');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraPrefCalendarFirstDayOfWeek', '2');
 	});
 
 	it('should handle default appointment visibility change', async () => {
@@ -166,20 +178,25 @@ describe('CalendarOptions Component', () => {
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 		await user.click(screen.getByText('Private'));
 		await user.click(screen.getByText('Public'));
 
-		expect(mockHandlers.onAppointmentVisibilityChange).toHaveBeenCalledWith('public');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefCalendarApptVisibility',
+			'public'
+		);
 	});
 	it('should render switches and handles switch toggling', async () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadonlyCOSEntry={false}
-				{...mockHandlers}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
 		);
 
@@ -201,7 +218,7 @@ describe('CalendarOptions Component', () => {
 		}): Promise<void> => {
 			const switchElement = screen.getByText(label);
 			await user.click(switchElement);
-			expect(mockHandlers.changeSwitchOption).toHaveBeenCalledWith(pref);
+			expect(mockChangeSwitchOption).toHaveBeenCalledWith(pref);
 		};
 
 		await testSwitchToggle({
@@ -252,7 +269,12 @@ describe('CalendarOptions Component', () => {
 
 	it('should disable inputs when isReadonlyCOSEntry is true', async () => {
 		const { user } = setup(
-			<CalendarOptions cosPrefAttributes={cosPrefAttributes} isReadonlyCOSEntry {...mockHandlers} />
+			<CalendarOptions
+				cosPrefAttributes={cosPrefAttributes}
+				isReadonlyCOSEntry
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+				onSwitchOptionChanged={mockChangeSwitchOption}
+			/>
 		);
 
 		/**
@@ -266,7 +288,7 @@ describe('CalendarOptions Component', () => {
 		const testDisabledSwitch = async ({ label }: { label: string }): Promise<void> => {
 			const switchElement = screen.getByText(label);
 			await user.click(switchElement);
-			expect(mockHandlers.changeSwitchOption).not.toHaveBeenCalled();
+			expect(mockChangeSwitchOption).not.toHaveBeenCalled();
 		};
 
 		await testDisabledSwitch({

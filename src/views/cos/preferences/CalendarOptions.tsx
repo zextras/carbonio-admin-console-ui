@@ -13,30 +13,21 @@ import ListRow from '../../list/list-row';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
 import { findSelectItemWithFallback } from '../utils';
 
+type AttributeValue = SelectItem | string | null;
+
 interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadonlyCOSEntry: boolean;
-
+	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 	// typing is hard to achieve here
-	onCalendarDefaultApptDurationChange: (value: any) => void;
-	onPrefTimeZoneChange: (value: any) => void;
-	onReminderWarningTimeChange: (value: any) => void;
-	onCalendarInitialViewChange: (value: any) => void;
-	onFirstDayOfWeekChange: (value: any) => void;
-	onAppointmentVisibilityChange: (value: any) => void;
-	changeSwitchOption: (value: any) => void;
+	onSwitchOptionChanged: (value: any) => void;
 }
 
 const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 	cosPrefAttributes,
 	isReadonlyCOSEntry,
-	onCalendarDefaultApptDurationChange,
-	onPrefTimeZoneChange,
-	onReminderWarningTimeChange,
-	onCalendarInitialViewChange,
-	onFirstDayOfWeekChange,
-	onAppointmentVisibilityChange,
-	changeSwitchOption
+	onSwitchOptionChanged,
+	onCosAttributeChanged
 }) => {
 	const [t] = useTranslation();
 	const APPOINTMENT_REMINDER: SelectItem[] = useMemo(() => appointmentReminder(t), [t]);
@@ -108,7 +99,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									TIMEZONES,
 									cosPrefAttributes?.zimbraPrefTimeZoneId
 								)}
-								onChange={onPrefTimeZoneChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefTimeZoneId', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -122,7 +115,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									DEFAULT_APPOINTMENT_DURATION,
 									cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
 								)}
-								onChange={onCalendarDefaultApptDurationChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefCalendarDefaultApptDuration', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -150,7 +145,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									APPOINTMENT_REMINDER,
 									cosPrefAttributes?.zimbraPrefCalendarApptReminderWarningTime
 								)}
-								onChange={onReminderWarningTimeChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefCalendarApptReminderWarningTime', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -164,7 +161,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									DEFAULT_VIEW_OPTIONS,
 									cosPrefAttributes?.zimbraPrefCalendarInitialView
 								)}
-								onChange={onCalendarInitialViewChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefCalendarInitialView', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -189,7 +188,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									FIRST_DAY_OF_WEEK,
 									cosPrefAttributes?.zimbraPrefCalendarFirstDayOfWeek
 								)}
-								onChange={onFirstDayOfWeekChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefCalendarFirstDayOfWeek', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -203,7 +204,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									APPOINTMENT_VISIBILITY,
 									cosPrefAttributes?.zimbraPrefCalendarApptVisibility
 								)}
-								onChange={onAppointmentVisibilityChange}
+								onChange={(value: SelectItem | string | null): void =>
+									onCosAttributeChanged('zimbraPrefCalendarApptVisibility', value)
+								}
 								disabled={isReadonlyCOSEntry}
 							/>
 						</Container>
@@ -221,7 +224,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarShowPastDueReminders === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefCalendarShowPastDueReminders')}
+								onClick={(): void =>
+									onSwitchOptionChanged('zimbraPrefCalendarShowPastDueReminders')
+								}
 								label={t(
 									'cos.enable_past_due_reminders',
 									`Enable reminders of appointments in the past`
@@ -233,7 +238,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefCalendarAllowCancelEmailToSelf')}
+								onClick={(): void =>
+									onSwitchOptionChanged('zimbraPrefCalendarAllowCancelEmailToSelf')
+								}
 								label={t('cos.allow_sending_cancellation_mail', `Allow sending cancellation mail`)}
 								iconColor="primary"
 								disabled={isReadonlyCOSEntry}
@@ -253,7 +260,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarAllowForwardedInvite === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefCalendarAllowForwardedInvite')}
+								onClick={(): void =>
+									onSwitchOptionChanged('zimbraPrefCalendarAllowForwardedInvite')
+								}
 								label={t(
 									'cos.add_forwarded_invites_to_calendar',
 									`Automatically add forwarded appointments to the calendar`
@@ -266,7 +275,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
 								onClick={(): void =>
-									changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')
+									onSwitchOptionChanged('zimbraPrefCalendarAllowPublishMethodInvite')
 								}
 								label={t('cos.add_invites_with_publish_method', 'Add invites with PUBLISH method')}
 								iconColor="primary"
@@ -287,7 +296,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
+								onClick={(): void => onSwitchOptionChanged('zimbraPrefCalendarAutoAddInvites')}
 								label={t(
 									'cos.add_appointments_when_invited',
 									`Automatically add appointments when the user is invited`
@@ -300,7 +309,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarSendInviteDeniedAutoReply === 'TRUE'}
 								onClick={(): void =>
-									changeSwitchOption('zimbraPrefCalendarSendInviteDeniedAutoReply')
+									onSwitchOptionChanged('zimbraPrefCalendarSendInviteDeniedAutoReply')
 								}
 								label={t(
 									'cos.auto_decline_if_inviter_is_blacklisted',
@@ -324,7 +333,9 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefCalendarNotifyDelegatedChanges')}
+								onClick={(): void =>
+									onSwitchOptionChanged('zimbraPrefCalendarNotifyDelegatedChanges')
+								}
 								label={t(
 									'cos.notify_changes_by_delegated_access',
 									`Notify changes made by delegated accounts`
@@ -336,7 +347,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 							<Switch
 								value={cosPrefAttributes?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraPrefAppleIcalDelegationEnabled')}
+								onClick={(): void => onSwitchOptionChanged('zimbraPrefAppleIcalDelegationEnabled')}
 								label={t(
 									'cos.use_ical_delegation_model_for_shared_calendars',
 									`Use iCal delegation model for shared calendars`
