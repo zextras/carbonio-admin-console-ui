@@ -11,9 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
+import { AttributeValue } from '../constants/types';
 import { findSelectItemWithFallback } from '../utils';
-
-type AttributeValue = SelectItem | string | null;
 
 interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
