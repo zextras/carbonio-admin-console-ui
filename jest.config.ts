@@ -14,31 +14,37 @@ export default {
 	// cacheDirectory: "/tmp/jest_rs",
 
 	// Automatically clear mock calls, instances, contexts and results before every test
-	// clearMocks: true,
+	clearMocks: true,
 
 	// Indicates whether the coverage information should be collected while executing the test
 	collectCoverage: true,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
 	collectCoverageFrom: [
-		'src/**/*.{js,ts}(x)?',
+		'src/**/*.{js,ts,tsx}',
 		'!src/**/mocks/**/*', // exclude msw handlers
 		'!src/mocks/**/*', // exclude msw handlers
-		'!**/(test|mock)*.ts(x)?', // exclude file which name starts with test or mock
-		'!src/**/types/*', // exclude types
+		'!**/(test|mock|spec).ts(x)?', // exclude files with 'test', 'mock', or 'spec' in their names
+		'!src/**/types/**/*', // exclude types folder
 		'!src/**/*.d.ts', // exclude declarations
-		'!src/test/*', // exclude test folder
+		'!src/test/**/*', // exclude test folder
 		'!**/__mocks__/**/*', // exclude manual mocks
-		'!src/workers/*' // FIXME: exclude worker folder which throws error because of the esm syntax
+		'!src/workers/**/*' // exclude worker folder due to esm syntax
 	],
 
 	// The directory where Jest should output its coverage files
 	coverageDirectory: 'coverage',
 
 	// An array of regexp pattern strings used to skip coverage collection
-	// coveragePathIgnorePatterns: [
-	//   "/node_modules/"
-	// ],
+	coveragePathIgnorePatterns: [
+		'/node_modules/',
+		'/mocks/',
+		'/types/',
+		'/test/',
+		'/__mocks__/',
+		'/workers/',
+		'\\.(d|test|spec)\\.ts(x)?$'
+	],
 
 	coverageProvider: 'babel',
 
@@ -79,7 +85,7 @@ export default {
 	globals: {},
 
 	// The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
-	// maxWorkers: undefined,
+	maxWorkers: '50%',
 
 	// An array of directory names to be searched recursively up from the requiring module's location
 	moduleDirectories: ['node_modules'],
@@ -120,7 +126,7 @@ export default {
 	reporters: ['default', 'jest-junit'],
 
 	// Automatically reset mock state before every test
-	// resetMocks: true,
+	resetMocks: true,
 
 	// Reset the module registry before running each individual test
 	// resetModules: false,
