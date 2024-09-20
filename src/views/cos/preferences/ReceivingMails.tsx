@@ -168,8 +168,7 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 												(item) => item.value === cosPrefAttributes?.zimbraPrefMailPollingInterval
 										  ) || POLLING_INTERVAL[0]
 								}
-								// onChange={onPollingIntervalChange}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailPollingInterval', value)
 								}
 								disabled={isReadonlyCOSEntry}

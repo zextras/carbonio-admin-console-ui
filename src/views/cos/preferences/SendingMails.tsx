@@ -104,8 +104,7 @@ const SendingMails: React.FC<SendingMailsProps> = ({
 									SEND_READ_RECEIPTS,
 									cosPrefAttributes?.zimbraPrefMailSendReadReceipts
 								)}
-								// onChange={onMailSendReadReceipts}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailSendReadReceipts', value)
 								}
 								disabled={readonlyCOS}

@@ -98,7 +98,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									TIMEZONES,
 									cosPrefAttributes?.zimbraPrefTimeZoneId
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefTimeZoneId', value)
 								}
 								disabled={isReadonlyCOSEntry}
@@ -114,7 +114,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									DEFAULT_APPOINTMENT_DURATION,
 									cosPrefAttributes?.zimbraPrefCalendarDefaultApptDuration
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarDefaultApptDuration', value)
 								}
 								disabled={isReadonlyCOSEntry}
@@ -144,7 +144,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									APPOINTMENT_REMINDER,
 									cosPrefAttributes?.zimbraPrefCalendarApptReminderWarningTime
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarApptReminderWarningTime', value)
 								}
 								disabled={isReadonlyCOSEntry}
@@ -160,7 +160,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									DEFAULT_VIEW_OPTIONS,
 									cosPrefAttributes?.zimbraPrefCalendarInitialView
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarInitialView', value)
 								}
 								disabled={isReadonlyCOSEntry}
@@ -187,7 +187,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									FIRST_DAY_OF_WEEK,
 									cosPrefAttributes?.zimbraPrefCalendarFirstDayOfWeek
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarFirstDayOfWeek', value)
 								}
 								disabled={isReadonlyCOSEntry}
@@ -203,7 +203,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									APPOINTMENT_VISIBILITY,
 									cosPrefAttributes?.zimbraPrefCalendarApptVisibility
 								)}
-								onChange={(value: SelectItem | string | null): void =>
+								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarApptVisibility', value)
 								}
 								disabled={isReadonlyCOSEntry}
