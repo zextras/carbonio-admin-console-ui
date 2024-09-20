@@ -18,9 +18,7 @@ describe('MailOptions', () => {
 		jest.resetAllMocks();
 	});
 
-	const mockOnFileUploadMaxSizePerFileChange = jest.fn();
-	const mockOnGroupByChange = jest.fn();
-	const mockOnCharactorSetChange = jest.fn();
+	const mockOnCosAttributeChanged = jest.fn();
 	const mockChangeSwitchOption = jest.fn();
 
 	const cosPrefAttributes: CosPrefAttributes = {
@@ -37,10 +35,8 @@ describe('MailOptions', () => {
 		setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -60,10 +56,8 @@ describe('MailOptions', () => {
 		const { user } = setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -76,10 +70,8 @@ describe('MailOptions', () => {
 		const { user } = setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -88,7 +80,7 @@ describe('MailOptions', () => {
 		await user.clear(input);
 		await user.type(input, '104857600'); // input event count:  1 for clear input event + 9 for each char count = 10
 
-		expect(mockOnFileUploadMaxSizePerFileChange).toHaveBeenCalledTimes(10);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(10);
 	});
 
 	it('should not call onFileUploadMaxSizePerFileChange when the file upload size is non numeric', async () => {
@@ -99,33 +91,29 @@ describe('MailOptions', () => {
 		const { user } = setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributesWithNonNumericValue}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
 
 		// initial render
-		expect(mockOnFileUploadMaxSizePerFileChange).toHaveBeenCalledTimes(0);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(0);
 
 		// user input
 		const input = screen.getByLabelText('Maximum size (bytes) allowed for each attachment');
 		await user.clear(input);
 		await user.type(input, 'def');
 
-		expect(mockOnFileUploadMaxSizePerFileChange).toHaveBeenCalledTimes(0);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(0);
 	});
 
 	it('should call onGroupByChange when a different group by option is selected', async () => {
 		const { user } = setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -134,17 +122,15 @@ describe('MailOptions', () => {
 		await user.click(screen.getByText('Conversation'));
 		await user.click(screen.getByText('Message'));
 
-		expect(mockOnGroupByChange).toHaveBeenCalledWith('message');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraPrefGroupMailBy', 'message');
 	});
 
 	it('should call onCharactorSetChange when a different charset is selected', async () => {
 		const { user } = setup(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
-				onFileUploadMaxSizePerFileChange={mockOnFileUploadMaxSizePerFileChange}
-				onGroupByChange={mockOnGroupByChange}
-				onCharactorSetChange={mockOnCharactorSetChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -153,6 +139,9 @@ describe('MailOptions', () => {
 		await user.click(screen.getByText('UTF-8'));
 		await user.click(screen.getByText('ISO-8859-1'));
 
-		expect(mockOnCharactorSetChange).toHaveBeenCalledWith('ISO-8859-1');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith(
+			'zimbraPrefMailDefaultCharset',
+			'ISO-8859-1'
+		);
 	});
 });

@@ -45,7 +45,7 @@ describe('CalendarOptions Component', () => {
 		setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -90,7 +90,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -108,7 +108,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -126,7 +126,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -144,7 +144,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -162,7 +162,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -177,7 +177,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -194,7 +194,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>
@@ -271,7 +271,7 @@ describe('CalendarOptions Component', () => {
 		const { user } = setup(
 			<CalendarOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry
+				isReadOnlyCosEntry
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				onSwitchOptionChanged={mockChangeSwitchOption}
 			/>

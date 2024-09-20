@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Container, Divider, SelectItem, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -25,6 +25,7 @@ import { useCosStore } from '../../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
+import { AttributeValue } from '../constants/types';
 
 const COSPreferences: FC = () => {
 	const [t] = useTranslation();
@@ -34,7 +35,7 @@ const COSPreferences: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 
 	const locales = useMemo(() => localeList(t), [t]);
-	const readonlyCOS = useMemo(() => {
+	const isReadOnlyCos = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
@@ -61,7 +62,7 @@ const COSPreferences: FC = () => {
 	}, [draftCosPrefAttributes, currentCosAttributes]);
 
 	const handleCosPrefAttributeChange = useCallback(
-		(key: keyof CosPrefAttributes, value: SelectItem | string | null) => {
+		(key: keyof CosPrefAttributes, value: AttributeValue) => {
 			if (value === null) return;
 			const newValue = typeof value === 'object' && 'value' in value ? value.value : value;
 			setDraftCosPrefAttributes((prev) => ({
@@ -162,61 +163,47 @@ const COSPreferences: FC = () => {
 				<GeneralOptions
 					cosPrefAttributes={draftCosPrefAttributes}
 					locales={locales}
-					onPrefLocaleChange={(selectedItem: string): void =>
-						handleCosPrefAttributeChange('zimbraPrefLocale', selectedItem)
-					}
-					readonlyCOS={readonlyCOS}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<MailOptions
 					changeSwitchOption={handleSwitchOptionChange}
 					cosPrefAttributes={draftCosPrefAttributes}
-					onFileUploadMaxSizePerFileChange={(v): void =>
-						handleCosPrefAttributeChange('zimbraFileUploadMaxSizePerFile', v)
-					}
-					onCharactorSetChange={(v): void =>
-						handleCosPrefAttributeChange('zimbraPrefMailDefaultCharset', v)
-					}
-					onGroupByChange={(v): void => handleCosPrefAttributeChange('zimbraPrefGroupMailBy', v)}
-					isReadonlyCOSEntry={readonlyCOS}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<ReceivingMails
 					cosPrefAttributes={draftCosPrefAttributes}
-					isReadonlyCOSEntry={readonlyCOS}
-					onCosAttributeChanged={(attribute, value): void =>
-						handleCosPrefAttributeChange(attribute, value)
-					}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<ForwardingOptions
 					changeSwitchOption={handleSwitchOptionChange}
 					cosPrefAttributes={draftCosPrefAttributes}
-					isReadonlyCOSEntry={readonlyCOS}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<SendingMails
 					cosPrefAttributes={draftCosPrefAttributes}
-					readonlyCOS={readonlyCOS}
-					onCosAttributeChanged={(attribute, value): void =>
-						handleCosPrefAttributeChange(attribute, value)
-					}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
 					changeSwitchOption={handleSwitchOptionChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<ContactOptions
 					cosPrefAttributes={draftCosPrefAttributes}
-					readonlyCOS={readonlyCOS}
 					changeSwitchOption={handleSwitchOptionChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<CalendarOptions
 					cosPrefAttributes={draftCosPrefAttributes}
-					isReadonlyCOSEntry={readonlyCOS}
-					onCosAttributeChanged={(attribute, value): void =>
-						handleCosPrefAttributeChange(attribute, value)
-					}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
 					onSwitchOptionChanged={handleSwitchOptionChange}
+					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 			</Container>
 		</Container>

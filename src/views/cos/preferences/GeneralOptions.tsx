@@ -10,19 +10,20 @@ import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
+import { AttributeValue } from '../constants/types';
 
 interface GeneralOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	locales: SelectItem[];
-	readonlyCOS: boolean;
-	onPrefLocaleChange: (selection: any) => void; // typing is hard to achieve here
+	isReadOnlyCosEntry: boolean;
+	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
 const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 	cosPrefAttributes,
 	locales,
-	readonlyCOS,
-	onPrefLocaleChange
+	isReadOnlyCosEntry,
+	onCosAttributeChanged
 }) => {
 	const { t } = useTranslation();
 
@@ -55,8 +56,10 @@ const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 									locales.find((item) => item.value === cosPrefAttributes?.zimbraPrefLocale) ||
 									locales[0]
 								}
-								onChange={onPrefLocaleChange}
-								disabled={readonlyCOS}
+								onChange={(value: AttributeValue): void =>
+									onCosAttributeChanged('zimbraPrefLocale', value)
+								}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>

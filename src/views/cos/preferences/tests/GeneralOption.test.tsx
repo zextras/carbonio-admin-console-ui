@@ -19,7 +19,7 @@ describe('GeneralOptions', () => {
 		jest.resetAllMocks();
 	});
 
-	const mockOnPrefLocaleChange = jest.fn();
+	const mockOnCosAttributeChanged = jest.fn();
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
 		zimbraPrefLocale: 'en'
@@ -34,8 +34,8 @@ describe('GeneralOptions', () => {
 			<GeneralOptions
 				cosPrefAttributes={cosPrefAttributes}
 				locales={locales}
-				readonlyCOS={false}
-				onPrefLocaleChange={mockOnPrefLocaleChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -49,8 +49,8 @@ describe('GeneralOptions', () => {
 			<GeneralOptions
 				cosPrefAttributes={cosPrefAttributes}
 				locales={locales}
-				readonlyCOS={false}
-				onPrefLocaleChange={mockOnPrefLocaleChange}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -59,8 +59,8 @@ describe('GeneralOptions', () => {
 		await user.click(screen.getByText('English'));
 		await user.click(screen.getByText('Spanish'));
 
-		expect(mockOnPrefLocaleChange).toHaveBeenCalledTimes(1);
-		expect(mockOnPrefLocaleChange).toHaveBeenCalledWith('es');
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(1);
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraPrefLocale', 'es');
 	});
 
 	it('should disable the select dropdown when readonlyCOS is true', async () => {
@@ -68,8 +68,8 @@ describe('GeneralOptions', () => {
 			<GeneralOptions
 				cosPrefAttributes={cosPrefAttributes}
 				locales={locales}
-				readonlyCOS
-				onPrefLocaleChange={mockOnPrefLocaleChange}
+				isReadOnlyCosEntry
+				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
 
@@ -77,6 +77,6 @@ describe('GeneralOptions', () => {
 
 		await user.click(screen.getByText('English'));
 
-		expect(mockOnPrefLocaleChange).not.toHaveBeenCalled();
+		expect(mockOnCosAttributeChanged).not.toHaveBeenCalled();
 	});
 });

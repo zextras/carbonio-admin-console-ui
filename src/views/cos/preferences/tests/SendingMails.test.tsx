@@ -33,7 +33,7 @@ describe('SendingMails', () => {
 		setup(
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
@@ -50,7 +50,7 @@ describe('SendingMails', () => {
 		const { user } = setup(
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
@@ -65,7 +65,7 @@ describe('SendingMails', () => {
 		const { user } = setup(
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
@@ -83,7 +83,7 @@ describe('SendingMails', () => {
 		const { user } = setup(
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS
+				isReadOnlyCosEntry
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
@@ -101,7 +101,7 @@ describe('SendingMails', () => {
 		const { user } = setup(
 			<SendingMails
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS
+				isReadOnlyCosEntry
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>

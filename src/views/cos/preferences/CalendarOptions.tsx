@@ -16,7 +16,7 @@ import { findSelectItemWithFallback } from '../utils';
 
 interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
-	isReadonlyCOSEntry: boolean;
+	isReadOnlyCosEntry: boolean;
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 	// typing is hard to achieve here
 	onSwitchOptionChanged: (value: any) => void;
@@ -24,7 +24,7 @@ interface CalendarOptionsProps {
 
 const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 	cosPrefAttributes,
-	isReadonlyCOSEntry,
+	isReadOnlyCosEntry,
 	onSwitchOptionChanged,
 	onCosAttributeChanged
 }) => {
@@ -101,7 +101,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefTimeZoneId', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container padding={{ left: 'small' }}>
@@ -117,7 +117,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarDefaultApptDuration', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -147,7 +147,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarApptReminderWarningTime', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container padding={{ left: 'small' }}>
@@ -163,7 +163,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarInitialView', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -190,7 +190,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarFirstDayOfWeek', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container padding={{ left: 'small' }}>
@@ -206,7 +206,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefCalendarApptVisibility', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -231,7 +231,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									`Enable reminders of appointments in the past`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -242,7 +242,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								}
 								label={t('cos.allow_sending_cancellation_mail', `Allow sending cancellation mail`)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -267,7 +267,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									`Automatically add forwarded appointments to the calendar`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -278,7 +278,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 								}
 								label={t('cos.add_invites_with_publish_method', 'Add invites with PUBLISH method')}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -301,7 +301,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									`Automatically add appointments when the user is invited`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -315,7 +315,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									'Auto-decline if the sender is blacklisted'
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -340,7 +340,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									`Notify changes made by delegated accounts`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -352,7 +352,7 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 									`Use iCal delegation model for shared calendars`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>

@@ -31,7 +31,7 @@ describe('GeneralOptions', () => {
 		setup(
 			<ContactOptions
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -44,7 +44,7 @@ describe('GeneralOptions', () => {
 		const { user } = setup(
 			<ContactOptions
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -58,7 +58,7 @@ describe('GeneralOptions', () => {
 		const { user } = setup(
 			<ContactOptions
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -71,7 +71,7 @@ describe('GeneralOptions', () => {
 		const { user } = setup(
 			<ContactOptions
 				cosPrefAttributes={cosPrefAttributes}
-				readonlyCOS
+				isReadOnlyCosEntry
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);

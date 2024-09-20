@@ -20,25 +20,20 @@ import { useTranslation } from 'react-i18next';
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
 import { bytesToHumanReadable, charactorSet, conversationGroupBy } from '../../utility/utils';
+import { AttributeValue } from '../constants/types';
 
 interface MailOptionsProps {
-	cosPrefAttributes: CosPrefAttributes;
-	isReadonlyCOSEntry: boolean;
-	onFileUploadMaxSizePerFileChange: (value: string) => void;
-
-	// typing is hard to achieve here
-	onGroupByChange: (value: any) => void;
-	onCharactorSetChange: (value: any) => void;
 	changeSwitchOption: (key: keyof CosPrefAttributes) => void;
+	cosPrefAttributes: CosPrefAttributes;
+	isReadOnlyCosEntry: boolean;
+	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
 const MailOptions: React.FC<MailOptionsProps> = ({
+	changeSwitchOption,
 	cosPrefAttributes,
-	isReadonlyCOSEntry,
-	onFileUploadMaxSizePerFileChange,
-	onGroupByChange,
-	onCharactorSetChange,
-	changeSwitchOption
+	isReadOnlyCosEntry,
+	onCosAttributeChanged
 }) => {
 	const { t } = useTranslation();
 	const GROUP_BY: SelectItem[] = useMemo(() => conversationGroupBy(t), [t]);
@@ -76,7 +71,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 
 		const newValue = value <= 0 ? '0' : value.toString();
 		if (cosPrefAttributes.zimbraFileUploadMaxSizePerFile !== newValue) {
-			onFileUploadMaxSizePerFileChange(newValue);
+			onCosAttributeChanged('zimbraFileUploadMaxSizePerFile', newValue);
 		}
 	};
 
@@ -102,7 +97,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 						onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
 						label={t('cos.view_mail_as_html', 'View mail as HTML')}
 						iconColor="primary"
-						disabled={isReadonlyCOSEntry}
+						disabled={isReadOnlyCosEntry}
 					/>
 				</Container>
 			</Row>
@@ -125,8 +120,10 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 										(item) => item.value === cosPrefAttributes?.zimbraPrefGroupMailBy
 									) || GROUP_BY[0]
 								}
-								onChange={onGroupByChange}
-								disabled={isReadonlyCOSEntry}
+								onChange={(value: AttributeValue): void =>
+									onCosAttributeChanged('zimbraPrefGroupMailBy', value)
+								}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container padding={{ left: 'small' }}>
@@ -140,8 +137,10 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 										(item) => item.value === cosPrefAttributes?.zimbraPrefMailDefaultCharset
 									) || CHARACTOR_SET[0]
 								}
-								onChange={onCharactorSetChange}
-								disabled={isReadonlyCOSEntry}
+								onChange={(value: AttributeValue): void =>
+									onCosAttributeChanged('zimbraPrefMailDefaultCharset', value)
+								}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -161,7 +160,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 								onClick={(): void => changeSwitchOption('zimbraPrefMessageIdDedupingEnabled')}
 								label={t('cos.auto_delete_duplicate_messages', 'Auto-Delete duplicate messages')}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -173,7 +172,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 									`Enable New Mail Toast Notification`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -191,7 +190,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 								)}
 								value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 								backgroundColor={'gray5'}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 								onKeyDown={(e): void => {
 									if (
 										![

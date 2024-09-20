@@ -14,13 +14,13 @@ import { AttributeValue } from '../constants/types';
 
 interface ReceivingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
-	isReadonlyCOSEntry: boolean;
+	isReadOnlyCosEntry: boolean;
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
 const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 	cosPrefAttributes,
-	isReadonlyCOSEntry,
+	isReadOnlyCosEntry,
 	onCosAttributeChanged
 }) => {
 	const { t } = useTranslation();
@@ -124,7 +124,7 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									onPrefMailPollingIntervalNumChange(e);
 								}}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container padding={{ left: 'small' }}>
@@ -140,7 +140,7 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 										  TIME_TYPES[0]
 								}
 								onChange={onPrefMailPollingIntervalTypeChange}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -171,7 +171,7 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailPollingInterval', value)
 								}
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>

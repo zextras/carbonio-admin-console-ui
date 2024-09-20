@@ -15,14 +15,14 @@ import { findSelectItemWithFallback } from '../utils';
 
 interface SendingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
-	readonlyCOS: boolean;
+	isReadOnlyCosEntry: boolean;
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
 const SendingMails: React.FC<SendingMailsProps> = ({
 	cosPrefAttributes,
-	readonlyCOS,
+	isReadOnlyCosEntry,
 	onCosAttributeChanged,
 	changeSwitchOption
 }) => {
@@ -60,7 +60,7 @@ const SendingMails: React.FC<SendingMailsProps> = ({
 								onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
 								label={t('cos.save_to_Sent', `Save to sent`)}
 								iconColor="primary"
-								disabled={readonlyCOS}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -80,7 +80,7 @@ const SendingMails: React.FC<SendingMailsProps> = ({
 								onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
 								label={t('cos.allow_sending_from_any_address', 'Allow sending from any address')}
 								iconColor="primary"
-								disabled={readonlyCOS}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
@@ -107,7 +107,7 @@ const SendingMails: React.FC<SendingMailsProps> = ({
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailSendReadReceipts', value)
 								}
-								disabled={readonlyCOS}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>

@@ -13,13 +13,13 @@ import ListRow from '../../list/list-row';
 
 interface ContactOptions {
 	cosPrefAttributes: CosPrefAttributes;
-	readonlyCOS: boolean;
+	isReadOnlyCosEntry: boolean;
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
 const ContactOptions: React.FC<ContactOptions> = ({
 	cosPrefAttributes,
-	readonlyCOS,
+	isReadOnlyCosEntry,
 	changeSwitchOption
 }) => {
 	const { t } = useTranslation();
@@ -47,7 +47,7 @@ const ContactOptions: React.FC<ContactOptions> = ({
 								onClick={(): void => changeSwitchOption('zimbraPrefAutoAddAddressEnabled')}
 								label={t('cos.enable_auto_add_contacts', `Enable auto-add contacts`)}
 								iconColor="primary"
-								disabled={readonlyCOS}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -56,7 +56,7 @@ const ContactOptions: React.FC<ContactOptions> = ({
 								onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
 								label={t('cos.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
 								iconColor="primary"
-								disabled={readonlyCOS}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>

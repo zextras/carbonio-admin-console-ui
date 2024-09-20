@@ -29,7 +29,7 @@ describe('ReceivingMails', () => {
 		setup(
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
@@ -46,7 +46,7 @@ describe('ReceivingMails', () => {
 		const { user } = setup(
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
@@ -63,7 +63,7 @@ describe('ReceivingMails', () => {
 		const { user } = setup(
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);
@@ -81,7 +81,7 @@ describe('ReceivingMails', () => {
 		const { user } = setup(
 			<ReceivingMails
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry
+				isReadOnlyCosEntry
 				onCosAttributeChanged={mockOnCosAttributeChanged}
 			/>
 		);

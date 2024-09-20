@@ -29,7 +29,7 @@ describe('ForwardingOptions', () => {
 		setup(
 			<ForwardingOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -43,7 +43,7 @@ describe('ForwardingOptions', () => {
 		const { user } = setup(
 			<ForwardingOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -58,7 +58,7 @@ describe('ForwardingOptions', () => {
 		const { user } = setup(
 			<ForwardingOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry={false}
+				isReadOnlyCosEntry={false}
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);
@@ -75,7 +75,7 @@ describe('ForwardingOptions', () => {
 		const { user } = setup(
 			<ForwardingOptions
 				cosPrefAttributes={cosPrefAttributes}
-				isReadonlyCOSEntry
+				isReadOnlyCosEntry
 				changeSwitchOption={mockChangeSwitchOption}
 			/>
 		);

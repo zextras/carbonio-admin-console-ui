@@ -13,13 +13,13 @@ import ListRow from '../../list/list-row';
 
 interface ForwardingOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
-	isReadonlyCOSEntry: boolean;
+	isReadOnlyCosEntry: boolean;
 	changeSwitchOption: (key: keyof CosPrefAttributes) => void;
 }
 
 const ForwardingOptions: React.FC<ForwardingOptionsProps> = ({
 	cosPrefAttributes,
-	isReadonlyCOSEntry,
+	isReadOnlyCosEntry,
 	changeSwitchOption
 }) => {
 	const { t } = useTranslation();
@@ -51,7 +51,7 @@ const ForwardingOptions: React.FC<ForwardingOptionsProps> = ({
 									`User can specify forwarding address`
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -65,7 +65,7 @@ const ForwardingOptions: React.FC<ForwardingOptionsProps> = ({
 									'User can specify mail forwarding filter'
 								)}
 								iconColor="primary"
-								disabled={isReadonlyCOSEntry}
+								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>
 					</ListRow>
