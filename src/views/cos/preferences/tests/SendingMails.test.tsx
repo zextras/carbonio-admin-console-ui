@@ -88,8 +88,11 @@ describe('GeneralOptions', () => {
 
 		await user.click(screen.getByText('Save to sent'));
 		await user.click(screen.getByText('Allow sending from any address'));
-		// TODO: check also the select disabled status and align the other tests
 		expect(mockChangeSwitchOption).not.toHaveBeenCalled();
+
+		expect(screen.getByText('Read Receipt settings')).toBeInTheDocument();
+		await user.click(screen.getByText('Never send a read receipt'));
+		expect(screen.queryByText('Ask me')).not.toBeInTheDocument();
 	});
 	it('should not call changeSwitchOption when disabled switch is clicked', async () => {
 		const { user } = setup(

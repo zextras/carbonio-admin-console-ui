@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
@@ -74,7 +75,20 @@ describe('CalendarOptions Component', () => {
 
 		expect(screen.getByText('Default appointment visibility')).toBeInTheDocument();
 		expect(screen.getByText('Private')).toBeInTheDocument();
-		// TODO: How to test switches? also on ds they seems not tested
+
+		// SWITCHES - CANNOT CHECK DEFAULT STATE, JUST CORRECT RENDER
+		expect(screen.getByText('Enable reminders of appointments in the past')).toBeInTheDocument();
+		expect(screen.getByText('Allow sending cancellation mail')).toBeInTheDocument();
+		expect(
+			screen.getByText('Automatically add forwarded appointments to the calendar')
+		).toBeInTheDocument();
+		expect(screen.getByText('Add invites with PUBLISH method')).toBeInTheDocument();
+		expect(
+			screen.getByText('Automatically add appointments when the user is invited')
+		).toBeInTheDocument();
+		expect(screen.getByText('Auto-decline if the sender is blacklisted')).toBeInTheDocument();
+		expect(screen.getByText('Notify changes made by delegated accounts')).toBeInTheDocument();
+		expect(screen.getByText('Use iCal delegation model for shared calendars')).toBeInTheDocument();
 	});
 
 	it('should handle time zone change', async () => {
@@ -160,7 +174,135 @@ describe('CalendarOptions Component', () => {
 
 		expect(mockHandlers.onAppointmentVisibilityChange).toHaveBeenCalledWith('public');
 	});
-	// disabled status is hard to test on ds components
-	test.todo('should disable inputs when isReadonlyCOSEntry is true');
-	test.todo('should render switches and handles switch toggling');
+	it('should render switches and handles switch toggling', async () => {
+		const { user } = setup(
+			<CalendarOptions
+				cosPrefAttributes={cosPrefAttributes}
+				isReadonlyCOSEntry={false}
+				{...mockHandlers}
+			/>
+		);
+
+		/**
+		 * Function to test the toggling of a switch element and ensure that the correct preference
+		 * change handler is called with the appropriate preference key.
+		 *
+		 * @async
+		 * @function testSwitchToggle
+		 * @param {string} params.label - The text label used to identify the switch in the DOM via `getByText`.
+		 * @param {keyof CosPrefAttributes} params.pref - The preference key (from `CosPrefAttributes`) that should be passed to the change handler.
+		 */
+		const testSwitchToggle = async ({
+			label,
+			pref
+		}: {
+			label: string;
+			pref: keyof CosPrefAttributes;
+		}): Promise<void> => {
+			const switchElement = screen.getByText(label);
+			await user.click(switchElement);
+			expect(mockHandlers.changeSwitchOption).toHaveBeenCalledWith(pref);
+		};
+
+		await testSwitchToggle({
+			label: 'Allow sending cancellation mail',
+			pref: 'zimbraPrefCalendarAllowCancelEmailToSelf'
+		});
+
+		await testSwitchToggle({
+			label: 'Enable reminders of appointments in the past',
+			pref: 'zimbraPrefCalendarShowPastDueReminders'
+		});
+
+		await testSwitchToggle({
+			label: 'Allow sending cancellation mail',
+			pref: 'zimbraPrefCalendarAllowCancelEmailToSelf'
+		});
+
+		await testSwitchToggle({
+			label: 'Automatically add forwarded appointments to the calendar',
+			pref: 'zimbraPrefCalendarAllowForwardedInvite'
+		});
+
+		await testSwitchToggle({
+			label: 'Add invites with PUBLISH method',
+			pref: 'zimbraPrefCalendarAllowPublishMethodInvite'
+		});
+
+		await testSwitchToggle({
+			label: 'Automatically add appointments when the user is invited',
+			pref: 'zimbraPrefCalendarAutoAddInvites'
+		});
+
+		await testSwitchToggle({
+			label: 'Auto-decline if the sender is blacklisted',
+			pref: 'zimbraPrefCalendarSendInviteDeniedAutoReply'
+		});
+
+		await testSwitchToggle({
+			label: 'Notify changes made by delegated accounts',
+			pref: 'zimbraPrefCalendarNotifyDelegatedChanges'
+		});
+
+		await testSwitchToggle({
+			label: 'Use iCal delegation model for shared calendars',
+			pref: 'zimbraPrefAppleIcalDelegationEnabled'
+		});
+	});
+
+	it('should disable inputs when isReadonlyCOSEntry is true', async () => {
+		const { user } = setup(
+			<CalendarOptions cosPrefAttributes={cosPrefAttributes} isReadonlyCOSEntry {...mockHandlers} />
+		);
+
+		/**
+		 * Function to test the toggling of a switch element and ensure that the
+		 * change handler is NOT called.
+		 *
+		 * @async
+		 * @function testDisabledSwitch
+		 * @param {string} params.label - The text label used to identify the switch in the DOM via `getByText`.
+		 */
+		const testDisabledSwitch = async ({ label }: { label: string }): Promise<void> => {
+			const switchElement = screen.getByText(label);
+			await user.click(switchElement);
+			expect(mockHandlers.changeSwitchOption).not.toHaveBeenCalled();
+		};
+
+		await testDisabledSwitch({
+			label: 'Allow sending cancellation mail'
+		});
+
+		await testDisabledSwitch({
+			label: 'Enable reminders of appointments in the past'
+		});
+
+		await testDisabledSwitch({
+			label: 'Allow sending cancellation mail'
+		});
+
+		await testDisabledSwitch({
+			label: 'Automatically add forwarded appointments to the calendar'
+		});
+
+		await testDisabledSwitch({
+			label: 'Add invites with PUBLISH method'
+		});
+
+		await testDisabledSwitch({
+			label: 'Automatically add appointments when the user is invited'
+		});
+
+		await testDisabledSwitch({
+			label: 'Auto-decline if the sender is blacklisted'
+		});
+
+		await testDisabledSwitch({
+			label: 'Notify changes made by delegated accounts'
+		});
+
+		await testDisabledSwitch({
+			label: 'Use iCal delegation model for shared calendars'
+		});
+	});
 });
