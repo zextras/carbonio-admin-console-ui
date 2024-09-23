@@ -13,6 +13,7 @@ import CalendarOptions from './CalendarOptions';
 import ContactOptions from './ContactOptions';
 import ForwardingOptions from './ForwardingOptions';
 import GeneralOptions from './GeneralOptions';
+import { useHasUnsavedChanges } from './hooks/useHasUnsavedChanges';
 import MailOptions from './MailOptions';
 import ReceivingMails from './ReceivingMails';
 import SaveCancelBar from './SaveCancelBar';
@@ -46,14 +47,7 @@ const COSPreferences: FC = () => {
 		DEFAULT_COS_PREF_ATTRIBUTES
 	);
 
-	const hasUnsavedChanges = useCallback((): boolean => {
-		if (!currentCosAttributes) return false;
-
-		return Object.keys(currentCosAttributes).some((key) => {
-			const typedKey = key as keyof CosPrefAttributes;
-			return draftCosPrefAttributes[typedKey] !== currentCosAttributes[typedKey];
-		});
-	}, [draftCosPrefAttributes, currentCosAttributes]);
+	const hasUnsavedChanges = useHasUnsavedChanges(currentCosAttributes, draftCosPrefAttributes);
 
 	const handleCosPrefAttributeChange = useCallback(
 		(key: keyof CosPrefAttributes, value: AttributeValue) => {
@@ -127,8 +121,7 @@ const COSPreferences: FC = () => {
 	};
 
 	useEffect(() => {
-		const hasChanges = hasUnsavedChanges();
-		setIsDirty(hasChanges);
+		setIsDirty(hasUnsavedChanges);
 	}, [draftCosPrefAttributes, hasUnsavedChanges]);
 
 	useEffect(() => {
