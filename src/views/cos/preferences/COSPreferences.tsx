@@ -46,19 +46,13 @@ const COSPreferences: FC = () => {
 		DEFAULT_COS_PREF_ATTRIBUTES
 	);
 
-	const haveChangesToSave = useCallback((): boolean => {
-		let hasChanges = false;
-		if (currentCosAttributes) {
-			Object.keys(currentCosAttributes).forEach((key) => {
-				const typedKey = key as keyof CosPrefAttributes;
+	const hasUnsavedChanges = useCallback((): boolean => {
+		if (!currentCosAttributes) return false;
 
-				if (draftCosPrefAttributes[typedKey] !== currentCosAttributes[typedKey]) {
-					hasChanges = true;
-				}
-			});
-		}
-
-		return hasChanges;
+		return Object.keys(currentCosAttributes).some((key) => {
+			const typedKey = key as keyof CosPrefAttributes;
+			return draftCosPrefAttributes[typedKey] !== currentCosAttributes[typedKey];
+		});
 	}, [draftCosPrefAttributes, currentCosAttributes]);
 
 	const handleCosPrefAttributeChange = useCallback(
@@ -133,9 +127,9 @@ const COSPreferences: FC = () => {
 	};
 
 	useEffect(() => {
-		const hasChanges = haveChangesToSave();
+		const hasChanges = hasUnsavedChanges();
 		setIsDirty(hasChanges);
-	}, [draftCosPrefAttributes, haveChangesToSave]);
+	}, [draftCosPrefAttributes, hasUnsavedChanges]);
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
@@ -162,48 +156,48 @@ const COSPreferences: FC = () => {
 			>
 				<GeneralOptions
 					cosPrefAttributes={draftCosPrefAttributes}
+					isReadOnlyCosEntry={isReadOnlyCos}
 					locales={locales}
 					onCosAttributeChanged={handleCosPrefAttributeChange}
-					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<MailOptions
-					changeSwitchOption={handleSwitchOptionChange}
 					cosPrefAttributes={draftCosPrefAttributes}
-					onCosAttributeChanged={handleCosPrefAttributeChange}
 					isReadOnlyCosEntry={isReadOnlyCos}
+					changeSwitchOption={handleSwitchOptionChange}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
 				/>
 				<Divider />
 				<ReceivingMails
 					cosPrefAttributes={draftCosPrefAttributes}
-					onCosAttributeChanged={handleCosPrefAttributeChange}
 					isReadOnlyCosEntry={isReadOnlyCos}
+					onCosAttributeChanged={handleCosPrefAttributeChange}
 				/>
 				<Divider />
 				<ForwardingOptions
-					changeSwitchOption={handleSwitchOptionChange}
 					cosPrefAttributes={draftCosPrefAttributes}
 					isReadOnlyCosEntry={isReadOnlyCos}
+					changeSwitchOption={handleSwitchOptionChange}
 				/>
 				<Divider />
 				<SendingMails
 					cosPrefAttributes={draftCosPrefAttributes}
+					isReadOnlyCosEntry={isReadOnlyCos}
 					onCosAttributeChanged={handleCosPrefAttributeChange}
 					changeSwitchOption={handleSwitchOptionChange}
-					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 				<Divider />
 				<ContactOptions
 					cosPrefAttributes={draftCosPrefAttributes}
-					changeSwitchOption={handleSwitchOptionChange}
 					isReadOnlyCosEntry={isReadOnlyCos}
+					changeSwitchOption={handleSwitchOptionChange}
 				/>
 				<Divider />
 				<CalendarOptions
 					cosPrefAttributes={draftCosPrefAttributes}
+					isReadOnlyCosEntry={isReadOnlyCos}
 					onCosAttributeChanged={handleCosPrefAttributeChange}
 					onSwitchOptionChanged={handleSwitchOptionChange}
-					isReadOnlyCosEntry={isReadOnlyCos}
 				/>
 			</Container>
 		</Container>
