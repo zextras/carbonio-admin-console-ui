@@ -9,12 +9,12 @@ import { Button, Container, Padding, Row, Text } from '@zextras/carbonio-design-
 import { useTranslation } from 'react-i18next';
 
 interface SaveCancelBarProps {
-	isDirty: boolean;
+	hasUnsavedChanges: boolean;
 	onSave: () => void;
 	onCancel: () => void;
 }
 
-const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ isDirty, onSave, onCancel }) => {
+const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ hasUnsavedChanges, onSave, onCancel }) => {
 	const { t } = useTranslation();
 	return (
 		<Row mainAlignment="flex-start" width="100%">
@@ -32,11 +32,13 @@ const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ isDirty, onSave, onCancel
 					</Row>
 					<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<Padding right="small">
-							{isDirty && (
+							{hasUnsavedChanges && (
 								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
 							)}
 						</Padding>
-						{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
+						{hasUnsavedChanges && (
+							<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+						)}
 					</Row>
 				</Row>
 			</Container>

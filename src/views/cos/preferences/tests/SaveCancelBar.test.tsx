@@ -19,14 +19,14 @@ describe('SaveCancelBar', () => {
 	const mockOnCancel = jest.fn();
 
 	it('should renders SaveCancelBar with buttons when isDirty is true', () => {
-		setup(<SaveCancelBar isDirty onSave={mockOnSave} onCancel={mockOnCancel} />);
+		setup(<SaveCancelBar hasUnsavedChanges onSave={mockOnSave} onCancel={mockOnCancel} />);
 
 		expect(screen.getByText('Preferences')).toBeInTheDocument();
 		expect(screen.getByText('Cancel')).toBeInTheDocument();
 		expect(screen.getByText('Save')).toBeInTheDocument();
 	});
 	it('should not show buttons when isDirty is false', () => {
-		setup(<SaveCancelBar isDirty={false} onSave={mockOnSave} onCancel={mockOnCancel} />);
+		setup(<SaveCancelBar hasUnsavedChanges={false} onSave={mockOnSave} onCancel={mockOnCancel} />);
 
 		expect(screen.getByText('Preferences')).toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
@@ -34,7 +34,9 @@ describe('SaveCancelBar', () => {
 	});
 
 	it('should call onSave when Save button is clicked', async () => {
-		const { user } = setup(<SaveCancelBar isDirty onSave={mockOnSave} onCancel={mockOnCancel} />);
+		const { user } = setup(
+			<SaveCancelBar hasUnsavedChanges onSave={mockOnSave} onCancel={mockOnCancel} />
+		);
 
 		await user.click(screen.getByText('Save'));
 
@@ -42,7 +44,9 @@ describe('SaveCancelBar', () => {
 	});
 
 	it('should call onCancel when Cancel button is clicked', async () => {
-		const { user } = setup(<SaveCancelBar isDirty onSave={mockOnSave} onCancel={mockOnCancel} />);
+		const { user } = setup(
+			<SaveCancelBar hasUnsavedChanges onSave={mockOnSave} onCancel={mockOnCancel} />
+		);
 
 		await user.click(screen.getByText('Cancel'));
 

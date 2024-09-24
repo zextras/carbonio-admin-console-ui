@@ -42,7 +42,6 @@ const COSPreferences: FC = () => {
 	}, [rights]);
 
 	const [currentCosAttributes, setCurrentCosAttributes] = useState<Partial<CosAttributes>>();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [draftCosPrefAttributes, setDraftCosPrefAttributes] = useState<CosPrefAttributes>(
 		DEFAULT_COS_PREF_ATTRIBUTES
 	);
@@ -121,10 +120,6 @@ const COSPreferences: FC = () => {
 	};
 
 	useEffect(() => {
-		setIsDirty(hasUnsavedChanges);
-	}, [draftCosPrefAttributes, hasUnsavedChanges]);
-
-	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const initialCosPrefAttributes: Partial<CosAttributes> = {};
 			cosInformation.forEach((item: Attribute) => {
@@ -138,7 +133,11 @@ const COSPreferences: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
-			<SaveCancelBar isDirty={isDirty} onSave={handleSave} onCancel={handleCancel} />
+			<SaveCancelBar
+				hasUnsavedChanges={hasUnsavedChanges}
+				onSave={handleSave}
+				onCancel={handleCancel}
+			/>
 			<Divider />
 			<Container
 				mainAlignment="flex-start"
