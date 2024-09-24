@@ -18,7 +18,7 @@ import MailOptions from './MailOptions';
 import ReceivingMails from './ReceivingMails';
 import SaveCancelBar from './SaveCancelBar';
 import SendingMails from './SendingMails';
-import { Attribute, CosAttributes, CosPrefAttributes } from '../../../../types';
+import { CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
@@ -120,12 +120,12 @@ const COSPreferences: FC = () => {
 	};
 
 	useEffect(() => {
-		if (!!cosInformation && cosInformation.length > 0) {
-			const initialCosPrefAttributes: Partial<CosAttributes> = {};
-			cosInformation.forEach((item: Attribute) => {
+		if (cosInformation?.length) {
+			const initialCosPrefAttributes = cosInformation.reduce((accumulator, item) => {
 				const key = item?.n as keyof CosAttributes;
-				initialCosPrefAttributes[key] = item._content;
-			});
+				accumulator[key] = item._content;
+				return accumulator;
+			}, {} as Partial<CosAttributes>);
 			setCurrentCosAttributes(initialCosPrefAttributes);
 			setInitialValues(initialCosPrefAttributes);
 		}
