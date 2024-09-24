@@ -42,7 +42,7 @@ describe('MailOptions', () => {
 		);
 
 		expect(screen.getByText('Mail Options')).toBeInTheDocument();
-		expect(screen.getByText('View mail as HTML')).toBeInTheDocument();
+		expect(screen.getByText('View mail as HTML (when possible)')).toBeInTheDocument();
 		expect(screen.getByText('Auto-Delete duplicate messages')).toBeInTheDocument();
 		expect(screen.getByText('Enable New Mail Toast Notification')).toBeInTheDocument();
 		expect(
@@ -62,7 +62,7 @@ describe('MailOptions', () => {
 			/>
 		);
 
-		await user.click(screen.getByText('View mail as HTML'));
+		await user.click(screen.getByText('View mail as HTML (when possible)'));
 		expect(mockChangeSwitchOption).toHaveBeenCalledWith('zimbraPrefMessageViewHtmlPreferred');
 	});
 

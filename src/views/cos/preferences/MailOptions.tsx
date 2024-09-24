@@ -95,7 +95,7 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 					<Switch
 						value={cosPrefAttributes?.zimbraPrefMessageViewHtmlPreferred === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
-						label={t('cos.view_mail_as_html', 'View mail as HTML')}
+						label={t('cos.view_mail_as_html', 'View mail as HTML (when possible)')}
 						iconColor="primary"
 						disabled={isReadOnlyCosEntry}
 					/>
