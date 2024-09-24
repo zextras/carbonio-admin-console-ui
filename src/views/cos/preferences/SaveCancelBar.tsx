@@ -18,12 +18,7 @@ const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ hasUnsavedChanges, onSave
 	const { t } = useTranslation();
 	return (
 		<Row mainAlignment="flex-start" width="100%">
-			<Container
-				orientation="vertical"
-				mainAlignment="space-around"
-				background={'gray6'}
-				height="58px"
-			>
+			<Container orientation="vertical" mainAlignment="space-around" background={'gray6'}>
 				<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 					<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
