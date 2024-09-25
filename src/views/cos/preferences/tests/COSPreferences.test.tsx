@@ -94,7 +94,7 @@ describe('COSPreferences', () => {
 		expect(screen.getByText('Contact Options')).toBeInTheDocument();
 	});
 
-	it('should toggle SaveCancelBar visibility when hasChangesToSave', async () => {
+	test('should toggle SaveCancelBar visibility when hasChangesToSave', async () => {
 		const { user } = setup(<COSPreferences />);
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
@@ -115,7 +115,7 @@ describe('COSPreferences', () => {
 		await expect(screen.getByText('Cancel')).toBeInTheDocument();
 	});
 
-	it('should call modifyCos, flushCache and createSnackbar when Save Button is clicked', async () => {
+	test('should call modifyCos, flushCache and createSnackbar when Save Button is clicked', async () => {
 		const mockModifyCos = modifyCos as jest.MockedFunction<typeof modifyCos>;
 		mockModifyCos.mockImplementation(() => Promise.resolve({}));
 
@@ -151,7 +151,7 @@ describe('COSPreferences', () => {
 		await expect(mockCreateSnackbar).toHaveBeenCalled();
 	});
 
-	it('should not be able to modify COS preferences when COS entry is read only', async () => {
+	test('should not be able to modify COS preferences when COS entry is read only', async () => {
 		useRightsStore.getState().setRights([
 			{
 				type: 'cos',
@@ -183,6 +183,32 @@ describe('COSPreferences', () => {
 			await user.click(screen.getByText('English - English'));
 		});
 		await expect(screen.queryByText('German - Deutsch')).not.toBeInTheDocument();
+
+		await expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		await expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+	});
+
+	test('clicking Cancel button should reset the modifications/hide save and cancel buttons', async () => {
+		const { user } = setup(<COSPreferences />);
+
+		expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+		expect(screen.getByText('Preferences')).toBeInTheDocument();
+
+		// Change the locale from English to German
+		await expect(screen.getByText('English - English')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('English - English'));
+		});
+		await expect(screen.getByText('German - Deutsch')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('German - Deutsch'));
+		});
+
+		await expect(screen.getByText('Cancel')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('Cancel'));
+		});
 
 		await expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		await expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
