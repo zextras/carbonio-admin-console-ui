@@ -13,7 +13,7 @@ export type Cos = {
 	a?: Array<Attribute>;
 };
 
-export interface CosPrefAttributes {
+export type CosPrefAttributes = {
 	zimbraPrefLocale: string;
 	zimbraPrefMessageViewHtmlPreferred: string;
 	zimbraPrefGroupMailBy: string;
@@ -44,8 +44,8 @@ export interface CosPrefAttributes {
 	zimbraPrefCalendarNotifyDelegatedChanges: string;
 	zimbraPrefAppleIcalDelegationEnabled: string;
 	zimbraFileUploadMaxSizePerFile: string;
-}
+};
 
-export interface CosAttributes extends CosPrefAttributes {
+export type CosAttributes = CosPrefAttributes & {
 	zimbraId: string;
-}
+};
