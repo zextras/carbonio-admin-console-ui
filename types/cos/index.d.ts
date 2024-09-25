@@ -45,3 +45,7 @@ export type CosPrefAttributes = {
 	zimbraPrefAppleIcalDelegationEnabled: string;
 	zimbraFileUploadMaxSizePerFile: string;
 };
+
+export type CosAttributes = CosPrefAttributes & {
+	zimbraId: string;
+};
