@@ -45,7 +45,8 @@ describe('COSPreferences', () => {
 			isDefaultCos: true,
 			a: [
 				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-				{ n: 'zimbraPrefLocale', _content: 'en' }
+				{ n: 'zimbraPrefLocale', _content: 'en' },
+				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
 			]
 		});
 	};
@@ -141,9 +142,29 @@ describe('COSPreferences', () => {
 			await user.click(screen.getByText('Save'));
 		});
 
-		expect(mockModifyCos).toHaveBeenCalled();
+		const expectedModifyCosBody = {
+			_jsns: 'urn:zimbraAdmin',
+			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+			a: expect.arrayContaining([
+				expect.objectContaining({
+					n: 'zimbraPrefLocale',
+					_content: 'de'
+				})
+			])
+		};
+		expect(mockModifyCos).toHaveBeenCalledWith(expect.objectContaining(expectedModifyCosBody));
+
 		expect(mockFlushCache).toHaveBeenCalled();
-		expect(mockCreateSnackbar).toHaveBeenCalled();
+
+		const expectedSnackbarOptions = {
+			key: 'success',
+			type: 'success',
+			label: 'The change has been saved successfully',
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		};
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
 	});
 
 	test('should not allow modification of COS preferences when COS entry is read-only', async () => {
@@ -205,5 +226,60 @@ describe('COSPreferences', () => {
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+	});
+
+	test('should call handleSwitchOptionChange, modifyCos, flushCache, and createSnackbar when toggling a switch', async () => {
+		const mockModifyCos = modifyCos as jest.MockedFunction<typeof modifyCos>;
+		const mockFlushCache = flushCache as jest.MockedFunction<typeof flushCache>;
+		const mockCreateSnackbar = jest.fn();
+		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+
+		mockModifyCos.mockResolvedValue({});
+		mockFlushCache.mockResolvedValue({});
+
+		const { user } = setup(<COSPreferences />);
+
+		expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+		expect(screen.getByText('Mail Options')).toBeInTheDocument();
+
+		const currentZimbraPrefMessageViewHtmlPreferred = useCosStore
+			.getState()
+			.cos?.a?.find((attr) => attr.n === 'zimbraPrefMessageViewHtmlPreferred')?._content;
+		expect(currentZimbraPrefMessageViewHtmlPreferred).toBe('TRUE');
+
+		// Change the "View mail as HTML" option from TRUE to FALSE
+		await act(async () => {
+			await user.click(screen.getByText('View mail as HTML (when possible)'));
+		});
+
+		await expect(screen.getByText('Save')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('Save'));
+		});
+
+		const expectedModifyCosBody = {
+			_jsns: 'urn:zimbraAdmin',
+			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+			a: expect.arrayContaining([
+				expect.objectContaining({
+					n: 'zimbraPrefMessageViewHtmlPreferred',
+					_content: 'FALSE'
+				})
+			])
+		};
+		expect(mockModifyCos).toHaveBeenCalledWith(expect.objectContaining(expectedModifyCosBody));
+
+		expect(mockFlushCache).toHaveBeenCalled();
+
+		const expectedSnackbarOptions = {
+			key: 'success',
+			type: 'success',
+			label: 'The change has been saved successfully',
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		};
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
 	});
 });
