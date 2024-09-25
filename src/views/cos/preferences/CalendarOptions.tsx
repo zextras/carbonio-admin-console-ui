@@ -18,8 +18,7 @@ interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadOnlyCosEntry: boolean;
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
-	// typing is hard to achieve here
-	onSwitchOptionChanged: (value: any) => void;
+	onSwitchOptionChanged: (value: string) => void;
 }
 
 const CalendarOptions: React.FC<CalendarOptionsProps> = ({
