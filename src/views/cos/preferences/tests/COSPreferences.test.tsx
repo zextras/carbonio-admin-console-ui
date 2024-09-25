@@ -150,4 +150,41 @@ describe('COSPreferences', () => {
 		await expect(mockFlushCache).toHaveBeenCalled();
 		await expect(mockCreateSnackbar).toHaveBeenCalled();
 	});
+
+	it('should not be able to modify COS preferences when COS entry is read only', async () => {
+		useRightsStore.getState().setRights([
+			{
+				type: 'cos',
+				all: [
+					{
+						right: [
+							{ n: 'assignCos' },
+							{ n: 'deleteCos' },
+							{ n: 'listCos' },
+							{ n: 'manageZimlet' },
+							{ n: 'renameCos' }
+						],
+						setAttrs: [{ all: false }], // cannot set/change attributes on COS entry
+						getAttrs: [{ all: true }]
+					}
+				]
+			}
+		]);
+
+		const { user } = setup(<COSPreferences />);
+
+		expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+		expect(screen.getByText('Preferences')).toBeInTheDocument();
+
+		// Change the locale from English to German
+		await expect(screen.getByText('English - English')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('English - English'));
+		});
+		await expect(screen.queryByText('German - Deutsch')).not.toBeInTheDocument();
+
+		await expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		await expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+	});
 });
