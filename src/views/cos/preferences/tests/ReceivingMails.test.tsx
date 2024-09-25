@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier,sonarjs/no-duplicate-string */
+// noinspection DuplicatedCode
+
 /*
  * SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
  *
@@ -75,6 +77,26 @@ describe('ReceivingMails', () => {
 
 		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(1);
 		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraPrefMailPollingInterval', '3m');
+	});
+
+	it('should call onCosAttributeChanged when a prefMailPollingIntervalType is changed', async () => {
+		const { user } = setup(
+			<ReceivingMails
+				cosPrefAttributes={cosPrefAttributes}
+				isReadOnlyCosEntry={false}
+				onCosAttributeChanged={mockOnCosAttributeChanged}
+			/>
+		);
+
+		expect(screen.getByText('Days / Hours / Minutes / Sec')).toBeInTheDocument();
+
+		await user.click(screen.getByText('Minutes'));
+		await user.click(screen.getByText('Hours'));
+
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledTimes(1);
+		// onPrefMailPollingIntervalTypeChange causes the time type to change, it added the type to zimbraMailMinPollingInterval
+		// value hence, the value is changed to 2h from 2m
+		expect(mockOnCosAttributeChanged).toHaveBeenCalledWith('zimbraMailMinPollingInterval', '2h');
 	});
 
 	it('should disable input and select fields when isReadonlyCOSEntry is true', async () => {
