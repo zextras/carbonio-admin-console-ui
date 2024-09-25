@@ -282,4 +282,42 @@ describe('COSPreferences', () => {
 		};
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
 	});
+
+	test('should show snackBar with correct error when modifyCos call fails', async () => {
+		const mockModifyCos = modifyCos as jest.MockedFunction<typeof modifyCos>;
+		const mockFlushCache = flushCache as jest.MockedFunction<typeof flushCache>;
+		const mockCreateSnackbar = jest.fn();
+		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+
+		// Mock the implementation to throw an error
+		mockModifyCos.mockRejectedValue(new Error('Something went wrong. Please try again.'));
+		mockFlushCache.mockResolvedValue({});
+
+		const { user } = setup(<COSPreferences />);
+
+		expect(screen.queryByText('Save')).not.toBeInTheDocument();
+		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+		expect(screen.getByText('Mail Options')).toBeInTheDocument();
+
+		// Change the "View mail as HTML" option from TRUE to FALSE
+		await act(async () => {
+			await user.click(screen.getByText('View mail as HTML (when possible)'));
+		});
+
+		await expect(screen.getByText('Save')).toBeInTheDocument();
+		await act(async () => {
+			await user.click(screen.getByText('Save'));
+		});
+
+		// Check that the Snackbar is called with an error message
+		const expectedSnackbarOptions = {
+			key: 'error',
+			type: 'error',
+			label: 'Something went wrong. Please try again.',
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		};
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
+	});
 });
