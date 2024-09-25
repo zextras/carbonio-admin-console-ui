@@ -9,15 +9,15 @@ import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import CalendarOptions from './CalendarOptions';
-import ContactOptions from './ContactOptions';
-import ForwardingOptions from './ForwardingOptions';
-import GeneralOptions from './GeneralOptions';
+import { CalendarOptions } from './CalendarOptions';
+import { ContactOptions } from './ContactOptions';
+import { ForwardingOptions } from './ForwardingOptions';
+import { GeneralOptions } from './GeneralOptions';
 import { useHasUnsavedChanges } from './hooks/useHasUnsavedChanges';
-import MailOptions from './MailOptions';
-import ReceivingMails from './ReceivingMails';
-import SaveCancelBar from './SaveCancelBar';
-import SendingMails from './SendingMails';
+import { MailOptions } from './MailOptions';
+import { ReceivingMails } from './ReceivingMails';
+import { SaveCancelBar } from './SaveCancelBar';
+import { SendingMails } from './SendingMails';
 import { CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
@@ -28,7 +28,7 @@ import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { AttributeValue } from '../constants/types';
 
-const COSPreferences = (): React.JSX.Element => {
+export const COSPreferences = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
@@ -195,5 +195,3 @@ const COSPreferences = (): React.JSX.Element => {
 		</Container>
 	);
 };
-
-export default COSPreferences;

@@ -12,7 +12,7 @@ import { SelectItem } from '@zextras/carbonio-design-system';
 import { CosPrefAttributes } from '../../../../../types';
 import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
-import GeneralOptions from '../GeneralOptions';
+import { GeneralOptions } from '../GeneralOptions';
 
 describe('GeneralOptions', () => {
 	beforeEach(() => {

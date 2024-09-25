@@ -18,11 +18,11 @@ interface ReceivingMailsProps {
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
-const ReceivingMails: React.FC<ReceivingMailsProps> = ({
+export const ReceivingMails = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	onCosAttributeChanged
-}) => {
+}: ReceivingMailsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
 	const TIME_TYPES: SelectItem[] = useMemo(
@@ -180,5 +180,3 @@ const ReceivingMails: React.FC<ReceivingMailsProps> = ({
 		</Row>
 	);
 };
-
-export default ReceivingMails;

@@ -9,7 +9,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { setup } from '../../../../tests/testUtils';
-import SaveCancelBar from '../SaveCancelBar';
+import { SaveCancelBar } from '../SaveCancelBar';
 
 describe('SaveCancelBar', () => {
 	beforeEach(() => {

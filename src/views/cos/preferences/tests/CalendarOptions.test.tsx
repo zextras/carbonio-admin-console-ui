@@ -13,7 +13,7 @@ import { screen } from '@testing-library/react';
 import { CosPrefAttributes } from '../../../../../types';
 import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
-import CalendarOptions from '../CalendarOptions';
+import { CalendarOptions } from '../CalendarOptions';
 
 const cosPrefAttributes: CosPrefAttributes = {
 	...DEFAULT_COS_PREF_ATTRIBUTES,

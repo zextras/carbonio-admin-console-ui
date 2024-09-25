@@ -29,12 +29,12 @@ interface MailOptionsProps {
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
-const MailOptions: React.FC<MailOptionsProps> = ({
+export const MailOptions = ({
 	changeSwitchOption,
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	onCosAttributeChanged
-}) => {
+}: MailOptionsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 	const GROUP_BY: SelectItem[] = useMemo(() => conversationGroupBy(t), [t]);
 	const CHARACTOR_SET: SelectItem[] = useMemo(() => charactorSet(), []);
@@ -234,5 +234,3 @@ const MailOptions: React.FC<MailOptionsProps> = ({
 		</Row>
 	);
 };
-
-export default MailOptions;

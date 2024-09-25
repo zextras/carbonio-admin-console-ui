@@ -11,17 +11,17 @@ import { useTranslation } from 'react-i18next';
 import { CosPrefAttributes } from '../../../../types';
 import ListRow from '../../list/list-row';
 
-interface ContactOptions {
+interface ContactOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadOnlyCosEntry: boolean;
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
-const ContactOptions: React.FC<ContactOptions> = ({
+export const ContactOptions = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	changeSwitchOption
-}) => {
+}: ContactOptionsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 	return (
 		<Row
@@ -65,5 +65,3 @@ const ContactOptions: React.FC<ContactOptions> = ({
 		</Row>
 	);
 };
-
-export default ContactOptions;

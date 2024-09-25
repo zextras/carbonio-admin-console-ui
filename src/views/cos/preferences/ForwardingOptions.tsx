@@ -17,11 +17,11 @@ interface ForwardingOptionsProps {
 	changeSwitchOption: (key: keyof CosPrefAttributes) => void;
 }
 
-const ForwardingOptions: React.FC<ForwardingOptionsProps> = ({
+export const ForwardingOptions = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	changeSwitchOption
-}) => {
+}: ForwardingOptionsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
 	return (
@@ -74,5 +74,3 @@ const ForwardingOptions: React.FC<ForwardingOptionsProps> = ({
 		</Row>
 	);
 };
-
-export default ForwardingOptions;

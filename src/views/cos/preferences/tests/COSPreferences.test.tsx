@@ -12,7 +12,7 @@ import { screen } from '@testing-library/react';
 import { useCosStore } from '../../../../store/cos/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import { setup } from '../../../../tests/testUtils';
-import COSPreferences from '../COSPreferences';
+import { COSPreferences } from '../COSPreferences';
 
 jest.mock('../../../../store/cos/store', () => ({
 	useCosStore: jest.fn()

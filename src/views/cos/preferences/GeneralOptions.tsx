@@ -19,12 +19,12 @@ interface GeneralOptionsProps {
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 }
 
-const GeneralOptions: React.FC<GeneralOptionsProps> = ({
+export const GeneralOptions = ({
 	cosPrefAttributes,
 	locales,
 	isReadOnlyCosEntry,
 	onCosAttributeChanged
-}) => {
+}: GeneralOptionsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
 	return (
@@ -68,5 +68,3 @@ const GeneralOptions: React.FC<GeneralOptionsProps> = ({
 		</Row>
 	);
 };
-
-export default GeneralOptions;

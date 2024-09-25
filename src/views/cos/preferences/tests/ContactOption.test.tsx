@@ -12,7 +12,7 @@ import { screen } from '@testing-library/react';
 import { CosPrefAttributes } from '../../../../../types';
 import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
-import ContactOptions from '../ContactOptions';
+import { ContactOptions } from '../ContactOptions';
 
 describe('GeneralOptions', () => {
 	beforeEach(() => {

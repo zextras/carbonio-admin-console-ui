@@ -20,12 +20,12 @@ interface SendingMailsProps {
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
-const SendingMails: React.FC<SendingMailsProps> = ({
+export const SendingMails = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	onCosAttributeChanged,
 	changeSwitchOption
-}) => {
+}: SendingMailsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
 	const SEND_READ_RECEIPTS: SelectItem[] = useMemo(
@@ -116,5 +116,3 @@ const SendingMails: React.FC<SendingMailsProps> = ({
 		</Row>
 	);
 };
-
-export default SendingMails;

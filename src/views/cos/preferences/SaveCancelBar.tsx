@@ -14,7 +14,11 @@ interface SaveCancelBarProps {
 	onCancel: () => void;
 }
 
-const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ hasUnsavedChanges, onSave, onCancel }) => {
+export const SaveCancelBar = ({
+	hasUnsavedChanges,
+	onSave,
+	onCancel
+}: SaveCancelBarProps): React.JSX.Element => {
 	const { t } = useTranslation();
 	return (
 		<Row mainAlignment="flex-start" width="100%">
@@ -40,5 +44,3 @@ const SaveCancelBar: React.FC<SaveCancelBarProps> = ({ hasUnsavedChanges, onSave
 		</Row>
 	);
 };
-
-export default SaveCancelBar;

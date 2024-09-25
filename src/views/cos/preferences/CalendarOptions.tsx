@@ -18,15 +18,15 @@ interface CalendarOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadOnlyCosEntry: boolean;
 	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
-	onSwitchOptionChanged: (value: string) => void;
+	onSwitchOptionChanged: (value: keyof CosPrefAttributes) => void;
 }
 
-const CalendarOptions: React.FC<CalendarOptionsProps> = ({
+export const CalendarOptions = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
 	onSwitchOptionChanged,
 	onCosAttributeChanged
-}) => {
+}: CalendarOptionsProps): React.JSX.Element => {
 	const [t] = useTranslation();
 	const APPOINTMENT_REMINDER: SelectItem[] = useMemo(() => appointmentReminder(t), [t]);
 	const TIMEZONES: SelectItem[] = useMemo(() => timeZoneList(t), [t]);
@@ -360,5 +360,3 @@ const CalendarOptions: React.FC<CalendarOptionsProps> = ({
 		</Row>
 	);
 };
-
-export default CalendarOptions;

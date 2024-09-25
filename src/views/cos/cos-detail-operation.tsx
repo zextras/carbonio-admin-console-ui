@@ -13,7 +13,7 @@ import CosAdvanced from './cos-advanced';
 import CosFeatures from './cos-features';
 import CosGeneralInformation from './cos-general-information';
 import CosServerPools from './cos-server-pools';
-import COSPreferences from './preferences/COSPreferences';
+import { COSPreferences } from './preferences/COSPreferences';
 import {
 	ADVANCED,
 	FEATURES,
