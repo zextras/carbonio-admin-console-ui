@@ -24,6 +24,7 @@ import styled from 'styled-components';
 
 import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
+	CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
 	FALSE,
 	TRUE,
 	ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
@@ -31,6 +32,7 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
@@ -42,6 +44,7 @@ const RelativeContainer = styled(Container)`
 const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const isAdvanced = !useAuthIsAdvanced((state) => state.isAdvanced);
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
 	const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
 		[key: string]: string | { label: string }[];
@@ -142,6 +145,18 @@ const GlobalDetailPanel: FC = () => {
 				);
 			} else {
 				setInitialAndCurrentValue(ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY, false);
+			}
+
+			const carbonioSearchAllDomainsByFeature = data.filter(
+				(item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE
+			);
+			if (carbonioSearchAllDomainsByFeature[0]?._content) {
+				setInitialAndCurrentValue(
+					CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+					carbonioSearchAllDomainsByFeature[0]?._content === TRUE
+				);
+			} else {
+				setInitialAndCurrentValue(CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, false);
 			}
 		}
 	}, [globalConfigData, setInitialAndCurrentValue]);
@@ -288,6 +303,12 @@ const GlobalDetailPanel: FC = () => {
 			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
 			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
 		});
+		if (isAdvanced) {
+			attributes.push({
+				n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+				_content: globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature ? TRUE : FALSE
+			});
+		}
 
 		if (attributes && attributes.length > 0) {
 			callRequest(attributes);
@@ -439,6 +460,32 @@ const GlobalDetailPanel: FC = () => {
 						/>
 					</Container>
 				</ListRow>
+				{isAdvanced && (
+					<ListRow>
+						<Container
+							crossAlignment="flex-start"
+							mainAlignment="flex-start"
+							height="auto"
+							padding={{
+								top: 'extralarge'
+							}}
+						>
+							<Switch
+								label={t(
+									'label.search_user_info_for_all_domains',
+									'Allow to search user information for all domains'
+								)}
+								value={globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature}
+								onClick={(): void => {
+									setValue(
+										CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+										!globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature
+									);
+								}}
+							/>
+						</Container>
+					</ListRow>
+				)}
 			</Container>
 		</RelativeContainer>
 	);

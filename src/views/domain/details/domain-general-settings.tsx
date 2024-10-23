@@ -27,9 +27,11 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import DomainCosLink from './domain-cos-link';
-import { CosMaxAccountValues, objectType } from '../../../../types';
+import DomainListChipInput from './parts/domain-list-chip-input';
+import { CosMaxAccountValues, DomainsByFeature, objectType } from '../../../../types';
 import {
 	ACTIVE,
+	CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
 	CLOSED,
 	HTTP,
 	HTTPS,
@@ -45,6 +47,7 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../store/domain/store';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
@@ -84,6 +87,7 @@ const DomainGeneralSettings: FC = () => {
 	const createSnackbar = useSnackbar();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
+	const isAdvanced = !useAuthIsAdvanced((state) => state.isAdvanced);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -159,7 +163,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraPublicServiceHostname: '',
 		zimbraDomainMaxAccounts: '',
 		zimbraDomainAggregateQuota: '',
-		description: ''
+		description: '',
+		carbonioSearchSpecifiedDomainsByFeature: []
 	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
@@ -186,6 +191,7 @@ const DomainGeneralSettings: FC = () => {
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [domainList, setDomainList] = useState<Array<DomainsByFeature>>([]);
 
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		objectType[]
@@ -255,6 +261,18 @@ const DomainGeneralSettings: FC = () => {
 			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
 			});
+
+			const carbonioSearchSpecifiedDomainsByFeature = domainInformation.filter(
+				(item) => item.n === CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE
+			);
+			const domainListArr: DomainsByFeature[] = [];
+			carbonioSearchSpecifiedDomainsByFeature.forEach((item) => {
+				if (item._content) {
+					domainListArr.push({ label: item._content });
+				}
+			});
+			setDomainList(domainListArr);
+			obj[CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE] = domainListArr;
 			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {
 				setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
@@ -429,7 +447,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom,
 			carbonioNotificationRecipients,
-			zimbraDomainMaxAccounts
+			zimbraDomainMaxAccounts,
+			carbonioSearchSpecifiedDomainsByFeature: domainList
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -445,7 +464,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
 			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients,
-			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts
+			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts,
+			carbonioSearchSpecifiedDomainsByFeature: domainData.carbonioSearchSpecifiedDomainsByFeature
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -467,7 +487,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraNotes,
 		zimbraPublicServicePort,
 		description,
-		zimbraDomainMaxAccounts
+		zimbraDomainMaxAccounts,
+		domainList
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -576,6 +597,22 @@ const DomainGeneralSettings: FC = () => {
 					_content: item?.label
 				});
 			});
+
+			if (isAdvanced) {
+				domainList.forEach((item: DomainsByFeature): void => {
+					attributes.push({
+						n: CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
+						_content: item.label
+					});
+				});
+				if (!domainList.length) {
+					attributes.push({
+						n: CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
+						_content: ''
+					});
+				}
+			}
+
 			body.a = attributes;
 			modifyDomain(body)
 				.then((data) => {
@@ -1040,6 +1077,29 @@ const DomainGeneralSettings: FC = () => {
 									/>
 								</Container>
 							</ListRow>
+
+							{isAdvanced && (
+								<ListRow>
+									<Container
+										padding={{ all: 'small' }}
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+									>
+										<Text size="small" weight="bold">
+											{t(
+												'label.allow_search_user_from_specific_domains',
+												'Allow Search User From Specific Domains'
+											)}
+										</Text>
+										<Padding top="small" />
+										<DomainListChipInput
+											domainList={domainList}
+											setDomainList={setDomainList}
+											domainName={domainName}
+										/>
+									</Container>
+								</ListRow>
+							)}
 							<Row
 								mainAlignment="flex-start"
 								width="100%"
