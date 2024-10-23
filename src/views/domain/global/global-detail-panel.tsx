@@ -472,7 +472,7 @@ const GlobalDetailPanel: FC = () => {
 						>
 							<Switch
 								label={t(
-									'label.search_user_info_for_all_domains',
+									'domain.globalSettings.allowSearchUserFromAllDomains',
 									'Allow to search user information for all domains'
 								)}
 								value={globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature}

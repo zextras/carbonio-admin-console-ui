@@ -448,3 +448,4 @@ export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
 export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
+export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
