@@ -46,6 +46,6 @@ describe('DomainListChipInput', () => {
 
 		const inputElement = screen.getByTestId(DOMAIN_INPUT_NAME);
 		expect(inputElement).toBeInTheDocument();
-		expect(screen.getByText('demo.com'));
+		expect(screen.getByText('demo.com')).toBeInTheDocument();
 	});
 });
