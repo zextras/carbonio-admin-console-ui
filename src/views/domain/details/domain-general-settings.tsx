@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, FC } from 'react';
 
 import {
 	Container,
@@ -78,7 +78,7 @@ const CustomIcon = styled(Icon)`
 `;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const DomainGeneralSettings: FC = () => {
+const DomainGeneralSettings: FC = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const cosList = useDomainStore((state) => state.cosList);
@@ -88,7 +88,7 @@ const DomainGeneralSettings: FC = () => {
 	const createSnackbar = useSnackbar();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
-	const isAdvanced = !useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -911,6 +911,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.name', 'Name')}
 										value={domainName}
 										backgroundColor="gray6"
+										data-testid={'input-domain-name'}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -918,6 +919,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
 										backgroundColor="gray6"
+										data-testid={'input-domain-id'}
 									/>
 								</Container>
 							</ListRow>
@@ -1068,8 +1070,8 @@ const DomainGeneralSettings: FC = () => {
 									>
 										<Text size="small" weight="bold">
 											{t(
-												'label.allow_search_user_from_specific_domains',
-												'Allow Search User From Specific Domains'
+												'domains.generalSettings.AllowSearchUserFromSpecificDomains',
+												'Search users from a specific domains'
 											)}
 										</Text>
 										<Padding top="small" />

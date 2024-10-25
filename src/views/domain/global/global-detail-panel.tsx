@@ -44,7 +44,7 @@ const RelativeContainer = styled(Container)`
 const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = !useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
 	const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
 		[key: string]: string | { label: string }[];
@@ -473,7 +473,7 @@ const GlobalDetailPanel: FC = () => {
 							<Switch
 								label={t(
 									'domain.globalSettings.allowSearchUserFromAllDomains',
-									'Allow to search user information for all domains'
+									`Allow searching users' information in all domains`
 								)}
 								value={globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature}
 								onClick={(): void => {

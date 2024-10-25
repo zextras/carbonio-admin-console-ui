@@ -66,7 +66,7 @@ const DomainListChipInput: FC<{
 			onChange={onChange}
 			requireUniqueChips
 			separators={[]}
-			placeholder={t('label.search_domain', 'Search Domain')}
+			placeholder={t('domains.GeneralSettings.searchDomain.label', 'Search Domain')}
 		/>
 	);
 };
