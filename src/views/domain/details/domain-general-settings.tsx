@@ -78,7 +78,7 @@ const CustomIcon = styled(Icon)`
 `;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const DomainGeneralSettings: FC = (): React.JSX.Element => {
+const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const cosList = useDomainStore((state) => state.cosList);
