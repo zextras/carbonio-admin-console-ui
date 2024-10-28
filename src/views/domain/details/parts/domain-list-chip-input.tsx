@@ -4,13 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
-import { ChipInput, ChipInputProps, DropdownItem } from '@zextras/carbonio-design-system';
+import {
+	ChipInput,
+	ChipInputProps,
+	DropdownItem,
+	Row,
+	Tooltip
+} from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';
+import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
 import { getDomainList } from '../../../../services/search-domain-service';
+import { useConfigStore } from '../../../../store/config/store';
 import { ZimbraDomainResponse } from '../../domain-list/domain-list';
 
 const DomainListChipInput: FC<{
@@ -19,6 +27,7 @@ const DomainListChipInput: FC<{
 	setDomainList: (domainList: DomainsByFeature[]) => void;
 }> = ({ domainList, setDomainList, domainName }) => {
 	const [t] = useTranslation();
+	const config = useConfigStore((state) => state.config);
 	const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
 	const getAllDomainList = useCallback(
 		(searchQuery): void => {
@@ -55,19 +64,39 @@ const DomainListChipInput: FC<{
 		[setDomainList]
 	);
 
+	const isEnableSearchAllDomainsByFeature: boolean = useMemo(() => {
+		const carbonioSearchAllDomainsByFeature = config.filter(
+			(item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE
+		);
+		return carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
+	}, [config]);
+
 	return (
-		<ChipInput
-			data-testid={'domain-input'}
-			disableOptions
-			confirmChipOnBlur={false}
-			onInputType={onInputType}
-			options={domainOption}
-			value={domainList}
-			onChange={onChange}
-			requireUniqueChips
-			separators={[]}
-			placeholder={t('domains.GeneralSettings.searchDomain.label', 'Search Domain')}
-		/>
+		<Tooltip
+			placement="bottom"
+			label={t(
+				'domains.GeneralSettings.searchDomain.disabledTooltip',
+				`Allow searching users information in all domains at global settings should be disabled to set a domain specific settings`
+			)}
+			disabled={!isEnableSearchAllDomainsByFeature}
+		>
+			<Row width={'fill'}>
+				<ChipInput
+					data-testid={'domain-input'}
+					disableOptions
+					confirmChipOnBlur={false}
+					onInputType={onInputType}
+					options={domainOption}
+					value={domainList}
+					onChange={onChange}
+					requireUniqueChips
+					separators={[]}
+					placeholder={t('domains.GeneralSettings.searchDomain.label', 'Search Domain')}
+					disabled={isEnableSearchAllDomainsByFeature}
+					style={{ pointerEvents: isEnableSearchAllDomainsByFeature ? 'none' : 'auto' }}
+				/>
+			</Row>
+		</Tooltip>
 	);
 };
 export default DomainListChipInput;
