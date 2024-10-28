@@ -518,6 +518,7 @@ const DomainGeneralSettings: FC = () => {
 		}
 		setCarbonioNotificationFrom(domainData.carbonioNotificationFrom);
 		setCarbonioNotificationRecipients(domainData.carbonioNotificationRecipients);
+		setDomainList(domainData.carbonioSearchSpecifiedDomainsByFeature);
 		setIsDirty(false);
 	};
 	const handleSuccess = (data: { domain: Domain[] }): void => {
@@ -1071,9 +1072,10 @@ const DomainGeneralSettings: FC = () => {
 										<Text size="small" weight="bold">
 											{t(
 												'domains.generalSettings.AllowSearchUserFromSpecificDomains',
-												'Search users from a specific domains'
+												'Search users in specific domains'
 											)}
 										</Text>
+
 										<Padding top="small" />
 										<DomainListChipInput
 											domainList={domainList}
