@@ -356,6 +356,9 @@ export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML = 'zimbraAmavisDomainDisclaimerHTML';
 export const ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY = 'zimbraAmavisOutboundDisclaimersOnly';
+export const CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE = 'carbonioSearchAllDomainsByFeature';
+export const CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE =
+	'carbonioSearchSpecifiedDomainsByFeature';
 export const GLOBAL_SETTINGS_ROUTE = 'global/settings';
 export const SETTINGS = 'settings';
 export const IS_SERVER_LIST_EXPANDED = 'isServerListExpanded';
@@ -445,3 +448,4 @@ export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
 export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
+export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';

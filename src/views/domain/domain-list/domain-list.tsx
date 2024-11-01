@@ -46,7 +46,7 @@ type ZimbraDomain = {
 	a: ZimbraDomainAttribute[];
 };
 
-type ZimbraDomainResponse = {
+export type ZimbraDomainResponse = {
 	domain: ZimbraDomain[];
 	more: boolean;
 	searchTotal: number;
