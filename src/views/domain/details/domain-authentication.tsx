@@ -64,11 +64,15 @@ const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
 
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+
+	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
+
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean | null>(null);
-	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
 	const [zimbraAuthLdapSearchBindDn, setZimbraAuthLdapSearchBindDn] = useState<string>('');
 	const [zimbraAuthLdapSearchBindPassword, setZimbraAuthLdapSearchBindPassword] =
@@ -77,11 +81,16 @@ const DomainAuthentication: FC = () => {
 		useState<boolean>(false);
 	const [zimbraAuthLdapSearchFilter, setZimbraAuthLdapSearchFilter] = useState<string>('');
 	const [zimbraAuthLdapSearchBase, setZimbraAuthLdapSearchBase] = useState<string>('');
-	const [toggleLoginVerfyBtn, setToggleLoginVerfyBtn] = useState<boolean>(true);
+	const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
+		useState<boolean>(false);
+
+	const [toggleLoginVerifyBtn, setToggleLoginVerifyBtn] = useState<boolean>(true);
 	const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
 	const [isValidUserName, setIsValidUserName] = useState<boolean>(true);
 	const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
-	const createSnackbar = useSnackbar();
+	const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
+	const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
+
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 
@@ -95,8 +104,7 @@ const DomainAuthentication: FC = () => {
 	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
-	const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
-	const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
+
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -105,10 +113,8 @@ const DomainAuthentication: FC = () => {
 			}
 		}
 	}, [userSetting?.attrs]);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
-		useState<boolean>(false);
 
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const localLdapTrans = t(
 		'label.method_allows_local_ldap_only',
 		'This method allows usage of Local LDAP'
@@ -354,7 +360,7 @@ const DomainAuthentication: FC = () => {
 		() => setZimbraAuthLdapStartTlsEnabled((c) => !c),
 		[]
 	);
-	const resetPassowrdStatusChange = useCallback(
+	const resetPasswordStatusChange = useCallback(
 		() => setZimbraFeatureResetPasswordStatus((c) => !c),
 		[]
 	);
@@ -464,7 +470,9 @@ const DomainAuthentication: FC = () => {
 					replace: true
 				});
 				if (isGlobalAdmin) {
-					flushCache('domain', 'id', domainAuthData.zimbraId);
+					flushCache('domain', 'id', domainAuthData.zimbraId).then((): void => {
+						// no operation
+					});
 				}
 				const domain: objectType = data?.domain[0];
 				if (domain) {
@@ -497,9 +505,9 @@ const DomainAuthentication: FC = () => {
 			isValidPassword
 		) {
 			setIsSuccessVerify(false);
-			setToggleLoginVerfyBtn(false);
+			setToggleLoginVerifyBtn(false);
 		} else {
-			setToggleLoginVerfyBtn(true);
+			setToggleLoginVerifyBtn(true);
 		}
 	}, [
 		isValidLdapUrl,
@@ -511,8 +519,8 @@ const DomainAuthentication: FC = () => {
 		zimbraAuthMech?.value
 	]);
 
-	const handleClickLoginAndVarify = useCallback(() => {
-		setToggleLoginVerfyBtn(true);
+	const handleClickLoginAndVerify = useCallback(() => {
+		setToggleLoginVerifyBtn(true);
 		const body: {
 			name?: string;
 			password?: string;
@@ -558,7 +566,7 @@ const DomainAuthentication: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					setToggleLoginVerfyBtn(false);
+					setToggleLoginVerifyBtn(false);
 				}
 			})
 			.catch((error) => {
@@ -572,7 +580,7 @@ const DomainAuthentication: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				setToggleLoginVerfyBtn(false);
+				setToggleLoginVerifyBtn(false);
 			});
 	}, [
 		createSnackbar,
@@ -872,8 +880,8 @@ const DomainAuthentication: FC = () => {
 										color={isSuccessVerify ? 'success' : 'primary'}
 										width="fill"
 										size="extralarge"
-										onClick={handleClickLoginAndVarify}
-										disabled={toggleLoginVerfyBtn}
+										onClick={handleClickLoginAndVerify}
+										disabled={toggleLoginVerifyBtn}
 									/>
 								</Padding>
 							</ListRow>
@@ -892,7 +900,7 @@ const DomainAuthentication: FC = () => {
 												'label.show_forget_password_link',
 												'Show "Forget Password" link in the login page'
 											)}
-											onClick={resetPassowrdStatusChange}
+											onClick={resetPasswordStatusChange}
 											iconColor="primary"
 										/>
 									</Padding>
