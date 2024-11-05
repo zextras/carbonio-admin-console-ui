@@ -283,8 +283,13 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
-		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value) {
+		if (
+			!_.isEmpty(domainAuthData) &&
+			domainAuthData.zimbraAuthMech !== undefined &&
+			zimbraAuthMech?.value !== undefined
+		) {
+			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech.value) {
+				console.log('zimbraAuthMech', domainAuthData.zimbraAuthMech, zimbraAuthMech);
 				setIsDirty(true);
 			}
 		}
@@ -294,6 +299,11 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
+				console.log(
+					'zimbraPasswordChangeListener',
+					domainAuthData.zimbraPasswordChangeListener,
+					zimbraPasswordChangeListener
+				);
 				setIsDirty(true);
 			}
 		}
@@ -305,6 +315,11 @@ const DomainAuthentication: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			if (oldFallbacktoLocalValue !== zimbraAuthFallbackToLocal) {
+				console.log(
+					'zimbraAuthFallbackToLocal',
+					oldFallbacktoLocalValue,
+					zimbraAuthFallbackToLocal
+				);
 				setIsDirty(true);
 			}
 		}
@@ -314,6 +329,7 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
+				console.log('zimbraAuthLdapURL', domainAuthData.zimbraAuthLdapURL, zimbraAuthLdapURL);
 				setIsDirty(true);
 			}
 		}
@@ -323,6 +339,11 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
+				console.log(
+					'zimbraAuthLdapSearchBase',
+					domainAuthData.zimbraAuthLdapSearchBase,
+					zimbraAuthLdapSearchBase
+				);
 				setIsDirty(true);
 			}
 		}
@@ -332,6 +353,11 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
+				console.log(
+					'zimbraAuthLdapSearchFilter',
+					domainAuthData.zimbraAuthLdapSearchFilter,
+					zimbraAuthLdapSearchFilter
+				);
 				setIsDirty(true);
 			}
 		}
@@ -341,6 +367,11 @@ const DomainAuthentication: FC = () => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldAuthLdapStartTlsValue = domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE';
 			if (oldAuthLdapStartTlsValue !== zimbraAuthLdapStartTlsEnabled) {
+				console.log(
+					'zimbraAuthLdapStartTlsEnabled',
+					oldAuthLdapStartTlsValue,
+					zimbraAuthLdapStartTlsEnabled
+				);
 				setIsDirty(true);
 			}
 		}
@@ -350,6 +381,11 @@ const DomainAuthentication: FC = () => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldResetPasswordStatus = domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
 			if (oldResetPasswordStatus !== zimbraFeatureResetPasswordStatus) {
+				console.log(
+					'zimbraFeatureResetPasswordStatus',
+					oldResetPasswordStatus,
+					zimbraFeatureResetPasswordStatus
+				);
 				setIsDirty(true);
 			}
 		}
