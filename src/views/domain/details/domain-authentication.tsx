@@ -366,7 +366,7 @@ const DomainAuthentication: FC = () => {
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldAuthLdapStartTlsValue = domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE';
-			if (oldAuthLdapStartTlsValue !== zimbraAuthLdapStartTlsEnabled) {
+			if (oldAuthLdapStartTlsValue !== Boolean(zimbraAuthLdapStartTlsEnabled)) {
 				console.log(
 					'zimbraAuthLdapStartTlsEnabled',
 					oldAuthLdapStartTlsValue,
