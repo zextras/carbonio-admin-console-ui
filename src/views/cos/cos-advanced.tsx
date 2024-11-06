@@ -396,7 +396,7 @@ const CosAdvanced: FC = () => {
 				);
 
 				setAccountQuotaGBValue(
-					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(3) : ''
+					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : ''
 				);
 
 				setTimeValues(
@@ -517,8 +517,8 @@ const CosAdvanced: FC = () => {
 	const getFileQuota = useCallback((cosId: string): void => {
 		getFileQuotaById(cosId, COS).then((res: any) => {
 			if (res?.limit) {
-				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
-				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
+				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
+				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
 			}
 		});
 	}, []);

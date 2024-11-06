@@ -404,7 +404,7 @@ const EditAccountGeneralSection: FC<{
 		) {
 			setAccountQuotaGBValue(
 				initAccountDetail.zimbraMailQuota
-					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(3)
+					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(2)
 					: ''
 			);
 		}
@@ -417,7 +417,7 @@ const EditAccountGeneralSection: FC<{
 		) {
 			setFileQuotaGBValue(
 				initAccountDetail?.filesQuotaLimit
-					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)
+					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)
 					: ''
 			);
 		}
@@ -660,11 +660,11 @@ const EditAccountGeneralSection: FC<{
 	const calculatedFilesQuotaSize: string = useMemo(
 		() =>
 			initAccountDetail?.filesQuotaLimit > 0
-				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} ${t(
+				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)} ${t('label.gb', 'GB')}`
-				: `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} ${t('label.of', 'Of')}  ${t(
+				  )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
+				: `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
 				  )}`,
@@ -674,11 +674,11 @@ const EditAccountGeneralSection: FC<{
 	const calculatedMailboxQuotaSize: string = useMemo(
 		() =>
 			initAccountDetail?.zimbraMailQuota > 0
-				? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(3)} ${t(
+				? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(3)} ${t('label.gb', 'GB')}`
-				: `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(3)} ${t('label.of', 'Of')}  ${t(
+				  )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
+				: `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
 				  )}`,
@@ -919,11 +919,11 @@ const EditAccountGeneralSection: FC<{
 							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
 							subValue={accountQuotaGBValue}
 							inheritedValue={
-								cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(3) : ''
+								cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
 							}
 							fromSubValue={
 								accSpecificDetail.zimbraMailQuota
-									? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(3)
+									? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(2)
 									: undefined
 							}
 							background="gray5"
@@ -957,7 +957,7 @@ const EditAccountGeneralSection: FC<{
 								label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
 								subValue={fileQuotaGBValue}
 								inheritedValue={
-									cosDetail.filesQuotaLimit ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(3) : ''
+									cosDetail.filesQuotaLimit ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2) : ''
 								}
 								fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
 								onChange={changeFileQuotaLimit}
