@@ -195,6 +195,34 @@ describe('Domain Authentication', () => {
 
 			expect(mockModifyDomain).toHaveBeenCalledTimes(1);
 		});
+
+		test('clicking cancel button hides save and cancel button', async () => {
+			const { user } = setup(<DomainAuthentication />);
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			const authMethodOptionCarbonio = await within(authMethodSelect).findByText('Carbonio');
+
+			await act(async () => {
+				await user.click(authMethodOptionCarbonio);
+			});
+
+			const authMethodOptionLocalLdapOnly = await screen.findByText(/local ldap only/i);
+			await act(async () => {
+				await user.click(authMethodOptionLocalLdapOnly);
+			});
+
+			const ldapUrlTextBox = screen.getByRole('textbox', { name: /url/i });
+			await act(async () => {
+				await user.type(ldapUrlTextBox, 'ldap://localhost:389');
+			});
+
+			await act(async () => {
+				await user.click(screen.getByTestId('cancel-button'));
+			});
+
+			expect(screen.queryByTestId('cancel-button')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('save-button')).not.toBeInTheDocument();
+		});
 	});
 
 	describe('Verify Auth: Toggle switches', () => {
