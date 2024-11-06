@@ -937,6 +937,7 @@ const DomainAuthentication: FC = () => {
 								{isAdvanced && (
 									<Padding vertical="small" horizontal="small" width="70%">
 										<Switch
+											data-testid="reset-password-switch"
 											value={zimbraFeatureResetPasswordStatus}
 											label={t(
 												'label.show_forget_password_link',
