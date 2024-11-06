@@ -7,10 +7,12 @@
 
 import React from 'react';
 
+import { jest } from '@jest/globals';
 import { act, screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
 import { Domain } from '../../../../../types';
+import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { setup } from '../../../../tests/testUtils';
@@ -76,6 +78,10 @@ function getDefaultDomain(
 		]
 	};
 }
+
+jest.mock('../../../../services/modify-domain-service', () => ({
+	modifyDomain: jest.fn()
+}));
 
 describe('Domain Authentication', () => {
 	const setupDomainStore = (): void => {
@@ -157,6 +163,37 @@ describe('Domain Authentication', () => {
 
 			expect(screen.getByTestId('save-button')).toBeInTheDocument();
 			expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+		});
+
+		test('clicking save button calls modifyDomain', async () => {
+			const mockModifyDomain = modifyDomain as jest.MockedFunction<typeof modifyDomain>;
+			mockModifyDomain.mockResolvedValue({});
+			mockModifyDomain.mockResolvedValue({});
+
+			const { user } = setup(<DomainAuthentication />);
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			const authMethodOptionCarbonio = await within(authMethodSelect).findByText('Carbonio');
+
+			await act(async () => {
+				await user.click(authMethodOptionCarbonio);
+			});
+
+			const authMethodOptionLocalLdapOnly = await screen.findByText(/local ldap only/i);
+			await act(async () => {
+				await user.click(authMethodOptionLocalLdapOnly);
+			});
+
+			const ldapUrlTextBox = screen.getByRole('textbox', { name: /url/i });
+			await act(async () => {
+				await user.type(ldapUrlTextBox, 'ldap://localhost:389');
+			});
+
+			await act(async () => {
+				await user.click(screen.getByTestId('save-button'));
+			});
+
+			expect(mockModifyDomain).toHaveBeenCalledTimes(1);
 		});
 	});
 
