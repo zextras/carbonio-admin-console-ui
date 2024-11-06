@@ -657,6 +657,7 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Select
+										data-testid={'auth-method-select'}
 										background="gray5"
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										showCheckbox={false}

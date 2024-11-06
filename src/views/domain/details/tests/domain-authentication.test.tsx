@@ -89,7 +89,78 @@ describe('Domain Authentication', () => {
 		(useSnackbar as jest.Mock).mockReturnValue(createSnackbarSpy);
 	});
 
-	describe('Verify Auth section Toggle switches', () => {
+	describe('Auth Method', () => {
+		beforeEach(() => {
+			useAuthIsAdvanced.getState().setIsAdvanced(true);
+			useDomainStore.getState().setDomain(getDefaultDomain());
+		});
+
+		test('renders Auth Method section with valid domain data', () => {
+			setup(<DomainAuthentication />);
+
+			expect(screen.getByText('Auth Method')).toBeInTheDocument();
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			expect(within(authMethodSelect).getByText('Your Auth Method is')).toBeInTheDocument();
+		});
+
+		test('displays Carbonio as default auth method', async () => {
+			setup(<DomainAuthentication />);
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			expect(await within(authMethodSelect).findByText('Carbonio')).toBeInTheDocument();
+		});
+
+		test('displays URL, Filter, Search Bind User, and Password fields', () => {
+			setup(<DomainAuthentication />);
+
+			expect(screen.getByRole('textbox', { name: /url/i })).toBeInTheDocument();
+			expect(screen.getByRole('textbox', { name: /filter/i })).toBeInTheDocument();
+			expect(screen.getByRole('textbox', { name: /search bind user/i })).toBeInTheDocument();
+			expect(screen.getByRole('textbox', { name: /search bind password/i })).toBeInTheDocument();
+		});
+
+		test('expands to show additional LDAP/AD options when Carbonio is clicked', async () => {
+			const { user } = setup(<DomainAuthentication />);
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			const authMethodOptionCarbonio = await within(authMethodSelect).findByText('Carbonio');
+
+			await act(async () => {
+				await user.click(authMethodOptionCarbonio);
+			});
+
+			expect(screen.getByText(/local ldap only/i)).toBeInTheDocument();
+			expect(screen.getByText(/external ldap only/i)).toBeInTheDocument();
+			expect(screen.getByText(/external ad only/i)).toBeInTheDocument();
+		});
+
+		test('displays save and cancel buttons after modifying fields', async () => {
+			const { user } = setup(<DomainAuthentication />);
+
+			const authMethodSelect = screen.getByTestId('auth-method-select');
+			const authMethodOptionCarbonio = await within(authMethodSelect).findByText('Carbonio');
+
+			await act(async () => {
+				await user.click(authMethodOptionCarbonio);
+			});
+
+			const authMethodOptionLocalLdapOnly = await screen.findByText(/local ldap only/i);
+			await act(async () => {
+				await user.click(authMethodOptionLocalLdapOnly);
+			});
+
+			const ldapUrlTextBox = screen.getByRole('textbox', { name: /url/i });
+			await act(async () => {
+				await user.type(ldapUrlTextBox, 'ldap://localhost:389');
+			});
+
+			expect(screen.getByTestId('save-button')).toBeInTheDocument();
+			expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
+		});
+	});
+
+	describe('Verify Auth: Toggle switches', () => {
 		beforeEach(() => {
 			useAuthIsAdvanced.getState().setIsAdvanced(true);
 		});
