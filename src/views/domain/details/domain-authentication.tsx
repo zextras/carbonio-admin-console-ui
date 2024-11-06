@@ -232,20 +232,6 @@ const DomainAuthentication: FC = () => {
 				obj[item?.n] = item._content;
 			});
 
-			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-			const handleNullable = <T extends string | boolean>(
-				key: keyof typeof obj,
-				setter: (value: T) => void,
-				defaultValue: T
-			) => {
-				if (obj[key] ?? defaultValue) {
-					setter(obj[key]);
-				} else {
-					obj[key] = defaultValue;
-					setter(defaultValue);
-				}
-			};
-
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
 					? DOMAIN_AUTH_LIST.find(
@@ -254,28 +240,26 @@ const DomainAuthentication: FC = () => {
 					: DOMAIN_AUTH_LIST[0]
 			);
 
-			handleNullable<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
-			handleNullable<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
-			handleNullable<string>('zimbraAuthLdapSearchBindDn', setZimbraAuthLdapSearchBindDn, '');
-			handleNullable<string>(
-				'zimbraAuthLdapSearchBindPassword',
-				setZimbraAuthLdapSearchBindPassword,
-				''
-			);
-			handleNullable<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
-			handleNullable<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
+			const setValue = <T extends string>(
+				key: keyof typeof obj,
+				setter: (value: T) => void,
+				defaultValue: T
+			): void => {
+				const value = obj[key] ?? defaultValue;
+				obj[key] = value;
+				setter(value);
+			};
 
-			if (obj.zimbraAuthFallbackToLocal) {
-				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
-			}
+			setValue<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
+			setValue<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
+			setValue<string>('zimbraAuthLdapSearchBindDn', setZimbraAuthLdapSearchBindDn, '');
+			setValue<string>('zimbraAuthLdapSearchBindPassword', setZimbraAuthLdapSearchBindPassword, '');
+			setValue<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
+			setValue<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
 
-			if (obj.zimbraAuthLdapStartTlsEnabled) {
-				setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
-			}
-
-			if (obj.zimbraFeatureResetPasswordStatus) {
-				setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
-			}
+			setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
+			setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
+			setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
 
 			setDomainAuthData(obj);
 			setIsDirty(false);
@@ -290,7 +274,6 @@ const DomainAuthentication: FC = () => {
 			zimbraAuthMech?.value !== undefined
 		) {
 			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech.value) {
-				console.log('zimbraAuthMech', domainAuthData.zimbraAuthMech, zimbraAuthMech);
 				setIsDirty(true);
 			}
 		}
@@ -300,11 +283,6 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
-				console.log(
-					'zimbraPasswordChangeListener',
-					domainAuthData.zimbraPasswordChangeListener,
-					zimbraPasswordChangeListener
-				);
 				setIsDirty(true);
 			}
 		}
@@ -313,20 +291,7 @@ const DomainAuthentication: FC = () => {
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldFallbackToLocalValue = domainAuthData.zimbraAuthFallbackToLocal === 'TRUE';
-			let currentFallbackToLocalValue = false;
-
-			if (typeof zimbraAuthFallbackToLocal === 'string') {
-				currentFallbackToLocalValue = zimbraAuthFallbackToLocal === 'TRUE';
-			} else {
-				currentFallbackToLocalValue = Boolean(zimbraAuthFallbackToLocal);
-			}
-
-			if (oldFallbackToLocalValue !== currentFallbackToLocalValue) {
-				console.log(
-					'zimbraAuthFallbackToLocal',
-					oldFallbackToLocalValue,
-					currentFallbackToLocalValue
-				);
+			if (oldFallbackToLocalValue !== zimbraAuthFallbackToLocal) {
 				setIsDirty(true);
 			}
 		}
@@ -336,7 +301,6 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
-				console.log('zimbraAuthLdapURL', domainAuthData.zimbraAuthLdapURL, zimbraAuthLdapURL);
 				setIsDirty(true);
 			}
 		}
@@ -346,11 +310,6 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
-				console.log(
-					'zimbraAuthLdapSearchBase',
-					domainAuthData.zimbraAuthLdapSearchBase,
-					zimbraAuthLdapSearchBase
-				);
 				setIsDirty(true);
 			}
 		}
@@ -360,11 +319,6 @@ const DomainAuthentication: FC = () => {
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
-				console.log(
-					'zimbraAuthLdapSearchFilter',
-					domainAuthData.zimbraAuthLdapSearchFilter,
-					zimbraAuthLdapSearchFilter
-				);
 				setIsDirty(true);
 			}
 		}
@@ -373,12 +327,7 @@ const DomainAuthentication: FC = () => {
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldAuthLdapStartTlsValue = domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE';
-			if (oldAuthLdapStartTlsValue !== Boolean(zimbraAuthLdapStartTlsEnabled)) {
-				console.log(
-					'zimbraAuthLdapStartTlsEnabled',
-					oldAuthLdapStartTlsValue,
-					zimbraAuthLdapStartTlsEnabled
-				);
+			if (oldAuthLdapStartTlsValue !== zimbraAuthLdapStartTlsEnabled) {
 				setIsDirty(true);
 			}
 		}
@@ -388,11 +337,6 @@ const DomainAuthentication: FC = () => {
 		if (!_.isEmpty(domainAuthData)) {
 			const oldResetPasswordStatus = domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
 			if (oldResetPasswordStatus !== zimbraFeatureResetPasswordStatus) {
-				console.log(
-					'zimbraFeatureResetPasswordStatus',
-					oldResetPasswordStatus,
-					zimbraFeatureResetPasswordStatus
-				);
 				setIsDirty(true);
 			}
 		}
