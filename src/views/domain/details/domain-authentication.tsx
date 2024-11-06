@@ -311,14 +311,20 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
-			const oldFallbacktoLocalValue = domainAuthData.zimbraAuthFallbackToLocal;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			if (oldFallbacktoLocalValue !== zimbraAuthFallbackToLocal) {
+			const oldFallbackToLocalValue = domainAuthData.zimbraAuthFallbackToLocal === 'TRUE';
+			let currentFallbackToLocalValue = false;
+
+			if (typeof zimbraAuthFallbackToLocal === 'string') {
+				currentFallbackToLocalValue = zimbraAuthFallbackToLocal === 'TRUE';
+			} else {
+				currentFallbackToLocalValue = Boolean(zimbraAuthFallbackToLocal);
+			}
+
+			if (oldFallbackToLocalValue !== currentFallbackToLocalValue) {
 				console.log(
 					'zimbraAuthFallbackToLocal',
-					oldFallbacktoLocalValue,
-					zimbraAuthFallbackToLocal
+					oldFallbackToLocalValue,
+					currentFallbackToLocalValue
 				);
 				setIsDirty(true);
 			}
