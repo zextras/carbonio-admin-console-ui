@@ -611,6 +611,7 @@ const DomainAuthentication: FC = () => {
 								<Padding right="small">
 									{isDirty && (
 										<Button
+											data-testid={'cancel-button'}
 											label={t('label.cancel', 'Cancel')}
 											color="secondary"
 											onClick={onCancel}
@@ -619,6 +620,7 @@ const DomainAuthentication: FC = () => {
 								</Padding>
 								{isDirty && (
 									<Button
+										data-testid={'save-button'}
 										label={t('label.save', 'Save')}
 										color="primary"
 										onClick={onSave}

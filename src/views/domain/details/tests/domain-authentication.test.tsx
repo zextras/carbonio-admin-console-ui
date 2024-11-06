@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
 import { Domain } from '../../../../../types';
@@ -142,6 +142,46 @@ describe('Domain Authentication', () => {
 
 				const enableSecureConnection = screen.getByTestId('enable-secure-connection');
 				expect(within(enableSecureConnection).getByTestId(expectedIcon)).toBeInTheDocument();
+			}
+		);
+
+		const toggleSwitchTests = [
+			{
+				description: 'zimbraFeatureResetPasswordStatus switch is toggled',
+				initialState: { zimbraFeatureResetPasswordStatus: 'enabled' },
+				switchTestId: 'reset-password-switch',
+				initialIcon: 'icon: ToggleRight',
+				toggledIcon: 'icon: ToggleLeftOutline'
+			},
+			{
+				description: 'zimbraAuthLdapStartTlsEnabled switch is toggled',
+				initialState: { zimbraAuthLdapStartTlsEnabled: 'TRUE' },
+				switchTestId: 'enable-secure-connection',
+				initialIcon: 'icon: ToggleRight',
+				toggledIcon: 'icon: ToggleLeftOutline'
+			}
+		];
+
+		test.each(toggleSwitchTests)(
+			'should show cancel/save buttons when $description',
+			async ({ initialState, switchTestId, initialIcon, toggledIcon }) => {
+				useAuthIsAdvanced.getState().setIsAdvanced(true);
+				useDomainStore.getState().setDomain(getDefaultDomain(initialState));
+
+				const { user } = setup(<DomainAuthentication />);
+				expect(screen.getByText('Verify Auth')).toBeInTheDocument();
+
+				const toggleSwitch = screen.getByTestId(switchTestId);
+				expect(within(toggleSwitch).getByTestId(initialIcon)).toBeInTheDocument();
+				expect(screen.queryByTestId('save-button')).not.toBeInTheDocument();
+				expect(screen.queryByTestId('cancel-button')).not.toBeInTheDocument();
+
+				await act(async () => {
+					await user.click(toggleSwitch);
+				});
+				expect(within(toggleSwitch).getByTestId(toggledIcon)).toBeInTheDocument();
+				expect(screen.getByTestId('save-button')).toBeVisible();
+				expect(screen.getByTestId('cancel-button')).toBeVisible();
 			}
 		);
 	});
