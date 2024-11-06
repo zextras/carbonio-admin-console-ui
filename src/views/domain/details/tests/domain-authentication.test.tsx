@@ -30,7 +30,18 @@ jest.mock('@zextras/carbonio-design-system', () => {
 	};
 });
 
-function getDefaultDomain(args?: { zimbraFeatureResetPasswordStatus?: string }): Domain {
+function getDefaultEmptyDomain(): Domain {
+	return {
+		name: 'demo.zextras.io',
+		id: '142f56c1-aaf1-432b-9cfa-448e1b952cf6',
+		a: []
+	};
+}
+
+function getDefaultDomain(args?: {
+	zimbraFeatureResetPasswordStatus?: string;
+	zimbraAuthLdapStartTlsEnabled?: string;
+}): Domain {
 	return {
 		name: 'demo.zextras.io',
 		id: '142f56c1-aaf1-432b-9cfa-448e1b952cf6',
@@ -118,6 +129,10 @@ function getDefaultDomain(args?: { zimbraFeatureResetPasswordStatus?: string }):
 			{
 				n: 'zimbraFeatureResetPasswordStatus',
 				_content: args?.zimbraFeatureResetPasswordStatus ?? 'enabled'
+			},
+			{
+				n: 'zimbraAuthLdapStartTlsEnabled',
+				_content: args?.zimbraAuthLdapStartTlsEnabled ?? 'TRUE'
 			}
 		]
 	};
@@ -183,5 +198,57 @@ describe('Domain Authentication', () => {
 
 		const forgotPasswordSwitch = screen.getByTestId('reset-password-switch');
 		expect(within(forgotPasswordSwitch).getByTestId('icon: ToggleLeftOutline')).toBeInTheDocument();
+	});
+
+	it('reset password  switch must be turned off when zimbraFeatureResetPasswordStatus is unset/missing in the domain', () => {
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
+
+		useDomainStore.getState().setDomain(getDefaultEmptyDomain());
+
+		setup(<DomainAuthentication />);
+		expect(screen.getByText('Verify Auth')).toBeInTheDocument();
+
+		const forgotPasswordSwitch = screen.getByTestId('reset-password-switch');
+		expect(within(forgotPasswordSwitch).getByTestId('icon: ToggleLeftOutline')).toBeInTheDocument();
+	});
+
+	it('enable secure connection switch must be turned on when zimbraAuthLdapStartTlsEnabled is TRUE', () => {
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
+
+		setup(<DomainAuthentication />);
+		expect(screen.getByText('Verify Auth')).toBeInTheDocument();
+
+		const enableSecureConnection = screen.getByTestId('enable-secure-connection');
+		expect(within(enableSecureConnection).getByTestId('icon: ToggleRight')).toBeInTheDocument();
+	});
+
+	it('enable secure connection switch must be turned off when zimbraAuthLdapStartTlsEnabled is FALSE', () => {
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
+
+		useDomainStore
+			.getState()
+			.setDomain(getDefaultDomain({ zimbraAuthLdapStartTlsEnabled: 'FALSE' }));
+
+		setup(<DomainAuthentication />);
+		expect(screen.getByText('Verify Auth')).toBeInTheDocument();
+
+		const enableSecureConnection = screen.getByTestId('enable-secure-connection');
+		expect(
+			within(enableSecureConnection).getByTestId('icon: ToggleLeftOutline')
+		).toBeInTheDocument();
+	});
+
+	it('enable secure connection switch must be turned off when zimbraAuthLdapStartTlsEnabled is unset/missing in the domain', () => {
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
+
+		useDomainStore.getState().setDomain(getDefaultEmptyDomain());
+
+		setup(<DomainAuthentication />);
+		expect(screen.getByText('Verify Auth')).toBeInTheDocument();
+
+		const enableSecureConnection = screen.getByTestId('enable-secure-connection');
+		expect(
+			within(enableSecureConnection).getByTestId('icon: ToggleLeftOutline')
+		).toBeInTheDocument();
 	});
 });

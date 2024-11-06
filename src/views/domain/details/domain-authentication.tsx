@@ -6,17 +6,17 @@
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
-	Input,
 	Button,
-	Switch,
-	Select,
+	Container,
+	Divider,
 	Icon,
+	Input,
+	Padding,
 	Popper,
+	Row,
+	Select,
+	Switch,
+	Text,
 	Tooltip as TooltipDefault,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
@@ -72,7 +72,7 @@ const DomainAuthentication: FC = () => {
 
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean | null>(null);
+	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
 	const [zimbraAuthLdapSearchBindDn, setZimbraAuthLdapSearchBindDn] = useState<string>('');
 	const [zimbraAuthLdapSearchBindPassword, setZimbraAuthLdapSearchBindPassword] =
@@ -255,7 +255,6 @@ const DomainAuthentication: FC = () => {
 			);
 
 			handleNullable<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
-			handleNullable<boolean>('zimbraAuthFallbackToLocal', setZimbraAuthFallbackToLocal, false);
 			handleNullable<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
 			handleNullable<string>('zimbraAuthLdapSearchBindDn', setZimbraAuthLdapSearchBindDn, '');
 			handleNullable<string>(
@@ -265,15 +264,17 @@ const DomainAuthentication: FC = () => {
 			);
 			handleNullable<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
 			handleNullable<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
-			handleNullable<boolean>(
-				'zimbraAuthLdapStartTlsEnabled',
-				setZimbraAuthLdapStartTlsEnabled,
-				false
-			);
+
+			if (obj.zimbraAuthFallbackToLocal) {
+				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
+			}
+
+			if (obj.zimbraAuthLdapStartTlsEnabled) {
+				setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
+			}
 
 			if (obj.zimbraFeatureResetPasswordStatus) {
-				const resetPasswordStatus = obj.zimbraFeatureResetPasswordStatus === ENABLED;
-				setZimbraFeatureResetPasswordStatus(resetPasswordStatus);
+				setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
 			}
 
 			setDomainAuthData(obj);
@@ -987,6 +988,7 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Switch
+										data-testid={'enable-secure-connection'}
 										value={zimbraAuthLdapStartTlsEnabled}
 										label={t(
 											'label.enable_secure_connection',
