@@ -270,11 +270,11 @@ const DomainAuthentication: FC = () => {
 				setZimbraAuthLdapStartTlsEnabled,
 				false
 			);
-			handleNullable<boolean>(
-				'zimbraFeatureResetPasswordStatus',
-				setZimbraFeatureResetPasswordStatus,
-				false
-			);
+
+			if (obj.zimbraFeatureResetPasswordStatus) {
+				const resetPasswordStatus = obj.zimbraFeatureResetPasswordStatus === ENABLED;
+				setZimbraFeatureResetPasswordStatus(resetPasswordStatus);
+			}
 
 			setDomainAuthData(obj);
 			setIsDirty(false);
