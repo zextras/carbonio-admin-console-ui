@@ -567,17 +567,21 @@ const EditAccountGeneralSection: FC<{
 		},
 		[createSnackbar, t]
 	);
+	const setUserSessionListState = useCallback((): void => {
+		setUserSessionList((prev: any) =>
+			prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+		);
+		setAllUserSessionList((prev: any) =>
+			prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+		);
+	}, [selectedSession, setAllUserSessionList, setUserSessionList]);
+
 	const handleEndSession = useCallback(
 		(token: string) => {
 			endSession(selectedSession[0], accountDetail?.name, token)
 				.then((resp: any) => {
 					if (!resp?._jsns) throw new Error('Session end failed');
-					setUserSessionList((prev: any) =>
-						prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-					);
-					setAllUserSessionList((prev: any) =>
-						prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-					);
+					setUserSessionListState();
 					setSelectedSession([]);
 					createSnackbar({
 						key: 'success',
@@ -591,11 +595,10 @@ const EditAccountGeneralSection: FC<{
 				.catch(handleEndSessionError);
 		},
 		[
+			selectedSession,
 			accountDetail?.name,
 			handleEndSessionError,
-			selectedSession,
-			setUserSessionList,
-			setAllUserSessionList,
+			setUserSessionListState,
 			createSnackbar,
 			t
 		]
