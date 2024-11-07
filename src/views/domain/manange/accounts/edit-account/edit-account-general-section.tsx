@@ -494,61 +494,65 @@ const EditAccountGeneralSection: FC<{
 		setSelectedSession([item?.sid]);
 	}, []);
 
+	const handleUserSessionListUpdate = useCallback(() => {
+		const allRows = userSessionList.map((item: UserSession) => ({
+			id: item?.sid,
+			columns: [
+				<Container
+					crossAlignment="flex-start"
+					key={item?.zid}
+					style={{ cursor: 'pointer' }}
+					onClick={(): void => addSelection(item)}
+				>
+					<Text size="small" weight="light" color="#828282">
+						{item?.name}
+					</Text>
+				</Container>,
+				<Container
+					crossAlignment="flex-start"
+					key={item?.zid}
+					style={{ cursor: 'pointer' }}
+					onClick={(): void => addSelection(item)}
+				>
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
+						{item?.sid}
+					</Text>
+				</Container>,
+				<Container
+					crossAlignment="flex-start"
+					key={item?.zid}
+					style={{ cursor: 'pointer' }}
+					onClick={(): void => addSelection(item)}
+				>
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
+						{''}
+					</Text>
+				</Container>,
+				<Container
+					crossAlignment="flex-start"
+					key={item?.zid}
+					style={{ cursor: 'pointer' }}
+					onClick={(): void => addSelection(item)}
+				>
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
+						{''}
+					</Text>
+				</Container>
+			]
+		}));
+		setSessionListRows(allRows);
+	}, [addSelection, userSessionList]);
+
 	useEffect(() => {
 		if (userSessionList && userSessionList.length > 0) {
-			const allRows = userSessionList.map((item: UserSession) => ({
-				id: item?.sid,
-				columns: [
-					<Container
-						crossAlignment="flex-start"
-						key={item?.zid}
-						style={{ cursor: 'pointer' }}
-						onClick={(): void => addSelection(item)}
-					>
-						<Text size="small" weight="light" color="#828282">
-							{item?.name}
-						</Text>
-					</Container>,
-					<Container
-						crossAlignment="flex-start"
-						key={item?.zid}
-						style={{ cursor: 'pointer' }}
-						onClick={(): void => addSelection(item)}
-					>
-						<Text size="small" weight="light" key={item?.zid} color="#828282">
-							{item?.sid}
-						</Text>
-					</Container>,
-					<Container
-						crossAlignment="flex-start"
-						key={item?.zid}
-						style={{ cursor: 'pointer' }}
-						onClick={(): void => addSelection(item)}
-					>
-						<Text size="small" weight="light" key={item?.zid} color="#828282">
-							{''}
-						</Text>
-					</Container>,
-					<Container
-						crossAlignment="flex-start"
-						key={item?.zid}
-						style={{ cursor: 'pointer' }}
-						onClick={(): void => addSelection(item)}
-					>
-						<Text size="small" weight="light" key={item?.zid} color="#828282">
-							{''}
-						</Text>
-					</Container>
-				]
-			}));
-			setSessionListRows(allRows);
+			handleUserSessionListUpdate();
 		} else {
 			setSessionListRows([]);
 		}
-	}, [addSelection, userSessionList]);
+	}, [addSelection, handleUserSessionListUpdate, userSessionList]);
 
-	const onEndSession = useCallback(() => {
-		const handleError = (error: { message?: string }): void => {
+	const handleEndSessionError = useCallback(
+		(error: { message?: string }): void => {
 			setIsRequestInProgress(false);
 			createSnackbar({
 				key: 'error',
@@ -560,8 +564,10 @@ const EditAccountGeneralSection: FC<{
 				hideButton: true,
 				replace: true
 			});
-		};
-
+		},
+		[createSnackbar, t]
+	);
+	const onEndSession = useCallback(() => {
 		setIsRequestInProgress(true);
 		getDelegateAuthRequest(accountDetail?.zimbraId)
 			.then((res: any) => {
@@ -588,10 +594,11 @@ const EditAccountGeneralSection: FC<{
 				});
 				setIsRequestInProgress(false);
 			})
-			.catch(handleError);
+			.catch(handleEndSessionError);
 	}, [
 		accountDetail?.zimbraId,
 		accountDetail?.name,
+		handleEndSessionError,
 		selectedSession,
 		setUserSessionList,
 		setAllUserSessionList,
