@@ -686,7 +686,7 @@ const EditAccountGeneralSection: FC<{
 			</Row>
 			<Row mainAlignment="flex-start" width="100%">
 				<Quota
-					fill={quotaPercentage || 0}
+					fill={quotaPercentage ?? 0}
 					height="0.5rem"
 					background="gray5"
 					style={{ borderRadius: '2px' }}
@@ -721,24 +721,6 @@ const EditAccountGeneralSection: FC<{
 		<Row width="69%" mainAlignment="flex-start">
 			<Switch value={value} onClick={onClick} label={label} iconColor="primary" />
 		</Row>
-	);
-
-	const renderPasswordInput = (
-		label: string,
-		inputName: string,
-		value: string,
-		disabled: boolean
-	): React.JSX.Element => (
-		<Input
-			backgroundColor="gray5"
-			label={label}
-			onChange={changeAccDetail}
-			inputName={inputName}
-			type="password"
-			autoComplete="new-password"
-			value={value}
-			disabled={disabled}
-		/>
 	);
 
 	return (
