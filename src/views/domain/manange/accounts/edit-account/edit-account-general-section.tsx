@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -117,12 +116,12 @@ const EditAccountGeneralSection: FC<{
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
-	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState(undefined);
+	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const [fileQuotaGBValue, setFileQuotaGBValue] = useState(undefined);
+	const [fileQuotaGBValue, setFileQuotaGBValue] = useState('');
 	const [focusableFileQuota, setFocusableFileQuota] = useState(false);
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
@@ -384,7 +383,7 @@ const EditAccountGeneralSection: FC<{
 	const setEmptyAccountQuota = useCallback(
 		(keyName) => {
 			setEmptyValue(keyName);
-			setAccountQuotaGBValue(undefined);
+			setAccountQuotaGBValue('');
 		},
 		[setEmptyValue]
 	);
@@ -392,7 +391,7 @@ const EditAccountGeneralSection: FC<{
 	const setEmptyFileQuota = useCallback(
 		(keyName) => {
 			setEmptyValue(keyName);
-			setFileQuotaGBValue(undefined);
+			setFileQuotaGBValue('');
 		},
 		[setEmptyValue]
 	);
@@ -423,55 +422,50 @@ const EditAccountGeneralSection: FC<{
 		}
 	}, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
 
-	const items =
-		domainList.length > MAX_DOMAIN_DISPLAY
-			? [
-					{
-						customComponent: (
-							<>
-								<Row mainAlignment="flex-start">
-									<Padding horizontal="small">
-										<CustomIcon icon="InfoOutline"></CustomIcon>
-									</Padding>
-								</Row>
-								<Row
-									mainAlignment="flex-start"
-									width="100%"
-									padding={{
-										all: 'small'
-									}}
-								>
-									<Text overflow="break-word">
-										{t(
-											'many_domain_info_msg',
-											'So many domains! Which one would you like to see? Start typing to filter.'
-										)}
-									</Text>
-								</Row>
-							</>
-						)
-					}
-			  ]
-			: domainList.map((domain: objectType, index) => ({
-					id: domain.id,
-					label: domain.name,
+	const items = useMemo(() => {
+		if (domainList.length > MAX_DOMAIN_DISPLAY) {
+			return [
+				{
 					customComponent: (
-						<SelectItem
-							style={{
-								display: 'block',
-								textAlign: 'left',
-								height: 'inherit',
-								padding: '3px',
-								width: 'inherit'
-							}}
-							onClick={(): void => {
-								selectedDomain(domain?.name);
-							}}
-						>
-							{domain?.name}
-						</SelectItem>
+						<>
+							<Row mainAlignment="flex-start">
+								<Padding horizontal="small">
+									<CustomIcon icon="InfoOutline" />
+								</Padding>
+							</Row>
+							<Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
+								<Text overflow="break-word">
+									{t(
+										'many_domain_info_msg',
+										'So many domains! Which one would you like to see? Start typing to filter.'
+									)}
+								</Text>
+							</Row>
+						</>
 					)
-			  }));
+				}
+			];
+		}
+
+		return domainList.map((domain: objectType) => ({
+			id: domain.id,
+			label: domain.name,
+			customComponent: (
+				<SelectItem
+					style={{
+						display: 'block',
+						textAlign: 'left',
+						height: 'inherit',
+						padding: '3px',
+						width: 'inherit'
+					}}
+					onClick={(): void => selectedDomain(domain?.name)}
+				>
+					{domain?.name}
+				</SelectItem>
+			)
+		}));
+	}, [domainList, selectedDomain, t]);
 
 	useEffect(() => {
 		selectedDomain(accountDetail?.domainName);
@@ -554,63 +548,47 @@ const EditAccountGeneralSection: FC<{
 	}, [addSelection, userSessionList]);
 
 	const onEndSession = useCallback(() => {
+		const handleError = (error: { message?: string }): void => {
+			setIsRequestInProgress(false);
+			createSnackbar({
+				key: 'error',
+				severity: 'error',
+				label: error.message
+					? error.message
+					: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		};
+
 		setIsRequestInProgress(true);
 		getDelegateAuthRequest(accountDetail?.zimbraId)
 			.then((res: any) => {
-				if (res && res?.authToken) {
-					const token = res?.authToken[0]?._content;
-					setIsRequestInProgress(true);
-					endSession(selectedSession[0], accountDetail?.name, token)
-						.then((resp: any) => {
-							setIsRequestInProgress(false);
-							if (resp && resp?._jsns) {
-								setUserSessionList((prev: any) => [
-									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-								]);
-								setAllUserSessionList((prev: any) => [
-									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-								]);
-								setSelectedSession([]);
-								createSnackbar({
-									key: 'success',
-									severity: 'success',
-									label: t('label.session_end_success', 'Session end successfully'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-							}
-						})
-						.then((error: any) => {
-							setIsRequestInProgress(false);
-							createSnackbar({
-								key: 'error',
-								severity: 'error',
-								label: error.message
-									? error.message
-									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-
-								autoHideTimeout: 3000,
-								hideButton: true,
-								replace: true
-							});
-						});
-				}
+				if (!res?.authToken) throw new Error('Auth token missing');
+				return res?.authToken[0]?._content;
 			})
-			.then((error: any) => {
-				setIsRequestInProgress(false);
+			.then((token: string) => endSession(selectedSession[0], accountDetail?.name, token))
+			.then((resp: any) => {
+				if (!resp?._jsns) throw new Error('Session end failed');
+				setUserSessionList((prev: any) =>
+					prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+				);
+				setAllUserSessionList((prev: any) =>
+					prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+				);
+				setSelectedSession([]);
 				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label: error.message
-						? error.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-
+					key: 'success',
+					severity: 'success',
+					label: t('label.session_end_success', 'Session end successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
-			});
+				setIsRequestInProgress(false);
+			})
+			.catch(handleError);
 	}, [
 		accountDetail?.zimbraId,
 		accountDetail?.name,
@@ -685,6 +663,84 @@ const EditAccountGeneralSection: FC<{
 		[initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t]
 	);
 
+	const renderQuotaRow = (
+		label: string,
+		usageSize: string,
+		quotaPercentage: number | undefined,
+		onClick: () => void
+	): React.JSX.Element => (
+		<Row
+			width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
+			mainAlignment="space-between"
+			onClick={onClick}
+		>
+			<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
+				<Text size="extrasmall" color="secondary">
+					{label}
+				</Text>
+			</Row>
+			<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
+				<Text size="extrasmall" color="gray0">
+					{usageSize}
+				</Text>
+			</Row>
+			<Row mainAlignment="flex-start" width="100%">
+				<Quota
+					fill={quotaPercentage || 0}
+					height="0.5rem"
+					background="gray5"
+					style={{ borderRadius: '2px' }}
+				/>
+			</Row>
+		</Row>
+	);
+
+	const renderInputRow = (
+		label: string,
+		inputName: string,
+		value: string,
+		onChange: (e: any) => void
+	): React.JSX.Element => (
+		<Row width="32%" mainAlignment="space-between">
+			<Input
+				label={label}
+				backgroundColor="gray5"
+				onChange={onChange}
+				inputName={inputName}
+				defaultValue={value || ''}
+				value={value || ''}
+			/>
+		</Row>
+	);
+
+	const renderSwitchRow = (
+		label: string,
+		value: boolean,
+		onClick: () => void
+	): React.JSX.Element => (
+		<Row width="69%" mainAlignment="flex-start">
+			<Switch value={value} onClick={onClick} label={label} iconColor="primary" />
+		</Row>
+	);
+
+	const renderPasswordInput = (
+		label: string,
+		inputName: string,
+		value: string,
+		disabled: boolean
+	): React.JSX.Element => (
+		<Input
+			backgroundColor="gray5"
+			label={label}
+			onChange={changeAccDetail}
+			inputName={inputName}
+			type="password"
+			autoComplete="new-password"
+			value={value}
+			disabled={disabled}
+		/>
+	);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -697,84 +753,35 @@ const EditAccountGeneralSection: FC<{
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row
-						width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
-						mainAlignment="space-between"
-						onClick={focusMailBoxQuota}
-					>
-						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
-							<Text size="extrasmall" color="secondary">
-								{t('label.mailbox_space_usage', 'Mailbox Space Usage')}
-							</Text>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
-							<Text size="extrasmall" color="gray0">
-								{calculatedMailboxQuotaSize}
-							</Text>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Quota
-								fill={calculatedMailBoxQuotaSizePercentage}
-								height="0.5rem"
-								background="gray5"
-								style={{ borderRadius: '2px' }}
-							/>
-						</Row>
-					</Row>
-					{isAdvanced && initAccountDetail?.filesQuotaLimit && (
-						<Row width="49%" mainAlignment="space-between" onClick={focusFileQuota}>
-							<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
-								<Text size="extrasmall" color="secondary">
-									{t('label.files_space_usage', 'Files Space Usage')}
-								</Text>
-							</Row>
-							<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
-								<Text size="extrasmall" color="gray0">
-									{calculatedFilesQuotaSize}
-								</Text>
-							</Row>
-							<Row mainAlignment="flex-start" width="100%">
-								<Quota
-									fill={calculatedFilesQuotaSizePercentage}
-									height="0.5rem"
-									background="gray5"
-									style={{ borderRadius: '2px' }}
-								/>
-							</Row>
-						</Row>
+					{renderQuotaRow(
+						t('label.mailbox_space_usage', 'Mailbox Space Usage'),
+						calculatedMailboxQuotaSize,
+						calculatedMailBoxQuotaSizePercentage,
+						focusMailBoxQuota
 					)}
+					{isAdvanced &&
+						initAccountDetail?.filesQuotaLimit &&
+						renderQuotaRow(
+							t('label.files_space_usage', 'Files Space Usage'),
+							calculatedFilesQuotaSize,
+							calculatedFilesQuotaSizePercentage,
+							focusFileQuota
+						)}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="space-between">
-						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
-							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
-							value={accountDetail?.sn || ''}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="space-between">
-						<Input
-							label={t('label.second_name_initials', 'Middle Name Initials')}
-							backgroundColor="gray5"
-							onChange={changeAccDetail}
-							inputName="initials"
-							defaultValue={accountDetail?.initials || ''}
-							value={accountDetail?.initials || ''}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="space-between">
-						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.person_name', 'Name')}
-							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
-							value={accountDetail?.givenName || ''}
-						/>
-					</Row>
+					{renderInputRow(t('label.surname', 'Surname'), 'sn', accountDetail?.sn, changeAccDetail)}
+					{renderInputRow(
+						t('label.second_name_initials', 'Middle Name Initials'),
+						'initials',
+						accountDetail?.initials,
+						changeAccDetail
+					)}
+					{renderInputRow(
+						t('label.person_name', 'Name'),
+						'givenName',
+						accountDetail?.givenName,
+						changeAccDetail
+					)}
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="47%" mainAlignment="flex-start">
@@ -843,7 +850,6 @@ const EditAccountGeneralSection: FC<{
 						/>
 					</Row>
 				</Row>
-
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
 						<Input
@@ -856,21 +862,18 @@ const EditAccountGeneralSection: FC<{
 							autoComplete="new-password"
 						/>
 					</Row>
-					{isAdvanced ? (
+					{isAdvanced && (
 						<Row width="49%" mainAlignment="flex-start">
 							<Input
-								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('account_details.otp_devices', 'OTP Devices')}
 								backgroundColor="gray5"
 								defaultValue={accountDetail?.displayName}
 								value={otpList?.length || 0}
 							/>
 						</Row>
-					) : (
-						<></>
 					)}
 				</Row>
-				{isAdvanced ? (
+				{isAdvanced && (
 					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 						<Row width="49%" mainAlignment="flex-start">
 							<Select
@@ -902,8 +905,6 @@ const EditAccountGeneralSection: FC<{
 							/>
 						</Row>
 					</Row>
-				) : (
-					<></>
 				)}
 				<Row
 					width="100%"
@@ -1025,7 +1026,6 @@ const EditAccountGeneralSection: FC<{
 						/>
 					</Row>
 				</Row>
-
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="27%" mainAlignment="flex-start">
 						<Switch
@@ -1044,17 +1044,11 @@ const EditAccountGeneralSection: FC<{
 							</Text>
 						</Tooltip>
 					</Row>
-					<Row width="69%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPasswordMustChange === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
-							label={t(
-								'account_details.this_user_must_change_password',
-								'This user must change password'
-							)}
-							iconColor="primary"
-						/>
-					</Row>
+					{renderSwitchRow(
+						t('account_details.this_user_must_change_password', 'This user must change password'),
+						accountDetail?.zimbraPasswordMustChange === 'TRUE',
+						() => changeSwitchOption('zimbraPasswordMustChange')
+					)}
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					{isHidePassword ? (
