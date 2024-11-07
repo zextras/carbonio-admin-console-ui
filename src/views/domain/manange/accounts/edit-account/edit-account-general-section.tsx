@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -81,7 +82,6 @@ const ZimbraAuthMethod = {
 
 const EditAccountGeneralSection: FC<{
 	setChange: any;
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 }> = ({ setChange }) => {
 	const createSnackbar = useSnackbar();
 	const context = useContext(AccountContext);

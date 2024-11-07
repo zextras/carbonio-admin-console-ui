@@ -667,7 +667,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'Mail Space Quota threshold (%) warning'
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
-										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
@@ -693,7 +692,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'Receiver of Quota warning (email)'
 										)}
 										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
