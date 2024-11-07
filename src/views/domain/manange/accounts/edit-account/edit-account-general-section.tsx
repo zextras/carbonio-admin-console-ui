@@ -567,6 +567,40 @@ const EditAccountGeneralSection: FC<{
 		},
 		[createSnackbar, t]
 	);
+	const handleEndSession = useCallback(
+		(token: string) => {
+			endSession(selectedSession[0], accountDetail?.name, token)
+				.then((resp: any) => {
+					if (!resp?._jsns) throw new Error('Session end failed');
+					setUserSessionList((prev: any) =>
+						prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+					);
+					setAllUserSessionList((prev: any) =>
+						prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+					);
+					setSelectedSession([]);
+					createSnackbar({
+						key: 'success',
+						severity: 'success',
+						label: t('label.session_end_success', 'Session end successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch(handleEndSessionError);
+		},
+		[
+			accountDetail?.name,
+			handleEndSessionError,
+			selectedSession,
+			setUserSessionList,
+			setAllUserSessionList,
+			createSnackbar,
+			t
+		]
+	);
+
 	const onEndSession = useCallback(() => {
 		setIsRequestInProgress(true);
 		getDelegateAuthRequest(accountDetail?.zimbraId)
@@ -574,37 +608,10 @@ const EditAccountGeneralSection: FC<{
 				if (!res?.authToken) throw new Error('Auth token missing');
 				return res?.authToken[0]?._content;
 			})
-			.then((token: string) => endSession(selectedSession[0], accountDetail?.name, token))
-			.then((resp: any) => {
-				if (!resp?._jsns) throw new Error('Session end failed');
-				setUserSessionList((prev: any) =>
-					prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-				);
-				setAllUserSessionList((prev: any) =>
-					prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
-				);
-				setSelectedSession([]);
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t('label.session_end_success', 'Session end successfully'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-				setIsRequestInProgress(false);
-			})
-			.catch(handleEndSessionError);
-	}, [
-		accountDetail?.zimbraId,
-		accountDetail?.name,
-		handleEndSessionError,
-		selectedSession,
-		setUserSessionList,
-		setAllUserSessionList,
-		createSnackbar,
-		t
-	]);
+			.then(handleEndSession)
+			.catch(handleEndSessionError)
+			.finally(() => setIsRequestInProgress(false));
+	}, [accountDetail?.zimbraId, handleEndSession, handleEndSessionError, setIsRequestInProgress]);
 
 	const onSessionFilterInputChange = useCallback(
 		(ev) => {
