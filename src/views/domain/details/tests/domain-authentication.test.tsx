@@ -257,13 +257,13 @@ describe('Domain Authentication', () => {
 		);
 
 		const secureConnectionTests = [
-			{ enabled: 'TRUE', expectedIcon: 'icon: ToggleRight' },
-			{ enabled: 'FALSE', expectedIcon: 'icon: ToggleLeftOutline' },
-			{ enabled: undefined, expectedIcon: 'icon: ToggleLeftOutline' }
+			{ test: 'turned on', enabled: 'TRUE', expectedIcon: 'icon: ToggleRight' },
+			{ test: 'turned off', enabled: 'FALSE', expectedIcon: 'icon: ToggleLeftOutline' },
+			{ test: 'turned off', enabled: undefined, expectedIcon: 'icon: ToggleLeftOutline' }
 		];
 
 		test.each(secureConnectionTests)(
-			'enable secure connection switch must be turned $expectedIcon when zimbraAuthLdapStartTlsEnabled is $enabled',
+			'enable secure connection switch must be turned $test when zimbraAuthLdapStartTlsEnabled is $enabled',
 			({ enabled, expectedIcon }) => {
 				useDomainStore
 					.getState()
