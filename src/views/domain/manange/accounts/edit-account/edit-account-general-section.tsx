@@ -607,10 +607,7 @@ const EditAccountGeneralSection: FC<{
 	const onEndSession = useCallback(() => {
 		setIsRequestInProgress(true);
 		getDelegateAuthRequest(accountDetail?.zimbraId)
-			.then((res: any) => {
-				if (!res?.authToken) throw new Error('Auth token missing');
-				return res?.authToken[0]?._content;
-			})
+			.then((res: any) => res?.authToken[0]?._content)
 			.then(handleEndSession)
 			.catch(handleEndSessionError)
 			.finally(() => setIsRequestInProgress(false));
