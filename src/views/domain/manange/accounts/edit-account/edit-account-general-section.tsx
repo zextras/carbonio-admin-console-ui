@@ -713,6 +713,7 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const renderInputRow = (
+		id: string,
 		label: string,
 		inputName: string,
 		value: string,
@@ -720,11 +721,11 @@ const EditAccountGeneralSection: FC<{
 	): React.JSX.Element => (
 		<Row width="32%" mainAlignment="space-between">
 			<Input
+				data-testid={id}
 				label={label}
 				backgroundColor="gray5"
 				onChange={onChange}
 				inputName={inputName}
-				defaultValue={value || ''}
 				value={value || ''}
 			/>
 		</Row>
@@ -768,14 +769,22 @@ const EditAccountGeneralSection: FC<{
 						)}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					{renderInputRow(t('label.surname', 'Surname'), 'sn', accountDetail?.sn, changeAccDetail)}
 					{renderInputRow(
+						'surname-input',
+						t('label.surname', 'Surname'),
+						'sn',
+						accountDetail?.sn,
+						changeAccDetail
+					)}
+					{renderInputRow(
+						'middlename-input',
 						t('label.second_name_initials', 'Middle Name Initials'),
 						'initials',
 						accountDetail?.initials,
 						changeAccDetail
 					)}
 					{renderInputRow(
+						'name-input',
 						t('label.person_name', 'Name'),
 						'givenName',
 						accountDetail?.givenName,
@@ -789,7 +798,6 @@ const EditAccountGeneralSection: FC<{
 							label={t('label.advance_edit_user', 'User')}
 							onChange={changeUserNaneDetail}
 							inputName="uid"
-							defaultValue={accountDetail?.uid}
 							value={accountDetail?.uid}
 							autoComplete="new-password"
 						/>
@@ -854,7 +862,6 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.advance_edit_display_name', 'Display Name')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.displayName}
 							value={accountDetail?.displayName}
 							onChange={changeAccDetail}
 							inputName="displayName"
@@ -866,7 +873,6 @@ const EditAccountGeneralSection: FC<{
 							<Input
 								label={t('account_details.otp_devices', 'OTP Devices')}
 								backgroundColor="gray5"
-								defaultValue={accountDetail?.displayName}
 								value={otpList?.length || 0}
 							/>
 						</Row>
@@ -919,10 +925,10 @@ const EditAccountGeneralSection: FC<{
 							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
 							subValue={accountQuotaGBValue}
 							inheritedValue={
-								cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
+								cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
 							}
 							fromSubValue={
-								accSpecificDetail.zimbraMailQuota
+								accSpecificDetail?.zimbraMailQuota
 									? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(2)
 									: undefined
 							}
@@ -1293,7 +1299,6 @@ const EditAccountGeneralSection: FC<{
 					<Input
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.description}
 						value={accountDetail?.description}
 						onChange={changeAccDetail}
 						inputName="description"
