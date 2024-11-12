@@ -463,23 +463,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="35%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraAllowAnyFromAddress}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.allow_sending_from_any_address',
-							`Allow sending from any address`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraAllowAnyFromAddress}
-						fromSubValue={accSpecificDetail?.zimbraAllowAnyFromAddress}
-						inputName={'zimbraAllowAnyFromAddress'}
-						onChangeReset={(): void => setEmptyValue('zimbraAllowAnyFromAddress')}
-						disabled
-					/>
-				</Row>
-				<Row width="65%" mainAlignment="flex-start">
+				<Row width="100%" mainAlignment="flex-start">
 					<ChipInput
 						placeholder={t('label.allowed_sending_addresses', 'Allowed sending Addresses')}
 						background="gray5"
