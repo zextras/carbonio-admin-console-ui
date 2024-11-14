@@ -1425,6 +1425,10 @@ export const localeList = (t: TFunction): SelectItem[] => [
 		value: 'hi'
 	},
 	{
+		label: t('locale.label_hungarian', { value: 'Magyar', defaultValue: 'Hungarian - {{value}}' }),
+		value: 'hu'
+	},
+	{
 		label: t('locale.label_indonesian', {
 			value: 'Bahasa Indonesia',
 			defaultValue: 'Indonesian - {{value}}'
