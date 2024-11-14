@@ -6,13 +6,12 @@
 
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
+import { Icon, useSnackbar, Button, Spinner } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
 	registerActions,
 	setAppContext,
-	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest,
@@ -104,7 +103,7 @@ import { getRights } from './views/utility/utils';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<Spinner />}>
+	<Suspense fallback={<Spinner color={'primary'} />}>
 		<LazyAppView {...props} />
 	</Suspense>
 );
