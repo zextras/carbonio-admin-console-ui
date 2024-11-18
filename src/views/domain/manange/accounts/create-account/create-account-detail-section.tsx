@@ -193,7 +193,6 @@ const CreateAccountDetailSection: FC = () => {
 							value={accountDetail?.name}
 							onChange={changeAccName}
 							inputName="name"
-							// defaultValue={accountDetail?.name || ''}
 						/>
 						{(accountDetail?.displayName || combineDisplayName) && showAutoFillAlert && (
 							<Text color="error" size="small">

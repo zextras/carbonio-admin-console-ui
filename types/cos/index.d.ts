@@ -12,3 +12,40 @@ export type Cos = {
 	isDefaultCos?: boolean;
 	a?: Array<Attribute>;
 };
+
+export type CosPrefAttributes = {
+	zimbraPrefLocale: string;
+	zimbraPrefMessageViewHtmlPreferred: string;
+	zimbraPrefGroupMailBy: string;
+	zimbraPrefMailDefaultCharset: string;
+	zimbraPrefMessageIdDedupingEnabled: string;
+	zimbraPrefMailToasterEnabled: string;
+	zimbraPrefMailPollingInterval: string;
+	zimbraMailMinPollingInterval: string;
+	zimbraPrefMailSendReadReceipts: string;
+	zimbraPrefSaveToSent: string;
+	zimbraFeatureMailForwardingEnabled: string;
+	zimbraFeatureMailForwardingInFiltersEnabled: string;
+	zimbraAllowAnyFromAddress: string;
+	zimbraPrefAutoAddAddressEnabled: string;
+	zimbraPrefGalAutoCompleteEnabled: string;
+	zimbraPrefCalendarFirstDayOfWeek: string;
+	zimbraPrefTimeZoneId: string;
+	zimbraPrefCalendarInitialView: string;
+	zimbraPrefCalendarApptVisibility: string;
+	zimbraPrefCalendarDefaultApptDuration: string;
+	zimbraPrefCalendarApptReminderWarningTime: string;
+	zimbraPrefCalendarShowPastDueReminders: string;
+	zimbraPrefCalendarAllowCancelEmailToSelf: string;
+	zimbraPrefCalendarAllowPublishMethodInvite: string;
+	zimbraPrefCalendarAllowForwardedInvite: string;
+	zimbraPrefCalendarAutoAddInvites: string;
+	zimbraPrefCalendarSendInviteDeniedAutoReply: string;
+	zimbraPrefCalendarNotifyDelegatedChanges: string;
+	zimbraPrefAppleIcalDelegationEnabled: string;
+	zimbraFileUploadMaxSizePerFile: string;
+};
+
+export type CosAttributes = CosPrefAttributes & {
+	zimbraId: string;
+};

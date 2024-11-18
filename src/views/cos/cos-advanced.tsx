@@ -396,7 +396,7 @@ const CosAdvanced: FC = () => {
 				);
 
 				setAccountQuotaGBValue(
-					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(3) : ''
+					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : ''
 				);
 
 				setTimeValues(
@@ -517,8 +517,8 @@ const CosAdvanced: FC = () => {
 	const getFileQuota = useCallback((cosId: string): void => {
 		getFileQuotaById(cosId, COS).then((res: any) => {
 			if (res?.limit) {
-				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
-				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
+				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
+				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
 			}
 		});
 	}, []);
@@ -1124,7 +1124,7 @@ const CosAdvanced: FC = () => {
 				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					severity: 'success',
+					type: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,

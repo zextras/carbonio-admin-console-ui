@@ -49,7 +49,7 @@ import { searchDirectory } from '../../services/search-directory-service';
 import { useDomainStore } from '../../store/domain/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
-const DomainOperations: FC = () => {
+const DomainOperations: FC = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();

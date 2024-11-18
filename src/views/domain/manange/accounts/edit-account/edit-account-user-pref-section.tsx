@@ -49,7 +49,6 @@ const EditAccountUserPrefrencesSection: FC<{
 	const [outOfOfficeCacheDurationType, setOutOfOfficeCacheDurationType] = useState(
 		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''
 	);
-	const [prefReadReceiptsToAddress, setPrefReadReceiptsToAddress] = useState<any[]>([]);
 	const [zimbraAllowFromAddress, setZimbraAllowFromAddress] = useState<any[]>([]);
 
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -130,16 +129,6 @@ const EditAccountUserPrefrencesSection: FC<{
 	);
 
 	useEffect(() => {
-		setPrefReadReceiptsToAddress(
-			accountDetail?.zimbraPrefReadReceiptsToAddress
-				? accountDetail.zimbraPrefReadReceiptsToAddress
-						.split(', ')
-						.map((ele: string) => ({ label: ele }))
-				: []
-		);
-	}, [accountDetail?.zimbraPrefReadReceiptsToAddress]);
-
-	useEffect(() => {
 		setZimbraAllowFromAddress(
 			accountDetail?.zimbraAllowFromAddress
 				? accountDetail.zimbraAllowFromAddress.split(', ').map((ele: string) => ({ label: ele }))
@@ -207,12 +196,7 @@ const EditAccountUserPrefrencesSection: FC<{
 		},
 		[setAccountDetail, prefMailPollingIntervalType]
 	);
-	const changeAccDetail = useCallback(
-		(e) => {
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setAccountDetail]
-	);
+
 	const changeOutOfOfficeDurationetail = useCallback(
 		(e) => {
 			setAccountDetail((prev: any) => ({
@@ -442,38 +426,15 @@ const EditAccountUserPrefrencesSection: FC<{
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
 						onChange={changeSwitchOption}
-						label={t('account_details.send_read_receipts', `Send read receipts`)}
+						label={t(
+							'account_details.ask_read_receipts',
+							`Permit the user to ask for read receipt`
+						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
 						fromSubValue={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
 						inputName={'zimbraFeatureReadReceiptsEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraFeatureReadReceiptsEnabled')}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<ChipInput
-						disabled={accountDetail?.zimbraFeatureReadReceiptsEnabled !== 'TRUE'}
-						placeholder={t(
-							'account_details.this_account_is_a_in_direct_member_of',
-							'This account is an indirect member of'
-						)}
-						background="gray5"
-						onChange={(contacts: any): void => {
-							const data: any = [];
-							map(contacts, (contact) => {
-								if (isValidEmail(contact.label ?? '')) data.push(contact);
-							});
-							setPrefReadReceiptsToAddress(data);
-							setAccountDetail((prev: any) => ({
-								...prev,
-								zimbraPrefReadReceiptsToAddress: map(data, 'label').join(', ')
-							}));
-						}}
-						defaultValue={prefReadReceiptsToAddress}
-						value={prefReadReceiptsToAddress}
-						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
-						ChipComponent={CustomChip}
-						maxChips={null}
 					/>
 				</Row>
 			</Row>
@@ -502,22 +463,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="35%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraAllowAnyFromAddress}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.allow_sending_from_any_address',
-							`Allow sending from any address`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraAllowAnyFromAddress}
-						fromSubValue={accSpecificDetail?.zimbraAllowAnyFromAddress}
-						inputName={'zimbraAllowAnyFromAddress'}
-						onChangeReset={(): void => setEmptyValue('zimbraAllowAnyFromAddress')}
-					/>
-				</Row>
-				<Row width="65%" mainAlignment="flex-start">
+				<Row width="100%" mainAlignment="flex-start">
 					<ChipInput
 						placeholder={t('label.allowed_sending_addresses', 'Allowed sending Addresses')}
 						background="gray5"

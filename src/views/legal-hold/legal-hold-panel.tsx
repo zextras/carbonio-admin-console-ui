@@ -803,15 +803,17 @@ const LegalHoldPanel: FC = () => {
 										</Row>
 										<ListRow>
 											<Container mainAlignment="flex-end" crossAlignment="flex-end">
-												<Paging
-													totalItem={totalItem}
-													pageSize={accountLimit}
-													currentPageProp={accountOffset ? accountOffset + 1 : 1}
-													onPageChange={(val: number): void => {
-														getBackupAccounts(searchAccountName, val - 1);
-														setAccountOffset(val - 1);
-													}}
-												/>
+												<Padding right="4rem">
+													<Paging
+														totalItem={totalItem}
+														pageSize={accountLimit}
+														currentPageProp={accountOffset ? accountOffset + 1 : 1}
+														onPageChange={(val: number): void => {
+															getBackupAccounts(searchAccountName, val - 1);
+															setAccountOffset(val - 1);
+														}}
+													/>
+												</Padding>
 											</Container>
 										</ListRow>
 									</>

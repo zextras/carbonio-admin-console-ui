@@ -139,3 +139,8 @@ type SelectItem<T = string> = {
 	disabled?: boolean;
 	customComponent?: React.ReactElement;
 };
+
+export interface DomainsByFeature {
+	label?: string;
+	value?: string;
+}
