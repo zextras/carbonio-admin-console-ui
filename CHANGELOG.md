@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.53](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.52...v0.9.53) (2024-09-04)
+
+
+### Bug Fixes
+
+* subscription wsc module support added ([f8beb11](https://github.com/zextras/carbonio-admin-console-ui/commit/f8beb1164c43814cf14efdbfb164f2d59dc43e51))
+
+### [0.9.52](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.51...v0.9.52) (2024-08-26)
+
+
+### Features
+
+* ac-1007: Restore an account including all deleted email for legal-hold related activities ([575f25a](https://github.com/zextras/carbonio-admin-console-ui/commit/575f25ac0aeeab69933112d39c440d79bb8e88f4))
+* co-1346 enable otp management feature for account and cos ([169cece](https://github.com/zextras/carbonio-admin-console-ui/commit/169cecebc1eeb9ec8f380395974fedab1e4dcafd))
+* manage wsc option from account and cos ([9a44c88](https://github.com/zextras/carbonio-admin-console-ui/commit/9a44c884980dfe733994336f025f112fd3621cca))
+
+
+### Bug Fixes
+
+* added server name in set-unset api and pagination issue fixed ([636a8f1](https://github.com/zextras/carbonio-admin-console-ui/commit/636a8f12449ea6e2e12eb1705de62b6d1c673f74))
+* change work appendix to prefix ([28f312a](https://github.com/zextras/carbonio-admin-console-ui/commit/28f312aee90190827d7a6e36a730680158b6c305))
+* change work appendix to prefix ([02de133](https://github.com/zextras/carbonio-admin-console-ui/commit/02de13382a883cecb418c4a00ec6b2bbb88ad53e))
+* conflict resolved with devel ([abf9e89](https://github.com/zextras/carbonio-admin-console-ui/commit/abf9e89e78c20309d4e6543c07ff2275e33102c2))
+* dropdown items click issue fixed ([df4811c](https://github.com/zextras/carbonio-admin-console-ui/commit/df4811c93d9702ad6d63a20ba4ca6817a40984e4))
+* fixed sonarcube code smell ([d4337b0](https://github.com/zextras/carbonio-admin-console-ui/commit/d4337b066f1263ce3cbd3cfd9e4f183b670efe4b))
+* fixed sonarcube code smell ([86876a2](https://github.com/zextras/carbonio-admin-console-ui/commit/86876a2baaa615ab5a1370b7da47df85c10acee0))
+* fixed sonarcube code smell ([2849996](https://github.com/zextras/carbonio-admin-console-ui/commit/2849996fb23b644857048b75abb40f38ea75f17d))
+* flush cache after modify cos ([7701138](https://github.com/zextras/carbonio-admin-console-ui/commit/7701138e25e67c060e781ca9d745f3b9f8b6d08e))
+* sonarcube error fixed ([93253e2](https://github.com/zextras/carbonio-admin-console-ui/commit/93253e2b6ca2cd36e479c5c2f6b958f23cc3c8e9))
+
 ### [0.9.51](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.50...v0.9.51) (2024-07-02)
 
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, FC } from 'react';
 
 import {
 	Container,
@@ -27,9 +27,11 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import DomainCosLink from './domain-cos-link';
-import { CosMaxAccountValues, objectType } from '../../../../types';
+import DomainListChipInput from './parts/domain-list-chip-input';
+import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
 import {
 	ACTIVE,
+	CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
 	CLOSED,
 	HTTP,
 	HTTPS,
@@ -38,6 +40,7 @@ import {
 	NOT_SET,
 	SUSPENDED,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
@@ -45,6 +48,7 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../store/domain/store';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
@@ -84,6 +88,7 @@ const DomainGeneralSettings: FC = () => {
 	const createSnackbar = useSnackbar();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -159,7 +164,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraPublicServiceHostname: '',
 		zimbraDomainMaxAccounts: '',
 		zimbraDomainAggregateQuota: '',
-		description: ''
+		description: '',
+		carbonioSearchSpecifiedDomainsByFeature: []
 	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
@@ -186,6 +192,7 @@ const DomainGeneralSettings: FC = () => {
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [domainList, setDomainList] = useState<Array<DomainsByFeature>>([]);
 
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		objectType[]
@@ -255,6 +262,18 @@ const DomainGeneralSettings: FC = () => {
 			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
 			});
+
+			const carbonioSearchSpecifiedDomainsByFeature = domainInformation.filter(
+				(item) => item.n === CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE
+			);
+			const domainListArr: DomainsByFeature[] = [];
+			carbonioSearchSpecifiedDomainsByFeature.forEach((item) => {
+				if (item._content) {
+					domainListArr.push({ label: item._content });
+				}
+			});
+			setDomainList(domainListArr);
+			obj[CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE] = domainListArr;
 			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {
 				setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
@@ -429,7 +448,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom,
 			carbonioNotificationRecipients,
-			zimbraDomainMaxAccounts
+			zimbraDomainMaxAccounts,
+			carbonioSearchSpecifiedDomainsByFeature: domainList
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -445,7 +465,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
 			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients,
-			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts
+			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts,
+			carbonioSearchSpecifiedDomainsByFeature: domainData.carbonioSearchSpecifiedDomainsByFeature
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -467,7 +488,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraNotes,
 		zimbraPublicServicePort,
 		description,
-		zimbraDomainMaxAccounts
+		zimbraDomainMaxAccounts,
+		domainList
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -496,122 +518,119 @@ const DomainGeneralSettings: FC = () => {
 		}
 		setCarbonioNotificationFrom(domainData.carbonioNotificationFrom);
 		setCarbonioNotificationRecipients(domainData.carbonioNotificationRecipients);
+		setDomainList(domainData.carbonioSearchSpecifiedDomainsByFeature);
 		setIsDirty(false);
 	};
+	const handleSuccess = (data: { domain: Domain[] }): void => {
+		if (isGlobalAdmin) {
+			flushCache('domain', 'id', domainData.zimbraId);
+		}
+		createSnackbar({
+			key: 'success',
+			severity: 'success',
+			label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		});
+		const domain: Domain = data?.domain[0];
+		if (domain) {
+			setDomain(domain);
+		}
+		setIsLoading(false);
+	};
 
+	const handleError = (error: { message?: string }): void => {
+		createSnackbar({
+			key: 'error',
+			severity: 'error',
+			label: error?.message
+				? error?.message
+				: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		});
+		setIsLoading(false);
+	};
+	const addConditionalAttributes = (attributes: { n: string; _content?: string }[]): void => {
+		if (selectedTimeZone.value !== NOT_SET) {
+			attributes.push({ n: 'zimbraPrefTimeZoneId', _content: selectedTimeZone.value });
+		}
+		if (selectedPublicServiceProtocol.value !== NOT_SET) {
+			attributes.push({
+				n: 'zimbraPublicServiceProtocol',
+				_content: selectedPublicServiceProtocol.value
+			});
+		}
+		if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
+			attributes.push({ n: 'zimbraDomainDefaultCOSId', _content: zimbraDomainDefaultCOSId });
+		}
+		if (isGlobalAdmin) {
+			attributes.push({ n: 'zimbraDomainMaxAccounts', _content: zimbraDomainMaxAccounts });
+		}
+	};
+
+	const addRecipients = (attributes: { n: string; _content?: string }[]): void => {
+		carbonioNotificationRecipients.forEach((item: objectType): void => {
+			attributes.push({ n: 'carbonioNotificationRecipients', _content: item?.label });
+		});
+	};
+
+	const addAdvancedFeatures = (attributes: { n: string; _content?: string }[]): void => {
+		if (isAdvanced) {
+			domainList.forEach((item: DomainsByFeature): void => {
+				attributes.push({ n: CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE, _content: item.label });
+			});
+			if (!domainList.length) {
+				attributes.push({ n: CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE, _content: '' });
+			}
+		}
+	};
+
+	const createAttributes = (): { n: string; _content: string }[] => {
+		const attributes: { n: string; _content: string }[] = [
+			{ n: 'zimbraNotes', _content: zimbraNotes },
+			{ n: 'description', _content: description },
+			{ n: 'zimbraDomainStatus', _content: domainStatus.value },
+			{ n: 'zimbraPublicServicePort', _content: zimbraPublicServicePort },
+			{ n: 'zimbraDNSCheckHostname', _content: zimbraDNSCheckHostname },
+			{ n: 'zimbraHelpAdminURL', _content: zimbraHelpAdminURL },
+			{ n: 'zimbraHelpDelegatedURL', _content: zimbraHelpDelegatedURL },
+			{ n: 'zimbraPublicServiceHostname', _content: publicServiceHostName },
+			{ n: 'carbonioNotificationFrom', _content: carbonioNotificationFrom }
+		];
+
+		addConditionalAttributes(attributes);
+		addRecipients(attributes);
+		addAdvancedFeatures(attributes);
+
+		return attributes;
+	};
+	const createRequestBody = (): any => {
+		const body: any = {
+			id: domainData.zimbraId,
+			_jsns: ZIMBRA_ADMIN_URN,
+			a: createAttributes()
+		};
+		return body;
+	};
+
+	const isInvalidEmail = (): boolean =>
+		!(isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '');
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
-		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
-			setIsLoading(true);
-			setHasCarbonioNotificationFromError(false);
-			const body: any = {};
-			const attributes: any[] = [];
-			body.id = domainData.zimbraId;
-			// eslint-disable-next-line sonarjs/no-duplicate-string
-			body._jsns = 'urn:zimbraAdmin';
-			attributes.push({
-				n: 'zimbraNotes',
-				_content: zimbraNotes
-			});
-			attributes.push({
-				n: 'description',
-				_content: description
-			});
-			if (selectedTimeZone.value !== NOT_SET) {
-				attributes.push({
-					n: 'zimbraPrefTimeZoneId',
-					_content: selectedTimeZone.value
-				});
-			}
-			if (selectedPublicServiceProtocol.value !== NOT_SET) {
-				attributes.push({
-					n: 'zimbraPublicServiceProtocol',
-					_content: selectedPublicServiceProtocol.value
-				});
-			}
-			attributes.push({
-				n: 'zimbraDomainStatus',
-				_content: domainStatus.value
-			});
-			attributes.push({
-				n: 'zimbraPublicServicePort',
-				_content: zimbraPublicServicePort
-			});
-			attributes.push({
-				n: 'zimbraDNSCheckHostname',
-				_content: zimbraDNSCheckHostname
-			});
-			attributes.push({
-				n: 'zimbraHelpAdminURL',
-				_content: zimbraHelpAdminURL
-			});
-			attributes.push({
-				n: 'zimbraHelpDelegatedURL',
-				_content: zimbraHelpDelegatedURL
-			});
-			if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
-				attributes.push({
-					n: 'zimbraDomainDefaultCOSId',
-					_content: zimbraDomainDefaultCOSId
-				});
-			}
-			attributes.push({
-				n: 'zimbraPublicServiceHostname',
-				_content: publicServiceHostName
-			});
-			attributes.push({
-				n: 'carbonioNotificationFrom',
-				_content: carbonioNotificationFrom
-			});
-			if (isGlobalAdmin) {
-				attributes.push({
-					n: 'zimbraDomainMaxAccounts',
-					_content: zimbraDomainMaxAccounts
-				});
-			}
-			// eslint-disable-next-line array-callback-return
-			carbonioNotificationRecipients.forEach((item: objectType): void => {
-				attributes.push({
-					n: 'carbonioNotificationRecipients',
-					_content: item?.label
-				});
-			});
-			body.a = attributes;
-			modifyDomain(body)
-				.then((data) => {
-					if (isGlobalAdmin) {
-						flushCache('domain', 'id', domainData.zimbraId);
-					}
-					createSnackbar({
-						key: 'success',
-						severity: 'success',
-						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					const domain: any = data?.domain[0];
-					if (domain) {
-						setDomain(domain);
-					}
-					setIsLoading(false);
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					setIsLoading(false);
-				});
-		} else {
+		if (isInvalidEmail()) {
 			setHasCarbonioNotificationFromError(true);
+			return;
 		}
+
+		setIsLoading(true);
+		setHasCarbonioNotificationFromError(false);
+
+		const body = createRequestBody();
+
+		modifyDomain(body).then(handleSuccess).catch(handleError);
 	};
 
 	const deleteOnlyDomain = useCallback((): void => {
@@ -647,19 +666,19 @@ const DomainGeneralSettings: FC = () => {
 		domainDirectoies.account.forEach((item: any): any =>
 			accountDeleteBatch.push({
 				id: item?.id,
-				_jsns: 'urn:zimbraAdmin'
+				_jsns: ZIMBRA_ADMIN_URN
 			})
 		);
 		domainDirectoies.dl.forEach((item: any): any =>
 			dlDeleteBatch.push({
 				id: { _content: item?.id },
-				_jsns: 'urn:zimbraAdmin'
+				_jsns: ZIMBRA_ADMIN_URN
 			})
 		);
 		domainDirectoies.calresource.forEach((item: any): any =>
 			resourceDeleteBatch.push({
 				id: item?.id,
-				_jsns: 'urn:zimbraAdmin'
+				_jsns: ZIMBRA_ADMIN_URN
 			})
 		);
 		batchService({
@@ -893,6 +912,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.name', 'Name')}
 										value={domainName}
 										backgroundColor="gray6"
+										data-testid={'input-domain-name'}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -900,6 +920,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
 										backgroundColor="gray6"
+										data-testid={'input-domain-id'}
 									/>
 								</Container>
 							</ListRow>
@@ -1040,6 +1061,30 @@ const DomainGeneralSettings: FC = () => {
 									/>
 								</Container>
 							</ListRow>
+
+							{isAdvanced && (
+								<ListRow>
+									<Container
+										padding={{ all: 'small' }}
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+									>
+										<Text size="small" weight="bold">
+											{t(
+												'domains.generalSettings.AllowSearchUserFromSpecificDomains',
+												'Search users in specific domains'
+											)}
+										</Text>
+
+										<Padding top="small" />
+										<DomainListChipInput
+											domainList={domainList}
+											setDomainList={setDomainList}
+											domainName={domainName}
+										/>
+									</Container>
+								</ListRow>
+							)}
 							<Row
 								mainAlignment="flex-start"
 								width="100%"

@@ -9,4 +9,5 @@ export type GlobalDisclaimerType = {
 	zimbraAmavisOutboundDisclaimersOnly: boolean;
 	zimbraAmavisDomainDisclaimerText: string;
 	zimbraAmavisDomainDisclaimerHTML: string;
+	carbonioSearchAllDomainsByFeature: boolean;
 };

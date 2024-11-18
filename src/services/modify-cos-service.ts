@@ -6,7 +6,18 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const modifyCos = async (body: JSON): Promise<any> =>
+export const modifyCos = async (body: JSON | ModifyCosBody): Promise<any> =>
 	soapFetch(`ModifyCos`, {
 		...body
 	});
+
+export interface ModifyCosBody {
+	_jsns: string;
+	id: {
+		_content: string;
+	};
+	a: Array<{
+		n: string;
+		_content: string;
+	}>;
+}

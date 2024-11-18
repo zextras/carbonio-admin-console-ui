@@ -24,6 +24,7 @@ import styled from 'styled-components';
 
 import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
+	CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
 	FALSE,
 	TRUE,
 	ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
@@ -143,6 +144,18 @@ const GlobalDetailPanel: FC = () => {
 			} else {
 				setInitialAndCurrentValue(ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY, false);
 			}
+
+			const carbonioSearchAllDomainsByFeature = data.filter(
+				(item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE
+			);
+			if (carbonioSearchAllDomainsByFeature[0]?._content) {
+				setInitialAndCurrentValue(
+					CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+					carbonioSearchAllDomainsByFeature[0]?._content === TRUE
+				);
+			} else {
+				setInitialAndCurrentValue(CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, false);
+			}
 		}
 	}, [globalConfigData, setInitialAndCurrentValue]);
 
@@ -176,6 +189,10 @@ const GlobalDetailPanel: FC = () => {
 					updateConfig(
 						ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 						globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+					);
+					updateConfig(
+						CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+						globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature ? TRUE : FALSE
 					);
 					createSnackbar({
 						key: 'success',
@@ -242,6 +259,7 @@ const GlobalDetailPanel: FC = () => {
 		},
 		[
 			createSnackbar,
+			globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature,
 			globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
 			globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
 			globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
@@ -287,6 +305,11 @@ const GlobalDetailPanel: FC = () => {
 		attributes.push({
 			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
 			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+			_content: globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature ? TRUE : FALSE
 		});
 
 		if (attributes && attributes.length > 0) {
@@ -434,6 +457,31 @@ const GlobalDetailPanel: FC = () => {
 								setValue(
 									ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
 									!globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly
+								);
+							}}
+						/>
+					</Container>
+				</ListRow>
+
+				<ListRow>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							top: 'extralarge'
+						}}
+					>
+						<Switch
+							label={t(
+								'domain.globalSettings.allowSearchUserFromAllDomains',
+								`Allow searching users' information in all domains`
+							)}
+							value={globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature}
+							onClick={(): void => {
+								setValue(
+									CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+									!globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature
 								);
 							}}
 						/>

@@ -19,6 +19,7 @@ import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest,
+	useUserAccount,
 	useUserSettings
 } from '@zextras/carbonio-shell-ui';
 import { debounce, filter, flatMapDeep } from 'lodash';
@@ -36,6 +37,7 @@ import {
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
+import { checkRightRequest } from '../../../../services/check-right';
 import {
 	GetCosResponse,
 	getCosGeneralInformation,
@@ -68,6 +70,11 @@ type UserSession = {
 	zid: string;
 	ip: string;
 	service: string;
+};
+
+type CheckRightResponse = {
+	allow: true;
+	_jsns: string;
 };
 
 const ManageDelegates: FC = () => {
@@ -111,6 +118,8 @@ const ManageDelegates: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
+	const account = useUserAccount();
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -276,6 +285,18 @@ const ManageDelegates: FC = () => {
 		}
 		return obj;
 	};
+
+	const getDeletePasswordRight = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(target): void => {
+			checkRightRequest(target, account.name, 'set.account.userPassword').then(
+				(data: CheckRightResponse) => {
+					setAllowedDeletePassword(data?.allow);
+				}
+			);
+		},
+		[account.name]
+	);
 
 	const getAccountDetail = useCallback(
 		(id): void => {
@@ -518,6 +539,7 @@ const ManageDelegates: FC = () => {
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
+			getDeletePasswordRight(acc?.name);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
@@ -529,6 +551,7 @@ const ManageDelegates: FC = () => {
 			getAccountMembership,
 			getIdentitiesList,
 			getAllUserSession,
+			getDeletePasswordRight,
 			isAdvanced,
 			getListOtp,
 			getCredentialList
@@ -856,8 +879,8 @@ const ManageDelegates: FC = () => {
 
 	useEffect(() => {
 		if (userSetting?.attrs) {
-			const account = userSetting?.attrs?.zimbraIsAdminAccount;
-			if (account && account === 'TRUE') {
+			const accountIsGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (accountIsGlobalAdmin && accountIsGlobalAdmin === 'TRUE') {
 				setIsGlobalAdmin(true);
 			}
 		}
@@ -924,44 +947,32 @@ const ManageDelegates: FC = () => {
 			allUserSessionList,
 			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			setDefaultCOS,
+			allowedDeletePassword,
+			setAllowedDeletePassword
 		}),
 		[
 			accountDetail,
 			cosDetail,
-			setAccountDetail,
 			accSpecificDetail,
-			setAccSpecificDetail,
 			directMemberList,
 			inDirectMemberList,
-			setDirectMemberList,
-			setInDirectMemberList,
 			initAccountDetail,
-			setInitAccountDetail,
-			setSignatureItems,
-			setSignatureList,
 			otpList,
 			getListOtp,
 			identitiesList,
 			deligateDetail,
-			setDeligateDetail,
 			getIdentitiesList,
 			folderList,
-			setFolderList,
 			credentialList,
 			getCredentialList,
 			initialGlobalRights,
-			setinitialGlobalRights,
 			globalRights,
-			setGlobalRights,
 			deleteAdministrationRights,
-			setDeleteAdministrationRights,
 			userSessionList,
-			setAllUserSessionList,
 			allUserSessionList,
-			setUserSessionList,
 			defaultCOS,
-			setDefaultCOS
+			allowedDeletePassword
 		]
 	);
 
