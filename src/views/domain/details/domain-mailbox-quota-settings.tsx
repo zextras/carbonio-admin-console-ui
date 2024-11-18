@@ -18,7 +18,6 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
-import { divide } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -171,11 +170,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 				key: 'name'
 			},
 			{
-				label: t('label.mails_quota_mb', 'Mails Quota (MB)'),
+				label: t('label.mails_quota_gb', 'Mails Quota (GB)'),
 				key: 'mailsQuota'
 			},
 			{
-				label: t('label.mails_quota_used_mb', 'Mails Quota Used (MB)'),
+				label: t('label.mails_quota_used_gb', 'Mails Quota Used (GB)'),
 				key: 'mailsQuotaUsed'
 			},
 			{
@@ -186,11 +185,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 		if (fileStorageEnabled) {
 			const filesHeaders = [
 				{
-					label: t('label.files_quota_mb', 'Files Quota (MB)'),
+					label: t('label.files_quota_gb', 'Files Quota (GB)'),
 					key: 'filesQuota'
 				},
 				{
-					label: t('label.files_quota_used_mb', 'Files Quota Used (MB)'),
+					label: t('label.files_quota_used_gb', 'Files Quota Used (GB)'),
 					key: 'filesQuotaUsed'
 				},
 				{
@@ -212,7 +211,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				return [t('label.unlimited', 'Unlimited'), 0];
 			}
 			if (quotaLimit >= BYTE_PER_MB) {
-				return [(quotaLimit / BYTE_PER_MB).toFixed(0), (quotaUsed / quotaLimit) * 100];
+				return [BytesToGB(quotaLimit), (quotaUsed / quotaLimit) * 100];
 			}
 			return ['1', (quotaUsed / quotaLimit) * 100];
 		},
@@ -223,14 +222,16 @@ const DomainMailboxQuotaSetting: FC = () => {
 		(usedQuota: Array<unknown>, isAdvance = false): Array<MailBoxQuota> => {
 			const quota: Array<MailBoxQuota> = [];
 			usedQuota.forEach((item: any): void => {
-				const toGB = (bytes: number): number => divide(bytes, 1024 ** 3);
-				const [mailQuota, mailQuotaPercentage] = formatQuota(item?.used ?? 0, item.limit ?? 0);
+				const [mailQuota, mailQuotaPercentage] = formatQuota(
+					item?.mailsQuotaUsed ?? 0,
+					item.mailsQuotaLimit ?? 0
+				);
 
 				const data: Partial<MailBoxQuota> = {
 					name: !isAdvance ? item?.name : item?.accountName,
 					id: !isAdvance ? item?.id : item?.accountId,
 					mailsQuota: mailQuota,
-					mailsQuotaUsed: toGB(item?.used || 0).toFixed(0),
+					mailsQuotaUsed: BytesToGB(item?.mailsQuotaUsed || 0).toFixed(2),
 					mailsQuotaUsedPercentage: mailQuotaPercentage.toFixed(0)
 				};
 
@@ -240,7 +241,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						item?.filesQuotaLimit ?? 0
 					);
 					data.filesQuota = fileQuota;
-					data.filesQuotaUsed = toGB(item?.filesQuotaUsed || 0).toFixed(0);
+					data.filesQuotaUsed = BytesToGB(item?.filesQuotaUsed || 0).toFixed(2);
 					data.filesQuotaUsedPercentage = fileQuotaPercentage.toFixed(0);
 				}
 
@@ -666,7 +667,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'Mail Space Quota threshold (%) warning'
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
-										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
@@ -692,7 +692,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'Receiver of Quota warning (email)'
 										)}
 										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
