@@ -12,6 +12,7 @@ import {
 	Icon,
 	Input,
 	Padding,
+	PasswordInput,
 	Popper,
 	Row,
 	Select,
@@ -805,7 +806,7 @@ const DomainAuthentication: FC = () => {
 									/>
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
+									<PasswordInput
 										label={t('label.search_bind_password', 'Search Bind Password')}
 										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
@@ -846,7 +847,7 @@ const DomainAuthentication: FC = () => {
 									/>
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="38%">
-									<Input
+									<PasswordInput
 										label={t('label.password', 'Password')}
 										backgroundColor="gray5"
 										inputName="verifyAuthPassword"
