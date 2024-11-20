@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.55](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.54...v0.9.55) (2024-11-20)
+
+
+### Bug Fixes
+
+* used the password input instead of input for password fields ([bee6479](https://github.com/zextras/carbonio-admin-console-ui/commit/bee64798cfd2f30f058b22939a166a315527cfac))
+
 ### [0.9.54](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.53...v0.9.54) (2024-11-18)
 
 
