@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.55](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.54...v0.9.55) (2024-11-20)
+
+
+### Bug Fixes
+
+* used the password input instead of input for password fields ([bee6479](https://github.com/zextras/carbonio-admin-console-ui/commit/bee64798cfd2f30f058b22939a166a315527cfac))
+
+### [0.9.54](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.53...v0.9.54) (2024-11-18)
+
+
+### Features
+
+* [C0-1422] Expose ability to  change zimbraFileUploadMaxSizePerFile in COS preferences ([#778](https://github.com/zextras/carbonio-admin-console-ui/issues/778)) ([21c9226](https://github.com/zextras/carbonio-admin-console-ui/commit/21c922634cd4351760c89423093724ff78ab5ae9)), closes [#779](https://github.com/zextras/carbonio-admin-console-ui/issues/779)
+* [CO-1442] corner case handling for updating zimbraFileUploadMaxSizePerFile ([#781](https://github.com/zextras/carbonio-admin-console-ui/issues/781)) ([05b761a](https://github.com/zextras/carbonio-admin-console-ui/commit/05b761aa3f037406b09a7aa66cb45955451e69e6))
+* [CO-1649] add Hungarian language in user and COS settings ([#791](https://github.com/zextras/carbonio-admin-console-ui/issues/791)) ([56d879b](https://github.com/zextras/carbonio-admin-console-ui/commit/56d879b214d2f983a8e87a7d5c11117abfdb3da4))
+* specify domain for searchByFeature API ([#787](https://github.com/zextras/carbonio-admin-console-ui/issues/787)) ([3ddd60e](https://github.com/zextras/carbonio-admin-console-ui/commit/3ddd60e650b8fb5a64f7f9c8828b4d5b1354a69a))
+
+
+### Bug Fixes
+
+* [CO-1409] Correctly persist AuthLdapStartTlsEnabled & FeatureResetPasswordStatus attributes ([#788](https://github.com/zextras/carbonio-admin-console-ui/issues/788)) ([189b457](https://github.com/zextras/carbonio-admin-console-ui/commit/189b457cda5acbec761d7c7d4452f89874b2d838))
+* bytes to gb calculation issue fixed ([98cc686](https://github.com/zextras/carbonio-admin-console-ui/commit/98cc6863425784268012069fcab5280789ec857b))
+* fixed loading state of account detail view ([9b20b88](https://github.com/zextras/carbonio-admin-console-ui/commit/9b20b88432d0fff2fc57f4831fd20daa234a8a76))
+* prefReadReceiptsToAddress removing and translations update ([86be666](https://github.com/zextras/carbonio-admin-console-ui/commit/86be666d78fcf9ed4af84a5d8d82115fd892f583))
+* prefReadReceiptsToAddress removing and translations update ([b6fa384](https://github.com/zextras/carbonio-admin-console-ui/commit/b6fa384eb9390bb2520a8eb5a70c5cf2d4d94b48))
+* set quota size to round of 2 decimal ([814dd1b](https://github.com/zextras/carbonio-admin-console-ui/commit/814dd1bda5960b6302b089ffb80a84f90a1218da))
+
 ### [0.9.53](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.52...v0.9.53) (2024-09-04)
 
 
