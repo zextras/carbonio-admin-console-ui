@@ -123,7 +123,7 @@ describe('Domain Authentication', () => {
 			expect(screen.getByRole('textbox', { name: /url/i })).toBeInTheDocument();
 			expect(screen.getByRole('textbox', { name: /filter/i })).toBeInTheDocument();
 			expect(screen.getByRole('textbox', { name: /search bind user/i })).toBeInTheDocument();
-			expect(screen.getByRole('textbox', { name: /search bind password/i })).toBeInTheDocument();
+			expect(screen.getByLabelText(/search bind password/i)).toBeInTheDocument();
 		});
 
 		test('expands to show additional LDAP/AD options when Carbonio is clicked', async () => {
