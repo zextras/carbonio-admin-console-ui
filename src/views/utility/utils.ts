@@ -2294,3 +2294,11 @@ export function bytesToHumanReadable(bytes: number): string {
 	const sizeIndex = Math.min(i, sizes.length - 1);
 	return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
+
+export function bytesToMB(bytes: number): number {
+	return parseFloat((bytes / 1024 / 1024).toFixed(2));
+}
+
+export function mbToBytes(mb: number): number {
+	return mb * 1024 * 1024;
+}
