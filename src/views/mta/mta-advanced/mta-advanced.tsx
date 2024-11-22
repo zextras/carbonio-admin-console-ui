@@ -40,7 +40,7 @@ import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
-import { isValidProxy } from '../../utility/utils';
+import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -53,6 +53,7 @@ const MTAAdvanced: FC = () => {
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
 
 	const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] = useState<boolean>(false);
+	const [zimbraMtaMaxMessageSizeState, setZimbraMtaMaxMessageSizeState] = useState<number>(0);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -261,6 +262,7 @@ const MTAAdvanced: FC = () => {
 			}
 			if (zimbraMtaMaxMessageSize && zimbraMtaMaxMessageSize?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MESSAGE_SIZE, zimbraMtaMaxMessageSize?._content);
+				setZimbraMtaMaxMessageSizeState(bytesToMB(Number(zimbraMtaMaxMessageSize?._content)));
 			}
 
 			const zimbraMilterMaxConnections = configInformation.find(
@@ -428,7 +430,7 @@ const MTAAdvanced: FC = () => {
 		if (mtaAdvancedDetail?.zimbraMtaMaxMessageSize) {
 			attributes.push({
 				n: ZIMBRA_MTA_MESSAGE_SIZE,
-				_content: mtaAdvancedDetail?.zimbraMtaMaxMessageSize
+				_content: mbToBytes(Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize)).toString()
 			});
 		}
 		if (mtaAdvancedDetail?.zimbraMilterMaxConnections) {
@@ -728,9 +730,10 @@ const MTAAdvanced: FC = () => {
 								'Max size for mail messages (MB, 0 = "no limit")'
 							)}
 							backgroundColor="gray5"
-							value={mtaAdvancedDetail?.zimbraMtaMaxMessageSize}
+							value={zimbraMtaMaxMessageSizeState}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value);
+								setZimbraMtaMaxMessageSizeState(Number(e.target.value));
 							}}
 							disabled={!allowSetMTA}
 						/>
