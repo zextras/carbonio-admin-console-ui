@@ -6,7 +6,7 @@
 
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Icon, useSnackbar, Button, Spinner, Container } from '@zextras/carbonio-design-system';
+import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -97,19 +97,14 @@ import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
+import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense
-		fallback={
-			<Container>
-				<Spinner color={'primary'} />
-			</Container>
-		}
-	>
+	<Suspense fallback={<Spinner />}>
 		<LazyAppView {...props} />
 	</Suspense>
 );

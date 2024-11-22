@@ -6,7 +6,7 @@
  */
 import React, { FC, Suspense } from 'react';
 
-import { Container, ContainerProps, Spinner } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
@@ -20,6 +20,7 @@ import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
+import { Spinner } from './components/spinner';
 import Subscription from './core/subscribsion/subscription';
 import CosDetailPanel from './cos/cos-detail-panel';
 import CosListPanel from './cos/cos-list-panel';
@@ -75,26 +76,14 @@ const AppView: FC = () => {
 						background="gray5"
 						height="auto"
 					>
-						<Suspense
-							fallback={
-								<Container>
-									<Spinner color={'primary'} />
-								</Container>
-							}
-						>
+						<Suspense fallback={<Spinner />}>
 							<Dashboard />
 						</Suspense>
 					</Container>
 				</Route>
 				<Route path={`/${MONITORING}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Suspense
-							fallback={
-								<Container>
-									<Spinner color={'primary'} />
-								</Container>
-							}
-						>
+						<Suspense fallback={<Spinner />}>
 							<MonitoringView />
 						</Suspense>
 					</Container>
@@ -106,25 +95,13 @@ const AppView: FC = () => {
 						height="calc(100vh - 105px)"
 					>
 						<Container style={{ maxWidth: '265px' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<DomainListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<DomainDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
@@ -134,24 +111,12 @@ const AppView: FC = () => {
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '265px' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<BucketListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<BucketRoutePanel />
 							</Suspense>
 						</Container>
@@ -161,13 +126,7 @@ const AppView: FC = () => {
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<PrivacyView />
 								</Suspense>
 							</DetailViewContainer>
@@ -181,25 +140,13 @@ const AppView: FC = () => {
 						height="calc(100vh - 105px)"
 					>
 						<Container style={{ maxWidth: '265px' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<CosListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<CosDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
@@ -209,25 +156,13 @@ const AppView: FC = () => {
 				<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '16.563rem' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<MTAListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<MTADetailPanel />
 								</Suspense>
 							</DetailViewContainer>
@@ -238,13 +173,7 @@ const AppView: FC = () => {
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<Subscription />
 								</Suspense>
 							</DetailViewContainer>
@@ -258,25 +187,13 @@ const AppView: FC = () => {
 						style={{ overflow: 'hidden' }}
 					>
 						<Container style={{ maxWidth: '265px' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<BackupListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<BackupDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
@@ -291,13 +208,7 @@ const AppView: FC = () => {
 						style={{ overflow: 'hidden' }}
 					>
 						<Container style={{ maxWidth: '100%' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<LegalHoldPanel />
 							</Suspense>
 						</Container>
@@ -307,25 +218,13 @@ const AppView: FC = () => {
 				<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '265px' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<NotificationsListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<NotificationsDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
@@ -335,25 +234,13 @@ const AppView: FC = () => {
 				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '16.563rem' }}>
-							<Suspense
-								fallback={
-									<Container>
-										<Spinner color={'primary'} />
-									</Container>
-								}
-							>
+							<Suspense fallback={<Spinner />}>
 								<OperationsListPanel />
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense
-									fallback={
-										<Container>
-											<Spinner color={'primary'} />
-										</Container>
-									}
-								>
+								<Suspense fallback={<Spinner />}>
 									<OperationsDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
