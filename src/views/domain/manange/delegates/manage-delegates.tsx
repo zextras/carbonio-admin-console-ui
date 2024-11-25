@@ -95,8 +95,8 @@ const ManageDelegates: FC = () => {
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [selectedAccount, setSelectedAccount] = useState<any>({});
 	const [accountDetail, setAccountDetail] = useState<any>({});
-	const [directMemberList, setDirectMemberList] = useState<any>({});
-	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>([]);
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
