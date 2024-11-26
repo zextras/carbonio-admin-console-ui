@@ -295,7 +295,7 @@ const MTAStatsMail: FC<{
 		}
 	}, []);
 
-	const setMailStateCountData = useCallback((queue) => {
+	const setMailStateCountData = useCallback((queue: any) => {
 		setMailStatCount({
 			queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
 			corrupted:
@@ -394,7 +394,7 @@ const MTAStatsMail: FC<{
 	}, [getMailFromMailQueue]);
 
 	const callAllRequest = useCallback(
-		(request) => {
+		(request: any) => {
 			batchService({
 				MailQueueActionRequest: request,
 				_jsns: 'urn:zimbra'
@@ -412,7 +412,7 @@ const MTAStatsMail: FC<{
 	);
 
 	const mailQueAction = useCallback(
-		(operation) => {
+		(operation: string) => {
 			const mailActionRequestData: {
 				_jsns: string;
 				server: {

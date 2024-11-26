@@ -82,7 +82,7 @@ const MTAServerGeneral: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: string) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -90,7 +90,15 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setServerSpecificCurrentValue = useCallback(
-		(key, value) => {
+		(
+			key: string,
+			value:
+				| string
+				| {
+						label: string;
+				  }[]
+				| undefined
+		) => {
 			setMtaServerSpecificGeneralDetail((prev: any) => ({
 				...prev,
 				[key]: value
@@ -675,7 +683,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setMtaServerGeneralDetail]
