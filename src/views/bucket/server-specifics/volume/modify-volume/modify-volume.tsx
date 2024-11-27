@@ -402,7 +402,7 @@ const ModifyVolume: FC<{
 	};
 
 	const onVolumeTypeChange = useCallback(
-		(e): void => {
+		(e: number | null): void => {
 			const volumeObject: VolumeType = volTypeList?.find(
 				(item: VolumeType): boolean => item?.value === e
 			);
@@ -672,7 +672,7 @@ const ModifyVolume: FC<{
 	}, [volAllocationList, volumeDetail?.type]);
 
 	const getVolumeDetailData = useCallback(
-		(volId): void => {
+		(volId: string): void => {
 			setIsLoading(true);
 			soapFetch(
 				'GetVolume',

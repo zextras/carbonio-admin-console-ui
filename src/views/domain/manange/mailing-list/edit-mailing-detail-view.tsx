@@ -725,7 +725,7 @@ const EditMailingListView: FC<any> = ({
 				if (data && data?.grant && Array.isArray(data?.grant)) {
 					const grant = data?.grant;
 					if (grant.length > 1) {
-						const emails: Array<any> = [];
+						const emails: Array<{ id: string; name: string }> = [];
 						const sendToListItems = grant.filter(
 							(item: any) => item?.right[0]?._content === 'sendToDistList'
 						);
@@ -852,11 +852,6 @@ const EditMailingListView: FC<any> = ({
 		getGrantML();
 	}, [getGrantML]);
 
-	const onEmailAdd = useCallback((v) => {
-		setGrantEmails(v);
-		setIsDirty(true);
-	}, []);
-
 	const grantItems = searchGrantEmailResult.map((item: any, index) => ({
 		id: item?.id,
 		label: item?.name,
@@ -878,7 +873,7 @@ const EditMailingListView: FC<any> = ({
 		)
 	}));
 
-	const searchEmailFromGal = useCallback((searchKeyword) => {
+	const searchEmailFromGal = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {
@@ -1492,7 +1487,7 @@ const EditMailingListView: FC<any> = ({
 	}));
 
 	const getSearchMemberList = useCallback(
-		(mem) => {
+		(mem: string) => {
 			const attrs =
 				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
 			const types = 'accounts,distributionlists,aliases';
@@ -1625,7 +1620,7 @@ const EditMailingListView: FC<any> = ({
 	}, [searchOwner, t, ownersList]);
 
 	const getSearchOwnerList = useCallback(
-		(searchKeyword) => {
+		(searchKeyword: string) => {
 			searchGal(searchKeyword).then((data) => {
 				const contactList = data?.cn;
 				if (contactList) {
@@ -1842,7 +1837,7 @@ const EditMailingListView: FC<any> = ({
 	}, []);
 
 	const onSuccess = useCallback(
-		(message) => {
+		(message: string) => {
 			createSnackbar({
 				key: 'success',
 				severity: 'success',

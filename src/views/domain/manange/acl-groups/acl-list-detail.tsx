@@ -393,7 +393,7 @@ const AclListDetail: FC<any> = ({
 	}, []);
 
 	const onSuccess = useCallback(
-		(message) => {
+		(message: string) => {
 			createSnackbar({
 				key: 'success',
 				severity: 'success',

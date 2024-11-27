@@ -94,7 +94,7 @@ const HSMsettingPanel: FC = () => {
 	);
 
 	const showSnackbar = useCallback(
-		(key, severity, message) => {
+		(key: string, severity: 'success' | 'info' | 'warning' | 'error', message: string) => {
 			createSnackbar({
 				key,
 				severity,
@@ -203,7 +203,7 @@ const HSMsettingPanel: FC = () => {
 		}
 	}, [handleClick, policies]);
 
-	const setValuesFromAttributes = useCallback((attributes) => {
+	const setValuesFromAttributes = useCallback((attributes: any) => {
 		if (!attributes) return;
 		const olderValues: any = {};
 		if (attributes) {
@@ -491,7 +491,7 @@ const HSMsettingPanel: FC = () => {
 	}, []);
 
 	const parseResponse = useCallback(
-		(isEditSave, info) => {
+		(isEditSave: boolean | undefined, info: any) => {
 			if (info?.ok) {
 				if (isEditSave) {
 					onDeletePolicy(isEditSave);

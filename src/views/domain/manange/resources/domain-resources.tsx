@@ -346,16 +346,16 @@ const DomainResources: FC = () => {
 
 	const createResourceReq = useCallback(
 		(
-			name,
-			password,
-			attr,
-			resourceName,
-			signatureList,
-			zimbraPrefCalendarAutoAcceptSignatureId,
-			zimbraPrefCalendarAutoDeclineSignatureId,
-			zimbraPrefCalendarAutoDenySignatureId
+			name: string,
+			password: string,
+			attr: any,
+			resourceName: string,
+			signatureList: any[],
+			zimbraPrefCalendarAutoAcceptSignatureId: any,
+			zimbraPrefCalendarAutoDeclineSignatureId: any,
+			zimbraPrefCalendarAutoDenySignatureId: any
 			// eslint-disable-next-line sonarjs/cognitive-complexity
-		) => {
+		): void => {
 			createResource(name, password, attr)
 				.then((data) => {
 					const resourceId = data?.calresource[0]?.id;

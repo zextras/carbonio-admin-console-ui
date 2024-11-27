@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { FC, useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
 
 import {
 	Container,
@@ -109,7 +109,7 @@ const BackupAdvanced: FC = () => {
 		[initbackupDetail]
 	);
 	const changeBackupDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setInitBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setInitBackupDetail]

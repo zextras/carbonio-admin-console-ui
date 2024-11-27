@@ -146,7 +146,7 @@ const CosGeneralInformation: FC = () => {
 		[t]
 	);
 
-	const accountUserType = useCallback((item): string => {
+	const accountUserType = useCallback((item: any): string => {
 		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
 		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
 		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';

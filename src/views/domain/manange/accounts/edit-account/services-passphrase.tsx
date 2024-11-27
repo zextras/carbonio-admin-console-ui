@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 
 import {
 	Input,
@@ -76,7 +76,7 @@ export const ServicesPassphrase: FC = () => {
 	});
 
 	const changeCredLabel = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCreateCredential((prev: CredentialType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setCreateCredential]

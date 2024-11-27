@@ -750,7 +750,7 @@ const BackupConfiguration: FC = () => {
 
 	const onBackupExternalVolume = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(body) => {
+		(body: any) => {
 			setIsExternalVolumeRequestRunning(true);
 			fetchExternalSoap(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
 				...body

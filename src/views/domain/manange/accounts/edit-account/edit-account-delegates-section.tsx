@@ -11,7 +11,8 @@ import React, {
 	ReactElement,
 	useEffect,
 	useCallback,
-	useRef
+	useRef,
+	KeyboardEvent
 } from 'react';
 
 import {
@@ -555,7 +556,7 @@ const EditAccountDelegatesSection: FC = () => {
 		[debounce]
 	);
 	const filterOptions = useCallback(
-		({ textContent }) => {
+		(textContent: KeyboardEvent<HTMLInputElement> & { textContent: string | null }) => {
 			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			searchAccountList(textContent);
 		},
@@ -842,7 +843,7 @@ const EditAccountDelegatesSection: FC = () => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
 	};
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]

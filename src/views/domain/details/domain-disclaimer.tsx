@@ -84,7 +84,7 @@ const DomainDisclaimer: FC = () => {
 	}, [userSetting?.attrs]);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: unknown) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},

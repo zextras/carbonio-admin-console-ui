@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -43,7 +43,7 @@ const AdvancedMailstoresConfig: FC<{
 	const [bucketS3, setBucketS3] = useState(false);
 
 	const changeVolDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAdvancedVolumeDetail((prev: any) => ({ ...prev, [e?.target?.name]: e?.target?.value }));
 		},
 		[setAdvancedVolumeDetail]

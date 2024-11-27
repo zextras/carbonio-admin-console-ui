@@ -64,7 +64,7 @@ const GlobalDetailPanel: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: unknown) => {
 			setGlobalInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -182,7 +182,7 @@ const GlobalDetailPanel: FC = () => {
 	};
 
 	const callRequest = useCallback(
-		(attributes) => {
+		(attributes: Attribute[]) => {
 			modifyConfig(attributes)
 				.then(() => {
 					getAllConfigData();

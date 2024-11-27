@@ -23,7 +23,7 @@ import {
 import { isEqual, find, some, map, join, split, trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { IpRangeValue, MtaOutboundFlow, TRow } from '../../../../types';
+import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
 import {
 	ANTISPAM,
 	ANTIVIRUS,
@@ -81,7 +81,7 @@ const MTAOutBoundFlow: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: any) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -89,7 +89,7 @@ const MTAOutBoundFlow: FC = () => {
 	);
 
 	const setTableValues = useCallback(
-		(server, tableRow) => {
+		(server: any, tableRow: Array<TRow>) => {
 			const serviceEnabled = server?.a.filter(
 				(item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled'
 			);
@@ -151,7 +151,7 @@ const MTAOutBoundFlow: FC = () => {
 	useEffect(() => {
 		if (mtaServersList && mtaServersList.length > 0) {
 			const tableRow: Array<TRow> = [];
-			mtaServersList.forEach((server: Record<string, unknown>) => {
+			mtaServersList.forEach((server: Server) => {
 				if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
 					setTableValues(server, tableRow);
 				}
@@ -457,7 +457,7 @@ const MTAOutBoundFlow: FC = () => {
 	);
 
 	const onBlockExtensionChange = useCallback(
-		(ips) => {
+		(ips: IpRangeValue[]) => {
 			const data: any = [];
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });

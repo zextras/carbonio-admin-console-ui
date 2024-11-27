@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -63,7 +63,7 @@ const MTAAdvanced: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: unknown) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -481,7 +481,7 @@ const MTAAdvanced: FC = () => {
 	]);
 
 	const onSenderLoginMapsChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			const { value } = e.target;
 			if (!isValidProxy(value)) {
 				setIsErrorInSmtpdProxy(true);

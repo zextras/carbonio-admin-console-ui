@@ -66,10 +66,10 @@ const ActiveSync: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
-		(key, type, msg) => {
+		(key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
 			createSnackbar({
 				key,
-				type,
+				severity,
 				label: msg,
 				autoHideTimeout: 3000,
 				hideButton: true,
@@ -121,7 +121,15 @@ const ActiveSync: FC = () => {
 		[t]
 	);
 
-	const parseAllDevices = useCallback((keys, contentDevice) => {
+	type ContentDevice = {
+		[key: string]: {
+			response: {
+				devices: MobileDevice[];
+			};
+		};
+	};
+
+	const parseAllDevices = useCallback((keys: string[], contentDevice: ContentDevice) => {
 		if (keys.length > 0) {
 			const allDevices: Array<MobileDevice> = [];
 			keys.forEach((item: string) => {
@@ -315,7 +323,7 @@ const ActiveSync: FC = () => {
 	}, [selectedMobileDevice, allMobileDevices]);
 
 	const parseResponse = useCallback(
-		(info) => {
+		(info: any) => {
 			if (info?.ok) {
 				getAllDeviceList();
 				showSnackbar(
@@ -357,7 +365,7 @@ const ActiveSync: FC = () => {
 		}
 	}, [allMobileDevices, parseResponse, selectRow, showSnackbar, t]);
 
-	const onSelectChange = useCallback((selected) => {
+	const onSelectChange = useCallback((selected: any) => {
 		setSelectRow(selected);
 	}, []);
 
