@@ -62,8 +62,8 @@ const GlobalDelegates: FC = () => {
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [defaultTab, setDefaultTab] = useState('general');
-	const [directMemberList, setDirectMemberList] = useState<any>({});
-	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>([]);
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);

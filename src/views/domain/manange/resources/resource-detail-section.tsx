@@ -37,6 +37,8 @@ import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 
+type SelectValue = SelectItem[] | string | null;
+
 const ResourceDetailSection: FC = () => {
 	const { t } = useTranslation();
 	const context = useContext(ResourceContext);
@@ -133,7 +135,7 @@ const ResourceDetailSection: FC = () => {
 	}, [cosList, t]);
 
 	const onCOSIdChange = useCallback(
-		(v: SelectItem[] | string | null): void => {
+		(v: SelectValue): void => {
 			const objItem = cosItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCOSId) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: objItem }));
@@ -143,7 +145,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAccountStatusChange = useCallback(
-		(v: SelectItem[] | string | null): void => {
+		(v: SelectValue): void => {
 			const objItem = accountStatusOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraAccountStatus) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: objItem }));
@@ -153,7 +155,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onResourceTypeChange = useCallback(
-		(v: SelectItem[] | string | null): void => {
+		(v: SelectValue): void => {
 			const objItem = resourceTypeOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResType) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: objItem }));
@@ -163,7 +165,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAutoRefuseChange = useCallback(
-		(v: SelectItem[] | string | null): void => {
+		(v: SelectValue): void => {
 			const objItem = autoRefuseOption.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResAutoDeclineRecurring) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
@@ -173,7 +175,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onSchedulePolicyChange = useCallback(
-		(v: SelectItem[] | string | null): void => {
+		(v: SelectValue): void => {
 			const objItem = schedulePolicyItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.schedulePolicyType) {
 				setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: objItem }));

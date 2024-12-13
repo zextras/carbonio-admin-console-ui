@@ -54,6 +54,7 @@ const CustomIcon = styled(Icon)`
 	width: 1.25rem;
 	height: 1.25rem;
 `;
+type SelectValue = SelectItem[] | string | null;
 
 const MTAPostScreenTuning: FC = () => {
 	const [t] = useTranslation();
@@ -446,7 +447,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSMinTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -460,7 +461,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSMaxTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -474,7 +475,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -488,7 +489,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onPipelinginTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setPipeliningTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -502,7 +503,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onNonSMTPCommandTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setNonSMTPCommandTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -516,7 +517,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onBareNewLineTTLUnitChange = useCallback(
-		(v: SelectItem[] | string | null) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setBareNewLineTTLUnit(findOption || intervalOptions[2]);
 			setValue(
