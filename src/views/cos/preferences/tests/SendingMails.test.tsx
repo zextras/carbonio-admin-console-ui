@@ -25,7 +25,6 @@ describe('SendingMails', () => {
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
 		zimbraPrefSaveToSent: 'TRUE',
-		zimbraAllowAnyFromAddress: 'FALSE',
 		zimbraPrefMailSendReadReceipts: 'never'
 	};
 
