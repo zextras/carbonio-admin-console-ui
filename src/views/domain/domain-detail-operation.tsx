@@ -17,14 +17,6 @@ import DomainGeneralSettings from './details/domain-general-settings';
 import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
 import DomainSaml from './details/domain-saml';
 import DomainTheme from './details/domain-theme';
-import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
-import ManageAccounts from './manange/accounts/manage-accounts';
-import DomainAclList from './manange/acl-groups/domain-acl-list';
-import ActiveSync from './manange/active-sync/active-sync';
-import ManageDelegates from './manange/delegates/manage-delegates';
-import DomainMailingList from './manange/mailing-list/domain-mailing-list';
-import DomainResources from './manange/resources/domain-resources';
-import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
 import {
 	GAL,
 	GENERAL_INFORMATION,
@@ -44,6 +36,14 @@ import {
 	DELEGATES_DOMAIN_ADMINS,
 	DISCLAIMER
 } from '../../constants';
+import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
+import ManageAccounts from './manange/accounts/manage-accounts';
+import DomainAclList from './manange/acl-groups/domain-acl-list';
+import ActiveSync from './manange/active-sync/active-sync';
+import ManageDelegates from './manange/delegates/manage-delegates';
+import DomainMailingList from './manange/mailing-list/domain-mailing-list';
+import DomainResources from './manange/resources/domain-resources';
+import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useDomainStore } from '../../store/domain/store';

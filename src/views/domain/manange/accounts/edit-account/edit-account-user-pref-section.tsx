@@ -742,7 +742,7 @@ const EditAccountUserPrefrencesSection: FC<{
 						subValue={accountDetail?.zimbraPrefCalendarAutoAddInvites}
 						onChange={changeSwitchOption}
 						label={t(
-							'account_details.add_appointments_when_invited',
+							'label.add_appointments_when_invited',
 							'Automatically add appointments when the user is invited'
 						)}
 						iconColor="primary"

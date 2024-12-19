@@ -24,7 +24,6 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
-import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
@@ -46,6 +45,7 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import EditAccount from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
 	name: string;

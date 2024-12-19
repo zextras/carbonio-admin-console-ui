@@ -591,7 +591,7 @@ const MTAServerGeneral: FC = () => {
 		if (val === undefined) {
 			return '';
 		}
-		return (val === TRUE ? 'yes' : 'no') || '';
+		return val === TRUE ? 'yes' : 'no';
 	}, []);
 
 	const onSave = useCallback(() => {

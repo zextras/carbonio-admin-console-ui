@@ -16,6 +16,23 @@ import {
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
+import {
+	BACKUP_ROUTE_ID,
+	COS_ROUTE_ID,
+	DASHBOARD,
+	DOMAINS_ROUTE_ID,
+	LEGAL_HOLD_ROUTE_ID,
+	LOG_AND_QUEUES,
+	MANAGE_APP_ID,
+	MONITORING,
+	MTA_ROUTE_ID,
+	NOTIFICATION_ROUTE_ID,
+	OPERATIONS_ROUTE_ID,
+	PRIVACY_ROUTE_ID,
+	SERVICES_ROUTE_ID,
+	STORAGES_ROUTE_ID,
+	SUBSCRIPTIONS_ROUTE_ID
+} from '../constants';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
@@ -36,23 +53,6 @@ import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
 import PrivacyView from './privacy/privacy-view';
-import {
-	BACKUP_ROUTE_ID,
-	COS_ROUTE_ID,
-	DASHBOARD,
-	DOMAINS_ROUTE_ID,
-	LEGAL_HOLD_ROUTE_ID,
-	LOG_AND_QUEUES,
-	MANAGE_APP_ID,
-	MONITORING,
-	MTA_ROUTE_ID,
-	NOTIFICATION_ROUTE_ID,
-	OPERATIONS_ROUTE_ID,
-	PRIVACY_ROUTE_ID,
-	SERVICES_ROUTE_ID,
-	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID
-} from '../constants';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

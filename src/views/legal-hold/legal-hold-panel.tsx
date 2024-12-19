@@ -664,7 +664,7 @@ const LegalHoldPanel: FC = () => {
 									<Text size="medium" weight="bold" color="gray0">
 										<Switch
 											label={t(
-												'legal_hold.show_only_accounts_on_legal_hold',
+												'legalHold.show_only_accounts_on_legal_hold',
 												'Show only accounts on Legal Hold'
 											)}
 											value={isShowOnlyLegalHostAccount}

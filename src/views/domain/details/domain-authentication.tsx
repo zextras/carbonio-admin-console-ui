@@ -126,7 +126,7 @@ const DomainAuthentication: FC = () => {
 				label: `${t('label.carbonio', 'Carbonio')}`,
 				value: '',
 				info_label: `${t(
-					'label.carbonio_info',
+					'domain.authentication.carbonio_info',
 					'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.'
 				)}`,
 				info_label_ce: `${localLdapTrans}`
@@ -791,7 +791,7 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.search_bind_user', 'Search Bind User')}
+										label={t('domain.authentication.search_bind_user', 'Search Bind User')}
 										value={zimbraAuthLdapSearchBindDn}
 										backgroundColor="gray5"
 										inputName="user"
@@ -807,7 +807,7 @@ const DomainAuthentication: FC = () => {
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<PasswordInput
-										label={t('label.search_bind_password', 'Search Bind Password')}
+										label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
 										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										value={zimbraAuthLdapSearchBindPassword}

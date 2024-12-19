@@ -674,10 +674,7 @@ const EditAccountSecuritySection: FC = () => {
 									<Switch
 										value={accountDetail?.backupSelfUndeleteAllowed}
 										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
-										label={t(
-											'account_details.allow_restore_message',
-											'Allow user to restore messages'
-										)}
+										label={t('label.allow_restore_message', 'Allow user to restore messages')}
 										iconColor="primary"
 									/>
 								</Container>
