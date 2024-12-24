@@ -15,6 +15,7 @@ interface ModalOverlayProps {
 	maxWidth?: string;
 	setShowModal?: (showModal: boolean) => void;
 	isDirty?: boolean;
+	children?: React.ReactNode;
 }
 
 const ModalOverlay: FC<ModalOverlayProps> = ({

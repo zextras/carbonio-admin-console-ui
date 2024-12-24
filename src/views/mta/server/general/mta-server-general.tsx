@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -82,7 +82,7 @@ const MTAServerGeneral: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: string) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -90,7 +90,15 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setServerSpecificCurrentValue = useCallback(
-		(key, value) => {
+		(
+			key: string,
+			value:
+				| string
+				| {
+						label: string;
+				  }[]
+				| undefined
+		) => {
 			setMtaServerSpecificGeneralDetail((prev: any) => ({
 				...prev,
 				[key]: value
@@ -580,18 +588,18 @@ const MTAServerGeneral: FC = () => {
 		[createSnackbar, getServerSpecificInformation, mtaServerList, server, t]
 	);
 
-	const getValues = useCallback((val) => {
+	const getValues = useCallback((val: string | undefined) => {
 		if (val === undefined) {
 			return '';
 		}
 		return val || '';
 	}, []);
 
-	const getYesNoValues = useCallback((val) => {
+	const getYesNoValues = useCallback((val: string | undefined) => {
 		if (val === undefined) {
 			return '';
 		}
-		return (val === TRUE ? 'yes' : 'no') || '';
+		return val === TRUE ? 'yes' : 'no';
 	}, []);
 
 	const onSave = useCallback(() => {
@@ -631,7 +639,7 @@ const MTAServerGeneral: FC = () => {
 	]);
 
 	const onAmavisLogLevelChange = useCallback(
-		(v) => {
+		(v: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisLogLevel: v }));
 		},
 		[setMtaServerGeneralDetail]
@@ -659,7 +667,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const onBlockExtensionChange = useCallback(
-		(ips) => {
+		(ips: IpRangeValue[]) => {
 			const data: Array<unknown> = [];
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
@@ -675,14 +683,14 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setMtaServerGeneralDetail]
 	);
 
 	const setEmptyValueMyNetwork = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 			setNetworkValue([]);
 		},
@@ -702,7 +710,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const changeValue = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setMtaServerGeneralDetail]

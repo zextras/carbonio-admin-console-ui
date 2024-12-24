@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -16,7 +16,8 @@ import {
 	Input,
 	Select,
 	Icon,
-	useSnackbar
+	useSnackbar,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -164,7 +165,7 @@ const CosAdvanced: FC = () => {
 		cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || ''
 	);
 	const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
-	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState(undefined);
+	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
@@ -530,7 +531,7 @@ const CosAdvanced: FC = () => {
 	}, [cosData, getFileQuota, isAdvanced]);
 
 	const changeValue = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setCosAdvanced]
@@ -831,7 +832,7 @@ const CosAdvanced: FC = () => {
 	}, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
 
 	const onZimbraQuotaWarnIntervalTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
@@ -843,7 +844,7 @@ const CosAdvanced: FC = () => {
 		[zimbraQuotaWarnIntervalNum, setCosAdvanced]
 	);
 	const onZimbraQuotaWarnIntervalNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraQuotaWarnInterval: e.target.value
@@ -856,7 +857,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
@@ -868,7 +869,7 @@ const CosAdvanced: FC = () => {
 		[zimbraPasswordLockoutDurationNum, setCosAdvanced]
 	);
 	const onZimbraPasswordLockoutDurationNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: e.target.value
@@ -881,7 +882,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
@@ -893,7 +894,7 @@ const CosAdvanced: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: e.target.value
@@ -906,7 +907,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
@@ -918,7 +919,7 @@ const CosAdvanced: FC = () => {
 		[zimbraAdminAuthTokenLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraAdminAuthTokenLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAdminAuthTokenLifetime: e.target.value
@@ -931,7 +932,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraAuthTokenLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
@@ -943,7 +944,7 @@ const CosAdvanced: FC = () => {
 		[zimbraAuthTokenLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraAuthTokenLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAuthTokenLifetime: e.target.value
@@ -956,7 +957,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
@@ -968,7 +969,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailIdleSessionTimeoutNum, setCosAdvanced]
 	);
 	const onZimbraMailIdleSessionTimeoutNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailIdleSessionTimeout: e.target.value
@@ -981,7 +982,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailTrashLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
@@ -993,7 +994,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailTrashLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailTrashLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailTrashLifetime: e.target.value
@@ -1006,7 +1007,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailSpamLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum ? `${zimbraMailSpamLifetimeNum}${v}` : ''
@@ -1016,7 +1017,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailSpamLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailSpamLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailSpamLifetime: e.target.value
@@ -1028,7 +1029,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailSpamLifetimeType, setCosAdvanced]
 	);
 
-	const onFileQuotaChange = useCallback((e) => {
+	const onFileQuotaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		if (!isValidDecimalNumber(e.target.value)) return;
 		const decimalPoints = e.target.value?.split('.')[1];
 		if (!!decimalPoints && decimalPoints?.length > 3) {
@@ -1040,7 +1041,7 @@ const CosAdvanced: FC = () => {
 	}, []);
 
 	const onZimbraMailQuotaChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			if (!isValidDecimalNumber(e.target.value)) return;
 			const decimalPoints = e.target.value?.split('.')[1];
 			if (!!decimalPoints && decimalPoints?.length > 3) {
@@ -1058,7 +1059,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailMessageLifetimeTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
@@ -1070,7 +1071,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailMessageLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailMessageLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailMessageLifetime: e.target.value
@@ -1124,7 +1125,7 @@ const CosAdvanced: FC = () => {
 				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,

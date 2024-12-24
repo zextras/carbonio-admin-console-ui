@@ -474,21 +474,21 @@ const DomainMailingList: FC = () => {
 
 	const createMailingListReq = useCallback(
 		(
-			name,
-			description,
-			dynamic,
-			displayName,
-			zimbraHideInGal,
-			zimbraIsACLGroup,
-			zimbraMailStatus,
-			zimbraNotes,
-			memberURL,
-			members,
-			zimbraDistributionListSendShareMessageToNewMembers,
-			owners,
-			allOwnersList,
-			ownerGrantEmailType,
-			ownerGrantEmails
+			name: string,
+			description: string,
+			dynamic: boolean,
+			displayName: string,
+			zimbraHideInGal: boolean,
+			zimbraIsACLGroup: boolean,
+			zimbraMailStatus: boolean,
+			zimbraNotes: string,
+			memberURL: string,
+			members: string[],
+			zimbraDistributionListSendShareMessageToNewMembers: boolean,
+			owners: string[],
+			allOwnersList: any[],
+			ownerGrantEmailType: { value: string },
+			ownerGrantEmails: string[]
 			// eslint-disable-next-line sonarjs/cognitive-complexity
 		) => {
 			setIsLoading(true);

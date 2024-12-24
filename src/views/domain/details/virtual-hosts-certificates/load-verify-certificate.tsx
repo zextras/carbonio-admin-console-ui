@@ -209,7 +209,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				} else if (!data?.verifyResult) {
 					createSnackbar({
 						key: 'warning',
-						type: 'warning',
+						severity: 'warning',
 						label: t(
 							'domain.certificate_valid_but_either_expired_or_exists_non_trusted_CA',
 							`The certificate is valid but it's either expired or exists a non trusted CA`

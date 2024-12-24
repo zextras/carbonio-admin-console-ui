@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+	ChangeEvent
+} from 'react';
 
 import {
 	Container,
@@ -12,7 +20,8 @@ import {
 	Select,
 	Text,
 	Icon,
-	Divider
+	Divider,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +37,8 @@ import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 
+type SelectValue = SelectItem[] | string | null;
+
 const ResourceDetailSection: FC = () => {
 	const { t } = useTranslation();
 	const context = useContext(ResourceContext);
@@ -37,7 +48,7 @@ const ResourceDetailSection: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
-	const resourceTypeOptions: any[] = useMemo(
+	const resourceTypeOptions: Array<{ label: string; value: string }> = useMemo(
 		() => [
 			{
 				label: t('label.meeting_room', 'Meeting Room'),
@@ -124,7 +135,7 @@ const ResourceDetailSection: FC = () => {
 	}, [cosList, t]);
 
 	const onCOSIdChange = useCallback(
-		(v): void => {
+		(v: SelectValue): void => {
 			const objItem = cosItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCOSId) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: objItem }));
@@ -134,7 +145,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAccountStatusChange = useCallback(
-		(v): void => {
+		(v: SelectValue): void => {
 			const objItem = accountStatusOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraAccountStatus) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: objItem }));
@@ -144,7 +155,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onResourceTypeChange = useCallback(
-		(v): void => {
+		(v: SelectValue): void => {
 			const objItem = resourceTypeOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResType) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: objItem }));
@@ -154,7 +165,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAutoRefuseChange = useCallback(
-		(v): void => {
+		(v: SelectValue): void => {
 			const objItem = autoRefuseOption.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResAutoDeclineRecurring) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
@@ -164,7 +175,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onSchedulePolicyChange = useCallback(
-		(v): void => {
+		(v: SelectValue): void => {
 			const objItem = schedulePolicyItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.schedulePolicyType) {
 				setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: objItem }));
@@ -174,14 +185,14 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const changeResourceDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setResourceDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setResourceDetail]
 	);
 
 	const changeResourceName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setShowAutoFillAlert(false);
 			setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
 			setResourceDetail((prev: any) => ({

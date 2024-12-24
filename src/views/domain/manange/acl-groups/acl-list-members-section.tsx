@@ -185,7 +185,7 @@ const AclListMembersSection: FC<any> = () => {
 	}, [dlm, selectedDistributionListMember]);
 
 	const getSearchMemberList = useCallback(
-		(mem) => {
+		(mem: string) => {
 			const attrs =
 				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
 			const types = 'accounts,distributionlists,aliases';
@@ -217,7 +217,7 @@ const AclListMembersSection: FC<any> = () => {
 		[createSnackbar, t]
 	);
 
-	const getSearchOwnerList = useCallback((searchKeyword) => {
+	const getSearchOwnerList = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {

@@ -120,7 +120,7 @@ const EditHsmPolicy: FC<{
 	];
 
 	const showSnackbar = useCallback(
-		(msg) => {
+		(msg: string) => {
 			createSnackbar({
 				key: 'error',
 				severity: 'error',

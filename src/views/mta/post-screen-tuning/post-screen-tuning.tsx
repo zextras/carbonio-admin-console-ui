@@ -16,7 +16,8 @@ import {
 	Icon,
 	Select,
 	Input,
-	Switch
+	Switch,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -53,6 +54,7 @@ const CustomIcon = styled(Icon)`
 	width: 1.25rem;
 	height: 1.25rem;
 `;
+type SelectValue = SelectItem[] | string | null;
 
 const MTAPostScreenTuning: FC = () => {
 	const [t] = useTranslation();
@@ -75,7 +77,7 @@ const MTAPostScreenTuning: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: unknown) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -445,7 +447,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSMinTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -459,7 +461,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSMaxTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -473,7 +475,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onDNSTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setDnsblTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -487,7 +489,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onPipelinginTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setPipeliningTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -501,7 +503,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onNonSMTPCommandTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setNonSMTPCommandTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -515,7 +517,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const onBareNewLineTTLUnitChange = useCallback(
-		(v) => {
+		(v: SelectValue) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setBareNewLineTTLUnit(findOption || intervalOptions[2]);
 			setValue(
@@ -578,7 +580,7 @@ const MTAPostScreenTuning: FC = () => {
 	);
 
 	const setSaveValue = useCallback(
-		(attributes) => {
+		(attributes: Array<Record<string, string>>) => {
 			if (mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction) {
 				attributes.push({
 					n: ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,

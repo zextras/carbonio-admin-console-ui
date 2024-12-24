@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -62,7 +70,7 @@ const MailstoresCreate: FC<{
 	};
 
 	const changeVolName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setVolumeDetail((prev: object) => ({ ...prev, volumeName: e?.target?.value }));
 			onSelection({ volumeName: e?.target?.value }, true);
 			if (e?.target?.value !== '') {
@@ -74,7 +82,7 @@ const MailstoresCreate: FC<{
 		[onSelection, setVolumeDetail]
 	);
 	const changeVolPath = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setVolumeDetail((prev: object) => ({ ...prev, path: e?.target?.value }));
 			onSelection({ path: e?.target?.value }, true);
 			if (e?.target?.value !== '') {
@@ -86,7 +94,7 @@ const MailstoresCreate: FC<{
 		[onSelection, setVolumeDetail]
 	);
 	const changeVolCompThresold = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			const regex = /^[0-9]*$/;
 			const result = regex?.test(e?.target?.value);
 			if (result) {
@@ -117,7 +125,7 @@ const MailstoresCreate: FC<{
 	};
 
 	const onVolNamechange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			if (e?.target?.value !== '') {
 				setErrName(true);

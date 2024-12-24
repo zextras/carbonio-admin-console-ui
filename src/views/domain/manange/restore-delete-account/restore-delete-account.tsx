@@ -60,18 +60,18 @@ const RestoreDeleteAccount: FC = () => {
 
 	const restoreAccountRequest = useCallback(
 		(
-			name,
-			id,
-			createDate,
-			status,
-			copyAccount,
-			dateTime,
-			lastAvailableStatus,
-			hsmApply,
-			dataSource,
-			notificationReceiver,
-			isEmailNotificationEnable,
-			copyDomain
+			name: string,
+			id: string,
+			createDate: string,
+			status: string,
+			copyAccount: string,
+			dateTime: string | null,
+			lastAvailableStatus: boolean,
+			hsmApply: boolean,
+			dataSource: boolean,
+			notificationReceiver: string,
+			isEmailNotificationEnable: boolean,
+			copyDomain: string
 		) => {
 			const body: any = {
 				srcAccountName: id,

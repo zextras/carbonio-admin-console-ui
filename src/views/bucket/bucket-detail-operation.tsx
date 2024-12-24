@@ -12,9 +12,9 @@ import styled from 'styled-components';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
 import HSMsettingPanel from './hsm/hsm-setting-panel';
+import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 import VolumesDetailPanel from './server-specifics/volume/volumes-list';
-import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

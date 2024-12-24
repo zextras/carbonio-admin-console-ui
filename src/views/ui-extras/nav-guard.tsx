@@ -14,6 +14,7 @@ import { Prompt, useHistory } from 'react-router-dom';
 export const RouteLeavingGuard: FC<{
 	when?: boolean;
 	onSave: () => void;
+	children?: React.ReactNode;
 }> = ({ children, when, onSave }) => {
 	const history = useHistory();
 	const lastLocationInitial = useMemo(() => history.location, [history]);

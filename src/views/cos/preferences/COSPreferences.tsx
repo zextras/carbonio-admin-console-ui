@@ -93,7 +93,7 @@ export const COSPreferences = (): React.JSX.Element => {
 				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -104,7 +104,7 @@ export const COSPreferences = (): React.JSX.Element => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label:
 						error?.message ||
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

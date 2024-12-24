@@ -16,6 +16,7 @@ import {
 	Popper,
 	Row,
 	Select,
+	SelectItem,
 	Switch,
 	Text,
 	Tooltip as TooltipDefault,
@@ -354,7 +355,7 @@ const DomainAuthentication: FC = () => {
 	);
 
 	const onAuthMethodChange = useCallback(
-		(v): void => {
+		(v: SelectItem[] | string | null): void => {
 			setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
 			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
 				if (!zimbraAuthLdapURL) {

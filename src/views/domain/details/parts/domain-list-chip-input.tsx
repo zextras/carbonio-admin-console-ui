@@ -30,7 +30,7 @@ const DomainListChipInput: FC<{
 	const config = useConfigStore((state) => state.config);
 	const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
 	const getAllDomainList = useCallback(
-		(searchQuery): void => {
+		(searchQuery: string): void => {
 			getDomainList(searchQuery, 0, 10).then((data) => {
 				const domainListResponse: ZimbraDomainResponse = data?.domain || [];
 				if (domainListResponse && Array.isArray(domainListResponse)) {
@@ -47,7 +47,7 @@ const DomainListChipInput: FC<{
 	);
 
 	const onInputType = useCallback<NonNullable<ChipInputProps['onInputType']>>(
-		({ textContent }) => {
+		({ textContent }: { textContent: any }) => {
 			getAllDomainList(textContent);
 		},
 		[getAllDomainList]

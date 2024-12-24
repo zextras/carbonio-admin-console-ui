@@ -823,33 +823,7 @@ const EditAclListView: FC<any> = ({
 		getGrantML();
 	}, [getGrantML]);
 
-	const onEmailAdd = useCallback((v) => {
-		setGrantEmails(v);
-		setIsDirty(true);
-	}, []);
-
-	const grantItems = searchGrantEmailResult.map((item: any, index) => ({
-		id: item?.id,
-		label: item?.name,
-		customComponent: (
-			<Row
-				style={{
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setGrantEmailItem(item?.name);
-				}}
-			>
-				{item?.name}
-			</Row>
-		)
-	}));
-
-	const searchEmailFromGal = useCallback((searchKeyword) => {
+	const searchEmailFromGal = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {
@@ -1517,7 +1491,7 @@ const EditAclListView: FC<any> = ({
 	}));
 
 	const getSearchMemberList = useCallback(
-		(mem) => {
+		(mem: string) => {
 			const attrs =
 				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
 			const types = 'accounts,distributionlists,aliases';
@@ -1624,7 +1598,7 @@ const EditAclListView: FC<any> = ({
 		setIsOpenDeleteDialog(false);
 	}, []);
 	const onSuccess = useCallback(
-		(message) => {
+		(message: string) => {
 			createSnackbar({
 				key: 'success',
 				severity: 'success',
@@ -1711,7 +1685,7 @@ const EditAclListView: FC<any> = ({
 	}, [searchOwner, t, ownersList]);
 
 	const getSearchOwnerList = useCallback(
-		(searchKeyword) => {
+		(searchKeyword: string) => {
 			searchGal(searchKeyword).then((data) => {
 				const contactList = data?.cn;
 				if (contactList) {

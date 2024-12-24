@@ -25,7 +25,7 @@ import { useParams } from 'react-router-dom';
 
 import { DISABLED, ENABLED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
@@ -141,7 +141,7 @@ const CosServerPools: FC = () => {
 	}, [cosInformation]);
 
 	const onFilterApply = useCallback(
-		(e) => {
+		(e: string) => {
 			if (e === null) {
 				return;
 			}
@@ -277,7 +277,7 @@ const CosServerPools: FC = () => {
 	}, []);
 
 	const onModifyCOS = useCallback(
-		(body) => {
+		(body: ModifyCosBody) => {
 			modifyCos(body)
 				.then((data) => {
 					const cos: any = data?.cos[0];
