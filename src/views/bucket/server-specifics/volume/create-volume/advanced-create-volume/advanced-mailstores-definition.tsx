@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +50,7 @@ const AdvancedMailstoresDefinition: FC<{
 	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
 
 	const changeVolName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			if (e?.target?.value !== '') {

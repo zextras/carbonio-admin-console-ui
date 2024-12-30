@@ -7,7 +7,6 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import '@testing-library/jest-dom/extend-expect';
 import DomainListChipInput from './domain-list-chip-input';
 import { setup } from '../../../../tests/testUtils';
 

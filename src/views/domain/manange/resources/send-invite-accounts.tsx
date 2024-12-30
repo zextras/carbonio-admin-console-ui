@@ -121,7 +121,7 @@ export const SendInviteAccounts: FC<any> = ({
 	}, [selectedSendInvite, sendInviteList, setDefaultSendInviteList, setSendInviteList]);
 
 	const getSearchMemberList = useCallback(
-		(mem) => {
+		(mem: string) => {
 			const attrs =
 				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
 			const types = 'accounts,distributionlists,aliases';

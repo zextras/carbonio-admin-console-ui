@@ -100,7 +100,7 @@ const DomainSaml: FC = () => {
 	}, []);
 
 	const showError = useCallback(
-		(error): void => {
+		(error: any): void => {
 			createSnackbar({
 				key: 'error',
 				severity: 'error',
@@ -170,7 +170,7 @@ const DomainSaml: FC = () => {
 								}}
 							>
 								<Text size="small" weight="light" color="gray0">
-									{item?.value}
+									{item?.value as unknown as React.ReactNode}
 								</Text>
 							</Container>
 						]

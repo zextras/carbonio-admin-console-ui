@@ -93,7 +93,7 @@ const NewBucket: FC<{
 	];
 
 	const onComplete = useCallback(
-		(data) => {
+		(data: any) => {
 			setConnectionData(data.steps.connection);
 			setToggleWizardSection(false);
 			setDetailsBucket(false);

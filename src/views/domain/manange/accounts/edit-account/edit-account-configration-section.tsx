@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useCallback, useState, useEffect } from 'react';
+import React, { FC, useContext, useCallback, useState, useEffect, ChangeEvent } from 'react';
 
 import {
 	Container,
@@ -128,13 +128,13 @@ const EditAccountConfigrationSection: FC = () => {
 	}, [accountDetail?.name, getMobileFeatureSync, isAdvanced]);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
 	const changeAccDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]

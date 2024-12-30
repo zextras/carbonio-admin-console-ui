@@ -18,7 +18,7 @@ import {
 	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
-import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
+import { getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
 import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
@@ -555,6 +555,7 @@ const AttachmentsBlock: FC<{
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 }): ReactElement => {
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
 	const [expanded, setExpanded] = useState(false);
 	const attachments = useMemo(
 		() => filter(message?.attachments, { cd: 'attachment' }),
@@ -597,7 +598,7 @@ const AttachmentsBlock: FC<{
 	);
 
 	const confirmAction = useCallback(
-		(nodes) => {
+		(nodes: any) => {
 			const promises = map(attachments, (att) => copyToFiles(att, message, nodes));
 			Promise.allSettled(promises).then((res: CopyToFileResponse[]) => {
 				const isFault = res.length === filter(res, (r) => r?.value?.Fault)?.length;
@@ -607,20 +608,20 @@ const AttachmentsBlock: FC<{
 				const allFails = res.length === filter(res, ['status', 'rejected'])?.length;
 				const type = allSuccess ? 'info' : 'warning';
 				const label = getLabel({ allSuccess, allFails });
-				getBridgedFunctions()?.createSnackbar({
+				createSnackbar({
 					key: `calendar-moved-root`,
 					replace: true,
-					type,
+					severity: type,
 					hideButton: true,
 					label,
 					autoHideTimeout: 4000
 				});
 			});
 		},
-		[attachments, getLabel, message]
+		[attachments, createSnackbar, getLabel, message]
 	);
 
-	const isAValidDestination = useCallback((node) => node?.permissions?.can_write_file, []);
+	const isAValidDestination = useCallback((node: any) => node?.permissions?.can_write_file, []);
 
 	const actionTarget = useMemo(
 		() => ({

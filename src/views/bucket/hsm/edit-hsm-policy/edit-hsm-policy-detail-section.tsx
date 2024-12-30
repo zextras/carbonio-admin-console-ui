@@ -139,7 +139,7 @@ const EditHsmPolicyDetailSection: FC<{
 		}
 	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, hsmDetail?.policyCriteria]);
 
-	const setSourceAndDestinationValues = useCallback((option, valueItem) => {
+	const setSourceAndDestinationValues = useCallback((option: string, valueItem: string) => {
 		if (option.startsWith('source')) {
 			setSelectedSourceVolume(valueItem.split(',').map((item: string) => +item));
 		}

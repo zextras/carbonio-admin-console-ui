@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useState, useContext } from 'react';
+import React, { FC, useCallback, useState, useContext, ChangeEvent } from 'react';
 
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +23,8 @@ const EditAccountContactsSection: FC = () => {
 	const [isValidFaxNumber, setIsValidFaxNumber] = useState<boolean>(true);
 
 	const changeAccDetail = useCallback(
-		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
+		(e: ChangeEvent<HTMLInputElement>) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e?.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);

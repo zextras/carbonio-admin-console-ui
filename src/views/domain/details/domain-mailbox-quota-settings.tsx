@@ -114,7 +114,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	);
 
 	const onSortChange = useCallback(
-		(v): any => {
+		(v: any): any => {
 			if (
 				v &&
 				v.length > 0 &&

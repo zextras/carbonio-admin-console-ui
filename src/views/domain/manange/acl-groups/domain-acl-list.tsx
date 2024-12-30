@@ -474,23 +474,23 @@ const DomainAclList: FC = () => {
 
 	const createAclListReq = useCallback(
 		(
-			name,
-			description,
-			dynamic,
-			displayName,
-			zimbraHideInGal,
-			zimbraIsACLGroup,
-			zimbraMailStatus,
-			zimbraNotes,
-			memberURL,
-			members,
-			zimbraDistributionListSendShareMessageToNewMembers,
-			owners,
-			zimbraDistributionListSubscriptionPolicy,
-			zimbraDistributionListUnsubscriptionPolicy,
-			allOwnersList,
-			ownerGrantEmailType,
-			ownerGrantEmails
+			name: string,
+			description: string,
+			dynamic: boolean,
+			displayName: string,
+			zimbraHideInGal: boolean,
+			zimbraIsACLGroup: boolean,
+			zimbraMailStatus: boolean,
+			zimbraNotes: string,
+			memberURL: string,
+			members: string[],
+			zimbraDistributionListSendShareMessageToNewMembers: boolean,
+			owners: string[],
+			zimbraDistributionListSubscriptionPolicy: { value: string },
+			zimbraDistributionListUnsubscriptionPolicy: { value: string },
+			allOwnersList: any[],
+			ownerGrantEmailType: { value: string },
+			ownerGrantEmails: string[]
 			// eslint-disable-next-line sonarjs/cognitive-complexity
 		) => {
 			setIsLoading(true);

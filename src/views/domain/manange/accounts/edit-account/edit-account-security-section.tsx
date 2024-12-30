@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, ReactElement, useCallback } from 'react';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	ReactElement,
+	useCallback,
+	ChangeEvent
+} from 'react';
 
 import {
 	Container,
@@ -418,14 +426,14 @@ const EditAccountSecuritySection: FC = () => {
 	};
 
 	const changeValue = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
@@ -463,7 +471,7 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutDurationNum, setAccountDetail]
 	);
 	const onZimbraPasswordLockoutDurationNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: e.target.value
@@ -487,7 +495,7 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeNum, setAccountDetail]
 	);
 	const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: e.target.value

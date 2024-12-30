@@ -52,7 +52,6 @@ describe('CalendarOptions Component', () => {
 		);
 
 		expect(screen.getByText('Calendar Options')).toBeInTheDocument();
-
 		expect(screen.getByText('Time Zone')).toBeInTheDocument();
 		expect(screen.getByText('GMT -10:00 Hawaii')).toBeInTheDocument();
 

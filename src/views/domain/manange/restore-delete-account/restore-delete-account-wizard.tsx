@@ -53,7 +53,7 @@ const RestoreDeleteAccountWizard: FC<{
 		createDate: string;
 		status: string;
 		copyAccount: string;
-		dateTime: any;
+		dateTime: string | null;
 		lastAvailableStatus: boolean;
 		hsmApply: boolean;
 		dataSource: boolean;

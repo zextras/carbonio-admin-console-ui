@@ -8,7 +8,6 @@ import React from 'react';
 import { screen, waitFor, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
-import '@testing-library/jest-dom/extend-expect';
 import { accountDetail, domain } from './mock-edit-account-data';
 import { useDomainStore } from '../../../../../../store/domain/store';
 import { setup } from '../../../../../../tests/testUtils';

@@ -135,20 +135,17 @@ const NewVolume: FC<{
 		}
 	];
 
-	const onComplete = useCallback(
-		(data) => {
-			CreateVolumeRequest({
-				id: volumeDetail?.id,
-				name: volumeDetail?.volumeName,
-				rootpath: volumeDetail?.path,
-				type: volumeDetail?.volumeMain,
-				compressBlobs: volumeDetail?.isCompression ? 1 : 0,
-				compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
-				isCurrent: volumeDetail?.isCurrent ? 1 : 0
-			});
-		},
-		[volumeDetail, CreateVolumeRequest]
-	);
+	const onComplete = useCallback(() => {
+		CreateVolumeRequest({
+			id: volumeDetail?.id,
+			name: volumeDetail?.volumeName,
+			rootpath: volumeDetail?.path,
+			type: volumeDetail?.volumeMain,
+			compressBlobs: volumeDetail?.isCompression ? 1 : 0,
+			compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
+			isCurrent: volumeDetail?.isCurrent ? 1 : 0
+		});
+	}, [volumeDetail, CreateVolumeRequest]);
 
 	return (
 		<>
