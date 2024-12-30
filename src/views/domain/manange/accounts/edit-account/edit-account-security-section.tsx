@@ -538,7 +538,7 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Text size="small" color="gray0" weight="bold">
-									{t('label.two_factor_auth', '2nd Factor Authentication')}
+									{t('label.two_factor_auth', 'Second Factor Authentication')}
 								</Text>
 							</Row>
 							<Row
