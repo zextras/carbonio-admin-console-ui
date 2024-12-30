@@ -1267,7 +1267,7 @@ const CosAdvanced: FC = () => {
 								<ListRow>
 									<Container crossAlignment="flex-start">
 										<Switch
-											label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+											label={t('label.allow_restore_message', 'Allow user to restore messages')}
 											value={cosAdvanced.backupSelfUndeleteAllowed}
 											onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
 											iconColor="primary"

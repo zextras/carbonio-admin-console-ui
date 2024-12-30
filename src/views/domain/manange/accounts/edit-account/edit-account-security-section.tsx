@@ -538,7 +538,7 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Text size="small" color="gray0" weight="bold">
-									{t('label.two_factor_auth', '2nd Factor Authentication')}
+									{t('label.two_factor_auth', 'Second Factor Authentication')}
 								</Text>
 							</Row>
 							<Row
@@ -682,10 +682,7 @@ const EditAccountSecuritySection: FC = () => {
 									<Switch
 										value={accountDetail?.backupSelfUndeleteAllowed}
 										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
-										label={t(
-											'account_details.allow_restore_message',
-											'Allow user to restore messages'
-										)}
+										label={t('label.allow_restore_message', 'Allow user to restore messages')}
 										iconColor="primary"
 									/>
 								</Container>
