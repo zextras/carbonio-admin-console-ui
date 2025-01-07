@@ -2100,43 +2100,6 @@ const CosAdvanced: FC = () => {
 					</Row>
 					<Divider />
 				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t(
-							'cos.free_busy_interop',
-							'Free/Busy Interop (O = OutOfOffice), (OU = OutOfOffice, AvailableForUrgentIssues)'
-						)}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Input
-										label={t(
-											'cos.legacy_exchange_dn_attribute',
-											'O and OU used in legacyExchangeDN attribute'
-										)}
-										value={cosAdvanced.zimbraFreebusyExchangeUserOrg}
-										backgroundColor="gray5"
-										inputName="zimbraFreebusyExchangeUserOrg"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-				</Row>
 			</Container>
 		</Container>
 	);
