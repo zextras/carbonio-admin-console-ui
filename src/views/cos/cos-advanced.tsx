@@ -79,10 +79,22 @@ const CosAdvanced: FC = () => {
 		[t]
 	);
 
-	const [advancedCoreAttributes, setAdvancedCoreAttributes] = useState<any>({
-		backupEnabled: undefined,
-		backupSelfUndeleteAllowed: undefined
-	});
+	type AdvancedCoreAttributes = {
+		[BACKUP_ENABLED]: boolean | undefined;
+		[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
+	};
+
+	type AdvancedCoreAttributesKeys = keyof AdvancedCoreAttributes;
+
+	function isCoreAttribute(key: string): key is AdvancedCoreAttributesKeys {
+		return key === BACKUP_ENABLED || key === BACKUP_SELF_UNDELETE_ALLOWED;
+	}
+
+	const [cosAdvancedCoreAttributes, setCosAdvancedCoreAttributes] =
+		useState<AdvancedCoreAttributes>({
+			[BACKUP_ENABLED]: undefined,
+			[BACKUP_SELF_UNDELETE_ALLOWED]: undefined
+		});
 
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
 		zimbraMailForwardingAddressMaxLength: '',
@@ -181,11 +193,14 @@ const CosAdvanced: FC = () => {
 		[setCosAdvanced]
 	);
 
-	const setCoreValue = useCallback(
-		(key: string, value: any): void => {
-			setAdvancedCoreAttributes((prev: any) => ({ ...prev, [key]: value }));
+	const setCosAdvancedAttributeValue = useCallback(
+		(key: string, value: boolean): void => {
+			setCosAdvancedCoreAttributes((prev: AdvancedCoreAttributes) => ({
+				...prev,
+				[key]: value
+			}));
 		},
-		[setAdvancedCoreAttributes]
+		[setCosAdvancedCoreAttributes]
 	);
 
 	const setInitalValues = useCallback(
@@ -1105,25 +1120,21 @@ const CosAdvanced: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		if (advancedCoreAttributes.backupSelfUndeleteAllowed !== undefined) {
-			const coreAttributesBody: any = {
-				backupSelfUndeleteAllowed: {
-					value: advancedCoreAttributes.backupSelfUndeleteAllowed,
-					objectName: cosName,
-					configType: COS
-				}
-			};
-			setCoreAttributes(coreAttributesBody);
-		}
-		if (advancedCoreAttributes.backupEnabled !== undefined) {
-			const coreAttributesBody: any = {
-				backupEnabled: {
-					value: advancedCoreAttributes.backupEnabled,
-					objectName: cosName,
-					configType: COS
-				}
-			};
-			setCoreAttributes(coreAttributesBody);
+		const updatedCoreAttributes = Object.keys(cosAdvancedCoreAttributes).reduce((acc, key) => {
+			if (isCoreAttribute(key) && cosAdvancedCoreAttributes[key] !== undefined) {
+				return {
+					...acc,
+					[key]: {
+						value: cosAdvancedCoreAttributes[key],
+						objectName: cosName,
+						configType: COS
+					}
+				};
+			}
+			return acc;
+		}, {});
+		if (Object.keys(updatedCoreAttributes).length > 0) {
+			setCoreAttributes(updatedCoreAttributes);
 		}
 		Object.keys(cosAdvanced).forEach((ele: any) => {
 			attributes.push({ n: ele, _content: cosAdvanced[ele] });
@@ -1183,11 +1194,14 @@ const CosAdvanced: FC = () => {
 		getCoreAttributes(body)
 			.then((data) => {
 				if (data?.attributes) {
-					setCoreValue(
+					setCosAdvancedAttributeValue(
 						BACKUP_SELF_UNDELETE_ALLOWED,
-						!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
+						!!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value
 					);
-					setCoreValue(BACKUP_ENABLED, !!data?.attributes?.backupEnabled?.[0]?.value);
+					setCosAdvancedAttributeValue(
+						BACKUP_ENABLED,
+						!!data?.attributes?.[BACKUP_ENABLED]?.[0]?.value
+					);
 				}
 			})
 			.catch((error) => {
@@ -1203,17 +1217,17 @@ const CosAdvanced: FC = () => {
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setCoreValue, t]);
+	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValue, t]);
 
-	const changeBooleanSwitchOption = useCallback(
-		(key: string): void => {
-			setAdvancedCoreAttributes((prev: any) => ({
+	const changeCoreAttribute = useCallback(
+		(key: AdvancedCoreAttributesKeys): void => {
+			setCosAdvancedCoreAttributes((prev: AdvancedCoreAttributes) => ({
 				...prev,
-				[key]: !advancedCoreAttributes[key]
+				[key]: !cosAdvancedCoreAttributes[key]
 			}));
 			setIsDirty(true);
 		},
-		[advancedCoreAttributes, setAdvancedCoreAttributes, setIsDirty]
+		[cosAdvancedCoreAttributes, setCosAdvancedCoreAttributes, setIsDirty]
 	);
 
 	return (
@@ -1276,18 +1290,22 @@ const CosAdvanced: FC = () => {
 								padding={{ top: 'large' }}
 							>
 								<ListRow>
-									<Container crossAlignment="flex-start">
+									<Container
+										mainAlignment="flex-start"
+										style={{ gap: 10 }}
+										orientation="horizontal"
+									>
 										<Switch
 											label={t('label.allow_restore_message', 'Allow user to restore messages')}
-											value={advancedCoreAttributes.backupSelfUndeleteAllowed}
-											onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
+											value={cosAdvancedCoreAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
+											onClick={(): void => changeCoreAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
 											iconColor="primary"
 											disabled={readonlyCOS}
 										/>
 										<Switch
 											label={t('label.backup_enabled', 'Backup')}
-											value={advancedCoreAttributes.backupEnabled}
-											onClick={(): void => changeBooleanSwitchOption('backupEnabled')}
+											value={cosAdvancedCoreAttributes[BACKUP_ENABLED]}
+											onClick={(): void => changeCoreAttribute(BACKUP_ENABLED)}
 											iconColor="primary"
 											disabled={readonlyCOS}
 										/>
