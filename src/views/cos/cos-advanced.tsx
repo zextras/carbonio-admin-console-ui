@@ -43,6 +43,59 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 
+type AdvancedBackupAttributes = {
+	[BACKUP_ENABLED]: boolean | undefined;
+	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
+};
+
+type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
+
+function isBackupAttribute(key: string): key is AdvancedBackupAttributesKeys {
+	return key === BACKUP_ENABLED || key === BACKUP_SELF_UNDELETE_ALLOWED;
+}
+
+function saveBackupAttributes(
+	cosAdvancedBackupAttributes: AdvancedBackupAttributes,
+	cosName: string | undefined
+): void {
+	const updateBackupAttributes = Object.keys(cosAdvancedBackupAttributes).reduce((acc, key) => {
+		if (isBackupAttribute(key) && cosAdvancedBackupAttributes[key] !== undefined) {
+			return {
+				...acc,
+				[key]: {
+					value: cosAdvancedBackupAttributes[key],
+					objectName: cosName,
+					configType: COS
+				}
+			};
+		}
+		return acc;
+	}, {});
+	if (Object.keys(updateBackupAttributes).length > 0) {
+		setCoreAttributes(updateBackupAttributes);
+	}
+}
+
+function saveCosAdvanced(cosAdvanced: any, zimbraId: unknown): Promise<any> {
+	const body: any = {};
+	body._jsns = 'urn:zimbraAdmin';
+	const attributes: any[] = [];
+	const id = {
+		_content: zimbraId
+	};
+	body.id = id;
+
+	Object.keys(cosAdvanced).forEach((ele: any) => {
+		attributes.push({ n: ele, _content: cosAdvanced[ele] });
+	});
+
+	body.a = attributes;
+	return modifyCos(body).then((data) => ({
+		cosId: body.id._content,
+		cos: data?.cos[0]
+	}));
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -79,19 +132,8 @@ const CosAdvanced: FC = () => {
 		[t]
 	);
 
-	type AdvancedCoreAttributes = {
-		[BACKUP_ENABLED]: boolean | undefined;
-		[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
-	};
-
-	type AdvancedCoreAttributesKeys = keyof AdvancedCoreAttributes;
-
-	function isCoreAttribute(key: string): key is AdvancedCoreAttributesKeys {
-		return key === BACKUP_ENABLED || key === BACKUP_SELF_UNDELETE_ALLOWED;
-	}
-
-	const [cosAdvancedCoreAttributes, setCosAdvancedCoreAttributes] =
-		useState<AdvancedCoreAttributes>({
+	const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
+		useState<AdvancedBackupAttributes>({
 			[BACKUP_ENABLED]: undefined,
 			[BACKUP_SELF_UNDELETE_ALLOWED]: undefined
 		});
@@ -195,12 +237,12 @@ const CosAdvanced: FC = () => {
 
 	const setCosAdvancedAttributeValue = useCallback(
 		(key: string, value: boolean): void => {
-			setCosAdvancedCoreAttributes((prev: AdvancedCoreAttributes) => ({
+			setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
 				...prev,
 				[key]: value
 			}));
 		},
-		[setCosAdvancedCoreAttributes]
+		[setCosAdvancedBackupAttributes]
 	);
 
 	const setInitalValues = useCallback(
@@ -1113,37 +1155,11 @@ const CosAdvanced: FC = () => {
 	}, []);
 
 	const onSave = (): void => {
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		const attributes: any[] = [];
-		const id = {
-			_content: cosData.zimbraId
-		};
-		body.id = id;
-		const updatedCoreAttributes = Object.keys(cosAdvancedCoreAttributes).reduce((acc, key) => {
-			if (isCoreAttribute(key) && cosAdvancedCoreAttributes[key] !== undefined) {
-				return {
-					...acc,
-					[key]: {
-						value: cosAdvancedCoreAttributes[key],
-						objectName: cosName,
-						configType: COS
-					}
-				};
-			}
-			return acc;
-		}, {});
-		if (Object.keys(updatedCoreAttributes).length > 0) {
-			setCoreAttributes(updatedCoreAttributes);
-		}
-		Object.keys(cosAdvanced).forEach((ele: any) => {
-			attributes.push({ n: ele, _content: cosAdvanced[ele] });
-		});
+		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
 
-		body.a = attributes;
-		modifyCos(body)
-			.then((data) => {
-				flushCache('cos', 'id', body.id._content);
+		saveCosAdvanced(cosAdvanced, cosData.zimbraId)
+			.then(({ cosId, cos }) => {
+				flushCache('cos', 'id', cosId);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -1152,7 +1168,6 @@ const CosAdvanced: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				const cos: any = data?.cos[0];
 				if (cos) {
 					setCos(cos);
 				}
@@ -1194,6 +1209,7 @@ const CosAdvanced: FC = () => {
 		getCoreAttributes(body)
 			.then((data) => {
 				if (data?.attributes) {
+					// TODO: use the setCosAdvancedAttributesValue function
 					setCosAdvancedAttributeValue(
 						BACKUP_SELF_UNDELETE_ALLOWED,
 						!!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value
@@ -1219,15 +1235,15 @@ const CosAdvanced: FC = () => {
 			});
 	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValue, t]);
 
-	const changeCoreAttribute = useCallback(
-		(key: AdvancedCoreAttributesKeys): void => {
-			setCosAdvancedCoreAttributes((prev: AdvancedCoreAttributes) => ({
+	const changeBackupAttribute = useCallback(
+		(key: AdvancedBackupAttributesKeys): void => {
+			setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
 				...prev,
-				[key]: !cosAdvancedCoreAttributes[key]
+				[key]: !cosAdvancedBackupAttributes[key]
 			}));
 			setIsDirty(true);
 		},
-		[cosAdvancedCoreAttributes, setCosAdvancedCoreAttributes, setIsDirty]
+		[cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes, setIsDirty]
 	);
 
 	return (
@@ -1297,15 +1313,15 @@ const CosAdvanced: FC = () => {
 									>
 										<Switch
 											label={t('label.allow_restore_message', 'Allow user to restore messages')}
-											value={cosAdvancedCoreAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
-											onClick={(): void => changeCoreAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
+											value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
+											onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
 											iconColor="primary"
 											disabled={readonlyCOS}
 										/>
 										<Switch
 											label={t('label.backup_enabled', 'Backup')}
-											value={cosAdvancedCoreAttributes[BACKUP_ENABLED]}
-											onClick={(): void => changeCoreAttribute(BACKUP_ENABLED)}
+											value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
+											onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 											iconColor="primary"
 											disabled={readonlyCOS}
 										/>
