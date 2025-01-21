@@ -85,8 +85,8 @@ describe('CosAdvanced', () => {
 		useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
 	};
 
-	const setAdvancedEnabled = (): void => setupAdvanced(true);
-	const setAdvancedDisabled = (): void => setupAdvanced(false);
+	const enableAdvanced = (): void => setupAdvanced(true);
+	const disableAdvanced = (): void => setupAdvanced(false);
 
 	beforeEach(() => {
 		jest.resetAllMocks();
@@ -101,7 +101,7 @@ describe('CosAdvanced', () => {
 	}
 
 	it('should render the component correctly', async () => {
-		setAdvancedEnabled();
+		enableAdvanced();
 
 		await renderComponent(<CosAdvanced />);
 
@@ -118,7 +118,7 @@ describe('CosAdvanced', () => {
 	});
 
 	it('should render Advanced toggles', async () => {
-		setAdvancedEnabled();
+		enableAdvanced();
 
 		await renderComponent(<CosAdvanced />);
 
@@ -128,7 +128,7 @@ describe('CosAdvanced', () => {
 	});
 
 	it('should not render Advanced toggles', async () => {
-		setAdvancedDisabled();
+		disableAdvanced();
 
 		await renderComponent(<CosAdvanced />);
 
