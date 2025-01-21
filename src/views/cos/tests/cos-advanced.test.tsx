@@ -94,11 +94,16 @@ describe('CosAdvanced', () => {
 		setupAdvanced(false);
 	});
 
+	async function renderComponent(component: React.ReactElement): Promise<void> {
+		await act(async () => {
+			setup(component);
+		});
+	}
+
 	it('should render the component correctly', async () => {
 		setAdvancedEnabled();
-		await act(async () => {
-			setup(<CosAdvanced />);
-		});
+
+		await renderComponent(<CosAdvanced />);
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
@@ -114,9 +119,8 @@ describe('CosAdvanced', () => {
 
 	it('should render Advanced toggles', async () => {
 		setAdvancedEnabled();
-		await act(async () => {
-			setup(<CosAdvanced />);
-		});
+
+		await renderComponent(<CosAdvanced />);
 
 		expect(screen.getByText('General Options')).toBeInTheDocument();
 		expect(screen.getByText('Backup')).toBeInTheDocument();
@@ -125,9 +129,8 @@ describe('CosAdvanced', () => {
 
 	it('should not render Advanced toggles', async () => {
 		setAdvancedDisabled();
-		await act(async () => {
-			setup(<CosAdvanced />);
-		});
+
+		await renderComponent(<CosAdvanced />);
 
 		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
 		expect(screen.queryByText('Backup')).not.toBeInTheDocument();
