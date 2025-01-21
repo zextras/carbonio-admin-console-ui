@@ -13,6 +13,7 @@ import { jest } from '@jest/globals';
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn } from '@zextras/carbonio-design-system';
 
+import { useCosStore } from '../../../store/cos/store';
 import { setup } from '../../../tests/testUtils';
 import CosAdvanced from '../cos-advanced';
 
@@ -25,20 +26,43 @@ jest.mock('../../../services/modify-cos-service', () => ({
 }));
 
 jest.mock('../../../services/get-core-attributes', () => ({
-	getCoreAttributes: jest.fn()
+	getCoreAttributes: (): Promise<any> =>
+		Promise.resolve({
+			attributes: {
+				zimbraMailForwardingAddress: {
+					_content: ''
+				},
+				zimbraMailQuota: {
+					_content: '0'
+				},
+				zimbraMailQuotaUsed: {
+					_content: '0'
+				}
+			}
+		})
 }));
 jest.mock('../../../services/set-core-attributes', () => ({
 	setCoreAttributes: jest.fn()
 }));
 
 jest.mock('../../../services/get-file-quota', () => ({
-	getFileQuotaById: jest.fn()
+	getFileQuotaById: (): Promise<any> =>
+		Promise.resolve({
+			limit: 0
+		})
 }));
 jest.mock('../../../services/set-file-quota-limit', () => ({
 	setFileQuotaLimitById: jest.fn()
 }));
 jest.mock('../../../services/reset-file-quota-limit', () => ({
 	resetFileQuotaLimitById: jest.fn()
+}));
+
+jest.mock('../../../store/auth-advanced/store', () => ({
+	useAuthIsAdvanced: (): { isAdvanced: boolean; setIsAdvanced: () => void } => ({
+		isAdvanced: true,
+		setIsAdvanced: jest.fn()
+	})
 }));
 
 jest.mock('@zextras/carbonio-design-system', () => {
@@ -50,8 +74,22 @@ jest.mock('@zextras/carbonio-design-system', () => {
 });
 
 describe('CosAdvanced', () => {
+	const setupCosStore = (): void => {
+		useCosStore.getState().setCos({
+			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+			name: 'default',
+			isDefaultCos: true,
+			a: [
+				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+				{ n: 'zimbraPrefLocale', _content: 'en' },
+				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
+			]
+		});
+	};
+
 	beforeEach(() => {
 		jest.resetAllMocks();
+		setupCosStore();
 	});
 
 	it('should render the component correctly', async () => {
@@ -60,8 +98,7 @@ describe('CosAdvanced', () => {
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		// TODO: rendered only when 'isAdvanced', add another test
-		// expect(screen.getByText('General Options')).toBeInTheDocument();
+		expect(screen.getByText('General Options')).toBeInTheDocument();
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		expect(screen.getByText('Quotas')).toBeInTheDocument();
 		expect(screen.getByText('Password')).toBeInTheDocument();
