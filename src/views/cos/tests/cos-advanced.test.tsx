@@ -10,7 +10,7 @@
 import React from 'react';
 
 import { jest } from '@jest/globals';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { CreateSnackbarFn } from '@zextras/carbonio-design-system';
 
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
@@ -96,7 +96,9 @@ describe('CosAdvanced', () => {
 
 	it('should render the component correctly', async () => {
 		setAdvancedEnabled();
-		setup(<CosAdvanced />);
+		await act(async () => {
+			setup(<CosAdvanced />);
+		});
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
@@ -112,7 +114,9 @@ describe('CosAdvanced', () => {
 
 	it('should render Advanced toggles', async () => {
 		setAdvancedEnabled();
-		setup(<CosAdvanced />);
+		await act(async () => {
+			setup(<CosAdvanced />);
+		});
 
 		expect(screen.getByText('General Options')).toBeInTheDocument();
 		expect(screen.getByText('Backup')).toBeInTheDocument();
@@ -121,7 +125,9 @@ describe('CosAdvanced', () => {
 
 	it('should not render Advanced toggles', async () => {
 		setAdvancedDisabled();
-		setup(<CosAdvanced />);
+		await act(async () => {
+			setup(<CosAdvanced />);
+		});
 
 		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
 		expect(screen.queryByText('Backup')).not.toBeInTheDocument();
