@@ -13,6 +13,7 @@ import { jest } from '@jest/globals';
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn } from '@zextras/carbonio-design-system';
 
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
 import { setup } from '../../../tests/testUtils';
 import CosAdvanced from '../cos-advanced';
@@ -58,13 +59,6 @@ jest.mock('../../../services/reset-file-quota-limit', () => ({
 	resetFileQuotaLimitById: jest.fn()
 }));
 
-jest.mock('../../../store/auth-advanced/store', () => ({
-	useAuthIsAdvanced: (): { isAdvanced: boolean; setIsAdvanced: () => void } => ({
-		isAdvanced: true,
-		setIsAdvanced: jest.fn()
-	})
-}));
-
 jest.mock('@zextras/carbonio-design-system', () => {
 	const actual: CreateSnackbarFn = jest.requireActual('@zextras/carbonio-design-system');
 	return {
@@ -87,12 +81,21 @@ describe('CosAdvanced', () => {
 		});
 	};
 
+	const setupAdvanced = (isAdvanced: boolean): void => {
+		useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
+	};
+
+	const setAdvancedEnabled = (): void => setupAdvanced(true);
+	const setAdvancedDisabled = (): void => setupAdvanced(false);
+
 	beforeEach(() => {
 		jest.resetAllMocks();
 		setupCosStore();
+		setupAdvanced(false);
 	});
 
 	it('should render the component correctly', async () => {
+		setAdvancedEnabled();
 		setup(<CosAdvanced />);
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
@@ -105,5 +108,23 @@ describe('CosAdvanced', () => {
 		expect(screen.getByText('Failed Login Policy')).toBeInTheDocument();
 		expect(screen.getByText('Timeout Policy')).toBeInTheDocument();
 		expect(screen.getByText('Email Retention Policy')).toBeInTheDocument();
+	});
+
+	it('should render Advanced toggles', async () => {
+		setAdvancedEnabled();
+		setup(<CosAdvanced />);
+
+		expect(screen.getByText('General Options')).toBeInTheDocument();
+		expect(screen.getByText('Backup')).toBeInTheDocument();
+		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
+	});
+
+	it('should not render Advanced toggles', async () => {
+		setAdvancedDisabled();
+		setup(<CosAdvanced />);
+
+		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
+		expect(screen.queryByText('Backup')).not.toBeInTheDocument();
+		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
 	});
 });
