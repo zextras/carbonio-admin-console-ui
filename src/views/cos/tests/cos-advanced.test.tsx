@@ -147,6 +147,9 @@ async function renderComponent(component: React.ReactElement): Promise<any> {
 const enableAdvanced = (): void => setupAdvanced(true);
 const disableAdvanced = (): void => setupAdvanced(false);
 
+const spySetCoreAttributes = (): any =>
+	jest.spyOn(setCoreAttributes, 'setCoreAttributes').mockImplementation((_) => Promise.resolve({}));
+
 /*
 /═══════════════════════════════════════════════════\
 |          			  Tests							|
@@ -197,10 +200,7 @@ describe('CosAdvanced', () => {
 	it('should toggle/untoggle Backup based on initial state', async () => {
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-
-		const setCoreAttributesMock = jest
-			.spyOn(setCoreAttributes, 'setCoreAttributes')
-			.mockImplementation((_) => Promise.resolve({}));
+		const setCoreAttrs = spySetCoreAttributes();
 
 		const { user } = await renderComponent(<CosAdvanced />);
 
@@ -210,7 +210,7 @@ describe('CosAdvanced', () => {
 
 		await user.click(screen.getByText('Save'));
 
-		expect(setCoreAttributesMock).toHaveBeenCalled();
+		expect(setCoreAttrs).toHaveBeenCalled();
 
 		const expectedBody = {
 			backupEnabled: {
@@ -224,7 +224,7 @@ describe('CosAdvanced', () => {
 				value: true
 			}
 		};
-		expect(setCoreAttributesMock).toHaveBeenCalledWith(expectedBody);
+		expect(setCoreAttrs).toHaveBeenCalledWith(expectedBody);
 
 		const expectedSnackbarOptions = {
 			key: 'success',
