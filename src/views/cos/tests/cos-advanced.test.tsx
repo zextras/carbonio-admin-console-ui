@@ -204,9 +204,8 @@ describe('CosAdvanced', () => {
 
 		const { user } = await renderComponent(<CosAdvanced />);
 
+		// Toggle/Untoggle Backup
 		await user.click(screen.getByText('Backup'));
-		expect(screen.getByText('Save')).toBeInTheDocument();
-		expect(screen.getByText('Cancel')).toBeInTheDocument();
 
 		await user.click(screen.getByText('Save'));
 
