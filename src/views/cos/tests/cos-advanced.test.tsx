@@ -167,6 +167,15 @@ const createAdvancedCosValues = (
 	}
 });
 
+const successSnackbar = {
+	key: 'success',
+	severity: 'success',
+	label: 'The change has been saved successfully',
+	autoHideTimeout: 3000,
+	hideButton: true,
+	replace: true
+};
+
 /*
 /═══════════════════════════════════════════════════\
 |          			  Tests							|
@@ -230,14 +239,6 @@ describe('CosAdvanced', () => {
 			createAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
 
-		const expectedSnackbarOptions = {
-			key: 'success',
-			severity: 'success',
-			label: 'The change has been saved successfully',
-			autoHideTimeout: 3000,
-			hideButton: true,
-			replace: true
-		};
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
 });
