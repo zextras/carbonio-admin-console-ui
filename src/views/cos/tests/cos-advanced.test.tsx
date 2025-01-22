@@ -225,8 +225,9 @@ describe('CosAdvanced', () => {
 
 		await user.click(screen.getByText('Save'));
 
+		const expectedBackupEnabledValue = !initialBackupEnabledValue;
 		expect(setCoreAttrs).toHaveBeenCalledWith(
-			createAdvancedCosValues(!initialBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
+			createAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
 
 		const expectedSnackbarOptions = {
