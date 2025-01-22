@@ -22,7 +22,7 @@ import CosAdvanced from '../cos-advanced';
 
 /*
 /═══════════════════════════════════════════════════\
-|          	Cos Advanced Config Mocks     			|
+|          			Config Mocks     				|
 \═══════════════════════════════════════════════════/
 */
 
@@ -94,52 +94,56 @@ jest.mock('@zextras/carbonio-design-system', () => {
 
 /*
 /═══════════════════════════════════════════════════\
+|          			Config Stores     				|
+\═══════════════════════════════════════════════════/
+*/
+const setupCosStore = (): void => {
+	useCosStore.getState().setCos({
+		id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+		name: 'default',
+		isDefaultCos: true,
+		a: [
+			{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+			{ n: 'zimbraPrefLocale', _content: 'en' },
+			{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
+		]
+	});
+};
+
+const setupRightsStore = (): void => {
+	useRightsStore.getState().setRights([
+		{
+			type: 'cos',
+			all: [
+				{
+					right: [
+						{ n: 'assignCos' },
+						{ n: 'deleteCos' },
+						{ n: 'listCos' },
+						{ n: 'manageZimlet' },
+						{ n: 'renameCos' }
+					],
+					setAttrs: [{ all: true }],
+					getAttrs: [{ all: true }]
+				}
+			]
+		}
+	]);
+};
+
+const setupAdvanced = (isAdvanced: boolean): void => {
+	useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
+};
+const enableAdvanced = (): void => setupAdvanced(true);
+const disableAdvanced = (): void => setupAdvanced(false);
+
+/*
+/═══════════════════════════════════════════════════\
 |          			  Tests							|
 \═══════════════════════════════════════════════════/
 */
 
 describe('CosAdvanced', () => {
-	const setupCosStore = (): void => {
-		useCosStore.getState().setCos({
-			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-			name: 'default',
-			isDefaultCos: true,
-			a: [
-				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-				{ n: 'zimbraPrefLocale', _content: 'en' },
-				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
-			]
-		});
-	};
-
-	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'cos',
-				all: [
-					{
-						right: [
-							{ n: 'assignCos' },
-							{ n: 'deleteCos' },
-							{ n: 'listCos' },
-							{ n: 'manageZimlet' },
-							{ n: 'renameCos' }
-						],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
-	};
-
-	const setupAdvanced = (isAdvanced: boolean): void => {
-		useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
-	};
-
-	const enableAdvanced = (): void => setupAdvanced(true);
-	const disableAdvanced = (): void => setupAdvanced(false);
-
 	beforeEach(() => {
 		jest.resetAllMocks();
 		setupCosStore();
