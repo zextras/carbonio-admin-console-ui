@@ -39,6 +39,7 @@ jest.mock('../../../services/modify-cos-service', () => ({
 		})
 }));
 
+const mockInitialBackupValue = false;
 jest.mock('../../../services/get-core-attributes', () => ({
 	getCoreAttributes: (): Promise<any> =>
 		Promise.resolve({
@@ -47,7 +48,7 @@ jest.mock('../../../services/get-core-attributes', () => ({
 					{
 						configName: 'default',
 						configType: 'cos',
-						value: false
+						value: mockInitialBackupValue
 					}
 				],
 				backupSelfUndeleteAllowed: [
@@ -193,7 +194,7 @@ describe('CosAdvanced', () => {
 			backupEnabled: {
 				objectName: 'default',
 				configType: 'cos',
-				value: true
+				value: !mockInitialBackupValue
 			},
 			backupSelfUndeleteAllowed: {
 				objectName: 'default',
