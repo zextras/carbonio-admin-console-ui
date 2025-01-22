@@ -20,6 +20,12 @@ import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import CosAdvanced from '../cos-advanced';
 
+/*
+/═══════════════════════════════════════════════════\
+|          	Cos Advanced Config Mocks     			|
+\═══════════════════════════════════════════════════/
+*/
+
 jest.mock('../../../services/flush-cache-service', () => ({
 	flushCache: jest.fn()
 }));
@@ -85,6 +91,12 @@ jest.mock('@zextras/carbonio-design-system', () => {
 		useSnackbar: jest.fn()
 	};
 });
+
+/*
+/═══════════════════════════════════════════════════\
+|          			  Tests							|
+\═══════════════════════════════════════════════════/
+*/
 
 describe('CosAdvanced', () => {
 	const setupCosStore = (): void => {
