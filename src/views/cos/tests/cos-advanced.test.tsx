@@ -134,6 +134,16 @@ const setupRightsStore = (): void => {
 const setupAdvanced = (isAdvanced: boolean): void => {
 	useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
 };
+
+/*
+/═══════════════════════════════════════════════════\
+|          		Utility functions					|
+\═══════════════════════════════════════════════════/
+*/
+async function renderComponent(component: React.ReactElement): Promise<any> {
+	return act(async (): Promise<any> => setup(component));
+}
+
 const enableAdvanced = (): void => setupAdvanced(true);
 const disableAdvanced = (): void => setupAdvanced(false);
 
@@ -150,10 +160,6 @@ describe('CosAdvanced', () => {
 		setupRightsStore();
 		enableAdvanced();
 	});
-
-	async function renderComponent(component: React.ReactElement): Promise<any> {
-		return act(async (): Promise<any> => setup(component));
-	}
 
 	it('should render the component correctly', async () => {
 		await renderComponent(<CosAdvanced />);
