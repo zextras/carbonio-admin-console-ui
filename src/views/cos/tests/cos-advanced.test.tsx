@@ -11,10 +11,13 @@ import React from 'react';
 
 import { jest } from '@jest/globals';
 import { act, screen } from '@testing-library/react';
-import { CreateSnackbarFn } from '@zextras/carbonio-design-system';
+import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
+import * as getCoreAttributes from '../../../services/get-core-attributes';
+import * as setCoreAttributes from '../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
+import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import CosAdvanced from '../cos-advanced';
 
@@ -23,22 +26,38 @@ jest.mock('../../../services/flush-cache-service', () => ({
 }));
 
 jest.mock('../../../services/modify-cos-service', () => ({
-	modifyCos: jest.fn()
+	modifyCos: (): Promise<any> =>
+		Promise.resolve({
+			_jsns: 'urn:zimbraAdmin',
+			cos: {
+				id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+				a: [
+					{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+					{ n: 'zimbraPrefLocale', _content: 'en' },
+					{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
+				]
+			}
+		})
 }));
 
 jest.mock('../../../services/get-core-attributes', () => ({
 	getCoreAttributes: (): Promise<any> =>
 		Promise.resolve({
 			attributes: {
-				zimbraMailForwardingAddress: {
-					_content: ''
-				},
-				zimbraMailQuota: {
-					_content: '0'
-				},
-				zimbraMailQuotaUsed: {
-					_content: '0'
-				}
+				backupEnabled: [
+					{
+						configName: 'default',
+						configType: 'cos',
+						value: false
+					}
+				],
+				backupSelfUndeleteAllowed: [
+					{
+						configName: 'default',
+						configType: 'cos',
+						value: true
+					}
+				]
 			}
 		})
 }));
@@ -81,6 +100,27 @@ describe('CosAdvanced', () => {
 		});
 	};
 
+	const setupRightsStore = (): void => {
+		useRightsStore.getState().setRights([
+			{
+				type: 'cos',
+				all: [
+					{
+						right: [
+							{ n: 'assignCos' },
+							{ n: 'deleteCos' },
+							{ n: 'listCos' },
+							{ n: 'manageZimlet' },
+							{ n: 'renameCos' }
+						],
+						setAttrs: [{ all: true }],
+						getAttrs: [{ all: true }]
+					}
+				]
+			}
+		]);
+	};
+
 	const setupAdvanced = (isAdvanced: boolean): void => {
 		useAuthIsAdvanced.getState().setIsAdvanced(isAdvanced);
 	};
@@ -91,13 +131,12 @@ describe('CosAdvanced', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 		setupCosStore();
+		setupRightsStore();
 		enableAdvanced();
 	});
 
-	async function renderComponent(component: React.ReactElement): Promise<void> {
-		await act(async () => {
-			setup(component);
-		});
+	async function renderComponent(component: React.ReactElement): Promise<any> {
+		return act(async (): Promise<any> => setup(component));
 	}
 
 	it('should render the component correctly', async () => {
@@ -131,5 +170,69 @@ describe('CosAdvanced', () => {
 		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
 		expect(screen.queryByText('Backup')).not.toBeInTheDocument();
 		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
+	});
+
+	it('should toggle/untoggle Backup based on initial state', async () => {
+		const mockCreateSnackbar = jest.fn();
+		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+
+		const setCoreAttributesMock = jest
+			.spyOn(setCoreAttributes, 'setCoreAttributes')
+			.mockImplementation((_) => Promise.resolve({}));
+
+		jest.spyOn(getCoreAttributes, 'getCoreAttributes').mockImplementation((_) =>
+			Promise.resolve({
+				attributes: {
+					backupEnabled: [
+						{
+							configName: 'default',
+							configType: 'cos',
+							value: false
+						}
+					],
+					backupSelfUndeleteAllowed: [
+						{
+							configName: 'default',
+							configType: 'cos',
+							value: true
+						}
+					]
+				}
+			})
+		);
+
+		const { user } = await renderComponent(<CosAdvanced />);
+
+		await user.click(screen.getByText('Backup'));
+		expect(screen.getByText('Save')).toBeInTheDocument();
+		expect(screen.getByText('Cancel')).toBeInTheDocument();
+
+		await user.click(screen.getByText('Save'));
+
+		expect(setCoreAttributesMock).toHaveBeenCalled();
+
+		const expectedBody = {
+			backupEnabled: {
+				objectName: 'default',
+				configType: 'cos',
+				value: true
+			},
+			backupSelfUndeleteAllowed: {
+				objectName: 'default',
+				configType: 'cos',
+				value: true
+			}
+		};
+		expect(setCoreAttributesMock).toHaveBeenCalledWith(expectedBody);
+
+		const expectedSnackbarOptions = {
+			key: 'success',
+			severity: 'success',
+			label: 'The change has been saved successfully',
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true
+		};
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(expectedSnackbarOptions);
 	});
 });
