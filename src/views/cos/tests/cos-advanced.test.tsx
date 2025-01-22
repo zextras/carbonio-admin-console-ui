@@ -46,6 +46,7 @@ jest.mock('../../../services/modify-cos-service', () => ({
 }));
 
 const initialBackupEnabledValue = false;
+const initialBackupSelfUndeleteAllowedValue = true;
 jest.mock('../../../services/get-core-attributes', () => ({
 	getCoreAttributes: (): Promise<any> =>
 		Promise.resolve({
@@ -61,7 +62,7 @@ jest.mock('../../../services/get-core-attributes', () => ({
 					{
 						configName: 'default',
 						configType: 'cos',
-						value: true
+						value: initialBackupSelfUndeleteAllowedValue
 					}
 				]
 			}
@@ -225,7 +226,7 @@ describe('CosAdvanced', () => {
 		await user.click(screen.getByText('Save'));
 
 		expect(setCoreAttrs).toHaveBeenCalledWith(
-			createAdvancedCosValues(!initialBackupEnabledValue, true)
+			createAdvancedCosValues(!initialBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
 
 		const expectedSnackbarOptions = {
