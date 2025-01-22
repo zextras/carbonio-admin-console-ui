@@ -45,7 +45,7 @@ jest.mock('../../../services/modify-cos-service', () => ({
 		})
 }));
 
-const mockInitialBackupValue = false;
+const initialBackupEnabledValue = false;
 jest.mock('../../../services/get-core-attributes', () => ({
 	getCoreAttributes: (): Promise<any> =>
 		Promise.resolve({
@@ -54,7 +54,7 @@ jest.mock('../../../services/get-core-attributes', () => ({
 					{
 						configName: 'default',
 						configType: 'cos',
-						value: mockInitialBackupValue
+						value: initialBackupEnabledValue
 					}
 				],
 				backupSelfUndeleteAllowed: [
@@ -150,6 +150,22 @@ const disableAdvanced = (): void => setupAdvanced(false);
 const spySetCoreAttributes = (): any =>
 	jest.spyOn(setCoreAttributes, 'setCoreAttributes').mockImplementation((_) => Promise.resolve({}));
 
+const createAdvancedCosValues = (
+	backupEnabled: boolean,
+	backupSelfUndeleteAllowed: boolean
+): any => ({
+	backupEnabled: {
+		objectName: 'default',
+		configType: 'cos',
+		value: backupEnabled
+	},
+	backupSelfUndeleteAllowed: {
+		objectName: 'default',
+		configType: 'cos',
+		value: backupSelfUndeleteAllowed
+	}
+});
+
 /*
 /═══════════════════════════════════════════════════\
 |          			  Tests							|
@@ -201,7 +217,6 @@ describe('CosAdvanced', () => {
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
 		const setCoreAttrs = spySetCoreAttributes();
-
 		const { user } = await renderComponent(<CosAdvanced />);
 
 		// Toggle/Untoggle Backup
@@ -209,21 +224,9 @@ describe('CosAdvanced', () => {
 
 		await user.click(screen.getByText('Save'));
 
-		expect(setCoreAttrs).toHaveBeenCalled();
-
-		const expectedBody = {
-			backupEnabled: {
-				objectName: 'default',
-				configType: 'cos',
-				value: !mockInitialBackupValue
-			},
-			backupSelfUndeleteAllowed: {
-				objectName: 'default',
-				configType: 'cos',
-				value: true
-			}
-		};
-		expect(setCoreAttrs).toHaveBeenCalledWith(expectedBody);
+		expect(setCoreAttrs).toHaveBeenCalledWith(
+			createAdvancedCosValues(!initialBackupEnabledValue, true)
+		);
 
 		const expectedSnackbarOptions = {
 			key: 'success',
