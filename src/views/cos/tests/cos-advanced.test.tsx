@@ -13,7 +13,6 @@ import { jest } from '@jest/globals';
 import { act, screen } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
-import * as getCoreAttributes from '../../../services/get-core-attributes';
 import * as setCoreAttributes from '../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
@@ -179,27 +178,6 @@ describe('CosAdvanced', () => {
 		const setCoreAttributesMock = jest
 			.spyOn(setCoreAttributes, 'setCoreAttributes')
 			.mockImplementation((_) => Promise.resolve({}));
-
-		jest.spyOn(getCoreAttributes, 'getCoreAttributes').mockImplementation((_) =>
-			Promise.resolve({
-				attributes: {
-					backupEnabled: [
-						{
-							configName: 'default',
-							configType: 'cos',
-							value: false
-						}
-					],
-					backupSelfUndeleteAllowed: [
-						{
-							configName: 'default',
-							configType: 'cos',
-							value: true
-						}
-					]
-				}
-			})
-		);
 
 		const { user } = await renderComponent(<CosAdvanced />);
 
