@@ -91,7 +91,7 @@ describe('CosAdvanced', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 		setupCosStore();
-		setupAdvanced(false);
+		enableAdvanced();
 	});
 
 	async function renderComponent(component: React.ReactElement): Promise<void> {
@@ -101,8 +101,6 @@ describe('CosAdvanced', () => {
 	}
 
 	it('should render the component correctly', async () => {
-		enableAdvanced();
-
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
@@ -118,8 +116,6 @@ describe('CosAdvanced', () => {
 	});
 
 	it('should render Advanced toggles', async () => {
-		enableAdvanced();
-
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.getByText('General Options')).toBeInTheDocument();
