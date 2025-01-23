@@ -13,6 +13,7 @@ import { jest } from '@jest/globals';
 import { act, screen } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
+import { modifyCos } from '../../../services/modify-cos-service';
 import * as setCoreAttributes from '../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
@@ -31,18 +32,7 @@ jest.mock('../../../services/flush-cache-service', () => ({
 }));
 
 jest.mock('../../../services/modify-cos-service', () => ({
-	modifyCos: (): Promise<any> =>
-		Promise.resolve({
-			_jsns: 'urn:zimbraAdmin',
-			cos: {
-				id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-				a: [
-					{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-					{ n: 'zimbraPrefLocale', _content: 'en' },
-					{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
-				]
-			}
-		})
+	modifyCos: jest.fn()
 }));
 
 const initialBackupEnabledValue = false;
@@ -106,7 +96,8 @@ const setupCosStore = (): void => {
 		a: [
 			{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 			{ n: 'zimbraPrefLocale', _content: 'en' },
-			{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
+			{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
+			{ n: 'zimbraMailForwardingAddressMaxLength', _content: '4096' }
 		]
 	});
 };
@@ -138,7 +129,7 @@ const setupAdvanced = (isAdvanced: boolean): void => {
 
 /*
 /═══════════════════════════════════════════════════\
-|          		Utility functions					|
+|          			Utilities						|
 \═══════════════════════════════════════════════════/
 */
 async function renderComponent(component: React.ReactElement): Promise<any> {
@@ -167,6 +158,9 @@ const createAdvancedCosValues = (
 	}
 });
 
+const mock = (fn: any): jest.MockedFunction<(body: any) => Promise<any>> =>
+	fn as jest.MockedFunction<typeof fn>;
+
 const successSnackbar = {
 	key: 'success',
 	severity: 'success',
@@ -174,6 +168,14 @@ const successSnackbar = {
 	autoHideTimeout: 3000,
 	hideButton: true,
 	replace: true
+};
+
+const defaultModifyCosBody = {
+	_jsns: 'urn:zimbraAdmin',
+	cos: {
+		id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+		a: []
+	}
 };
 
 /*
@@ -224,6 +226,15 @@ describe('CosAdvanced', () => {
 	});
 
 	it('should toggle/untoggle Backup based on initial state', async () => {
+		const mockModifyCos = mock(modifyCos);
+		mockModifyCos.mockResolvedValue({
+			_jsns: 'urn:zimbraAdmin',
+			cos: {
+				id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+				a: []
+			}
+		});
+
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
 		const setCoreAttrs = spySetCoreAttributes();
@@ -239,6 +250,43 @@ describe('CosAdvanced', () => {
 			createAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
 
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+	});
+
+	it('should modify the forwarding addresses max length', async () => {
+		const mockModifyCos = mock(modifyCos);
+		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+		const mockCreateSnackbar = jest.fn();
+		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+
+		const { user } = await renderComponent(<CosAdvanced />);
+
+		expect(screen.getByText('Forwarding')).toBeInTheDocument();
+		const addressesMaxLengthLabel = screen.getByLabelText(
+			'Limit user-specified forwarding addresses to (char)'
+		) as HTMLInputElement;
+		expect(addressesMaxLengthLabel).toBeInTheDocument();
+
+		const currentZimbraMailForwardingAddressMaxLength = useCosStore
+			.getState()
+			.cos?.a?.find((attr) => attr.n === 'zimbraMailForwardingAddressMaxLength')?._content;
+		expect(addressesMaxLengthLabel.value).toBe(currentZimbraMailForwardingAddressMaxLength);
+
+		await user.clear(addressesMaxLengthLabel);
+		await user.type(addressesMaxLengthLabel, '8000');
+		await user.click(screen.getByText('Save'));
+
+		const expectedModifyCosBody = {
+			_jsns: 'urn:zimbraAdmin',
+			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+			a: expect.arrayContaining([
+				expect.objectContaining({
+					n: 'zimbraMailForwardingAddressMaxLength',
+					_content: '8000'
+				})
+			])
+		};
+		expect(mockModifyCos).toHaveBeenCalledWith(expect.objectContaining(expectedModifyCosBody));
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
 });
