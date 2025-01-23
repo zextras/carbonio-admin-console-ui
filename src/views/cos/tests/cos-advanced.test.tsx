@@ -246,7 +246,6 @@ describe('CosAdvanced', () => {
 	it('should toggle/untoggle Backup based on initial state', async () => {
 		const mockModifyCos = mock(modifyCos);
 		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
 		const setCoreAttrs = spySetCoreAttributes();

@@ -238,11 +238,11 @@ const CosAdvanced: FC = () => {
 		[setCosAdvanced]
 	);
 
-	const setCosAdvancedAttributeValue = useCallback(
-		(key: string, value: boolean): void => {
-			setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
+	const setCosAdvancedAttributeValues = useCallback(
+		(entries: Array<[keyof AdvancedBackupAttributes, boolean | undefined]>): void => {
+			setCosAdvancedBackupAttributes((prev) => ({
 				...prev,
-				[key]: value
+				...(Object.fromEntries(entries) as Partial<AdvancedBackupAttributes>)
 			}));
 		},
 		[setCosAdvancedBackupAttributes]
@@ -1212,15 +1212,13 @@ const CosAdvanced: FC = () => {
 		getCoreAttributes(body)
 			.then((data) => {
 				if (data?.attributes) {
-					// TODO: use the setCosAdvancedAttributesValue function
-					setCosAdvancedAttributeValue(
-						BACKUP_SELF_UNDELETE_ALLOWED,
-						!!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value
-					);
-					setCosAdvancedAttributeValue(
-						BACKUP_ENABLED,
-						!!data?.attributes?.[BACKUP_ENABLED]?.[0]?.value
-					);
+					setCosAdvancedAttributeValues([
+						[
+							BACKUP_SELF_UNDELETE_ALLOWED,
+							!!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value
+						],
+						[BACKUP_ENABLED, !!data?.attributes?.[BACKUP_ENABLED]?.[0]?.value]
+					]);
 				}
 			})
 			.catch((error) => {
@@ -1236,7 +1234,7 @@ const CosAdvanced: FC = () => {
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValue, t]);
+	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t]);
 
 	const changeBackupAttribute = useCallback(
 		(key: AdvancedBackupAttributesKeys): void => {
