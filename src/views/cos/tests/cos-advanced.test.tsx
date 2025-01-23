@@ -19,6 +19,7 @@ import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
 import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
 
 /*
@@ -161,6 +162,9 @@ const createAdvancedCosValues = (
 const mock = (fn: any): jest.MockedFunction<(body: any) => Promise<any>> =>
 	fn as jest.MockedFunction<typeof fn>;
 
+const getCosAttributeValue = (attrName: keyof AccountType): any =>
+	useCosStore.getState().cos?.a?.find((attr) => attr.n === attrName)?._content;
+
 const successSnackbar = {
 	key: 'success',
 	severity: 'success',
@@ -267,9 +271,9 @@ describe('CosAdvanced', () => {
 		) as HTMLInputElement;
 		expect(addressesMaxLengthLabel).toBeInTheDocument();
 
-		const currentZimbraMailForwardingAddressMaxLength = useCosStore
-			.getState()
-			.cos?.a?.find((attr) => attr.n === 'zimbraMailForwardingAddressMaxLength')?._content;
+		const currentZimbraMailForwardingAddressMaxLength = getCosAttributeValue(
+			'zimbraMailForwardingAddressMaxLength'
+		);
 		expect(addressesMaxLengthLabel.value).toBe(currentZimbraMailForwardingAddressMaxLength);
 
 		await user.clear(addressesMaxLengthLabel);
