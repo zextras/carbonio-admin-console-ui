@@ -243,13 +243,7 @@ describe('CosAdvanced', () => {
 
 	it('should toggle/untoggle Backup based on initial state', async () => {
 		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue({
-			_jsns: 'urn:zimbraAdmin',
-			cos: {
-				id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-				a: []
-			}
-		});
+		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
 
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
