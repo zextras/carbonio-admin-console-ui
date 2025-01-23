@@ -233,7 +233,7 @@ describe('CosAdvanced', () => {
 		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
 	});
 
-	it('should not render Advanced toggles', async () => {
+	it('should not render Advanced toggles when is not an Advanced environment', async () => {
 		disableAdvanced();
 
 		await renderComponent(<CosAdvanced />);
@@ -251,16 +251,13 @@ describe('CosAdvanced', () => {
 		const setCoreAttrs = spySetCoreAttributes();
 		const { user } = await renderComponent(<CosAdvanced />);
 
-		// Toggle/Untoggle Backup
 		await user.click(screen.getByText('Backup'));
-
 		await user.click(screen.getByText('Save'));
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;
 		expect(setCoreAttrs).toHaveBeenCalledWith(
 			buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
-
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
 
@@ -269,27 +266,26 @@ describe('CosAdvanced', () => {
 		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
 		const mockCreateSnackbar = jest.fn();
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-
 		const { user } = await renderComponent(<CosAdvanced />);
-
-		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
 			FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
 		) as HTMLInputElement;
-		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
 
+		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
 		const currentForwardingAddressMaxLength = getCosAttributeValue(
 			'zimbraMailForwardingAddressMaxLength'
 		);
 		expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
 
+		const newForwardingAddressesMaxLength = '8000';
 		await user.clear(forwardingAddressesMaxLengthLabel);
-		await user.type(forwardingAddressesMaxLengthLabel, '8000');
+		await user.type(forwardingAddressesMaxLengthLabel, newForwardingAddressesMaxLength);
 		await user.click(screen.getByText('Save'));
 
 		expect(mockModifyCos).toHaveBeenCalledWith(
-			expectedModifyCosBody('zimbraMailForwardingAddressMaxLength', '8000')
+			expectedModifyCosBody('zimbraMailForwardingAddressMaxLength', newForwardingAddressesMaxLength)
 		);
+		expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
 });
