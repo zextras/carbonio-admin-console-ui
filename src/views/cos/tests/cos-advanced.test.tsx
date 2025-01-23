@@ -165,6 +165,17 @@ const mock = (fn: any): jest.MockedFunction<(body: any) => Promise<any>> =>
 const getCosAttributeValue = (attrName: keyof AccountType): any =>
 	useCosStore.getState().cos?.a?.find((attr) => attr.n === attrName)?._content;
 
+const createExpectedModifyCosBody = (attrName: keyof AccountType, value: any): any => ({
+	_jsns: 'urn:zimbraAdmin',
+	id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+	a: expect.arrayContaining([
+		expect.objectContaining({
+			n: attrName,
+			_content: value
+		})
+	])
+});
+
 const successSnackbar = {
 	key: 'success',
 	severity: 'success',
@@ -266,30 +277,24 @@ describe('CosAdvanced', () => {
 		const { user } = await renderComponent(<CosAdvanced />);
 
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
-		const addressesMaxLengthLabel = screen.getByLabelText(
+		const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
 			FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
 		) as HTMLInputElement;
-		expect(addressesMaxLengthLabel).toBeInTheDocument();
+		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
 
-		const currentZimbraMailForwardingAddressMaxLength = getCosAttributeValue(
+		const currentForwardingAddressMaxLength = getCosAttributeValue(
 			'zimbraMailForwardingAddressMaxLength'
 		);
-		expect(addressesMaxLengthLabel.value).toBe(currentZimbraMailForwardingAddressMaxLength);
+		expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
 
-		await user.clear(addressesMaxLengthLabel);
-		await user.type(addressesMaxLengthLabel, '8000');
+		await user.clear(forwardingAddressesMaxLengthLabel);
+		await user.type(forwardingAddressesMaxLengthLabel, '8000');
 		await user.click(screen.getByText('Save'));
 
-		const expectedModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
-			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-			a: expect.arrayContaining([
-				expect.objectContaining({
-					n: 'zimbraMailForwardingAddressMaxLength',
-					_content: '8000'
-				})
-			])
-		};
+		const expectedModifyCosBody = createExpectedModifyCosBody(
+			'zimbraMailForwardingAddressMaxLength',
+			'8000'
+		);
 		expect(mockModifyCos).toHaveBeenCalledWith(expect.objectContaining(expectedModifyCosBody));
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
