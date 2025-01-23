@@ -48,6 +48,9 @@ type AdvancedBackupAttributes = {
 	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
 };
 
+export const FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL =
+	'Limit user-specified forwarding addresses to (char)';
+
 type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 
 function isBackupAttribute(key: string): key is AdvancedBackupAttributesKeys {
@@ -1352,7 +1355,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t(
 											'cos.limit_user_specified_forwarding_addresses',
-											'Limit user-specified forwarding addresses to (char)'
+											FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
 										backgroundColor="gray5"

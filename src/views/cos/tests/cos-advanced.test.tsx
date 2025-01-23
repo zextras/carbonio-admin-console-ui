@@ -19,7 +19,7 @@ import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useCosStore } from '../../../store/cos/store';
 import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
-import CosAdvanced from '../cos-advanced';
+import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
 
 /*
 /═══════════════════════════════════════════════════\
@@ -263,7 +263,7 @@ describe('CosAdvanced', () => {
 
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		const addressesMaxLengthLabel = screen.getByLabelText(
-			'Limit user-specified forwarding addresses to (char)'
+			FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
 		) as HTMLInputElement;
 		expect(addressesMaxLengthLabel).toBeInTheDocument();
 
