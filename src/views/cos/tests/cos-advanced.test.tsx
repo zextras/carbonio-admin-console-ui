@@ -143,7 +143,7 @@ const disableAdvanced = (): void => setupAdvanced(false);
 const spySetCoreAttributes = (): any =>
 	jest.spyOn(setCoreAttributes, 'setCoreAttributes').mockImplementation((_) => Promise.resolve({}));
 
-const createAdvancedCosValues = (
+const buildAdvancedCosValues = (
 	backupEnabled: boolean,
 	backupSelfUndeleteAllowed: boolean
 ): any => ({
@@ -165,7 +165,7 @@ const mock = (fn: any): jest.MockedFunction<(body: any) => Promise<any>> =>
 const getCosAttributeValue = (attrName: keyof AccountType): any =>
 	useCosStore.getState().cos?.a?.find((attr) => attr.n === attrName)?._content;
 
-const createExpectedModifyCosBody = (attrName: keyof AccountType, value: any): any => ({
+const buildExpectedModifyCosBody = (attrName: keyof AccountType, value: any): any => ({
 	_jsns: 'urn:zimbraAdmin',
 	id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 	a: expect.arrayContaining([
@@ -262,7 +262,7 @@ describe('CosAdvanced', () => {
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;
 		expect(setCoreAttrs).toHaveBeenCalledWith(
-			createAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
+			buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
 		);
 
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
@@ -291,7 +291,7 @@ describe('CosAdvanced', () => {
 		await user.type(forwardingAddressesMaxLengthLabel, '8000');
 		await user.click(screen.getByText('Save'));
 
-		const expectedModifyCosBody = createExpectedModifyCosBody(
+		const expectedModifyCosBody = buildExpectedModifyCosBody(
 			'zimbraMailForwardingAddressMaxLength',
 			'8000'
 		);
