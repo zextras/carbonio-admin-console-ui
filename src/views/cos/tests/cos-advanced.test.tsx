@@ -28,6 +28,8 @@ import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../c
 \═══════════════════════════════════════════════════/
 */
 
+const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
+
 jest.mock('../../../services/flush-cache-service', () => ({
 	flushCache: jest.fn()
 }));
@@ -91,11 +93,11 @@ jest.mock('@zextras/carbonio-design-system', () => {
 */
 const setupCosStore = (): void => {
 	useCosStore.getState().setCos({
-		id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+		id: COS_ID,
 		name: 'default',
 		isDefaultCos: true,
 		a: [
-			{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+			{ n: 'zimbraId', _content: COS_ID },
 			{ n: 'zimbraPrefLocale', _content: 'en' },
 			{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
 			{ n: 'zimbraMailForwardingAddressMaxLength', _content: '4096' }
@@ -168,7 +170,7 @@ const getCosAttributeValue = (attrName: keyof AccountType): any =>
 const expectedModifyCosBody = (attrName: keyof AccountType, value: any): any =>
 	expect.objectContaining({
 		_jsns: 'urn:zimbraAdmin',
-		id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+		id: { _content: COS_ID },
 		a: expect.arrayContaining([
 			expect.objectContaining({
 				n: attrName,
@@ -189,7 +191,7 @@ const successSnackbar = {
 const defaultModifyCosBody = {
 	_jsns: 'urn:zimbraAdmin',
 	cos: {
-		id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+		id: COS_ID,
 		a: []
 	}
 };
