@@ -229,7 +229,7 @@ describe('CosAdvanced', () => {
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.getByText('General Options')).toBeInTheDocument();
-		expect(screen.getByText('Backup')).toBeInTheDocument();
+		expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
 		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
 	});
 
@@ -239,7 +239,7 @@ describe('CosAdvanced', () => {
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
-		expect(screen.queryByText('Backup')).not.toBeInTheDocument();
+		expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
 		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
 	});
 
@@ -251,7 +251,7 @@ describe('CosAdvanced', () => {
 		const setCoreAttrs = spySetCoreAttributes();
 		const { user } = await renderComponent(<CosAdvanced />);
 
-		await user.click(screen.getByText('Backup'));
+		await user.click(screen.getByText('Enable / Disable Backup'));
 		await user.click(screen.getByText('Save'));
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;
