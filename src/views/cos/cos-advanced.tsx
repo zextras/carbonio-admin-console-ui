@@ -1312,20 +1312,35 @@ const CosAdvanced: FC = () => {
 										style={{ gap: 10 }}
 										orientation="horizontal"
 									>
-										<Switch
-											label={t('label.allow_restore_message', 'Allow user to restore messages')}
-											value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
-											onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
-											iconColor="primary"
-											disabled={readonlyCOS}
-										/>
-										<Switch
-											label={t('label.backup_enabled', 'Backup')}
-											value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
-											onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
-											iconColor="primary"
-											disabled={readonlyCOS}
-										/>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											width="50%"
+											orientation="vertical"
+										>
+											<Switch
+												label={t('label.allow_restore_message', 'Allow user to restore messages')}
+												value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
+												// eslint-disable-next-line max-len
+												onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
+												iconColor="primary"
+												disabled={readonlyCOS}
+											/>
+										</Container>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											width="50%"
+											orientation="vertical"
+										>
+											<Switch
+												label={t('label.backup_enabled', 'Enable / Disable Backup')}
+												value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
+												onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
+												iconColor="primary"
+												disabled={readonlyCOS}
+											/>
+										</Container>
 									</Container>
 								</ListRow>
 							</Container>
