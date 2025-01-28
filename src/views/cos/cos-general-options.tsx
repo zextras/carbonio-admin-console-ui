@@ -11,15 +11,27 @@ import { useTranslation } from 'react-i18next';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../constants';
 import ListRow from '../list/list-row';
 
-export const ALLOW_RESTORE_MESSAGE_DEFAULT_LABEL = 'Allow user to restore messages';
-export const ENABLE_DISABLE_BACKUP_DEFAULT_LABEL = 'Enable / Disable Backup';
-
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
 	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
 };
 
 type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
+
+export const labels = {
+	general_options: {
+		key: 'cos.general_options',
+		default_value: 'General Options'
+	},
+	allow_restore_message: {
+		key: 'label.allow_restore_message',
+		default_value: 'Allow user to restore messages'
+	},
+	backup_enabled: {
+		key: 'label.backup_enabled',
+		default_value: 'Enable / Disable Backup'
+	}
+};
 
 const CosGeneralOptions: FC<{
 	cosAdvancedBackupAttributes: AdvancedBackupAttributes;
@@ -35,7 +47,7 @@ const CosGeneralOptions: FC<{
 			width="100%"
 		>
 			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-				{t('cos.general_options', 'General Options')}
+				{t(labels.general_options.key, labels.general_options.default_value)}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -53,7 +65,10 @@ const CosGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.allow_restore_message', ALLOW_RESTORE_MESSAGE_DEFAULT_LABEL)}
+									label={t(
+										labels.allow_restore_message.key,
+										labels.allow_restore_message.default_value
+									)}
 									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
 									// eslint-disable-next-line max-len
 									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
@@ -68,7 +83,7 @@ const CosGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.backup_enabled', ENABLE_DISABLE_BACKUP_DEFAULT_LABEL)}
+									label={t(labels.backup_enabled.key, labels.backup_enabled.default_value)}
 									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
 									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 									iconColor="primary"
