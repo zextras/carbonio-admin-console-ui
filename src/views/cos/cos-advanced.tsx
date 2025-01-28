@@ -23,7 +23,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
@@ -42,6 +42,62 @@ const CustomIcon = styled(Icon)`
 	width: 1.25rem;
 	height: 1.25rem;
 `;
+
+type AdvancedBackupAttributes = {
+	[BACKUP_ENABLED]: boolean | undefined;
+	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
+};
+
+export const FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL =
+	'Limit user-specified forwarding addresses to (char)';
+
+type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
+
+function isBackupAttribute(key: string): key is AdvancedBackupAttributesKeys {
+	return key === BACKUP_ENABLED || key === BACKUP_SELF_UNDELETE_ALLOWED;
+}
+
+function saveBackupAttributes(
+	cosAdvancedBackupAttributes: AdvancedBackupAttributes,
+	cosName: string | undefined
+): void {
+	const updateBackupAttributes = Object.keys(cosAdvancedBackupAttributes).reduce((acc, key) => {
+		if (isBackupAttribute(key) && cosAdvancedBackupAttributes[key] !== undefined) {
+			return {
+				...acc,
+				[key]: {
+					value: cosAdvancedBackupAttributes[key],
+					objectName: cosName,
+					configType: COS
+				}
+			};
+		}
+		return acc;
+	}, {});
+	if (Object.keys(updateBackupAttributes).length > 0) {
+		setCoreAttributes(updateBackupAttributes);
+	}
+}
+
+function saveCosAdvanced(cosAdvanced: any, zimbraId: unknown): Promise<any> {
+	const body: any = {};
+	body._jsns = 'urn:zimbraAdmin';
+	const attributes: any[] = [];
+	const id = {
+		_content: zimbraId
+	};
+	body.id = id;
+
+	Object.keys(cosAdvanced).forEach((ele: any) => {
+		attributes.push({ n: ele, _content: cosAdvanced[ele] });
+	});
+
+	body.a = attributes;
+	return modifyCos(body).then((data) => ({
+		cosId: body.id._content,
+		cos: data?.cos[0]
+	}));
+}
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CosAdvanced: FC = () => {
@@ -79,8 +135,13 @@ const CosAdvanced: FC = () => {
 		[t]
 	);
 
+	const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
+		useState<AdvancedBackupAttributes>({
+			[BACKUP_ENABLED]: undefined,
+			[BACKUP_SELF_UNDELETE_ALLOWED]: undefined
+		});
+
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
-		backupSelfUndeleteAllowed: undefined,
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
@@ -175,6 +236,16 @@ const CosAdvanced: FC = () => {
 			setCosAdvanced((prev: any) => ({ ...prev, [key]: value }));
 		},
 		[setCosAdvanced]
+	);
+
+	const setCosAdvancedAttributeValues = useCallback(
+		(entries: Array<[keyof AdvancedBackupAttributes, boolean | undefined]>): void => {
+			setCosAdvancedBackupAttributes((prev) => ({
+				...prev,
+				...(Object.fromEntries(entries) as Partial<AdvancedBackupAttributes>)
+			}));
+		},
+		[setCosAdvancedBackupAttributes]
 	);
 
 	const setInitalValues = useCallback(
@@ -546,16 +617,6 @@ const CosAdvanced: FC = () => {
 			setIsDirty(true);
 		},
 		[cosAdvanced, setCosAdvanced, setIsDirty]
-	);
-
-	const onSelectionChange = useCallback(
-		(key: string, v: string): void => {
-			const objItem = timeItems.find((item: any) => item.value === v);
-			if (objItem !== cosAdvanced[key]) {
-				setCosAdvanced((prev: any) => ({ ...prev, [key]: objItem }));
-			}
-		},
-		[cosAdvanced, timeItems, setCosAdvanced]
 	);
 
 	const onCancel = (): void => {
@@ -1097,32 +1158,11 @@ const CosAdvanced: FC = () => {
 	}, []);
 
 	const onSave = (): void => {
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		const attributes: any[] = [];
-		const id = {
-			_content: cosData.zimbraId
-		};
-		body.id = id;
-		if (cosAdvanced.backupSelfUndeleteAllowed !== undefined) {
-			const backupSelfUndeleteAllowedBody: any = {
-				backupSelfUndeleteAllowed: {
-					value: cosAdvanced.backupSelfUndeleteAllowed,
-					objectName: cosName,
-					configType: COS
-				}
-			};
-			setCoreAttributes(backupSelfUndeleteAllowedBody);
-		}
-		Object.keys(cosAdvanced).forEach((ele: any) => {
-			if (ele !== BACKUP_SELF_UNDELETE_ALLOWED)
-				attributes.push({ n: ele, _content: cosAdvanced[ele] });
-		});
+		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
 
-		body.a = attributes;
-		modifyCos(body)
-			.then((data) => {
-				flushCache('cos', 'id', body.id._content);
+		saveCosAdvanced(cosAdvanced, cosData.zimbraId)
+			.then(({ cosId, cos }) => {
+				flushCache('cos', 'id', cosId);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -1131,7 +1171,6 @@ const CosAdvanced: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				const cos: any = data?.cos[0];
 				if (cos) {
 					setCos(cos);
 				}
@@ -1167,16 +1206,19 @@ const CosAdvanced: FC = () => {
 			{
 				configType: COS,
 				configName: [cosName],
-				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED]
 			}
 		];
 		getCoreAttributes(body)
 			.then((data) => {
 				if (data?.attributes) {
-					setValue(
-						BACKUP_SELF_UNDELETE_ALLOWED,
-						!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
-					);
+					setCosAdvancedAttributeValues([
+						[
+							BACKUP_SELF_UNDELETE_ALLOWED,
+							!!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value
+						],
+						[BACKUP_ENABLED, !!data?.attributes?.[BACKUP_ENABLED]?.[0]?.value]
+					]);
 				}
 			})
 			.catch((error) => {
@@ -1192,17 +1234,17 @@ const CosAdvanced: FC = () => {
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setValue, t]);
+	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t]);
 
-	const changeBooleanSwitchOption = useCallback(
-		(key: string): void => {
-			setCosAdvanced((prev: any) => ({
+	const changeBackupAttribute = useCallback(
+		(key: AdvancedBackupAttributesKeys): void => {
+			setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
 				...prev,
-				[key]: !cosAdvanced[key]
+				[key]: !cosAdvancedBackupAttributes[key]
 			}));
 			setIsDirty(true);
 		},
-		[cosAdvanced, setCosAdvanced, setIsDirty]
+		[cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes, setIsDirty]
 	);
 
 	return (
@@ -1265,14 +1307,40 @@ const CosAdvanced: FC = () => {
 								padding={{ top: 'large' }}
 							>
 								<ListRow>
-									<Container crossAlignment="flex-start">
-										<Switch
-											label={t('label.allow_restore_message', 'Allow user to restore messages')}
-											value={cosAdvanced.backupSelfUndeleteAllowed}
-											onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
-											iconColor="primary"
-											disabled={readonlyCOS}
-										/>
+									<Container
+										mainAlignment="flex-start"
+										style={{ gap: 10 }}
+										orientation="horizontal"
+									>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											width="50%"
+											orientation="vertical"
+										>
+											<Switch
+												label={t('label.allow_restore_message', 'Allow user to restore messages')}
+												value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
+												// eslint-disable-next-line max-len
+												onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
+												iconColor="primary"
+												disabled={readonlyCOS}
+											/>
+										</Container>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											width="50%"
+											orientation="vertical"
+										>
+											<Switch
+												label={t('label.backup_enabled', 'Enable / Disable Backup')}
+												value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
+												onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
+												iconColor="primary"
+												disabled={readonlyCOS}
+											/>
+										</Container>
 									</Container>
 								</ListRow>
 							</Container>
@@ -1300,7 +1368,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t(
 											'cos.limit_user_specified_forwarding_addresses',
-											'Limit user-specified forwarding addresses to (char)'
+											FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
 										backgroundColor="gray5"
