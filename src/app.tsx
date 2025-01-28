@@ -12,7 +12,6 @@ import {
 	removeRoute,
 	registerActions,
 	setAppContext,
-	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest,
@@ -98,6 +97,7 @@ import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
+import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
 

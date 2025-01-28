@@ -8,7 +8,6 @@ import React, { FC, Suspense } from 'react';
 
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import {
-	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	usePrimaryBarState
@@ -38,6 +37,7 @@ import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
+import { Spinner } from './components/spinner';
 import Subscription from './core/subscribsion/subscription';
 import CosDetailPanel from './cos/cos-detail-panel';
 import CosListPanel from './cos/cos-list-panel';
