@@ -217,7 +217,7 @@ describe('CosAdvanced', () => {
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		expect(screen.getByText(labels.general_options.default_value)).toBeInTheDocument();
+		expect(screen.getByText(labels.general_options.defaultValue)).toBeInTheDocument();
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		expect(screen.getByText('Quotas')).toBeInTheDocument();
 		expect(screen.getByText('Password')).toBeInTheDocument();
@@ -229,7 +229,7 @@ describe('CosAdvanced', () => {
 	it('should render Advanced toggles', async () => {
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.getByText(labels.general_options.default_value)).toBeInTheDocument();
+		expect(screen.getByText(labels.general_options.defaultValue)).toBeInTheDocument();
 		expect(screen.getByText(labels.backup_enabled.default_value)).toBeInTheDocument();
 		expect(screen.getByText(labels.allow_restore_message.default_value)).toBeInTheDocument();
 	});
@@ -239,7 +239,7 @@ describe('CosAdvanced', () => {
 
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.queryByText(labels.general_options.default_value)).not.toBeInTheDocument();
+		expect(screen.queryByText(labels.general_options.defaultValue)).not.toBeInTheDocument();
 		expect(screen.queryByText(labels.backup_enabled.default_value)).not.toBeInTheDocument();
 		expect(screen.queryByText(labels.allow_restore_message.default_value)).not.toBeInTheDocument();
 	});

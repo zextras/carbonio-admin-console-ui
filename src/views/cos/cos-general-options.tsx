@@ -21,7 +21,7 @@ type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 export const labels = {
 	general_options: {
 		key: 'cos.general_options',
-		default_value: 'General Options'
+		defaultValue: 'General Options'
 	},
 	allow_restore_message: {
 		key: 'label.allow_restore_message',
@@ -47,7 +47,7 @@ const CosGeneralOptions: FC<{
 			width="100%"
 		>
 			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-				{t(labels.general_options.key, labels.general_options.default_value)}
+				{t(labels.general_options.key, labels.general_options.defaultValue)}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
