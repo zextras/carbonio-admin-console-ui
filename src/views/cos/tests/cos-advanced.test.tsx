@@ -21,7 +21,7 @@ import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
-import { labels } from '../cos-general-options';
+import { labelEntries } from '../cos-general-options';
 
 /*
 /═══════════════════════════════════════════════════\
@@ -217,7 +217,7 @@ describe('CosAdvanced', () => {
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		expect(screen.getByText(labels.general_options.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText(labelEntries.generalOptions.defaultValue)).toBeInTheDocument();
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		expect(screen.getByText('Quotas')).toBeInTheDocument();
 		expect(screen.getByText('Password')).toBeInTheDocument();
@@ -229,9 +229,9 @@ describe('CosAdvanced', () => {
 	it('should render Advanced toggles', async () => {
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.getByText(labels.general_options.defaultValue)).toBeInTheDocument();
-		expect(screen.getByText(labels.backup_enabled.defaultValue)).toBeInTheDocument();
-		expect(screen.getByText(labels.allow_restore_message.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText(labelEntries.generalOptions.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText(labelEntries.backupEnabled.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText(labelEntries.allowRestoreMessage.defaultValue)).toBeInTheDocument();
 	});
 
 	it('should not render Advanced toggles when is not an Advanced environment', async () => {
@@ -239,9 +239,11 @@ describe('CosAdvanced', () => {
 
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.queryByText(labels.general_options.defaultValue)).not.toBeInTheDocument();
-		expect(screen.queryByText(labels.backup_enabled.defaultValue)).not.toBeInTheDocument();
-		expect(screen.queryByText(labels.allow_restore_message.defaultValue)).not.toBeInTheDocument();
+		expect(screen.queryByText(labelEntries.generalOptions.defaultValue)).not.toBeInTheDocument();
+		expect(screen.queryByText(labelEntries.backupEnabled.defaultValue)).not.toBeInTheDocument();
+		expect(
+			screen.queryByText(labelEntries.allowRestoreMessage.defaultValue)
+		).not.toBeInTheDocument();
 	});
 
 	it('should toggle/untoggle Backup based on initial state', async () => {
@@ -252,7 +254,7 @@ describe('CosAdvanced', () => {
 		const setCoreAttrs = spySetCoreAttributes();
 		const { user } = await renderComponent(<CosAdvanced />);
 
-		await user.click(screen.getByText(labels.backup_enabled.defaultValue));
+		await user.click(screen.getByText(labelEntries.backupEnabled.defaultValue));
 		await user.click(screen.getByText('Save'));
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;

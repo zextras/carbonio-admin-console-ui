@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../constants';
 import ListRow from '../list/list-row';
+import { createLabels, LabelEntries } from '../utility/label';
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
@@ -18,16 +19,17 @@ type AdvancedBackupAttributes = {
 
 type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 
-export const labels = {
-	general_options: {
+// TODO: see label.ts for more information and discuss about this approach
+export const labelEntries: LabelEntries = {
+	generalOptions: {
 		key: 'cos.general_options',
 		defaultValue: 'General Options'
 	},
-	allow_restore_message: {
+	allowRestoreMessage: {
 		key: 'label.allow_restore_message',
 		defaultValue: 'Allow user to restore messages'
 	},
-	backup_enabled: {
+	backupEnabled: {
 		key: 'label.backup_enabled',
 		defaultValue: 'Enable / Disable Backup'
 	}
@@ -39,6 +41,9 @@ const COSGeneralOptions: FC<{
 	changeBackupAttribute: (key: AdvancedBackupAttributesKeys) => void;
 }> = ({ cosAdvancedBackupAttributes, readonlyCOS, changeBackupAttribute }) => {
 	const [t] = useTranslation();
+
+	// TODO: see label.ts for more information and discuss about this approach
+	const tLabels = createLabels(labelEntries)(t);
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -47,7 +52,7 @@ const COSGeneralOptions: FC<{
 			width="100%"
 		>
 			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-				{t(labels.general_options.key, labels.general_options.defaultValue)}
+				{tLabels.generalOptions.translation}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -65,10 +70,7 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t(
-										labels.allow_restore_message.key,
-										labels.allow_restore_message.defaultValue
-									)}
+									label={tLabels.allowRestoreMessage.translation}
 									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
 									// eslint-disable-next-line max-len
 									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
@@ -83,7 +85,7 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t(labels.backup_enabled.key, labels.backup_enabled.defaultValue)}
+									label={tLabels.backupEnabled.translation}
 									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
 									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 									iconColor="primary"
