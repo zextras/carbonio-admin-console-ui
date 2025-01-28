@@ -230,8 +230,8 @@ describe('CosAdvanced', () => {
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.getByText(labels.general_options.defaultValue)).toBeInTheDocument();
-		expect(screen.getByText(labels.backup_enabled.default_value)).toBeInTheDocument();
-		expect(screen.getByText(labels.allow_restore_message.default_value)).toBeInTheDocument();
+		expect(screen.getByText(labels.backup_enabled.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText(labels.allow_restore_message.defaultValue)).toBeInTheDocument();
 	});
 
 	it('should not render Advanced toggles when is not an Advanced environment', async () => {
@@ -240,8 +240,8 @@ describe('CosAdvanced', () => {
 		await renderComponent(<CosAdvanced />);
 
 		expect(screen.queryByText(labels.general_options.defaultValue)).not.toBeInTheDocument();
-		expect(screen.queryByText(labels.backup_enabled.default_value)).not.toBeInTheDocument();
-		expect(screen.queryByText(labels.allow_restore_message.default_value)).not.toBeInTheDocument();
+		expect(screen.queryByText(labels.backup_enabled.defaultValue)).not.toBeInTheDocument();
+		expect(screen.queryByText(labels.allow_restore_message.defaultValue)).not.toBeInTheDocument();
 	});
 
 	it('should toggle/untoggle Backup based on initial state', async () => {
@@ -252,7 +252,7 @@ describe('CosAdvanced', () => {
 		const setCoreAttrs = spySetCoreAttributes();
 		const { user } = await renderComponent(<CosAdvanced />);
 
-		await user.click(screen.getByText(labels.backup_enabled.default_value));
+		await user.click(screen.getByText(labels.backup_enabled.defaultValue));
 		await user.click(screen.getByText('Save'));
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;

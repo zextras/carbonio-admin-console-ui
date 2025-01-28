@@ -25,11 +25,11 @@ export const labels = {
 	},
 	allow_restore_message: {
 		key: 'label.allow_restore_message',
-		default_value: 'Allow user to restore messages'
+		defaultValue: 'Allow user to restore messages'
 	},
 	backup_enabled: {
 		key: 'label.backup_enabled',
-		default_value: 'Enable / Disable Backup'
+		defaultValue: 'Enable / Disable Backup'
 	}
 };
 
@@ -67,7 +67,7 @@ const COSGeneralOptions: FC<{
 								<Switch
 									label={t(
 										labels.allow_restore_message.key,
-										labels.allow_restore_message.default_value
+										labels.allow_restore_message.defaultValue
 									)}
 									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
 									// eslint-disable-next-line max-len
@@ -83,7 +83,7 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t(labels.backup_enabled.key, labels.backup_enabled.default_value)}
+									label={t(labels.backup_enabled.key, labels.backup_enabled.defaultValue)}
 									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
 									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 									iconColor="primary"
