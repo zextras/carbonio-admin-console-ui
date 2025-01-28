@@ -23,7 +23,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import CosGeneralOptions from './cos-general-options';
+import COSGeneralOptions from './cos-general-options';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
@@ -1291,7 +1291,7 @@ const CosAdvanced: FC = () => {
 				padding={{ top: 'large' }}
 			>
 				{isAdvanced && (
-					<CosGeneralOptions
+					<COSGeneralOptions
 						cosAdvancedBackupAttributes={cosAdvancedBackupAttributes}
 						readonlyCOS={readonlyCOS}
 						changeBackupAttribute={changeBackupAttribute}

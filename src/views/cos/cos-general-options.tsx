@@ -33,7 +33,7 @@ export const labels = {
 	}
 };
 
-const CosGeneralOptions: FC<{
+const COSGeneralOptions: FC<{
 	cosAdvancedBackupAttributes: AdvancedBackupAttributes;
 	readonlyCOS: boolean;
 	changeBackupAttribute: (key: AdvancedBackupAttributesKeys) => void;
@@ -98,4 +98,4 @@ const CosGeneralOptions: FC<{
 	);
 };
 
-export default CosGeneralOptions;
+export default COSGeneralOptions;
