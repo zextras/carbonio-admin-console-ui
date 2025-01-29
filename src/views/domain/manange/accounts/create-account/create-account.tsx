@@ -91,6 +91,7 @@ interface AccountDetailObj {
 	secrateCode: string;
 	pinCodes: string;
 	showOtpOptionSection: boolean;
+	description: string;
 }
 
 // eslint-disable-next-line no-empty-pattern
@@ -136,7 +137,8 @@ const CreateAccount: FC<{
 		qrData: '',
 		secrateCode: '',
 		pinCodes: '',
-		showOtpOptionSection: true
+		showOtpOptionSection: true,
+		description: ''
 	});
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
@@ -158,7 +160,8 @@ const CreateAccount: FC<{
 				zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
 				zimbraNotes: accountDetail?.zimbraNotes,
 				displayName: accountDetail?.displayName,
-				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
+				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId,
+				description: accountDetail?.description
 			},
 			`${accountDetail?.name}@${domainName}`,
 			accountDetail?.password || ''
@@ -239,7 +242,8 @@ const CreateAccount: FC<{
 			qrData: '',
 			secrateCode: '',
 			pinCodes: '',
-			showOtpOptionSection: true
+			showOtpOptionSection: true,
+			description: ''
 		});
 		setActiveStep('details');
 		setAccountCreate('');
