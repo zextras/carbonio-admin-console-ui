@@ -21,7 +21,6 @@ import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
-import { labelEntries } from '../cos-general-options';
 
 /*
 /═══════════════════════════════════════════════════\
@@ -217,7 +216,7 @@ describe('CosAdvanced', () => {
 		expect(screen.queryByText('Save')).not.toBeInTheDocument();
 		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		expect(screen.getByText(labelEntries.generalOptions.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText('General Options')).toBeInTheDocument();
 		expect(screen.getByText('Forwarding')).toBeInTheDocument();
 		expect(screen.getByText('Quotas')).toBeInTheDocument();
 		expect(screen.getByText('Password')).toBeInTheDocument();
@@ -229,9 +228,9 @@ describe('CosAdvanced', () => {
 	it('should render Advanced toggles', async () => {
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.getByText(labelEntries.generalOptions.defaultValue)).toBeInTheDocument();
-		expect(screen.getByText(labelEntries.backupEnabled.defaultValue)).toBeInTheDocument();
-		expect(screen.getByText(labelEntries.allowRestoreMessage.defaultValue)).toBeInTheDocument();
+		expect(screen.getByText('General Options')).toBeInTheDocument();
+		expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
+		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
 	});
 
 	it('should render Quota fields', async () => {
@@ -245,11 +244,9 @@ describe('CosAdvanced', () => {
 
 		await renderComponent(<CosAdvanced />);
 
-		expect(screen.queryByText(labelEntries.generalOptions.defaultValue)).not.toBeInTheDocument();
-		expect(screen.queryByText(labelEntries.backupEnabled.defaultValue)).not.toBeInTheDocument();
-		expect(
-			screen.queryByText(labelEntries.allowRestoreMessage.defaultValue)
-		).not.toBeInTheDocument();
+		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
+		expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
+		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
 	});
 
 	it('should toggle/untoggle Backup based on initial state', async () => {
@@ -260,7 +257,7 @@ describe('CosAdvanced', () => {
 		const setCoreAttrs = spySetCoreAttributes();
 		const { user } = await renderComponent(<CosAdvanced />);
 
-		await user.click(screen.getByText(labelEntries.backupEnabled.defaultValue));
+		await user.click(screen.getByText('Enable / Disable Backup'));
 		await user.click(screen.getByText('Save'));
 
 		const expectedBackupEnabledValue = !initialBackupEnabledValue;
