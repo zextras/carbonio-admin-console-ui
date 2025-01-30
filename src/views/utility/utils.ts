@@ -1455,13 +1455,6 @@ export const localeList = (t: TFunction): SelectItem[] => [
 		value: 'pl'
 	},
 	{
-		label: t('locale.label_portuguese_brazil', {
-			value: 'português (Brasil)',
-			defaultValue: 'Portuguese - {{value}}'
-		}),
-		value: 'pt_BR'
-	},
-	{
 		label: t('locale.label_romanian', { value: 'română', defaultValue: 'Romanian - {{value}}' }),
 		value: 'ro'
 	},
