@@ -14,13 +14,11 @@ import {
 	Button,
 	Input,
 	Select,
-	Icon,
 	useSnackbar,
 	SelectItem
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import COSFailedLoginPolicy from './cos-failed-login-policy';
 import CosForwarding from './cos-forwarding';
@@ -41,11 +39,6 @@ import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
-
-const CustomIcon = styled(Icon)`
-	width: 1.25rem;
-	height: 1.25rem;
-`;
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
