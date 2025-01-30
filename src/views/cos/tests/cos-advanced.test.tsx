@@ -297,10 +297,30 @@ describe('CosAdvanced', () => {
 	});
 
 	describe('COS Quotas', () => {
-		it('should render Quota fields', async () => {
+		it('should render Quota advanced field', async () => {
 			await renderComponent(<CosAdvanced />);
 
+			// This input is shown only if getFileQuotaById returns a limit > 0
 			expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
+		});
+
+		it('should render Quota default fields', async () => {
+			disableAdvanced();
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByLabelText('Mails Account quota (GB)')).toBeInTheDocument();
+			expect(screen.getByLabelText('Max contacts allowed in the folder')).toBeInTheDocument();
+			expect(
+				screen.getByLabelText('Percentage threshold for quota warning messages (%)')
+			).toBeInTheDocument();
+			expect(
+				screen.getByLabelText('Minimum duration of time between quota warnings')
+			).toBeInTheDocument();
+			const timeRangeElements = screen.getAllByText('Time Range');
+			timeRangeElements.forEach((element) => {
+				expect(element).toBeInTheDocument();
+			});
+			expect(screen.getByLabelText('Quota warning message template')).toBeInTheDocument();
 		});
 
 		it('should modify the mails quota limit', async () => {
