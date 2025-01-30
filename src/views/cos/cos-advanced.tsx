@@ -10,7 +10,6 @@ import {
 	Row,
 	Text,
 	Divider,
-	Switch,
 	Padding,
 	Button,
 	Input,
@@ -23,6 +22,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import COSFailedLoginPolicy from './cos-failed-login-policy';
 import CosForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
 import COSPassword from './cos-password';
@@ -1329,131 +1329,25 @@ const CosAdvanced: FC = () => {
 					changeSwitchOption={changeSwitchOption}
 					changeValue={changeValue}
 				/>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.failed_login_policy', 'Failed Login Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Switch
-										value={cosAdvanced.zimbraPasswordLockoutEnabled === 'TRUE'}
-										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-										onClick={(): void => changeSwitchOption('zimbraPasswordLockoutEnabled')}
-										iconColor="primary"
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Input
-										label={t(
-											'cos.number_of_consecutive_failed_login_allowed',
-											'Number of consecutive failed logins allowed'
-										)}
-										value={cosAdvanced.zimbraPasswordLockoutMaxFailures}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutMaxFailures"
-										onChange={changeValue}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="72%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-										value={zimbraPasswordLockoutDurationNum}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutDuration"
-										onChange={onZimbraPasswordLockoutDurationNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraPasswordLockoutDurationType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraPasswordLockoutDurationType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraPasswordLockoutDurationTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t(
-											'cos.time_window_failed_logins_must_occur_to_lock_account',
-											'Time window in which the failed logins must occur to lock the account:'
-										)}
-										value={zimbraPasswordLockoutFailureLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutFailureLifetime"
-										onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="28%" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraPasswordLockoutFailureLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraPasswordLockoutFailureLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
+				<COSFailedLoginPolicy
+					cosAdvanced={cosAdvanced}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					zimbraPasswordLockoutDurationNum={zimbraPasswordLockoutDurationNum}
+					zimbraPasswordLockoutDurationType={zimbraPasswordLockoutDurationType}
+					zimbraPasswordLockoutFailureLifetimeNum={zimbraPasswordLockoutFailureLifetimeNum}
+					zimbraPasswordLockoutFailureLifetimeType={zimbraPasswordLockoutFailureLifetimeType}
+					changeSwitchOption={changeSwitchOption}
+					changeValue={changeValue}
+					onZimbraPasswordLockoutDurationNumChange={onZimbraPasswordLockoutDurationNumChange}
+					onZimbraPasswordLockoutDurationTypeChange={onZimbraPasswordLockoutDurationTypeChange}
+					onZimbraPasswordLockoutFailureLifetimeNumChange={
+						onZimbraPasswordLockoutFailureLifetimeNumChange
+					}
+					onZimbraPasswordLockoutFailureLifetimeTypeChange={
+						onZimbraPasswordLockoutFailureLifetimeTypeChange
+					}
+				/>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"

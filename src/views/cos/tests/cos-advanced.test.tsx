@@ -365,4 +365,26 @@ describe('CosAdvanced', () => {
 			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 		});
 	});
+
+	describe('COS Failed Login Policy', () => {
+		it('should enable failed login lockout', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByText('Enable failed login lockout')).toBeInTheDocument();
+
+			await user.click(screen.getByText('Enable failed login lockout'));
+			await user.click(screen.getByText('Save'));
+
+			const expectedToggleValue = getCosAttributeValue('zimbraPasswordLockoutEnabled') === 'FALSE';
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedToggleValue, !expectedToggleValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
 });
