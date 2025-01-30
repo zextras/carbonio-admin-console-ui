@@ -25,6 +25,7 @@ import styled from 'styled-components';
 
 import CosForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
+import COSQuotas from './cos-quotas';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
@@ -36,7 +37,6 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
-import Textarea from '../components/textarea';
 import ListRow from '../list/list-row';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
@@ -1246,6 +1246,10 @@ const CosAdvanced: FC = () => {
 		[cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes, setIsDirty]
 	);
 
+	const labels = {
+		timeRange: t('cos.time_range', 'Time Range')
+	};
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
 			<Row mainAlignment="flex-start" width="100%">
@@ -1300,170 +1304,24 @@ const CosAdvanced: FC = () => {
 					changeValue={changeValue}
 					readonlyCOS={readonlyCOS}
 				/>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.quotas', 'Quotas')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								{isAdvanced && initFileQuotaLimitGBValue && (
-									<Container padding={{ right: 'small' }}>
-										<Input
-											label={t('cos.files_account_quota_gb', 'Files Account quota (GB)')}
-											value={fileQuotaLimitGBValue}
-											backgroundColor="gray5"
-											inputName="fileQuotaLimit"
-											onChange={onFileQuotaChange}
-											disabled={readonlyCOS}
-										/>
-										{showFileQuotaLimitMsg && (
-											<Container
-												mainAlignment="flex-start"
-												crossAlignment="flex-start"
-												width="fill"
-											>
-												<Padding top="small">
-													<Text size="extrasmall" weight="regular" color="primary">
-														{t(
-															'label.maximum_3_digits_allowed_decimal_point',
-															'Maximum 3 digits allowed after the decimal point'
-														)}
-													</Text>
-												</Padding>
-											</Container>
-										)}
-									</Container>
-								)}
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.mails_account_quota_gb', 'Mails Account quota (GB)')}
-										value={accountQuotaGBValue}
-										backgroundColor="gray5"
-										inputName="zimbraMailQuota"
-										onChange={onZimbraMailQuotaChange}
-										disabled={readonlyCOS}
-									/>
-									{showAccountQuotaLimitMsg && (
-										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-											<Padding top="small">
-												<Text size="extrasmall" weight="regular" color="primary">
-													{t(
-														'label.maximum_3_digits_allowed_decimal_point',
-														'Maximum 3 digits allowed after the decimal point'
-													)}
-												</Text>
-											</Padding>
-										</Container>
-									)}
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t(
-											'cos.max_contacts_allowed_in_the_folder',
-											'Max contacts allowed in the folder'
-										)}
-										value={cosAdvanced.zimbraContactMaxNumEntries}
-										backgroundColor="gray5"
-										inputName="zimbraContactMaxNumEntries"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.percentage_threshold_for_quota_warning',
-											'Percentage threshold for quota warning messages (%)'
-										)}
-										value={cosAdvanced.zimbraQuotaWarnPercent}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnPercent"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t(
-											'cos.minimum_duration_of_time_between_quota_warnings',
-											'Minimum duration of time between quota warnings'
-										)}
-										value={zimbraQuotaWarnIntervalNum}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnInterval"
-										onChange={onZimbraQuotaWarnIntervalNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="26%" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										// eslint-disable-next-line sonarjs/no-duplicate-string
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraQuotaWarnIntervalType === ''
-												? timeItems[0]
-												: // eslint-disable-next-line max-len
-												  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
-										}
-										showCheckbox={false}
-										onChange={onZimbraQuotaWarnIntervalTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container>
-									<Textarea
-										label={t(
-											'cos.quota_warning_message_template',
-											'Quota warning message template'
-										)}
-										// style={{ height: 'fitContent' }}
-										value={cosAdvanced.zimbraQuotaWarnMessage}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnMessage"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
+				<COSQuotas
+					isAdvanced={isAdvanced}
+					showFileQuotaLimitMsg={showFileQuotaLimitMsg}
+					showAccountQuotaLimitMsg={showAccountQuotaLimitMsg}
+					readonlyCOS={readonlyCOS}
+					cosAdvanced={cosAdvanced}
+					initFileQuotaLimitGBValue={initFileQuotaLimitGBValue}
+					fileQuotaLimitGBValue={fileQuotaLimitGBValue}
+					accountQuotaGBValue={accountQuotaGBValue}
+					zimbraQuotaWarnIntervalNum={zimbraQuotaWarnIntervalNum}
+					timeItems={timeItems}
+					zimbraQuotaWarnIntervalType={zimbraQuotaWarnIntervalType}
+					onFileQuotaChange={onFileQuotaChange}
+					onZimbraMailQuotaChange={onZimbraMailQuotaChange}
+					changeValue={changeValue}
+					onZimbraQuotaWarnIntervalNumChange={onZimbraQuotaWarnIntervalNumChange}
+					onZimbraQuotaWarnIntervalTypeChange={onZimbraQuotaWarnIntervalTypeChange}
+				/>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
@@ -1767,7 +1625,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraPasswordLockoutDurationType === ''
 												? timeItems[-1]
@@ -1798,7 +1656,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraPasswordLockoutFailureLifetimeType === ''
 												? timeItems[-1]
@@ -1851,7 +1709,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraAdminAuthTokenLifetimeType === ''
 												? timeItems[-1]
@@ -1890,7 +1748,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraAuthTokenLifetimeType === ''
 												? timeItems[-1]
@@ -1927,7 +1785,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraMailIdleSessionTimeoutType === ''
 												? timeItems[-1]
@@ -1977,7 +1835,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraMailMessageLifetimeType === ''
 												? timeItems[-1]
@@ -2016,7 +1874,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraMailTrashLifetimeType === ''
 												? timeItems[-1]
@@ -2055,7 +1913,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
+										label={labels.timeRange}
 										selection={
 											zimbraMailSpamLifetimeType === ''
 												? timeItems[-1]

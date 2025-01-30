@@ -233,12 +233,6 @@ describe('CosAdvanced', () => {
 		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
 	});
 
-	it('should render Quota fields', async () => {
-		await renderComponent(<CosAdvanced />);
-
-		expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
-	});
-
 	it('should not render Advanced toggles when is not an Advanced environment', async () => {
 		disableAdvanced();
 
@@ -292,6 +286,32 @@ describe('CosAdvanced', () => {
 			expectedModifyCosBody('zimbraMailForwardingAddressMaxLength', newForwardingAddressesMaxLength)
 		);
 		expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
+		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+	});
+
+	it('should render Quota fields', async () => {
+		await renderComponent(<CosAdvanced />);
+
+		expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
+	});
+
+	it('should modify the mails quota limit', async () => {
+		const mockModifyCos = mock(modifyCos);
+		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+		const mockCreateSnackbar = jest.fn();
+		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+		const { user } = await renderComponent(<CosAdvanced />);
+		const mailsAccountQuotaLabelEl = screen.getByLabelText(
+			'Mails Account quota (GB)'
+		) as HTMLInputElement;
+		expect(mailsAccountQuotaLabelEl.value).toBe('');
+
+		const newMailsAccountQuotaValue = '1.00';
+		await user.clear(mailsAccountQuotaLabelEl);
+		await user.type(mailsAccountQuotaLabelEl, newMailsAccountQuotaValue);
+		await user.click(screen.getByText('Save'));
+
+		expect(mailsAccountQuotaLabelEl.value).toBe(newMailsAccountQuotaValue);
 		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 	});
 });
