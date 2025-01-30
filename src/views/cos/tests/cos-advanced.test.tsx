@@ -69,7 +69,7 @@ jest.mock('../../../services/set-core-attributes', () => ({
 jest.mock('../../../services/get-file-quota', () => ({
 	getFileQuotaById: (): Promise<any> =>
 		Promise.resolve({
-			limit: 0
+			limit: 1
 		})
 }));
 jest.mock('../../../services/set-file-quota-limit', () => ({
@@ -232,6 +232,12 @@ describe('CosAdvanced', () => {
 		expect(screen.getByText(labelEntries.generalOptions.defaultValue)).toBeInTheDocument();
 		expect(screen.getByText(labelEntries.backupEnabled.defaultValue)).toBeInTheDocument();
 		expect(screen.getByText(labelEntries.allowRestoreMessage.defaultValue)).toBeInTheDocument();
+	});
+
+	it('should render Quota fields', async () => {
+		await renderComponent(<CosAdvanced />);
+
+		expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
 	});
 
 	it('should not render Advanced toggles when is not an Advanced environment', async () => {
