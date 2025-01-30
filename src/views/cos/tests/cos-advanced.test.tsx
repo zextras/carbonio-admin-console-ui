@@ -343,4 +343,26 @@ describe('CosAdvanced', () => {
 			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 		});
 	});
+
+	describe('COS Password', () => {
+		it('should enable prevent user from changing password', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByText('Prevent user from changing password')).toBeInTheDocument();
+
+			await user.click(screen.getByText('Prevent user from changing password'));
+			await user.click(screen.getByText('Save'));
+
+			const expectedToggleValue = getCosAttributeValue('zimbraPasswordLocked') === 'FALSE';
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedToggleValue, !expectedToggleValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
 });
