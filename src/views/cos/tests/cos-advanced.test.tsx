@@ -210,108 +210,117 @@ describe('CosAdvanced', () => {
 		enableAdvanced();
 	});
 
-	it('should render the component correctly', async () => {
-		await renderComponent(<CosAdvanced />);
+	describe('COS General Options', () => {
+		it('should render the component correctly', async () => {
+			await renderComponent(<CosAdvanced />);
 
-		expect(screen.queryByText('Save')).not.toBeInTheDocument();
-		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
-		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		expect(screen.getByText('General Options')).toBeInTheDocument();
-		expect(screen.getByText('Forwarding')).toBeInTheDocument();
-		expect(screen.getByText('Quotas')).toBeInTheDocument();
-		expect(screen.getByText('Password')).toBeInTheDocument();
-		expect(screen.getByText('Failed Login Policy')).toBeInTheDocument();
-		expect(screen.getByText('Timeout Policy')).toBeInTheDocument();
-		expect(screen.getByText('Email Retention Policy')).toBeInTheDocument();
+			expect(screen.queryByText('Save')).not.toBeInTheDocument();
+			expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+			expect(screen.getByText('Advanced')).toBeInTheDocument();
+			expect(screen.getByText('General Options')).toBeInTheDocument();
+			expect(screen.getByText('Forwarding')).toBeInTheDocument();
+			expect(screen.getByText('Quotas')).toBeInTheDocument();
+			expect(screen.getByText('Password')).toBeInTheDocument();
+			expect(screen.getByText('Failed Login Policy')).toBeInTheDocument();
+			expect(screen.getByText('Timeout Policy')).toBeInTheDocument();
+			expect(screen.getByText('Email Retention Policy')).toBeInTheDocument();
+		});
+
+		it('should render Advanced toggles', async () => {
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByText('General Options')).toBeInTheDocument();
+			expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
+			expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
+		});
+
+		it('should not render Advanced toggles when is not an Advanced environment', async () => {
+			disableAdvanced();
+
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.queryByText('General Options')).not.toBeInTheDocument();
+			expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
+			expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
+		});
+
+		it('should toggle/untoggle Backup based on initial state', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
+
+			await user.click(screen.getByText('Enable / Disable Backup'));
+			await user.click(screen.getByText('Save'));
+
+			const expectedBackupEnabledValue = !initialBackupEnabledValue;
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should render Advanced toggles', async () => {
-		await renderComponent(<CosAdvanced />);
+	describe('COS Forwarding', () => {
+		it('should modify the forwarding addresses max length', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
+				'Limit user-specified forwarding addresses to (char)'
+			) as HTMLInputElement;
 
-		expect(screen.getByText('General Options')).toBeInTheDocument();
-		expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
-		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
+			expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
+			const currentForwardingAddressMaxLength = getCosAttributeValue(
+				'zimbraMailForwardingAddressMaxLength'
+			);
+			expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
+
+			const newForwardingAddressesMaxLength = '8000';
+			await user.clear(forwardingAddressesMaxLengthLabel);
+			await user.type(forwardingAddressesMaxLengthLabel, newForwardingAddressesMaxLength);
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody(
+					'zimbraMailForwardingAddressMaxLength',
+					newForwardingAddressesMaxLength
+				)
+			);
+			expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should not render Advanced toggles when is not an Advanced environment', async () => {
-		disableAdvanced();
+	describe('COS Quotas', () => {
+		it('should render Quota fields', async () => {
+			await renderComponent(<CosAdvanced />);
 
-		await renderComponent(<CosAdvanced />);
+			expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
+		});
 
-		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
-		expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
-		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
-	});
+		it('should modify the mails quota limit', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const mailsAccountQuotaLabelEl = screen.getByLabelText(
+				'Mails Account quota (GB)'
+			) as HTMLInputElement;
+			expect(mailsAccountQuotaLabelEl.value).toBe('');
 
-	it('should toggle/untoggle Backup based on initial state', async () => {
-		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-		const mockCreateSnackbar = jest.fn();
-		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-		const setCoreAttrs = spySetCoreAttributes();
-		const { user } = await renderComponent(<CosAdvanced />);
+			const newMailsAccountQuotaValue = '1.00';
+			await user.clear(mailsAccountQuotaLabelEl);
+			await user.type(mailsAccountQuotaLabelEl, newMailsAccountQuotaValue);
+			await user.click(screen.getByText('Save'));
 
-		await user.click(screen.getByText('Enable / Disable Backup'));
-		await user.click(screen.getByText('Save'));
-
-		const expectedBackupEnabledValue = !initialBackupEnabledValue;
-		expect(setCoreAttrs).toHaveBeenCalledWith(
-			buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
-		);
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
-	});
-
-	it('should modify the forwarding addresses max length', async () => {
-		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-		const mockCreateSnackbar = jest.fn();
-		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-		const { user } = await renderComponent(<CosAdvanced />);
-		const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
-			'Limit user-specified forwarding addresses to (char)'
-		) as HTMLInputElement;
-
-		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
-		const currentForwardingAddressMaxLength = getCosAttributeValue(
-			'zimbraMailForwardingAddressMaxLength'
-		);
-		expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
-
-		const newForwardingAddressesMaxLength = '8000';
-		await user.clear(forwardingAddressesMaxLengthLabel);
-		await user.type(forwardingAddressesMaxLengthLabel, newForwardingAddressesMaxLength);
-		await user.click(screen.getByText('Save'));
-
-		expect(mockModifyCos).toHaveBeenCalledWith(
-			expectedModifyCosBody('zimbraMailForwardingAddressMaxLength', newForwardingAddressesMaxLength)
-		);
-		expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
-	});
-
-	it('should render Quota fields', async () => {
-		await renderComponent(<CosAdvanced />);
-
-		expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
-	});
-
-	it('should modify the mails quota limit', async () => {
-		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-		const mockCreateSnackbar = jest.fn();
-		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-		const { user } = await renderComponent(<CosAdvanced />);
-		const mailsAccountQuotaLabelEl = screen.getByLabelText(
-			'Mails Account quota (GB)'
-		) as HTMLInputElement;
-		expect(mailsAccountQuotaLabelEl.value).toBe('');
-
-		const newMailsAccountQuotaValue = '1.00';
-		await user.clear(mailsAccountQuotaLabelEl);
-		await user.type(mailsAccountQuotaLabelEl, newMailsAccountQuotaValue);
-		await user.click(screen.getByText('Save'));
-
-		expect(mailsAccountQuotaLabelEl.value).toBe(newMailsAccountQuotaValue);
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+			expect(mailsAccountQuotaLabelEl.value).toBe(newMailsAccountQuotaValue);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 });
