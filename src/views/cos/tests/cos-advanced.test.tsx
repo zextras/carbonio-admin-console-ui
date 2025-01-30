@@ -10,7 +10,7 @@
 import React from 'react';
 
 import { jest } from '@jest/globals';
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
 import { modifyCos } from '../../../services/modify-cos-service';
@@ -384,6 +384,38 @@ describe('CosAdvanced', () => {
 			expect(setCoreAttrs).toHaveBeenCalledWith(
 				buildAdvancedCosValues(expectedToggleValue, !expectedToggleValue)
 			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
+	describe('COS Timeout Policy', () => {
+		it('should modify admin auth token timeout', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const timeoutPolicyInputLabel = screen.getByLabelText(
+				'Admin console auth token lifetime'
+			) as HTMLInputElement;
+
+			expect(timeoutPolicyInputLabel).toBeInTheDocument();
+			expect(timeoutPolicyInputLabel.value).toBe('');
+
+			const newTimeoutPolicyInputLabel = '800';
+			await user.clear(timeoutPolicyInputLabel);
+			await user.type(timeoutPolicyInputLabel, newTimeoutPolicyInputLabel);
+
+			const view = screen.getByTestId('zimbraAdminAuthTokenLifetimeType');
+
+			await user.click(within(view).getByText(/seconds/i));
+			const dropdown = await screen.findByTestId('dropdown-popper-list');
+			await user.click(within(dropdown).getByText(/minutes/i));
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody('zimbraAdminAuthTokenLifetime', `${newTimeoutPolicyInputLabel}m`)
+			);
+			expect(timeoutPolicyInputLabel.value).toBe(newTimeoutPolicyInputLabel);
 			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 		});
 	});

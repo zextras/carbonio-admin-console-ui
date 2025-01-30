@@ -27,6 +27,7 @@ import CosForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
 import COSPassword from './cos-password';
 import COSQuotas from './cos-quotas';
+import COSTimeoutPolicy from './cos-timeout-policy';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
@@ -1348,135 +1349,22 @@ const CosAdvanced: FC = () => {
 						onZimbraPasswordLockoutFailureLifetimeTypeChange
 					}
 				/>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.timeout_policy', 'Timeout Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.admin_console_auth_token_lifetime',
-											'Admin console auth token lifetime'
-										)}
-										value={zimbraAdminAuthTokenLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraAdminAuthTokenLifetime"
-										onChange={onZimbraAdminAuthTokenLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraAdminAuthTokenLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraAdminAuthTokenLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
-										value={zimbraAuthTokenLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraAuthTokenLifetime"
-										onChange={onZimbraAuthTokenLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraAuthTokenLifetimeType === ''
-												? timeItems[-1]
-												: // eslint-disable-next-line max-len
-												  timeItems.find((item: any) => item.value === zimbraAuthTokenLifetimeType)
-										}
-										showCheckbox={false}
-										onChange={onZimbraAuthTokenLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.session_idle_timeout', 'Session idle timeout')}
-										value={zimbraMailIdleSessionTimeoutNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailIdleSessionTimeout"
-										onChange={onZimbraMailIdleSessionTimeoutNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraMailIdleSessionTimeoutType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailIdleSessionTimeoutType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
+				<COSTimeoutPolicy
+					zimbraAdminAuthTokenLifetimeNum={zimbraAdminAuthTokenLifetimeNum}
+					zimbraAdminAuthTokenLifetimeType={zimbraAdminAuthTokenLifetimeType}
+					zimbraAuthTokenLifetimeNum={zimbraAuthTokenLifetimeNum}
+					zimbraAuthTokenLifetimeType={zimbraAuthTokenLifetimeType}
+					zimbraMailIdleSessionTimeoutNum={zimbraMailIdleSessionTimeoutNum}
+					zimbraMailIdleSessionTimeoutType={zimbraMailIdleSessionTimeoutType}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					onZimbraAdminAuthTokenLifetimeNumChange={onZimbraAdminAuthTokenLifetimeNumChange}
+					onZimbraAdminAuthTokenLifetimeTypeChange={onZimbraAdminAuthTokenLifetimeTypeChange}
+					onZimbraAuthTokenLifetimeNumChange={onZimbraAuthTokenLifetimeNumChange}
+					onZimbraAuthTokenLifetimeTypeChange={onZimbraAuthTokenLifetimeTypeChange}
+					onZimbraMailIdleSessionTimeoutNumChange={onZimbraMailIdleSessionTimeoutNumChange}
+					onZimbraMailIdleSessionTimeoutTypeChange={onZimbraMailIdleSessionTimeoutTypeChange}
+				/>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
