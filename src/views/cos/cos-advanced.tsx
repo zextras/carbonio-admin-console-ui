@@ -23,6 +23,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import CosForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
@@ -48,9 +49,6 @@ type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
 	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
 };
-
-export const FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL =
-	'Limit user-specified forwarding addresses to (char)';
 
 type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 
@@ -1297,53 +1295,11 @@ const CosAdvanced: FC = () => {
 						changeBackupAttribute={changeBackupAttribute}
 					/>
 				)}
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.forwarding', 'Forwarding')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.limit_user_specified_forwarding_addresses',
-											FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
-										)}
-										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
-										backgroundColor="gray5"
-										inputName="zimbraMailForwardingAddressMaxLength"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t(
-											'cos.max_user_specific_forwarding_address',
-											'Max user-specific forwarding address'
-										)}
-										value={cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs}
-										backgroundColor="gray5"
-										inputName="zimbraMailForwardingAddressMaxNumAddrs"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-				</Row>
+				<CosForwarding
+					cosAdvanced={cosAdvanced}
+					changeValue={changeValue}
+					readonlyCOS={readonlyCOS}
+				/>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"

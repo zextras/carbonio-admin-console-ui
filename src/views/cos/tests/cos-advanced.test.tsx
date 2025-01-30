@@ -20,7 +20,7 @@ import { useCosStore } from '../../../store/cos/store';
 import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
-import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
+import CosAdvanced from '../cos-advanced';
 
 /*
 /═══════════════════════════════════════════════════\
@@ -274,7 +274,7 @@ describe('CosAdvanced', () => {
 		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
 		const { user } = await renderComponent(<CosAdvanced />);
 		const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
-			FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
+			'Limit user-specified forwarding addresses to (char)'
 		) as HTMLInputElement;
 
 		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
