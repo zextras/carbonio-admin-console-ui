@@ -12,14 +12,13 @@ import {
 	Divider,
 	Padding,
 	Button,
-	Input,
-	Select,
 	useSnackbar,
 	SelectItem
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import COSEmailRetentionPolicy from './cos-email-retention-policy';
 import COSFailedLoginPolicy from './cos-failed-login-policy';
 import CosForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
@@ -37,7 +36,6 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
-import ListRow from '../list/list-row';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
 type AdvancedBackupAttributes = {
@@ -1140,13 +1138,13 @@ const CosAdvanced: FC = () => {
 
 	const cosName = useCosStore((state) => state.cos?.name);
 	const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
-		setFileQuotaLimitById(cosId, limit, COS).then((res) => {
+		setFileQuotaLimitById(cosId, limit, COS).then(() => {
 			setShowFileQuotaLimitMsg(false);
 		});
 	}, []);
 
 	const resetFileQuotaLimit = useCallback((cosId: string) => {
-		resetFileQuotaLimitById(cosId, COS).then((res) => {
+		resetFileQuotaLimitById(cosId, COS).then(() => {
 			setShowFileQuotaLimitMsg(false);
 		});
 	}, []);
@@ -1241,17 +1239,13 @@ const CosAdvanced: FC = () => {
 		[cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes, setIsDirty]
 	);
 
-	const labels = {
-		timeRange: t('cos.time_range', 'Time Range')
-	};
-
 	return (
-		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
+		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
-					background="gray6"
+					background={'gray6'}
 					height="58px"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
@@ -1277,7 +1271,7 @@ const CosAdvanced: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-			<Row orientation="horizontal" width="100%" background="gray6">
+			<Row orientation="horizontal" width="100%" background={'gray6'}>
 				<Divider />
 			</Row>
 			<Container
@@ -1358,134 +1352,22 @@ const CosAdvanced: FC = () => {
 					onZimbraMailIdleSessionTimeoutNumChange={onZimbraMailIdleSessionTimeoutNumChange}
 					onZimbraMailIdleSessionTimeoutTypeChange={onZimbraMailIdleSessionTimeoutTypeChange}
 				/>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.email_retention_policy', 'Email Retention Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
-										value={zimbraMailMessageLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailMessageLifetime"
-										onChange={onZimbraMailMessageLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraMailMessageLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailMessageLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailMessageLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
-										value={zimbraMailTrashLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailTrashLifetime"
-										onChange={onZimbraMailTrashLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraMailTrashLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailTrashLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailTrashLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
-										value={zimbraMailSpamLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailSpamLifetime"
-										onChange={onZimbraMailSpamLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={labels.timeRange}
-										selection={
-											zimbraMailSpamLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailSpamLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailSpamLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
+				<COSEmailRetentionPolicy
+					zimbraMailMessageLifetimeNum={zimbraMailMessageLifetimeNum}
+					zimbraMailMessageLifetimeType={zimbraMailMessageLifetimeType}
+					zimbraMailTrashLifetimeNum={zimbraMailTrashLifetimeNum}
+					zimbraMailTrashLifetimeType={zimbraMailTrashLifetimeType}
+					zimbraMailSpamLifetimeNum={zimbraMailSpamLifetimeNum}
+					zimbraMailSpamLifetimeType={zimbraMailSpamLifetimeType}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					onZimbraMailMessageLifetimeNumChange={onZimbraMailMessageLifetimeNumChange}
+					onZimbraMailMessageLifetimeTypeChange={onZimbraMailMessageLifetimeTypeChange}
+					onZimbraMailTrashLifetimeNumChange={onZimbraMailTrashLifetimeNumChange}
+					onZimbraMailTrashLifetimeTypeChange={onZimbraMailTrashLifetimeTypeChange}
+					onZimbraMailSpamLifetimeNumChange={onZimbraMailSpamLifetimeNumChange}
+					onZimbraMailSpamLifetimeTypeChange={onZimbraMailSpamLifetimeTypeChange}
+				/>
 			</Container>
 		</Container>
 	);

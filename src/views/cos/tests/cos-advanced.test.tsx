@@ -419,4 +419,39 @@ describe('CosAdvanced', () => {
 			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
 		});
 	});
+	describe('COS Email Retention Policy', () => {
+		it('should modify admin email retention policy lifetime', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const emailRetentionPolicyInputElement = screen.getByRole('textbox', {
+				name: 'E-mail message lifetime'
+			}) as HTMLInputElement;
+
+			expect(emailRetentionPolicyInputElement).toBeInTheDocument();
+			expect(emailRetentionPolicyInputElement).toHaveValue('');
+
+			const newEmailRetentionPolicyInputElement = '800';
+			await user.clear(emailRetentionPolicyInputElement);
+			await user.type(emailRetentionPolicyInputElement, newEmailRetentionPolicyInputElement);
+
+			const view = screen.getByTestId('zimbraMailTrashLifetimeSelect');
+
+			await user.click(within(view).getByText(/seconds/i));
+			const dropdown = await screen.findByTestId('dropdown-popper-list');
+			await user.click(within(dropdown).getByText(/minutes/i));
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody(
+					'zimbraMailMessageLifetime',
+					`${newEmailRetentionPolicyInputElement}m`
+				)
+			);
+			expect(emailRetentionPolicyInputElement).toHaveValue(newEmailRetentionPolicyInputElement);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
 });

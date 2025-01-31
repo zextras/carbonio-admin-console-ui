@@ -85,6 +85,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 						</Container>
 						<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 							<Select
+								data-testid="zimbraMailTrashLifetimeSelect"
 								items={timeItems}
 								background="gray5"
 								label={labels.timeRange}
