@@ -51,10 +51,9 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.allow_restore_message', 'Allow user to restore messages')}
-									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
-									// eslint-disable-next-line max-len
-									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
+									label={t('label.backup_enabled', 'Enable / Disable Backup')}
+									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
+									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 									iconColor="primary"
 									disabled={readonlyCOS}
 								/>
@@ -66,9 +65,10 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.backup_enabled', 'Enable / Disable Backup')}
-									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
-									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
+									label={t('label.allow_restore_message', 'Allow user to restore messages')}
+									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
+									// eslint-disable-next-line max-len
+									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
 									iconColor="primary"
 									disabled={readonlyCOS}
 								/>
