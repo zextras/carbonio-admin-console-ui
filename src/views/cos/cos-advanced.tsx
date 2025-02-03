@@ -3,7 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	Dispatch,
+	FC,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -25,7 +34,7 @@ import COSGeneralOptions from './cos-general-options';
 import COSPassword from './cos-password';
 import COSQuotas from './cos-quotas';
 import COSTimeoutPolicy from './cos-timeout-policy';
-import { TimeItems } from '../../../types';
+import { Attribute, TimeItems } from '../../../types';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
@@ -182,9 +191,9 @@ const CosAdvanced: FC = () => {
 	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
 		cosAdvanced?.zimbraPasswordLockoutDuration?.slice(0, -1)
 	);
-	const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState<
-		string | null
-	>(cosAdvanced?.zimbraPasswordLockoutDuration?.slice(-1) || '');
+	const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
+		cosAdvanced?.zimbraPasswordLockoutDuration?.slice(-1) || ''
+	);
 	const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
 		useState(cosAdvanced?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
 	const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
@@ -192,9 +201,9 @@ const CosAdvanced: FC = () => {
 	const [zimbraAdminAuthTokenLifetimeNum, setZimbraAdminAuthTokenLifetimeNum] = useState(
 		cosAdvanced?.zimbraAdminAuthTokenLifetime?.slice(0, -1)
 	);
-	const [zimbraAdminAuthTokenLifetimeType, setZimbraAdminAuthTokenLifetimeType] = useState<
-		string | null
-	>(cosAdvanced?.zimbraAdminAuthTokenLifetime?.slice(-1) || '');
+	const [zimbraAdminAuthTokenLifetimeType, setZimbraAdminAuthTokenLifetimeType] = useState(
+		cosAdvanced?.zimbraAdminAuthTokenLifetime?.slice(-1) || ''
+	);
 	const [zimbraAuthTokenLifetimeNum, setZimbraAuthTokenLifetimeNum] = useState(
 		cosAdvanced?.zimbraAuthTokenLifetime?.slice(0, -1)
 	);
@@ -204,9 +213,9 @@ const CosAdvanced: FC = () => {
 	const [zimbraMailIdleSessionTimeoutNum, setZimbraMailIdleSessionTimeoutNum] = useState(
 		cosAdvanced?.zimbraMailIdleSessionTimeout?.slice(0, -1)
 	);
-	const [zimbraMailIdleSessionTimeoutType, setZimbraMailIdleSessionTimeoutType] = useState<
-		string | null
-	>(cosAdvanced?.zimbraMailIdleSessionTimeout?.slice(-1) || '');
+	const [zimbraMailIdleSessionTimeoutType, setZimbraMailIdleSessionTimeoutType] = useState(
+		cosAdvanced?.zimbraMailIdleSessionTimeout?.slice(-1) || ''
+	);
 	const [zimbraMailTrashLifetimeNum, setZimbraMailTrashLifetimeNum] = useState(
 		cosAdvanced?.zimbraMailTrashLifetime?.slice(0, -1)
 	);
@@ -225,8 +234,8 @@ const CosAdvanced: FC = () => {
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 
-	const setValue = useCallback(
-		(key: string, value: any): void => {
+	const setValue = useCallback<(key: string, value: AccountType) => void>(
+		(key, value): void => {
 			setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
 		},
 		[setCosAdvanced]
@@ -403,9 +412,9 @@ const CosAdvanced: FC = () => {
 		(obj: any): void => {
 			const setTimeValues = (
 				value: string | undefined,
-				setValueFn: React.Dispatch<any>,
-				setValueTypeFn: React.Dispatch<any>,
-				timeItem: any[]
+				setValueFn: Dispatch<SetStateAction<string | undefined>>,
+				setValueTypeFn: Dispatch<SetStateAction<string>>,
+				timeItem: TimeItems
 			): void => {
 				setValueFn(value?.slice(0, -1));
 				setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
@@ -479,9 +488,9 @@ const CosAdvanced: FC = () => {
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
-			const obj: any = {};
-			cosInformation.forEach((item: any) => {
-				obj[item?.n] = item._content;
+			const obj: AccountType = {};
+			cosInformation.forEach((item: Attribute) => {
+				obj[item?.n as keyof AccountType] = item._content;
 			});
 			if (!obj.zimbraMailForwardingAddressMaxLength) {
 				obj.zimbraMailForwardingAddressMaxLength = '';
@@ -915,13 +924,15 @@ const CosAdvanced: FC = () => {
 
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback<SingleSelectionOnChange>(
 		(v) => {
-			setCosAdvanced((prev: AccountType) => ({
-				...prev,
-				zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
-					? `${zimbraPasswordLockoutDurationNum}${v}`
-					: ''
-			}));
-			setZimbraPasswordLockoutDurationType(v);
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
+						? `${zimbraPasswordLockoutDurationNum}${v}`
+						: ''
+				}));
+				setZimbraPasswordLockoutDurationType(v);
+			}
 		},
 		[zimbraPasswordLockoutDurationNum, setCosAdvanced]
 	);
@@ -967,13 +978,15 @@ const CosAdvanced: FC = () => {
 
 	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
 		(v) => {
-			setCosAdvanced((prev: AccountType) => ({
-				...prev,
-				zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
-					? `${zimbraAdminAuthTokenLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraAdminAuthTokenLifetimeType(v);
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
+						? `${zimbraAdminAuthTokenLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraAdminAuthTokenLifetimeType(v);
+			}
 		},
 		[zimbraAdminAuthTokenLifetimeNum, setCosAdvanced]
 	);
@@ -1019,13 +1032,15 @@ const CosAdvanced: FC = () => {
 
 	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback<SingleSelectionOnChange>(
 		(v) => {
-			setCosAdvanced((prev: AccountType) => ({
-				...prev,
-				zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
-					? `${zimbraMailIdleSessionTimeoutNum}${v}`
-					: ''
-			}));
-			setZimbraMailIdleSessionTimeoutType(v);
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
+						? `${zimbraMailIdleSessionTimeoutNum}${v}`
+						: ''
+				}));
+				setZimbraMailIdleSessionTimeoutType(v);
+			}
 		},
 		[zimbraMailIdleSessionTimeoutNum, setCosAdvanced]
 	);
