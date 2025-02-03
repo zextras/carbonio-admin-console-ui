@@ -232,7 +232,7 @@ const CosAdvanced: FC = () => {
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 
-	const setValue = useCallback<(key: string, value: AccountType) => void>(
+	const setValue = useCallback<(key: keyof AccountType, value: AccountType) => void>(
 		(key, value): void => {
 			setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
 		},
@@ -285,14 +285,6 @@ const CosAdvanced: FC = () => {
 					obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : ''
 				);
 				setValue(
-					'zimbraDataSourcePop3PollingInterval',
-					obj?.zimbraDataSourcePop3PollingInterval ? obj?.zimbraDataSourcePop3PollingInterval : ''
-				);
-				setValue(
-					'zimbraDataSourceImapPollingInterval',
-					obj?.zimbraDataSourceImapPollingInterval ? obj?.zimbraDataSourceImapPollingInterval : ''
-				);
-				setValue(
 					'zimbraDataSourceCalendarPollingInterval',
 					obj?.zimbraDataSourceCalendarPollingInterval
 						? obj?.zimbraDataSourceCalendarPollingInterval
@@ -301,12 +293,6 @@ const CosAdvanced: FC = () => {
 				setValue(
 					'zimbraDataSourceRssPollingInterval',
 					obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : ''
-				);
-				setValue(
-					'zimbraDataSourceCaldavPollingInterval',
-					obj?.zimbraDataSourceCaldavPollingInterval
-						? obj?.zimbraDataSourceCaldavPollingInterval
-						: ''
 				);
 				setValue(
 					'zimbraPasswordLocked',
