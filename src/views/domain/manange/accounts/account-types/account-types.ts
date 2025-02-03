@@ -283,7 +283,7 @@ export interface AccountType {
 	zimbraPrefGroupMailBy?: string;
 	zimbraMailForwardingAddressMaxNumAddrs?: string;
 	zimbraNewMailNotificationSubject?: string;
-	zimbraMailQuota?: string;
+	zimbraMailQuota?: string | number;
 	zimbraQuotaWarnMessage?: string;
 	zimbraFeatureZimbraAssistantEnabled?: string;
 	zimbraContactAutoCompleteEmailFields?: string;
