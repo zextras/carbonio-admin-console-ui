@@ -17,7 +17,9 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import { TimeItems } from '../../../types';
 import Textarea from '../components/textarea';
+import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import ListRow from '../list/list-row';
 
 type QuotaProps = {
@@ -25,13 +27,13 @@ type QuotaProps = {
 	showFileQuotaLimitMsg: boolean;
 	showAccountQuotaLimitMsg: boolean;
 	readonlyCOS: boolean;
-	cosAdvanced: any;
+	cosAdvanced: AccountType;
 	initFileQuotaLimitGBValue: number | undefined;
 	fileQuotaLimitGBValue: string | undefined;
 	accountQuotaGBValue: string;
-	zimbraQuotaWarnIntervalNum: any;
-	timeItems: any[];
-	zimbraQuotaWarnIntervalType: any;
+	zimbraQuotaWarnIntervalNum: string | undefined;
+	timeItems: TimeItems;
+	zimbraQuotaWarnIntervalType: string;
 	onFileQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -99,7 +101,7 @@ const COSQuotas: FC<QuotaProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -160,7 +162,7 @@ const COSQuotas: FC<QuotaProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -185,17 +187,13 @@ const COSQuotas: FC<QuotaProps> = ({
 							/>
 						</Container>
 						<Container width="26%" padding={{ left: 'small' }}>
-							{/* TODO: rember that you can add type on select component */}
 							<Select
 								items={timeItems}
-								background="gray5"
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraQuotaWarnIntervalType === ''
-										? timeItems[0]
-										: // eslint-disable-next-line max-len
-										  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
+									timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
+									timeItems[0]
 								}
 								showCheckbox={false}
 								onChange={onZimbraQuotaWarnIntervalTypeChange}
@@ -209,7 +207,7 @@ const COSQuotas: FC<QuotaProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large', bottom: 'large' }}
 				>
 					<ListRow>

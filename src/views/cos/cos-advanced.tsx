@@ -25,6 +25,7 @@ import COSGeneralOptions from './cos-general-options';
 import COSPassword from './cos-password';
 import COSQuotas from './cos-quotas';
 import COSTimeoutPolicy from './cos-timeout-policy';
+import { TimeItems } from '../../../types';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
@@ -106,7 +107,7 @@ const CosAdvanced: FC = () => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
-	const timeItems: any[] = useMemo(
+	const timeItems = useMemo<TimeItems>(
 		() => [
 			{
 				label: t('label.seconds', 'Seconds'),
