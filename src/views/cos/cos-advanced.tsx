@@ -232,7 +232,9 @@ const CosAdvanced: FC = () => {
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 
-	const setValue = useCallback<(key: keyof AccountType, value: AccountType) => void>(
+	const setValue = useCallback<
+		(key: keyof AccountType, value: AccountType[keyof AccountType]) => void
+	>(
 		(key, value): void => {
 			setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
 		},
@@ -251,7 +253,7 @@ const CosAdvanced: FC = () => {
 
 	const setInitalValues = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(obj: any): void => {
+		(obj: AccountType): void => {
 			if (obj) {
 				setValue(
 					'zimbraMailForwardingAddressMaxLength',
@@ -393,7 +395,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setStateAttrValues = useCallback(
-		(obj: any): void => {
+		(obj: AccountType): void => {
 			const setTimeValues = (
 				value: string | undefined,
 				setValueFn: Dispatch<SetStateAction<string | undefined>>,
@@ -1234,8 +1236,7 @@ const CosAdvanced: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
