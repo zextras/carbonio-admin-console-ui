@@ -11,7 +11,7 @@ import {
 	Input,
 	Row,
 	Select,
-	SelectItem,
+	SingleSelectionOnChange,
 	Text
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -28,11 +28,11 @@ type TimeoutPolicyProps = {
 	readonlyCOS: boolean;
 	timeItems: any[];
 	onZimbraAdminAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraAdminAuthTokenLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraAdminAuthTokenLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraAuthTokenLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraAuthTokenLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraMailIdleSessionTimeoutNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraMailIdleSessionTimeoutTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraMailIdleSessionTimeoutTypeChange: SingleSelectionOnChange;
 };
 
 const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({

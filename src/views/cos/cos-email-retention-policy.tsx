@@ -11,7 +11,7 @@ import {
 	Input,
 	Row,
 	Select,
-	SelectItem,
+	SingleSelectionOnChange,
 	Text
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -28,11 +28,11 @@ type EmailRetentionPolicyProps = {
 	readonlyCOS: boolean;
 	timeItems: any[];
 	onZimbraMailMessageLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraMailMessageLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraMailMessageLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraMailTrashLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraMailTrashLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraMailTrashLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraMailSpamLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraMailSpamLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraMailSpamLifetimeTypeChange: SingleSelectionOnChange;
 };
 
 const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({

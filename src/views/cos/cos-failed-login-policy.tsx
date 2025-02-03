@@ -11,7 +11,7 @@ import {
 	Input,
 	Row,
 	Select,
-	SelectItem,
+	SingleSelectionOnChange,
 	Switch,
 	Text
 } from '@zextras/carbonio-design-system';
@@ -31,9 +31,9 @@ type FailedLoginPolicyProps = {
 	changeSwitchOption: (key: keyof AccountType) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraPasswordLockoutDurationNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraPasswordLockoutDurationTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraPasswordLockoutDurationTypeChange: SingleSelectionOnChange;
 	onZimbraPasswordLockoutFailureLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraPasswordLockoutFailureLifetimeTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraPasswordLockoutFailureLifetimeTypeChange: SingleSelectionOnChange;
 };
 
 const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({

@@ -12,7 +12,7 @@ import {
 	Padding,
 	Row,
 	Select,
-	SelectItem,
+	SingleSelectionOnChange,
 	Text
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ type QuotaProps = {
 	onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraQuotaWarnIntervalNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraQuotaWarnIntervalTypeChange: (v: SelectItem[] | string | null) => void;
+	onZimbraQuotaWarnIntervalTypeChange: SingleSelectionOnChange;
 };
 
 const COSQuotas: FC<QuotaProps> = ({

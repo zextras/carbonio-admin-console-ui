@@ -62,6 +62,7 @@ export interface AccountType {
 	zimbraFeatureMailPriorityEnabled?: string;
 	zimbraPrefAutocompleteAddressBubblesEnabled?: string;
 	zimbraFreebusyExchangeCachedInterval?: string;
+	zimbraFreebusyExchangeUserOrg?: string;
 	zimbraFeatureManageZimlets?: string;
 	zimbraPasswordMinNumericChars?: string;
 	zimbraWebClientShowOfflineLink?: string;
