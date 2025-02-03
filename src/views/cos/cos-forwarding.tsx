@@ -8,10 +8,11 @@ import React, { ChangeEvent, FC } from 'react';
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import ListRow from '../list/list-row';
 
 type ForwardingProps = {
-	cosAdvanced: any;
+	cosAdvanced: AccountType;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
 	readonlyCOS: boolean;
 };
@@ -32,7 +33,7 @@ const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
