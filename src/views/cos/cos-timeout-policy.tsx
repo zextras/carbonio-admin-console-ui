@@ -16,17 +16,18 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import { TimeItems } from '../../../types';
 import ListRow from '../list/list-row';
 
 type TimeoutPolicyProps = {
-	zimbraAdminAuthTokenLifetimeNum: any;
-	zimbraAdminAuthTokenLifetimeType: any;
-	zimbraAuthTokenLifetimeNum: any;
-	zimbraAuthTokenLifetimeType: any;
-	zimbraMailIdleSessionTimeoutNum: any;
-	zimbraMailIdleSessionTimeoutType: any;
+	zimbraAdminAuthTokenLifetimeNum: string | undefined;
+	zimbraAdminAuthTokenLifetimeType: string | undefined;
+	zimbraAuthTokenLifetimeNum: string | undefined;
+	zimbraAuthTokenLifetimeType: string | undefined;
+	zimbraMailIdleSessionTimeoutNum: string | undefined;
+	zimbraMailIdleSessionTimeoutType: string | undefined;
 	readonlyCOS: boolean;
-	timeItems: any[];
+	timeItems: TimeItems;
 	onZimbraAdminAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraAdminAuthTokenLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -69,7 +70,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -80,7 +81,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 									'Admin console auth token lifetime'
 								)}
 								value={zimbraAdminAuthTokenLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraAdminAuthTokenLifetime"
 								onChange={onZimbraAdminAuthTokenLifetimeNumChange}
 								disabled={readonlyCOS}
@@ -90,15 +91,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 							<Select
 								data-testid="zimbraAdminAuthTokenLifetimeType"
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraAdminAuthTokenLifetimeType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraAdminAuthTokenLifetimeType
-										  )
+									timeItems.find((item) => item.value === zimbraAdminAuthTokenLifetimeType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
@@ -112,7 +109,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -120,7 +117,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 							<Input
 								label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
 								value={zimbraAuthTokenLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraAuthTokenLifetime"
 								onChange={onZimbraAuthTokenLifetimeNumChange}
 								disabled={readonlyCOS}
@@ -129,13 +126,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraAuthTokenLifetimeType === ''
-										? timeItems[-1]
-										: // eslint-disable-next-line max-len
-										  timeItems.find((item: any) => item.value === zimbraAuthTokenLifetimeType)
+									timeItems.find((item) => item.value === zimbraAuthTokenLifetimeType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraAuthTokenLifetimeTypeChange}
@@ -149,7 +144,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large', bottom: 'large' }}
 				>
 					<ListRow>
@@ -157,7 +152,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 							<Input
 								label={t('cos.session_idle_timeout', 'Session idle timeout')}
 								value={zimbraMailIdleSessionTimeoutNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraMailIdleSessionTimeout"
 								onChange={onZimbraMailIdleSessionTimeoutNumChange}
 								disabled={readonlyCOS}
@@ -166,15 +161,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraMailIdleSessionTimeoutType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraMailIdleSessionTimeoutType
-										  )
+									timeItems.find((item) => item.value === zimbraMailIdleSessionTimeoutType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraMailIdleSessionTimeoutTypeChange}
