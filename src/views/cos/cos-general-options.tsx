@@ -25,6 +25,13 @@ const COSGeneralOptions: FC<{
 }> = ({ cosAdvancedBackupAttributes, readonlyCOS, changeBackupAttribute }) => {
 	const [t] = useTranslation();
 
+	const labels = {
+		backup: {
+			selfUndelete: t('label.allow_restore_message', 'Allow user to restore messages'),
+			enableDisable: t('label.backup_enabled', 'Enable / Disable Backup')
+		},
+		generalOptions: t('cos.general_options', 'General Options')
+	};
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -33,7 +40,7 @@ const COSGeneralOptions: FC<{
 			width="100%"
 		>
 			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-				{t('cos.general_options', 'General Options')}
+				{labels.generalOptions}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -51,7 +58,7 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.backup_enabled', 'Enable / Disable Backup')}
+									label={labels.backup.enableDisable}
 									value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
 									onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
 									iconColor="primary"
@@ -65,7 +72,7 @@ const COSGeneralOptions: FC<{
 								orientation="vertical"
 							>
 								<Switch
-									label={t('label.allow_restore_message', 'Allow user to restore messages')}
+									label={labels.backup.selfUndelete}
 									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
 									// eslint-disable-next-line max-len
 									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
