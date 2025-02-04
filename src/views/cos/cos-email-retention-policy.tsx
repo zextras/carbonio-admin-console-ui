@@ -16,17 +16,18 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import { TimeItems } from '../../../types';
 import ListRow from '../list/list-row';
 
 type EmailRetentionPolicyProps = {
-	zimbraMailMessageLifetimeNum: any;
-	zimbraMailMessageLifetimeType: any;
-	zimbraMailTrashLifetimeNum: any;
-	zimbraMailTrashLifetimeType: any;
-	zimbraMailSpamLifetimeNum: any;
-	zimbraMailSpamLifetimeType: any;
+	zimbraMailMessageLifetimeNum: string | undefined;
+	zimbraMailMessageLifetimeType: string | undefined;
+	zimbraMailTrashLifetimeNum: string | undefined;
+	zimbraMailTrashLifetimeType: string | undefined;
+	zimbraMailSpamLifetimeNum: string | undefined;
+	zimbraMailSpamLifetimeType: string | undefined;
 	readonlyCOS: boolean;
-	timeItems: any[];
+	timeItems: TimeItems;
 	onZimbraMailMessageLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraMailMessageLifetimeTypeChange: SingleSelectionOnChange;
 	onZimbraMailTrashLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -69,7 +70,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -77,7 +78,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 							<Input
 								label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
 								value={zimbraMailMessageLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraMailMessageLifetime"
 								onChange={onZimbraMailMessageLifetimeNumChange}
 								disabled={readonlyCOS}
@@ -87,15 +88,11 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 							<Select
 								data-testid="zimbraMailTrashLifetimeSelect"
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraMailMessageLifetimeType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraMailMessageLifetimeType
-										  )
+									timeItems.find((item) => item.value === zimbraMailMessageLifetimeType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraMailMessageLifetimeTypeChange}
@@ -109,7 +106,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -117,7 +114,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 							<Input
 								label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
 								value={zimbraMailTrashLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraMailTrashLifetime"
 								onChange={onZimbraMailTrashLifetimeNumChange}
 								disabled={readonlyCOS}
@@ -126,15 +123,11 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 						<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraMailTrashLifetimeType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraMailTrashLifetimeType
-										  )
+									timeItems.find((item) => item.value === zimbraMailTrashLifetimeType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraMailTrashLifetimeTypeChange}
@@ -148,7 +141,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large', bottom: 'large' }}
 				>
 					<ListRow>
@@ -156,7 +149,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 							<Input
 								label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
 								value={zimbraMailSpamLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraMailSpamLifetime"
 								onChange={onZimbraMailSpamLifetimeNumChange}
 								disabled={readonlyCOS}
@@ -165,15 +158,11 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 						<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									zimbraMailSpamLifetimeType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraMailSpamLifetimeType
-										  )
+									timeItems.find((item) => item.value === zimbraMailSpamLifetimeType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraMailSpamLifetimeTypeChange}
