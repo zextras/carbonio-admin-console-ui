@@ -17,17 +17,18 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import { TimeItems } from '../../../types';
 import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import ListRow from '../list/list-row';
 
 type FailedLoginPolicyProps = {
-	cosAdvanced: any;
+	cosAdvanced: AccountType;
 	readonlyCOS: boolean;
-	timeItems: any[];
-	zimbraPasswordLockoutDurationNum: any;
-	zimbraPasswordLockoutDurationType: any;
-	zimbraPasswordLockoutFailureLifetimeNum: any;
-	zimbraPasswordLockoutFailureLifetimeType: any;
+	timeItems: TimeItems;
+	zimbraPasswordLockoutDurationNum: string | undefined;
+	zimbraPasswordLockoutDurationType: string | undefined;
+	zimbraPasswordLockoutFailureLifetimeNum: string | undefined;
+	zimbraPasswordLockoutFailureLifetimeType: string | undefined;
 	changeSwitchOption: (key: keyof AccountType) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
 	onZimbraPasswordLockoutDurationNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -66,7 +67,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -86,7 +87,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -97,7 +98,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 									'Number of consecutive failed logins allowed'
 								)}
 								value={cosAdvanced.zimbraPasswordLockoutMaxFailures}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutMaxFailures"
 								onChange={changeValue}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -110,7 +111,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large', bottom: 'large' }}
 				>
 					<ListRow>
@@ -118,7 +119,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 							<Input
 								label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
 								value={zimbraPasswordLockoutDurationNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutDuration"
 								onChange={onZimbraPasswordLockoutDurationNumChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -127,15 +128,11 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={t('cos.time_range', 'Time Range')}
 								selection={
-									zimbraPasswordLockoutDurationType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraPasswordLockoutDurationType
-										  )
+									timeItems.find((item) => item.value === zimbraPasswordLockoutDurationType) ??
+									timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraPasswordLockoutDurationTypeChange}
@@ -149,7 +146,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 									'Time window in which the failed logins must occur to lock the account:'
 								)}
 								value={zimbraPasswordLockoutFailureLifetimeNum}
-								backgroundColor="gray5"
+								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutFailureLifetime"
 								onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -158,15 +155,12 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						<Container width="28%" padding={{ left: 'small' }}>
 							<Select
 								items={timeItems}
-								background="gray5"
+								background={'gray5'}
 								label={t('cos.time_range', 'Time Range')}
 								selection={
-									zimbraPasswordLockoutFailureLifetimeType === ''
-										? timeItems[-1]
-										: timeItems.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === zimbraPasswordLockoutFailureLifetimeType
-										  )
+									timeItems.find(
+										(item) => item.value === zimbraPasswordLockoutFailureLifetimeType
+									) ?? timeItems[-1]
 								}
 								showCheckbox={false}
 								onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
