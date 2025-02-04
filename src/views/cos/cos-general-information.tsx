@@ -23,6 +23,7 @@ import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { Attribute } from '../../../types';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
@@ -226,25 +227,27 @@ const CosGeneralInformation: FC = () => {
 	}, [cosData.description, description]);
 
 	const modifyCosInfo = (): void => {
-		const body: ModifyCosBody = {} as ModifyCosBody;
-		const attributes: any[] = [];
-		body._jsns = 'urn:zimbraAdmin';
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
-		attributes.push({
-			n: 'description',
-			_content: description
-		});
-		attributes.push({
-			n: 'cn',
-			_content: cosName,
-			c: true
-		});
-		body.a = attributes;
-		body.id = {
-			_content: cosData.zimbraId
+		const attributes: Attribute[] = [
+			{
+				n: 'zimbraNotes',
+				_content: zimbraNotes
+			},
+			{
+				n: 'description',
+				_content: description
+			},
+			{
+				n: 'cn',
+				_content: cosName,
+				c: true
+			}
+		];
+		const body: ModifyCosBody = {
+			_jsns: 'urn:zimbraAdmin',
+			a: attributes,
+			id: {
+				_content: cosData.zimbraId
+			}
 		};
 		modifyCos(body)
 			.then((data) => {
