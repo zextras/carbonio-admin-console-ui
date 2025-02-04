@@ -53,6 +53,24 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 	onZimbraPasswordLockoutFailureLifetimeTypeChange
 }) => {
 	const [t] = useTranslation();
+	const labels = {
+		failedLoginPolicy: t('cos.failed_login_policy', 'Failed Login Policy'),
+		timeRange: t('cos.time_range', 'Time Range'),
+		passwordLockout: {
+			enabled: t('cos.enable_failed_login_lockout', 'Enable failed login lockout'),
+			maxFailures: t(
+				'cos.number_of_consecutive_failed_login_allowed',
+				'Number of consecutive failed logins allowed'
+			),
+			duration: t('cos.time_to_lockout_account', 'Time to lockout the account'),
+
+			failureLifetime: t(
+				'cos.time_window_failed_logins_must_occur_to_lock_account',
+				'Time window in which the failed logins must occur to lock the account:'
+			)
+		}
+	};
+
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -61,7 +79,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 			width="100%"
 		>
 			<Text size="extralarge" weight="bold">
-				{t('cos.failed_login_policy', 'Failed Login Policy')}
+				{labels.failedLoginPolicy}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -74,7 +92,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						<Container crossAlignment="flex-start">
 							<Switch
 								value={cosAdvanced.zimbraPasswordLockoutEnabled === 'TRUE'}
-								label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
+								label={labels.passwordLockout.enabled}
 								onClick={(): void => changeSwitchOption('zimbraPasswordLockoutEnabled')}
 								iconColor="primary"
 								disabled={readonlyCOS}
@@ -93,10 +111,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 					<ListRow>
 						<Container crossAlignment="flex-start">
 							<Input
-								label={t(
-									'cos.number_of_consecutive_failed_login_allowed',
-									'Number of consecutive failed logins allowed'
-								)}
+								label={labels.passwordLockout.maxFailures}
 								value={cosAdvanced.zimbraPasswordLockoutMaxFailures}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutMaxFailures"
@@ -117,7 +132,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 					<ListRow>
 						<Container width="72%" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
+								label={labels.passwordLockout.duration}
 								value={zimbraPasswordLockoutDurationNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutDuration"
@@ -129,7 +144,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 							<Select
 								items={timeItems}
 								background={'gray5'}
-								label={t('cos.time_range', 'Time Range')}
+								label={labels.timeRange}
 								selection={
 									timeItems.find((item) => item.value === zimbraPasswordLockoutDurationType) ??
 									timeItems[-1]
@@ -141,10 +156,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						</Container>
 						<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={t(
-									'cos.time_window_failed_logins_must_occur_to_lock_account',
-									'Time window in which the failed logins must occur to lock the account:'
-								)}
+								label={labels.passwordLockout.enabled}
 								value={zimbraPasswordLockoutFailureLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutFailureLifetime"
@@ -156,7 +168,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 							<Select
 								items={timeItems}
 								background={'gray5'}
-								label={t('cos.time_range', 'Time Range')}
+								label={labels.timeRange}
 								selection={
 									timeItems.find(
 										(item) => item.value === zimbraPasswordLockoutFailureLifetimeType
