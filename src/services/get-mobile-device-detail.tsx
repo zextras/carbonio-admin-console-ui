@@ -10,6 +10,8 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
+import { ZIMBRA_ADMIN_URN } from '../constants';
+
 export const getMobileDeviceDetail = async (
 	module: string,
 	accountName: string,
@@ -19,7 +21,7 @@ export const getMobileDeviceDetail = async (
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module,
 			action: 'getDeviceStatistics',
 			accountName,

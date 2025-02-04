@@ -28,7 +28,8 @@ import {
 	PERCENT_USED,
 	RECORD_DISPLAY_LIMIT,
 	TOTAL_USED,
-	TRUE
+	TRUE,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
@@ -482,7 +483,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = domainData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		attributes.push({
 			n: 'zimbraDomainMaxAccounts',
 			_content: zimbraDomainMaxAccounts

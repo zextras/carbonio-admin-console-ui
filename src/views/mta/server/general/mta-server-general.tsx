@@ -35,7 +35,8 @@ import {
 	ZIMBRA_MTA_MY_NETWORKS,
 	ZIMBRA_MTA_RELAY_HOST,
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_SASL_AUTH_ENABLED
+	ZIMBRA_MTA_SASL_AUTH_ENABLED,
+	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
@@ -549,7 +550,7 @@ const MTAServerGeneral: FC = () => {
 			const id = mtaServerList.find((serverItem) => serverItem?.name === server)?.id;
 			const body: Record<string, unknown> = {
 				a: attributes,
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				id
 			};
 			modifyServer(body)

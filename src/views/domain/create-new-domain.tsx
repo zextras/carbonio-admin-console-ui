@@ -33,7 +33,8 @@ import {
 	GENERAL_SETTINGS,
 	HTTPS,
 	INTERNAL_GAL,
-	MANAGE
+	MANAGE,
+	ZIMBRA_ADMIN_URN
 } from '../../constants';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
@@ -212,7 +213,7 @@ const CreateDomain: FC = () => {
 
 	const handleRevokesGrants = useCallback(() => {
 		InitDomainForDelegation('/admin/initDomainForDelegation', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			domain: domainName
 		})
 			.then((res: objectType) => {

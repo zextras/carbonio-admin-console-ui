@@ -25,7 +25,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../types';
 import logo from '../../assets/gardian.svg';
-import { COS, DEFAULT, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
@@ -243,7 +243,7 @@ const CosGeneralInformation: FC = () => {
 			}
 		];
 		const body: ModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			a: attributes,
 			id: {
 				_content: cosData.zimbraId
@@ -284,7 +284,7 @@ const CosGeneralInformation: FC = () => {
 	const onSave = (): void => {
 		if (cosData.cn !== cosName) {
 			const renameBody: any = {};
-			renameBody._jsns = 'urn:zimbraAdmin';
+			renameBody._jsns = ZIMBRA_ADMIN_URN;
 			const id = {
 				_content: cosData.zimbraId
 			};

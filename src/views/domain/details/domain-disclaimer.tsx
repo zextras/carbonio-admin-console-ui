@@ -27,6 +27,7 @@ import {
 	AMAVIS_DISCLAIMER_OPTIONS,
 	FALSE,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
@@ -153,7 +154,7 @@ const DomainDisclaimer: FC = () => {
 		const body: any = {};
 		const attributes: Array<Record<string, string | undefined>> = [];
 		body.id = domainId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,

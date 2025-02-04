@@ -74,6 +74,7 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
@@ -927,7 +928,7 @@ const App: FC = () => {
 	const getGlobalConfig = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxConfig',
 				action: 'dump_global_config'
 			}
@@ -980,7 +981,7 @@ const App: FC = () => {
 	const getModuleLicense = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxCore',
 				action: 'getLicenseInfo'
 			}

@@ -44,7 +44,8 @@ import {
 	READ_MAILS_ONLY,
 	SEND_READ_MAILS,
 	MANAGE_NO_SEND,
-	SEND_READ_MANAGE_MAILS
+	SEND_READ_MANAGE_MAILS,
+	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -252,7 +253,7 @@ const EditAccountDelegatesSection: FC = () => {
 					`/service/admin/soap/RevokeRightRequest`,
 					{
 						// eslint-disable-next-line sonarjs/no-duplicate-string
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						target: {
 							_content: accountDetail?.zimbraMailDeliveryAddress,
 							type: 'account',
@@ -315,7 +316,7 @@ const EditAccountDelegatesSection: FC = () => {
 			postSoapFetchRequest(
 				`/service/admin/soap/GrantRightRequest`,
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					target: {
 						_content: accountDetail?.zimbraMailDeliveryAddress,
 						type: 'account',
@@ -569,7 +570,7 @@ const EditAccountDelegatesSection: FC = () => {
 				postSoapFetchRequest(
 					`/service/admin/soap/RevokeRightRequest`,
 					{
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						target: {
 							_content: accountDetail?.zimbraMailDeliveryAddress,
 							type: 'account',
@@ -597,7 +598,7 @@ const EditAccountDelegatesSection: FC = () => {
 				postSoapFetchRequest(
 					`/service/admin/soap/GrantRightRequest`,
 					{
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						target: {
 							_content: accountDetail?.zimbraMailDeliveryAddress,
 							type: 'account',
@@ -750,7 +751,7 @@ const EditAccountDelegatesSection: FC = () => {
 						postSoapFetchRequest(
 							`/service/admin/soap/RevokeRightRequest`,
 							{
-								_jsns: 'urn:zimbraAdmin',
+								_jsns: ZIMBRA_ADMIN_URN,
 								target: {
 									_content: accountDetail?.zimbraMailDeliveryAddress,
 									type: 'account',

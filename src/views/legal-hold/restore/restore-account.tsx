@@ -29,7 +29,12 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import { BackupAccountItem } from '../../../../types';
-import { ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
+import {
+	ERROR_LABLE,
+	RECORD_DISPLAY_LIMIT,
+	SUCCESS_LABLE,
+	ZIMBRA_ADMIN_URN
+} from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -370,7 +375,7 @@ const RestoreAccountView: FC<{
 						setIsShowRestoreView(false);
 					} else {
 						soapFetch(`GetAccount`, {
-							_jsns: 'urn:zimbraAdmin',
+							_jsns: ZIMBRA_ADMIN_URN,
 							account: {
 								by: 'name',
 								_content: destinationAccount

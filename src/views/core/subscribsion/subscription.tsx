@@ -23,7 +23,7 @@ import { find } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { CONFIG } from '../../../constants';
+import { CONFIG, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
@@ -236,7 +236,7 @@ const Subscription: FC = () => {
 	const getLicence = useCallback(() => {
 		fetchSoap('zextras', {
 			// eslint-disable-next-line sonarjs/no-duplicate-string
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'getLicenseInfo'
 		}).then((res) => {
@@ -246,7 +246,7 @@ const Subscription: FC = () => {
 			}
 		});
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'getVersion'
 		}).then((res) => {
@@ -264,7 +264,7 @@ const Subscription: FC = () => {
 	const activeLicence = (): void => {
 		setDisableActiveBtn(true);
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'activate-license',
 			token: licenseKey
@@ -297,7 +297,7 @@ const Subscription: FC = () => {
 
 	const doRemoveLicense = (): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'doRemoveLicense',
 			iamsure: true
@@ -342,7 +342,7 @@ const Subscription: FC = () => {
 	const refreshLicence = (): void => {
 		setIsLoader(true);
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'activate-license',
 			token: licenseKey,
