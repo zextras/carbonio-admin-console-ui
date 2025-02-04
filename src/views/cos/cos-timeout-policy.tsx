@@ -54,7 +54,14 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 }) => {
 	const [t] = useTranslation();
 	const labels = {
-		timeRange: t('cos.time_range', 'Time Range')
+		timeRange: t('cos.time_range', 'Time Range'),
+		timeoutPolicy: t('cos.timeout_policy', 'Timeout Policy'),
+		adminAuthTokenLifetime: t(
+			'cos.admin_console_auth_token_lifetime',
+			'Admin console auth token lifetime'
+		),
+		authTokenLifetime: t('cos.auth_token_lifetime', 'Auth token lifetime'),
+		mailIdleSessionTimeout: t('cos.session_idle_timeout', 'Session idle timeout')
 	};
 	return (
 		<Row
@@ -64,7 +71,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 			width="100%"
 		>
 			<Text size="extralarge" weight="bold">
-				{t('cos.timeout_policy', 'Timeout Policy')}
+				{labels.timeoutPolicy}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -76,10 +83,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
-								label={t(
-									'cos.admin_console_auth_token_lifetime',
-									'Admin console auth token lifetime'
-								)}
+								label={labels.adminAuthTokenLifetime}
 								value={zimbraAdminAuthTokenLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraAdminAuthTokenLifetime"
@@ -115,7 +119,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
+								label={labels.authTokenLifetime}
 								value={zimbraAuthTokenLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraAuthTokenLifetime"
@@ -150,7 +154,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.session_idle_timeout', 'Session idle timeout')}
+								label={labels.mailIdleSessionTimeout}
 								value={zimbraMailIdleSessionTimeoutNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraMailIdleSessionTimeout"
