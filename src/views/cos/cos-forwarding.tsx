@@ -17,8 +17,22 @@ type ForwardingProps = {
 	readonlyCOS: boolean;
 };
 
-const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonlyCOS }) => {
+const COSForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonlyCOS }) => {
 	const [t] = useTranslation();
+	const labels = {
+		cosForwarding: t('cos.forwarding', 'Forwarding'),
+		address: {
+			maxLength: t(
+				'cos.limit_user_specified_forwarding_addresses',
+				'Limit user-specified forwarding addresses to (char)'
+			),
+			maxNumAddress: t(
+				'cos.max_user_specific_forwarding_address',
+				'Max user-specific forwarding address'
+			)
+		}
+	};
+
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -27,7 +41,7 @@ const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 			width="100%"
 		>
 			<Text size="extralarge" weight="bold">
-				{t('cos.forwarding', 'Forwarding')}
+				{labels.cosForwarding}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -39,10 +53,7 @@ const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 					<ListRow>
 						<Container padding={{ right: 'small' }}>
 							<Input
-								label={t(
-									'cos.limit_user_specified_forwarding_addresses',
-									'Limit user-specified forwarding addresses to (char)'
-								)}
+								label={labels.address.maxLength}
 								value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
 								backgroundColor="gray5"
 								inputName="zimbraMailForwardingAddressMaxLength"
@@ -52,10 +63,7 @@ const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 						</Container>
 						<Container padding={{ left: 'small' }}>
 							<Input
-								label={t(
-									'cos.max_user_specific_forwarding_address',
-									'Max user-specific forwarding address'
-								)}
+								label={labels.address.maxNumAddress}
 								value={cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs}
 								backgroundColor="gray5"
 								inputName="zimbraMailForwardingAddressMaxNumAddrs"
@@ -70,4 +78,4 @@ const CosForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 	);
 };
 
-export default CosForwarding;
+export default COSForwarding;

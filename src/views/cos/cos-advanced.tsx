@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 
 import COSEmailRetentionPolicy from './cos-email-retention-policy';
 import COSFailedLoginPolicy from './cos-failed-login-policy';
-import CosForwarding from './cos-forwarding';
+import COSForwarding from './cos-forwarding';
 import COSGeneralOptions from './cos-general-options';
 import COSPassword from './cos-password';
 import COSQuotas from './cos-quotas';
@@ -1309,7 +1309,7 @@ const CosAdvanced: FC = () => {
 						changeBackupAttribute={changeBackupAttribute}
 					/>
 				)}
-				<CosForwarding
+				<COSForwarding
 					cosAdvanced={cosAdvanced}
 					changeValue={changeValue}
 					readonlyCOS={readonlyCOS}
