@@ -156,7 +156,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						</Container>
 						<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={labels.passwordLockout.enabled}
+								label={labels.passwordLockout.failureLifetime}
 								value={zimbraPasswordLockoutFailureLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutFailureLifetime"
