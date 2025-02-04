@@ -40,6 +40,41 @@ const COSPassword: FC<COSPasswordProps> = ({
 	changeValue
 }) => {
 	const [t] = useTranslation();
+	const labels = {
+		password: t('cos.password', 'Password'),
+		externalAuthenticationMessage: t(
+			'cos.password_set_to_use_external_authentication_information_msg',
+			'These settings do not affect the passwords set by users in domains that are configured to use external authentication'
+		),
+		preventChange: t(
+			'cos.prevent_user_from_changing_password',
+			'Prevent user from changing password'
+		),
+		characters: {
+			minimumUppercase: t('cos.minimum_upper_case_characters', 'Minimum upper case characters'),
+			minimumLowercase: t('cos.minimum_lower_case_characters', 'Minimum lower case characters'),
+			minimumNumeric: t('cos.minimum_numeric_chracters', 'Minimum numeric characters')
+		},
+		length: {
+			minimum: t('cos.minimum_password_length', 'Minimum password length'),
+			maximum: t('cos.maximum_password_length', 'Maximum password length')
+		},
+		age: {
+			minimum: t('cos.minimum_password_age', 'Minimum password age (Days)'),
+			maximum: t('cos.maximum_password_age', 'Maximum password age (Days)')
+		},
+		minimumPunctuationSymbol: t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols'),
+		minDigitsOrPuncs: t(
+			'cos.minimum_numeric_characters_or_punctuation_symbols',
+			'Minimum numeric characters or punctuation symbols'
+		),
+		enforceHistory: t(
+			'cos.minimum_number_of_unique_password_history',
+			'Minimum number of unique passwords history'
+		),
+		blockCommonEnabled: t('cos.reject_common_passwords', 'Reject common passwords')
+	};
+
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -48,7 +83,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 			width="100%"
 		>
 			<Text size="extralarge" weight="bold">
-				{t('cos.password', 'Password')}
+				{labels.password}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<Container
@@ -76,12 +111,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 							bottom: 'small'
 						}}
 					>
-						<Text overflow="break-word">
-							{t(
-								'cos.password_set_to_use_external_authentication_information_msg',
-								'These settings do not affect the passwords set by users in domains that are configured to use external authentication'
-							)}
-						</Text>
+						<Text overflow="break-word">{labels.externalAuthenticationMessage}</Text>
 					</Row>
 				</Container>
 			</Row>
@@ -96,10 +126,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						<Container crossAlignment="flex-start">
 							<Switch
 								value={cosAdvanced.zimbraPasswordLocked === 'TRUE'}
-								label={t(
-									'cos.prevent_user_from_changing_password',
-									'Prevent user from changing password'
-								)}
+								label={labels.preventChange}
 								onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
 								iconColor="primary"
 								disabled={readonlyCOS}
@@ -118,7 +145,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 					<ListRow>
 						<Container padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.minimum_password_length', 'Minimum password length')}
+								label={labels.length.minimum}
 								value={cosAdvanced.zimbraPasswordMinLength}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinLength"
@@ -128,7 +155,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={t('cos.maximum_password_length', 'Maximum password length')}
+								label={labels.length.maximum}
 								value={cosAdvanced.zimbraPasswordMaxLength}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMaxLength"
@@ -138,7 +165,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={t('cos.minimum_upper_case_characters', 'Minimum upper case characters')}
+								label={labels.characters.minimumUppercase}
 								value={cosAdvanced.zimbraPasswordMinUpperCaseChars}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinUpperCaseChars"
@@ -148,7 +175,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small' }}>
 							<Input
-								label={t('cos.minimum_lower_case_characters', 'Minimum lower case characters')}
+								label={labels.characters.minimumLowercase}
 								value={cosAdvanced.zimbraPasswordMinLowerCaseChars}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinLowerCaseChars"
@@ -169,7 +196,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 					<ListRow>
 						<Container padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
+								label={labels.minimumPunctuationSymbol}
 								value={cosAdvanced.zimbraPasswordMinPunctuationChars}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinPunctuationChars"
@@ -179,7 +206,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
+								label={labels.characters.minimumNumeric}
 								value={cosAdvanced.zimbraPasswordMinNumericChars}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinNumericChars"
@@ -189,7 +216,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small', right: 'small' }}>
 							<Input
-								label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
+								label={labels.age.minimum}
 								value={cosAdvanced.zimbraPasswordMinAge}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinAge"
@@ -199,7 +226,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small' }}>
 							<Input
-								label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
+								label={labels.age.maximum}
 								value={cosAdvanced.zimbraPasswordMaxAge}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMaxAge"
@@ -220,10 +247,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 					<ListRow>
 						<Container padding={{ right: 'small' }}>
 							<Input
-								label={t(
-									'cos.minimum_numeric_characters_or_punctuation_symbols',
-									'Minimum numeric characters or punctuation symbols'
-								)}
+								label={labels.minDigitsOrPuncs}
 								value={cosAdvanced.zimbraPasswordMinDigitsOrPuncs}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordMinDigitsOrPuncs"
@@ -233,10 +257,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						</Container>
 						<Container padding={{ left: 'small' }}>
 							<Input
-								label={t(
-									'cos.minimum_number_of_unique_password_history',
-									'Minimum number of unique passwords history'
-								)}
+								label={labels.enforceHistory}
 								value={cosAdvanced.zimbraPasswordEnforceHistory}
 								backgroundColor="gray5"
 								inputName="zimbraPasswordEnforceHistory"
@@ -258,7 +279,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 						<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
 							<Switch
 								value={cosAdvanced.zimbraPasswordBlockCommonEnabled === 'TRUE'}
-								label={t('cos.reject_common_passwords', 'Reject common passwords')}
+								label={labels.blockCommonEnabled}
 								onClick={(): void => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
 								iconColor="primary"
 								disabled={readonlyCOS}
