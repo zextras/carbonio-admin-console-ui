@@ -81,7 +81,7 @@ function saveBackupAttributes(
 		setCoreAttributes(updateBackupAttributes);
 	}
 }
-function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
+function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string | undefined): Promise<any> {
 	const body: any = {};
 	body._jsns = 'urn:zimbraAdmin';
 	const attributes: any[] = [];
@@ -106,7 +106,7 @@ const CosAdvanced: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const [cosData, setCosData]: any = useState({});
+	const [cosData, setCosData] = useState<AccountType>({});
 	const setCos = useCosStore((state) => state.setCos);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -135,6 +135,10 @@ const CosAdvanced: FC = () => {
 		],
 		[t]
 	);
+
+	const labels = {
+		errorMessage: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+	};
 
 	const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
 		useState<AdvancedBackupAttributes>({
@@ -1167,9 +1171,10 @@ const CosAdvanced: FC = () => {
 	}, []);
 
 	const onSave = (): void => {
-		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
+		const { zimbraId = '' } = cosData;
 
-		saveCosAdvanced(cosAdvanced, cosData.zimbraId)
+		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
+		saveCosAdvanced(cosAdvanced, zimbraId)
 			.then(({ cosId, cos }) => {
 				flushCache('cos', 'id', cosId);
 				createSnackbar({
@@ -1185,12 +1190,9 @@ const CosAdvanced: FC = () => {
 				}
 				if (isAdvanced && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
 					if (fileQuotaLimitGBValue) {
-						setFileQuotaLimit(
-							cosData.zimbraId,
-							Math.round(GbToBytes(fileQuotaLimitGBValue)).toString()
-						);
+						setFileQuotaLimit(zimbraId, Math.round(GbToBytes(fileQuotaLimitGBValue)).toString());
 					} else {
-						resetFileQuotaLimit(cosData.zimbraId);
+						resetFileQuotaLimit(zimbraId);
 					}
 				}
 				setIsDirty(false);
@@ -1199,9 +1201,7 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : labels.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1234,15 +1234,13 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : labels.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t]);
+	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t, labels.errorMessage]);
 
 	const changeBackupAttribute = useCallback(
 		(key: AdvancedBackupAttributesKeys): void => {
