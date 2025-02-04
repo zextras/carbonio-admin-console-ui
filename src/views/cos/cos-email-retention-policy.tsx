@@ -54,7 +54,13 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 }) => {
 	const [t] = useTranslation();
 	const labels = {
-		timeRange: t('cos.time_range', 'Time Range')
+		timeRange: t('cos.time_range', 'Time Range'),
+		email: {
+			retentionPolicy: t('cos.email_retention_policy', 'Email Retention Policy'),
+			messageLifetime: t('cos.email_message_lifetime', 'E-mail message lifetime')
+		},
+		trashedMessageLifetime: t('cos.trashed_message_lifetime', 'Trashed message lifetime'),
+		spamMessageLifetime: t('cos.spam_message_lifetime', 'Spam message lifetime')
 	};
 	return (
 		<Row
@@ -64,7 +70,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 			width="100%"
 		>
 			<Text size="extralarge" weight="bold">
-				{t('cos.email_retention_policy', 'Email Retention Policy')}
+				{labels.email.retentionPolicy}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
@@ -76,7 +82,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
+								label={labels.email.messageLifetime}
 								value={zimbraMailMessageLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraMailMessageLifetime"
@@ -112,7 +118,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
+								label={labels.trashedMessageLifetime}
 								value={zimbraMailTrashLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraMailTrashLifetime"
@@ -147,7 +153,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
 					<ListRow>
 						<Container width="100%" padding={{ right: 'small' }}>
 							<Input
-								label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
+								label={labels.spamMessageLifetime}
 								value={zimbraMailSpamLifetimeNum}
 								backgroundColor={'gray5'}
 								inputName="zimbraMailSpamLifetime"
