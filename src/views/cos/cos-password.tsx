@@ -27,7 +27,7 @@ const CustomIcon = styled(Icon)`
 `;
 
 type COSPasswordProps = {
-	cosAdvanced: any;
+	cosAdvanced: AccountType;
 	readonlyCOS: boolean;
 	changeSwitchOption: (key: keyof AccountType) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -56,7 +56,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 					width="99%"
 					crossAlignment="center"
 					mainAlignment="space-between"
-					background="#D3EBF8"
+					background={'#D3EBF8'}
 					padding={{
 						top: 'large',
 						bottom: 'large'
@@ -89,7 +89,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -112,7 +112,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -163,7 +163,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -214,7 +214,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
@@ -251,7 +251,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ bottom: 'large' }}
 				>
 					<ListRow>
