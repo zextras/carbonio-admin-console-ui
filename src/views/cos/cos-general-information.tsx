@@ -6,32 +6,32 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
+	Button,
 	Container,
 	Divider,
-	Row,
-	Text,
-	Input,
-	Button,
-	Padding,
-	useSnackbar,
-	Modal,
 	Icon,
+	Input,
+	Modal,
+	Padding,
+	Row,
 	Table,
-	Tooltip
+	Text,
+	Tooltip,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { DEFAULT, COS, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { COS, DEFAULT, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import { flushCache } from '../../services/flush-cache-service';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
@@ -40,7 +40,7 @@ import Textarea from '../components/textarea';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
-import { getFormatedDate, getDateFromStr } from '../utility/utils';
+import { getDateFromStr, getFormatedDate } from '../utility/utils';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -226,7 +226,7 @@ const CosGeneralInformation: FC = () => {
 	}, [cosData.description, description]);
 
 	const modifyCosInfo = (): void => {
-		const body: any = {};
+		const body: ModifyCosBody = {} as ModifyCosBody;
 		const attributes: any[] = [];
 		body._jsns = 'urn:zimbraAdmin';
 		attributes.push({
@@ -243,10 +243,9 @@ const CosGeneralInformation: FC = () => {
 			c: true
 		});
 		body.a = attributes;
-		const id = {
+		body.id = {
 			_content: cosData.zimbraId
 		};
-		body.id = id;
 		modifyCos(body)
 			.then((data) => {
 				flushCache('cos', 'id', body.id._content);

@@ -23,7 +23,7 @@ import { Features } from './features';
 import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
@@ -143,7 +143,7 @@ const CosFeatures: FC = () => {
 		}
 	}, [cosName, getMobileFeatureSync, isAdvanced]);
 
-	const modifyCosRequest = (body: any): void => {
+	const modifyCosRequest = (body: ModifyCosBody): void => {
 		modifyCos(body)
 			.then((data) => {
 				flushCache('cos', 'id', body.id._content);

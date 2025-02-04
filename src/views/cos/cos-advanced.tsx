@@ -15,14 +15,14 @@ import React, {
 } from 'react';
 
 import {
+	Button,
 	Container,
-	Row,
-	Text,
 	Divider,
 	Padding,
-	Button,
-	useSnackbar,
-	SingleSelectionOnChange
+	Row,
+	SingleSelectionOnChange,
+	Text,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -39,13 +39,13 @@ import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constan
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
@@ -81,14 +81,13 @@ function saveBackupAttributes(
 		setCoreAttributes(updateBackupAttributes);
 	}
 }
-function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string | undefined): Promise<any> {
-	const body: any = {};
+function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
+	const body: ModifyCosBody = {} as ModifyCosBody;
 	body._jsns = 'urn:zimbraAdmin';
 	const attributes: any[] = [];
-	const id = {
+	body.id = {
 		_content: zimbraId
 	};
-	body.id = id;
 	Object.keys(cosAdvanced).forEach((ele) => {
 		attributes.push({ n: ele, _content: cosAdvanced[ele as keyof AccountType] });
 	});
