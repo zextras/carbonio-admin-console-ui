@@ -576,7 +576,7 @@ const CosAdvanced: FC = () => {
 	}, [cosInformation, setInitalValues, setStateAttrValues, setValue, timeItems]);
 
 	const getFileQuota = useCallback((cosId: string): void => {
-		getFileQuotaById(cosId, COS).then((res: any) => {
+		getFileQuotaById(cosId, COS).then((res: { limit: string }) => {
 			if (res?.limit) {
 				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
 				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
