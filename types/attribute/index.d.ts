@@ -7,6 +7,7 @@
 export type Attribute = {
 	n: string;
 	_content: string;
+	c?: boolean;
 };
 
 export type objectType = { [key: string]: string };
