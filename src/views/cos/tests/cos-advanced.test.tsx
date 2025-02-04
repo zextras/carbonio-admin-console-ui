@@ -13,6 +13,7 @@ import { jest } from '@jest/globals';
 import { act, screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
+import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { modifyCos } from '../../../services/modify-cos-service';
 import * as setCoreAttributes from '../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
@@ -169,7 +170,7 @@ const getCosAttributeValue = (attrName: keyof AccountType): any =>
 
 const expectedModifyCosBody = (attrName: keyof AccountType, value: any): any =>
 	expect.objectContaining({
-		_jsns: 'urn:zimbraAdmin',
+		_jsns: ZIMBRA_ADMIN_URN,
 		id: { _content: COS_ID },
 		a: expect.arrayContaining([
 			expect.objectContaining({
@@ -189,7 +190,7 @@ const successSnackbar = {
 };
 
 const defaultModifyCosBody = {
-	_jsns: 'urn:zimbraAdmin',
+	_jsns: ZIMBRA_ADMIN_URN,
 	cos: {
 		id: COS_ID,
 		a: []
