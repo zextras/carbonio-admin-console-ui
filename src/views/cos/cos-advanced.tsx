@@ -27,13 +27,13 @@ import {
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import COSEmailRetentionPolicy from './cos-email-retention-policy';
-import COSFailedLoginPolicy from './cos-failed-login-policy';
-import COSForwarding from './cos-forwarding';
-import COSGeneralOptions from './cos-general-options';
-import COSPassword from './cos-password';
-import COSQuotas from './cos-quotas';
-import COSTimeoutPolicy from './cos-timeout-policy';
+import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
+import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
+import COSForwarding from './advanced/cos-forwarding';
+import COSGeneralOptions from './advanced/cos-general-options';
+import COSPassword from './advanced/cos-password';
+import COSQuotas from './advanced/cos-quotas';
+import COSTimeoutPolicy from './advanced/cos-timeout-policy';
 import { Attribute, TimeItems } from '../../../types';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';

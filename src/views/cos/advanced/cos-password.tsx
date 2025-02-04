@@ -18,8 +18,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { AccountType } from '../domain/manange/accounts/account-types/account-types';
-import ListRow from '../list/list-row';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
+import ListRow from '../../list/list-row';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;

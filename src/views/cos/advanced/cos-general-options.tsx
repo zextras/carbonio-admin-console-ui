@@ -8,8 +8,8 @@ import React, { FC } from 'react';
 import { Container, Row, Switch, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../constants';
-import ListRow from '../list/list-row';
+import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../constants';
+import ListRow from '../../list/list-row';
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;

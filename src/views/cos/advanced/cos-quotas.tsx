@@ -17,10 +17,10 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../types';
-import Textarea from '../components/textarea';
-import { AccountType } from '../domain/manange/accounts/account-types/account-types';
-import ListRow from '../list/list-row';
+import { TimeItems } from '../../../../types';
+import Textarea from '../../components/textarea';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
+import ListRow from '../../list/list-row';
 
 type QuotaProps = {
 	isAdvanced: boolean;

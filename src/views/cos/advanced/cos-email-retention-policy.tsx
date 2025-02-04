@@ -16,8 +16,8 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../types';
-import ListRow from '../list/list-row';
+import { TimeItems } from '../../../../types';
+import ListRow from '../../list/list-row';
 
 type EmailRetentionPolicyProps = {
 	zimbraMailMessageLifetimeNum: string | undefined;

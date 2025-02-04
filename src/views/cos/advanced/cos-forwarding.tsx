@@ -8,8 +8,8 @@ import React, { ChangeEvent, FC } from 'react';
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../domain/manange/accounts/account-types/account-types';
-import ListRow from '../list/list-row';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
+import ListRow from '../../list/list-row';
 
 type ForwardingProps = {
 	cosAdvanced: AccountType;
