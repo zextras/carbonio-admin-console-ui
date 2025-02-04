@@ -46,7 +46,7 @@ const COSGeneralOptions: FC<{
 				<Container
 					height="fit"
 					crossAlignment="flex-start"
-					background="gray6"
+					background={'gray6'}
 					padding={{ top: 'large' }}
 				>
 					<ListRow>
