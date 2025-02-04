@@ -82,16 +82,18 @@ function saveBackupAttributes(
 	}
 }
 function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
-	const body: ModifyCosBody = {} as ModifyCosBody;
-	body._jsns = 'urn:zimbraAdmin';
-	const attributes: any[] = [];
-	body.id = {
-		_content: zimbraId
+	const attributes: Attribute[] = Object.keys(cosAdvanced).map((ele) => ({
+		n: ele,
+		_content: cosAdvanced[ele as keyof AccountType]?.toString() ?? ''
+	}));
+
+	const body: ModifyCosBody = {
+		_jsns: 'urn:zimbraAdmin',
+		id: {
+			_content: zimbraId
+		},
+		a: attributes
 	};
-	Object.keys(cosAdvanced).forEach((ele) => {
-		attributes.push({ n: ele, _content: cosAdvanced[ele as keyof AccountType] });
-	});
-	body.a = attributes;
 
 	return modifyCos(body).then((data) => ({
 		cosId: body.id._content,
