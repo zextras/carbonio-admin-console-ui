@@ -137,7 +137,13 @@ const CosAdvanced: FC = () => {
 	);
 
 	const labels = {
-		errorMessage: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+		snackbar: {
+			successMessage: t('label.change_save_success_msg', 'The change has been saved successfully'),
+			errorMessage: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+		},
+		advanced: t('cos.advanced', 'Advanced'),
+		saveButton: t('label.save', 'Save'),
+		cancelButton: t('label.cancel', 'Cancel')
 	};
 
 	const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
@@ -1180,7 +1186,7 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
-					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					label: labels.snackbar.successMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1201,7 +1207,7 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message ? error?.message : labels.errorMessage,
+					label: error?.message ? error?.message : labels.snackbar.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1234,13 +1240,20 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message ? error?.message : labels.errorMessage,
+					label: error?.message ? error?.message : labels.snackbar.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t, labels.errorMessage]);
+	}, [
+		cosName,
+		createSnackbar,
+		isAdvanced,
+		setCosAdvancedAttributeValues,
+		t,
+		labels.snackbar.errorMessage
+	]);
 
 	const changeBackupAttribute = useCallback(
 		(key: AdvancedBackupAttributesKeys): void => {
@@ -1265,22 +1278,16 @@ const CosAdvanced: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('cos.advanced', 'Advanced')}
+								{labels.advanced}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onCancel}
-									/>
+									<Button label={labels.cancelButton} color="secondary" onClick={onCancel} />
 								)}
 							</Padding>
-							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-							)}
+							{isDirty && <Button label={labels.saveButton} color="primary" onClick={onSave} />}
 						</Row>
 					</Row>
 				</Container>
