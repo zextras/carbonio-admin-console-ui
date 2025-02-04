@@ -35,7 +35,12 @@ import COSPassword from './advanced/cos-password';
 import COSQuotas from './advanced/cos-quotas';
 import COSTimeoutPolicy from './advanced/cos-timeout-policy';
 import { Attribute, TimeItems } from '../../../types';
-import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import {
+	BACKUP_ENABLED,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	COS,
+	ZIMBRA_ADMIN_URN
+} from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
@@ -88,7 +93,7 @@ function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<an
 	}));
 
 	const body: ModifyCosBody = {
-		_jsns: 'urn:zimbraAdmin',
+		_jsns: ZIMBRA_ADMIN_URN,
 		id: {
 			_content: zimbraId
 		},
