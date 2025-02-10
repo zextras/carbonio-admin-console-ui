@@ -29,7 +29,7 @@ import styled from 'styled-components';
 import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
 import { CosMaxAccountValues } from '../../../../types/domain';
-import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE } from '../../../constants';
+import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -155,7 +155,7 @@ const DomainCosLink: FC<{
 			const attributes: Attribute[] = [];
 			body.id = domainId;
 			// eslint-disable-next-line sonarjs/no-duplicate-string
-			body._jsns = 'urn:zimbraAdmin';
+			body._jsns = ZIMBRA_ADMIN_URN;
 			const isOverride = cosMaxAccountList.some((item) => item.id === cId);
 			if (isOverride) {
 				cosMaxAccountList.forEach((item) => {
@@ -226,7 +226,7 @@ const DomainCosLink: FC<{
 				postSoapFetchRequest(
 					`/service/admin/soap/GrantRightRequest`,
 					{
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						target,
 						grantee,
 						right: {
@@ -238,7 +238,7 @@ const DomainCosLink: FC<{
 					postSoapFetchRequest(
 						`/service/admin/soap/GrantRightRequest`,
 						{
-							_jsns: 'urn:zimbraAdmin',
+							_jsns: ZIMBRA_ADMIN_URN,
 							target,
 							grantee,
 							right: {
@@ -251,7 +251,7 @@ const DomainCosLink: FC<{
 						postSoapFetchRequest(
 							`/service/admin/soap/GrantRightRequest`,
 							{
-								_jsns: 'urn:zimbraAdmin',
+								_jsns: ZIMBRA_ADMIN_URN,
 								target,
 								grantee,
 								right: {
@@ -310,7 +310,7 @@ const DomainCosLink: FC<{
 			} = {};
 			const attributes: Attribute[] = [];
 			body.id = domainId;
-			body._jsns = 'urn:zimbraAdmin';
+			body._jsns = ZIMBRA_ADMIN_URN;
 			attributes.push({
 				n: '-zimbraDomainCOSMaxAccounts',
 				_content: `${cId}:${cosMaxAccValue}`
@@ -360,7 +360,7 @@ const DomainCosLink: FC<{
 			postSoapFetchRequest(
 				`/service/admin/soap/RevokeRightRequest`,
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					target,
 					grantee,
 					right: {
@@ -372,7 +372,7 @@ const DomainCosLink: FC<{
 				postSoapFetchRequest(
 					`/service/admin/soap/RevokeRightRequest`,
 					{
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						target,
 						grantee,
 						right: {
@@ -385,7 +385,7 @@ const DomainCosLink: FC<{
 					postSoapFetchRequest(
 						`/service/admin/soap/RevokeRightRequest`,
 						{
-							_jsns: 'urn:zimbraAdmin',
+							_jsns: ZIMBRA_ADMIN_URN,
 							target,
 							grantee,
 							right: {
@@ -413,7 +413,7 @@ const DomainCosLink: FC<{
 			} = {};
 			const attributes: Attribute[] = [];
 			body.id = domainId;
-			body._jsns = 'urn:zimbraAdmin';
+			body._jsns = ZIMBRA_ADMIN_URN;
 			attributes.push({
 				n: 'zimbraDomainDefaultCOSId',
 				_content: `${cId}`

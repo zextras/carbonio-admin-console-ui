@@ -19,7 +19,7 @@ import { ReceivingMails } from './ReceivingMails';
 import { SaveCancelBar } from './SaveCancelBar';
 import { SendingMails } from './SendingMails';
 import { CosAttributes, CosPrefAttributes } from '../../../../types';
-import { COS } from '../../../constants';
+import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
@@ -80,7 +80,7 @@ export const COSPreferences = (): React.JSX.Element => {
 		if (!zimbraID) return;
 
 		const body: ModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			id: { _content: zimbraID },
 			a: Object.keys(DEFAULT_COS_PREF_ATTRIBUTES).map((key) => ({
 				n: key,
@@ -93,7 +93,7 @@ export const COSPreferences = (): React.JSX.Element => {
 				flushCache('cos', 'id', body.id._content);
 				createSnackbar({
 					key: 'success',
-					type: 'success',
+					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -104,7 +104,7 @@ export const COSPreferences = (): React.JSX.Element => {
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
-					type: 'error',
+					severity: 'error',
 					label:
 						error?.message ||
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),

@@ -28,6 +28,7 @@ import {
 	LONG,
 	SHORT,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_ID
 } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
@@ -190,7 +191,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			setVerifyBtnLoading(false);
 		} else {
 			soapFetch(`VerifyCertKey`, {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				ca: objDomainCertificateCaChain.content.replaceAll('\r', ''),
 				cert: objDomainCertificate.content.replaceAll('\r', ''),
 				privkey: objDomainCertificatePrivateKey.content.replaceAll('\r', '')
@@ -209,7 +210,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				} else if (!data?.verifyResult) {
 					createSnackbar({
 						key: 'warning',
-						type: 'warning',
+						severity: 'warning',
 						label: t(
 							'domain.certificate_valid_but_either_expired_or_exists_non_trusted_CA',
 							`The certificate is valid but it's either expired or exists a non trusted CA`
@@ -257,7 +258,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		attributes.push({
 			n: 'zimbraSSLCertificate',
 			_content: concatedCertiFile

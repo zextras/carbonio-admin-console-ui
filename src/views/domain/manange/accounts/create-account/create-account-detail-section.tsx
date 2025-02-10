@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+import React, {
+	FC,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	ChangeEvent
+} from 'react';
 
 import {
 	Container,
@@ -58,13 +66,13 @@ const CreateAccountDetailSection: FC = () => {
 		[accountDetail, setAccountDetail]
 	);
 	const changeAccDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 	const changeAccName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setShowAutoFillAlert(false);
 			setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: any) => ({
@@ -76,7 +84,7 @@ const CreateAccountDetailSection: FC = () => {
 	);
 
 	const changeAccDisplayName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},

@@ -24,9 +24,8 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
-import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -46,6 +45,7 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import EditAccount from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
 	name: string;
@@ -62,8 +62,8 @@ const GlobalDelegates: FC = () => {
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [defaultTab, setDefaultTab] = useState('general');
-	const [directMemberList, setDirectMemberList] = useState<any>({});
-	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>([]);
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
@@ -137,7 +137,7 @@ const GlobalDelegates: FC = () => {
 			setSignatureList(signatureResponse);
 		}
 	};
-	const getSignatureDetail = useCallback((id): void => {
+	const getSignatureDetail = useCallback((id: string): void => {
 		getSingatures(id).then((data: any) => {
 			const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
 			generateSignatureList(signatureResponse);
@@ -174,14 +174,14 @@ const GlobalDelegates: FC = () => {
 		[t]
 	);
 
-	const accountUserType = useCallback((item): string => {
+	const accountUserType = useCallback((item: any): string => {
 		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
 		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
 		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
 		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
 		return 'Normal';
 	}, []);
-	const getAccountSpecificDetail = useCallback((id): void => {
+	const getAccountSpecificDetail = useCallback((id: string): void => {
 		getAccountRequest(id, '', 0).then((res: any) => {
 			const accountObj: any = {};
 			// eslint-disable-next-line array-callback-return
@@ -201,7 +201,7 @@ const GlobalDelegates: FC = () => {
 			setAccSpecificDetail({ ...accountObj });
 		});
 	}, []);
-	const getCosDetail = useCallback((id): void => {
+	const getCosDetail = useCallback((id: string): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
 			const obj: any = {};
 			data?.cos?.[0]?.a?.forEach((ele: CosA) => {
@@ -223,7 +223,7 @@ const GlobalDelegates: FC = () => {
 	}, []);
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(id): void => {
+		(id: string): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = {};
@@ -280,7 +280,7 @@ const GlobalDelegates: FC = () => {
 		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
 	);
 	const getAccountMembership = useCallback(
-		(id): void => {
+		(id: string): void => {
 			getAccountMembershipRequest(id)
 				.then((data: any) => {
 					const directMemArr: any[] = [];
@@ -312,10 +312,10 @@ const GlobalDelegates: FC = () => {
 		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
 	);
 	const getListOtp = useCallback(
-		(id): void => {
+		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -357,9 +357,9 @@ const GlobalDelegates: FC = () => {
 		},
 		[t]
 	);
-	const getCredentialList = useCallback((id): void => {
+	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -373,7 +373,7 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 	const getFolderList = useCallback(
-		(acc, delegateList): void => {
+		(acc: any, delegateList: any): void => {
 			postSoapFetchRequest(
 				`/service/admin/soap/GetFolderRequest`,
 				{
@@ -430,9 +430,9 @@ const GlobalDelegates: FC = () => {
 		[flatten]
 	);
 	const getIdentitiesList = useCallback(
-		(acc): void => {
+		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',
@@ -453,7 +453,7 @@ const GlobalDelegates: FC = () => {
 		[getFolderList]
 	);
 
-	const getAllUserSession = useCallback((acc) => {
+	const getAllUserSession = useCallback((acc: any) => {
 		const sessionType: string[] = ['admin', 'imap', 'soap'];
 		setUserSessionList([]);
 		setAllUserSessionList([]);

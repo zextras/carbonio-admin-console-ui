@@ -29,7 +29,7 @@ const MTAStatsDetail: FC<{
 	const [t] = useTranslation();
 	const [openMailDetail, setOpenMailDetail] = useState<boolean>(false);
 
-	const openMailDetailDialog = useCallback((value) => {
+	const openMailDetailDialog = useCallback((value: boolean) => {
 		setOpenMailDetail(value);
 	}, []);
 

@@ -10,7 +10,7 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const setCoreAttributes = async (body: JSON): Promise<any> =>
+export const setCoreAttributes = async (body: { [key: string]: unknown }): Promise<any> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/core/attribute/set`, {
 		...body
 	});

@@ -25,7 +25,12 @@ import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY } from '../../../constants';
+import {
+	DESCRIPTION,
+	HSM_SCHEDULED_KEY,
+	INDEXER_MANAGER_KEY,
+	ZIMBRA_ADMIN_URN
+} from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
@@ -209,7 +214,7 @@ const ServerDetailPanel: FC = () => {
 		if (isAdvanced) {
 			setIsRequestInProgress(true);
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
 				targetServers: 'all_servers'

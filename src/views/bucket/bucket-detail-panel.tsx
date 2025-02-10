@@ -28,6 +28,7 @@ import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
 import { TestConnectionObjectType, objectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
+import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
@@ -205,7 +206,7 @@ const BucketDetailPanel: FC = () => {
 			showSecrets: boolean;
 			targetServer?: string;
 		} = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
@@ -232,7 +233,7 @@ const BucketDetailPanel: FC = () => {
 		// delete  api call here
 		setOpen(false);
 		const objectToSendDeleteBucket: TestConnectionObjectType = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'doDeleteBucket',
 			storeType: bucketDeleteName?.storeType,

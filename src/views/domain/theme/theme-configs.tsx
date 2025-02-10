@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	ReactElement,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -13,7 +21,8 @@ import {
 	Text,
 	Button,
 	DefaultTabBarItem,
-	TabBar
+	TabBar,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -134,14 +143,14 @@ export const ThemeConfigs: FC<{
 	);
 
 	const onThemeModeChange = useCallback(
-		(v): void => {
+		(v: SelectItem[] | string | null): void => {
 			setThemeConfig((prev: any) => ({ ...prev, carbonioWebUiDarkMode: v }));
 		},
 		[setThemeConfig]
 	);
 
 	const onChangeDomainThemeDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setThemeConfig((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setThemeConfig]
@@ -190,7 +199,7 @@ export const ThemeConfigs: FC<{
 		setIsValidated
 	]);
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setThemeConfig((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setThemeConfig]

@@ -37,7 +37,8 @@ import {
 	DOCUMENT,
 	MESSAGE,
 	SERVER,
-	VOLUME_INDEX_TYPE
+	VOLUME_INDEX_TYPE,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
@@ -75,7 +76,6 @@ const HSMsettingPanel: FC = () => {
 		'label.storage_hsm_not_licensed',
 		'Cannot complete operation: storages_hsm not licensed.'
 	);
-	const urnZimbraAdmin = 'urn:zimbraAdmin';
 	const errorMessage = t(
 		'label.something_wrong_error_msg',
 		'Something went wrong. Please try again.'
@@ -94,7 +94,7 @@ const HSMsettingPanel: FC = () => {
 	);
 
 	const showSnackbar = useCallback(
-		(key, severity, message) => {
+		(key: string, severity: 'success' | 'info' | 'warning' | 'error', message: string) => {
 			createSnackbar({
 				key,
 				severity,
@@ -109,7 +109,7 @@ const HSMsettingPanel: FC = () => {
 
 	const getHSMPolicyList = useCallback(() => {
 		fetchSoap('zextras', {
-			_jsns: urnZimbraAdmin,
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
 			targetServer: server
@@ -203,7 +203,7 @@ const HSMsettingPanel: FC = () => {
 		}
 	}, [handleClick, policies]);
 
-	const setValuesFromAttributes = useCallback((attributes) => {
+	const setValuesFromAttributes = useCallback((attributes: any) => {
 		if (!attributes) return;
 		const olderValues: any = {};
 		if (attributes) {
@@ -265,7 +265,7 @@ const HSMsettingPanel: FC = () => {
 			soapFetch(
 				'GetAllVolumes',
 				{
-					_jsns: urnZimbraAdmin
+					_jsns: ZIMBRA_ADMIN_URN
 				},
 				undefined,
 				serverId
@@ -411,7 +411,7 @@ const HSMsettingPanel: FC = () => {
 			setIsRequestInProgress(true);
 			const hType = policies.find((item: any) => item?.hsmQuery === selectedPolicies[0]);
 			fetchSoap('zextras', {
-				_jsns: urnZimbraAdmin,
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
 				targetServer: server,
@@ -491,7 +491,7 @@ const HSMsettingPanel: FC = () => {
 	}, []);
 
 	const parseResponse = useCallback(
-		(isEditSave, info) => {
+		(isEditSave: boolean | undefined, info: any) => {
 			if (info?.ok) {
 				if (isEditSave) {
 					onDeletePolicy(isEditSave);
@@ -521,7 +521,7 @@ const HSMsettingPanel: FC = () => {
 	const hsmPolicyOperation = useCallback(
 		(hsmPolicyDetail?: any, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
 			const request: any = {
-				_jsns: urnZimbraAdmin,
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: isRunCustomPolicy ? 'doMoveBlobs' : 'setHSMPolicy',
 				targetServer: server,

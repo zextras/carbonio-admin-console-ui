@@ -69,7 +69,7 @@ export const ReceivingMails = ({
 	);
 
 	const onPrefMailPollingIntervalNumChange = useCallback(
-		(e) => {
+		(e: React.ChangeEvent<HTMLInputElement>) => {
 			onCosAttributeChanged(
 				'zimbraMailMinPollingInterval',
 				e.target.value ? `${e.target.value}${prefMailPollingIntervalType}` : ''
@@ -80,7 +80,7 @@ export const ReceivingMails = ({
 	);
 
 	const onPrefMailPollingIntervalTypeChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			onCosAttributeChanged(
 				'zimbraMailMinPollingInterval',
 				zimbraPrefMailPollingIntervalNum ? `${zimbraPrefMailPollingIntervalNum}${v}` : ''

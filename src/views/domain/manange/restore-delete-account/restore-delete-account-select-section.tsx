@@ -80,7 +80,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 
 	const getBackupAccounts = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(searchText) => {
+		(searchText: string) => {
 			setIsRequestInProgress(true);
 			setAccounts([]);
 			getSoapFetchRequest(

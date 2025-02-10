@@ -16,6 +16,7 @@ import {
 	Popper,
 	Row,
 	Select,
+	SelectItem,
 	Switch,
 	Text,
 	Tooltip as TooltipDefault,
@@ -26,7 +27,7 @@ import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../types';
-import { CHECK_OK, DISABLED, ENABLED, TRUE } from '../../../constants';
+import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -126,7 +127,7 @@ const DomainAuthentication: FC = () => {
 				label: `${t('label.carbonio', 'Carbonio')}`,
 				value: '',
 				info_label: `${t(
-					'label.carbonio_info',
+					'domain.authentication.carbonio_info',
 					'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.'
 				)}`,
 				info_label_ce: `${localLdapTrans}`
@@ -354,7 +355,7 @@ const DomainAuthentication: FC = () => {
 	);
 
 	const onAuthMethodChange = useCallback(
-		(v): void => {
+		(v: SelectItem[] | string | null): void => {
 			setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
 			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
 				if (!zimbraAuthLdapURL) {
@@ -398,7 +399,7 @@ const DomainAuthentication: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = domainAuthData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: 'zimbraAuthMech',
@@ -516,7 +517,7 @@ const DomainAuthentication: FC = () => {
 			a?: { n: string; _content?: string }[];
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: 'zimbraAuthMech',
@@ -791,7 +792,7 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.search_bind_user', 'Search Bind User')}
+										label={t('domain.authentication.search_bind_user', 'Search Bind User')}
 										value={zimbraAuthLdapSearchBindDn}
 										backgroundColor="gray5"
 										inputName="user"
@@ -807,7 +808,7 @@ const DomainAuthentication: FC = () => {
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<PasswordInput
-										label={t('label.search_bind_password', 'Search Bind Password')}
+										label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
 										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										value={zimbraAuthLdapSearchBindPassword}

@@ -26,7 +26,6 @@ export type CosPrefAttributes = {
 	zimbraPrefSaveToSent: string;
 	zimbraFeatureMailForwardingEnabled: string;
 	zimbraFeatureMailForwardingInFiltersEnabled: string;
-	zimbraAllowAnyFromAddress: string;
 	zimbraPrefAutoAddAddressEnabled: string;
 	zimbraPrefGalAutoCompleteEnabled: string;
 	zimbraPrefCalendarFirstDayOfWeek: string;

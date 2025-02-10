@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -139,14 +147,14 @@ const MailingListSection: FC<any> = () => {
 	}, [ownersList, setMailingListDetail]);
 
 	const setValueByName = useCallback(
-		(name, value) => {
+		(name: string, value: any) => {
 			setMailingListDetail((prev: any) => ({ ...prev, [name]: value }));
 		},
 		[setMailingListDetail]
 	);
 
 	const changeLdapDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			const newValue = e.target.value;
 			let isValid = false;
 			if (newValue.startsWith(LDAP)) {
@@ -161,7 +169,7 @@ const MailingListSection: FC<any> = () => {
 		[setValueByName]
 	);
 	const changeResourceDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setValueByName(e.target.name, e.target.value);
 		},
 		[setValueByName]
@@ -245,7 +253,7 @@ const MailingListSection: FC<any> = () => {
 	}, [dynamicListMember, setMailingListDetail]);
 
 	const getSearchMemberList = useCallback(
-		(searchKeyword) => {
+		(searchKeyword: string) => {
 			searchGal(searchKeyword).then((data) => {
 				const contactList = data?.cn;
 				if (contactList) {
@@ -358,7 +366,7 @@ const MailingListSection: FC<any> = () => {
 	);
 
 	const onEmailAdd = useCallback(
-		(v) => {
+		(v: any) => {
 			setGrantEmails(v);
 			setMailingListDetail((prev: any) => ({
 				...prev,
@@ -368,7 +376,7 @@ const MailingListSection: FC<any> = () => {
 		[setMailingListDetail]
 	);
 
-	const searchEmailFromGal = useCallback((searchKeyword) => {
+	const searchEmailFromGal = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {

@@ -25,7 +25,6 @@ describe('SendingMails', () => {
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
 		zimbraPrefSaveToSent: 'TRUE',
-		zimbraAllowAnyFromAddress: 'FALSE',
 		zimbraPrefMailSendReadReceipts: 'never'
 	};
 
@@ -41,7 +40,6 @@ describe('SendingMails', () => {
 
 		expect(screen.getByText('Sending Mails')).toBeInTheDocument();
 		expect(screen.getByText('Save to sent')).toBeInTheDocument();
-		expect(screen.getByText('Allow sending from any address')).toBeInTheDocument();
 		expect(screen.getByText('Read Receipt settings')).toBeInTheDocument();
 		expect(screen.getByText('Never send a read receipt')).toBeInTheDocument();
 	});
@@ -90,7 +88,6 @@ describe('SendingMails', () => {
 		);
 
 		await user.click(screen.getByText('Save to sent'));
-		await user.click(screen.getByText('Allow sending from any address'));
 		expect(mockChangeSwitchOption).not.toHaveBeenCalled();
 
 		expect(screen.getByText('Read Receipt settings')).toBeInTheDocument();

@@ -5,7 +5,6 @@
  */
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
 import { screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 

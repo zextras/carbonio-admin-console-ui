@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -113,7 +113,7 @@ const LegalHoldPanel: FC = () => {
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
-		(key, severity, msg) => {
+		(key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
 			createSnackbar({
 				key,
 				severity,
@@ -201,7 +201,7 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const setBackupAccountAndPage = useCallback(
-		(backupAccounts, page) => {
+		(backupAccounts: Array<BackupAccountItem> | undefined, page: number) => {
 			if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
 				setBackupAccountList(backupAccounts);
 			} else {
@@ -218,10 +218,11 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const setBackupAccountPage = useCallback(
-		(data, page) => {
+		(data: any, page: number) => {
 			let backupAccounts;
 			const allServers = Object.keys(data);
-			let allServerAccounts: Array<Record<string, unknown>> = [];
+			let allServerAccounts: Array<BackupAccountItem> = [];
+			// Array<Record<string, unknown>> = [];
 			const maxPageList: Array<number> = [];
 			let backupPage = page;
 			allServers.forEach((item: string) => {
@@ -304,7 +305,7 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const onSearchAccount = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			searchAccount(e.target.value);
 		},
 		[searchAccount]
@@ -411,7 +412,7 @@ const LegalHoldPanel: FC = () => {
 	}, [allBackupAccounts, t]);
 
 	const getLegalHoldById = useCallback(
-		(id): BackupAccountItem | undefined => {
+		(id: string): BackupAccountItem | undefined => {
 			const account = allBackupAccounts.find((item) => item?.id === id);
 			return account ?? undefined;
 		},
@@ -664,7 +665,7 @@ const LegalHoldPanel: FC = () => {
 									<Text size="medium" weight="bold" color="gray0">
 										<Switch
 											label={t(
-												'legal_hold.show_only_accounts_on_legal_hold',
+												'legalHold.show_only_accounts_on_legal_hold',
 												'Show only accounts on Legal Hold'
 											)}
 											value={isShowOnlyLegalHostAccount}

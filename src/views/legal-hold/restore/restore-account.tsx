@@ -29,7 +29,12 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import { BackupAccountItem } from '../../../../types';
-import { ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
+import {
+	ERROR_LABLE,
+	RECORD_DISPLAY_LIMIT,
+	SUCCESS_LABLE,
+	ZIMBRA_ADMIN_URN
+} from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -56,8 +61,8 @@ const RestoreAccountView: FC<{
 	const limit = RECORD_DISPLAY_LIMIT;
 	const [tableRows, setTableRows] = useState<any[]>([]);
 	const [selectedRow, setSelectedRow] = useState<any>([]);
-	const [fromDate, setFromDate] = useState<Date>();
-	const [undeleteFromDate, setUndeleteFromDate] = useState<Date>(
+	const [fromDate, setFromDate] = useState<Date | null>();
+	const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
 		new Date(legalHoldAccount?.creationTimestamp ?? '')
 	);
 	const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
@@ -83,7 +88,7 @@ const RestoreAccountView: FC<{
 	);
 
 	const showSnackbar = useCallback(
-		(key, severity, msg) => {
+		(key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
 			createSnackbar({
 				key,
 				severity,
@@ -117,7 +122,7 @@ const RestoreAccountView: FC<{
 	}));
 
 	const getAccountList = useCallback(
-		(searchStr) => {
+		(searchStr: string) => {
 			const type = 'distributionlists,accounts';
 			const attrs = 'displayName,zimbraId';
 			const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
@@ -173,7 +178,7 @@ const RestoreAccountView: FC<{
 	}, [searchAccount, searchAccountList]);
 
 	const callDeligateRequest = useCallback(
-		(request) => {
+		(request: Array<unknown>) => {
 			setIsRequestInprogress(true);
 			Promise.all(request)
 				.then((response) => Promise.all(response))
@@ -233,8 +238,8 @@ const RestoreAccountView: FC<{
 	}, [accountList, searchAccount, searchAccountResult]);
 
 	const handleFromDateChange = useCallback(
-		(d) => {
-			if (undeleteFromDate && d?.getTime() < undeleteFromDate?.getTime()) {
+		(d: Date | null) => {
+			if (undeleteFromDate && d && d.getTime() < undeleteFromDate.getTime()) {
 				setUndeleteFromDate(d);
 			}
 			setFromDate(d);
@@ -242,7 +247,7 @@ const RestoreAccountView: FC<{
 		[undeleteFromDate]
 	);
 
-	const handleUndeleteFromDateChange = useCallback((d) => {
+	const handleUndeleteFromDateChange = useCallback((d: Date | null) => {
 		setUndeleteFromDate(d);
 	}, []);
 
@@ -286,7 +291,7 @@ const RestoreAccountView: FC<{
 	}, [accountList]);
 
 	const fixDate = useCallback(
-		({ getDate, getUndeletedDate }) => {
+		({ getDate, getUndeletedDate }: { getDate?: boolean; getUndeletedDate?: boolean }) => {
 			let returnTimestamp;
 			const creationTimestamp = legalHoldAccount?.creationTimestamp;
 			const deletedTimestamp = legalHoldAccount?.deletedTimestamp;
@@ -370,7 +375,7 @@ const RestoreAccountView: FC<{
 						setIsShowRestoreView(false);
 					} else {
 						soapFetch(`GetAccount`, {
-							_jsns: 'urn:zimbraAdmin',
+							_jsns: ZIMBRA_ADMIN_URN,
 							account: {
 								by: 'name',
 								_content: destinationAccount

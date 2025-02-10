@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -91,6 +92,7 @@ interface AccountDetailObj {
 	secrateCode: string;
 	pinCodes: string;
 	showOtpOptionSection: boolean;
+	description: string;
 }
 
 // eslint-disable-next-line no-empty-pattern
@@ -136,7 +138,8 @@ const CreateAccount: FC<{
 		qrData: '',
 		secrateCode: '',
 		pinCodes: '',
-		showOtpOptionSection: true
+		showOtpOptionSection: true,
+		description: ''
 	});
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
@@ -158,7 +161,8 @@ const CreateAccount: FC<{
 				zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
 				zimbraNotes: accountDetail?.zimbraNotes,
 				displayName: accountDetail?.displayName,
-				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
+				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId,
+				description: accountDetail?.description
 			},
 			`${accountDetail?.name}@${domainName}`,
 			accountDetail?.password || ''
@@ -239,7 +243,8 @@ const CreateAccount: FC<{
 			qrData: '',
 			secrateCode: '',
 			pinCodes: '',
-			showOtpOptionSection: true
+			showOtpOptionSection: true,
+			description: ''
 		});
 		setActiveStep('details');
 		setAccountCreate('');
@@ -247,7 +252,7 @@ const CreateAccount: FC<{
 
 	const handleOnGenerateOTP = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'totp_generate_command',
 			account: `${accountDetail?.name}`

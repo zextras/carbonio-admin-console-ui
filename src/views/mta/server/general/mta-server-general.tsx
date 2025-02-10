@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -35,7 +35,8 @@ import {
 	ZIMBRA_MTA_MY_NETWORKS,
 	ZIMBRA_MTA_RELAY_HOST,
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_SASL_AUTH_ENABLED
+	ZIMBRA_MTA_SASL_AUTH_ENABLED,
+	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
@@ -82,7 +83,7 @@ const MTAServerGeneral: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: string) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -90,7 +91,15 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setServerSpecificCurrentValue = useCallback(
-		(key, value) => {
+		(
+			key: string,
+			value:
+				| string
+				| {
+						label: string;
+				  }[]
+				| undefined
+		) => {
 			setMtaServerSpecificGeneralDetail((prev: any) => ({
 				...prev,
 				[key]: value
@@ -541,7 +550,7 @@ const MTAServerGeneral: FC = () => {
 			const id = mtaServerList.find((serverItem) => serverItem?.name === server)?.id;
 			const body: Record<string, unknown> = {
 				a: attributes,
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				id
 			};
 			modifyServer(body)
@@ -580,18 +589,18 @@ const MTAServerGeneral: FC = () => {
 		[createSnackbar, getServerSpecificInformation, mtaServerList, server, t]
 	);
 
-	const getValues = useCallback((val) => {
+	const getValues = useCallback((val: string | undefined) => {
 		if (val === undefined) {
 			return '';
 		}
 		return val || '';
 	}, []);
 
-	const getYesNoValues = useCallback((val) => {
+	const getYesNoValues = useCallback((val: string | undefined) => {
 		if (val === undefined) {
 			return '';
 		}
-		return (val === TRUE ? 'yes' : 'no') || '';
+		return val === TRUE ? 'yes' : 'no';
 	}, []);
 
 	const onSave = useCallback(() => {
@@ -631,7 +640,7 @@ const MTAServerGeneral: FC = () => {
 	]);
 
 	const onAmavisLogLevelChange = useCallback(
-		(v) => {
+		(v: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisLogLevel: v }));
 		},
 		[setMtaServerGeneralDetail]
@@ -659,7 +668,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const onBlockExtensionChange = useCallback(
-		(ips) => {
+		(ips: IpRangeValue[]) => {
 			const data: Array<unknown> = [];
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
@@ -675,14 +684,14 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setMtaServerGeneralDetail]
 	);
 
 	const setEmptyValueMyNetwork = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 			setNetworkValue([]);
 		},
@@ -702,7 +711,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const changeValue = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setMtaServerGeneralDetail]

@@ -5,29 +5,34 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+	Button,
 	Container,
-	Row,
-	Text,
 	Divider,
 	Padding,
-	Button,
+	Row,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import _, { isEqual, reduce, find } from 'lodash';
+import _, { find, isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Features } from './features';
-import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
+import {
+	COS,
+	MOBILE_CALENDAR_FEATURE_SYNC,
+	MOBILE_CONTACT_FEATURE_SYNC,
+	ZIMBRA_ADMIN_URN
+} from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const CosFeatures: FC = () => {
@@ -143,7 +148,7 @@ const CosFeatures: FC = () => {
 		}
 	}, [cosName, getMobileFeatureSync, isAdvanced]);
 
-	const modifyCosRequest = (body: any): void => {
+	const modifyCosRequest = (body: ModifyCosBody): void => {
 		modifyCos(body)
 			.then((data) => {
 				flushCache('cos', 'id', body.id._content);
@@ -195,24 +200,19 @@ const CosFeatures: FC = () => {
 	};
 
 	const onSave = (): void => {
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		const attrList: { n: string; _content: string }[] = [];
-		Object.keys(cosFeatures).forEach((ele: any) => {
-			if (ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC) {
-				attrList.push({ n: ele, _content: cosFeatures[ele] });
+		const body: ModifyCosBody = {
+			_jsns: ZIMBRA_ADMIN_URN,
+			id: {
+				_content: zimbraId
 			}
-		});
-		body.a = attrList;
-		const id = {
-			_content: zimbraId
-		};
-		body.id = id;
+		} as ModifyCosBody;
+		body.a = Object.keys(cosFeatures)
+			.filter((ele) => ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC)
+			.map((ele) => ({ n: ele, _content: cosFeatures[ele] }));
+
 		const modifiedKeys: any = reduce(
 			cosFeatures,
-			function (result, value, key): any {
-				return isEqual(value, initCosData[key]) ? result : [...result, key];
-			},
+			(result, value, key): any => (isEqual(value, initCosData[key]) ? result : [...result, key]),
 			[]
 		);
 		if (

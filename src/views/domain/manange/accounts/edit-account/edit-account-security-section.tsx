@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, ReactElement, useCallback } from 'react';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	ReactElement,
+	useCallback,
+	ChangeEvent
+} from 'react';
 
 import {
 	Container,
@@ -26,7 +34,7 @@ import styled from 'styled-components';
 
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
-import { DISABLED, ENABLED } from '../../../../../constants';
+import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -365,7 +373,7 @@ const EditAccountSecuritySection: FC = () => {
 
 	const handleOnGenerateOTP = (): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'totp_generate_command',
 			account: `${accountDetail?.uid}@${domainName}`
@@ -387,7 +395,7 @@ const EditAccountSecuritySection: FC = () => {
 	};
 	const handleDeleteOTP = (): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'delete_totp_command',
 			account: `${accountDetail?.uid}@${domainName}`,
@@ -418,14 +426,14 @@ const EditAccountSecuritySection: FC = () => {
 	};
 
 	const changeValue = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
@@ -463,7 +471,7 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutDurationNum, setAccountDetail]
 	);
 	const onZimbraPasswordLockoutDurationNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: e.target.value
@@ -487,7 +495,7 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeNum, setAccountDetail]
 	);
 	const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: e.target.value
@@ -530,7 +538,7 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Text size="small" color="gray0" weight="bold">
-									{t('label.two_factor_auth', '2nd Factor Authentication')}
+									{t('label.two_factor_auth', 'Second Factor Authentication')}
 								</Text>
 							</Row>
 							<Row
@@ -674,10 +682,7 @@ const EditAccountSecuritySection: FC = () => {
 									<Switch
 										value={accountDetail?.backupSelfUndeleteAllowed}
 										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
-										label={t(
-											'account_details.allow_restore_message',
-											'Allow user to restore messages'
-										)}
+										label={t('label.allow_restore_message', 'Allow user to restore messages')}
 										iconColor="primary"
 									/>
 								</Container>

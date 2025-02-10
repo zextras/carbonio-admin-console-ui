@@ -189,7 +189,7 @@ const MailingListSettingsSection: FC<any> = () => {
 	}, [ownersList, selectedDistributionListOwner]);
 
 	const getSearchMemberList = useCallback(
-		(searchKeyword) => {
+		(searchKeyword: string) => {
 			searchGal(searchKeyword).then((data) => {
 				const contactList = data?.cn;
 				if (contactList) {
@@ -267,7 +267,7 @@ const MailingListSettingsSection: FC<any> = () => {
 		)
 	}));
 
-	const searchEmailFromGal = useCallback((searchKeyword) => {
+	const searchEmailFromGal = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {

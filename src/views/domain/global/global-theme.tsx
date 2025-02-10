@@ -184,7 +184,7 @@ const GlobalTheme: FC = () => {
 	};
 
 	const showErrorMessage = useCallback(
-		(msg) => {
+		(msg: string) => {
 			createSnackbar({
 				key: 'error',
 				severity: 'error',

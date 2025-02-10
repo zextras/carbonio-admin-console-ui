@@ -8,7 +8,6 @@ import React, { FC, Suspense } from 'react';
 
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import {
-	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	usePrimaryBarState
@@ -16,26 +15,6 @@ import {
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
-import BackupDetailPanel from './backup/backup-detail-panel';
-import BackupListPanel from './backup/backup-list-panel';
-import BreadCrumb from './breadcrumb/breadcrumb-view';
-import BucketListPanel from './bucket/bucket-list-panel';
-import BucketRoutePanel from './bucket/bucket-route-panel';
-import Subscription from './core/subscribsion/subscription';
-import CosDetailPanel from './cos/cos-detail-panel';
-import CosListPanel from './cos/cos-list-panel';
-import Dashboard from './dashboard/dashboard-view';
-import DomainDetailPanel from './domain/domain-detail-panel';
-import DomainListPanel from './domain/domain-list-panel';
-import LegalHoldPanel from './legal-hold/legal-hold-panel';
-import MonitoringView from './monitoring/monitoring-view';
-import MTADetailPanel from './mta/mta-detail-panel';
-import MTAListPanel from './mta/mta-list-panel';
-import NotificationsDetailPanel from './notifications/notifications-detail-panel';
-import NotificationsListPanel from './notifications/notifications-list-panel';
-import OperationsDetailPanel from './operations/operations-detail-panel';
-import OperationsListPanel from './operations/operations-list-panel';
-import PrivacyView from './privacy/privacy-view';
 import {
 	BACKUP_ROUTE_ID,
 	COS_ROUTE_ID,
@@ -53,6 +32,27 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
+import BackupDetailPanel from './backup/backup-detail-panel';
+import BackupListPanel from './backup/backup-list-panel';
+import BreadCrumb from './breadcrumb/breadcrumb-view';
+import BucketListPanel from './bucket/bucket-list-panel';
+import BucketRoutePanel from './bucket/bucket-route-panel';
+import { Spinner } from './components/spinner';
+import Subscription from './core/subscribsion/subscription';
+import CosDetailPanel from './cos/cos-detail-panel';
+import CosListPanel from './cos/cos-list-panel';
+import Dashboard from './dashboard/dashboard-view';
+import DomainDetailPanel from './domain/domain-detail-panel';
+import DomainListPanel from './domain/domain-list-panel';
+import LegalHoldPanel from './legal-hold/legal-hold-panel';
+import MonitoringView from './monitoring/monitoring-view';
+import MTADetailPanel from './mta/mta-detail-panel';
+import MTAListPanel from './mta/mta-list-panel';
+import NotificationsDetailPanel from './notifications/notifications-detail-panel';
+import NotificationsListPanel from './notifications/notifications-list-panel';
+import OperationsDetailPanel from './operations/operations-detail-panel';
+import OperationsListPanel from './operations/operations-list-panel';
+import PrivacyView from './privacy/privacy-view';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

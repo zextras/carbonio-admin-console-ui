@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { bytesToHumanReadable } from '../utils';
+import { bytesToHumanReadable, bytesToMB, mbToBytes } from '../utils';
 
 describe('bytesToHumanReadable', () => {
 	test('Zero bytes', () => {
@@ -49,4 +49,21 @@ describe('bytesToHumanReadable', () => {
 	test('Extremely large numbers', () => {
 		expect(bytesToHumanReadable(1e24)).toBe('847.03 ZB');
 	});
+
+	test('should give 1 mb of 1048576 bytes', () => {
+		expect(bytesToMB(1048576)).toBe(1);
+	});
+
+	test('should give 0 if pass 0', () => {
+		expect(bytesToMB(0)).toBe(0);
+	});
+
+	test('should give 2097152 bytes if pass 2 mb', () => {
+		expect(mbToBytes(2)).toBe(2097152);
+	});
+
+	test('should give 0 bytes if pass 0 mb', () => {
+		expect(mbToBytes(0)).toBe(0);
+	});
+
 });

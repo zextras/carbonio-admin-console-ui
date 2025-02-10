@@ -12,7 +12,6 @@ import {
 	removeRoute,
 	registerActions,
 	setAppContext,
-	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest,
@@ -75,6 +74,7 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
@@ -98,6 +98,7 @@ import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
+import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
 
@@ -160,7 +161,7 @@ const App: FC = () => {
 	}, [rights]);
 	const userSetting = useUserSettings();
 	const getAccountDetails = useCallback(
-		(id) => {
+		(id: any) => {
 			getAccountRequest(id, '', 0).then((res: any) => {
 				const lastLogin = res?.account?.[0]?.a?.find(
 					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
@@ -911,11 +912,9 @@ const App: FC = () => {
 		history.push(`/${DASHBOARD}`);
 	}, [t, history, setDomainView, setDomain, setCosView, createDomainRight, createCosRight]);
 
-	const checkIsBackupModuleEnable = useCallback(
-		(servers) => {
-			getSoapFetchRequest(
-				`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`
-			).then((data: any) => {
+	const checkIsBackupModuleEnable = useCallback(() => {
+		getSoapFetchRequest(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`).then(
+			(data: any) => {
 				const backupServer = data?.servers;
 				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
 					setBackupServerList(backupServer);
@@ -923,28 +922,24 @@ const App: FC = () => {
 				} else {
 					setBackupModuleEnable(false);
 				}
-			});
-		},
-		[setBackupModuleEnable, setBackupServerList]
-	);
-	const getGlobalConfig = useCallback(
-		(serverName) => {
-			postSoapFetchRequest(`/service/admin/soap/zextras`, {
-				zextras: {
-					_jsns: 'urn:zimbraAdmin',
-					module: 'ZxConfig',
-					action: 'dump_global_config'
-				}
-			}).then((data: any) => {
-				const responseData = JSON.parse(data?.Body?.response?.content);
-				const globalConfig = responseData?.response;
-				if (globalConfig) {
-					setGlobalConfig(globalConfig);
-				}
-			});
-		},
-		[setGlobalConfig]
-	);
+			}
+		);
+	}, [setBackupModuleEnable, setBackupServerList]);
+	const getGlobalConfig = useCallback(() => {
+		postSoapFetchRequest(`/service/admin/soap/zextras`, {
+			zextras: {
+				_jsns: ZIMBRA_ADMIN_URN,
+				module: 'ZxConfig',
+				action: 'dump_global_config'
+			}
+		}).then((data: any) => {
+			const responseData = JSON.parse(data?.Body?.response?.content);
+			const globalConfig = responseData?.response;
+			if (globalConfig) {
+				setGlobalConfig(globalConfig);
+			}
+		});
+	}, [setGlobalConfig]);
 
 	const getAllServersRequest = useCallback(() => {
 		getAllServers().then((data) => {
@@ -952,8 +947,8 @@ const App: FC = () => {
 			if (server && Array.isArray(server) && server.length > 0) {
 				setServerList(server);
 				if (isAdvanced) {
-					checkIsBackupModuleEnable(server);
-					getGlobalConfig(server[0]?.name);
+					checkIsBackupModuleEnable();
+					getGlobalConfig();
 				}
 				setAllServersList(server);
 			}
@@ -986,7 +981,7 @@ const App: FC = () => {
 	const getModuleLicense = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxCore',
 				action: 'getLicenseInfo'
 			}
