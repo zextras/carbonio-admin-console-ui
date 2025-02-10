@@ -13,6 +13,7 @@ import { jest } from '@jest/globals';
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
+import { ZIMBRA_ADMIN_URN } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyCos } from '../../../../services/modify-cos-service';
 import { useCosStore } from '../../../../store/cos/store';
@@ -142,7 +143,7 @@ describe('COSPreferences', () => {
 		});
 
 		const expectedModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 			a: expect.arrayContaining([
 				expect.objectContaining({
@@ -258,7 +259,7 @@ describe('COSPreferences', () => {
 		});
 
 		const expectedModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			id: { _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 			a: expect.arrayContaining([
 				expect.objectContaining({

@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../types';
-import { CHECK_OK, DISABLED, ENABLED, TRUE } from '../../../constants';
+import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -399,7 +399,7 @@ const DomainAuthentication: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = domainAuthData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: 'zimbraAuthMech',
@@ -517,7 +517,7 @@ const DomainAuthentication: FC = () => {
 			a?: { n: string; _content?: string }[];
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: 'zimbraAuthMech',

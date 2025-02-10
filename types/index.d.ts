@@ -6,6 +6,7 @@
 export * from './attribute';
 export * from './cos';
 export * from './domain';
+export * from './general';
 export * from './server';
 export * from './volume';
 export * from './mta';

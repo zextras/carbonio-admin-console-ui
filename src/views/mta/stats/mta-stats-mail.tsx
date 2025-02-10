@@ -31,7 +31,8 @@ import {
 	RELEASE,
 	REQUEUE,
 	DELETE,
-	RECORD_DISPLAY_LIMIT
+	RECORD_DISPLAY_LIMIT,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
@@ -423,7 +424,7 @@ const MTAStatsMail: FC<{
 			if (serverState?.serverName) {
 				selectedRow.forEach((item) => {
 					mailActionRequestData.push({
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						server: {
 							name: serverState?.serverName,
 							queue: {

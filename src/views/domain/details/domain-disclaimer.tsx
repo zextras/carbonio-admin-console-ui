@@ -27,6 +27,7 @@ import {
 	AMAVIS_DISCLAIMER_OPTIONS,
 	FALSE,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
@@ -94,7 +95,7 @@ const DomainDisclaimer: FC = () => {
 	useMemo(() => {
 		if (domainInformation) {
 			const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+				(item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
 			);
 			if (
 				zimbraDomainMandatoryMailSignatureEnabled &&
@@ -109,7 +110,7 @@ const DomainDisclaimer: FC = () => {
 			}
 
 			const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT
+				(item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT
 			);
 			if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
 				setInitialAndCurrentValue(
@@ -121,7 +122,7 @@ const DomainDisclaimer: FC = () => {
 			}
 
 			const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML
+				(item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML
 			);
 			if (zimbraAmavisDomainDisclaimerHtml && zimbraAmavisDomainDisclaimerHtml[0]?._content) {
 				setInitialAndCurrentValue(
@@ -153,7 +154,7 @@ const DomainDisclaimer: FC = () => {
 		const body: any = {};
 		const attributes: Array<Record<string, string | undefined>> = [];
 		body.id = domainId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 
 		attributes.push({
 			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,

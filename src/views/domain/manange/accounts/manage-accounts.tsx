@@ -44,7 +44,8 @@ import {
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
 	COS,
-	MAILBOX_QUOTA_USED
+	MAILBOX_QUOTA_USED,
+	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import {
 	accountListDirectory,
@@ -400,7 +401,7 @@ const ManageAccounts: FC = () => {
 		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -444,7 +445,7 @@ const ManageAccounts: FC = () => {
 	);
 	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -726,7 +727,7 @@ const ManageAccounts: FC = () => {
 	const getIdentitiesList = useCallback(
 		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',

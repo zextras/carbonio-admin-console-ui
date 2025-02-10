@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { themeConfigStore } from '../../../../types/domain';
-import { TRUE } from '../../../constants';
+import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -182,7 +182,7 @@ const DomainTheme: FC = () => {
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		const modifiedKeys: any = reduce(
 			domainTheme,
 			function (result, value, key): any {
@@ -219,7 +219,7 @@ const DomainTheme: FC = () => {
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		const domainDefaultElements: any = {
 			carbonioWebUiDarkMode: '',
 			carbonioWebUiLoginLogo: '',

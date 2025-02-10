@@ -10,9 +10,10 @@
 import React from 'react';
 
 import { jest } from '@jest/globals';
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
+import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { modifyCos } from '../../../services/modify-cos-service';
 import * as setCoreAttributes from '../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
@@ -20,7 +21,7 @@ import { useCosStore } from '../../../store/cos/store';
 import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
-import CosAdvanced, { FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL } from '../cos-advanced';
+import CosAdvanced from '../cos-advanced';
 
 /*
 /═══════════════════════════════════════════════════\
@@ -68,7 +69,7 @@ jest.mock('../../../services/set-core-attributes', () => ({
 jest.mock('../../../services/get-file-quota', () => ({
 	getFileQuotaById: (): Promise<any> =>
 		Promise.resolve({
-			limit: 0
+			limit: 1
 		})
 }));
 jest.mock('../../../services/set-file-quota-limit', () => ({
@@ -169,7 +170,7 @@ const getCosAttributeValue = (attrName: keyof AccountType): any =>
 
 const expectedModifyCosBody = (attrName: keyof AccountType, value: any): any =>
 	expect.objectContaining({
-		_jsns: 'urn:zimbraAdmin',
+		_jsns: ZIMBRA_ADMIN_URN,
 		id: { _content: COS_ID },
 		a: expect.arrayContaining([
 			expect.objectContaining({
@@ -189,7 +190,7 @@ const successSnackbar = {
 };
 
 const defaultModifyCosBody = {
-	_jsns: 'urn:zimbraAdmin',
+	_jsns: ZIMBRA_ADMIN_URN,
 	cos: {
 		id: COS_ID,
 		a: []
@@ -210,82 +211,248 @@ describe('CosAdvanced', () => {
 		enableAdvanced();
 	});
 
-	it('should render the component correctly', async () => {
-		await renderComponent(<CosAdvanced />);
+	describe('COS General Options', () => {
+		it('should render the component correctly', async () => {
+			await renderComponent(<CosAdvanced />);
 
-		expect(screen.queryByText('Save')).not.toBeInTheDocument();
-		expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
-		expect(screen.getByText('Advanced')).toBeInTheDocument();
-		expect(screen.getByText('General Options')).toBeInTheDocument();
-		expect(screen.getByText('Forwarding')).toBeInTheDocument();
-		expect(screen.getByText('Quotas')).toBeInTheDocument();
-		expect(screen.getByText('Password')).toBeInTheDocument();
-		expect(screen.getByText('Failed Login Policy')).toBeInTheDocument();
-		expect(screen.getByText('Timeout Policy')).toBeInTheDocument();
-		expect(screen.getByText('Email Retention Policy')).toBeInTheDocument();
+			expect(screen.queryByText('Save')).not.toBeInTheDocument();
+			expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+			expect(screen.getByText('Advanced')).toBeInTheDocument();
+			expect(screen.getByText('General Options')).toBeInTheDocument();
+			expect(screen.getByText('Forwarding')).toBeInTheDocument();
+			expect(screen.getByText('Quotas')).toBeInTheDocument();
+			expect(screen.getByText('Password')).toBeInTheDocument();
+			expect(screen.getByText('Failed Login Policy')).toBeInTheDocument();
+			expect(screen.getByText('Timeout Policy')).toBeInTheDocument();
+			expect(screen.getByText('Email Retention Policy')).toBeInTheDocument();
+		});
+
+		it('should render Advanced toggles', async () => {
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByText('General Options')).toBeInTheDocument();
+			expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
+			expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
+		});
+
+		it('should not render Advanced toggles when is not an Advanced environment', async () => {
+			disableAdvanced();
+
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.queryByText('General Options')).not.toBeInTheDocument();
+			expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
+			expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
+		});
+
+		it('should toggle/untoggle Backup based on initial state', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
+
+			await user.click(screen.getByText('Enable / Disable Backup'));
+			await user.click(screen.getByText('Save'));
+
+			const expectedBackupEnabledValue = !initialBackupEnabledValue;
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should render Advanced toggles', async () => {
-		await renderComponent(<CosAdvanced />);
+	describe('COS Forwarding', () => {
+		it('should modify the forwarding addresses max length', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
+				'Limit user-specified forwarding addresses to (char)'
+			) as HTMLInputElement;
 
-		expect(screen.getByText('General Options')).toBeInTheDocument();
-		expect(screen.getByText('Enable / Disable Backup')).toBeInTheDocument();
-		expect(screen.getByText('Allow user to restore messages')).toBeInTheDocument();
+			expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
+			const currentForwardingAddressMaxLength = getCosAttributeValue(
+				'zimbraMailForwardingAddressMaxLength'
+			);
+			expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
+
+			const newForwardingAddressesMaxLength = '8000';
+			await user.clear(forwardingAddressesMaxLengthLabel);
+			await user.type(forwardingAddressesMaxLengthLabel, newForwardingAddressesMaxLength);
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody(
+					'zimbraMailForwardingAddressMaxLength',
+					newForwardingAddressesMaxLength
+				)
+			);
+			expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should not render Advanced toggles when is not an Advanced environment', async () => {
-		disableAdvanced();
+	describe('COS Quotas', () => {
+		it('should render Quota advanced field', async () => {
+			await renderComponent(<CosAdvanced />);
 
-		await renderComponent(<CosAdvanced />);
+			// This input is shown only if getFileQuotaById returns a limit > 0
+			expect(screen.getByLabelText('Files Account quota (GB)')).toBeInTheDocument();
+		});
 
-		expect(screen.queryByText('General Options')).not.toBeInTheDocument();
-		expect(screen.queryByText('Enable / Disable Backup')).not.toBeInTheDocument();
-		expect(screen.queryByText('Allow user to restore messages')).not.toBeInTheDocument();
+		it('should render Quota default fields', async () => {
+			disableAdvanced();
+			await renderComponent(<CosAdvanced />);
+
+			expect(screen.getByLabelText('Mails Account quota (GB)')).toBeInTheDocument();
+			expect(screen.getByLabelText('Max contacts allowed in the folder')).toBeInTheDocument();
+			expect(
+				screen.getByLabelText('Percentage threshold for quota warning messages (%)')
+			).toBeInTheDocument();
+			expect(
+				screen.getByLabelText('Minimum duration of time between quota warnings')
+			).toBeInTheDocument();
+			const timeRangeElements = screen.getAllByText('Time Range');
+			timeRangeElements.forEach((element) => {
+				expect(element).toBeInTheDocument();
+			});
+			expect(screen.getByLabelText('Quota warning message template')).toBeInTheDocument();
+		});
+
+		it('should modify the mails quota limit', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const mailsAccountQuotaLabelEl = screen.getByLabelText(
+				'Mails Account quota (GB)'
+			) as HTMLInputElement;
+			expect(mailsAccountQuotaLabelEl.value).toBe('');
+
+			const newMailsAccountQuotaValue = '1.00';
+			await user.clear(mailsAccountQuotaLabelEl);
+			await user.type(mailsAccountQuotaLabelEl, newMailsAccountQuotaValue);
+			await user.click(screen.getByText('Save'));
+
+			expect(mailsAccountQuotaLabelEl.value).toBe(newMailsAccountQuotaValue);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should toggle/untoggle Backup based on initial state', async () => {
-		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-		const mockCreateSnackbar = jest.fn();
-		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-		const setCoreAttrs = spySetCoreAttributes();
-		const { user } = await renderComponent(<CosAdvanced />);
+	describe('COS Password', () => {
+		it('should enable prevent user from changing password', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
 
-		await user.click(screen.getByText('Enable / Disable Backup'));
-		await user.click(screen.getByText('Save'));
+			expect(screen.getByText('Prevent user from changing password')).toBeInTheDocument();
 
-		const expectedBackupEnabledValue = !initialBackupEnabledValue;
-		expect(setCoreAttrs).toHaveBeenCalledWith(
-			buildAdvancedCosValues(expectedBackupEnabledValue, initialBackupSelfUndeleteAllowedValue)
-		);
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+			await user.click(screen.getByText('Prevent user from changing password'));
+			await user.click(screen.getByText('Save'));
+
+			const expectedToggleValue = getCosAttributeValue('zimbraPasswordLocked') === 'FALSE';
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedToggleValue, !expectedToggleValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 
-	it('should modify the forwarding addresses max length', async () => {
-		const mockModifyCos = mock(modifyCos);
-		mockModifyCos.mockResolvedValue(defaultModifyCosBody);
-		const mockCreateSnackbar = jest.fn();
-		(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
-		const { user } = await renderComponent(<CosAdvanced />);
-		const forwardingAddressesMaxLengthLabel = screen.getByLabelText(
-			FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
-		) as HTMLInputElement;
+	describe('COS Failed Login Policy', () => {
+		it('should enable failed login lockout', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const setCoreAttrs = spySetCoreAttributes();
+			const { user } = await renderComponent(<CosAdvanced />);
 
-		expect(forwardingAddressesMaxLengthLabel).toBeInTheDocument();
-		const currentForwardingAddressMaxLength = getCosAttributeValue(
-			'zimbraMailForwardingAddressMaxLength'
-		);
-		expect(forwardingAddressesMaxLengthLabel.value).toBe(currentForwardingAddressMaxLength);
+			expect(screen.getByText('Enable failed login lockout')).toBeInTheDocument();
 
-		const newForwardingAddressesMaxLength = '8000';
-		await user.clear(forwardingAddressesMaxLengthLabel);
-		await user.type(forwardingAddressesMaxLengthLabel, newForwardingAddressesMaxLength);
-		await user.click(screen.getByText('Save'));
+			await user.click(screen.getByText('Enable failed login lockout'));
+			await user.click(screen.getByText('Save'));
 
-		expect(mockModifyCos).toHaveBeenCalledWith(
-			expectedModifyCosBody('zimbraMailForwardingAddressMaxLength', newForwardingAddressesMaxLength)
-		);
-		expect(forwardingAddressesMaxLengthLabel.value).toBe(newForwardingAddressesMaxLength);
-		expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+			const expectedToggleValue = getCosAttributeValue('zimbraPasswordLockoutEnabled') === 'FALSE';
+			expect(setCoreAttrs).toHaveBeenCalledWith(
+				buildAdvancedCosValues(expectedToggleValue, !expectedToggleValue)
+			);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
+	describe('COS Timeout Policy', () => {
+		it('should modify admin auth token timeout', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const timeoutPolicyInputLabel = screen.getByLabelText(
+				'Admin console auth token lifetime'
+			) as HTMLInputElement;
+
+			expect(timeoutPolicyInputLabel).toBeInTheDocument();
+			expect(timeoutPolicyInputLabel.value).toBe('');
+
+			const newTimeoutPolicyInputLabel = '800';
+			await user.clear(timeoutPolicyInputLabel);
+			await user.type(timeoutPolicyInputLabel, newTimeoutPolicyInputLabel);
+
+			const view = screen.getByTestId('zimbraAdminAuthTokenLifetimeType');
+
+			await user.click(within(view).getByText(/seconds/i));
+			const dropdown = await screen.findByTestId('dropdown-popper-list');
+			await user.click(within(dropdown).getByText(/minutes/i));
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody('zimbraAdminAuthTokenLifetime', `${newTimeoutPolicyInputLabel}m`)
+			);
+			expect(timeoutPolicyInputLabel.value).toBe(newTimeoutPolicyInputLabel);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
+	});
+	describe('COS Email Retention Policy', () => {
+		it('should modify admin email retention policy lifetime', async () => {
+			const mockModifyCos = mock(modifyCos);
+			mockModifyCos.mockResolvedValue(defaultModifyCosBody);
+			const mockCreateSnackbar = jest.fn();
+			(useSnackbar as jest.Mock).mockReturnValue(mockCreateSnackbar);
+			const { user } = await renderComponent(<CosAdvanced />);
+			const emailRetentionPolicyInputElement = screen.getByRole('textbox', {
+				name: 'E-mail message lifetime'
+			}) as HTMLInputElement;
+
+			expect(emailRetentionPolicyInputElement).toBeInTheDocument();
+			expect(emailRetentionPolicyInputElement).toHaveValue('');
+
+			const newEmailRetentionPolicyInputElement = '800';
+			await user.clear(emailRetentionPolicyInputElement);
+			await user.type(emailRetentionPolicyInputElement, newEmailRetentionPolicyInputElement);
+
+			const view = screen.getByTestId('zimbraMailTrashLifetimeSelect');
+
+			await user.click(within(view).getByText(/seconds/i));
+			const dropdown = await screen.findByTestId('dropdown-popper-list');
+			await user.click(within(dropdown).getByText(/minutes/i));
+			await user.click(screen.getByText('Save'));
+
+			expect(mockModifyCos).toHaveBeenCalledWith(
+				expectedModifyCosBody(
+					'zimbraMailMessageLifetime',
+					`${newEmailRetentionPolicyInputElement}m`
+				)
+			);
+			expect(emailRetentionPolicyInputElement).toHaveValue(newEmailRetentionPolicyInputElement);
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(successSnackbar);
+		});
 	});
 });

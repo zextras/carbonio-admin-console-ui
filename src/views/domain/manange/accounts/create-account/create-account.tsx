@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -251,7 +252,7 @@ const CreateAccount: FC<{
 
 	const handleOnGenerateOTP = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'totp_generate_command',
 			account: `${accountDetail?.name}`

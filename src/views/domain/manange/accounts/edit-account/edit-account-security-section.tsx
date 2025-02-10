@@ -34,7 +34,7 @@ import styled from 'styled-components';
 
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
-import { DISABLED, ENABLED } from '../../../../../constants';
+import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -373,7 +373,7 @@ const EditAccountSecuritySection: FC = () => {
 
 	const handleOnGenerateOTP = (): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'totp_generate_command',
 			account: `${accountDetail?.uid}@${domainName}`
@@ -395,7 +395,7 @@ const EditAccountSecuritySection: FC = () => {
 	};
 	const handleDeleteOTP = (): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'delete_totp_command',
 			account: `${accountDetail?.uid}@${domainName}`,

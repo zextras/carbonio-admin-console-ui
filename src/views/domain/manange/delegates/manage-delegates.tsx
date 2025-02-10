@@ -34,6 +34,7 @@ import {
 	HELPDESK_ADMINS,
 	RECORD_DISPLAY_LIMIT,
 	SYSTEM_ACCOUNT_FLAG,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -362,7 +363,7 @@ const ManageDelegates: FC = () => {
 		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -406,7 +407,7 @@ const ManageDelegates: FC = () => {
 	);
 	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -478,7 +479,7 @@ const ManageDelegates: FC = () => {
 	const getIdentitiesList = useCallback(
 		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',
@@ -640,7 +641,7 @@ const ManageDelegates: FC = () => {
 	const handleRevokesGrants = useCallback(() => {
 		setLoading(true);
 		InitDomainForDelegation('/admin/initDomainForDelegation', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			domain: domain?.name
 		})
 			.then((res: objectType) => {
@@ -661,7 +662,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {
@@ -676,7 +677,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {
@@ -691,7 +692,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {

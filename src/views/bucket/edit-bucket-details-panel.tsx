@@ -24,7 +24,7 @@ import { find, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { TestConnectionObjectType } from '../../../types';
-import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
+import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
@@ -209,7 +209,7 @@ const EditBucketDetailPanel: FC<{
 	const bucketRegions = useMemo(() => BucketRegions(t), [t]);
 	const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
 	const [modifiedBucketDetails, setModifiedBucketDetails] = useState<any>({
-		_jsns: 'urn:zimbraAdmin',
+		_jsns: ZIMBRA_ADMIN_URN,
 		module: 'ZxCore',
 		action: 'doUpdateBucket',
 		bucketConfigurationId: bucketDetail?.uuid,
@@ -219,7 +219,7 @@ const EditBucketDetailPanel: FC<{
 
 	const verifyConnector = useCallback(() => {
 		const objToSendTestConnection: TestConnectionObjectType = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'testS3Connection',
 			targetServers: selectedServerName,

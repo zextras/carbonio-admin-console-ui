@@ -22,7 +22,8 @@ import {
 	LOCAL_TYPE_VALUE,
 	EXTERNAL_TYPE_VALUE,
 	UNUSED,
-	USAGE_IN_EXTERNAL_BACKUP
+	USAGE_IN_EXTERNAL_BACKUP,
+	ZIMBRA_ADMIN_URN
 } from '../../../../../../constants';
 import { fetchSoap } from '../../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
@@ -92,7 +93,7 @@ const AdvancedMailstoresDefinition: FC<{
 
 	const getBucketListType = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',

@@ -43,7 +43,8 @@ import {
 	S3_BUCKET,
 	SERVER,
 	CONFIG,
-	BACKUP_REALTIME
+	BACKUP_REALTIME,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
@@ -644,7 +645,7 @@ const BackupConfiguration: FC = () => {
 		postSoapFetchRequest(
 			`/service/admin/soap/zextras`,
 			{
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxBackup',
 				action: backupServiceStart ? 'doStopService' : 'doStartService',
 				service_name: 'module',
@@ -820,7 +821,7 @@ const BackupConfiguration: FC = () => {
 
 	const getAllBuckets = useCallback(() => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',

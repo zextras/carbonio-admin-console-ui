@@ -47,7 +47,8 @@ import {
 	EMC,
 	SCALITYS3,
 	LOCAL_VALUE,
-	FLEX_START
+	FLEX_START,
+	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
@@ -230,7 +231,7 @@ const VolumesDetailPanel: FC = () => {
 		if (isAdvanced) {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
 				targetServers: selectedServerName
@@ -275,7 +276,7 @@ const VolumesDetailPanel: FC = () => {
 			soapFetch(
 				'GetAllVolumes',
 				{
-					_jsns: 'urn:zimbraAdmin'
+					_jsns: ZIMBRA_ADMIN_URN
 				},
 				undefined,
 				selectedServerId
@@ -307,7 +308,7 @@ const VolumesDetailPanel: FC = () => {
 	const deleteHandler = async (data: { name: string; id: number }): Promise<void> => {
 		if (isAdvanced) {
 			await fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'doDeleteVolume',
 				targetServers: selectedServerName,
@@ -355,7 +356,7 @@ const VolumesDetailPanel: FC = () => {
 			await soapFetch(
 				'DeleteVolume',
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					module: 'ZxCore',
 					action: 'DeleteVolumeRequest',
 					id
@@ -365,7 +366,7 @@ const VolumesDetailPanel: FC = () => {
 			)
 				.then((res) => {
 					const typeResponse = res as { _jsns: string };
-					if (typeResponse?._jsns === 'urn:zimbraAdmin') {
+					if (typeResponse?._jsns === ZIMBRA_ADMIN_URN) {
 						createSnackbar({
 							key: '1',
 							severity: 'success',
@@ -416,7 +417,7 @@ const VolumesDetailPanel: FC = () => {
 			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
 		);
 		const obj: { [key: string]: string | boolean | number | undefined } = {};
-		obj._jsns = 'urn:zimbraAdmin';
+		obj._jsns = ZIMBRA_ADMIN_URN;
 		obj.module = 'ZxPowerstore';
 		obj.action = 'doCreateVolume';
 		obj.targetServers = selectedServerName;
@@ -549,7 +550,7 @@ const VolumesDetailPanel: FC = () => {
 			postSoapFetchRequest(
 				`/service/admin/soap/zextras`,
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					module: 'ZxPowerstore',
 					action: 'doCreateVolume',
 					targetServers: selectedServerName,
@@ -571,7 +572,7 @@ const VolumesDetailPanel: FC = () => {
 						await postSoapFetchRequest(
 							`/service/admin/soap/zextras`,
 							{
-								_jsns: 'urn:zimbraAdmin',
+								_jsns: ZIMBRA_ADMIN_URN,
 								module: 'ZxPowerstore',
 								action: 'doUpdateVolume',
 								currentVolumeName: attr?.name,

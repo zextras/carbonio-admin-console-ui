@@ -19,7 +19,7 @@ import { ReceivingMails } from './ReceivingMails';
 import { SaveCancelBar } from './SaveCancelBar';
 import { SendingMails } from './SendingMails';
 import { CosAttributes, CosPrefAttributes } from '../../../../types';
-import { COS } from '../../../constants';
+import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
@@ -80,7 +80,7 @@ export const COSPreferences = (): React.JSX.Element => {
 		if (!zimbraID) return;
 
 		const body: ModifyCosBody = {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			id: { _content: zimbraID },
 			a: Object.keys(DEFAULT_COS_PREF_ATTRIBUTES).map((key) => ({
 				n: key,

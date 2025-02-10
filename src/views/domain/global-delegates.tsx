@@ -25,7 +25,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
 import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -315,7 +315,7 @@ const GlobalDelegates: FC = () => {
 		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -359,7 +359,7 @@ const GlobalDelegates: FC = () => {
 	);
 	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -432,7 +432,7 @@ const GlobalDelegates: FC = () => {
 	const getIdentitiesList = useCallback(
 		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',

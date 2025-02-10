@@ -3,53 +3,61 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	Dispatch,
+	FC,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
-	Container,
-	Row,
-	Text,
-	Divider,
-	Switch,
-	Padding,
 	Button,
-	Input,
-	Select,
-	Icon,
-	useSnackbar,
-	SelectItem
+	Container,
+	Divider,
+	Padding,
+	Row,
+	SingleSelectionOnChange,
+	Text,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
-import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
+import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
+import COSForwarding from './advanced/cos-forwarding';
+import COSGeneralOptions from './advanced/cos-general-options';
+import COSPassword from './advanced/cos-password';
+import COSQuotas from './advanced/cos-quotas';
+import COSTimeoutPolicy from './advanced/cos-timeout-policy';
+import { Attribute, TimeItems } from '../../../types';
+import {
+	BACKUP_ENABLED,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	COS,
+	ZIMBRA_ADMIN_URN
+} from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
-import Textarea from '../components/textarea';
-import ListRow from '../list/list-row';
+import { Right, Rights, useRightsStore } from '../../store/rights/store';
+import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
-
-const CustomIcon = styled(Icon)`
-	width: 1.25rem;
-	height: 1.25rem;
-`;
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
 	[BACKUP_SELF_UNDELETE_ALLOWED]: boolean | undefined;
 };
-
-export const FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL =
-	'Limit user-specified forwarding addresses to (char)';
 
 type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 
@@ -78,21 +86,20 @@ function saveBackupAttributes(
 		setCoreAttributes(updateBackupAttributes);
 	}
 }
+function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
+	const attributes: Attribute[] = Object.keys(cosAdvanced).map((ele) => ({
+		n: ele,
+		_content: cosAdvanced[ele as keyof AccountType]?.toString() ?? ''
+	}));
 
-function saveCosAdvanced(cosAdvanced: any, zimbraId: unknown): Promise<any> {
-	const body: any = {};
-	body._jsns = 'urn:zimbraAdmin';
-	const attributes: any[] = [];
-	const id = {
-		_content: zimbraId
+	const body: ModifyCosBody = {
+		_jsns: ZIMBRA_ADMIN_URN,
+		id: {
+			_content: zimbraId
+		},
+		a: attributes
 	};
-	body.id = id;
 
-	Object.keys(cosAdvanced).forEach((ele: any) => {
-		attributes.push({ n: ele, _content: cosAdvanced[ele] });
-	});
-
-	body.a = attributes;
 	return modifyCos(body).then((data) => ({
 		cosId: body.id._content,
 		cos: data?.cos[0]
@@ -105,7 +112,7 @@ const CosAdvanced: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const [cosData, setCosData]: any = useState({});
+	const [cosData, setCosData] = useState<AccountType>({});
 	const setCos = useCosStore((state) => state.setCos);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -113,7 +120,7 @@ const CosAdvanced: FC = () => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
-	const timeItems: any[] = useMemo(
+	const timeItems = useMemo<TimeItems>(
 		() => [
 			{
 				label: t('label.seconds', 'Seconds'),
@@ -135,13 +142,23 @@ const CosAdvanced: FC = () => {
 		[t]
 	);
 
+	const labels = {
+		snackbar: {
+			successMessage: t('label.change_save_success_msg', 'The change has been saved successfully'),
+			errorMessage: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+		},
+		advanced: t('cos.advanced', 'Advanced'),
+		saveButton: t('label.save', 'Save'),
+		cancelButton: t('label.cancel', 'Cancel')
+	};
+
 	const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
 		useState<AdvancedBackupAttributes>({
 			[BACKUP_ENABLED]: undefined,
 			[BACKUP_SELF_UNDELETE_ALLOWED]: undefined
 		});
 
-	const [cosAdvanced, setCosAdvanced] = useState<any>({
+	const [cosAdvanced, setCosAdvanced] = useState<AccountType>({
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
@@ -231,9 +248,11 @@ const CosAdvanced: FC = () => {
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 
-	const setValue = useCallback(
-		(key: string, value: any): void => {
-			setCosAdvanced((prev: any) => ({ ...prev, [key]: value }));
+	const setValue = useCallback<
+		(key: keyof AccountType, value: AccountType[keyof AccountType]) => void
+	>(
+		(key, value): void => {
+			setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
 		},
 		[setCosAdvanced]
 	);
@@ -250,7 +269,7 @@ const CosAdvanced: FC = () => {
 
 	const setInitalValues = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(obj: any): void => {
+		(obj: AccountType): void => {
 			if (obj) {
 				setValue(
 					'zimbraMailForwardingAddressMaxLength',
@@ -284,14 +303,6 @@ const CosAdvanced: FC = () => {
 					obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : ''
 				);
 				setValue(
-					'zimbraDataSourcePop3PollingInterval',
-					obj?.zimbraDataSourcePop3PollingInterval ? obj?.zimbraDataSourcePop3PollingInterval : ''
-				);
-				setValue(
-					'zimbraDataSourceImapPollingInterval',
-					obj?.zimbraDataSourceImapPollingInterval ? obj?.zimbraDataSourceImapPollingInterval : ''
-				);
-				setValue(
 					'zimbraDataSourceCalendarPollingInterval',
 					obj?.zimbraDataSourceCalendarPollingInterval
 						? obj?.zimbraDataSourceCalendarPollingInterval
@@ -300,12 +311,6 @@ const CosAdvanced: FC = () => {
 				setValue(
 					'zimbraDataSourceRssPollingInterval',
 					obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : ''
-				);
-				setValue(
-					'zimbraDataSourceCaldavPollingInterval',
-					obj?.zimbraDataSourceCaldavPollingInterval
-						? obj?.zimbraDataSourceCaldavPollingInterval
-						: ''
 				);
 				setValue(
 					'zimbraPasswordLocked',
@@ -406,12 +411,12 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setStateAttrValues = useCallback(
-		(obj: any): void => {
+		(obj: AccountType): void => {
 			const setTimeValues = (
 				value: string | undefined,
-				setValueFn: React.Dispatch<any>,
-				setValueTypeFn: React.Dispatch<any>,
-				timeItem: any[]
+				setValueFn: Dispatch<SetStateAction<string | undefined>>,
+				setValueTypeFn: Dispatch<SetStateAction<string>>,
+				timeItem: TimeItems
 			): void => {
 				setValueFn(value?.slice(0, -1));
 				setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
@@ -485,9 +490,9 @@ const CosAdvanced: FC = () => {
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
-			const obj: any = {};
-			cosInformation.forEach((item: any) => {
-				obj[item?.n] = item._content;
+			const obj: AccountType = {};
+			cosInformation.forEach((item: Attribute) => {
+				obj[item?.n as keyof AccountType] = item._content;
 			});
 			if (!obj.zimbraMailForwardingAddressMaxLength) {
 				obj.zimbraMailForwardingAddressMaxLength = '';
@@ -587,7 +592,7 @@ const CosAdvanced: FC = () => {
 	}, [cosInformation, setInitalValues, setStateAttrValues, setValue, timeItems]);
 
 	const getFileQuota = useCallback((cosId: string): void => {
-		getFileQuotaById(cosId, COS).then((res: any) => {
+		getFileQuotaById(cosId, COS).then((res: { limit: string }) => {
 			if (res?.limit) {
 				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
 				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
@@ -603,14 +608,14 @@ const CosAdvanced: FC = () => {
 
 	const changeValue = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setCosAdvanced]
 	);
 
 	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setCosAdvanced((prev: any) => ({
+		(key: keyof AccountType): void => {
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				[key]: cosAdvanced[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
@@ -892,21 +897,23 @@ const CosAdvanced: FC = () => {
 		}
 	}, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
 
-	const onZimbraQuotaWarnIntervalTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
-					? `${zimbraQuotaWarnIntervalNum}${v}`
-					: ''
-			}));
-			setzimbraQuotaWarnIntervalType(v);
+	const onZimbraQuotaWarnIntervalTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
+						? `${zimbraQuotaWarnIntervalNum}${v}`
+						: ''
+				}));
+				setzimbraQuotaWarnIntervalType(v);
+			}
 		},
 		[zimbraQuotaWarnIntervalNum, setCosAdvanced]
 	);
 	const onZimbraQuotaWarnIntervalNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraQuotaWarnInterval: e.target.value
 					? `${e.target.value}${zimbraQuotaWarnIntervalType}`
@@ -917,21 +924,23 @@ const CosAdvanced: FC = () => {
 		[zimbraQuotaWarnIntervalType, setCosAdvanced]
 	);
 
-	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
-					? `${zimbraPasswordLockoutDurationNum}${v}`
-					: ''
-			}));
-			setZimbraPasswordLockoutDurationType(v);
+	const onZimbraPasswordLockoutDurationTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
+						? `${zimbraPasswordLockoutDurationNum}${v}`
+						: ''
+				}));
+				setZimbraPasswordLockoutDurationType(v);
+			}
 		},
 		[zimbraPasswordLockoutDurationNum, setCosAdvanced]
 	);
 	const onZimbraPasswordLockoutDurationNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: e.target.value
 					? `${e.target.value}${zimbraPasswordLockoutDurationType}`
@@ -942,21 +951,23 @@ const CosAdvanced: FC = () => {
 		[zimbraPasswordLockoutDurationType, setCosAdvanced]
 	);
 
-	const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
-					? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraPasswordLockoutFailureLifetimeType(v);
+	const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
+						? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraPasswordLockoutFailureLifetimeType(v);
+			}
 		},
 		[zimbraPasswordLockoutFailureLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: e.target.value
 					? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
@@ -967,21 +978,23 @@ const CosAdvanced: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeType, setCosAdvanced]
 	);
 
-	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
-					? `${zimbraAdminAuthTokenLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraAdminAuthTokenLifetimeType(v);
+	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
+						? `${zimbraAdminAuthTokenLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraAdminAuthTokenLifetimeType(v);
+			}
 		},
 		[zimbraAdminAuthTokenLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraAdminAuthTokenLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraAdminAuthTokenLifetime: e.target.value
 					? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
@@ -992,21 +1005,23 @@ const CosAdvanced: FC = () => {
 		[zimbraAdminAuthTokenLifetimeType, setCosAdvanced]
 	);
 
-	const onZimbraAuthTokenLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
-					? `${zimbraAuthTokenLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraAuthTokenLifetimeType(v);
+	const onZimbraAuthTokenLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
+						? `${zimbraAuthTokenLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraAuthTokenLifetimeType(v);
+			}
 		},
 		[zimbraAuthTokenLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraAuthTokenLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraAuthTokenLifetime: e.target.value
 					? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
@@ -1017,21 +1032,23 @@ const CosAdvanced: FC = () => {
 		[zimbraAdminAuthTokenLifetimeType, setCosAdvanced]
 	);
 
-	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
-					? `${zimbraMailIdleSessionTimeoutNum}${v}`
-					: ''
-			}));
-			setZimbraMailIdleSessionTimeoutType(v);
+	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
+						? `${zimbraMailIdleSessionTimeoutNum}${v}`
+						: ''
+				}));
+				setZimbraMailIdleSessionTimeoutType(v);
+			}
 		},
 		[zimbraMailIdleSessionTimeoutNum, setCosAdvanced]
 	);
 	const onZimbraMailIdleSessionTimeoutNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraMailIdleSessionTimeout: e.target.value
 					? `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
@@ -1042,21 +1059,23 @@ const CosAdvanced: FC = () => {
 		[zimbraMailIdleSessionTimeoutType, setCosAdvanced]
 	);
 
-	const onZimbraMailTrashLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
-					? `${zimbraMailTrashLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraMailMessageLifetimeType(v);
+	const onZimbraMailTrashLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
+						? `${zimbraMailTrashLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraMailMessageLifetimeType(v);
+			}
 		},
 		[zimbraMailTrashLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailTrashLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraMailTrashLifetime: e.target.value
 					? `${e.target.value}${zimbraMailTrashLifetimeType}`
@@ -1067,19 +1086,23 @@ const CosAdvanced: FC = () => {
 		[zimbraMailTrashLifetimeType, setCosAdvanced]
 	);
 
-	const onZimbraMailSpamLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum ? `${zimbraMailSpamLifetimeNum}${v}` : ''
-			}));
-			setZimbraMailSpamLifetimeType(v);
+	const onZimbraMailSpamLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum
+						? `${zimbraMailSpamLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraMailSpamLifetimeType(v);
+			}
 		},
 		[zimbraMailSpamLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailSpamLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraMailSpamLifetime: e.target.value
 					? `${e.target.value}${zimbraMailSpamLifetimeType}`
@@ -1111,7 +1134,7 @@ const CosAdvanced: FC = () => {
 			}
 			setShowAccountQuotaLimitMsg(false);
 			setAccountQuotaGBValue(e.target.value);
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraMailQuota: e.target.value ? Math.round(GbToBytes(e.target.value)) : ''
 			}));
@@ -1119,21 +1142,23 @@ const CosAdvanced: FC = () => {
 		[setCosAdvanced]
 	);
 
-	const onZimbraMailMessageLifetimeTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			setCosAdvanced((prev: any) => ({
-				...prev,
-				zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
-					? `${zimbraMailMessageLifetimeNum}${v}`
-					: ''
-			}));
-			setZimbraMailMessageLifetimeType(v);
+	const onZimbraMailMessageLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
+		(v) => {
+			if (v) {
+				setCosAdvanced((prev: AccountType) => ({
+					...prev,
+					zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
+						? `${zimbraMailMessageLifetimeNum}${v}`
+						: ''
+				}));
+				setZimbraMailMessageLifetimeType(v);
+			}
 		},
 		[zimbraMailMessageLifetimeNum, setCosAdvanced]
 	);
 	const onZimbraMailMessageLifetimeNumChange = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setCosAdvanced((prev: any) => ({
+			setCosAdvanced((prev: AccountType) => ({
 				...prev,
 				zimbraMailMessageLifetime: e.target.value
 					? `${e.target.value}${zimbraMailMessageLifetimeType}`
@@ -1146,27 +1171,28 @@ const CosAdvanced: FC = () => {
 
 	const cosName = useCosStore((state) => state.cos?.name);
 	const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
-		setFileQuotaLimitById(cosId, limit, COS).then((res) => {
+		setFileQuotaLimitById(cosId, limit, COS).then(() => {
 			setShowFileQuotaLimitMsg(false);
 		});
 	}, []);
 
 	const resetFileQuotaLimit = useCallback((cosId: string) => {
-		resetFileQuotaLimitById(cosId, COS).then((res) => {
+		resetFileQuotaLimitById(cosId, COS).then(() => {
 			setShowFileQuotaLimitMsg(false);
 		});
 	}, []);
 
 	const onSave = (): void => {
-		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
+		const { zimbraId = '' } = cosData;
 
-		saveCosAdvanced(cosAdvanced, cosData.zimbraId)
+		saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
+		saveCosAdvanced(cosAdvanced, zimbraId)
 			.then(({ cosId, cos }) => {
 				flushCache('cos', 'id', cosId);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
-					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					label: labels.snackbar.successMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1176,12 +1202,9 @@ const CosAdvanced: FC = () => {
 				}
 				if (isAdvanced && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
 					if (fileQuotaLimitGBValue) {
-						setFileQuotaLimit(
-							cosData.zimbraId,
-							Math.round(GbToBytes(fileQuotaLimitGBValue)).toString()
-						);
+						setFileQuotaLimit(zimbraId, Math.round(GbToBytes(fileQuotaLimitGBValue)).toString());
 					} else {
-						resetFileQuotaLimit(cosData.zimbraId);
+						resetFileQuotaLimit(zimbraId);
 					}
 				}
 				setIsDirty(false);
@@ -1190,9 +1213,7 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : labels.snackbar.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1225,16 +1246,20 @@ const CosAdvanced: FC = () => {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message
-						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : labels.snackbar.errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, isAdvanced, setCosAdvancedAttributeValues, t]);
+	}, [
+		cosName,
+		createSnackbar,
+		isAdvanced,
+		setCosAdvancedAttributeValues,
+		t,
+		labels.snackbar.errorMessage
+	]);
 
 	const changeBackupAttribute = useCallback(
 		(key: AdvancedBackupAttributesKeys): void => {
@@ -1248,38 +1273,32 @@ const CosAdvanced: FC = () => {
 	);
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
+		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
-					background="gray6"
+					background={'gray6'}
 					height="58px"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('cos.advanced', 'Advanced')}
+								{labels.advanced}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onCancel}
-									/>
+									<Button label={labels.cancelButton} color="secondary" onClick={onCancel} />
 								)}
 							</Padding>
-							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-							)}
+							{isDirty && <Button label={labels.saveButton} color="primary" onClick={onSave} />}
 						</Row>
 					</Row>
 				</Container>
 			</Row>
-			<Row orientation="horizontal" width="100%" background="gray6">
+			<Row orientation="horizontal" width="100%" background={'gray6'}>
 				<Divider />
 			</Row>
 			<Container
@@ -1290,884 +1309,92 @@ const CosAdvanced: FC = () => {
 				padding={{ top: 'large' }}
 			>
 				{isAdvanced && (
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-							{t('cos.general_options', 'General Options')}
-						</Text>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container
-										mainAlignment="flex-start"
-										style={{ gap: 10 }}
-										orientation="horizontal"
-									>
-										<Container
-											mainAlignment="flex-start"
-											crossAlignment="flex-start"
-											width="50%"
-											orientation="vertical"
-										>
-											<Switch
-												label={t('label.allow_restore_message', 'Allow user to restore messages')}
-												value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
-												// eslint-disable-next-line max-len
-												onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
-												iconColor="primary"
-												disabled={readonlyCOS}
-											/>
-										</Container>
-										<Container
-											mainAlignment="flex-start"
-											crossAlignment="flex-start"
-											width="50%"
-											orientation="vertical"
-										>
-											<Switch
-												label={t('label.backup_enabled', 'Enable / Disable Backup')}
-												value={cosAdvancedBackupAttributes[BACKUP_ENABLED]}
-												onClick={(): void => changeBackupAttribute(BACKUP_ENABLED)}
-												iconColor="primary"
-												disabled={readonlyCOS}
-											/>
-										</Container>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-					</Row>
+					<COSGeneralOptions
+						cosAdvancedBackupAttributes={cosAdvancedBackupAttributes}
+						readonlyCOS={readonlyCOS}
+						changeBackupAttribute={changeBackupAttribute}
+					/>
 				)}
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.forwarding', 'Forwarding')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.limit_user_specified_forwarding_addresses',
-											FORWARDING_ADDRESSES_MAX_LENGTH_DEFAULT_LABEL
-										)}
-										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
-										backgroundColor="gray5"
-										inputName="zimbraMailForwardingAddressMaxLength"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t(
-											'cos.max_user_specific_forwarding_address',
-											'Max user-specific forwarding address'
-										)}
-										value={cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs}
-										backgroundColor="gray5"
-										inputName="zimbraMailForwardingAddressMaxNumAddrs"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.quotas', 'Quotas')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								{isAdvanced && initFileQuotaLimitGBValue && (
-									<Container padding={{ right: 'small' }}>
-										<Input
-											label={t('cos.files_account_quota_gb', 'Files Account quota (GB)')}
-											value={fileQuotaLimitGBValue}
-											backgroundColor="gray5"
-											inputName="fileQuotaLimit"
-											onChange={onFileQuotaChange}
-											disabled={readonlyCOS}
-										/>
-										{showFileQuotaLimitMsg && (
-											<Container
-												mainAlignment="flex-start"
-												crossAlignment="flex-start"
-												width="fill"
-											>
-												<Padding top="small">
-													<Text size="extrasmall" weight="regular" color="primary">
-														{t(
-															'label.maximum_3_digits_allowed_decimal_point',
-															'Maximum 3 digits allowed after the decimal point'
-														)}
-													</Text>
-												</Padding>
-											</Container>
-										)}
-									</Container>
-								)}
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.mails_account_quota_gb', 'Mails Account quota (GB)')}
-										value={accountQuotaGBValue}
-										backgroundColor="gray5"
-										inputName="zimbraMailQuota"
-										onChange={onZimbraMailQuotaChange}
-										disabled={readonlyCOS}
-									/>
-									{showAccountQuotaLimitMsg && (
-										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-											<Padding top="small">
-												<Text size="extrasmall" weight="regular" color="primary">
-													{t(
-														'label.maximum_3_digits_allowed_decimal_point',
-														'Maximum 3 digits allowed after the decimal point'
-													)}
-												</Text>
-											</Padding>
-										</Container>
-									)}
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t(
-											'cos.max_contacts_allowed_in_the_folder',
-											'Max contacts allowed in the folder'
-										)}
-										value={cosAdvanced.zimbraContactMaxNumEntries}
-										backgroundColor="gray5"
-										inputName="zimbraContactMaxNumEntries"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.percentage_threshold_for_quota_warning',
-											'Percentage threshold for quota warning messages (%)'
-										)}
-										value={cosAdvanced.zimbraQuotaWarnPercent}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnPercent"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t(
-											'cos.minimum_duration_of_time_between_quota_warnings',
-											'Minimum duration of time between quota warnings'
-										)}
-										value={zimbraQuotaWarnIntervalNum}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnInterval"
-										onChange={onZimbraQuotaWarnIntervalNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="26%" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										// eslint-disable-next-line sonarjs/no-duplicate-string
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraQuotaWarnIntervalType === ''
-												? timeItems[0]
-												: // eslint-disable-next-line max-len
-												  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
-										}
-										showCheckbox={false}
-										onChange={onZimbraQuotaWarnIntervalTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container>
-									<Textarea
-										label={t(
-											'cos.quota_warning_message_template',
-											'Quota warning message template'
-										)}
-										// style={{ height: 'fitContent' }}
-										value={cosAdvanced.zimbraQuotaWarnMessage}
-										backgroundColor="gray5"
-										inputName="zimbraQuotaWarnMessage"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.password', 'Password')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-						<Container
-							orientation="horizontal"
-							width="99%"
-							crossAlignment="center"
-							mainAlignment="space-between"
-							background="#D3EBF8"
-							padding={{
-								top: 'large',
-								bottom: 'large'
-							}}
-							style={{ borderRadius: '2px 2px 0px 0px' }}
-						>
-							<Row mainAlignment="flex-start">
-								<Padding horizontal="small">
-									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
-								</Padding>
-							</Row>
-							<Row
-								mainAlignment="flex-start"
-								width="100%"
-								padding={{
-									top: 'small',
-									bottom: 'small'
-								}}
-							>
-								<Text overflow="break-word">
-									{t(
-										'cos.password_set_to_use_external_authentication_information_msg',
-										'These settings do not affect the passwords set by users in domains that are configured to use external authentication'
-									)}
-								</Text>
-							</Row>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Switch
-										value={cosAdvanced.zimbraPasswordLocked === 'TRUE'}
-										label={t(
-											'cos.prevent_user_from_changing_password',
-											'Prevent user from changing password'
-										)}
-										onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
-										iconColor="primary"
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.minimum_password_length', 'Minimum password length')}
-										value={cosAdvanced.zimbraPasswordMinLength}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinLength"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t('cos.maximum_password_length', 'Maximum password length')}
-										value={cosAdvanced.zimbraPasswordMaxLength}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMaxLength"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t('cos.minimum_upper_case_characters', 'Minimum upper case characters')}
-										value={cosAdvanced.zimbraPasswordMinUpperCaseChars}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinUpperCaseChars"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t('cos.minimum_lower_case_characters', 'Minimum lower case characters')}
-										value={cosAdvanced.zimbraPasswordMinLowerCaseChars}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinLowerCaseChars"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
-										value={cosAdvanced.zimbraPasswordMinPunctuationChars}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinPunctuationChars"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-										value={cosAdvanced.zimbraPasswordMinNumericChars}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinNumericChars"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-										value={cosAdvanced.zimbraPasswordMinAge}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinAge"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-										value={cosAdvanced.zimbraPasswordMaxAge}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMaxAge"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.minimum_numeric_characters_or_punctuation_symbols',
-											'Minimum numeric characters or punctuation symbols'
-										)}
-										value={cosAdvanced.zimbraPasswordMinDigitsOrPuncs}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordMinDigitsOrPuncs"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Input
-										label={t(
-											'cos.minimum_number_of_unique_password_history',
-											'Minimum number of unique passwords history'
-										)}
-										value={cosAdvanced.zimbraPasswordEnforceHistory}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordEnforceHistory"
-										onChange={changeValue}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ bottom: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
-									<Switch
-										value={cosAdvanced.zimbraPasswordBlockCommonEnabled === 'TRUE'}
-										label={t('cos.reject_common_passwords', 'Reject common passwords')}
-										onClick={(): void => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
-										iconColor="primary"
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.failed_login_policy', 'Failed Login Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Switch
-										value={cosAdvanced.zimbraPasswordLockoutEnabled === 'TRUE'}
-										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-										onClick={(): void => changeSwitchOption('zimbraPasswordLockoutEnabled')}
-										iconColor="primary"
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Input
-										label={t(
-											'cos.number_of_consecutive_failed_login_allowed',
-											'Number of consecutive failed logins allowed'
-										)}
-										value={cosAdvanced.zimbraPasswordLockoutMaxFailures}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutMaxFailures"
-										onChange={changeValue}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="72%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-										value={zimbraPasswordLockoutDurationNum}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutDuration"
-										onChange={onZimbraPasswordLockoutDurationNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraPasswordLockoutDurationType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraPasswordLockoutDurationType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraPasswordLockoutDurationTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-									<Input
-										label={t(
-											'cos.time_window_failed_logins_must_occur_to_lock_account',
-											'Time window in which the failed logins must occur to lock the account:'
-										)}
-										value={zimbraPasswordLockoutFailureLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraPasswordLockoutFailureLifetime"
-										onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-								<Container width="28%" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraPasswordLockoutFailureLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraPasswordLockoutFailureLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.timeout_policy', 'Timeout Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t(
-											'cos.admin_console_auth_token_lifetime',
-											'Admin console auth token lifetime'
-										)}
-										value={zimbraAdminAuthTokenLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraAdminAuthTokenLifetime"
-										onChange={onZimbraAdminAuthTokenLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraAdminAuthTokenLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraAdminAuthTokenLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
-										value={zimbraAuthTokenLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraAuthTokenLifetime"
-										onChange={onZimbraAuthTokenLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraAuthTokenLifetimeType === ''
-												? timeItems[-1]
-												: // eslint-disable-next-line max-len
-												  timeItems.find((item: any) => item.value === zimbraAuthTokenLifetimeType)
-										}
-										showCheckbox={false}
-										onChange={onZimbraAuthTokenLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.session_idle_timeout', 'Session idle timeout')}
-										value={zimbraMailIdleSessionTimeoutNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailIdleSessionTimeout"
-										onChange={onZimbraMailIdleSessionTimeoutNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraMailIdleSessionTimeoutType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailIdleSessionTimeoutType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extralarge" weight="bold">
-						{t('cos.email_retention_policy', 'Email Retention Policy')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
-										value={zimbraMailMessageLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailMessageLifetime"
-										onChange={onZimbraMailMessageLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraMailMessageLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailMessageLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailMessageLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
-										value={zimbraMailTrashLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailTrashLifetime"
-										onChange={onZimbraMailTrashLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraMailTrashLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailTrashLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailTrashLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container width="100%" padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
-										value={zimbraMailSpamLifetimeNum}
-										backgroundColor="gray5"
-										inputName="zimbraMailSpamLifetime"
-										onChange={onZimbraMailSpamLifetimeNumChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
-									<Select
-										items={timeItems}
-										background="gray5"
-										label={t('cos.time_range', 'Time Range')}
-										selection={
-											zimbraMailSpamLifetimeType === ''
-												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraMailSpamLifetimeType
-												  )
-										}
-										showCheckbox={false}
-										onChange={onZimbraMailSpamLifetimeTypeChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Divider />
-				</Row>
+				<COSForwarding
+					cosAdvanced={cosAdvanced}
+					changeValue={changeValue}
+					readonlyCOS={readonlyCOS}
+				/>
+				<COSQuotas
+					isAdvanced={isAdvanced}
+					showFileQuotaLimitMsg={showFileQuotaLimitMsg}
+					showAccountQuotaLimitMsg={showAccountQuotaLimitMsg}
+					readonlyCOS={readonlyCOS}
+					cosAdvanced={cosAdvanced}
+					initFileQuotaLimitGBValue={initFileQuotaLimitGBValue}
+					fileQuotaLimitGBValue={fileQuotaLimitGBValue}
+					accountQuotaGBValue={accountQuotaGBValue}
+					zimbraQuotaWarnIntervalNum={zimbraQuotaWarnIntervalNum}
+					timeItems={timeItems}
+					zimbraQuotaWarnIntervalType={zimbraQuotaWarnIntervalType}
+					onFileQuotaChange={onFileQuotaChange}
+					onZimbraMailQuotaChange={onZimbraMailQuotaChange}
+					changeValue={changeValue}
+					onZimbraQuotaWarnIntervalNumChange={onZimbraQuotaWarnIntervalNumChange}
+					onZimbraQuotaWarnIntervalTypeChange={onZimbraQuotaWarnIntervalTypeChange}
+				/>
+				<COSPassword
+					cosAdvanced={cosAdvanced}
+					readonlyCOS={readonlyCOS}
+					changeSwitchOption={changeSwitchOption}
+					changeValue={changeValue}
+				/>
+				<COSFailedLoginPolicy
+					cosAdvanced={cosAdvanced}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					zimbraPasswordLockoutDurationNum={zimbraPasswordLockoutDurationNum}
+					zimbraPasswordLockoutDurationType={zimbraPasswordLockoutDurationType}
+					zimbraPasswordLockoutFailureLifetimeNum={zimbraPasswordLockoutFailureLifetimeNum}
+					zimbraPasswordLockoutFailureLifetimeType={zimbraPasswordLockoutFailureLifetimeType}
+					changeSwitchOption={changeSwitchOption}
+					changeValue={changeValue}
+					onZimbraPasswordLockoutDurationNumChange={onZimbraPasswordLockoutDurationNumChange}
+					onZimbraPasswordLockoutDurationTypeChange={onZimbraPasswordLockoutDurationTypeChange}
+					onZimbraPasswordLockoutFailureLifetimeNumChange={
+						onZimbraPasswordLockoutFailureLifetimeNumChange
+					}
+					onZimbraPasswordLockoutFailureLifetimeTypeChange={
+						onZimbraPasswordLockoutFailureLifetimeTypeChange
+					}
+				/>
+				<COSTimeoutPolicy
+					zimbraAdminAuthTokenLifetimeNum={zimbraAdminAuthTokenLifetimeNum}
+					zimbraAdminAuthTokenLifetimeType={zimbraAdminAuthTokenLifetimeType}
+					zimbraAuthTokenLifetimeNum={zimbraAuthTokenLifetimeNum}
+					zimbraAuthTokenLifetimeType={zimbraAuthTokenLifetimeType}
+					zimbraMailIdleSessionTimeoutNum={zimbraMailIdleSessionTimeoutNum}
+					zimbraMailIdleSessionTimeoutType={zimbraMailIdleSessionTimeoutType}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					onZimbraAdminAuthTokenLifetimeNumChange={onZimbraAdminAuthTokenLifetimeNumChange}
+					onZimbraAdminAuthTokenLifetimeTypeChange={onZimbraAdminAuthTokenLifetimeTypeChange}
+					onZimbraAuthTokenLifetimeNumChange={onZimbraAuthTokenLifetimeNumChange}
+					onZimbraAuthTokenLifetimeTypeChange={onZimbraAuthTokenLifetimeTypeChange}
+					onZimbraMailIdleSessionTimeoutNumChange={onZimbraMailIdleSessionTimeoutNumChange}
+					onZimbraMailIdleSessionTimeoutTypeChange={onZimbraMailIdleSessionTimeoutTypeChange}
+				/>
+				<COSEmailRetentionPolicy
+					zimbraMailMessageLifetimeNum={zimbraMailMessageLifetimeNum}
+					zimbraMailMessageLifetimeType={zimbraMailMessageLifetimeType}
+					zimbraMailTrashLifetimeNum={zimbraMailTrashLifetimeNum}
+					zimbraMailTrashLifetimeType={zimbraMailTrashLifetimeType}
+					zimbraMailSpamLifetimeNum={zimbraMailSpamLifetimeNum}
+					zimbraMailSpamLifetimeType={zimbraMailSpamLifetimeType}
+					readonlyCOS={readonlyCOS}
+					timeItems={timeItems}
+					onZimbraMailMessageLifetimeNumChange={onZimbraMailMessageLifetimeNumChange}
+					onZimbraMailMessageLifetimeTypeChange={onZimbraMailMessageLifetimeTypeChange}
+					onZimbraMailTrashLifetimeNumChange={onZimbraMailTrashLifetimeNumChange}
+					onZimbraMailTrashLifetimeTypeChange={onZimbraMailTrashLifetimeTypeChange}
+					onZimbraMailSpamLifetimeNumChange={onZimbraMailSpamLifetimeNumChange}
+					onZimbraMailSpamLifetimeTypeChange={onZimbraMailSpamLifetimeTypeChange}
+				/>
 			</Container>
 		</Container>
 	);

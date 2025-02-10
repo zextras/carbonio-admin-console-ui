@@ -18,6 +18,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
@@ -88,7 +89,7 @@ export const ServicesPassphrase: FC = () => {
 
 	const onSave = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'add',
@@ -143,7 +144,7 @@ export const ServicesPassphrase: FC = () => {
 	const onDelete = useCallback(
 		(cred: CredentialType): void => {
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'credential',
 				request: 'delete',

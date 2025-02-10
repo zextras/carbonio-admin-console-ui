@@ -45,7 +45,8 @@ import {
 	EXTERNAL_SERVER_EXAMPLE,
 	LDAP_BIND_DN_LABLE,
 	LDAP_FILTER_LABEL,
-	LDAP_SEARCH_BASE_LABEL
+	LDAP_SEARCH_BASE_LABEL,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
 import { destroyAccount } from '../../../services/destroy-account-service';
@@ -567,7 +568,7 @@ const DomainGalSettings: FC = () => {
 		} = {};
 		let attributes: Attribute[] = [];
 		body.id = domainData?.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		attributes.push({
 			n: 'zimbraGalMaxResults',
 			_content: zimbraGalMaxResults
@@ -639,7 +640,7 @@ const DomainGalSettings: FC = () => {
 						dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
 					} = {};
 					dataSourceBody.id = items?._content;
-					dataSourceBody._jsns = 'urn:zimbraAdmin';
+					dataSourceBody._jsns = ZIMBRA_ADMIN_URN;
 					attributes = [];
 					attributes.push({
 						n: 'zimbraGalType',
