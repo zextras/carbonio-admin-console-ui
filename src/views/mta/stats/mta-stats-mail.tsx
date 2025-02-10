@@ -31,7 +31,8 @@ import {
 	RELEASE,
 	REQUEUE,
 	DELETE,
-	RECORD_DISPLAY_LIMIT
+	RECORD_DISPLAY_LIMIT,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
@@ -295,7 +296,7 @@ const MTAStatsMail: FC<{
 		}
 	}, []);
 
-	const setMailStateCountData = useCallback((queue) => {
+	const setMailStateCountData = useCallback((queue: any) => {
 		setMailStatCount({
 			queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
 			corrupted:
@@ -394,7 +395,7 @@ const MTAStatsMail: FC<{
 	}, [getMailFromMailQueue]);
 
 	const callAllRequest = useCallback(
-		(request) => {
+		(request: any) => {
 			batchService({
 				MailQueueActionRequest: request,
 				_jsns: 'urn:zimbra'
@@ -412,7 +413,7 @@ const MTAStatsMail: FC<{
 	);
 
 	const mailQueAction = useCallback(
-		(operation) => {
+		(operation: string) => {
 			const mailActionRequestData: {
 				_jsns: string;
 				server: {
@@ -423,7 +424,7 @@ const MTAStatsMail: FC<{
 			if (serverState?.serverName) {
 				selectedRow.forEach((item) => {
 					mailActionRequestData.push({
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						server: {
 							name: serverState?.serverName,
 							queue: {

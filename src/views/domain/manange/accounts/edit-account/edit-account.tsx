@@ -516,7 +516,7 @@ const EditAccount: FC<{
 				.then(() => {
 					createSnackbar({
 						key: 'success',
-						type: 'success',
+						severity: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
@@ -860,7 +860,7 @@ const EditAccount: FC<{
 			});
 	}, [createSnackbar, selectedAccount?.id, t]);
 
-	const accountUserType = useCallback((item): string => {
+	const accountUserType = useCallback((item: any): string => {
 		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
 		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
 		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
@@ -925,7 +925,7 @@ const EditAccount: FC<{
 		setIsOpenDeleteDialog(false);
 	}, []);
 	const onSuccess = useCallback(
-		(message) => {
+		(message: string) => {
 			createSnackbar({
 				key: 'success',
 				severity: 'success',

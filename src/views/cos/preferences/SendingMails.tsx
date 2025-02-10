@@ -74,26 +74,6 @@ export const SendingMails = ({
 					padding={{ bottom: 'large' }}
 				>
 					<ListRow>
-						<Container crossAlignment="flex-start">
-							<Switch
-								value={cosPrefAttributes?.zimbraAllowAnyFromAddress === 'TRUE'}
-								onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
-								label={t('cos.allow_sending_from_any_address', 'Allow sending from any address')}
-								iconColor="primary"
-								disabled={isReadOnlyCosEntry}
-							/>
-						</Container>
-					</ListRow>
-				</Container>
-			</Row>
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					height="fit"
-					crossAlignment="flex-start"
-					background="gray6"
-					padding={{ bottom: 'large' }}
-				>
-					<ListRow>
 						<Container>
 							<Select
 								items={SEND_READ_RECEIPTS}

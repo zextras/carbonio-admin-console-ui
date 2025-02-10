@@ -34,6 +34,7 @@ import {
 	HELPDESK_ADMINS,
 	RECORD_DISPLAY_LIMIT,
 	SYSTEM_ACCOUNT_FLAG,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -95,8 +96,8 @@ const ManageDelegates: FC = () => {
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [selectedAccount, setSelectedAccount] = useState<any>({});
 	const [accountDetail, setAccountDetail] = useState<any>({});
-	const [directMemberList, setDirectMemberList] = useState<any>({});
-	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>([]);
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
@@ -174,7 +175,7 @@ const ManageDelegates: FC = () => {
 			setSignatureList(signatureResponse);
 		}
 	};
-	const getSignatureDetail = useCallback((id): void => {
+	const getSignatureDetail = useCallback((id: string): void => {
 		getSingatures(id).then((data: any) => {
 			const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
 			generateSignatureList(signatureResponse);
@@ -211,7 +212,7 @@ const ManageDelegates: FC = () => {
 		[t]
 	);
 
-	const getAccountSpecificDetail = useCallback((id): void => {
+	const getAccountSpecificDetail = useCallback((id: string): void => {
 		getAccountRequest(id, '', 0).then((res: any) => {
 			const accountObj: any = {};
 			// eslint-disable-next-line array-callback-return
@@ -231,7 +232,7 @@ const ManageDelegates: FC = () => {
 			setAccSpecificDetail({ ...accountObj });
 		});
 	}, []);
-	const getCosDetail = useCallback((id): void => {
+	const getCosDetail = useCallback((id: string): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
 			const obj: any = {};
 			data?.cos?.[0]?.a?.forEach((ele: CosA) => {
@@ -288,7 +289,7 @@ const ManageDelegates: FC = () => {
 
 	const getDeletePasswordRight = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(target): void => {
+		(target: string): void => {
 			checkRightRequest(target, account.name, 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
 					setAllowedDeletePassword(data?.allow);
@@ -299,7 +300,7 @@ const ManageDelegates: FC = () => {
 	);
 
 	const getAccountDetail = useCallback(
-		(id): void => {
+		(id: string): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = processAccountData(data);
@@ -327,7 +328,7 @@ const ManageDelegates: FC = () => {
 		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
 	);
 	const getAccountMembership = useCallback(
-		(id): void => {
+		(id: string): void => {
 			getAccountMembershipRequest(id)
 				.then((data: any) => {
 					const directMemArr: any[] = [];
@@ -359,10 +360,10 @@ const ManageDelegates: FC = () => {
 		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
 	);
 	const getListOtp = useCallback(
-		(id): void => {
+		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -404,9 +405,9 @@ const ManageDelegates: FC = () => {
 		},
 		[t]
 	);
-	const getCredentialList = useCallback((id): void => {
+	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -420,7 +421,7 @@ const ManageDelegates: FC = () => {
 		});
 	}, []);
 	const getFolderList = useCallback(
-		(acc, delegateList): void => {
+		(acc: any, delegateList: any): void => {
 			postSoapFetchRequest(
 				`/service/admin/soap/GetFolderRequest`,
 				{
@@ -476,9 +477,9 @@ const ManageDelegates: FC = () => {
 		[flatten]
 	);
 	const getIdentitiesList = useCallback(
-		(acc): void => {
+		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',
@@ -499,18 +500,18 @@ const ManageDelegates: FC = () => {
 		[getFolderList]
 	);
 
-	const getAllUserSession = useCallback((acc) => {
+	const getAllUserSession = useCallback((accName: string) => {
 		const sessionType: string[] = ['admin', 'imap', 'soap'];
 		setUserSessionList([]);
 		setAllUserSessionList([]);
 		sessionType.forEach((item: string) => {
-			getSessions(item, acc).then((resp: any) => {
+			getSessions(item, accName).then((resp: any) => {
 				if (resp?.s) {
 					const existingSession = resp?.s;
 					if (existingSession) {
 						const session: UserSession[] = [];
 						const filterSession = existingSession.filter(
-							(sessionItem: any) => sessionItem?.name === acc
+							(sessionItem: any) => sessionItem?.name === accName
 						);
 						if (filterSession.length > 0) {
 							filterSession.forEach((element: any) => {
@@ -559,7 +560,7 @@ const ManageDelegates: FC = () => {
 	);
 
 	const getAccountDistributionList = useCallback(
-		(id) => {
+		(id: string) => {
 			getAccountMembershipRequest(id)
 				.then((res) => {
 					const data = res?.dl?.filter((item: objectType) => item?.via === undefined);
@@ -640,7 +641,7 @@ const ManageDelegates: FC = () => {
 	const handleRevokesGrants = useCallback(() => {
 		setLoading(true);
 		InitDomainForDelegation('/admin/initDomainForDelegation', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			domain: domain?.name
 		})
 			.then((res: objectType) => {
@@ -661,7 +662,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {
@@ -676,7 +677,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {
@@ -691,7 +692,7 @@ const ManageDelegates: FC = () => {
 							postSoapFetchRequest(
 								`/service/admin/soap/GrantRightRequest`,
 								{
-									_jsns: 'urn:zimbraAdmin',
+									_jsns: ZIMBRA_ADMIN_URN,
 									target,
 									grantee,
 									right: {

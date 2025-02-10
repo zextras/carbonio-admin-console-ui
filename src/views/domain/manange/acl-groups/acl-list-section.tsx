@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -16,7 +24,8 @@ import {
 	Dropdown,
 	Select,
 	ChipInput,
-	useSnackbar
+	useSnackbar,
+	ChipItem
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -122,7 +131,7 @@ const AclListSection: FC<any> = () => {
 	}, [ownersList, setAclListDetail]);
 
 	const changeResourceDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			if (e.target.name === 'memberURL') {
 				const validQuery = isValidLdapQuery(e.target.value);
 				setIsValidQuery(validQuery);
@@ -165,7 +174,7 @@ const AclListSection: FC<any> = () => {
 	}, [dynamicListMember, setAclListDetail]);
 
 	const getSearchMemberList = useCallback(
-		(searchKeyword) => {
+		(searchKeyword: string) => {
 			searchGal(searchKeyword).then((data) => {
 				const contactList = data?.cn;
 				if (contactList) {
@@ -278,7 +287,7 @@ const AclListSection: FC<any> = () => {
 	);
 
 	const onEmailAdd = useCallback(
-		(v) => {
+		(v: ChipItem[]) => {
 			setGrantEmails(v);
 			setAclListDetail((prev: any) => ({
 				...prev,
@@ -288,7 +297,7 @@ const AclListSection: FC<any> = () => {
 		[setAclListDetail]
 	);
 
-	const searchEmailFromGal = useCallback((searchKeyword) => {
+	const searchEmailFromGal = useCallback((searchKeyword: string) => {
 		searchGal(searchKeyword).then((data) => {
 			const contactList = data?.cn;
 			if (contactList) {

@@ -1455,13 +1455,6 @@ export const localeList = (t: TFunction): SelectItem[] => [
 		value: 'pl'
 	},
 	{
-		label: t('locale.label_portuguese_brazil', {
-			value: 'português (Brasil)',
-			defaultValue: 'Portuguese - {{value}}'
-		}),
-		value: 'pt_BR'
-	},
-	{
 		label: t('locale.label_romanian', { value: 'română', defaultValue: 'Romanian - {{value}}' }),
 		value: 'ro'
 	},
@@ -2293,4 +2286,12 @@ export function bytesToHumanReadable(bytes: number): string {
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
 	const sizeIndex = Math.min(i, sizes.length - 1);
 	return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
+}
+
+export function bytesToMB(bytes: number): number {
+	return parseFloat((bytes / 1024 / 1024).toFixed(2));
+}
+
+export function mbToBytes(mb: number): number {
+	return mb * 1024 * 1024;
 }

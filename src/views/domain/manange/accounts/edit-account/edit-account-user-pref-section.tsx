@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useMemo, useContext, useState, useEffect } from 'react';
+import React, {
+	FC,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	useEffect,
+	ChangeEvent
+} from 'react';
 
 import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
@@ -177,28 +185,8 @@ const EditAccountUserPrefrencesSection: FC<{
 		[t]
 	);
 
-	const onPrefMailPollingIntervalTypeChange = useCallback(
-		(v: string) => {
-			setAccountDetail((prev: any) => ({
-				...prev,
-				zimbraPrefMailPollingInterval: `${zimbraPrefMailPollingIntervalNum}${v}`
-			}));
-		},
-		[zimbraPrefMailPollingIntervalNum, setAccountDetail]
-	);
-	const onPrefMailPollingIntervalNumChange = useCallback(
-		(e) => {
-			setAccountDetail((prev: any) => ({
-				...prev,
-				zimbraPrefMailPollingInterval: `${e.target.value}${prefMailPollingIntervalType}`
-			}));
-			setZimbraPrefMailPollingIntervalNum(e.target.value);
-		},
-		[setAccountDetail, prefMailPollingIntervalType]
-	);
-
 	const changeOutOfOfficeDurationetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
 				zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`
@@ -258,7 +246,7 @@ const EditAccountUserPrefrencesSection: FC<{
 	};
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
@@ -742,7 +730,7 @@ const EditAccountUserPrefrencesSection: FC<{
 						subValue={accountDetail?.zimbraPrefCalendarAutoAddInvites}
 						onChange={changeSwitchOption}
 						label={t(
-							'account_details.add_appointments_when_invited',
+							'label.add_appointments_when_invited',
 							'Automatically add appointments when the user is invited'
 						)}
 						iconColor="primary"

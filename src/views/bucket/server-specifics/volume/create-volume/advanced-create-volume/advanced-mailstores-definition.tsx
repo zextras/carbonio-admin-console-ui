@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +22,8 @@ import {
 	LOCAL_TYPE_VALUE,
 	EXTERNAL_TYPE_VALUE,
 	UNUSED,
-	USAGE_IN_EXTERNAL_BACKUP
+	USAGE_IN_EXTERNAL_BACKUP,
+	ZIMBRA_ADMIN_URN
 } from '../../../../../../constants';
 import { fetchSoap } from '../../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
@@ -42,7 +51,7 @@ const AdvancedMailstoresDefinition: FC<{
 	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
 
 	const changeVolName = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			if (e?.target?.value !== '') {
@@ -84,7 +93,7 @@ const AdvancedMailstoresDefinition: FC<{
 
 	const getBucketListType = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',

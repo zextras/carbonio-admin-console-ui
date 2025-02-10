@@ -19,7 +19,6 @@ export const DEFAULT_COS_PREF_ATTRIBUTES: CosPrefAttributes = {
 	zimbraPrefSaveToSent: 'FALSE',
 	zimbraFeatureMailForwardingEnabled: 'FALSE',
 	zimbraFeatureMailForwardingInFiltersEnabled: 'FALSE',
-	zimbraAllowAnyFromAddress: 'FALSE',
 	zimbraPrefAutoAddAddressEnabled: 'FALSE',
 	zimbraPrefGalAutoCompleteEnabled: 'FALSE',
 	zimbraPrefCalendarFirstDayOfWeek: '',

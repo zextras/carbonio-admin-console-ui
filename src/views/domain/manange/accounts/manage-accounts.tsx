@@ -44,7 +44,8 @@ import {
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
 	COS,
-	MAILBOX_QUOTA_USED
+	MAILBOX_QUOTA_USED,
+	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import {
 	accountListDirectory,
@@ -97,8 +98,8 @@ const ManageAccounts: FC = () => {
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [defaultTab, setDefaultTab] = useState('general');
-	const [directMemberList, setDirectMemberList] = useState<any>({});
-	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>([]);
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [otpList, setOtpList] = useState<any[]>([]);
@@ -308,7 +309,7 @@ const ManageAccounts: FC = () => {
 			setSignatureList(signatureResponse);
 		}
 	};
-	const getSignatureDetail = useCallback((id): void => {
+	const getSignatureDetail = useCallback((id: string): void => {
 		getSingatures(id).then((data) => {
 			const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
 			generateSignatureList(signatureResponse);
@@ -346,14 +347,14 @@ const ManageAccounts: FC = () => {
 		[t]
 	);
 
-	const accountUserType = useCallback((item): string => {
+	const accountUserType = useCallback((item: any): string => {
 		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
 		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
 		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
 		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
 		return 'Normal';
 	}, []);
-	const getAccountSpecificDetail = useCallback((id): void => {
+	const getAccountSpecificDetail = useCallback((id: string): void => {
 		getAccountRequest(id, '', 0)
 			.then((res: any) => {
 				const accountObj: any = {};
@@ -376,7 +377,7 @@ const ManageAccounts: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			.catch((error) => {});
 	}, []);
-	const getCosDetail = useCallback((id): void => {
+	const getCosDetail = useCallback((id: string): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
 			const obj: any = {};
 			data?.cos?.[0]?.a?.forEach((ele: CosA) => {
@@ -397,10 +398,10 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 	const getListOtp = useCallback(
-		(id): void => {
+		(id: string): void => {
 			fetchSoap('zextras', {
 				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
 				account: `${id}`
@@ -442,9 +443,9 @@ const ManageAccounts: FC = () => {
 		},
 		[t]
 	);
-	const getCredentialList = useCallback((id): void => {
+	const getCredentialList = useCallback((id: string): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'list',
@@ -457,7 +458,7 @@ const ManageAccounts: FC = () => {
 			}
 		});
 	}, []);
-	const getABQStatus = useCallback((acc) => {
+	const getABQStatus = useCallback((acc: any) => {
 		const body = [
 			{
 				configType: ACCOUNT,
@@ -537,7 +538,7 @@ const ManageAccounts: FC = () => {
 	);
 	const getDeletePasswordRight = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(target): void => {
+		(target: string): void => {
 			checkRightRequest(target, account.name, 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
 					setAllowedDeletePassword(data?.allow);
@@ -549,7 +550,7 @@ const ManageAccounts: FC = () => {
 
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(id): void => {
+		(id: string): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = {};
@@ -634,7 +635,7 @@ const ManageAccounts: FC = () => {
 		]
 	);
 	const getAccountMembership = useCallback(
-		(id): void => {
+		(id: string): void => {
 			getAccountMembershipRequest(id)
 				.then((data: any) => {
 					const directMemArr: any[] = [];
@@ -667,7 +668,7 @@ const ManageAccounts: FC = () => {
 	);
 
 	const getFolderList = useCallback(
-		(acc, delegateList): void => {
+		(acc: any, delegateList: any): void => {
 			postSoapFetchRequest(
 				`/service/admin/soap/GetFolderRequest`,
 				{
@@ -724,9 +725,9 @@ const ManageAccounts: FC = () => {
 		[flatten]
 	);
 	const getIdentitiesList = useCallback(
-		(acc): void => {
+		(acc: any): void => {
 			const request: any = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: acc.name,
 					type: 'account',
@@ -747,7 +748,7 @@ const ManageAccounts: FC = () => {
 		[getFolderList]
 	);
 
-	const getAllUserSession = useCallback((acc) => {
+	const getAllUserSession = useCallback((acc: any) => {
 		const sessionType: string[] = ['admin', 'imap', 'soap'];
 		setUserSessionList([]);
 		setAllUserSessionList([]);
@@ -1012,7 +1013,7 @@ const ManageAccounts: FC = () => {
 	}, [showAccountDetailView]);
 
 	const handleKeyEvent = useCallback(
-		(event) => {
+		(event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
 				closeAccountDetailDialog();
 			}

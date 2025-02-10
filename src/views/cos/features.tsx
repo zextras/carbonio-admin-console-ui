@@ -90,7 +90,7 @@ export const Features: FC<{
 						padding={{ bottom: 'large' }}
 					>
 						<Text size="extralarge" weight="bold">
-							{t('label.two_factor_auth', '2nd Factor Authentication')}
+							{t('label.two_factor_auth', 'Second Factor Authentication')}
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch

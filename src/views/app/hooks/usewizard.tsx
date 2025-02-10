@@ -41,7 +41,7 @@ WizardProps): any => {
 	const stepKeys = useMemo(() => map(steps, (step) => step.name), [steps]);
 
 	const getStepIndex = useCallback(
-		(stepName) => findIndex(steps, (step) => step.name === stepName),
+		(stepName: string) => findIndex(steps, (step) => step.name === stepName),
 		[steps]
 	);
 
@@ -49,7 +49,7 @@ WizardProps): any => {
 	const isFirstStep = useMemo(() => getStepIndex(currentStep) === 0, [currentStep, getStepIndex]);
 
 	const onSelection = useCallback(
-		(_data, replace = true) => {
+		(_data: any, replace = true) => {
 			const newState = {
 				currentStep: dataRef.current.currentStep,
 				steps: {
@@ -78,7 +78,7 @@ WizardProps): any => {
 	}, [uncontrolledMode, onChange, steps]);
 
 	const goToStep = useCallback(
-		(stepName) => {
+		(stepName: any) => {
 			const keysToKeep = take(stepKeys, findIndex(stepKeys, (step) => step === stepName) + 1);
 			const newState = {
 				currentStep: stepName,
@@ -110,7 +110,7 @@ WizardProps): any => {
 	const getData = useCallback(() => dataRef.current, []);
 
 	const canGoToStep = useCallback(
-		(stepName) => {
+		(stepName: any) => {
 			const stepIndex = getStepIndex(stepName);
 			return steps[stepIndex].canGoNext
 				? steps[stepIndex].canGoNext(dataRef.current.steps[stepName], dataRef.current)

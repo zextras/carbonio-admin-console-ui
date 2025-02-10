@@ -6,29 +6,30 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+	Button,
 	Container,
-	Row,
-	Text,
 	Divider,
+	Icon,
+	Input,
+	Modal,
+	Padding,
+	Row,
 	Switch,
 	Table,
-	Padding,
-	Input,
-	Button,
-	Icon,
-	Modal,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { DISABLED, ENABLED, COS } from '../../constants';
+import { Attribute } from '../../../types';
+import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
-import { modifyCos } from '../../services/modify-cos-service';
+import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -141,7 +142,7 @@ const CosServerPools: FC = () => {
 	}, [cosInformation]);
 
 	const onFilterApply = useCallback(
-		(e) => {
+		(e: string) => {
 			if (e === null) {
 				return;
 			}
@@ -277,7 +278,7 @@ const CosServerPools: FC = () => {
 	}, []);
 
 	const onModifyCOS = useCallback(
-		(body) => {
+		(body: ModifyCosBody) => {
 			modifyCos(body)
 				.then((data) => {
 					const cos: any = data?.cos[0];
@@ -317,22 +318,21 @@ const CosServerPools: FC = () => {
 	);
 
 	const onEnable = useCallback(() => {
-		const attributes: any[] = [];
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		zimbraMailHostPoolList.forEach((item: any) => {
-			attributes.push({
-				n: 'zimbraMailHostPool',
-				_content: item?._content
-			});
-		});
-		attributes.push({
-			n: 'zimbraMailHostPool',
-			_content: selectedTableRows[0]?.id
-		});
-		body.a = attributes;
-		body.id = {
-			_content: cosId
+		const body: ModifyCosBody = {
+			_jsns: ZIMBRA_ADMIN_URN,
+			a: [
+				...zimbraMailHostPoolList.map((item) => ({
+					n: 'zimbraMailHostPool',
+					_content: item?._content
+				})),
+				{
+					n: 'zimbraMailHostPool',
+					_content: selectedTableRows[0]?.id
+				}
+			],
+			id: {
+				_content: cosId
+			}
 		};
 		onModifyCOS(body);
 	}, [selectedTableRows, onModifyCOS, zimbraMailHostPoolList, cosId]);
@@ -341,26 +341,21 @@ const CosServerPools: FC = () => {
 		const allServers = zimbraMailHostPoolList.filter(
 			(item: any) => item?._content !== selectedTableRows[0]?.id
 		);
-		const attributes: any[] = [];
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		if (allServers.length === 0) {
-			attributes.push({
-				n: 'zimbraMailHostPool',
-				_content: ''
-			});
-		} else if (allServers.length > 0) {
-			allServers.forEach((item: any) => {
-				attributes.push({
-					n: 'zimbraMailHostPool',
-					_content: item?._content
-				});
-			});
-		}
-		body.a = attributes;
-		body.id = {
-			_content: cosId
-		};
+		const attributes: Attribute[] =
+			allServers.length === 0
+				? [{ n: 'zimbraMailHostPool', _content: '' }]
+				: allServers.map((item) => ({
+						n: 'zimbraMailHostPool',
+						_content: item?._content
+				  }));
+		const body: ModifyCosBody = {
+			_jsns: ZIMBRA_ADMIN_URN,
+			id: {
+				_content: cosId
+			},
+			a: attributes
+		} as ModifyCosBody;
+
 		onModifyCOS(body);
 	}, [selectedTableRows, zimbraMailHostPoolList, onModifyCOS, cosId]);
 

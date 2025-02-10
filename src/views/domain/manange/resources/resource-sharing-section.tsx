@@ -17,7 +17,7 @@ const ResourceSharingSection: FC = () => {
 	const { resourceDetail, setResourceDetail } = context;
 
 	const setSendInviteList = useCallback(
-		(v) => {
+		(v: any) => {
 			setResourceDetail((prev: any) => ({ ...prev, sendInviteList: v }));
 		},
 		[setResourceDetail]

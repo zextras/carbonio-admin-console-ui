@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -45,7 +45,8 @@ import {
 	EXTERNAL_SERVER_EXAMPLE,
 	LDAP_BIND_DN_LABLE,
 	LDAP_FILTER_LABEL,
-	LDAP_SEARCH_BASE_LABEL
+	LDAP_SEARCH_BASE_LABEL,
+	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
 import { destroyAccount } from '../../../services/destroy-account-service';
@@ -378,7 +379,7 @@ const DomainGalSettings: FC = () => {
 
 	const updateDomainInformation = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(data) => {
+		(data: Array<Attribute> | undefined) => {
 			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
 				setZimbraGalAccountName('');
@@ -387,7 +388,7 @@ const DomainGalSettings: FC = () => {
 				const obj: {
 					[key: string]: string;
 				} = {};
-				data.map((item: Attribute) => {
+				data?.map((item: Attribute) => {
 					obj[item?.n] = item._content;
 					return '';
 				});
@@ -567,7 +568,7 @@ const DomainGalSettings: FC = () => {
 		} = {};
 		let attributes: Attribute[] = [];
 		body.id = domainData?.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		attributes.push({
 			n: 'zimbraGalMaxResults',
 			_content: zimbraGalMaxResults
@@ -639,7 +640,7 @@ const DomainGalSettings: FC = () => {
 						dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
 					} = {};
 					dataSourceBody.id = items?._content;
-					dataSourceBody._jsns = 'urn:zimbraAdmin';
+					dataSourceBody._jsns = ZIMBRA_ADMIN_URN;
 					attributes = [];
 					attributes.push({
 						n: 'zimbraGalType',
@@ -762,8 +763,8 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onFreqDigitsChange = useCallback(
-		(ev) => {
-			if (ev?.target?.value < 0 || ev?.target?.value > 9) {
+		(ev: ChangeEvent<HTMLInputElement>) => {
+			if (parseInt(ev?.target?.value, 10) < 0 || parseInt(ev?.target?.value, 10) > 9) {
 				return;
 			}
 			setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
@@ -780,7 +781,7 @@ const DomainGalSettings: FC = () => {
 	);
 
 	const onFreqTimeUnitChange = useCallback(
-		(ev) => {
+		(ev: any) => {
 			setFreqValue({ digits: freqValue.digits, time: ev });
 			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
 				(item: IntervalType): boolean => item?.value === ev
@@ -860,7 +861,7 @@ const DomainGalSettings: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const handleClick = useCallback((i: number[], serverListData): void => {
+	const handleClick = useCallback((i: number[], serverListData: AccountDataType[]): void => {
 		if (i.length !== 0) {
 			if (serverListData[i[0]]?.galAccount === null) {
 				setIsDistroyBtnDisable(true);
@@ -876,7 +877,7 @@ const DomainGalSettings: FC = () => {
 	}, []);
 
 	const getAllTableList = useCallback(
-		(data) => {
+		(data: any[]) => {
 			// eslint-disable-next-line array-callback-return
 			const result = allMailstoreList.map((listItems: Server) => {
 				const obj: AccountDataType = {};
@@ -902,7 +903,7 @@ const DomainGalSettings: FC = () => {
 	);
 
 	const getDomainWithGAlSyncList = useCallback(
-		(domainList) => {
+		(domainList: any) => {
 			const allDomains = domainList?.filter((item: Attribute) => item.n === 'zimbraGalAccountId');
 			// eslint-disable-next-line array-callback-return
 			const result: readonly unknown[] | [] = allDomains?.map((item: Attribute) =>

@@ -29,6 +29,7 @@ import { objectType } from '../../../../../types';
 import logo from '../../../../assets/helmet_logo.svg';
 import {
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_DOMAIN_NAME,
 	ZIMBRA_ID,
 	ZIMBRA_SSL_CERTIFICATE,
@@ -175,7 +176,7 @@ const DomainVirtualHosts: FC = () => {
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
 		// eslint-disable-next-line sonarjs/no-duplicate-string
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		items.forEach((item: any) => {
 			if (item.columns[0]?.props?.children) {
 				attributes.push({
@@ -235,7 +236,7 @@ const DomainVirtualHosts: FC = () => {
 
 	const getAllCertiDetailsAPICall = useCallback((): void => {
 		soapFetch('GetDomainCert', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			domain: domainId
 		})
 			.then((res: any) => {
@@ -255,7 +256,7 @@ const DomainVirtualHosts: FC = () => {
 			domainInformation &&
 			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
 		soapFetch(`GetDomain`, {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			attrs: 'zimbraSSLCertificate,zimbraSSLPrivateKey',
 			domain: {
 				by: 'name',
@@ -296,7 +297,7 @@ const DomainVirtualHosts: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
+		body._jsns = ZIMBRA_ADMIN_URN;
 		attributes.push({
 			n: ZIMBRA_SSL_CERTIFICATE,
 			_content: ''

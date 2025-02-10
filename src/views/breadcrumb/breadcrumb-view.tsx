@@ -59,7 +59,7 @@ const BreadCrumb: FC = () => {
 	}, [loc, t]);
 
 	const navigationClick = useCallback(
-		(item, index) => {
+		(item: any, index: number) => {
 			if (index === 0) {
 				history.push(item?.homePath);
 			} else {

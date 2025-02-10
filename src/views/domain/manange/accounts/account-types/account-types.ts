@@ -62,6 +62,7 @@ export interface AccountType {
 	zimbraFeatureMailPriorityEnabled?: string;
 	zimbraPrefAutocompleteAddressBubblesEnabled?: string;
 	zimbraFreebusyExchangeCachedInterval?: string;
+	zimbraFreebusyExchangeUserOrg?: string;
 	zimbraFeatureManageZimlets?: string;
 	zimbraPasswordMinNumericChars?: string;
 	zimbraWebClientShowOfflineLink?: string;
@@ -282,7 +283,7 @@ export interface AccountType {
 	zimbraPrefGroupMailBy?: string;
 	zimbraMailForwardingAddressMaxNumAddrs?: string;
 	zimbraNewMailNotificationSubject?: string;
-	zimbraMailQuota?: string;
+	zimbraMailQuota?: string | number;
 	zimbraQuotaWarnMessage?: string;
 	zimbraFeatureZimbraAssistantEnabled?: string;
 	zimbraContactAutoCompleteEmailFields?: string;

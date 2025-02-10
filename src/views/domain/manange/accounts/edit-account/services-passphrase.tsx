@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 
 import {
 	Input,
@@ -18,6 +18,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
@@ -76,7 +77,7 @@ export const ServicesPassphrase: FC = () => {
 	});
 
 	const changeCredLabel = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setCreateCredential((prev: CredentialType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setCreateCredential]
@@ -88,7 +89,7 @@ export const ServicesPassphrase: FC = () => {
 
 	const onSave = useCallback((): void => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxAuth',
 			action: 'credential',
 			request: 'add',
@@ -143,7 +144,7 @@ export const ServicesPassphrase: FC = () => {
 	const onDelete = useCallback(
 		(cred: CredentialType): void => {
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'credential',
 				request: 'delete',

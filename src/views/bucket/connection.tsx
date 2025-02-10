@@ -29,7 +29,8 @@ import {
 	HTTP,
 	HTTPS,
 	SUCCESS,
-	V4
+	V4,
+	ZIMBRA_ADMIN_URN
 } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
@@ -82,7 +83,7 @@ const Connection: FC<{
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
 			const objectToSend: TestConnectionObjectType = {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxCore',
 				action: 'doCreateBucket',
 				storeType,
@@ -122,7 +123,7 @@ const Connection: FC<{
 					setBucketUid(responseData[1]);
 					onSelection({ uuid: responseData[1] }, false);
 					const objToSendTestConnection: TestConnectionObjectType = {
-						_jsns: 'urn:zimbraAdmin',
+						_jsns: ZIMBRA_ADMIN_URN,
 						module: 'ZxCore',
 						action: 'testS3Connection',
 						targetServers: selectedServerName,

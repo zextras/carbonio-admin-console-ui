@@ -17,7 +17,8 @@ import {
 	Input,
 	Select,
 	Table,
-	Modal
+	Modal,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { isEqual, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -95,7 +96,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [updateFrequncy, setUpdateFrequncy] = useState<string>('');
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: unknown) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -172,7 +173,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	);
 
 	const setSaveValues = useCallback(
-		(attributes) => {
+		(attributes: Array<Record<string, string>>) => {
 			if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
 				const calmDatabaseMirror =
 					mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
@@ -793,7 +794,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	}, [mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency, intervalOptions]);
 
 	const onUpdateMesurementChange = useCallback(
-		(v) => {
+		(v: SelectItem[] | string | null) => {
 			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setUpdateMesurementUnit(findOption || intervalOptions[2]);
 			setValue(ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY, `${updateFrequncy}${findOption?.value}`);

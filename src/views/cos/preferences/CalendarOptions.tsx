@@ -296,7 +296,7 @@ export const CalendarOptions = ({
 								value={cosPrefAttributes?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
 								onClick={(): void => onSwitchOptionChanged('zimbraPrefCalendarAutoAddInvites')}
 								label={t(
-									'cos.add_appointments_when_invited',
+									'label.add_appointments_when_invited',
 									`Automatically add appointments when the user is invited`
 								)}
 								iconColor="primary"

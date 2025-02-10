@@ -46,7 +46,8 @@ import {
 	SECONDARY_TYPE_VALUE,
 	SWIFT,
 	UNUSED,
-	USAGE_IN_EXTERNAL_BACKUP
+	USAGE_IN_EXTERNAL_BACKUP,
+	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -187,7 +188,7 @@ const ModifyVolume: FC<{
 			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			// eslint-disable-next-line sonarjs/no-duplicate-string
-			obj._jsns = 'urn:zimbraAdmin';
+			obj._jsns = ZIMBRA_ADMIN_URN;
 			obj.module = 'ZxPowerstore';
 			obj.action = 'doUpdateVolume';
 			obj.targetServers = selectedServerName;
@@ -297,7 +298,7 @@ const ModifyVolume: FC<{
 			await soapFetch(
 				'ModifyVolume',
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					module: 'ZxCore',
 					action: 'ModifyVolumeRequest',
 					id,
@@ -319,7 +320,7 @@ const ModifyVolume: FC<{
 						soapFetch(
 							'SetCurrentVolume',
 							{
-								_jsns: 'urn:zimbraAdmin',
+								_jsns: ZIMBRA_ADMIN_URN,
 								module: 'ZxCore',
 								action: 'SetCurrentVolumeRequest',
 								id,
@@ -402,7 +403,7 @@ const ModifyVolume: FC<{
 	};
 
 	const onVolumeTypeChange = useCallback(
-		(e): void => {
+		(e: number | null): void => {
 			const volumeObject: VolumeType = volTypeList?.find(
 				(item: VolumeType): boolean => item?.value === e
 			);
@@ -431,7 +432,7 @@ const ModifyVolume: FC<{
 
 	const getAllBuckets = useCallback(() => {
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
@@ -672,12 +673,12 @@ const ModifyVolume: FC<{
 	}, [volAllocationList, volumeDetail?.type]);
 
 	const getVolumeDetailData = useCallback(
-		(volId): void => {
+		(volId: string): void => {
 			setIsLoading(true);
 			soapFetch(
 				'GetVolume',
 				{
-					_jsns: 'urn:zimbraAdmin',
+					_jsns: ZIMBRA_ADMIN_URN,
 					module: 'ZxPowerstore',
 					id: volId
 				},

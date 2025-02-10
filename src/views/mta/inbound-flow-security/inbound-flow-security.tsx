@@ -79,7 +79,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	}, []);
 
 	const setInitialAndCurrentValue = useCallback(
-		(key, value) => {
+		(key: string, value: boolean) => {
 			setInitialValue(key, value);
 			setValue(key, value);
 		},
@@ -353,7 +353,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	);
 
 	const setMtaRestrictions = useCallback(
-		(attributes) => {
+		(attributes: Array<Record<string, string>>) => {
 			if (mtaInboundSecurityDetail?.rejectUnknownClientHostname) {
 				attributes.push({
 					n: ZIMBRA_MTA_RESTRICTION,
@@ -398,7 +398,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	);
 
 	const setValueForSave = useCallback(
-		(attributes) => {
+		(attributes: Array<Record<string, string>>) => {
 			if (mtaInboundSecurityDetail?.rejectUnknownHeloHostname) {
 				attributes.push({
 					n: ZIMBRA_MTA_RESTRICTION,
@@ -557,7 +557,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	}, [mtaInboundSecurityInitialDetail, setValue]);
 
 	const onBlockExtensionChange = useCallback(
-		(ev) => {
+		(ev: any) => {
 			if (ev && ev.length > 0) {
 				const validExtensionExpression = /^[A-Za-z0-9]*$/;
 				const extension = ev

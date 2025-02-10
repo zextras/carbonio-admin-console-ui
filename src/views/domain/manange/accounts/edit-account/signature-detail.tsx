@@ -161,7 +161,6 @@ export const SignatureDetail: FC<any> = ({
 	const _createSignature = useCallback((): void => {
 		if (accountId) {
 			createSignature(accountId, signatureName, signatureContent)
-				// 	.then((response) => response.json())
 				.then((data) => {
 					console.log({ data });
 					if (data?.Body?.Reason?.Text) {

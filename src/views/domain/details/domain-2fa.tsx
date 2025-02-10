@@ -89,7 +89,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 					if (response?.ok) {
 						createSnackbar({
 							key: 'policy-success',
-							type: response?.message !== OK ? 'warning' : 'success',
+							severity: response?.message !== OK ? 'warning' : 'success',
 							label:
 								response?.message !== OK
 									? response?.message

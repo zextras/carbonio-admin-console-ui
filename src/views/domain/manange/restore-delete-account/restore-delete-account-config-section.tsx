@@ -47,7 +47,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [searchDomainName, setSearchDomainName] = useState(restoreAccountDetail?.copyDomain);
 	const handleChange = useCallback(
-		(d) => {
+		(d: Date | null) => {
 			setDate(d);
 			setRestoreAccountDetail((prev: any) => ({
 				...prev,

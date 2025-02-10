@@ -199,25 +199,22 @@ const CreateMailstoresVolume: FC<{
 		}
 	];
 
-	const onComplete = useCallback(
-		(data) => {
-			const volumeType = volTypeList
-				?.filter((item) => item?.value === advancedVolumeDetail?.volumeMain)[0]
-				?.label?.toLowerCase();
-			CreateAdvancedRequest({
-				volumeName: advancedVolumeDetail?.volumeName,
-				volumeType,
-				storeType: advancedVolumeDetail?.unusedBucketType,
-				bucketConfigurationId: advancedVolumeDetail?.bucketId,
-				volumePrefix: advancedVolumeDetail?.prefix,
-				centralized: advancedVolumeDetail?.centralized,
-				isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
-				useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
-				useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering
-			});
-		},
-		[CreateAdvancedRequest, advancedVolumeDetail, volTypeList]
-	);
+	const onComplete = useCallback(() => {
+		const volumeType = volTypeList
+			?.filter((item) => item?.value === advancedVolumeDetail?.volumeMain)[0]
+			?.label?.toLowerCase();
+		CreateAdvancedRequest({
+			volumeName: advancedVolumeDetail?.volumeName,
+			volumeType,
+			storeType: advancedVolumeDetail?.unusedBucketType,
+			bucketConfigurationId: advancedVolumeDetail?.bucketId,
+			volumePrefix: advancedVolumeDetail?.prefix,
+			centralized: advancedVolumeDetail?.centralized,
+			isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
+			useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
+			useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering
+		});
+	}, [CreateAdvancedRequest, advancedVolumeDetail, volTypeList]);
 
 	return (
 		<AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail }}>

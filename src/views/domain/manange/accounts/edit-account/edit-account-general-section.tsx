@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+import React, {
+	FC,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	ChangeEvent
+} from 'react';
 
 import {
 	Container,
@@ -180,7 +188,12 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const handleQuotaChange = useCallback(
-		(value, setQuotaLimitMsg, setQuotaGBValue, name) => {
+		(
+			value: string,
+			setQuotaLimitMsg: (msg: boolean) => void,
+			setQuotaGBValue: (value: string) => void,
+			name: string
+		) => {
 			if (!isValidDecimalNumber(value)) return;
 			const decimalPoints = value?.split('.')[1];
 			if (!!decimalPoints && decimalPoints?.length > 3) {
@@ -198,7 +211,7 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const changeAccountQuota = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			handleQuotaChange(
 				e.target.value,
 				setShowAccountQuotaLimitMsg,
@@ -210,7 +223,7 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const changeFileQuotaLimit = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			handleQuotaChange(
 				e.target.value,
 				setShowFileQuotaLimitMsg,
@@ -254,13 +267,13 @@ const EditAccountGeneralSection: FC<{
 		[accountDetail, setAccountDetail]
 	);
 	const changeAccDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 	const changeUserNaneDetail = useCallback(
-		(e) => {
+		(e: ChangeEvent<HTMLInputElement>) => {
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
@@ -374,14 +387,14 @@ const EditAccountGeneralSection: FC<{
 	};
 
 	const setEmptyValue = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
 
 	const setEmptyAccountQuota = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setEmptyValue(keyName);
 			setAccountQuotaGBValue('');
 		},
@@ -389,7 +402,7 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const setEmptyFileQuota = useCallback(
-		(keyName) => {
+		(keyName: string) => {
 			setEmptyValue(keyName);
 			setFileQuotaGBValue('');
 		},
@@ -490,7 +503,7 @@ const EditAccountGeneralSection: FC<{
 		accountDetail.zimbraIsSystemAccount
 	]);
 
-	const addSelection = useCallback((item) => {
+	const addSelection = useCallback((item: UserSession) => {
 		setSelectedSession([item?.sid]);
 	}, []);
 
@@ -614,7 +627,7 @@ const EditAccountGeneralSection: FC<{
 	}, [accountDetail?.zimbraId, handleEndSession, handleEndSessionError, setIsRequestInProgress]);
 
 	const onSessionFilterInputChange = useCallback(
-		(ev) => {
+		(ev: ChangeEvent<HTMLInputElement>) => {
 			setSelectedSession([]);
 			const value = ev?.target?.value || '';
 			const filterdSession = allUserSessionList.filter(
@@ -714,7 +727,7 @@ const EditAccountGeneralSection: FC<{
 		label: string,
 		inputName: string,
 		value: string,
-		onChange: (e: any) => void
+		onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	): React.JSX.Element => (
 		<Row width="32%" mainAlignment="space-between">
 			<Input

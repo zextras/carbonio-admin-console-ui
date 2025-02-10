@@ -104,7 +104,7 @@ const PrivacyView: FC = () => {
 	}, [lastState]);
 
 	const callAllRequest = useCallback(
-		(req) => {
+		(req: any) => {
 			Promise.all(req).then((response) => {
 				createSnackbar({
 					key: 'success',
