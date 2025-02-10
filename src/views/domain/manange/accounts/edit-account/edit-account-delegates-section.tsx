@@ -11,8 +11,7 @@ import React, {
 	ReactElement,
 	useEffect,
 	useCallback,
-	useRef,
-	KeyboardEvent
+	useRef
 } from 'react';
 
 import {
@@ -25,7 +24,8 @@ import {
 	Table,
 	Divider,
 	ChipInput,
-	Checkbox
+	Checkbox,
+	ChipInputProps
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -556,9 +556,8 @@ const EditAccountDelegatesSection: FC = () => {
 		}, 700),
 		[debounce]
 	);
-	const filterOptions = useCallback(
-		(textContent: KeyboardEvent<HTMLInputElement> & { textContent: string | null }) => {
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+	const filterOptions = useCallback<NonNullable<ChipInputProps['onInputType']>>(
+		({ textContent }: { textContent: string | null }) => {
 			searchAccountList(textContent);
 		},
 		[searchAccountList]
