@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.55...v0.10.0) (2025-02-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove deprecated attributes from cosAdvanced
+
+### Features
+
+* added backupEnabled switch to cos advanced page ([4b7d881](https://github.com/zextras/carbonio-admin-console-ui/commit/4b7d881298715d2c80667b334c585f1430ead3a7))
+
+
+### Bug Fixes
+
+* [CO-1758] remove 'allow sending from any address' toggle ([#803](https://github.com/zextras/carbonio-admin-console-ui/issues/803)) ([4628f55](https://github.com/zextras/carbonio-admin-console-ui/commit/4628f5503d307dabaaba34053d70f9b32aa00665))
+* account delegate search accout-group input fix ([#810](https://github.com/zextras/carbonio-admin-console-ui/issues/810)) ([0977d71](https://github.com/zextras/carbonio-admin-console-ui/commit/0977d71a5f7602a697ac70de8bc444d781f438da))
+* cos failed login policy using proper translation key ([27c6a93](https://github.com/zextras/carbonio-admin-console-ui/commit/27c6a93aec67782ac92a483bf51d8da321e84a3a))
+* extract COS email retention policy labels ([0a086c7](https://github.com/zextras/carbonio-admin-console-ui/commit/0a086c78e48ae6f9fb9f415b3f4b4ee7aeb30d5f))
+* fix warning on COS general options ([a680532](https://github.com/zextras/carbonio-admin-console-ui/commit/a680532308564e802b11a94c71f88dc5a940c8db))
+* include description when creating account from admin console ([#807](https://github.com/zextras/carbonio-admin-console-ui/issues/807)) ([82325c7](https://github.com/zextras/carbonio-admin-console-ui/commit/82325c7de387b90e782f7dee916128fd2752d46b))
+* modify backup label in tests ([d428d1e](https://github.com/zextras/carbonio-admin-console-ui/commit/d428d1efde255514061134ec32b7d548032c7328))
+* size diplayed in bytes instead of mb in mta advanced ([0cc7320](https://github.com/zextras/carbonio-admin-console-ui/commit/0cc732049fdeb011ae58f1be18e94c43024706ff))
+* update Attribute type and inferring items in domain disclaimer ([3c81092](https://github.com/zextras/carbonio-admin-console-ui/commit/3c8109248cf93eb05c375ce435dee2821393dd52))
+* update cosData, setCosData type with AccountType + create labels object ([b31ffd9](https://github.com/zextras/carbonio-admin-console-ui/commit/b31ffd99b195cb03fec30a6028d45816e9d64ca8))
+* update getFileQuotaById response type in cos-advanced ([4e4be44](https://github.com/zextras/carbonio-admin-console-ui/commit/4e4be442d9aa7d0e989fdbf11c43b083f13e0832))
+* use AccountType for COSAdvanced ([3e05d7c](https://github.com/zextras/carbonio-admin-console-ui/commit/3e05d7c78d1922f27483097df72595d610f611fe))
+* use only modifyCosBody instead of JSON type ([fb7949e](https://github.com/zextras/carbonio-admin-console-ui/commit/fb7949ea409293fec2766c3c697a7b1771f90ed1))
+* zimbraMailQuota type can be also number ([8a02935](https://github.com/zextras/carbonio-admin-console-ui/commit/8a02935677a6930d2259c669011afc4fbd3328d7))
+
+
+* remove deprecated attributes from cosAdvanced ([9a75b67](https://github.com/zextras/carbonio-admin-console-ui/commit/9a75b67dfbcd7bd2e72b57363d2c4ab68cffc912))
+
 ### [0.9.55](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.54...v0.9.55) (2024-11-20)
 
 
