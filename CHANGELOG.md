@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.0...v0.10.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* enable polling interval for new email ([6e8d002](https://github.com/zextras/carbonio-admin-console-ui/commit/6e8d00298358ce3d4f52e80325056fdf99635dbc))
+
 ## [0.10.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.55...v0.10.0) (2025-02-10)
 
 
