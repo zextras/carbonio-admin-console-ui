@@ -40,8 +40,7 @@ export const ReceivingMails = ({
 		() => [
 			{
 				label: t('cos.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '',
-				disabled: true
+				value: '500'
 			},
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
 			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
