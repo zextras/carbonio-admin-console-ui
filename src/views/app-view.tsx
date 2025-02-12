@@ -53,7 +53,6 @@ import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
 import PrivacyView from './privacy/privacy-view';
-import { TrackerProvider } from '../tracker/provider';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
@@ -67,191 +66,189 @@ const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 const AppView: FC = () => {
 	const isPrimaryBarExpanded = usePrimaryBarState();
 	return (
-		<TrackerProvider>
-			<Container>
-				<BreadCrumb />
-				<Switch>
-					<Route path={`/${DASHBOARD}`}>
-						<Container
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							background="gray5"
-							height="auto"
-						>
+		<Container>
+			<BreadCrumb />
+			<Switch>
+				<Route path={`/${DASHBOARD}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						background="gray5"
+						height="auto"
+					>
+						<Suspense fallback={<Spinner />}>
+							<Dashboard />
+						</Suspense>
+					</Container>
+				</Route>
+				<Route path={`/${MONITORING}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Suspense fallback={<Spinner />}>
+							<MonitoringView />
+						</Suspense>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					>
+						<Container style={{ maxWidth: '265px' }}>
 							<Suspense fallback={<Spinner />}>
-								<Dashboard />
+								<DomainListPanel />
 							</Suspense>
 						</Container>
-					</Route>
-					<Route path={`/${MONITORING}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<DomainDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '265px' }}>
 							<Suspense fallback={<Spinner />}>
-								<MonitoringView />
+								<BucketListPanel />
 							</Suspense>
 						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-						<Container
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							height="calc(100vh - 105px)"
-						>
-							<Container style={{ maxWidth: '265px' }}>
+						<Container style={{ maxWidth: '100%' }}>
+							<Suspense fallback={<Spinner />}>
+								<BucketRoutePanel />
+							</Suspense>
+						</Container>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<DomainListPanel />
+									<PrivacyView />
 								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<DomainDetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
+							</DetailViewContainer>
 						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '265px' }}>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					>
+						<Container style={{ maxWidth: '265px' }}>
+							<Suspense fallback={<Spinner />}>
+								<CosListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<BucketListPanel />
+									<CosDetailPanel />
 								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '16.563rem' }}>
+							<Suspense fallback={<Spinner />}>
+								<MTAListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<BucketRoutePanel />
+									<MTADetailPanel />
 								</Suspense>
-							</Container>
+							</DetailViewContainer>
 						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<PrivacyView />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
-						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
-						<Container
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							height="calc(100vh - 105px)"
-						>
-							<Container style={{ maxWidth: '265px' }}>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<CosListPanel />
+									<Subscription />
 								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<CosDetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
+							</DetailViewContainer>
 						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '16.563rem' }}>
+					</Container>
+				</Route>
+				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						style={{ overflow: 'hidden' }}
+					>
+						<Container style={{ maxWidth: '265px' }}>
+							<Suspense fallback={<Spinner />}>
+								<BackupListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<MTAListPanel />
+									<BackupDetailPanel />
 								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<MTADetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
+							</DetailViewContainer>
 						</Container>
-					</Route>
-					<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<Subscription />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
-						</Container>
-					</Route>
-					<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-						<Container
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							style={{ overflow: 'hidden' }}
-						>
-							<Container style={{ maxWidth: '265px' }}>
-								<Suspense fallback={<Spinner />}>
-									<BackupListPanel />
-								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<BackupDetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
-						</Container>
-					</Route>
+					</Container>
+				</Route>
 
-					<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
-						<Container
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							style={{ overflow: 'hidden' }}
-						>
-							<Container style={{ maxWidth: '100%' }}>
-								<Suspense fallback={<Spinner />}>
-									<LegalHoldPanel />
-								</Suspense>
-							</Container>
+				<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						style={{ overflow: 'hidden' }}
+					>
+						<Container style={{ maxWidth: '100%' }}>
+							<Suspense fallback={<Spinner />}>
+								<LegalHoldPanel />
+							</Suspense>
 						</Container>
-					</Route>
+					</Container>
+				</Route>
 
-					<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '265px' }}>
-								<Suspense fallback={<Spinner />}>
-									<NotificationsListPanel />
-								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<NotificationsDetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
+				<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '265px' }}>
+							<Suspense fallback={<Spinner />}>
+								<NotificationsListPanel />
+							</Suspense>
 						</Container>
-					</Route>
-					<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '16.563rem' }}>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
-									<OperationsListPanel />
+									<NotificationsDetailPanel />
 								</Suspense>
-							</Container>
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<Spinner />}>
-										<OperationsDetailPanel />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
+							</DetailViewContainer>
 						</Container>
-					</Route>
-				</Switch>
-			</Container>
-		</TrackerProvider>
+					</Container>
+				</Route>
+				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '16.563rem' }}>
+							<Suspense fallback={<Spinner />}>
+								<OperationsListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<OperationsDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+			</Switch>
+		</Container>
 	);
 };
 
