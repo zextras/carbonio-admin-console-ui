@@ -97,7 +97,7 @@ export const useTracker = (): Tracker => {
 		} else {
 			postHog.opt_out_capturing();
 		}
-	}, [carbonioSendAnalyticsEnabled, account?.id]);
+	}, [carbonioSendAnalyticsEnabled, account.id, postHog, isAdvanced]);
 
 	const capture = useCallback<Tracker['capture']>(
 		(eventName, properties, options) => {
