@@ -26,16 +26,22 @@ export const TrackerProvider = ({
 		(): Partial<PostHogConfig> => ({
 			api_host: PH_API_HOST,
 			person_profiles: 'identified_only',
+			opt_out_capturing_by_default: false,
+			disable_session_recording: true,
+			mask_all_text: true,
 			disable_surveys: showPostHogSurveys,
-			capture_pageview: true,
 			autocapture: false
 		}),
 		[showPostHogSurveys]
 	);
-	return (
-		<PostHogProvider apiKey={PH_PROJECT_API_KEY} options={options}>
-			{children}
-			<TrackerPageView />
-		</PostHogProvider>
-	);
+	const carbonioSendAnalyticsEnabled = useConfigurationAttribute('carbonioSendAnalytics') === TRUE;
+	if (carbonioSendAnalyticsEnabled) {
+		return (
+			<PostHogProvider apiKey={PH_PROJECT_API_KEY} options={options}>
+				{children}
+				<TrackerPageView />
+			</PostHogProvider>
+		);
+	}
+	return <>{children}</>;
 };
