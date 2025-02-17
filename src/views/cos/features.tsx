@@ -231,22 +231,6 @@ export const Features: FC<{
 								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures}
 							/>
 						</Row>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<InheritedSwitch
-								subValue={featuresDetail?.carbonioFeatureChatsEnabled}
-								onChange={changeSwitchOption}
-								label={t('label.enable_wsc', 'Enable WSC')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioFeatureChatsEnabled}
-								fromSubValue={accSpecificDetail?.carbonioFeatureChatsEnabled}
-								inputName={'carbonioFeatureChatsEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsEnabled')}
-							/>
-						</Row>
 					</Container>
 				)}
 				<Divider />
