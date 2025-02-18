@@ -24,7 +24,6 @@ import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
-import { WscSettings } from '../../../../cos/wscSettings/wsc-settings';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
@@ -322,10 +321,10 @@ const EditAccountConfigrationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('', 'Workstream Collaboration') /* TODO */}
+						{t('', 'Workstream Collaboration')}
 					</Text>
 				</Row>
-				<WscSettings />
+				{/* <WscSettings /> */}
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
