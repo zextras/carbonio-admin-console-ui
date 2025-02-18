@@ -8,26 +8,30 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button, Container, useSnackbar } from '@zextras/carbonio-design-system';
-import _, { find } from 'lodash';
+import { find, forEach, isEqual, size } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from './wsc-settings';
+import { Attribute, Cos } from '../../../../types';
 import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import { PageLayout } from '../../page-layout';
 
 const WscCosSettings: FC = () => {
 	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
+
+	const [zimbraId, setZimbraId] = useState<string | undefined>(undefined);
+	const [initCosData, setInitCosData] = useState<AccountType>({});
+	const [cosFeatures, setCosFeatures] = useState<AccountType>({});
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const [initCosData, setInitCosData] = useState({});
-	const [zimbraId, setZimbraId] = useState('');
 	const setCos = useCosStore((state) => state.setCos);
-	const [cosFeatures, setCosFeatures] = useState<Record<string, string>>({});
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const readonlyCOS = useMemo(() => {
@@ -36,27 +40,48 @@ const WscCosSettings: FC = () => {
 	}, [rights]);
 
 	const setSwitchOptionValue = useCallback(
-		(key: string, value: string): void => {
-			setInitCosData((prev: Record<string, string>) => ({ ...prev, [key]: value }));
-			setCosFeatures((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		(key: keyof AccountType, value: string | undefined): void => {
+			if (value) {
+				setInitCosData((prev) => ({ ...prev, [key]: value }));
+				setCosFeatures((prev) => ({ ...prev, [key]: value }));
+			}
 		},
 		[setCosFeatures, setInitCosData]
 	);
 
 	const setInitialValues = useCallback(
-		(obj: any) => {
+		(obj: AccountType) => {
 			if (obj) {
 				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
+				setSwitchOptionValue('carbonioWscShowMessageReads', obj?.carbonioWscShowMessageReads);
+				setSwitchOptionValue('carbonioWscShowUsersPresence', obj?.carbonioWscShowUsersPresence);
+				setSwitchOptionValue('carbonioWscVirtualBackground', obj?.carbonioWscVirtualBackground);
+				setSwitchOptionValue('carbonioWscVideoCall', obj?.carbonioWscVideoCall);
+				setSwitchOptionValue('carbonioWscVideoCallRecord', obj?.carbonioWscVideoCallRecord);
+				setSwitchOptionValue('carbonioWscGroupCreation', obj?.carbonioWscGroupCreation);
+				setSwitchOptionValue('carbonioWscSingleCreation', obj?.carbonioWscSingleCreation);
+				setSwitchOptionValue('carbonioWscAttachmentUpload', obj?.carbonioWscAttachmentUpload);
+				// setSwitchOptionValue(
+				// 	'carbonioWscMessageDeletionTimeLimit',
+				// 	obj?.carbonioWscMessageDeletionTimeLimit
+				// );
+				// setSwitchOptionValue(
+				// 	'carbonioWscMessageEditTimeLimit',
+				// 	obj?.carbonioWscMessageEditTimeLimit
+				// );
+				// setSwitchOptionValue('carbonioWscMaxGroupMembers', obj?.carbonioWscMaxGroupMembers);
+				// setSwitchOptionValue('carbonioWscMaxRoomPictureSize', obj?.carbonioWscMaxRoomPictureSize);
+				// setSwitchOptionValue('carbonioWscMaxAttachmentSize', obj?.carbonioWscMaxAttachmentSize);
 			}
 		},
 		[setSwitchOptionValue]
 	);
 
 	useEffect(() => {
-		if (!!cosInformation && cosInformation.length > 0) {
-			const obj: any = {};
-			cosInformation.forEach((item: any) => {
-				obj[item?.n] = item._content;
+		if (size(cosInformation) > 0) {
+			const obj: AccountType = {};
+			forEach(cosInformation, (item: Attribute) => {
+				obj[item?.n as keyof AccountType] = item._content;
 			});
 			setZimbraId(obj?.zimbraId);
 			setInitialValues(obj);
@@ -65,7 +90,7 @@ const WscCosSettings: FC = () => {
 	}, [cosInformation, setInitialValues, setSwitchOptionValue, setZimbraId]);
 
 	useEffect(() => {
-		if (zimbraId && !_.isEqual(cosFeatures, initCosData)) {
+		if (zimbraId && !isEqual(cosFeatures, initCosData)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
@@ -73,7 +98,7 @@ const WscCosSettings: FC = () => {
 	}, [cosFeatures, initCosData, zimbraId]);
 
 	const modifyCosRequest = useCallback(
-		(body: ModifyCosBody): void => {
+		(body: ModifyCosBody) => {
 			modifyCos(body)
 				.then((data) => {
 					flushCache('cos', 'id', body.id._content);
@@ -85,7 +110,7 @@ const WscCosSettings: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					const cos: any = data.cos[0];
+					const cos: Cos = data.cos[0];
 					if (cos) {
 						setCos(cos);
 					}
@@ -113,7 +138,10 @@ const WscCosSettings: FC = () => {
 				_content: zimbraId
 			}
 		} as ModifyCosBody;
-		body.a = Object.keys(cosFeatures).map((ele) => ({ n: ele, _content: cosFeatures[ele] }));
+		body.a = Object.keys(cosFeatures).map((ele) => ({
+			n: ele,
+			_content: cosFeatures[ele as keyof AccountType] as string
+		}));
 		modifyCosRequest(body);
 	}, [cosFeatures, modifyCosRequest, zimbraId]);
 

@@ -3,20 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback } from 'react';
+import React, { Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 
 import { Container } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import { BoxLayout, SettingLayout } from '../../page-layout';
 import InheritedSwitch from '../../utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
-	featuresDetail: Record<string, string>;
-	setFeaturesDetail: CallableFunction;
-	cosDetail?: Record<string, string>;
-	accSpecificDetail?: Record<string, string>;
+	featuresDetail: AccountType;
+	setFeaturesDetail: Dispatch<SetStateAction<AccountType>>;
+	cosDetail?: AccountType;
+	accSpecificDetail?: AccountType;
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
 }> = ({
@@ -31,14 +32,20 @@ export const WscSettings: FC<{
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setFeaturesDetail((prev: Record<string, string>) => ({
+		(key: keyof AccountType): void => {
+			setFeaturesDetail((prev) => ({
 				...prev,
 				[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
 		[featuresDetail, setFeaturesDetail]
 	);
+
+	const disableWscSettings = useMemo(
+		() => featuresDetail?.carbonioFeatureChatsEnabled === 'FALSE' || readonlyFeatures,
+		[featuresDetail?.carbonioFeatureChatsEnabled, readonlyFeatures]
+	);
+
 	return (
 		<Container height="fit" gap="2rem">
 			<BoxLayout
@@ -68,13 +75,69 @@ export const WscSettings: FC<{
 					<BoxLayout
 						title={t('', 'Messaging & Presence')}
 						description={t('', 'Manage the visibility of chats and user status.')}
-					/>
+					>
+						<SettingLayout description={t('', 'Show senders when their messages have been read.')}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscShowMessageReads}
+								onChange={changeSwitchOption}
+								label={t('', 'Show read receipts')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscShowMessageReads}
+								fromSubValue={accSpecificDetail?.carbonioWscShowMessageReads}
+								inputName={'carbonioWscShowMessageReads'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscShowMessageReads')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout description={t('', "Display users' online status or last seen time.")}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscShowUsersPresence}
+								onChange={changeSwitchOption}
+								label={t('', "Show users' online status")}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscShowUsersPresence}
+								fromSubValue={accSpecificDetail?.carbonioWscShowUsersPresence}
+								inputName={'carbonioWscShowUsersPresence'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscShowUsersPresence')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+					</BoxLayout>
 				</Container>
 				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
 					<BoxLayout
 						title={t('', 'Private and Group Chats')}
 						description={t('', 'Manage Chats creation and Group settings.')}
-					/>
+					>
+						<SettingLayout description={t('', 'Allow users to initiate one-on-one conversations.')}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscSingleCreation}
+								onChange={changeSwitchOption}
+								label={t('', 'Users can start new private chats')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscSingleCreation}
+								fromSubValue={accSpecificDetail?.carbonioWscSingleCreation}
+								inputName={'carbonioWscSingleCreation'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscSingleCreation')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Allow users to create chats with multiple participants.')}
+						>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscGroupCreation}
+								onChange={changeSwitchOption}
+								label={t('', 'Users can create group chats')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscGroupCreation}
+								fromSubValue={accSpecificDetail?.carbonioWscGroupCreation}
+								inputName={'carbonioWscGroupCreation'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupCreation')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+					</BoxLayout>
 				</Container>
 			</Container>
 			<Container orientation="horizontal" height="fit" gap="2rem">
@@ -82,13 +145,71 @@ export const WscSettings: FC<{
 					<BoxLayout
 						title={t('', 'Calls & Video')}
 						description={t('', 'Configure video calls, recording, and virtual backgrounds.')}
-					/>
+					>
+						<SettingLayout description={t('', 'Activate video call functionality in the feature.')}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscVideoCall}
+								onChange={changeSwitchOption}
+								label={t('', 'Enable video calls')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscVideoCall}
+								fromSubValue={accSpecificDetail?.carbonioWscVideoCall}
+								inputName={'carbonioWscVideoCall'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCall')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout description={t('', 'Permit recording of audio and video calls.')}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscVideoCallRecord}
+								onChange={changeSwitchOption}
+								label={t('', 'Allow call recording')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscVideoCallRecord}
+								fromSubValue={accSpecificDetail?.carbonioWscVideoCallRecord}
+								inputName={'carbonioWscVideoCallRecord'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallRecord')}
+								disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
+							/>
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Allow users to apply virtual backgrounds during video calls.')}
+						>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscVirtualBackground}
+								onChange={changeSwitchOption}
+								label={t('', 'Enable virtual background')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscVirtualBackground}
+								fromSubValue={accSpecificDetail?.carbonioWscVirtualBackground}
+								inputName={'carbonioWscVirtualBackground'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscVirtualBackground')}
+								disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
+							/>
+						</SettingLayout>
+					</BoxLayout>
 				</Container>
 				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
 					<BoxLayout
 						title={t('', 'Sharing & Attachments')}
 						description={t('', 'Manage file sharing and attachment limits.')}
-					/>
+					>
+						<SettingLayout
+							description={t('', 'Enable the sending of files, images, and documents.')}
+						>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioWscAttachmentUpload}
+								onChange={changeSwitchOption}
+								label={t('', 'Users can upload attachments')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioWscAttachmentUpload}
+								fromSubValue={accSpecificDetail?.carbonioWscAttachmentUpload}
+								inputName={'carbonioWscAttachmentUpload'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscAttachmentUpload')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+					</BoxLayout>
 				</Container>
 			</Container>
 		</Container>

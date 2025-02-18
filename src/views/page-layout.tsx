@@ -36,7 +36,7 @@ export const PageLayout: FC<{
 export const BoxLayout: FC<{
 	title: string;
 	description: string;
-	children?: ReactNode | ReactNode[];
+	children: ReactNode | ReactNode[];
 }> = ({ title, description, children }) => (
 	<Container orientation="vertical" height="fit" gap="1rem">
 		<Container orientation="vertical" height="fit" crossAlignment="flex-start" gap="0.5rem">
