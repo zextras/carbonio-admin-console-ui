@@ -125,7 +125,7 @@ const WscCosSettings: FC = () => {
 	const headerButtons = useMemo(() => {
 		if (!isDirty) return null;
 		return (
-			<Container orientation="horizontal" width="fit" gap="medium">
+			<Container orientation="horizontal" width="fit" gap="1rem">
 				<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
 				<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 			</Container>

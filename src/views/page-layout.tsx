@@ -40,11 +40,29 @@ export const BoxLayout: FC<{
 }> = ({ title, description, children }) => (
 	<Container orientation="vertical" height="fit" gap="1rem">
 		<Container orientation="vertical" height="fit" crossAlignment="flex-start" gap="0.5rem">
-			<Text weight="bold">{title}</Text>
-			<Text size="small">{description}</Text>
+			<Text weight="bold" overflow="break-word">
+				{title}
+			</Text>
+			<Text size="small" overflow="break-word">
+				{description}
+			</Text>
 		</Container>
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" height="fit" gap="1rem">
 			{children}
+		</Container>
+	</Container>
+);
+
+export const SettingLayout: FC<{
+	description: string;
+	children: ReactNode;
+}> = ({ description, children }) => (
+	<Container crossAlignment="flex-start">
+		{children}
+		<Container height="fit" crossAlignment="flex-start">
+			<Text weight="light" color="gray1" size="small" overflow="break-word">
+				{description}
+			</Text>
 		</Container>
 	</Container>
 );
