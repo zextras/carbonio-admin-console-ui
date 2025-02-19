@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import { BoxLayout, SettingLayout } from '../../page-layout';
+import InheritedInput from '../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../utility/inherited-components/inherited-switch';
 
@@ -45,11 +46,25 @@ export const WscSettings: FC<{
 	const changeSelectOption = useCallback(
 		(key: keyof AccountType) =>
 			(value: string): void => {
-				console.log(key, value);
 				setFeaturesDetail((prev) => ({
 					...prev,
 					[key]: value
 				}));
+			},
+		[setFeaturesDetail]
+	);
+
+	const changeInputOption = useCallback(
+		(key: keyof AccountType) =>
+			(ev: any): void => {
+				let inputValue = ev.target.value || '0';
+				if (/^\d*$/.test(inputValue)) {
+					inputValue = inputValue.replace(/^0+/, '') || '0';
+					setFeaturesDetail((prev) => ({
+						...prev,
+						[key]: inputValue.toString()
+					}));
+				}
 			},
 		[setFeaturesDetail]
 	);
@@ -137,6 +152,7 @@ export const WscSettings: FC<{
 						</SettingLayout>
 						<SettingLayout
 							description={t('', 'Define how long a message can be edited after sending.')}
+							descriptionGap
 						>
 							<InheritedSelect
 								label={t('', 'Message editing time limit')}
@@ -155,7 +171,6 @@ export const WscSettings: FC<{
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageEditTimeLimit')}
 								disabled={disableWscSettings}
 							/>
-							<Padding top="small" />
 						</SettingLayout>
 					</BoxLayout>
 				</Container>
@@ -189,6 +204,38 @@ export const WscSettings: FC<{
 								fromSubValue={accSpecificDetail?.carbonioWscGroupCreation}
 								inputName={'carbonioWscGroupCreation'}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupCreation')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Set the maximum number of users per group.')}
+							descriptionGap
+						>
+							<InheritedInput
+								label={t('', 'Maximum number of group members')}
+								subValue={featuresDetail?.carbonioWscMaxGroupMembers}
+								inheritedValue={cosDetail?.carbonioWscMaxGroupMembers}
+								fromSubValue={accSpecificDetail?.carbonioWscMaxGroupMembers}
+								background="gray5"
+								inputName="carbonioWscMaxGroupMembers"
+								onChange={changeInputOption('carbonioWscMaxGroupMembers')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxGroupMembers')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Limit the file size for group profile pictures.')}
+							descriptionGap
+						>
+							<InheritedInput
+								label={t('', 'Maximum group picture size in Kb')}
+								subValue={featuresDetail?.carbonioWscMaxRoomPictureSize}
+								inheritedValue={cosDetail?.carbonioWscMaxRoomPictureSize}
+								fromSubValue={accSpecificDetail?.carbonioWscMaxRoomPictureSize}
+								background="gray5"
+								inputName="carbonioWscMaxRoomPictureSize"
+								onChange={changeInputOption('carbonioWscMaxRoomPictureSize')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxRoomPictureSize')}
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
@@ -261,6 +308,22 @@ export const WscSettings: FC<{
 								fromSubValue={accSpecificDetail?.carbonioWscAttachmentUpload}
 								inputName={'carbonioWscAttachmentUpload'}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscAttachmentUpload')}
+								disabled={disableWscSettings}
+							/>
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Define the maximum size for shared files in chats.')}
+							descriptionGap
+						>
+							<InheritedInput
+								label={t('', 'Maximum attachment size in Mb')}
+								subValue={featuresDetail?.carbonioWscMaxAttachmentSize}
+								inheritedValue={cosDetail?.carbonioWscMaxAttachmentSize}
+								fromSubValue={accSpecificDetail?.carbonioWscMaxAttachmentSize}
+								background="gray5"
+								inputName="carbonioWscMaxAttachmentSize"
+								onChange={changeInputOption('carbonioWscMaxAttachmentSize')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxAttachmentSize')}
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>

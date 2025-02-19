@@ -5,7 +5,7 @@
  */
 import React, { FC, ReactNode } from 'react';
 
-import { Container, Divider, Row, Text } from '@zextras/carbonio-design-system';
+import { Container, Divider, Padding, Row, Text } from '@zextras/carbonio-design-system';
 
 export const PageLayout: FC<{
 	title: string;
@@ -56,9 +56,11 @@ export const BoxLayout: FC<{
 export const SettingLayout: FC<{
 	description: string;
 	children: ReactNode;
-}> = ({ description, children }) => (
+	descriptionGap?: boolean;
+}> = ({ description, children, descriptionGap }) => (
 	<Container crossAlignment="flex-start">
 		{children}
+		{descriptionGap && <Padding top="small" />}
 		<Container height="fit" crossAlignment="flex-start">
 			<Text weight="light" color="gray1" size="small" overflow="break-word">
 				{description}
