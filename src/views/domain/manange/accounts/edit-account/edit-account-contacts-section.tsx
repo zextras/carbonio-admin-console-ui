@@ -8,7 +8,7 @@ import React, { FC, useCallback, useState, useContext, ChangeEvent } from 'react
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { isValidNumber } from '../../../../utility/utils';
+import { isValidPhoneNumber } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -45,7 +45,7 @@ const EditAccountContactsSection: FC = () => {
 						<Input
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
-									const validPhone = isValidNumber(e.target.value);
+									const validPhone = isValidPhoneNumber(e.target.value);
 									setIsValidPhone(validPhone);
 									if (validPhone) {
 										changeAccDetail(e);
@@ -68,7 +68,7 @@ const EditAccountContactsSection: FC = () => {
 							backgroundColor="gray5"
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
-									const validPhone = isValidNumber(e.target.value);
+									const validPhone = isValidPhoneNumber(e.target.value);
 									setIsValidHomePhone(validPhone);
 									if (validPhone) {
 										changeAccDetail(e);
@@ -91,7 +91,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.mobile', 'Mobile')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
-									const validPhone = isValidNumber(e.target.value);
+									const validPhone = isValidPhoneNumber(e.target.value);
 									setIsValidMobile(validPhone);
 									if (validPhone) {
 										changeAccDetail(e);
@@ -112,7 +112,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.pager', 'Pager')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
-									const validPhone = isValidNumber(e.target.value);
+									const validPhone = isValidPhoneNumber(e.target.value);
 									setIsValidPager(validPhone);
 									if (validPhone) {
 										changeAccDetail(e);
@@ -135,7 +135,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.fax_number', 'Fax Number')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
-									const validPhone = isValidNumber(e.target.value);
+									const validPhone = isValidPhoneNumber(e.target.value);
 									setIsValidFaxNumber(validPhone);
 									if (validPhone) {
 										changeAccDetail(e);

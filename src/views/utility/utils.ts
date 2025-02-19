@@ -1761,8 +1761,8 @@ export const isValidUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
-export const isValidNumber = (str: string): boolean => {
-	const reqex = /^[0-9-+()]*$/;
+export const isValidPhoneNumber = (str: string): boolean => {
+	const reqex = /^[0-9-+()/|,.*\\]*$/;
 	return reqex.test(str);
 };
 
