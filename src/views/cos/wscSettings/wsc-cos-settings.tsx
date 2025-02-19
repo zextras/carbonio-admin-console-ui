@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Button, Container, useSnackbar } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/carbonio-design-system';
 import { find, forEach, isEqual, size } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -148,18 +148,13 @@ const WscCosSettings: FC = () => {
 		setIsDirty(false);
 	}, [initCosData]);
 
-	const headerButtons = useMemo(() => {
-		if (!isDirty) return null;
-		return (
-			<Container orientation="horizontal" width="fit" gap="1rem">
-				<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-				<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-			</Container>
-		);
-	}, [isDirty, onCancel, onSave, t]);
-
 	return (
-		<PageLayout title={t('', 'Workstream Collaboration')} headerComponent={headerButtons}>
+		<PageLayout
+			title={t('', 'Workstream Collaboration')}
+			onSave={onSave}
+			onCancel={onCancel}
+			unSavedChanges={isDirty}
+		>
 			<WscSettings
 				featuresDetail={cosFeatures}
 				setFeaturesDetail={setCosFeatures}

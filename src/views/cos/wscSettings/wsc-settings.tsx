@@ -261,19 +261,21 @@ export const WscSettings: FC<{
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
-						<SettingLayout description={t('', 'Permit recording of audio and video calls.')}>
-							<InheritedSwitch
-								subValue={featuresDetail?.carbonioWscVideoCallRecord}
-								onChange={changeSwitchOption}
-								label={t('', 'Allow call recording')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioWscVideoCallRecord}
-								fromSubValue={accSpecificDetail?.carbonioWscVideoCallRecord}
-								inputName={'carbonioWscVideoCallRecord'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallRecord')}
-								disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
-							/>
-						</SettingLayout>
+						{isAdvanced && (
+							<SettingLayout description={t('', 'Permit recording of audio and video calls.')}>
+								<InheritedSwitch
+									subValue={featuresDetail?.carbonioWscVideoCallRecord}
+									onChange={changeSwitchOption}
+									label={t('', 'Allow call recording')}
+									iconColor="primary"
+									inheritedValue={cosDetail?.carbonioWscVideoCallRecord}
+									fromSubValue={accSpecificDetail?.carbonioWscVideoCallRecord}
+									inputName={'carbonioWscVideoCallRecord'}
+									onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallRecord')}
+									disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
+								/>
+							</SettingLayout>
+						)}
 						<SettingLayout
 							description={t('', 'Allow users to apply virtual backgrounds during video calls.')}
 						>
