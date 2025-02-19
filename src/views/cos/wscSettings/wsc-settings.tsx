@@ -5,12 +5,13 @@
  */
 import React, { Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 
-import { Container } from '@zextras/carbonio-design-system';
+import { Container, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
 import { BoxLayout, SettingLayout } from '../../page-layout';
+import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
@@ -39,6 +40,18 @@ export const WscSettings: FC<{
 			}));
 		},
 		[featuresDetail, setFeaturesDetail]
+	);
+
+	const changeSelectOption = useCallback(
+		(key: keyof AccountType) =>
+			(value: string): void => {
+				console.log(key, value);
+				setFeaturesDetail((prev) => ({
+					...prev,
+					[key]: value
+				}));
+			},
+		[setFeaturesDetail]
 	);
 
 	const disableWscSettings = useMemo(
@@ -70,8 +83,8 @@ export const WscSettings: FC<{
 					/>
 				</SettingLayout>
 			</BoxLayout>
-			<Container orientation="horizontal" height="fit" gap="2rem">
-				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
+			<Container orientation="horizontal" height="fit" gap="4rem">
+				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
 					<BoxLayout
 						title={t('', 'Messaging & Presence')}
 						description={t('', 'Manage the visibility of chats and user status.')}
@@ -102,9 +115,51 @@ export const WscSettings: FC<{
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
+						<SettingLayout description={t('', 'Set the time limit for deleting a sent message.')}>
+							<InheritedSelect
+								label={t('', 'Message deletion time limit')}
+								items={[
+									{ value: '0', label: t('', 'Never') },
+									{ value: '5', label: t('', '5 minutes time limit') },
+									{ value: '10', label: t('', '10 minutes time limit') },
+									{ value: '30', label: t('', '30 minutes time limit') }
+								]}
+								subValue={featuresDetail?.carbonioWscMessageDeletionTimeLimit}
+								inheritedValue={cosDetail?.carbonioWscMessageDeletionTimeLimit}
+								fromSubValue={accSpecificDetail?.carbonioWscMessageDeletionTimeLimit}
+								background="gray5"
+								selectName="carbonioWscMessageDeletionTimeLimit"
+								onChange={changeSelectOption('carbonioWscMessageDeletionTimeLimit')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageDeletionTimeLimit')}
+								disabled={disableWscSettings}
+							/>
+							<Padding top="small" />
+						</SettingLayout>
+						<SettingLayout
+							description={t('', 'Define how long a message can be edited after sending.')}
+						>
+							<InheritedSelect
+								label={t('', 'Message editing time limit')}
+								items={[
+									{ value: '0', label: t('', 'Never') },
+									{ value: '5', label: t('', '5 minutes time limit') },
+									{ value: '10', label: t('', '10 minutes time limit') },
+									{ value: '30', label: t('', '30 minutes time limit') }
+								]}
+								subValue={featuresDetail?.carbonioWscMessageEditTimeLimit}
+								inheritedValue={cosDetail?.carbonioWscMessageEditTimeLimit}
+								fromSubValue={accSpecificDetail?.carbonioWscMessageEditTimeLimit}
+								background="gray5"
+								selectName="carbonioWscMessageEditTimeLimit"
+								onChange={changeSelectOption('carbonioWscMessageEditTimeLimit')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageEditTimeLimit')}
+								disabled={disableWscSettings}
+							/>
+							<Padding top="small" />
+						</SettingLayout>
 					</BoxLayout>
 				</Container>
-				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
+				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
 					<BoxLayout
 						title={t('', 'Private and Group Chats')}
 						description={t('', 'Manage Chats creation and Group settings.')}
@@ -140,8 +195,8 @@ export const WscSettings: FC<{
 					</BoxLayout>
 				</Container>
 			</Container>
-			<Container orientation="horizontal" height="fit" gap="2rem">
-				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
+			<Container orientation="horizontal" height="fit" gap="4rem">
+				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
 					<BoxLayout
 						title={t('', 'Calls & Video')}
 						description={t('', 'Configure video calls, recording, and virtual backgrounds.')}
@@ -189,7 +244,7 @@ export const WscSettings: FC<{
 						</SettingLayout>
 					</BoxLayout>
 				</Container>
-				<Container mainAlignment="flex-start" width="calc(50% - 1rem)">
+				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
 					<BoxLayout
 						title={t('', 'Sharing & Attachments')}
 						description={t('', 'Manage file sharing and attachment limits.')}

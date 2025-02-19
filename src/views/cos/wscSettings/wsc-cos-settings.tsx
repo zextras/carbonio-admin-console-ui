@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react-hooks/rules-of-hooks */
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -61,14 +59,14 @@ const WscCosSettings: FC = () => {
 				setSwitchOptionValue('carbonioWscGroupCreation', obj?.carbonioWscGroupCreation);
 				setSwitchOptionValue('carbonioWscSingleCreation', obj?.carbonioWscSingleCreation);
 				setSwitchOptionValue('carbonioWscAttachmentUpload', obj?.carbonioWscAttachmentUpload);
-				// setSwitchOptionValue(
-				// 	'carbonioWscMessageDeletionTimeLimit',
-				// 	obj?.carbonioWscMessageDeletionTimeLimit
-				// );
-				// setSwitchOptionValue(
-				// 	'carbonioWscMessageEditTimeLimit',
-				// 	obj?.carbonioWscMessageEditTimeLimit
-				// );
+				setSwitchOptionValue(
+					'carbonioWscMessageDeletionTimeLimit',
+					obj?.carbonioWscMessageDeletionTimeLimit
+				);
+				setSwitchOptionValue(
+					'carbonioWscMessageEditTimeLimit',
+					obj?.carbonioWscMessageEditTimeLimit
+				);
 				// setSwitchOptionValue('carbonioWscMaxGroupMembers', obj?.carbonioWscMaxGroupMembers);
 				// setSwitchOptionValue('carbonioWscMaxRoomPictureSize', obj?.carbonioWscMaxRoomPictureSize);
 				// setSwitchOptionValue('carbonioWscMaxAttachmentSize', obj?.carbonioWscMaxAttachmentSize);
