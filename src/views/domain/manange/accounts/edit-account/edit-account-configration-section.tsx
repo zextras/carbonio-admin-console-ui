@@ -321,7 +321,7 @@ const EditAccountConfigrationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('', 'Workstream Collaboration')}
+						{t('label.wsc', 'Workstream Collaboration')}
 					</Text>
 				</Row>
 				{/* <WscSettings /> */}

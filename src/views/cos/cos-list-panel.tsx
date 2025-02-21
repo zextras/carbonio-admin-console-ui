@@ -26,7 +26,7 @@ import {
 	COS_LIST,
 	CREATE_NEW_COS_ROUTE_ID,
 	IS_COS_DETAIL_LIST_EXPANDED,
-	WSC_SETTINGS
+	WSC
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
@@ -222,8 +222,8 @@ const CosListPanel: FC = () => {
 				isSelected: isCosSelect
 			},
 			{
-				id: WSC_SETTINGS,
-				name: t('', 'Workstream Collaboration'),
+				id: WSC,
+				name: t('label.wsc', 'Workstream Collaboration'),
 				isSelected: isCosSelect
 			},
 			{

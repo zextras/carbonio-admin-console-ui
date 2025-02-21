@@ -135,17 +135,17 @@ export const WscSettings: FC<{
 								label={t('', 'Message deletion time limit')}
 								items={[
 									{ value: '0', label: t('', 'Never') },
-									{ value: '5', label: t('', '5 minutes time limit') },
-									{ value: '10', label: t('', '10 minutes time limit') },
-									{ value: '30', label: t('', '30 minutes time limit') }
+									{ value: '5', label: t('', '5 minute time limit') },
+									{ value: '10', label: t('', '10 minute time limit') },
+									{ value: '30', label: t('', '30 minute time limit') }
 								]}
-								subValue={featuresDetail?.carbonioWscMessageDeletionTimeLimit}
-								inheritedValue={cosDetail?.carbonioWscMessageDeletionTimeLimit}
-								fromSubValue={accSpecificDetail?.carbonioWscMessageDeletionTimeLimit}
+								subValue={featuresDetail?.carbonioWscMessageDeleteTimeLimit}
+								inheritedValue={cosDetail?.carbonioWscMessageDeleteTimeLimit}
+								fromSubValue={accSpecificDetail?.carbonioWscMessageDeleteTimeLimit}
 								background="gray5"
-								selectName="carbonioWscMessageDeletionTimeLimit"
-								onChange={changeSelectOption('carbonioWscMessageDeletionTimeLimit')}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageDeletionTimeLimit')}
+								selectName="carbonioWscMessageDeleteTimeLimit"
+								onChange={changeSelectOption('carbonioWscMessageDeleteTimeLimit')}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageDeleteTimeLimit')}
 								disabled={disableWscSettings}
 							/>
 							<Padding top="small" />
@@ -181,14 +181,14 @@ export const WscSettings: FC<{
 					>
 						<SettingLayout description={t('', 'Allow users to initiate one-on-one conversations.')}>
 							<InheritedSwitch
-								subValue={featuresDetail?.carbonioWscSingleCreation}
+								subValue={featuresDetail?.carbonioWscPrivateChatCreation}
 								onChange={changeSwitchOption}
 								label={t('', 'Users can start new private chats')}
 								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioWscSingleCreation}
-								fromSubValue={accSpecificDetail?.carbonioWscSingleCreation}
-								inputName={'carbonioWscSingleCreation'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscSingleCreation')}
+								inheritedValue={cosDetail?.carbonioWscPrivateChatCreation}
+								fromSubValue={accSpecificDetail?.carbonioWscPrivateChatCreation}
+								inputName={'carbonioWscPrivateChatCreation'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscPrivateChatCreation')}
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
@@ -196,14 +196,14 @@ export const WscSettings: FC<{
 							description={t('', 'Allow users to create chats with multiple participants.')}
 						>
 							<InheritedSwitch
-								subValue={featuresDetail?.carbonioWscGroupCreation}
+								subValue={featuresDetail?.carbonioWscGroupChatCreation}
 								onChange={changeSwitchOption}
 								label={t('', 'Users can create group chats')}
 								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioWscGroupCreation}
-								fromSubValue={accSpecificDetail?.carbonioWscGroupCreation}
-								inputName={'carbonioWscGroupCreation'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupCreation')}
+								inheritedValue={cosDetail?.carbonioWscGroupChatCreation}
+								fromSubValue={accSpecificDetail?.carbonioWscGroupChatCreation}
+								inputName={'carbonioWscGroupChatCreation'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupChatCreation')}
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
@@ -250,29 +250,31 @@ export const WscSettings: FC<{
 					>
 						<SettingLayout description={t('', 'Activate video call functionality in the feature.')}>
 							<InheritedSwitch
-								subValue={featuresDetail?.carbonioWscVideoCall}
+								subValue={featuresDetail?.carbonioWscVideoCallEnabled}
 								onChange={changeSwitchOption}
 								label={t('', 'Enable video calls')}
 								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioWscVideoCall}
-								fromSubValue={accSpecificDetail?.carbonioWscVideoCall}
-								inputName={'carbonioWscVideoCall'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCall')}
+								inheritedValue={cosDetail?.carbonioWscVideoCallEnabled}
+								fromSubValue={accSpecificDetail?.carbonioWscVideoCallEnabled}
+								inputName={'carbonioWscVideoCallEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallEnabled')}
 								disabled={disableWscSettings}
 							/>
 						</SettingLayout>
 						{isAdvanced && (
 							<SettingLayout description={t('', 'Permit recording of audio and video calls.')}>
 								<InheritedSwitch
-									subValue={featuresDetail?.carbonioWscVideoCallRecord}
+									subValue={featuresDetail?.carbonioWscRecordingEnabled}
 									onChange={changeSwitchOption}
 									label={t('', 'Allow call recording')}
 									iconColor="primary"
-									inheritedValue={cosDetail?.carbonioWscVideoCallRecord}
-									fromSubValue={accSpecificDetail?.carbonioWscVideoCallRecord}
-									inputName={'carbonioWscVideoCallRecord'}
-									onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallRecord')}
-									disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
+									inheritedValue={cosDetail?.carbonioWscRecordingEnabled}
+									fromSubValue={accSpecificDetail?.carbonioWscRecordingEnabled}
+									inputName={'carbonioWscRecordingEnabled'}
+									onChangeReset={(): void => setEmptyValue?.('carbonioWscRecordingEnabled')}
+									disabled={
+										disableWscSettings || featuresDetail?.carbonioWscVideoCallEnabled === 'FALSE'
+									}
 								/>
 							</SettingLayout>
 						)}
@@ -280,15 +282,17 @@ export const WscSettings: FC<{
 							description={t('', 'Allow users to apply virtual backgrounds during video calls.')}
 						>
 							<InheritedSwitch
-								subValue={featuresDetail?.carbonioWscVirtualBackground}
+								subValue={featuresDetail?.carbonioWscVirtualBackgroundEnabled}
 								onChange={changeSwitchOption}
 								label={t('', 'Enable virtual background')}
 								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioWscVirtualBackground}
-								fromSubValue={accSpecificDetail?.carbonioWscVirtualBackground}
-								inputName={'carbonioWscVirtualBackground'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioWscVirtualBackground')}
-								disabled={disableWscSettings || featuresDetail?.carbonioWscVideoCall === 'FALSE'}
+								inheritedValue={cosDetail?.carbonioWscVirtualBackgroundEnabled}
+								fromSubValue={accSpecificDetail?.carbonioWscVirtualBackgroundEnabled}
+								inputName={'carbonioWscVirtualBackgroundEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioWscVirtualBackgroundEnabled')}
+								disabled={
+									disableWscSettings || featuresDetail?.carbonioWscVideoCallEnabled === 'FALSE'
+								}
 							/>
 						</SettingLayout>
 					</BoxLayout>

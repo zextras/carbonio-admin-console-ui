@@ -20,7 +20,7 @@ import {
 	GENERAL_INFORMATION,
 	PREFERENCES,
 	SERVER_POOLS,
-	WSC_SETTINGS
+	WSC
 } from '../../constants';
 import WscCosSettings from './wscSettings/wsc-cos-settings';
 import { getCosGeneralInformation } from '../../services/cos-general-information-service';
@@ -96,7 +96,7 @@ const CosDetailOperation: FC = () => {
 						return <CosGeneralInformation />;
 					case FEATURES:
 						return <CosFeatures />;
-					case WSC_SETTINGS:
+					case WSC:
 						return <WscCosSettings />;
 					case PREFERENCES:
 						return <COSPreferences />;

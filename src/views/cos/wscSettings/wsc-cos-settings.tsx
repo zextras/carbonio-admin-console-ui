@@ -53,15 +53,18 @@ const WscCosSettings: FC = () => {
 				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
 				setSwitchOptionValue('carbonioWscShowMessageReads', obj?.carbonioWscShowMessageReads);
 				setSwitchOptionValue('carbonioWscShowUsersPresence', obj?.carbonioWscShowUsersPresence);
-				setSwitchOptionValue('carbonioWscVirtualBackground', obj?.carbonioWscVirtualBackground);
-				setSwitchOptionValue('carbonioWscVideoCall', obj?.carbonioWscVideoCall);
-				setSwitchOptionValue('carbonioWscVideoCallRecord', obj?.carbonioWscVideoCallRecord);
-				setSwitchOptionValue('carbonioWscGroupCreation', obj?.carbonioWscGroupCreation);
-				setSwitchOptionValue('carbonioWscSingleCreation', obj?.carbonioWscSingleCreation);
+				setSwitchOptionValue(
+					'carbonioWscVirtualBackgroundEnabled',
+					obj?.carbonioWscVirtualBackgroundEnabled
+				);
+				setSwitchOptionValue('carbonioWscVideoCallEnabled', obj?.carbonioWscVideoCallEnabled);
+				setSwitchOptionValue('carbonioWscRecordingEnabled', obj?.carbonioWscRecordingEnabled);
+				setSwitchOptionValue('carbonioWscGroupChatCreation', obj?.carbonioWscGroupChatCreation);
+				setSwitchOptionValue('carbonioWscPrivateChatCreation', obj?.carbonioWscPrivateChatCreation);
 				setSwitchOptionValue('carbonioWscAttachmentUpload', obj?.carbonioWscAttachmentUpload);
 				setSwitchOptionValue(
-					'carbonioWscMessageDeletionTimeLimit',
-					obj?.carbonioWscMessageDeletionTimeLimit
+					'carbonioWscMessageDeleteTimeLimit',
+					obj?.carbonioWscMessageDeleteTimeLimit
 				);
 				setSwitchOptionValue(
 					'carbonioWscMessageEditTimeLimit',
@@ -150,7 +153,7 @@ const WscCosSettings: FC = () => {
 
 	return (
 		<PageLayout
-			title={t('', 'Workstream Collaboration')}
+			title={t('label.wsc', 'Workstream Collaboration')}
 			onSave={onSave}
 			onCancel={onCancel}
 			unSavedChanges={isDirty}
