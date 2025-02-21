@@ -5,15 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/carbonio-design-system';
 import _, { find, isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +23,7 @@ import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../store/rights/store';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { PageLayout } from '../page-layout';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -40,7 +32,7 @@ const CosFeatures: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const cosName = useCosStore((state) => state.cos?.name);
 	const [initCosData, setInitCosData]: any = useState({});
-	const [zimbraId, setZimbraId]: any = useState('');
+	const [zimbraId, setZimbraId] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({});
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -95,7 +87,7 @@ const CosFeatures: FC = () => {
 			});
 	}, [cosName, createSnackbar, setSwitchOptionValue, t]);
 
-	const setInitalValues = useCallback(
+	const setInitialValues = useCallback(
 		(obj: any) => {
 			if (obj) {
 				setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
@@ -114,7 +106,6 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
 				setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
 				setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
-				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
 			}
 		},
 		[setSwitchOptionValue]
@@ -127,10 +118,10 @@ const CosFeatures: FC = () => {
 				obj[item?.n] = item._content;
 			});
 			setZimbraId(obj?.zimbraId);
-			setInitalValues(obj);
+			setInitialValues(obj);
 			setIsDirty(false);
 		}
-	}, [cosInformation, setInitalValues, setSwitchOptionValue, setZimbraId]);
+	}, [cosInformation, setInitialValues, setSwitchOptionValue, setZimbraId]);
 
 	useEffect(() => {
 		if (zimbraId && !_.isEqual(cosFeatures, initCosData)) {
@@ -241,56 +232,19 @@ const CosFeatures: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
-				>
-					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('cos.features', 'Features')}
-							</Text>
-						</Row>
-						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="small">
-								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onCancel}
-									/>
-								)}
-							</Padding>
-							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-							)}
-						</Row>
-					</Row>
-				</Container>
-			</Row>
-			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
-			</Row>
+		<PageLayout
+			title={t('cos.features', 'Features')}
+			onSave={onSave}
+			onCancel={onCancel}
+			unSavedChanges={isDirty}
+		>
 			<Features
 				featuresDetail={cosFeatures}
 				setFeaturesDetail={setCosFeatures}
 				readonlyFeatures={readonlyCOS}
-				cosLevelFeaures
+				cosLevelFeatures
 			/>
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
-		</Container>
+		</PageLayout>
 	);
 };
 

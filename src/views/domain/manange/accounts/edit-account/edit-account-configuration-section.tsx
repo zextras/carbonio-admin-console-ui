@@ -14,8 +14,7 @@ import {
 	Divider,
 	Input,
 	useSnackbar,
-	Tooltip,
-	Padding
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -326,15 +325,13 @@ const EditAccountConfigurationSection: FC = () => {
 						{t('label.wsc', 'Workstream Collaboration')}
 					</Text>
 				</Row>
-				<Padding all="large">
-					<WscSettings
-						featuresDetail={accountDetail}
-						setFeaturesDetail={setAccountDetail}
-						cosDetail={cosDetail}
-						accSpecificDetail={accSpecificDetail}
-						setEmptyValue={setEmptyValue}
-					/>
-				</Padding>
+				<WscSettings
+					featuresDetail={accountDetail}
+					setFeaturesDetail={setAccountDetail}
+					cosDetail={cosDetail}
+					accSpecificDetail={accSpecificDetail}
+					setEmptyValue={setEmptyValue}
+				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>

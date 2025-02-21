@@ -14,16 +14,7 @@ import React, {
 	useState
 } from 'react';
 
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	SingleSelectionOnChange,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
+import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -52,6 +43,7 @@ import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { AccountType } from '../domain/manange/accounts/account-types/account-types';
+import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
 type AdvancedBackupAttributes = {
@@ -1273,41 +1265,13 @@ const CosAdvanced: FC = () => {
 	);
 
 	return (
-		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background={'gray6'}
-					height="58px"
-				>
-					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{labels.advanced}
-							</Text>
-						</Row>
-						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="small">
-								{isDirty && (
-									<Button label={labels.cancelButton} color="secondary" onClick={onCancel} />
-								)}
-							</Padding>
-							{isDirty && <Button label={labels.saveButton} color="primary" onClick={onSave} />}
-						</Row>
-					</Row>
-				</Container>
-			</Row>
-			<Row orientation="horizontal" width="100%" background={'gray6'}>
-				<Divider />
-			</Row>
-			<Container
-				mainAlignment="flex-start"
-				width="100%"
-				orientation="vertical"
-				style={{ overflow: 'auto' }}
-				padding={{ top: 'large' }}
-			>
+		<PageLayout
+			title={labels.advanced}
+			onSave={onSave}
+			onCancel={onCancel}
+			unSavedChanges={isDirty}
+		>
+			<Container mainAlignment="flex-start" width="100%" orientation="vertical">
 				{isAdvanced && (
 					<COSGeneralOptions
 						cosAdvancedBackupAttributes={cosAdvancedBackupAttributes}
@@ -1396,7 +1360,7 @@ const CosAdvanced: FC = () => {
 					onZimbraMailSpamLifetimeTypeChange={onZimbraMailSpamLifetimeTypeChange}
 				/>
 			</Container>
-		</Container>
+		</PageLayout>
 	);
 };
 

@@ -85,7 +85,7 @@ export const WscSettings: FC<{
 	}, [t]);
 
 	return (
-		<Container height="fit" gap="2rem" style={{ userSelect: 'none' }}>
+		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
 			<BoxLayout
 				title={t('wsc.section.header.title', 'General Settings')}
 				description={t(

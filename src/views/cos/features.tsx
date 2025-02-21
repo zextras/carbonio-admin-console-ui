@@ -18,7 +18,7 @@ export const Features: FC<{
 	accSpecificDetail?: Record<string, string>;
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
-	cosLevelFeaures?: boolean;
+	cosLevelFeatures?: boolean;
 }> = ({
 	featuresDetail,
 	setFeaturesDetail,
@@ -26,7 +26,7 @@ export const Features: FC<{
 	accSpecificDetail,
 	setEmptyValue,
 	readonlyFeatures = false,
-	cosLevelFeaures = false
+	cosLevelFeatures = false
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -42,13 +42,7 @@ export const Features: FC<{
 	);
 
 	return (
-		<Container
-			mainAlignment="flex-start"
-			width="100%"
-			height="auto"
-			orientation="vertical"
-			padding={{ top: 'large' }}
-		>
+		<Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
@@ -74,14 +68,12 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureOptionsEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureOptionsEnabled}
 							inputName={'zimbraFeatureOptionsEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureOptionsEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOptionsEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
 				</Container>
-				{cosLevelFeaures && (
+				{cosLevelFeatures && (
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -134,9 +126,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.carbonioFeatureMailsAppEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureMailsAppEnabled}
 							inputName={'carbonioFeatureMailsAppEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('carbonioFeatureMailsAppEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureMailsAppEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -149,9 +139,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
 							inputName={'zimbraFeatureSignaturesEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureSignaturesEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureSignaturesEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -164,9 +152,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 							inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureOutOfOfficeReplyEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOutOfOfficeReplyEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -181,9 +167,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
 								inputName={'zimbraFeatureMobileSyncEnabled'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('zimbraFeatureMobileSyncEnabled')
-								}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
 								disabled={readonlyFeatures}
 							/>
 						</Row>
@@ -210,9 +194,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.carbonioFeatureTeamEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureTeamEnabled}
 								inputName={'carbonioFeatureTeamEnabled'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('carbonioFeatureTeamEnabled')
-								}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureTeamEnabled')}
 								disabled={readonlyFeatures}
 							/>
 						</Row>
@@ -225,9 +207,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.carbonioFeatureChatsAppEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureChatsAppEnabled}
 								inputName={'carbonioFeatureChatsAppEnabled'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('carbonioFeatureChatsAppEnabled')
-								}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsAppEnabled')}
 								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures}
 							/>
 						</Row>
@@ -260,9 +240,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureContactsEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureContactsEnabled}
 							inputName={'zimbraFeatureContactsEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureContactsEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureContactsEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -276,9 +254,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.mobileContactFeatureSync}
 								fromSubValue={accSpecificDetail?.mobileContactFeatureSync}
 								inputName={'mobileContactFeatureSync'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('mobileContactFeatureSync')
-								}
+								onChangeReset={(): void => setEmptyValue?.('mobileContactFeatureSync')}
 								disabled={
 									featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE' || readonlyFeatures
 								}
@@ -305,9 +281,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureCalendarEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureCalendarEnabled}
 							inputName={'zimbraFeatureCalendarEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureCalendarEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureCalendarEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -321,9 +295,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.mobileCalendarFeatureSync}
 								fromSubValue={accSpecificDetail?.mobileCalendarFeatureSync}
 								inputName={'mobileCalendarFeatureSync'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('mobileCalendarFeatureSync')
-								}
+								onChangeReset={(): void => setEmptyValue?.('mobileCalendarFeatureSync')}
 								disabled={
 									featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE' || readonlyFeatures
 								}
@@ -358,9 +330,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
 							inputName={'carbonioFeatureFilesEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('carbonioFeatureFilesEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
@@ -373,9 +343,7 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.carbonioFeatureFilesAppEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureFilesAppEnabled}
 							inputName={'carbonioFeatureFilesAppEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('carbonioFeatureFilesAppEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesAppEnabled')}
 							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE' || readonlyFeatures}
 						/>
 					</Row>
@@ -399,14 +367,11 @@ export const Features: FC<{
 							inheritedValue={cosDetail?.zimbraFeatureTasksEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureTasksEnabled}
 							inputName={'zimbraFeatureTasksEnabled'}
-							onChangeReset={(): void =>
-								setEmptyValue && setEmptyValue('zimbraFeatureTasksEnabled')
-							}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureTasksEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
 				</Container>
-				{isAdvanced && <Divider />}
 			</Row>
 		</Container>
 	);

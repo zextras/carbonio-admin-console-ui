@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Button,
 	Container,
-	Divider,
 	Icon,
 	Input,
 	Modal,
@@ -33,6 +32,7 @@ import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
+import { PageLayout } from '../page-layout';
 
 const CosServerPools: FC = () => {
 	const [t] = useTranslation();
@@ -433,36 +433,13 @@ const CosServerPools: FC = () => {
 	}, [zimbraMailHostPoolList, serverList]);
 
 	return (
-		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
-				>
-					<Row
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ all: 'large' }}
-					>
-						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.server_pools', '"Server Pools')}
-							</Text>
-						</Row>
-					</Row>
-				</Container>
-			</Row>
-			<Divider />
+		<PageLayout title={t('label.server_pools', 'Server Pools')}>
 			<Container
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				padding={{ top: 'large' }}
 			>
 				<Container
 					mainAlignment="flex-start"
@@ -571,7 +548,7 @@ const CosServerPools: FC = () => {
 			</Container>
 
 			<Modal
-				title={`${t('cos.disabling_pool', 'Disabling pool')}`}
+				title={t('cos.disabling_pool', 'Disabling pool')}
 				open={openConfirmDialog}
 				showCloseIcon
 				onClose={(): void => {
@@ -615,7 +592,7 @@ const CosServerPools: FC = () => {
 					</Text>
 				</Padding>
 			</Modal>
-		</Container>
+		</PageLayout>
 	);
 };
 
