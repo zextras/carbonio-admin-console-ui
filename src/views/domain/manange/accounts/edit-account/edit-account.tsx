@@ -33,7 +33,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import EditAccountAdministrationSection from './edit-account-administration-section';
-import EditAccountConfigrationSection from './edit-account-configration-section';
+import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountDelegatesSection from './edit-account-delegates-section';
 import EditAccountGeneralSection from './edit-account-general-section';
@@ -1083,7 +1083,7 @@ const EditAccount: FC<{
 					<Displayer buttons={buttons} pinIcon={isSticky} />
 					{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
 					{change === PROFILE && <EditAccountContactsSection />}
-					{change === CONFIGURATION && <EditAccountConfigrationSection />}
+					{change === CONFIGURATION && <EditAccountConfigurationSection />}
 					{change === USER_PREFERENCES && (
 						<EditAccountUserPrefrencesSection
 							signatureItems={signatureItems}

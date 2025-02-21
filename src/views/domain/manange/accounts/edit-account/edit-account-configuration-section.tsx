@@ -14,7 +14,8 @@ import {
 	Divider,
 	Input,
 	useSnackbar,
-	Tooltip
+	Tooltip,
+	Padding
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -24,12 +25,13 @@ import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
+import { WscSettings } from '../../../../cos/wscSettings/wsc-settings';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountConfigrationSection: FC = () => {
+const EditAccountConfigurationSection: FC = () => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
@@ -324,7 +326,15 @@ const EditAccountConfigrationSection: FC = () => {
 						{t('label.wsc', 'Workstream Collaboration')}
 					</Text>
 				</Row>
-				{/* <WscSettings /> */}
+				<Padding all="large">
+					<WscSettings
+						featuresDetail={accountDetail}
+						setFeaturesDetail={setAccountDetail}
+						cosDetail={cosDetail}
+						accSpecificDetail={accSpecificDetail}
+						setEmptyValue={setEmptyValue}
+					/>
+				</Padding>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
@@ -345,4 +355,4 @@ const EditAccountConfigrationSection: FC = () => {
 	);
 };
 
-export default EditAccountConfigrationSection;
+export default EditAccountConfigurationSection;
