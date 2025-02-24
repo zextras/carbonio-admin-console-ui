@@ -67,3 +67,7 @@ export const useConfigStore = create<ConfigState>()(
 			)
 	}))
 );
+
+export function useConfigurationAttribute(name: string): any {
+	return useConfigStore((state) => state.config.find((cf) => cf.n === name)?._content);
+}
