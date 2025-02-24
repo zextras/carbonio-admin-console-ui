@@ -98,6 +98,7 @@ import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
+import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
@@ -105,9 +106,11 @@ import { getRights } from './views/utility/utils';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<Spinner />}>
-		<LazyAppView {...props} />
-	</Suspense>
+	<TrackerProvider>
+		<Suspense fallback={<Spinner />}>
+			<LazyAppView {...props} />
+		</Suspense>
+	</TrackerProvider>
 );
 
 const PrimaryBarIconButton = styled(Button)`
