@@ -1762,7 +1762,7 @@ export const isValidUrl = (url: string): boolean => {
 };
 
 export const isValidPhoneNumber = (str: string): boolean => {
-	const reqex = /^[0-9-+()/|,.*\\]*$/;
+	const reqex = /^[0-9-+()/,. ]*$/;
 	return reqex.test(str);
 };
 
