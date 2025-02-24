@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useState, useContext, ChangeEvent } from 'react';
 
-import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
+import { Container, Input, Row, Text, Tooltip } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { isValidPhoneNumber } from '../../../../utility/utils';
@@ -28,6 +28,11 @@ const EditAccountContactsSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
+
+	const phoneTooltipLabel = t(
+		'label.phone_allowed_chars',
+		'allowed chars are whitespace, numbers and symbols -+()/,.'
+	);
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -42,113 +47,123 @@ const EditAccountContactsSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="space-between">
-						<Input
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e.target.value) {
-									const validPhone = isValidPhoneNumber(e.target.value);
-									setIsValidPhone(validPhone);
-									if (validPhone) {
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidPhone(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
 										changeAccDetail(e);
 									}
-								} else {
-									changeAccDetail(e);
-								}
-							}}
-							hasError={!isValidPhone}
-							inputName="telephoneNumber"
-							label={t('label.phone', 'Phone')}
-							backgroundColor="gray5"
-							defaultValue={accountDetail?.telephoneNumber || ''}
-							value={accountDetail?.telephoneNumber || ''}
-						/>
+								}}
+								hasError={!isValidPhone}
+								inputName="telephoneNumber"
+								label={t('label.phone', 'Phone')}
+								backgroundColor="gray5"
+								defaultValue={accountDetail?.telephoneNumber || ''}
+								value={accountDetail?.telephoneNumber || ''}
+							/>
+						</Tooltip>
 					</Row>
 					<Row width="48%" mainAlignment="space-between">
-						<Input
-							label={t('label.home', 'Home')}
-							backgroundColor="gray5"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e.target.value) {
-									const validPhone = isValidPhoneNumber(e.target.value);
-									setIsValidHomePhone(validPhone);
-									if (validPhone) {
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								label={t('label.home', 'Home')}
+								backgroundColor="gray5"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidHomePhone(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
 										changeAccDetail(e);
 									}
-								} else {
-									changeAccDetail(e);
-								}
-							}}
-							hasError={!isValidHomePhone}
-							inputName="homePhone"
-							defaultValue={accountDetail?.homePhone || ''}
-							value={accountDetail?.homePhone || ''}
-						/>
+								}}
+								hasError={!isValidHomePhone}
+								inputName="homePhone"
+								defaultValue={accountDetail?.homePhone || ''}
+								value={accountDetail?.homePhone || ''}
+							/>
+						</Tooltip>
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
-						<Input
-							backgroundColor="gray5"
-							label={t('label.mobile', 'Mobile')}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e.target.value) {
-									const validPhone = isValidPhoneNumber(e.target.value);
-									setIsValidMobile(validPhone);
-									if (validPhone) {
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.mobile', 'Mobile')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidMobile(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
 										changeAccDetail(e);
 									}
-								} else {
-									changeAccDetail(e);
-								}
-							}}
-							hasError={!isValidMobile}
-							inputName="mobile"
-							defaultValue={accountDetail?.mobile || ''}
-							value={accountDetail?.mobile || ''}
-						/>
+								}}
+								hasError={!isValidMobile}
+								inputName="mobile"
+								defaultValue={accountDetail?.mobile || ''}
+								value={accountDetail?.mobile || ''}
+							/>
+						</Tooltip>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
-						<Input
-							backgroundColor="gray5"
-							label={t('label.pager', 'Pager')}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e.target.value) {
-									const validPhone = isValidPhoneNumber(e.target.value);
-									setIsValidPager(validPhone);
-									if (validPhone) {
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.pager', 'Pager')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidPager(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
 										changeAccDetail(e);
 									}
-								} else {
-									changeAccDetail(e);
-								}
-							}}
-							hasError={!isValidPager}
-							inputName="pager"
-							defaultValue={accountDetail?.pager || ''}
-							value={accountDetail?.pager || ''}
-						/>
+								}}
+								hasError={!isValidPager}
+								inputName="pager"
+								defaultValue={accountDetail?.pager || ''}
+								value={accountDetail?.pager || ''}
+							/>
+						</Tooltip>
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
-						<Input
-							backgroundColor="gray5"
-							label={t('label.fax_number', 'Fax Number')}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e.target.value) {
-									const validPhone = isValidPhoneNumber(e.target.value);
-									setIsValidFaxNumber(validPhone);
-									if (validPhone) {
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.fax_number', 'Fax Number')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidFaxNumber(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
 										changeAccDetail(e);
 									}
-								} else {
-									changeAccDetail(e);
-								}
-							}}
-							hasError={!isValidFaxNumber}
-							inputName="facsimileTelephoneNumber"
-							defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
-							value={accountDetail?.facsimileTelephoneNumber || ''}
-						/>
+								}}
+								hasError={!isValidFaxNumber}
+								inputName="facsimileTelephoneNumber"
+								defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
+								value={accountDetail?.facsimileTelephoneNumber || ''}
+							/>
+						</Tooltip>
 					</Row>
 				</Row>
 			</Row>
