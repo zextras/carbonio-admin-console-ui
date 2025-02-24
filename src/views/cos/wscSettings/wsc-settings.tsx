@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
+import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 
 import { Container, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -56,7 +56,7 @@ export const WscSettings: FC<{
 
 	const changeInputOption = useCallback(
 		(key: keyof AccountType) =>
-			(ev: any): void => {
+			(ev: ChangeEvent<HTMLInputElement>): void => {
 				let inputValue = ev.target.value || '0';
 				if (/^\d*$/.test(inputValue)) {
 					inputValue = inputValue.replace(/^0+/, '') || '0';
@@ -74,10 +74,28 @@ export const WscSettings: FC<{
 		[featuresDetail?.carbonioFeatureChatsEnabled, readonlyFeatures]
 	);
 
-	const durationOptions = useMemo(() => {
+	const deleteMessageOptions = useMemo(() => {
 		const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
+		const userCannotDelete = t(
+			'wsc.section.content.select.deleteLimit.zero',
+			'User cannot delete sent messages'
+		);
 		return [
-			{ value: '0m', label: t('wsc.section.content.select.never', 'Never') },
+			{ value: '0m', label: userCannotDelete },
+			{ value: '5m', label: `5 ${timeLimitLabel}` },
+			{ value: '10m', label: `10 ${timeLimitLabel}` },
+			{ value: '30m', label: `30 ${timeLimitLabel}` }
+		];
+	}, [t]);
+
+	const editMessageOptions = useMemo(() => {
+		const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
+		const userCannotEdit = t(
+			'ws.section.content.select.editLimit.zero',
+			'User cannot edit sent messages'
+		);
+		return [
+			{ value: '0m', label: userCannotEdit },
 			{ value: '5m', label: `5 ${timeLimitLabel}` },
 			{ value: '10m', label: `10 ${timeLimitLabel}` },
 			{ value: '30m', label: `30 ${timeLimitLabel}` }
@@ -164,11 +182,10 @@ export const WscSettings: FC<{
 						>
 							<InheritedSelect
 								label={t('wsc.section.content.select.deletionLimit', 'Message deletion time limit')}
-								items={durationOptions}
+								items={deleteMessageOptions}
 								subValue={featuresDetail?.carbonioWscMessageDeleteTimeLimit}
 								inheritedValue={cosDetail?.carbonioWscMessageDeleteTimeLimit}
 								fromSubValue={accSpecificDetail?.carbonioWscMessageDeleteTimeLimit}
-								background="gray5"
 								selectName="carbonioWscMessageDeleteTimeLimit"
 								onChange={changeSelectOption('carbonioWscMessageDeleteTimeLimit')}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageDeleteTimeLimit')}
@@ -185,11 +202,10 @@ export const WscSettings: FC<{
 						>
 							<InheritedSelect
 								label={t('wsc.section.content.select.editLimit', 'Message editing time limit')}
-								items={durationOptions}
+								items={editMessageOptions}
 								subValue={featuresDetail?.carbonioWscMessageEditTimeLimit}
 								inheritedValue={cosDetail?.carbonioWscMessageEditTimeLimit}
 								fromSubValue={accSpecificDetail?.carbonioWscMessageEditTimeLimit}
-								background="gray5"
 								selectName="carbonioWscMessageEditTimeLimit"
 								onChange={changeSelectOption('carbonioWscMessageEditTimeLimit')}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageEditTimeLimit')}
@@ -260,7 +276,6 @@ export const WscSettings: FC<{
 								subValue={featuresDetail?.carbonioWscMaxGroupMembers}
 								inheritedValue={cosDetail?.carbonioWscMaxGroupMembers}
 								fromSubValue={accSpecificDetail?.carbonioWscMaxGroupMembers}
-								background="gray5"
 								inputName="carbonioWscMaxGroupMembers"
 								onChange={changeInputOption('carbonioWscMaxGroupMembers')}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxGroupMembers')}
@@ -282,7 +297,6 @@ export const WscSettings: FC<{
 								subValue={featuresDetail?.carbonioWscMaxRoomPictureSize}
 								inheritedValue={cosDetail?.carbonioWscMaxRoomPictureSize}
 								fromSubValue={accSpecificDetail?.carbonioWscMaxRoomPictureSize}
-								background="gray5"
 								inputName="carbonioWscMaxRoomPictureSize"
 								onChange={changeInputOption('carbonioWscMaxRoomPictureSize')}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxRoomPictureSize')}
@@ -410,11 +424,12 @@ export const WscSettings: FC<{
 								subValue={featuresDetail?.carbonioWscMaxAttachmentSize}
 								inheritedValue={cosDetail?.carbonioWscMaxAttachmentSize}
 								fromSubValue={accSpecificDetail?.carbonioWscMaxAttachmentSize}
-								background="gray5"
 								inputName="carbonioWscMaxAttachmentSize"
 								onChange={changeInputOption('carbonioWscMaxAttachmentSize')}
 								onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxAttachmentSize')}
-								disabled={disableWscSettings}
+								disabled={
+									disableWscSettings || featuresDetail?.carbonioWscAttachmentUpload === 'FALSE'
+								}
 							/>
 						</SettingLayout>
 					</BoxLayout>

@@ -21,7 +21,7 @@ const InheritedSelect: FC<{
 	items: any[];
 	subValue: any;
 	inheritedValue: any;
-	background: any;
+	background?: any;
 	selectName: any;
 	onChange: any;
 	onChangeReset: any;
@@ -33,7 +33,7 @@ const InheritedSelect: FC<{
 	items,
 	subValue,
 	inheritedValue,
-	background,
+	background = 'gray5',
 	onChange,
 	onChangeReset,
 	fromSubValue,
