@@ -30,8 +30,8 @@ const EditAccountContactsSection: FC = () => {
 	);
 
 	const phoneTooltipLabel = t(
-		'label.phone_allowed_chars',
-		'allowed chars are whitespace, numbers and symbols -+()/,.'
+		'label.accounts.phoneNumber.tooltip',
+		'allowed chars are whitespaces, numbers and symbols -+()/,.'
 	);
 	return (
 		<Container
