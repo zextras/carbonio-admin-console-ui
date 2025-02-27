@@ -237,14 +237,14 @@ export const Features: FC<{
 							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<InheritedSwitch
-								subValue={featuresDetail?.carbonioFeatureChatsEnabled}
+								subValue={featuresDetail?.carbonioFeatureWscEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.enable_wsc', 'Enable WSC')}
 								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioFeatureChatsEnabled}
-								fromSubValue={accSpecificDetail?.carbonioFeatureChatsEnabled}
-								inputName={'carbonioFeatureChatsEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsEnabled')}
+								inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
+								inputName={'carbonioFeatureWscEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
 							/>
 						</Row>
 					</Container>
