@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.2...v0.10.3) (2025-02-27)
+
+
+### Bug Fixes
+
+* use carbonioFeatureWscEnabled as attribute to activate wsc ([5502f71](https://github.com/zextras/carbonio-admin-console-ui/commit/5502f7181eb76ee310757596698574d9f80489e8))
+* use carbonioFeatureWscEnabled as attribute to activate wsc ([1d15f00](https://github.com/zextras/carbonio-admin-console-ui/commit/1d15f009c2deefa52fd772544f0b8225b929f72f))
+
+### [0.10.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.1...v0.10.2) (2025-02-24)
+
+
+### Bug Fixes
+
+* reduce posthog admin load from autocapture ([#818](https://github.com/zextras/carbonio-admin-console-ui/issues/818)) ([04309ba](https://github.com/zextras/carbonio-admin-console-ui/commit/04309baf72f5ae1f90e2b12559cec445efa8c90e))
+
 ### [0.10.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.0...v0.10.1) (2025-02-11)
 
 

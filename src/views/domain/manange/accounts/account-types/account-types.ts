@@ -231,7 +231,7 @@ export interface AccountType {
 	zimbraArchiveAccountNameTemplate?: string;
 	zimbraStandardClientCustomPrefTabsEnabled?: string;
 	zimbraTwoFactorAuthTrustedDeviceTokenLifetime?: string;
-	carbonioFeatureChatsEnabled?: string;
+	carbonioFeatureWscEnabled?: string;
 	carbonioWscShowMessageReads?: string;
 	carbonioWscShowUsersPresence?: string;
 	carbonioWscVirtualBackgroundEnabled?: string;

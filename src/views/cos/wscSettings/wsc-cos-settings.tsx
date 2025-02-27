@@ -50,7 +50,7 @@ const WscCosSettings: FC = () => {
 	const setInitialValues = useCallback(
 		(obj: AccountType) => {
 			if (obj) {
-				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
+				setSwitchOptionValue('carbonioFeatureWscEnabled', obj?.carbonioFeatureWscEnabled);
 				setSwitchOptionValue('carbonioWscShowMessageReads', obj?.carbonioWscShowMessageReads);
 				setSwitchOptionValue('carbonioWscShowUsersPresence', obj?.carbonioWscShowUsersPresence);
 				setSwitchOptionValue(

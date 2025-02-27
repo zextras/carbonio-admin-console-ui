@@ -70,8 +70,8 @@ export const WscSettings: FC<{
 	);
 
 	const disableWscSettings = useMemo(
-		() => featuresDetail?.carbonioFeatureChatsEnabled === 'FALSE' || readonlyFeatures,
-		[featuresDetail?.carbonioFeatureChatsEnabled, readonlyFeatures]
+		() => featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' || readonlyFeatures,
+		[featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures]
 	);
 
 	const deleteMessageOptions = useMemo(() => {
@@ -118,14 +118,14 @@ export const WscSettings: FC<{
 					)}
 				>
 					<InheritedSwitch
-						subValue={featuresDetail?.carbonioFeatureChatsEnabled}
+						subValue={featuresDetail?.carbonioFeatureWscEnabled}
 						onChange={changeSwitchOption}
 						label={t('wsc.section.content.toggle.enableFeature', 'Enable Workstream Collaboration')}
 						iconColor="primary"
-						inheritedValue={cosDetail?.carbonioFeatureChatsEnabled}
-						fromSubValue={accSpecificDetail?.carbonioFeatureChatsEnabled}
-						inputName={'carbonioFeatureChatsEnabled'}
-						onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsEnabled')}
+						inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
+						fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
+						inputName={'carbonioFeatureWscEnabled'}
+						onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
 					/>
 				</SettingLayout>
 			</BoxLayout>

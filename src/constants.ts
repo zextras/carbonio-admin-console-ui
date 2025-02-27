@@ -450,3 +450,5 @@ export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
 export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
+export const PH_API_HOST = 'https://stats.zextras.tools';

@@ -49,7 +49,7 @@ jest.mock('../../../services/set-core-attributes', () => ({
 }));
 
 const wscCeAttrs = [
-	'carbonioFeatureChatsEnabled',
+	'carbonioFeatureWscEnabled',
 	'carbonioWscShowMessageReads',
 	'carbonioWscShowUsersPresence',
 	'carbonioWscVirtualBackgroundEnabled',
@@ -68,7 +68,7 @@ const wscAdvancedAttrs = ['carbonioWscRecordingEnabled'];
 
 const allWscAttrs = [...wscCeAttrs, ...wscAdvancedAttrs];
 
-const secondLevelAttrs = filter(allWscAttrs, (attr) => attr !== 'carbonioFeatureChatsEnabled');
+const secondLevelAttrs = filter(allWscAttrs, (attr) => attr !== 'carbonioFeatureWscEnabled');
 
 const setFeaturesDetail = jest.fn();
 
@@ -87,14 +87,14 @@ describe('WscSettings', () => {
 	});
 
 	test.each(secondLevelAttrs)(
-		'input for changing %s is disabled when carbonioFeatureChatsEnabled is false',
+		'input for changing %s is disabled when carbonioFeatureWscEnabled is false',
 		(attr) => {
 			act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
 			const { user } = setup(
 				<WscSettings
 					featuresDetail={{
 						...accountDetail,
-						carbonioFeatureChatsEnabled: 'FALSE'
+						carbonioFeatureWscEnabled: 'FALSE'
 					}}
 					setFeaturesDetail={setFeaturesDetail}
 				/>
