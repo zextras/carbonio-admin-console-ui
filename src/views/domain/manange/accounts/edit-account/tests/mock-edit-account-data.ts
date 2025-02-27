@@ -230,7 +230,7 @@ export const accountDetail = {
 	zimbraArchiveAccountNameTemplate: 'archive@example.com',
 	zimbraStandardClientCustomPrefTabsEnabled: 'true',
 	zimbraTwoFactorAuthTrustedDeviceTokenLifetime: '365d',
-	carbonioFeatureChatsEnabled: 'true',
+	carbonioFeatureWscEnabled: 'true',
 	zimbraFeatureVoiceEnabled: 'false',
 	zimbraPrefShowSelectionCheckbox: 'true',
 	zimbraPrefDelegatedSendSaveTarget: 'Sent',
