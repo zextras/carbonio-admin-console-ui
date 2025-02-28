@@ -133,7 +133,7 @@ export const COSPreferences = (): React.JSX.Element => {
 
 	return (
 		<PageLayout
-			title={t('label.wsc', 'Workstream Collaboration')}
+			title={t('cos.preferences', 'Preferences')}
 			onSave={handleSave}
 			onCancel={handleCancel}
 			unSavedChanges={hasUnsavedChanges}
