@@ -292,7 +292,7 @@ export const WscSettings: FC<{
 							<InheritedInput
 								label={t(
 									'wsc.section.content.input.groupPicture',
-									'Maximum group picture size in Kb'
+									'Maximum group picture size in MB'
 								)}
 								subValue={featuresDetail?.carbonioWscMaxRoomPictureSize}
 								inheritedValue={cosDetail?.carbonioWscMaxRoomPictureSize}
@@ -419,7 +419,7 @@ export const WscSettings: FC<{
 							<InheritedInput
 								label={t(
 									'wsc.section.content.input.attachmentSize',
-									'Maximum attachment size in Mb'
+									'Maximum attachment size in MB'
 								)}
 								subValue={featuresDetail?.carbonioWscMaxAttachmentSize}
 								inheritedValue={cosDetail?.carbonioWscMaxAttachmentSize}
