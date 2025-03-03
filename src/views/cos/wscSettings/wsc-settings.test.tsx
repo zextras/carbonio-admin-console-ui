@@ -14,40 +14,6 @@ import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { setup } from '../../../tests/testUtils';
 import { accountDetail } from '../../domain/manange/accounts/edit-account/tests/mock-edit-account-data';
 
-jest.mock('../../../services/flush-cache-service', () => ({
-	flushCache: jest.fn()
-}));
-
-jest.mock('../../../services/modify-cos-service', () => ({
-	modifyCos: jest.fn()
-}));
-
-jest.mock('../../../services/get-core-attributes', () => ({
-	getCoreAttributes: (): Promise<any> =>
-		Promise.resolve({
-			attributes: {
-				backupEnabled: [
-					{
-						configName: 'default',
-						configType: 'cos',
-						value: false
-					}
-				],
-				backupSelfUndeleteAllowed: [
-					{
-						configName: 'default',
-						configType: 'cos',
-						value: true
-					}
-				]
-			}
-		})
-}));
-
-jest.mock('../../../services/set-core-attributes', () => ({
-	setCoreAttributes: jest.fn()
-}));
-
 const wscCeAttrs = [
 	'carbonioFeatureWscEnabled',
 	'carbonioWscShowMessageReads',
