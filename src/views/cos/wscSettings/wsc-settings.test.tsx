@@ -83,6 +83,23 @@ describe('WscSettings - general', () => {
 		user.click(screen.getByTestId('inherited-carbonioWscMaxAttachmentSize'));
 		expect(setFeaturesDetail).not.toHaveBeenCalled();
 	});
+
+	test('Reset carbonioFeatureWscEnabled', async () => {
+		const setEmptyValue = jest.fn();
+		const { user } = setup(
+			<WscSettings
+				featuresDetail={{ carbonioFeatureWscEnabled: 'FALSE' }}
+				setFeaturesDetail={jest.fn()}
+				cosDetail={accountDetail}
+				accSpecificDetail={{ carbonioFeatureWscEnabled: 'TRUE' }}
+				setEmptyValue={setEmptyValue}
+			/>
+		);
+		const element = screen.getByTestId(`inherited-carbonioFeatureWscEnabled`);
+		await user.click(within(element).getByTestId(iconRefreshOutline));
+		expect(setEmptyValue).toHaveBeenCalledWith('carbonioFeatureWscEnabled');
+		await user.hover(element);
+	});
 });
 
 const switchAttrs = filter(
@@ -110,7 +127,7 @@ describe('WscSettings - Switch attrs', () => {
 		}
 	);
 
-	test.each(switchAttrs)('Reset switch $name', async (attr) => {
+	test.each(switchAttrs)('Reset $name switch', async (attr) => {
 		const setEmptyValue = jest.fn();
 		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
 		const { user } = setup(
