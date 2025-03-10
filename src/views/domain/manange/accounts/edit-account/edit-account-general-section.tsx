@@ -1200,9 +1200,11 @@ const EditAccountGeneralSection: FC<{
 								label={t('label.account_status', 'Account Status')}
 								showCheckbox={false}
 								onChange={onAccountStatusChange}
-								defaultSelection={ACCOUNT_STATUS.find(
-									(item: any) => item.value === accountDetail?.zimbraAccountStatus
-								)}
+								selection={
+									ACCOUNT_STATUS.find(
+										(item: any) => item.value === accountDetail?.zimbraAccountStatus
+									) ?? ACCOUNT_STATUS[0]
+								}
 							/>
 						) : (
 							<></>
