@@ -810,12 +810,13 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+		const offsetParam = searchQuery ? 0 : offset;
 		accountListDirectory(
 			attrs,
 			type,
 			domainName,
 			searchQuery,
-			offset,
+			offsetParam,
 			limit,
 			sortedColumn,
 			sortOrder
