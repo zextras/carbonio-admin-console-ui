@@ -131,6 +131,10 @@ const DomainList: FC = () => {
 			lockout: {
 				color: '#D74942',
 				label: t('label.lockout', 'Lockout')
+			},
+			suspended: {
+				color: '#D74942',
+				label: t('label.suspended', 'Suspended')
 			}
 		}),
 		[t]
