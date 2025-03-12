@@ -4,20 +4,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useMemo, useState, useEffect, useCallback } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import {
-	Container,
-	Row,
-	Text,
-	Switch,
-	Select,
-	Padding,
 	Button,
+	Container,
 	Divider,
-	Table,
 	Dropdown,
 	Input,
+	Padding,
+	Row,
+	Select,
+	Switch,
+	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
@@ -27,9 +27,9 @@ import { useTranslation } from 'react-i18next';
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
+import { getInitializedDomains } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../../services/search-directory-service';
-import { getDomainList } from '../../../../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
@@ -273,7 +273,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 
 	const getDomainLists = useCallback(
 		(domain: string): any => {
-			getDomainList(domain, 0)
+			getInitializedDomains({ domainName: domain })
 				.then((data) => {
 					const searchResponse: any = data;
 					if (!!searchResponse && searchResponse?.searchTotal > 0) {
