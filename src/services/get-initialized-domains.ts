@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-type GetInitializedDomainsResponse = {
-	domain: [{ name: string; id: string }];
+export type GetInitializedDomainsResponse = {
+	domain: Array<{ name: string; id: string }>;
 	searchTotal: number;
 };
 

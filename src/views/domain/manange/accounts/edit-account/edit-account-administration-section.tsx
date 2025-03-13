@@ -44,7 +44,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 		context;
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
-	const [domainList, setDomainList] = useState([]);
+	const [domainList, setDomainList] = useState<Array<{ name: string; id: string }>>([]);
 	const [distributionList, setDistributionList] = useState<any>([]);
 	const [accountDistributionList, setAccountDistributionList] = useState([]);
 	const [domainId, setDomainId] = useState('');
@@ -272,11 +272,11 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	);
 
 	const getDomainLists = useCallback(
-		(domain: string): any => {
+		(domain: string) => {
 			getInitializedDomains({ domainName: domain })
 				.then((data) => {
-					const searchResponse: any = data;
-					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+					const searchResponse = data;
+					if (searchResponse?.searchTotal > 0) {
 						setDomainList(searchResponse?.domain);
 					} else {
 						setDomainList([]);
