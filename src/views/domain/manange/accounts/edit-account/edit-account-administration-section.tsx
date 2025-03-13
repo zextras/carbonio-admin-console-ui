@@ -282,7 +282,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 		}
 	}
 
-	const getDomainLists = useCallback(
+	const getInitializedDomainLists = useCallback(
 		(domain: string) => {
 			getInitializedDomains({ domainName: domain })
 				.then((response) => {
@@ -299,7 +299,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(
 		debounce((domain) => {
-			getDomainLists(domain);
+			getInitializedDomainLists(domain);
 		}, 700),
 		[debounce]
 	);
@@ -311,9 +311,9 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	}, [searchDomainName, isDomainSelect, searchDomainCall]);
 
 	useEffect(() => {
-		getDomainLists('');
+		getInitializedDomainLists('');
 		getAccountDistributionList();
-	}, [getDomainLists, getAccountDistributionList, accountDetail?.name]);
+	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name]);
 
 	return (
 		<Container
