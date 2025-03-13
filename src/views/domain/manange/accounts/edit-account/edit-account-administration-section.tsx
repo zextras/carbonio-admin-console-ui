@@ -27,7 +27,10 @@ import { useTranslation } from 'react-i18next';
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
-import { getInitializedDomains } from '../../../../../services/get-initialized-domains';
+import {
+	getInitializedDomains,
+	GetInitializedDomainsResponse
+} from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../../services/search-directory-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -44,7 +47,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 		context;
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
-	const [domainList, setDomainList] = useState<Array<{ name: string; id: string }>>([]);
+	const [domainList, setDomainList] = useState<Array<{ id: string; name: string }>>([]);
 	const [distributionList, setDistributionList] = useState<any>([]);
 	const [accountDistributionList, setAccountDistributionList] = useState([]);
 	const [domainId, setDomainId] = useState('');
@@ -271,16 +274,19 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 		[setIsLoading, accountDetail?.name, createSnackbar, t, getAccountDistributionList]
 	);
 
+	function setDomains(response: GetInitializedDomainsResponse): void {
+		if (response.searchTotal > 0) {
+			setDomainList(response.domain);
+		} else {
+			setDomainList([]);
+		}
+	}
+
 	const getDomainLists = useCallback(
 		(domain: string) => {
 			getInitializedDomains({ domainName: domain })
-				.then((data) => {
-					const searchResponse = data;
-					if (searchResponse?.searchTotal > 0) {
-						setDomainList(searchResponse?.domain);
-					} else {
-						setDomainList([]);
-					}
+				.then((response) => {
+					setDomains(response);
 				})
 				.catch((error) => {
 					const snackbarConfig = generateSnackbarFromError(error, t);
