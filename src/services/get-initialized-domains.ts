@@ -3,9 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-// TODO:
-//  	- improve error handling
-
 type GetInitializedDomainsResponse = {
 	domain: [{ name: string; id: string }];
 	searchTotal: number;
@@ -22,5 +19,13 @@ export const getInitializedDomains = async (body: {
 		body: JSON.stringify(body)
 	});
 
-	return result.json();
+	if (!result.ok) {
+		throw new Error(`Error. Status: ${result.status}`);
+	}
+
+	try {
+		return (await result.json()) as GetInitializedDomainsResponse;
+	} catch (error) {
+		throw new Error(`Invalid JSON response: ${(error as Error).message}.`);
+	}
 };
