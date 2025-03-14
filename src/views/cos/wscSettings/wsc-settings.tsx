@@ -91,7 +91,7 @@ export const WscSettings: FC<{
 	const editMessageOptions = useMemo(() => {
 		const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
 		const userCannotEdit = t(
-			'ws.section.content.select.editLimit.zero',
+			'wsc.section.content.select.zero.editLimit',
 			'User cannot edit sent messages'
 		);
 		return [
@@ -105,9 +105,9 @@ export const WscSettings: FC<{
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
 			<BoxLayout
-				title={t('wsc.section.header.title', 'General Settings')}
+				title={t('wsc.section.header.title.general', 'General Settings')}
 				description={t(
-					'wsc.section.header.description',
+					'wsc.section.header.description.general',
 					'Manage the activation of core features and applications.'
 				)}
 			>
@@ -120,7 +120,7 @@ export const WscSettings: FC<{
 					<InheritedSwitch
 						subValue={featuresDetail?.carbonioFeatureWscEnabled}
 						onChange={changeSwitchOption}
-						label={t('wsc.section.content.toggle.enableFeature', 'Enable Workstream Collaboration')}
+						label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
 						iconColor="primary"
 						inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
 						fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
@@ -309,7 +309,7 @@ export const WscSettings: FC<{
 			<Container orientation="horizontal" height="fit" gap="4rem">
 				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
 					<BoxLayout
-						title={t('wsc.section.header.title.videocall', 'Calls & Video')}
+						title={t('wsc.section.header.title.videocall', 'Video calls')}
 						description={t(
 							'wsc.section.header.description.videocall',
 							'Configure video calls, recording, and virtual backgrounds.'

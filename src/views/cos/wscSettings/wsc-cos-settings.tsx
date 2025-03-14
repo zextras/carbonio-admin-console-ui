@@ -153,7 +153,7 @@ const WscCosSettings: FC = () => {
 
 	return (
 		<PageLayout
-			title={t('label.wsc', 'Workstream Collaboration')}
+			title={t('label.wsc', 'Chats')}
 			onSave={onSave}
 			onCancel={onCancel}
 			unSavedChanges={isDirty}

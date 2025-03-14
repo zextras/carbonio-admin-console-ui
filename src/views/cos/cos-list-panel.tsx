@@ -223,7 +223,7 @@ const CosListPanel: FC = () => {
 			},
 			{
 				id: WSC,
-				name: t('label.wsc', 'Workstream Collaboration'),
+				name: t('label.wsc', 'Chat'),
 				isSelected: isCosSelect
 			},
 			{
