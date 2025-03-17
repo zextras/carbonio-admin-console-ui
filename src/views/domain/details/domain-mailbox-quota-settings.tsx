@@ -613,6 +613,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
 										onClick={onCancel}
+										data-testid="cancel-button"
 									/>
 								)}
 							</Padding>
@@ -622,6 +623,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									label={t('label.save', 'Save')}
 									color="primary"
 									onClick={onSave}
+									data-testid="save-button"
 								/>
 							)}
 						</Row>
