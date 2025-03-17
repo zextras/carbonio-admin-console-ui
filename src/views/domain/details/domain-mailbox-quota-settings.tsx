@@ -91,6 +91,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const [selectedSortType, setSelectedSortType] = useState<string>('');
 	const [isDownloadInProgress, setIsDownloadInProgress] = useState<boolean>(false);
 	const [fileStorageEnabled, setFileStorageEnabled] = useState<boolean>(isAdvanced);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const quotaPolicy: any = useMemo(
 		() => [
@@ -476,6 +477,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 		setZimbraDomainAggregateQuotaPolicy(
 			quotaPolicy.find((item: any) => item.value === domainData.zimbraDomainAggregateQuotaPolicy)
 		);
+		setHasError(false);
 		setIsDirty(false);
 	};
 
@@ -615,7 +617,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 								)}
 							</Padding>
 							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+								<Button
+									disabled={hasError}
+									label={t('label.save', 'Save')}
+									color="primary"
+									onClick={onSave}
+								/>
 							)}
 						</Row>
 					</Row>
@@ -669,9 +676,25 @@ const DomainMailboxQuotaSetting: FC = () => {
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										backgroundColor="gray5"
-										onChange={(e: any): any => {
-											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+										type="number"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											if (e.target.value === '') {
+												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setHasError(true);
+											} else if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {
+												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setHasError(false);
+											}
 										}}
+										hasError={hasError}
+										description={
+											hasError
+												? t(
+														'domain.mailSpaceQuotaThresholdError.description',
+														'Mail space quota threshold should be between 0 to 100'
+												  )
+												: ''
+										}
 									/>
 								</Container>
 							</ListRow>
