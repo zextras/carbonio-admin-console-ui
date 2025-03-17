@@ -686,6 +686,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 												setHasError(false);
 											}
 										}}
+										data-testid="zimbraDomainAggregateQuotaWarnPercent"
 										hasError={hasError}
 										description={
 											hasError
