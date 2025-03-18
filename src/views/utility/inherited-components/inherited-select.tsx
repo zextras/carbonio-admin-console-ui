@@ -21,7 +21,7 @@ const InheritedSelect: FC<{
 	items: any[];
 	subValue: any;
 	inheritedValue: any;
-	background: any;
+	background?: any;
 	selectName: any;
 	onChange: any;
 	onChangeReset: any;
@@ -33,7 +33,8 @@ const InheritedSelect: FC<{
 	items,
 	subValue,
 	inheritedValue,
-	background,
+	background = 'gray5',
+	selectName,
 	onChange,
 	onChangeReset,
 	fromSubValue,
@@ -49,7 +50,7 @@ const InheritedSelect: FC<{
 		return items.find((item: any) => item.value === selectValue);
 	}, [subValue, inheritedValue, items]);
 	return (
-		<Container orientation="horizontal">
+		<Container orientation="horizontal" data-testid={`inherited-${selectName}`}>
 			<Row takeAvailableSpace>
 				<Select
 					label={label}

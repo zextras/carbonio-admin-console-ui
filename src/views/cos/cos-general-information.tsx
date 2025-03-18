@@ -8,7 +8,6 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
 	Button,
 	Container,
-	Divider,
 	Icon,
 	Input,
 	Modal,
@@ -40,7 +39,7 @@ import Paging from '../components/paging';
 import Textarea from '../components/textarea';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 
 const CosGeneralInformation: FC = () => {
@@ -55,7 +54,7 @@ const CosGeneralInformation: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
-	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const totalAccount = useCosStore((state) => state.totalAccount);
 	const totalDomain = useCosStore((state) => state.totalDomain);
 	const rights: Rights = useRightsStore((state) => state.rights);
@@ -598,40 +597,12 @@ const CosGeneralInformation: FC = () => {
 	}, [cosDetail?.id, searchDomainList, searchDomainString]);
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
-				>
-					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('cos.general_information', 'General Information')}
-							</Text>
-						</Row>
-						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="small">
-								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onCancel}
-									/>
-								)}
-							</Padding>
-							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-							)}
-						</Row>
-					</Row>
-				</Container>
-			</Row>
-			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
-			</Row>
+		<PageLayout
+			title={t('cos.general_information', 'General Information')}
+			onSave={onSave}
+			onCancel={onCancel}
+			unSavedChanges={isDirty}
+		>
 			<Container
 				orientation="column"
 				crossAlignment="flex-start"
@@ -640,13 +611,8 @@ const CosGeneralInformation: FC = () => {
 				width="100%"
 				// height="calc(100vh - 230px)"
 			>
-				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container
-						height="fit"
-						crossAlignment="flex-start"
-						background="gray6"
-						padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
-					>
+				<Row mainAlignment="flex-start" width="100%">
+					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
@@ -733,7 +699,7 @@ const CosGeneralInformation: FC = () => {
 						</ListRow>
 					</Container>
 				</Row>
-				<Row width="100%" padding={{ all: 'large' }}>
+				<Row width="100%" padding={{ vertical: 'large' }}>
 					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
 							{t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
@@ -745,7 +711,6 @@ const CosGeneralInformation: FC = () => {
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
 					width="fill"
-					padding={{ left: 'large', right: 'large', top: 'large' }}
 				>
 					<Container padding={{ all: 'small' }}>
 						<Input
@@ -770,7 +735,6 @@ const CosGeneralInformation: FC = () => {
 						position: 'relative'
 					}}
 					ref={tableRef}
-					padding={{ left: 'large', right: 'large', bottom: 'large' }}
 				>
 					<Container padding={{ all: 'small' }}>
 						<Table
@@ -843,7 +807,7 @@ const CosGeneralInformation: FC = () => {
 				</Row>
 				<Row
 					width="100%"
-					padding={{ all: 'large' }}
+					padding={{ vertical: 'large' }}
 					style={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
 				>
 					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
@@ -857,7 +821,6 @@ const CosGeneralInformation: FC = () => {
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
 					width="fill"
-					padding={{ left: 'large', right: 'large', top: 'large' }}
 				>
 					<Container padding={{ all: 'small' }}>
 						<Input
@@ -882,7 +845,7 @@ const CosGeneralInformation: FC = () => {
 						position: 'relative'
 					}}
 					ref={tableRef}
-					padding={{ left: 'large', right: 'large', bottom: 'large' }}
+					padding={{ bottom: 'large' }}
 				>
 					<Container padding={{ all: 'small' }}>
 						<Table
@@ -1011,7 +974,7 @@ const CosGeneralInformation: FC = () => {
 								label={t('label.yes_delete', 'Yes, Delete')}
 								color="error"
 								onClick={onDeleteCOS}
-								disabled={isRequstInProgress}
+								disabled={isRequestInProgress}
 							/>
 						</Container>
 					</Container>
@@ -1044,17 +1007,7 @@ const CosGeneralInformation: FC = () => {
 					</Padding>
 				</Container>
 			</Modal>
-
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
-		</Container>
+		</PageLayout>
 	);
 };
 
