@@ -15,6 +15,8 @@ import { useDomainStore } from '../../../../store/domain/store';
 import { setup } from '../../../../tests/testUtils';
 import DomainMailboxQuotaSetting from '../domain-mailbox-quota-settings';
 
+const maxMailboxQuotaLabel = 'Max mailbox quota for the Mails (GB)';
+
 // jest.mock('react-i18next', () => ({
 // 	useTranslation: jest.fn()
 // }));
@@ -54,20 +56,20 @@ describe('Mailbox Quota Settings', () => {
 		setup(<DomainMailboxQuotaSetting />);
 
 		expect(screen.getByText('Mailbox Quota')).toBeInTheDocument();
-		expect(screen.getByText('Max mailbox quota for the Mails (GB)')).toBeInTheDocument();
+		expect(screen.getByText(maxMailboxQuotaLabel)).toBeInTheDocument();
 	});
 
 	test('displays correct input fields', () => {
 		setup(<DomainMailboxQuotaSetting />);
 
-		expect(screen.getByLabelText('Max mailbox quota for the Mails (GB)')).toBeInTheDocument();
+		expect(screen.getByLabelText(maxMailboxQuotaLabel)).toBeInTheDocument();
 		expect(screen.getByLabelText('Mail Space Quota threshold (%) warning')).toBeInTheDocument();
 		expect(screen.getByLabelText('Receiver of Quota warning (email)')).toBeInTheDocument();
 	});
 
 	test('handles input changes correctly', async () => {
 		const { user } = setup(<DomainMailboxQuotaSetting />);
-		const input = screen.getByLabelText('Max mailbox quota for the Mails (GB)');
+		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
 			await user.type(input, '10');
@@ -76,9 +78,20 @@ describe('Mailbox Quota Settings', () => {
 		expect(input).toHaveValue('10');
 	});
 
+	test('handles mailbox quota threshold changes correctly', async () => {
+		const { user } = setup(<DomainMailboxQuotaSetting />);
+		const input = screen.getByLabelText('Mail Space Quota threshold (%) warning');
+
+		await act(async () => {
+			await user.type(input, '10');
+		});
+
+		expect(input).toHaveValue(10);
+	});
+
 	test('displays save and cancel buttons after modifying fields', async () => {
 		const { user } = setup(<DomainMailboxQuotaSetting />);
-		const input = screen.getByLabelText('Max mailbox quota for the Mails (GB)');
+		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
 			await user.type(input, '10');
@@ -90,7 +103,7 @@ describe('Mailbox Quota Settings', () => {
 
 	test('clicking cancel button hides save and cancel buttons', async () => {
 		const { user } = setup(<DomainMailboxQuotaSetting />);
-		const input = screen.getByLabelText('Max mailbox quota for the Mails (GB)');
+		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
 			await user.type(input, '10');
