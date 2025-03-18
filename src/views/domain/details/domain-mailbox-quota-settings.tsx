@@ -680,7 +680,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										backgroundColor="gray5"
 										type="number"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-											if (e.target.value === '') {
+											if (e.target.value.trim() === '') {
 												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
 												setHasError(true);
 											} else if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {
