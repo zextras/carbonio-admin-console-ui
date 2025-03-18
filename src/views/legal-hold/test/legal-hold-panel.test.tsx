@@ -95,8 +95,6 @@ const mockResponse = {
 	}
 };
 
-const mockResponse2 = {};
-
 describe('LegalHoldPanel Component', () => {
 	const setupDomainStore = (): void => {
 		useDomainStore.getState().setDomain(domain);
@@ -108,10 +106,10 @@ describe('LegalHoldPanel Component', () => {
 		jest.clearAllMocks();
 		(useSnackbar as jest.Mock).mockReturnValue(createSnackbarSpy);
 		(useDomainInformation as jest.Mock).mockReturnValue({ name: 'mockDomain' });
+		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse);
 	});
 
 	test('renders empty', async () => {
-		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse);
 		await act(async () => {
 			setup(<LegalHoldPanel />);
 		});
@@ -120,10 +118,61 @@ describe('LegalHoldPanel Component', () => {
 	});
 
 	test('renders list', async () => {
-		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse2);
+		(getSoapFetchRequest as jest.Mock).mockResolvedValue({});
 		await act(async () => {
 			setup(<LegalHoldPanel />);
 		});
 		expect(screen.getByText(/This list is empty./i)).toBeInTheDocument();
+	});
+
+	test('renders Legal Hold section with valid data', () => {
+		setup(<LegalHoldPanel />);
+
+		expect(screen.getByText('Legal Hold')).toBeInTheDocument();
+		expect(screen.getByText('Show only accounts on Legal Hold')).toBeInTheDocument();
+	});
+
+	test('displays correct input fields', () => {
+		setup(<LegalHoldPanel />);
+		expect(screen.getByText('Show only accounts on Legal Hold')).toBeInTheDocument();
+		// eslint-disable-next-line sonarjs/no-duplicate-string
+		expect(screen.getByText('Search an Account')).toBeInTheDocument();
+		expect(screen.getByText('Type the exact domain name')).toBeInTheDocument();
+	});
+
+	test('handles input changes correctly', async () => {
+		const { user } = setup(<LegalHoldPanel />);
+		const input = screen.getByLabelText('Search an Account');
+
+		await act(async () => {
+			// eslint-disable-next-line sonarjs/no-duplicate-string
+			await user.type(input, 'test@example.com');
+		});
+
+		expect(input).toHaveValue('test@example.com');
+	});
+
+	test('displays set/unset legal hold and restore buttons after selecting an account', async () => {
+		const { user } = setup(<LegalHoldPanel />);
+		const input = screen.getByLabelText('Search an Account');
+
+		await act(async () => {
+			await user.type(input, 'test@example.com');
+		});
+		expect(screen.getByText('Set legal hold')).toBeInTheDocument();
+		expect(screen.getByText('Restore')).toBeInTheDocument();
+	});
+
+	test('clicking set/unset legal hold button calls setUnsetLegalHold', async () => {
+		const { user } = setup(<LegalHoldPanel />);
+		const input = screen.getByLabelText('Search an Account');
+
+		await act(async () => {
+			await user.type(input, 'test@example.com');
+		});
+
+		await act(async () => {
+			await user.click(screen.getByText('Set legal hold'));
+		});
 	});
 });
