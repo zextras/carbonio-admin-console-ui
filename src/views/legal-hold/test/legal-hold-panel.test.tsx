@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
+import React, { act } from 'react';
 
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
@@ -50,16 +50,19 @@ const domain = {
 	id: '142f56c1-aaf1-432b-9cfa-448e1b952cf6'
 };
 
+const id = '292342cf-1d9a-4f3a-b394-1093998430eb';
+const serverName = 'kc-dev3-mbox.demo.zextras.io';
+const serverName2 = 'kc-dev3-u22-mbox3.demo.zextras.io';
 const mockResponse = {
-	'kc-dev3-u22-mbox3.demo.zextras.io': {
+	serverName2: {
 		response: {
 			accounts: [
 				{
-					name: 'davide222@demo.zextras.io',
+					name: 'test11@demo.zextras.io',
 					creationTimestamp: 1742205198729,
-					serverName: 'kc-dev3-u22-mbox3.demo.zextras.io',
+					serverName2,
 					legalHold: 'true',
-					id: '292342cf-1d9a-4f3a-b394-1093998430eb',
+					id,
 					status: 'Active'
 				}
 			],
@@ -74,16 +77,15 @@ const mockResponse = {
 		},
 		ok: true
 	},
-	'kc-dev3-mbox.demo.zextras.io': {
+	serverName: {
 		response: {
 			accounts: [
 				{
-					mailHost: 'kc-dev3-mbox.demo.zextras.io',
-					name: 'davide222@demo.zextras.io',
+					name: 'test12@demo.zextras.io',
 					creationTimestamp: 1742205198729,
-					serverName: 'kc-dev3-mbox.demo.zextras.io',
+					serverName,
 					legalHold: 'true',
-					id: '292342cf-1d9a-4f3a-b394-1093998430eb',
+					id,
 					status: 'Active'
 				}
 			],
@@ -92,6 +94,8 @@ const mockResponse = {
 		ok: true
 	}
 };
+
+const mockResponse2 = {};
 
 describe('LegalHoldPanel Component', () => {
 	const setupDomainStore = (): void => {
@@ -106,10 +110,20 @@ describe('LegalHoldPanel Component', () => {
 		(useDomainInformation as jest.Mock).mockReturnValue({ name: 'mockDomain' });
 	});
 
-	test('renders list', () => {
+	test('renders empty', async () => {
 		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse);
-		// (getSoapFetchRequest as jest.Mock).mockImplementation(() => Promise.resolve(mockResponse));
-		setup(<LegalHoldPanel />);
-		expect(screen.getByText(/This list is empty2./i)).toBeInTheDocument();
+		await act(async () => {
+			setup(<LegalHoldPanel />);
+		});
+		expect(screen.getByText(/test11/i)).toBeInTheDocument();
+		expect(screen.getByText(/test12/i)).toBeInTheDocument();
+	});
+
+	test('renders list', async () => {
+		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse2);
+		await act(async () => {
+			setup(<LegalHoldPanel />);
+		});
+		expect(screen.getByText(/This list is empty./i)).toBeInTheDocument();
 	});
 });
