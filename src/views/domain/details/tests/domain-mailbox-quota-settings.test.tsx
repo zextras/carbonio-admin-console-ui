@@ -94,7 +94,10 @@ describe('Mailbox Quota Settings', () => {
 		const { user } = setup(<DomainMailboxQuotaSetting />);
 		const input = screen.getByLabelText(maxMailboxQuotaThresholdLabel);
 		await act(async () => {
-			await user.type(input, ' ');
+			await user.type(input, '5');
+		});
+		await act(async () => {
+			await user.type(input, '{backspace}');
 		});
 
 		expect(input).toHaveValue(null);
