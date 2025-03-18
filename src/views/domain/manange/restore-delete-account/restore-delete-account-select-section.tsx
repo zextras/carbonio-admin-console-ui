@@ -57,21 +57,27 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 				bold: true
 			},
 			{
+				id: 'serverName',
+				label: t('label.server_name', 'Server Name'),
+				width: '20%',
+				bold: true
+			},
+			{
 				id: 'hasBackup',
 				label: t('label.has_backup', 'Has Backup'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			},
 			{
 				id: 'creat_date',
 				label: t('label.creation_date', 'Creation Date'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			},
 			{
 				id: 'delete_date',
 				label: t('label.deletion_date', 'Deletion Date'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			}
 		],
@@ -148,7 +154,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -157,9 +163,20 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						</Text>
 					</Container>,
 					<Container
+						key={item?.serverName}
+						onClick={(): void => {
+							setSelectedAccountRows([item]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="light" key={item?.serverName} color="gray0">
+							{item?.serverName}
+						</Text>
+					</Container>,
+					<Container
 						key={item?.status}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -170,7 +187,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					<Container
 						key={item?.creationTimestamp}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -181,7 +198,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					<Container
 						key={item?.id}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -218,18 +235,19 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 
 	useMemo(() => {
 		if (selectedAccountRows && selectedAccountRows.length > 0) {
-			const findAccount = accounts.find((ac: any) => ac?.id === selectedAccountRows[0]);
+			const findAccount = selectedAccountRows[0];
 			if (!!findAccount && findAccount?.id) {
 				setRestoreAccountDetail((prev: any) => ({
 					...prev,
 					name: findAccount?.name,
 					id: findAccount?.id,
 					status: findAccount?.status,
-					createDate: findAccount?.creationTimestamp
+					createDate: findAccount?.creationTimestamp,
+					serverName: findAccount?.serverName
 				}));
 			}
 		}
-	}, [selectedAccountRows, accounts, setRestoreAccountDetail]);
+	}, [selectedAccountRows, setRestoreAccountDetail]);
 
 	return (
 		<Container

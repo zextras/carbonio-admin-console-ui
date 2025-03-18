@@ -60,6 +60,7 @@ const RestoreDeleteAccountWizard: FC<{
 		isEmailNotificationEnable: boolean;
 		notificationReceiver: string;
 		copyDomain: string;
+		serverName: string;
 	}
 	const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
 		name: '',
@@ -73,7 +74,8 @@ const RestoreDeleteAccountWizard: FC<{
 		dataSource: false,
 		isEmailNotificationEnable: false,
 		notificationReceiver: '',
-		copyDomain: ''
+		copyDomain: '',
+		serverName: ''
 	});
 
 	const onRestoreAccount = useCallback(() => {
@@ -89,7 +91,8 @@ const RestoreDeleteAccountWizard: FC<{
 			restoreAccountDetail?.dataSource,
 			restoreAccountDetail?.notificationReceiver,
 			restoreAccountDetail?.isEmailNotificationEnable,
-			restoreAccountDetail?.copyDomain
+			restoreAccountDetail?.copyDomain,
+			restoreAccountDetail?.serverName
 		);
 	}, [restoreAccountDetail, restoreAccountRequest]);
 

@@ -13,7 +13,6 @@ import { useHistory } from 'react-router-dom';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
-import { useDomainStore } from '../../../../store/domain/store';
 
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
@@ -24,7 +23,6 @@ const RestoreDeleteAccount: FC = () => {
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
-	const domainName = useDomainStore((state) => state.domain?.name);
 
 	const backToFirstTab = useCallback(() => {
 		const lastloc = history?.location?.pathname;
@@ -71,7 +69,8 @@ const RestoreDeleteAccount: FC = () => {
 			dataSource: boolean,
 			notificationReceiver: string,
 			isEmailNotificationEnable: boolean,
-			copyDomain: string
+			copyDomain: string,
+			serverName: string
 		) => {
 			const body: any = {
 				srcAccountName: id,
@@ -85,7 +84,7 @@ const RestoreDeleteAccount: FC = () => {
 				body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
 			}
 			setIsRequestWorkInProgress(true);
-			doRestoreDeleteAccount(body)
+			doRestoreDeleteAccount(body, serverName)
 				.then((data) => {
 					let error = data?.error?.details?.cause || data?.error?.message;
 					const success = data?.operationId;
