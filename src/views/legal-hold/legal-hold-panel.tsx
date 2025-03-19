@@ -324,7 +324,7 @@ const LegalHoldPanel: FC = () => {
 	useMemo(() => {
 		if (allBackupAccounts && allBackupAccounts.length > 0) {
 			const allRows = allBackupAccounts.map((item) => ({
-				id: item?.id,
+				id: `${item?.id}-${item?.serverName}`,
 				columns: [
 					<Container
 						key={item?.name}
