@@ -249,6 +249,8 @@ const LegalHoldPanel: FC = () => {
 
 	const getBackupAccounts = useCallback(
 		(searchText = '', offSet = 0): void => {
+			setIsRequestInProgress(true);
+			setAccountRows([]);
 			const domainNameItem =
 				selectedDomainName === '' || selectedDomainName === undefined
 					? domainName
@@ -322,12 +324,12 @@ const LegalHoldPanel: FC = () => {
 	useMemo(() => {
 		if (allBackupAccounts && allBackupAccounts.length > 0) {
 			const allRows = allBackupAccounts.map((item) => ({
-				id: item?.id,
+				id: `${item?.id}-${item?.serverName}`,
 				columns: [
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -338,7 +340,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -349,7 +351,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -360,7 +362,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -371,7 +373,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -382,7 +384,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -393,7 +395,7 @@ const LegalHoldPanel: FC = () => {
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -410,14 +412,6 @@ const LegalHoldPanel: FC = () => {
 			setAccountRows([]);
 		}
 	}, [allBackupAccounts, t]);
-
-	const getLegalHoldById = useCallback(
-		(id: string): BackupAccountItem | undefined => {
-			const account = allBackupAccounts.find((item) => item?.id === id);
-			return account ?? undefined;
-		},
-		[allBackupAccounts]
-	);
 
 	const setAccountAfterLegalHold = useCallback(
 		(status: string, id: string) => {
@@ -458,15 +452,14 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const onLegalHoldPress = useCallback(() => {
-		const id = selectedAccountRows[0];
-		const legalHoldItem = getLegalHoldById(id);
+		const legalHoldItem = selectedAccountRows[0];
 		if (legalHoldItem) {
 			const status = legalHoldItem?.legalHold?.toUpperCase() === TRUE ? UNSET : SET;
 			setUnsetLegalHold(status, legalHoldItem.id, legalHoldItem.serverName).then((data) => {
-				setUnsetLegalHoldResponse(data, status, id);
+				setUnsetLegalHoldResponse(data, status, legalHoldItem.id);
 			});
 		}
-	}, [selectedAccountRows, getLegalHoldById, setUnsetLegalHoldResponse]);
+	}, [selectedAccountRows, setUnsetLegalHoldResponse]);
 
 	const customIconDetail = {
 		onClick: (): void => {
@@ -587,8 +580,7 @@ const LegalHoldPanel: FC = () => {
 
 	useEffect(() => {
 		if (selectedAccountRows.length > 0) {
-			const id = selectedAccountRows[0];
-			const legalHoldItem = getLegalHoldById(id);
+			const legalHoldItem = selectedAccountRows[0];
 			const label =
 				legalHoldItem?.legalHold === 'false'
 					? t('legal_hold.set_legal_hold', 'Set legal hold')
@@ -598,7 +590,7 @@ const LegalHoldPanel: FC = () => {
 		} else {
 			setIsEnableLegalHold(false);
 		}
-	}, [getLegalHoldById, selectedAccountRows, t]);
+	}, [selectedAccountRows, t]);
 
 	const customIcon = useCallback(
 		() => <Icon icon="FunnelOutline" size="large" color="primary" />,
@@ -606,7 +598,7 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const onRestore = useCallback(() => {
-		const selectedItem = getLegalHoldById(selectedAccountRows[0]);
+		const selectedItem = selectedAccountRows[0];
 		if (selectedItem?.status === UNSET) {
 			showSnackbar(
 				ERROR_LABLE,
@@ -616,7 +608,7 @@ const LegalHoldPanel: FC = () => {
 			return;
 		}
 		setIsShowRestoreView(true);
-	}, [getLegalHoldById, selectedAccountRows, showSnackbar, t]);
+	}, [selectedAccountRows, showSnackbar, t]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
@@ -826,7 +818,7 @@ const LegalHoldPanel: FC = () => {
 			</Row>
 			{isShowRestoreView && (
 				<RestoreAccountView
-					legalHoldAccount={getLegalHoldById(selectedAccountRows[0])}
+					legalHoldAccount={selectedAccountRows[0]}
 					setIsShowRestoreView={setIsShowRestoreView}
 				/>
 			)}

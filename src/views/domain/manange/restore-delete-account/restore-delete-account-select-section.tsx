@@ -57,21 +57,27 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 				bold: true
 			},
 			{
+				id: 'serverName',
+				label: t('label.server_name', 'Server Name'),
+				width: '30%',
+				bold: true
+			},
+			{
 				id: 'hasBackup',
 				label: t('label.has_backup', 'Has Backup'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			},
 			{
 				id: 'creat_date',
 				label: t('label.creation_date', 'Creation Date'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			},
 			{
 				id: 'delete_date',
 				label: t('label.deletion_date', 'Deletion Date'),
-				width: '20%',
+				width: '10%',
 				bold: true
 			}
 		],
@@ -79,12 +85,12 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	);
 
 	const getBackupAccounts = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(searchText: string) => {
+		// eslint-disable-next-line sonarjs/cognitive-complexity,default-param-last
+		(searchText = '', offset = 0) => {
 			setIsRequestInProgress(true);
 			setAccounts([]);
 			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${accountOffset}&pageSize=${accountLimit}&domains=${domainName}&targetServers=all_servers&filter=${searchText}`
+				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offset}&pageSize=${accountLimit}&domains=${domainName}&targetServers=all_servers&filter=${searchText}`
 			)
 				.then((data: any) => {
 					setIsRequestInProgress(false);
@@ -131,24 +137,38 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					if (page) {
 						const num: number = page;
 						setTotalItem(num * accountLimit);
-					} else if (page === 0) {
+					} else if (page === undefined || page === 0) {
 						setTotalItem(1);
 					}
 				})
 				.catch(() => setHasError(true));
 		},
-		[domainName, createSnackbar, accountLimit, accountOffset]
+		[domainName, createSnackbar, accountLimit]
+	);
+
+	useEffect(() => {
+		getBackupAccounts();
+	}, [getBackupAccounts]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchAccount = useCallback(
+		debounce((searchText) => {
+			setSearchString(searchText);
+			setAccountOffset(0);
+			getBackupAccounts(searchText, 0);
+		}, 1000),
+		[debounce]
 	);
 
 	useMemo(() => {
 		if (accounts && accounts.length > 0) {
 			const allRows = accounts.map((item: any) => ({
-				id: item?.id,
+				id: `${item?.id}-${item?.serverName}`,
 				columns: [
 					<Container
 						key={item?.name}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -157,9 +177,20 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						</Text>
 					</Container>,
 					<Container
+						key={item?.serverName}
+						onClick={(): void => {
+							setSelectedAccountRows([item]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="light" key={item?.serverName} color="gray0">
+							{item?.serverName}
+						</Text>
+					</Container>,
+					<Container
 						key={item?.status}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -170,7 +201,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					<Container
 						key={item?.creationTimestamp}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -181,7 +212,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 					<Container
 						key={item?.id}
 						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
+							setSelectedAccountRows([item]);
 						}}
 						crossAlignment="flex-start"
 					>
@@ -198,19 +229,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	}, [accounts]);
 
 	useEffect(() => {
-		getBackupAccounts('');
-	}, [accountOffset, getBackupAccounts]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchAccount = useCallback(
-		debounce((searchText) => {
-			setAccountOffset(0);
-			getBackupAccounts(searchText);
-		}, 1000),
-		[debounce]
-	);
-
-	useEffect(() => {
 		if (searchString !== undefined) {
 			searchAccount(searchString);
 		}
@@ -218,18 +236,19 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 
 	useMemo(() => {
 		if (selectedAccountRows && selectedAccountRows.length > 0) {
-			const findAccount = accounts.find((ac: any) => ac?.id === selectedAccountRows[0]);
+			const findAccount = selectedAccountRows[0];
 			if (!!findAccount && findAccount?.id) {
 				setRestoreAccountDetail((prev: any) => ({
 					...prev,
 					name: findAccount?.name,
 					id: findAccount?.id,
 					status: findAccount?.status,
-					createDate: findAccount?.creationTimestamp
+					createDate: findAccount?.creationTimestamp,
+					serverName: findAccount?.serverName
 				}));
 			}
 		}
-	}, [selectedAccountRows, accounts, setRestoreAccountDetail]);
+	}, [selectedAccountRows, setRestoreAccountDetail]);
 
 	return (
 		<Container
@@ -322,8 +341,10 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 								<Paging
 									totalItem={totalItem}
 									pageSize={accountLimit}
-									setOffset={(val: any): void => {
-										setAccountOffset(val / accountLimit);
+									currentPageProp={accountOffset ? accountOffset + 1 : 1}
+									onPageChange={(val: number): void => {
+										setAccountOffset(val - 1);
+										getBackupAccounts(searchString, val - 1);
 									}}
 								/>
 							</Container>

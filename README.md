@@ -33,7 +33,7 @@ npm install
 <h4>Watch Mode</h4>
 
 ```
-npm run start -- -h <host>
+npm run start -- -h <proxy host>:<admin port>
 ```
 
 The host parameter is required to proxy requests and content from an existing Carbonio installation.
