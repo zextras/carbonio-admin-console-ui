@@ -870,7 +870,7 @@ const EditAccountDelegatesSection: FC = () => {
 							onClick={(): void => setIsSimplified(true)}
 							style={{ cursor: 'pointer' }}
 						>
-							{t('account_details.switch_simplified', 'Switch to Simplified View')}
+							{t('account_details.switch_advanced', 'Switch to Advanced View')}
 						</Text>
 					)}
 					{isSimplified && (
@@ -884,7 +884,7 @@ const EditAccountDelegatesSection: FC = () => {
 							}}
 							style={{ cursor: 'pointer' }}
 						>
-							{t('account_details.switch_advanced', 'Switch to Advanced View')}
+							{t('account_details.switch_simplified', 'Switch to Simplified View')}
 						</Text>
 					)}
 				</Row>
