@@ -424,7 +424,8 @@ const EditAccountDelegatesSection: FC = () => {
 		getIdentitiesList,
 		createSnackbar,
 		t,
-		folderList
+		folderList,
+		accountDetail
 	]);
 
 	const wizardSteps = useMemo(
