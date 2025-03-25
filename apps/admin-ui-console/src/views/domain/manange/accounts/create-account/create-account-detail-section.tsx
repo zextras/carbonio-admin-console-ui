@@ -21,7 +21,8 @@ import {
 	Select,
 	Text,
 	Icon,
-	Switch
+	Switch,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { find, head } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,8 @@ import {
 	AccountStatus,
 	checkValidUserName,
 	convertToAscii,
-	getModifiedName
+	getModifiedName,
+	isValidPhoneNumber
 } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
 
@@ -47,7 +49,19 @@ const CreateAccountDetailSection: FC = () => {
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const { accountDetail, setAccountDetail } = context;
 
+	const [isValidPhone, setIsValidPhone] = useState<boolean>(true);
+	const [isValidHomePhone, setIsValidHomePhone] = useState<boolean>(true);
+	const [isValidMobile, setIsValidMobile] = useState<boolean>(true);
+	const [isValidPager, setIsValidPager] = useState<boolean>(true);
+	const [isValidFaxNumber, setIsValidFaxNumber] = useState<boolean>(true);
+
 	const [t] = useTranslation();
+
+	const phoneTooltipLabel = t(
+		'label.accounts.phoneNumber.tooltip',
+		'allowed chars are whitespaces, numbers and symbols -+()/,.'
+	);
+
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 
 	const domainStatus = useMemo(() => {
@@ -283,7 +297,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="50%" mainAlignment="flex-start">
 						<Select
 							items={ACCOUNT_STATUS}
 							background="gray5"
@@ -354,6 +368,226 @@ const CreateAccountDetailSection: FC = () => {
 						inputName="zimbraNotes"
 						onChange={changeAccDetail}
 					/>
+				</Row>
+			</Row>
+			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.phone', 'Phone')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="48%" mainAlignment="space-between">
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidPhone(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
+										changeAccDetail(e);
+									}
+								}}
+								hasError={!isValidPhone}
+								inputName="telephoneNumber"
+								label={t('label.phone', 'Phone')}
+								backgroundColor="gray5"
+								defaultValue={accountDetail?.telephoneNumber || ''}
+								value={accountDetail?.telephoneNumber || ''}
+							/>
+						</Tooltip>
+					</Row>
+					<Row width="48%" mainAlignment="space-between">
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								label={t('label.home', 'Home')}
+								backgroundColor="gray5"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidHomePhone(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
+										changeAccDetail(e);
+									}
+								}}
+								hasError={!isValidHomePhone}
+								inputName="homePhone"
+								defaultValue={accountDetail?.homePhone || ''}
+								value={accountDetail?.homePhone || ''}
+							/>
+						</Tooltip>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.mobile', 'Mobile')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidMobile(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
+										changeAccDetail(e);
+									}
+								}}
+								hasError={!isValidMobile}
+								inputName="mobile"
+								defaultValue={accountDetail?.mobile || ''}
+								value={accountDetail?.mobile || ''}
+							/>
+						</Tooltip>
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.pager', 'Pager')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidPager(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
+										changeAccDetail(e);
+									}
+								}}
+								hasError={!isValidPager}
+								inputName="pager"
+								defaultValue={accountDetail?.pager || ''}
+								value={accountDetail?.pager || ''}
+							/>
+						</Tooltip>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Tooltip placement="top" label={phoneTooltipLabel}>
+							<Input
+								backgroundColor="gray5"
+								label={t('label.fax_number', 'Fax Number')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e.target.value) {
+										const validPhone = isValidPhoneNumber(e.target.value);
+										setIsValidFaxNumber(validPhone);
+										if (validPhone) {
+											changeAccDetail(e);
+										}
+									} else {
+										changeAccDetail(e);
+									}
+								}}
+								hasError={!isValidFaxNumber}
+								inputName="facsimileTelephoneNumber"
+								defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
+								value={accountDetail?.facsimileTelephoneNumber || ''}
+							/>
+						</Tooltip>
+					</Row>
+				</Row>
+			</Row>
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.company', 'Company')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.company', 'Company')}
+							onChange={changeAccDetail}
+							inputName="company"
+							defaultValue={accountDetail?.company || ''}
+							value={accountDetail?.company || ''}
+						/>
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.job_title', 'Job Title')}
+							onChange={changeAccDetail}
+							inputName="title"
+							defaultValue={accountDetail?.title || ''}
+							value={accountDetail?.title || ''}
+						/>
+					</Row>
+				</Row>
+			</Row>
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.address', 'Address')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.country', 'Country')}
+							onChange={changeAccDetail}
+							inputName="co"
+							defaultValue={accountDetail?.co || ''}
+							value={accountDetail?.co || ''}
+						/>
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.state', 'State')}
+							onChange={changeAccDetail}
+							inputName="st"
+							defaultValue={accountDetail?.st || ''}
+							value={accountDetail?.st || ''}
+						/>
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.city', 'City')}
+							onChange={changeAccDetail}
+							inputName="l"
+							defaultValue={accountDetail?.l || ''}
+							value={accountDetail?.l || ''}
+						/>
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.postal_code', 'Postal Code')}
+							onChange={changeAccDetail}
+							inputName="postalCode"
+							defaultValue={accountDetail?.postalCode || ''}
+							value={accountDetail?.postalCode || ''}
+						/>
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="100%" mainAlignment="flex-start">
+						<Input
+							backgroundColor="gray5"
+							label={t('label.address', 'Address')}
+							onChange={changeAccDetail}
+							inputName="street"
+							defaultValue={accountDetail?.street || ''}
+							value={accountDetail?.street || ''}
+						/>
+					</Row>
 				</Row>
 			</Row>
 		</Container>

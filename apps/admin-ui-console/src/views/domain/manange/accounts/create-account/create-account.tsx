@@ -93,6 +93,18 @@ interface AccountDetailObj {
 	pinCodes: string;
 	showOtpOptionSection: boolean;
 	description: string;
+	telephoneNumber: string;
+	homePhone: string;
+	mobile: string;
+	pager: string;
+	facsimileTelephoneNumber: string;
+	company: string;
+	title: string;
+	co: string;
+	l: string;
+	st: string;
+	postalCode: string;
+	street: string;
 }
 
 // eslint-disable-next-line no-empty-pattern
@@ -139,7 +151,19 @@ const CreateAccount: FC<{
 		secrateCode: '',
 		pinCodes: '',
 		showOtpOptionSection: true,
-		description: ''
+		description: '',
+		telephoneNumber: '',
+		homePhone: '',
+		mobile: '',
+		pager: '',
+		facsimileTelephoneNumber: '',
+		company: '',
+		title: '',
+		co: '',
+		l: '',
+		st: '',
+		postalCode: '',
+		street: ''
 	});
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
@@ -162,7 +186,19 @@ const CreateAccount: FC<{
 				zimbraNotes: accountDetail?.zimbraNotes,
 				displayName: accountDetail?.displayName,
 				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId,
-				description: accountDetail?.description
+				description: accountDetail?.description,
+				telephoneNumber: accountDetail?.telephoneNumber,
+				homePhone: accountDetail?.homePhone,
+				mobile: accountDetail?.mobile,
+				pager: accountDetail?.pager,
+				facsimileTelephoneNumber: accountDetail?.facsimileTelephoneNumber,
+				company: accountDetail?.company,
+				title: accountDetail?.title,
+				co: accountDetail?.co,
+				l: accountDetail?.l,
+				postalCode: accountDetail?.postalCode,
+				street: accountDetail?.street,
+				st: accountDetail?.st
 			},
 			`${accountDetail?.name}@${domainName}`,
 			accountDetail?.password || ''
@@ -244,7 +280,19 @@ const CreateAccount: FC<{
 			secrateCode: '',
 			pinCodes: '',
 			showOtpOptionSection: true,
-			description: ''
+			description: '',
+			telephoneNumber: '',
+			homePhone: '',
+			mobile: '',
+			pager: '',
+			facsimileTelephoneNumber: '',
+			company: '',
+			title: '',
+			co: '',
+			l: '',
+			st: '',
+			postalCode: '',
+			street: ''
 		});
 		setActiveStep('details');
 		setAccountCreate('');
