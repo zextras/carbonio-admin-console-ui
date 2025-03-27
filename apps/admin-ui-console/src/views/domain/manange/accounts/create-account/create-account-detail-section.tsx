@@ -297,7 +297,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="50%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Select
 							items={ACCOUNT_STATUS}
 							background="gray5"
