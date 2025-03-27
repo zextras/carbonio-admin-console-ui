@@ -430,9 +430,9 @@ const EditAccountGeneralSection: FC<{
 			initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
 		) {
 			setFileQuotaGBValue(
-				initAccountDetail?.filesQuotaLimit
+				initAccountDetail?.filesQuotaLimit && initAccountDetail?.filesQuotaLimit < 9223372036854776000
 					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)
-					: ''
+					: '0.00'
 			);
 		}
 	}, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
@@ -644,6 +644,9 @@ const EditAccountGeneralSection: FC<{
 		if (!initAccountDetail?.filesQuotaLimit) {
 			return 0;
 		}
+		if (initAccountDetail?.filesQuotaLimit == "9223372036854776000") {
+			return 0;
+		}
 		return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
 	}, [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed]);
 
@@ -665,8 +668,8 @@ const EditAccountGeneralSection: FC<{
 	}, []);
 
 	const calculatedFilesQuotaSize: string = useMemo(
-		() =>
-			initAccountDetail?.filesQuotaLimit > 0
+		() => 
+			initAccountDetail?.filesQuotaLimit > 0 && initAccountDetail?.filesQuotaLimit < 9223372036854776000
 				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
@@ -990,13 +993,13 @@ const EditAccountGeneralSection: FC<{
 						)}
 					</Row>
 					{isAdvanced && initAccountDetail?.filesQuotaLimit && (
-						<Row width="49%" mainAlignment="flex-start">
+						<Row width="49%" mainAlignment="flex-start"> 
 							<InheritedInput
 								background="gray5"
 								label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
 								subValue={fileQuotaGBValue}
 								inheritedValue={
-									cosDetail.filesQuotaLimit ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2) : ''
+									cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000 ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2) : '0.00'
 								}
 								fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
 								onChange={changeFileQuotaLimit}
