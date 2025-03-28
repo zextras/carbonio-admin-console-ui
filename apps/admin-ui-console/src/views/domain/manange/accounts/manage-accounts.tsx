@@ -800,6 +800,32 @@ const ManageAccounts: FC = () => {
 		openDetailView(item);
 	};
 
+	const getTotalFilteredUser = useCallback ((): void => {
+		const type = 'accounts';
+		const attrs ='zimbraId';
+		const offsetParam = 0;
+		const userSearchQuery = '(&(objectClass=zimbraAccount)(!(zimbraIsSystemAccount=TRUE)))';
+		const sortedC = '';
+		const sortedOrd = '';
+		const localLimit = 0;
+		accountListDirectory(
+			attrs,
+			type,
+			domainName,
+			userSearchQuery,
+			offsetParam,
+			localLimit,
+			sortedC,
+			sortedOrd
+		).then((data) => {
+			setTotalAccountCreated(data.searchTotal || 0);
+		}).catch((error) => {
+			const snackbarConfig = generateSnackbarFromError(error, t);
+			createSnackbar(snackbarConfig);
+			setHasError(true);
+		});
+	},[domainName,t,createSnackbar]);
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -998,7 +1024,7 @@ const ManageAccounts: FC = () => {
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchAccountList = useCallback(
+	/*const searchAccountList = useCallback(
 		debounce((searchStr: string, sfilter: string, tfilter: string) => {
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
@@ -1017,6 +1043,18 @@ const ManageAccounts: FC = () => {
 	useEffect(() => {
 		setAccountSearchCurrentPage(1);
 	}, [searchQuery]);
+
+	useEffect(() => {
+		if (domainName) {
+			if (
+				totalAccountCreated == 0 ||
+				showCreateAccountView === false ||
+				showEditAccountView === false
+			) {
+				getTotalFilteredUser();
+			}
+		}
+	},[showCreateAccountView,domainName,showCreateAccountView,showEditAccountView]);
 
 	const closeAccountDetailDialog = useCallback(() => {
 		if (showAccountDetailView) {
