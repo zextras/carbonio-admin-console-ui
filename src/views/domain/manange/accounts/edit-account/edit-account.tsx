@@ -970,8 +970,10 @@ const EditAccount: FC<{
 		deleteAccount(selectedAccount?.id)
 			.then((data: any) => {
 				onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
+				setShowEditAccountView(false);
+				setDefaultTab('general');
 			})
-			.then((error: any) => {
+			.catch((error) => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
@@ -985,7 +987,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [selectedAccount?.id, onSuccess, t, createSnackbar]);
+	}, [selectedAccount?.id, onSuccess, t, createSnackbar,setShowEditAccountView]);
 
 	return (
 		<>
