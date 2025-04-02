@@ -36,6 +36,7 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import ListRow from '../../list/list-row';
+import {encode} from 'html-entities';
 
 const EditorWrapper = styled.div`
 	width: 100%;
@@ -156,30 +157,46 @@ const DomainDisclaimer: FC = () => {
 		body.id = domainId;
 		body._jsns = ZIMBRA_ADMIN_URN;
 
-		attributes.push({
-			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-			_content: domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
-		});
+		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText) {
+			//Convert accented char
+			const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText.normalize("NFD").replace(/\p{Diacritic}/gu, "'");
+			//add new line after 996 char
+			const limitTextSignature = convertDiatrictTextSignature.replace(/(.{996})/g, "$1\n");
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+				_content: limitTextSignature
+			});
+		}
 
-		attributes.push({
-			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
-			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
-		});
+		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML) {
+			//Convert nonAsciiPrintableOnly entities into html entities
+			const encodeHtmlSignature = encode(domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML, {mode: 'nonAsciiPrintableOnly'});
+			//add new line after 996 char
+			const limitHtmlSignature = encodeHtmlSignature.replace(/(.{996})/g, "$1\n");
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+				_content: limitHtmlSignature
+			});
+		}
 
-		attributes.push({
-			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML
-		});
 		if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+
+			attributes.push({
+				n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+				_content: domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+			});
+
 			attributes.push({
 				n: AMAVIS_DISCLAIMER_OPTIONS,
 				_content: domainName
 			});
 		} else {
+
 			attributes.push({
 				n: AMAVIS_DISCLAIMER_OPTIONS,
 				_content: ''
 			});
+
 		}
 
 		body.a = attributes;
