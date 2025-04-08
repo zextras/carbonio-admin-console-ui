@@ -1275,9 +1275,9 @@ const EditAccountGeneralSection: FC<{
 							'account_details.this_account_is_a_direct_member_of',
 							'This account is a direct member of'
 						)}
-						background="gray5"
-						defaultValue={directMemberList}
+						background="gray4"
 						disabled
+						value={directMemberList}
 						ChipComponent={CustomChip}
 						maxChips={null}
 					/>
@@ -1290,9 +1290,9 @@ const EditAccountGeneralSection: FC<{
 							'account_details.this_account_is_a_in_direct_member_of',
 							'This account is an indirect member of'
 						)}
-						background="gray5"
-						defaultValue={inDirectMemberList}
+						background="gray4"
 						disabled
+						value={inDirectMemberList}
 						ChipComponent={CustomChip}
 						maxChips={null}
 					/>
