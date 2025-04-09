@@ -466,7 +466,7 @@ const EditAccountUserPrefrencesSection: FC<{
 								zimbraAllowFromAddress: map(data, 'label').join(', ')
 							}));
 						}}
-						defaultValue={zimbraAllowFromAddress}
+						defaultValue={[]}
 						value={zimbraAllowFromAddress}
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
 						ChipComponent={CustomChip}

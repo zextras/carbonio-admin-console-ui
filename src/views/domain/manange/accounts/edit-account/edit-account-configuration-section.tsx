@@ -223,7 +223,7 @@ const EditAccountConfigurationSection: FC = () => {
 								}));
 							}}
 							ChipComponent={CustomChip}
-							defaultValue={prefMailForwardingAddress}
+							defaultValue={[]}
 							value={prefMailForwardingAddress}
 							background="gray5"
 							hasError={some(prefMailForwardingAddress || [], { error: true })}
@@ -249,7 +249,7 @@ const EditAccountConfigurationSection: FC = () => {
 									zimbraMailForwardingAddress: map(data, 'label').join(', ')
 								}));
 							}}
-							defaultValue={mailForwardingAddress}
+							defaultValue={[]}
 							value={mailForwardingAddress}
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
@@ -276,7 +276,7 @@ const EditAccountConfigurationSection: FC = () => {
 									zimbraPrefCalendarForwardInvitesTo: map(data, 'label').join(', ')
 								}));
 							}}
-							defaultValue={prefCalendarForwardInvitesTo}
+							defaultValue={[]}
 							value={prefCalendarForwardInvitesTo}
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
@@ -299,7 +299,7 @@ const EditAccountConfigurationSection: FC = () => {
 						inputName="zimbraMailTransport"
 						label={t('label.mail_transport_map', 'Mail Transport Map')}
 						backgroundColor="gray5"
-						defaultValue={accountDetail?.zimbraMailTransport || ''}
+						defaultValue={''}
 						value={accountDetail?.zimbraMailTransport || ''}
 						CustomIcon={(): React.ReactElement => (
 							<Tooltip

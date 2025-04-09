@@ -872,7 +872,8 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.advance_edit_display_name', 'Display Name')}
 							backgroundColor="gray5"
-							value={accountDetail?.displayName}
+							value={accountDetail?.displayName || ''}
+							defaultValue={''}
 							onChange={changeAccDetail}
 							inputName="displayName"
 							autoComplete="new-password"
@@ -884,6 +885,7 @@ const EditAccountGeneralSection: FC<{
 								label={t('account_details.otp_devices', 'OTP Devices')}
 								backgroundColor="gray5"
 								value={otpList?.length || 0}
+								defaultValue={0}
 							/>
 						</Row>
 					)}
@@ -1038,6 +1040,7 @@ const EditAccountGeneralSection: FC<{
 									  )
 									: t('label.never_logged_in', 'Never logged in')
 							}
+							defaultValue={t('label.never_logged_in', 'Never logged in')}
 						/>
 					</Row>
 				</Row>
@@ -1278,6 +1281,7 @@ const EditAccountGeneralSection: FC<{
 						background="gray4"
 						disabled
 						value={directMemberList}
+						defaultValue={[]}
 						ChipComponent={CustomChip}
 						maxChips={null}
 					/>
@@ -1294,6 +1298,7 @@ const EditAccountGeneralSection: FC<{
 						disabled
 						value={inDirectMemberList}
 						ChipComponent={CustomChip}
+						defaultValue={[]}
 						maxChips={null}
 					/>
 				</Row>
@@ -1311,7 +1316,8 @@ const EditAccountGeneralSection: FC<{
 					<Input
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
-						value={accountDetail?.description}
+						value={accountDetail?.description || ''}
+						defaultValue={''}
 						onChange={changeAccDetail}
 						inputName="description"
 					/>
@@ -1328,6 +1334,7 @@ const EditAccountGeneralSection: FC<{
 						backgroundColor="gray5"
 						inputName="zimbraNotes"
 						onChange={changeAccDetail}
+						defaultValue={''}
 					/>
 				</Row>
 			</Row>
