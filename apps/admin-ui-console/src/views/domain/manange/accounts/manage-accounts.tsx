@@ -642,6 +642,9 @@ const ManageAccounts: FC = () => {
 					const inDirectMemArr: any[] = [];
 					// eslint-disable-next-line array-callback-return
 					data?.dl?.forEach((ele: any) => {
+						//remove zimbraIsAdminGroup
+						const re = /^__(monitoring|helpdesk|groups|users|delegated|domain)_admins.*/;
+						if (re.test(ele?.name)) return;
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
 						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
