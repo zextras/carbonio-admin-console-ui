@@ -78,7 +78,7 @@ const InheritedSelect: FC<{
 									{t('account_details.inherited_value_was', 'The inherited value was')} :
 								</Text>
 								<Text>{`  ${
-									items.find((item: any) => item.value === inheritedValue)?.label
+									items.find((item: any) => item.value === inheritedValue)?.label || ''
 								}`}</Text>
 							</Row>
 							<Padding top="small">
