@@ -12,7 +12,8 @@ import {
 	Text,
 	Row,
 	Container,
-	Padding
+	Padding,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +48,12 @@ const InheritedSelect: FC<{
 		if (!subValue) {
 			selectValue = inheritedValue;
 		}
-		return items.find((item: any) => item.value === selectValue);
+		return (
+			items.find((item: SelectItem) => item.value === selectValue) || {
+				label: selectValue,
+				value: selectValue
+			}
+		);
 	}, [subValue, inheritedValue, items]);
 	return (
 		<Container orientation="horizontal" data-testid={`inherited-${selectName}`}>
@@ -72,7 +78,7 @@ const InheritedSelect: FC<{
 									{t('account_details.inherited_value_was', 'The inherited value was')} :
 								</Text>
 								<Text>{`  ${
-									items.find((item: any) => item.value === inheritedValue)?.label || ''
+									items.find((item: any) => item.value === inheritedValue)?.label
 								}`}</Text>
 							</Row>
 							<Padding top="small">
