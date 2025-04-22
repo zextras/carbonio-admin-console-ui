@@ -90,7 +90,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 			setIsRequestInProgress(true);
 			setAccounts([]);
 			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offset}&pageSize=${accountLimit}&domains=${domainName}&targetServers=all_servers&filter=${searchText}`
+				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offset}&pageSize=${accountLimit}&domains=${domainName}&filter=${searchText}`
 			)
 				.then((data: any) => {
 					setIsRequestInProgress(false);
