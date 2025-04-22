@@ -94,23 +94,20 @@ const LegalHoldPanel: FC = () => {
 	const [legalHoldOperationLabel, setLegalHoldOperationLabel] = useState<string>(
 		t('legal_hold.set_legal_hold', 'Set legal hold')
 	);
-	const [isShowOnlyLegalHostAccount, setIsShowOnlyLegalHostAccount] = useState<boolean>(false);
+	const [isShowOnlyLegalHoldAccount, setIsShowOnlyLegalHoldAccount] = useState<boolean>(false);
 	const errorMessage = t(
 		'label.something_wrong_error_msg',
 		'Something went wrong. Please try again.'
 	);
 	const [domainList, setDomainList] = useState<
-		{
-			name: string;
-			id: string;
-			a: { n: string; _content: string }[];
-		}[]
+		{ name: string; id: string; a: { n: string; _content: string }[] }[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const domainName = useDomainInformation()?.name || '';
 	const [searchDomainName, setSearchDomainName] = useState<string>(domainName);
 	const [selectedDomainName, setSelectedDomainName] = useState<string>(domainName);
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
+	const [disableSwitch, setDisableSwitch] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
 		(key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
@@ -222,7 +219,6 @@ const LegalHoldPanel: FC = () => {
 			let backupAccounts;
 			const allServers = Object.keys(data);
 			let allServerAccounts: Array<BackupAccountItem> = [];
-			// Array<Record<string, unknown>> = [];
 			const maxPageList: Array<number> = [];
 			let backupPage = page;
 			allServers.forEach((item: string) => {
@@ -250,16 +246,17 @@ const LegalHoldPanel: FC = () => {
 	const getBackupAccounts = useCallback(
 		(searchText = '', offSet = 0): void => {
 			setIsRequestInProgress(true);
+			setDisableSwitch(true);
 			setAccountRows([]);
 			const domainNameItem =
 				selectedDomainName === '' || selectedDomainName === undefined
 					? domainName
 					: selectedDomainName;
-			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&filter=${searchText}`
-			)
+			const url = `/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&filter=${searchText}&legalHold=${isShowOnlyLegalHoldAccount}`;
+			getSoapFetchRequest(url)
 				.then((data: any) => {
 					setIsRequestInProgress(false);
+					setDisableSwitch(false);
 					const error = data?.all_server?.error?.message;
 					const backupAccounts = data?.accounts;
 					const page = data?.maxPage;
@@ -269,7 +266,6 @@ const LegalHoldPanel: FC = () => {
 						return;
 					}
 
-					/* Take account list and maxPage from multiserver environment  */
 					if (backupAccounts === undefined && !!data) {
 						setBackupAccountPage(data, page);
 					} else {
@@ -278,6 +274,7 @@ const LegalHoldPanel: FC = () => {
 				})
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
+					setDisableSwitch(false);
 					showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
 				});
 		},
@@ -286,40 +283,41 @@ const LegalHoldPanel: FC = () => {
 			domainName,
 			errorMessage,
 			selectedDomainName,
+			isShowOnlyLegalHoldAccount,
 			setBackupAccountAndPage,
 			setBackupAccountPage,
 			showSnackbar
 		]
 	);
 
-	useEffect(() => {
-		getBackupAccounts();
-	}, [getBackupAccounts]);
-
+	// Debounced version of getBackupAccounts
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchAccount = useCallback(
-		debounce((searchText) => {
-			setSearchAccountName(searchText);
-			getBackupAccounts(searchText, 0);
-			setAccountOffset(0);
-		}, 1000),
-		[debounce]
+	const debouncedGetBackupAccounts = useCallback(
+		debounce((searchText: string, offSet: number) => {
+			getBackupAccounts(searchText, offSet);
+		}, 500),
+		[getBackupAccounts]
 	);
 
-	const onSearchAccount = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			searchAccount(e.target.value);
-		},
-		[searchAccount]
-	);
+	useEffect(() => {
+		debouncedGetBackupAccounts(searchAccountName, accountOffset);
+		return () => {
+			debouncedGetBackupAccounts.cancel();
+		};
+	}, [
+		debouncedGetBackupAccounts,
+		searchAccountName,
+		accountOffset,
+		isShowOnlyLegalHoldAccount,
+		selectedDomainName
+	]);
 
-	const allBackupAccounts = useMemo(
-		() =>
-			isShowOnlyLegalHostAccount
-				? backupAccountList.filter((item) => item?.legalHold === 'true')
-				: backupAccountList,
-		[backupAccountList, isShowOnlyLegalHostAccount]
-	);
+	const onSearchAccount = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+		setSearchAccountName(e.target.value);
+		setAccountOffset(0);
+	}, []);
+
+	const allBackupAccounts = useMemo(() => backupAccountList, [backupAccountList]);
 
 	useMemo(() => {
 		if (allBackupAccounts && allBackupAccounts.length > 0) {
@@ -414,10 +412,10 @@ const LegalHoldPanel: FC = () => {
 	}, [allBackupAccounts, t]);
 
 	const setAccountAfterLegalHold = useCallback(
-		(status: string, id: string) => {
+		(status: string, id: string, serverName: string) => {
 			const updatedLegalAccounts = allBackupAccounts.map((item) => {
 				const holdItem = item;
-				if (holdItem?.id === id) {
+				if (holdItem?.id === id && holdItem?.serverName === serverName) {
 					holdItem.legalHold = status === SET ? 'true' : 'false';
 				}
 				return holdItem;
@@ -428,12 +426,10 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const setUnsetLegalHoldResponse = useCallback(
-		(data: any, status: string, id: string) => {
-			// If Single Server
+		(data: any, status: string, id: string, serverName: string) => {
 			if (data?.accounts?.length) {
-				setAccountAfterLegalHold(status, id);
+				setAccountAfterLegalHold(status, id, serverName);
 			} else {
-				// If multi server env
 				const allServers = Object.keys(data);
 				let allServerAccounts: Array<Record<string, unknown>> = [];
 				allServers.forEach((item: string) => {
@@ -442,10 +438,9 @@ const LegalHoldPanel: FC = () => {
 					}
 				});
 				if (allServerAccounts.length) {
-					setAccountAfterLegalHold(status, id);
+					setAccountAfterLegalHold(status, id, serverName);
 				}
 			}
-
 			setSelectedAccountRows([]);
 		},
 		[setAccountAfterLegalHold]
@@ -456,7 +451,7 @@ const LegalHoldPanel: FC = () => {
 		if (legalHoldItem) {
 			const status = legalHoldItem?.legalHold?.toUpperCase() === TRUE ? UNSET : SET;
 			setUnsetLegalHold(status, legalHoldItem.id, legalHoldItem.serverName).then((data) => {
-				setUnsetLegalHoldResponse(data, status, legalHoldItem.id);
+				setUnsetLegalHoldResponse(data, status, legalHoldItem.id, legalHoldItem.serverName);
 			});
 		}
 	}, [selectedAccountRows, setUnsetLegalHoldResponse]);
@@ -490,7 +485,7 @@ const LegalHoldPanel: FC = () => {
 			getDomainList(name, 0)
 				.then((data) => {
 					const searchResponse: DomainResponse = data;
-					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+					if (searchResponse?.searchTotal > 0) {
 						setDomainList(searchResponse?.domain);
 						setIsLoading(false);
 					} else if (name !== '' && searchResponse?.searchTotal === 0) {
@@ -515,7 +510,7 @@ const LegalHoldPanel: FC = () => {
 		debounce((domain) => {
 			getDomainLists(domain);
 		}, 700),
-		[debounce]
+		[getDomainLists]
 	);
 
 	useEffect(() => {
@@ -660,9 +655,13 @@ const LegalHoldPanel: FC = () => {
 												'legalHold.show_only_accounts_on_legal_hold',
 												'Show only accounts on Legal Hold'
 											)}
-											value={isShowOnlyLegalHostAccount}
+											value={isShowOnlyLegalHoldAccount}
+											disabled={disableSwitch}
 											onClick={(): void => {
-												setIsShowOnlyLegalHostAccount(!isShowOnlyLegalHostAccount);
+												const newValue = !isShowOnlyLegalHoldAccount;
+												setIsShowOnlyLegalHoldAccount(newValue);
+												setAccountOffset(0);
+												setDisableSwitch(!disableSwitch);
 											}}
 											iconColor="primary"
 										/>
@@ -802,7 +801,6 @@ const LegalHoldPanel: FC = () => {
 														pageSize={accountLimit}
 														currentPageProp={accountOffset ? accountOffset + 1 : 1}
 														onPageChange={(val: number): void => {
-															getBackupAccounts(searchAccountName, val - 1);
 															setAccountOffset(val - 1);
 														}}
 													/>
