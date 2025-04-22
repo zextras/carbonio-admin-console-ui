@@ -256,7 +256,7 @@ const LegalHoldPanel: FC = () => {
 					? domainName
 					: selectedDomainName;
 			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&targetServers=all_servers&filter=${searchText}`
+				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&filter=${searchText}`
 			)
 				.then((data: any) => {
 					setIsRequestInProgress(false);
