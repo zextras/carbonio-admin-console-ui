@@ -6,7 +6,6 @@
 import React from 'react';
 
 import { act, screen } from '@testing-library/react';
-// import '@testing-library/jest-dom/extend-expect';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 
 import { TRUE } from '../../../../constants';
@@ -17,10 +16,6 @@ import DomainMailboxQuotaSetting from '../domain-mailbox-quota-settings';
 
 const maxMailboxQuotaLabel = 'Max mailbox quota for the Mails (GB)';
 const maxMailboxQuotaThresholdLabel = 'Mail Space Quota threshold (%) warning';
-
-// jest.mock('react-i18next', () => ({
-// 	useTranslation: jest.fn()
-// }));
 
 jest.mock('@zextras/carbonio-shell-ui', () => ({
 	useUserSettings: jest.fn()
