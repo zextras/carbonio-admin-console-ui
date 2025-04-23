@@ -662,6 +662,9 @@ const LegalHoldPanel: FC = () => {
 												setIsShowOnlyLegalHoldAccount(newValue);
 												setAccountOffset(0);
 												setDisableSwitch(!disableSwitch);
+												setIsShowRestoreView(false);
+												setIsEnableLegalHold(false);
+												setSelectedAccountRows([]);
 											}}
 											iconColor="primary"
 										/>
@@ -802,6 +805,8 @@ const LegalHoldPanel: FC = () => {
 														currentPageProp={accountOffset ? accountOffset + 1 : 1}
 														onPageChange={(val: number): void => {
 															setAccountOffset(val - 1);
+															setSelectedAccountRows([]);
+															setIsShowRestoreView(false);
 														}}
 													/>
 												</Padding>
