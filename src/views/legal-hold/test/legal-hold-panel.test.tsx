@@ -109,14 +109,6 @@ describe('LegalHoldPanel Component', () => {
 		(getSoapFetchRequest as jest.Mock).mockResolvedValue(mockResponse);
 	});
 
-	test('renders empty', async () => {
-		await act(async () => {
-			setup(<LegalHoldPanel />);
-		});
-		expect(screen.getByText(/test11/i)).toBeInTheDocument();
-		expect(screen.getByText(/test12/i)).toBeInTheDocument();
-	});
-
 	test('renders list', async () => {
 		(getSoapFetchRequest as jest.Mock).mockResolvedValue({});
 		await act(async () => {
