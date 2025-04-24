@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 
 import { TRUE } from '../../../../constants';
@@ -121,6 +121,20 @@ describe('Mailbox Quota Settings', () => {
 		await act(async () => {
 			await user.click(screen.getByTestId(cancelBtnId));
 		});
+
+		expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
+		expect(screen.queryByTestId(cancelBtnId)).not.toBeInTheDocument();
+	});
+
+	test('clicking paging page change', async () => {
+		const { user } = setup(<DomainMailboxQuotaSetting />);
+
+		await act(async () => {
+			await user.click(screen.getByTestId('next-page'));
+		});
+
+		const view = screen.getByTestId('pagination-select');
+		await user.click(within(view).getByText(/10/i));
 
 		expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
 		expect(screen.queryByTestId(cancelBtnId)).not.toBeInTheDocument();
