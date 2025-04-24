@@ -12,7 +12,7 @@ import { TRUE } from '../../../../constants';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { setup } from '../../../../tests/testUtils';
-import DomainMailboxQuotaSetting from '../domain-mailbox-quota-settings';
+import DomainMailboxQuotaSetting, { getQuotaData } from '../domain-mailbox-quota-settings';
 
 const maxMailboxQuotaLabel = 'Max mailbox quota for the Mails (GB)';
 const maxMailboxQuotaThresholdLabel = 'Mail Space Quota threshold (%) warning';
@@ -138,5 +138,71 @@ describe('Mailbox Quota Settings', () => {
 
 		expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
 		expect(screen.queryByTestId(cancelBtnId)).not.toBeInTheDocument();
+	});
+
+	describe('getQuotaData callback function', () => {
+		test('processes quota data correctly for basic usage', () => {
+			const quotaInput = [
+				{
+					name: 'user1@example.com',
+					id: '1',
+					mailsQuotaUsed: 5000000000,
+					mailsQuotaLimit: 10000000000
+				},
+				{
+					name: 'user2@example.com',
+					id: '2',
+					mailsQuotaUsed: 0,
+					mailsQuotaLimit: 0
+				}
+			];
+
+			const result = getQuotaData(quotaInput, jest.fn());
+			console.log('=============>>>>', result);
+
+			expect(result).toEqual([
+				{
+					name: 'user1@example.com',
+					id: '1',
+					mailsQuota: 9.313225746154785,
+					mailsQuotaUsed: '4.66',
+					mailsQuotaUsedPercentage: '50'
+				},
+				{
+					name: 'user2@example.com',
+					id: '2',
+					mailsQuota: undefined,
+					mailsQuotaUsed: '0.00',
+					mailsQuotaUsedPercentage: '0'
+				}
+			]);
+		});
+
+		test('processes quota data correctly for advanced usage', () => {
+			const quotaInput = [
+				{
+					accountName: 'user3@example.com',
+					accountId: '3',
+					mailsQuotaUsed: 2000000000,
+					mailsQuotaLimit: 4000000000,
+					filesQuotaUsed: 1000000000,
+					filesQuotaLimit: 2000000000
+				}
+			];
+
+			const result = getQuotaData(quotaInput, jest.fn(), true);
+			expect(result).toEqual([
+				{
+					name: 'user3@example.com',
+					id: '3',
+					mailsQuota: 3.725290298461914,
+					mailsQuotaUsed: '1.86',
+					mailsQuotaUsedPercentage: '50',
+					filesQuota: 1.862645149230957,
+					filesQuotaUsed: '0.93',
+					filesQuotaUsedPercentage: '50'
+				}
+			]);
+		});
 	});
 });

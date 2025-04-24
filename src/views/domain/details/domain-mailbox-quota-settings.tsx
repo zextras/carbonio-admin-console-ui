@@ -19,6 +19,7 @@ import {
 	THeader
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -47,6 +48,58 @@ import Paging from '../../components/paging';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
+
+export const formatQuota = (
+	quotaUsed: number,
+	quotaLimit: number,
+	t: TFunction
+): [string, number] => {
+	if (quotaLimit === 0) {
+		// eslint-disable-next-line sonarjs/no-duplicate-string
+		return [t('label.unlimited', 'Unlimited'), 0];
+	}
+	if (quotaLimit >= BYTE_PER_MB) {
+		return [BytesToGB(quotaLimit), (quotaUsed / quotaLimit) * 100];
+	}
+	return ['1', (quotaUsed / quotaLimit) * 100];
+};
+
+export const getQuotaData = (
+	usedQuota: Array<unknown>,
+	t: TFunction,
+	isAdvance = false
+): Array<MailBoxQuota> => {
+	const quota: Array<MailBoxQuota> = [];
+	usedQuota.forEach((item: any): void => {
+		const [mailQuota, mailQuotaPercentage] = formatQuota(
+			item?.mailsQuotaUsed ?? 0,
+			item.mailsQuotaLimit ?? 0,
+			t
+		);
+
+		const data: Partial<MailBoxQuota> = {
+			name: !isAdvance ? item?.name : item?.accountName,
+			id: !isAdvance ? item?.id : item?.accountId,
+			mailsQuota: mailQuota,
+			mailsQuotaUsed: BytesToGB(item?.mailsQuotaUsed || 0).toFixed(2),
+			mailsQuotaUsedPercentage: mailQuotaPercentage.toFixed(0)
+		};
+
+		if (isAdvance) {
+			const [fileQuota, fileQuotaPercentage] = formatQuota(
+				item?.filesQuotaUsed ?? 0,
+				item?.filesQuotaLimit ?? 0,
+				t
+			);
+			data.filesQuota = fileQuota;
+			data.filesQuotaUsed = BytesToGB(item?.filesQuotaUsed || 0).toFixed(2);
+			data.filesQuotaUsedPercentage = fileQuotaPercentage.toFixed(0);
+		}
+
+		quota.push(data as MailBoxQuota);
+	});
+	return quota;
+};
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -158,54 +211,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 
 	const [csvQuotaData, setCsvQuotaData] = useState<Array<MailBoxQuota>>();
 
-	const formatQuota = useCallback(
-		(quotaUsed: number, quotaLimit: number): [string, number] => {
-			if (quotaLimit === 0) {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
-				return [t('label.unlimited', 'Unlimited'), 0];
-			}
-			if (quotaLimit >= BYTE_PER_MB) {
-				return [BytesToGB(quotaLimit), (quotaUsed / quotaLimit) * 100];
-			}
-			return ['1', (quotaUsed / quotaLimit) * 100];
-		},
-		[t]
-	);
-
-	const getQuotaData = useCallback(
-		(usedQuota: Array<unknown>, isAdvance = false): Array<MailBoxQuota> => {
-			const quota: Array<MailBoxQuota> = [];
-			usedQuota.forEach((item: any): void => {
-				const [mailQuota, mailQuotaPercentage] = formatQuota(
-					item?.mailsQuotaUsed ?? 0,
-					item.mailsQuotaLimit ?? 0
-				);
-
-				const data: Partial<MailBoxQuota> = {
-					name: !isAdvance ? item?.name : item?.accountName,
-					id: !isAdvance ? item?.id : item?.accountId,
-					mailsQuota: mailQuota,
-					mailsQuotaUsed: BytesToGB(item?.mailsQuotaUsed || 0).toFixed(2),
-					mailsQuotaUsedPercentage: mailQuotaPercentage.toFixed(0)
-				};
-
-				if (isAdvance) {
-					const [fileQuota, fileQuotaPercentage] = formatQuota(
-						item?.filesQuotaUsed ?? 0,
-						item?.filesQuotaLimit ?? 0
-					);
-					data.filesQuota = fileQuota;
-					data.filesQuotaUsed = BytesToGB(item?.filesQuotaUsed || 0).toFixed(2);
-					data.filesQuotaUsedPercentage = fileQuotaPercentage.toFixed(0);
-				}
-
-				quota.push(data as MailBoxQuota);
-			});
-			return quota;
-		},
-		[formatQuota]
-	);
-
 	const generateQuotaRows = useCallback(
 		(quota: MailBoxQuota[]) => {
 			const quotaData: Array<any> = [];
@@ -262,7 +267,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						if (data?.searchTotal) {
 							setTotalAccount(data?.searchTotal);
 						}
-						return getQuotaData(data.account);
+						return getQuotaData(data.account, t);
 					}
 					return [];
 				})
@@ -282,7 +287,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					throw new Error();
 				});
 		},
-		[createSnackbar, getQuotaData, t]
+		[createSnackbar, t]
 	);
 
 	const fetchQuotaForAdvance = useCallback(
@@ -295,7 +300,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						if (data?.total) {
 							setTotalAccount(data?.total);
 						}
-						return getQuotaData(data.accounts, true);
+						return getQuotaData(data.accounts, t, true);
 					}
 					return [];
 				})
@@ -304,7 +309,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					setFileStorageEnabled(false);
 				});
 		},
-		[getQuotaData]
+		[t]
 	);
 
 	const getQuotaUsageInformation = useCallback(
