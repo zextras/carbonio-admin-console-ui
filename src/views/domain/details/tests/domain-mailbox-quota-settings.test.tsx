@@ -6,6 +6,7 @@
 import React from 'react';
 
 import { act, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 
@@ -174,15 +175,19 @@ describe('Mailbox Quota Settings', () => {
 		});
 	});
 
-	test('renders Mailbox Quota section with valid data', () => {
-		setup(<DomainMailboxQuotaSetting />);
+	test('renders Mailbox Quota section with valid data', async () => {
+		await act(async () => {
+			setup(<DomainMailboxQuotaSetting />);
+		});
 
 		expect(screen.getByText('Mailbox Quota')).toBeInTheDocument();
 		expect(screen.getByText(maxMailboxQuotaLabel)).toBeInTheDocument();
 	});
 
-	test('displays correct input fields', () => {
-		setup(<DomainMailboxQuotaSetting />);
+	test('displays correct input fields', async () => {
+		await act(async () => {
+			setup(<DomainMailboxQuotaSetting />);
+		});
 
 		expect(screen.getByLabelText(maxMailboxQuotaLabel)).toBeInTheDocument();
 		expect(screen.getByLabelText(maxMailboxQuotaThresholdLabel)).toBeInTheDocument();
@@ -190,10 +195,17 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('handles input changes correctly', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
+
 		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
+			await user.clear(input); // optional
 			await user.type(input, '10');
 		});
 
@@ -201,7 +213,13 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('handles mailbox quota threshold changes correctly', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
+
 		const input = screen.getByLabelText(maxMailboxQuotaThresholdLabel);
 
 		await act(async () => {
@@ -212,7 +230,13 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('handles mailbox quota threshold empty value changes correctly', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
+
 		const input = screen.getByLabelText(maxMailboxQuotaThresholdLabel);
 		await act(async () => {
 			await user.type(input, '5');
@@ -225,7 +249,13 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('displays save and cancel buttons after modifying fields', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
+
 		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
@@ -237,7 +267,13 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('clicking cancel button hides save and cancel buttons', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
+
 		const input = screen.getByLabelText(maxMailboxQuotaLabel);
 
 		await act(async () => {
@@ -253,14 +289,21 @@ describe('Mailbox Quota Settings', () => {
 	});
 
 	test('clicking paging page change', async () => {
-		const { user } = setup(<DomainMailboxQuotaSetting />);
+		let user: ReturnType<typeof userEvent.setup>;
+
+		await act(async () => {
+			const setupObject = setup(<DomainMailboxQuotaSetting />);
+			user = setupObject.user;
+		});
 
 		await act(async () => {
 			await user.click(screen.getByTestId('next-page'));
 		});
 
 		const view = screen.getByTestId('pagination-select');
-		await user.click(within(view).getByText(/10/i));
+		await act(async () => {
+			await user.click(within(view).getByText(/10/i));
+		});
 
 		expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
 		expect(screen.queryByTestId(cancelBtnId)).not.toBeInTheDocument();
