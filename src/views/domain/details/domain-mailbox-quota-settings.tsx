@@ -108,7 +108,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
-	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState();
+	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
 		useState<string>('');

@@ -371,4 +371,31 @@ describe('Mailbox Quota Settings', () => {
 			}
 		]);
 	});
+
+	test('processes quota data less than 1048576 bytes', () => {
+		const quotaInput = [
+			{
+				accountName: 'user5@example.com',
+				accountId: '5',
+				mailsQuotaUsed: 1048000,
+				mailsQuotaLimit: 1048500,
+				filesQuotaUsed: 1048000,
+				filesQuotaLimit: 1048400
+			}
+		];
+
+		const result = getQuotaData(quotaInput, jest.fn(), true);
+		expect(result).toEqual([
+			{
+				filesQuota: '1',
+				filesQuotaUsed: '0.00',
+				filesQuotaUsedPercentage: '100',
+				id: '5',
+				mailsQuota: '1',
+				mailsQuotaUsed: '0.00',
+				mailsQuotaUsedPercentage: '100',
+				name: 'user5@example.com'
+			}
+		]);
+	});
 });
