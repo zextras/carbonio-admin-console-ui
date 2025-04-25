@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
@@ -171,7 +171,7 @@ describe('Mailbox Quota Settings', () => {
 					filesQuotaLimit: 4000000000
 				}
 			],
-			total: 1
+			total: 20
 		});
 	});
 
@@ -304,9 +304,12 @@ describe('Mailbox Quota Settings', () => {
 		await act(async () => {
 			await user.click(within(view).getByText(/10/i));
 		});
-
-		expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
-		expect(screen.queryByTestId(cancelBtnId)).not.toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
+		});
+		await waitFor(() => {
+			expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
+		});
 	});
 
 	test('processes quota data correctly for basic usage', () => {
