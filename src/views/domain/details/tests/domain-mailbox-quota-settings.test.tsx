@@ -305,10 +305,11 @@ describe('Mailbox Quota Settings', () => {
 			await user.click(within(view).getByText(/10/i));
 		});
 		await waitFor(() => {
-			expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
+			expect(screen.getByTestId('dropdown-popper-list')).toBeInTheDocument();
 		});
-		await waitFor(() => {
-			expect(screen.queryByTestId(saveBtnId)).not.toBeInTheDocument();
+		const dropdownList = screen.getByTestId('dropdown-popper-list');
+		await act(async () => {
+			await user.click(within(dropdownList).getByText(/15/i));
 		});
 	});
 
