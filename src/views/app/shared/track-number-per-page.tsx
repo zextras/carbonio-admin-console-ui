@@ -30,6 +30,7 @@ const TrackNumberPerPage: FC<{
 			<Row padding={{ right: 'small' }}>
 				<Select
 					items={paginationItems}
+					data-testid="pagination-select"
 					background="gray5"
 					defaultSelection={paginationItems[1]}
 					onChange={(e): void => setPageSize(e)}
