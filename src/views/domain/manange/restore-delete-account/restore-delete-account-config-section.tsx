@@ -235,7 +235,8 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										label={t('label.date_time_picker', 'Date Time Picker')}
 										defaultValue={date}
 										onChange={handleChange}
-										dateFormat="dd/MM/yyyy hh:mm"
+										minDate={new Date(restoreAccountDetail?.createDate ?? '')}
+										dateFormat="dd/MM/yyyy hh:mm a"
 										style={{ background: 'green' }}
 									/>
 								</DatePickerContainer>

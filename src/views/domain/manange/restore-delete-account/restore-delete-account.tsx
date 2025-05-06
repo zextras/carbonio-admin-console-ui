@@ -7,6 +7,7 @@
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -82,6 +83,9 @@ const RestoreDeleteAccount: FC = () => {
 			}
 			if (copyAccount !== '') {
 				body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
+			}
+			if (dateTime) {
+				body.date = moment(dateTime).valueOf();
 			}
 			setIsRequestWorkInProgress(true);
 			doRestoreDeleteAccount(body, serverName)
