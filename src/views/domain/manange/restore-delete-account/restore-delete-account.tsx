@@ -87,7 +87,7 @@ const RestoreDeleteAccount: FC = () => {
 			if (dateTime) {
 				body.date = moment(dateTime).valueOf();
 			}
-			if (body?.date > createDate) {
+			if (body?.date < createDate) {
 				body.date = createDate;
 			}
 			setIsRequestWorkInProgress(true);
