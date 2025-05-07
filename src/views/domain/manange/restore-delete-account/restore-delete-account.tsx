@@ -87,8 +87,8 @@ const RestoreDeleteAccount: FC = () => {
 			if (dateTime) {
 				body.date = moment(dateTime).valueOf();
 			}
-			if (body?.date > restoreAccountDetail?.createDate) {
-				body.date = restoreAccountDetail.createDate;
+			if (body?.date > createDate) {
+				body.date = createDate;
 			}
 			setIsRequestWorkInProgress(true);
 			doRestoreDeleteAccount(body, serverName)
@@ -137,7 +137,7 @@ const RestoreDeleteAccount: FC = () => {
 					});
 				});
 		},
-		[createSnackbar, restoreAccountDetail?.createDate, t]
+		[createSnackbar, t]
 	);
 
 	return (
