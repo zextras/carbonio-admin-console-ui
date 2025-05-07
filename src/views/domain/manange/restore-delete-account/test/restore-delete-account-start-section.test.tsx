@@ -42,4 +42,31 @@ describe('RestoreDeleteAccountStartSection', () => {
 		});
 		expect(screen.getByText(/Date/i)).toBeInTheDocument();
 	});
+
+	test('displays correct email notifications value', async () => {
+		await act(async () => {
+			setup(
+				<RestoreDeleteAccountContext.Provider value={mockContextValue}>
+					<RestoreDeleteAccountStartSection />
+				</RestoreDeleteAccountContext.Provider>
+			);
+		});
+		expect(screen.getByLabelText(/Email Notifications/i)).toHaveValue(
+			mockContextValue.restoreAccountDetail.notificationReceiver
+		);
+	});
+
+	test('displays correct destination account value', async () => {
+		await act(async () => {
+			setup(
+				<RestoreDeleteAccountContext.Provider value={mockContextValue}>
+					<RestoreDeleteAccountStartSection />
+				</RestoreDeleteAccountContext.Provider>
+			);
+		});
+		const expectedDestinationAccount = `${
+			mockContextValue.restoreAccountDetail.copyAccount.split('@')[0]
+		}@${mockContextValue.restoreAccountDetail.copyDomain}`;
+		expect(screen.getByLabelText(/Destination Account/i)).toHaveValue(expectedDestinationAccount);
+	});
 });
