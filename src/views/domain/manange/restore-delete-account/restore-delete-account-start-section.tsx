@@ -76,7 +76,11 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									value={
 										restoreAccountDetail?.dateTime === null
 											? ''
-											: moment(restoreAccountDetail?.dateTime).format('D MMMM YYYY | hh:mm:ss A')
+											: moment(
+													restoreAccountDetail?.dateTime > restoreAccountDetail.createDate
+														? restoreAccountDetail?.dateTime
+														: restoreAccountDetail.createDate
+											  ).format('D MMMM YYYY | hh:mm:ss A')
 									}
 								/>
 							</Container>
