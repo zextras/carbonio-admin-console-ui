@@ -91,4 +91,70 @@ describe('RestoreDeleteAccountWizard Component', () => {
 		});
 		expect(screen.getByText(/test12/i)).toBeInTheDocument();
 	});
+
+	test('restoreAccountRequest callback works as expected', async () => {
+		const mockRestoreAccountRequest = jest.fn();
+		const mockSetShowRestoreAccountWizard = jest.fn();
+
+		await act(async () => {
+			setup(
+				<RestoreDeleteAccountWizard
+					setShowRestoreAccountWizard={mockSetShowRestoreAccountWizard}
+					restoreAccountRequest={mockRestoreAccountRequest}
+					isRequestWorkInProgress={undefined}
+				/>
+			);
+		});
+
+		const mockData = {
+			name: 'testAccount',
+			id: '12345',
+			createDate: '2023-01-01',
+			status: 'Active',
+			copyAccount: 'copyAccount',
+			dateTime: '2023-01-02',
+			lastAvailableStatus: true,
+			hsmApply: true,
+			dataSource: true,
+			notificationReceiver: 'test@example.com',
+			isEmailNotificationEnable: true,
+			copyDomain: 'example.com',
+			serverName: 'server.example.com'
+		};
+
+		await act(async () => {
+			mockRestoreAccountRequest(
+				mockData.name,
+				mockData.id,
+				mockData.createDate,
+				mockData.status,
+				mockData.copyAccount,
+				mockData.dateTime,
+				mockData.lastAvailableStatus,
+				mockData.hsmApply,
+				mockData.dataSource,
+				mockData.notificationReceiver,
+				mockData.isEmailNotificationEnable,
+				mockData.copyDomain,
+				mockData.serverName
+			);
+		});
+
+		expect(mockRestoreAccountRequest).toHaveBeenCalledWith(
+			mockData.name,
+			mockData.id,
+			mockData.createDate,
+			mockData.status,
+			mockData.copyAccount,
+			mockData.dateTime,
+			mockData.lastAvailableStatus,
+			mockData.hsmApply,
+			mockData.dataSource,
+			mockData.notificationReceiver,
+			mockData.isEmailNotificationEnable,
+			mockData.copyDomain,
+			mockData.serverName
+		);
+		expect(mockRestoreAccountRequest).toHaveBeenCalledTimes(1);
+	});
 });
