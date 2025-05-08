@@ -238,8 +238,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 		if (selectedAccountRows && selectedAccountRows.length > 0) {
 			const findAccount = selectedAccountRows[0];
 			if (!!findAccount && findAccount?.id) {
-				setRestoreAccountDetail((prev: any) => ({
-					...prev,
+				setRestoreAccountDetail(() => ({
 					name: findAccount?.name,
 					id: findAccount?.id,
 					status: findAccount?.status,
