@@ -146,7 +146,7 @@ const RestoreDeleteAccountWizard: FC<{
 				label: t('label.config', 'Config'),
 				icon: 'OptionsOutline',
 				view: RestoreAccountConfigSection,
-				canGoNext: (): any => restoreAccountDetail?.copyAccount,
+				canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
 				CancelButton: (props: any): ReactElement => (
 					<Button
 						{...props}
@@ -221,11 +221,12 @@ const RestoreDeleteAccountWizard: FC<{
 		],
 		[
 			t,
-			restoreAccountDetail?.name,
+			restoreAccountDetail?.id,
 			restoreAccountDetail?.copyAccount,
+			restoreAccountDetail?.copyDomain,
+			restoreAccountDetail?.name,
 			backToFirstTab,
-			isRequestInProgress,
-			restoreAccountDetail?.id
+			isRequestInProgress
 		]
 	);
 

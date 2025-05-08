@@ -46,6 +46,9 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 	const [domainList, setDomainList] = useState([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [searchDomainName, setSearchDomainName] = useState(restoreAccountDetail?.copyDomain);
+	const [searchDomainNameInput, setSearchDomainNameInput] = useState(
+		restoreAccountDetail?.copyDomain
+	);
 	const handleChange = useCallback(
 		(d: Date | null) => {
 			setDate(d);
@@ -92,8 +95,8 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 			...prev,
 			copyDomain: searchDomainName
 		}));
-		searchDomainCall(searchDomainName);
-	}, [searchDomainName, searchDomainCall, setRestoreAccountDetail]);
+		searchDomainCall(searchDomainNameInput);
+	}, [searchDomainNameInput, searchDomainCall, setRestoreAccountDetail, searchDomainName]);
 
 	const items = domainList?.map((domain: any) => ({
 		id: domain.id,
@@ -109,6 +112,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 				}}
 				onClick={(): void => {
 					setSearchDomainName(domain?.name);
+					setSearchDomainNameInput(domain?.name);
 				}}
 			>
 				{domain?.name}
@@ -192,9 +196,9 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 									<Input
 										label={t('label.domain', 'Domain')}
 										onChange={(ev: any): void => {
-											setSearchDomainName(ev.target.value);
+											setSearchDomainNameInput(ev.target.value);
 										}}
-										value={searchDomainName}
+										value={searchDomainNameInput}
 										backgroundColor="gray5"
 										CustomIcon={(): JSX.Element => (
 											<Icon
@@ -236,6 +240,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										defaultValue={date}
 										onChange={handleChange}
 										minDate={new Date(restoreAccountDetail?.createDate ?? '')}
+										maxDate={new Date()}
 										dateFormat="dd/MM/yyyy hh:mm a"
 										style={{ background: 'green' }}
 									/>
