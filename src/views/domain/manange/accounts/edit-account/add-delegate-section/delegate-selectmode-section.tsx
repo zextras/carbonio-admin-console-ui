@@ -54,9 +54,7 @@ const DelegateSelectModeSection: FC = () => {
 
 	useEffect(() => {
 		const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
-		if (typeof(type) !== 'undefined') {
-			searchAccountList(searchDelegateAccountName,type);
-		}
+		searchAccountList(searchDelegateAccountName,type);
 	}, [searchAccountList, searchDelegateAccountName,deligateDetail]);
 
 	const selectedDelegateAccount = useCallback(
