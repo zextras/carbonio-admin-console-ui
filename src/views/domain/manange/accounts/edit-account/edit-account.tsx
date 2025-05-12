@@ -773,8 +773,8 @@ const EditAccount: FC<{
 			await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
 		}
 
-		await handleMobileSyncFeatures(modifiedKeys);
-		await handleFileQuotaLimitChange(modifiedKeys);
+		handleMobileSyncFeatures(modifiedKeys);
+		handleFileQuotaLimitChange(modifiedKeys);
 
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
