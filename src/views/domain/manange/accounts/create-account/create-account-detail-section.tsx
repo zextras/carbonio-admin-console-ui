@@ -158,9 +158,9 @@ const CreateAccountDetailSection: FC = () => {
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 			style={{
-					overflow: 'auto',
-					transition: 'left 0.2s ease-in-out',
-					maxHeight: '100%'
+				overflow: 'auto',
+				transition: 'left 0.2s ease-in-out',
+				maxHeight: '100%'
 			}}
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
