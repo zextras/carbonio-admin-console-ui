@@ -34,12 +34,10 @@ const DelegateSelectModeSection: FC = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
-		debounce((searchText,type) => {
+		debounce((searchText, type) => {
 			if (searchText) {
-				if (type == "distributionlists") {
-					setSearchQuery(
-						`(&(objectClass=zimbraDistributionList)(mail=*${searchText}*))`
-					);
+				if (type === 'distributionlists') {
+					setSearchQuery(`(&(objectClass=zimbraDistributionList)(mail=*${searchText}*))`);
 				} else {
 					setSearchQuery(
 						`(&(objectClass=zimbraAccount)(zimbraMailDeliveryAddress=*${searchText}*))`
@@ -54,8 +52,8 @@ const DelegateSelectModeSection: FC = () => {
 
 	useEffect(() => {
 		const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
-		searchAccountList(searchDelegateAccountName,type);
-	}, [searchAccountList, searchDelegateAccountName,deligateDetail]);
+		searchAccountList(searchDelegateAccountName, type);
+	}, [searchAccountList, searchDelegateAccountName, deligateDetail]);
 
 	const selectedDelegateAccount = useCallback(
 		(v: any): void => {
@@ -125,7 +123,7 @@ const DelegateSelectModeSection: FC = () => {
 	]);
 
 	useEffect(() => {
-		if(searchQuery.length > 2) getAccountList();
+		if (searchQuery.length > 2) getAccountList();
 	}, [getAccountList, searchQuery]);
 
 	const onGroupByChange = (v: any): any => {
@@ -134,7 +132,7 @@ const DelegateSelectModeSection: FC = () => {
 			grantee: [{ type: v, name: deligateDetail?.grantee?.[0]?.name || '' }]
 		}));
 		setSearchDelegateAccountName(undefined);
-		if(searchQuery.length > 2) getAccountList();
+		if (searchQuery.length > 2) getAccountList();
 	};
 
 	const customIconDetail = {

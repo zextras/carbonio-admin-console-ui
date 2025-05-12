@@ -837,7 +837,7 @@ const EditAccountDelegatesSection: FC = () => {
 	}, [accountDetail.zimbraId, createSnackbar, searchQuery, t]);
 
 	useEffect(() => {
-		if(searchQuery.length > 2) getAccountList();
+		if (searchQuery.length > 2) getAccountList();
 	}, [getAccountList, searchQuery]);
 	const onDeligateSendSettingsChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
