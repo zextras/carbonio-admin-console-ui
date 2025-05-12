@@ -43,6 +43,7 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
+import { batchService } from '../../../../../services/batch-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section';
@@ -53,7 +54,6 @@ import { generateSnackbarFromError } from '../../../../error/generate-snackbar-e
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
-import { batchService } from '../../../../../services/batch-service';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -220,15 +220,14 @@ const EditAccountDelegatesSection: FC = () => {
 
 	const handleDeleteeDelegate = useCallback((): void => {
 		const selectedDelegate = find(identitiesList, (o) => o?.grantee?.[0].id === selectedRows[0]);
-
-		const revokeUsrRigths : any[] = [];
-		const folderUsrRights : any[] = [];
+		const revokeUsrRigths: any[] = [];
+		const folderUsrRights: any[] = [];
 
 		if (selectedDelegate) {
 			if (selectedDelegate?.folder?.length) {
 				selectedDelegate.folder.forEach((ele: any) => {
-
 					folderUsrRights.push({
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						_jsns: 'urn:zimbraMail',
 						action: {
 							op: '!grant',
@@ -239,8 +238,8 @@ const EditAccountDelegatesSection: FC = () => {
 				});
 			}
 			if (selectedDelegate?.right?.[0]?._content) {
-
 				revokeUsrRigths.push({
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					_jsns: ZIMBRA_ADMIN_URN,
 					target: {
 						_content: accountDetail?.zimbraMailDeliveryAddress,
@@ -259,13 +258,17 @@ const EditAccountDelegatesSection: FC = () => {
 			}
 
 			if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
-				batchService({
-					RevokeRightRequest: revokeUsrRigths,
-					FolderActionRequest: folderUsrRights,
-					_jsns: 'urn:zimbra'
-				}, accountDetail?.zimbraMailDeliveryAddress )
+				batchService(
+					{
+						RevokeRightRequest: revokeUsrRigths,
+						FolderActionRequest: folderUsrRights,
+						// eslint-disable-next-line sonarjs/no-duplicate-string
+						_jsns: 'urn:zimbra'
+					},
+					accountDetail?.zimbraMailDeliveryAddress
+				);
 
-				if(revokeUsrRigths.length > 0) setShowCreateIdentity(false);
+				if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
 
 				getIdentitiesList({
 					id: accountDetail?.zimbraId,
@@ -303,8 +306,8 @@ const EditAccountDelegatesSection: FC = () => {
 			handleDeleteeDelegate();
 		}
 
-		const grantUsrRigths : any[] = [];
-		const folderUsrRights : any[] = [];
+		const grantUsrRigths: any[] = [];
+		const folderUsrRights: any[] = [];
 
 		if (
 			deligateDetail?.delegeteRights &&
@@ -313,6 +316,7 @@ const EditAccountDelegatesSection: FC = () => {
 				deligateDetail?.delegeteRights === 'send_read_manage_mails')
 		) {
 			grantUsrRigths.push({
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: accountDetail?.zimbraMailDeliveryAddress,
@@ -342,6 +346,7 @@ const EditAccountDelegatesSection: FC = () => {
 			});
 
 			folderUsrRights.push({
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbraMail',
 				action: {
 					op: 'grant',
@@ -360,13 +365,15 @@ const EditAccountDelegatesSection: FC = () => {
 			});
 		}
 
-		if (folderUsrRights.length > 0 || grantUsrRigths.length > 0 ) {
-			batchService({
-				GrantRightRequest: grantUsrRigths,
-				FolderActionRequest: folderUsrRights,
-				_jsns: 'urn:zimbra'
-			}, accountDetail?.zimbraMailDeliveryAddress ).then(() => {
-
+		if (folderUsrRights.length > 0 || grantUsrRigths.length > 0) {
+			batchService(
+				{
+					GrantRightRequest: grantUsrRigths,
+					FolderActionRequest: folderUsrRights,
+					_jsns: 'urn:zimbra'
+				},
+				accountDetail?.zimbraMailDeliveryAddress
+			).then(() => {
 				getIdentitiesList({
 					id: accountDetail?.zimbraId,
 					name: accountDetail?.zimbraMailDeliveryAddress
@@ -389,7 +396,6 @@ const EditAccountDelegatesSection: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -543,10 +549,9 @@ const EditAccountDelegatesSection: FC = () => {
 	);
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const addAccountGroupRights = useCallback((): void => {
-
-		const revokeUsrRigths : any[] = [];
-		const grantUsrRigths : any[] = [];
-		const folderUsrRights : any[] = [];
+		const revokeUsrRigths: any[] = [];
+		const grantUsrRigths: any[] = [];
+		const folderUsrRights: any[] = [];
 
 		simpleSelectedList?.forEach((item: any): any => {
 			if (sendRightCheck || sendBehalfRightCheck) {
@@ -579,12 +584,11 @@ const EditAccountDelegatesSection: FC = () => {
 						_content: item?.ele?.name
 					},
 					right: {
-						_content: sendRightCheck ? 'sendAs': 'sendOnBehalfOf'
+						_content: sendRightCheck ? 'sendAs' : 'sendOnBehalfOf'
 					}
 				});
 			}
 			if (readRightWriteCheck || readRightCheck) {
-
 				folderUsrRights.push({
 					_jsns: 'urn:zimbraMail',
 					action: {
@@ -601,31 +605,20 @@ const EditAccountDelegatesSection: FC = () => {
 			}
 		});
 
-		batchService({
-			RevokeRightRequest: revokeUsrRigths,
-			GrantRightRequest: grantUsrRigths,
-			FolderActionRequest: folderUsrRights,
-			_jsns: 'urn:zimbra'
-		}, accountDetail?.zimbraMailDeliveryAddress ).then((res) => {
-			/*if (res?.Fault) {
-
-				res?.Fault?.forEach((item: any) =>
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: item?.Reason?.Text,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: false
-					})
-				);
-			}*/
+		batchService(
+			{
+				RevokeRightRequest: revokeUsrRigths,
+				GrantRightRequest: grantUsrRigths,
+				FolderActionRequest: folderUsrRights,
+				_jsns: 'urn:zimbra'
+			},
+			accountDetail?.zimbraMailDeliveryAddress
+		).then((res) => {
 			getIdentitiesList({
 				id: accountDetail?.zimbraId,
 				name: accountDetail?.zimbraMailDeliveryAddress
 			});
 			setShowCreateIdentity(false);
-	
 		});
 		setSelectedAccounts([]);
 		setSimpleSelectedList([]);
@@ -640,10 +633,7 @@ const EditAccountDelegatesSection: FC = () => {
 		readRightCheck,
 		accountDetail?.zimbraMailDeliveryAddress,
 		accountDetail?.zimbraId,
-		getIdentitiesList,
-		createSnackbar,
-		editMode,
-		t
+		getIdentitiesList
 	]);
 	const handleSimpleDeleteDelegate = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -688,8 +678,8 @@ const EditAccountDelegatesSection: FC = () => {
 				setReadSelectedRows([]);
 			}
 
-			const revokeUsrRigths : any[] = [];
-			const folderUsrRights : any[] = [];
+			const revokeUsrRigths: any[] = [];
+			const folderUsrRights: any[] = [];
 
 			selectedDelegateArr.forEach((selectedDelegate: any) => {
 				if (selectedDelegate) {
@@ -709,7 +699,6 @@ const EditAccountDelegatesSection: FC = () => {
 						});
 					}
 					if (rightsType === 'send' && selectedDelegate?.right?.[0]?._content) {
-
 						revokeUsrRigths.push({
 							_jsns: ZIMBRA_ADMIN_URN,
 							target: {
@@ -729,11 +718,14 @@ const EditAccountDelegatesSection: FC = () => {
 					}
 
 					if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
-						batchService({
-							RevokeRightRequest: revokeUsrRigths,
-							FolderActionRequest: folderUsrRights,
-							_jsns: 'urn:zimbra'
-						}, accountDetail?.zimbraMailDeliveryAddress ).then((res) => {
+						batchService(
+							{
+								RevokeRightRequest: revokeUsrRigths,
+								FolderActionRequest: folderUsrRights,
+								_jsns: 'urn:zimbra'
+							},
+							accountDetail?.zimbraMailDeliveryAddress
+						).then((res) => {
 							getIdentitiesList({
 								id: accountDetail?.zimbraId,
 								name: accountDetail?.zimbraMailDeliveryAddress
