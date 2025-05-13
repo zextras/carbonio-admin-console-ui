@@ -18,6 +18,7 @@ import {
 	TextArea
 } from '@zextras/carbonio-design-system';
 import { useIntegratedComponent, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { encode } from 'html-entities';
 import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -36,7 +37,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import ListRow from '../../list/list-row';
-import {encode} from 'html-entities';
 
 const EditorWrapper = styled.div`
 	width: 100%;
@@ -158,32 +158,45 @@ const DomainDisclaimer: FC = () => {
 		body._jsns = ZIMBRA_ADMIN_URN;
 
 		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText) {
-			//Convert accented char
-			const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText.normalize("NFD").replace(/\p{Diacritic}/gu, "'");
-			//add new line after 996 char
-			const limitTextSignature = convertDiatrictTextSignature.replace(/(.{996})/g, "$1\n");
+			// Convert accented char
+			const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
+				.normalize('NFD')
+				.replace(/\p{Diacritic}/gu, "'");
+			// add new line after 996 char
+			const limitTextSignature = convertDiatrictTextSignature.replace(/(.{996})/g, '$1\n');
 			attributes.push({
 				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
 				_content: limitTextSignature
 			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+				_content: ''
+			});
 		}
 
 		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML) {
-			//Convert nonAsciiPrintableOnly entities into html entities
-			const encodeHtmlSignature = encode(domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML, {mode: 'nonAsciiPrintableOnly'});
-			//add new line after 996 char
-			const limitHtmlSignature = encodeHtmlSignature.replace(/(.{996})/g, "$1\n");
+			// Convert nonAsciiPrintableOnly entities into html entities
+			const encodeHtmlSignature = encode(domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML, {
+				mode: 'nonAsciiPrintableOnly'
+			});
+			// add new line after 996 char
+			const limitHtmlSignature = encodeHtmlSignature.replace(/(.{996})/g, '$1\n');
 			attributes.push({
 				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
 				_content: limitHtmlSignature
 			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+				_content: ''
+			});
 		}
 
 		if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
-
 			attributes.push({
 				n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-				_content: domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+				_content: TRUE
 			});
 
 			attributes.push({
@@ -191,12 +204,15 @@ const DomainDisclaimer: FC = () => {
 				_content: domainName
 			});
 		} else {
+			attributes.push({
+				n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+				_content: FALSE
+			});
 
 			attributes.push({
 				n: AMAVIS_DISCLAIMER_OPTIONS,
 				_content: ''
 			});
-
 		}
 
 		body.a = attributes;
