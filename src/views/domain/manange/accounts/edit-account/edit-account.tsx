@@ -987,7 +987,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [selectedAccount?.id, onSuccess, t, createSnackbar,setShowEditAccountView]);
+	}, [selectedAccount?.id, onSuccess, t, createSnackbar, setDefaultTab, setShowEditAccountView]);
 
 	return (
 		<>
