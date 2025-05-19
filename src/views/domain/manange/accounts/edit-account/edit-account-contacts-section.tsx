@@ -64,7 +64,7 @@ const EditAccountContactsSection: FC = () => {
 								inputName="telephoneNumber"
 								label={t('label.phone', 'Phone')}
 								backgroundColor="gray5"
-								defaultValue={accountDetail?.telephoneNumber || ''}
+								defaultValue={''}
 								value={accountDetail?.telephoneNumber || ''}
 							/>
 						</Tooltip>
@@ -87,7 +87,7 @@ const EditAccountContactsSection: FC = () => {
 								}}
 								hasError={!isValidHomePhone}
 								inputName="homePhone"
-								defaultValue={accountDetail?.homePhone || ''}
+								defaultValue={''}
 								value={accountDetail?.homePhone || ''}
 							/>
 						</Tooltip>
@@ -112,7 +112,7 @@ const EditAccountContactsSection: FC = () => {
 								}}
 								hasError={!isValidMobile}
 								inputName="mobile"
-								defaultValue={accountDetail?.mobile || ''}
+								defaultValue={''}
 								value={accountDetail?.mobile || ''}
 							/>
 						</Tooltip>
@@ -135,7 +135,7 @@ const EditAccountContactsSection: FC = () => {
 								}}
 								hasError={!isValidPager}
 								inputName="pager"
-								defaultValue={accountDetail?.pager || ''}
+								defaultValue={''}
 								value={accountDetail?.pager || ''}
 							/>
 						</Tooltip>
@@ -160,7 +160,7 @@ const EditAccountContactsSection: FC = () => {
 								}}
 								hasError={!isValidFaxNumber}
 								inputName="facsimileTelephoneNumber"
-								defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
+								defaultValue={''}
 								value={accountDetail?.facsimileTelephoneNumber || ''}
 							/>
 						</Tooltip>
@@ -180,7 +180,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.company', 'Company')}
 							onChange={changeAccDetail}
 							inputName="company"
-							defaultValue={accountDetail?.company || ''}
+							defaultValue={''}
 							value={accountDetail?.company || ''}
 						/>
 					</Row>
@@ -190,7 +190,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.job_title', 'Job Title')}
 							onChange={changeAccDetail}
 							inputName="title"
-							defaultValue={accountDetail?.title || ''}
+							defaultValue={''}
 							value={accountDetail?.title || ''}
 						/>
 					</Row>
@@ -209,7 +209,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.country', 'Country')}
 							onChange={changeAccDetail}
 							inputName="co"
-							defaultValue={accountDetail?.co || ''}
+							defaultValue={''}
 							value={accountDetail?.co || ''}
 						/>
 					</Row>
@@ -219,7 +219,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.state', 'State')}
 							onChange={changeAccDetail}
 							inputName="st"
-							defaultValue={accountDetail?.st || ''}
+							defaultValue={''}
 							value={accountDetail?.st || ''}
 						/>
 					</Row>
@@ -231,7 +231,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.city', 'City')}
 							onChange={changeAccDetail}
 							inputName="l"
-							defaultValue={accountDetail?.l || ''}
+							defaultValue={''}
 							value={accountDetail?.l || ''}
 						/>
 					</Row>
@@ -241,7 +241,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.postal_code', 'Postal Code')}
 							onChange={changeAccDetail}
 							inputName="postalCode"
-							defaultValue={accountDetail?.postalCode || ''}
+							defaultValue={''}
 							value={accountDetail?.postalCode || ''}
 						/>
 					</Row>
@@ -253,7 +253,7 @@ const EditAccountContactsSection: FC = () => {
 							label={t('label.address', 'Address')}
 							onChange={changeAccDetail}
 							inputName="street"
-							defaultValue={accountDetail?.street || ''}
+							defaultValue={''}
 							value={accountDetail?.street || ''}
 						/>
 					</Row>
