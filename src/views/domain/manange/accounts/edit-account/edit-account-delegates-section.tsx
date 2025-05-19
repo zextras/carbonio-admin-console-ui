@@ -716,37 +716,37 @@ const EditAccountDelegatesSection: FC = () => {
 							}
 						});
 					}
-
-					if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
-						batchService(
-							{
-								RevokeRightRequest: revokeUsrRigths,
-								FolderActionRequest: folderUsrRights,
-								_jsns: 'urn:zimbra'
-							},
-							accountDetail?.zimbraMailDeliveryAddress
-						).then((res) => {
-							getIdentitiesList({
-								id: accountDetail?.zimbraId,
-								name: accountDetail?.zimbraMailDeliveryAddress
-							});
-							if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
-						});
-
-						createSnackbar({
-							key: 'success',
-							severity: 'success',
-							label: t(
-								'account_details.delegate_deleted_successfully',
-								'Delegate deleted successfully'
-							),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					}
 				}
 			});
+
+			if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
+				batchService(
+					{
+						RevokeRightRequest: revokeUsrRigths,
+						FolderActionRequest: folderUsrRights,
+						_jsns: 'urn:zimbra'
+					},
+					accountDetail?.zimbraMailDeliveryAddress
+				).then((res) => {
+					getIdentitiesList({
+						id: accountDetail?.zimbraId,
+						name: accountDetail?.zimbraMailDeliveryAddress
+					});
+					if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
+				});
+
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t(
+						'account_details.delegate_deleted_successfully',
+						'Delegate deleted successfully'
+					),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			}
 		},
 		[
 			accountDetail?.zimbraId,
