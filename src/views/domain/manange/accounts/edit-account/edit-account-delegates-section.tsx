@@ -531,9 +531,9 @@ const EditAccountDelegatesSection: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
 		debounce((searchText) => {
-			if (searchText) {
+			if (searchText.length >= 2) {
 				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
+					`(|(&(objectClass=zimbraAccount)(zimbraMailDeliveryAddress=*${searchText}*))(&(objectClass=zimbraDistributionList)(mail=*${searchText}*)))`
 				);
 			} else {
 				setSearchQuery('');
@@ -796,7 +796,7 @@ const EditAccountDelegatesSection: FC = () => {
 	}, [accountDetail.zimbraId, createSnackbar, searchQuery, t]);
 
 	useEffect(() => {
-		if (searchQuery) getAccountList();
+		if (searchQuery.length > 2) getAccountList();
 	}, [getAccountList, searchQuery]);
 	const onDeligateSendSettingsChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
@@ -901,7 +901,6 @@ const EditAccountDelegatesSection: FC = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						style={{ gap: '0.625rem' }}
-						onClick={getAccountList}
 					>
 						<ChipInput
 							placeholder={t(
