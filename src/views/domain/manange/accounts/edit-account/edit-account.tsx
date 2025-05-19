@@ -751,12 +751,12 @@ const EditAccount: FC<{
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
-				handlePasswordChange(modifiedKeys);
+				await handlePasswordChange(modifiedKeys);
 				isPasswordChange = true;
 			}
 		}
 
-		handleAccountRename(modifiedKeys);
+		await handleAccountRename(modifiedKeys);
 
 		await handleCoreAttributesModification(modifiedKeys);
 
@@ -799,6 +799,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 				accountDetail.userPassword = 'VALUE-BLOCKED';
+				accountDetail.zimbraPasswordMustChange = 'FALSE';
 			}
 			setInitAccountDetail({ ...accountDetail });
 		}
