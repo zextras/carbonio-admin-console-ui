@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.3...v0.10.4) (2025-05-19)
+
+
+### Features
+
+* add fetch to get initialized domains ([caa1b92](https://github.com/zextras/carbonio-admin-console-ui/commit/caa1b92ea13bf23a30b9b63ab5a22964a87c84f3))
+* handle workstream collaboration LDAP attributes at COS and user level ([#827](https://github.com/zextras/carbonio-admin-console-ui/issues/827)) ([220e4b0](https://github.com/zextras/carbonio-admin-console-ui/commit/220e4b0518d44b9bdbdadd397b9aea7cb18eb899))
+* kyrgyz language support added to language settings ([#836](https://github.com/zextras/carbonio-admin-console-ui/issues/836)) ([1ed234e](https://github.com/zextras/carbonio-admin-console-ui/commit/1ed234ed788fecdaeb38814f8bb576451a6cbc40))
+* use getInitializedDomains in edit-account-administration-section ([018ba20](https://github.com/zextras/carbonio-admin-console-ui/commit/018ba202c55b60477d068277fc9522acc467cbc5))
+
+
+### Bug Fixes
+
+* [CO-1899] improve search account by domain & result pagination logic ([#845](https://github.com/zextras/carbonio-admin-console-ui/issues/845)) ([50962cf](https://github.com/zextras/carbonio-admin-console-ui/commit/50962cfeb14fa4b100964eec679131b10a061b26))
+* [CO-1899] set offset to 0 when no query provided ([#830](https://github.com/zextras/carbonio-admin-console-ui/issues/830)) ([91e555a](https://github.com/zextras/carbonio-admin-console-ui/commit/91e555aec4fb0e95bd5ccdd7722b583b55521aac))
+* [CO-1919] backup can not restore account on admin ui [#833](https://github.com/zextras/carbonio-admin-console-ui/issues/833) ([e128523](https://github.com/zextras/carbonio-admin-console-ui/commit/e128523c686fbf9e4c2aa73906577c583a9d133f))
+* [CO-1919]backup can not restore account on admin ui ([971498c](https://github.com/zextras/carbonio-admin-console-ui/commit/971498cbef941c00d45fe56a61b608e755f01ba6))
+* [CO-1943] backup restore account ui-list should be order of email address ([#839](https://github.com/zextras/carbonio-admin-console-ui/issues/839)) ([ee5d5ce](https://github.com/zextras/carbonio-admin-console-ui/commit/ee5d5ce61877e81e4bbc438fcd152cd88b735ddb))
+* [CO-1943] legalhold switch not calling api ([#840](https://github.com/zextras/carbonio-admin-console-ui/issues/840)) ([82dbc23](https://github.com/zextras/carbonio-admin-console-ui/commit/82dbc2305f4b528d2e1f5140bc33559d9bc71a53))
+* allow chars '/,. ' to be used inside phone numbers ([da9f514](https://github.com/zextras/carbonio-admin-console-ui/commit/da9f5149b1cfdfcfb73aed5e3836f07944b4ea40))
+* allow chars '/|,.*\' to be used inside phone numbers ([80e40b5](https://github.com/zextras/carbonio-admin-console-ui/commit/80e40b5737522baea76347d067f7dea9fc8f5d9f))
+* cleanup ([6434486](https://github.com/zextras/carbonio-admin-console-ui/commit/6434486c3f24947dd894210e353c4ee1471d48fe))
+* cleanup already opened edit account window ([7934fbf](https://github.com/zextras/carbonio-admin-console-ui/commit/7934fbfd1128b01d35bc355270d2877361ad7a10))
+* close account editing after delete it, fix catch error ([d61add1](https://github.com/zextras/carbonio-admin-console-ui/commit/d61add1547d2c63538ded8c03f0bad67b7aff99f))
+* direct and not direct member are not displayed correctly when open an account ([76b4260](https://github.com/zextras/carbonio-admin-console-ui/commit/76b4260b7c5649388cd9c5d48488ebbb19ddecdf))
+* domain list shown error when domain status set suspended ([10d095b](https://github.com/zextras/carbonio-admin-console-ui/commit/10d095b480787374fc5870788f046007781ed1bf))
+* domain quota threshold setting must only allow percentage ([20a6407](https://github.com/zextras/carbonio-admin-console-ui/commit/20a64076538de961b0848dafe6b1a5cb3c6ba09b))
+* filter account and dist list in proper way ([1859233](https://github.com/zextras/carbonio-admin-console-ui/commit/18592337dcaf464d2869ccc621668c6935fb1d12))
+* fixed add new delegate account on wizard mode ([ac60c76](https://github.com/zextras/carbonio-admin-console-ui/commit/ac60c76029fcb2c2ec300572faa4445ade999cd4))
+* fixed add new delegate account on wizard mode ([c785670](https://github.com/zextras/carbonio-admin-console-ui/commit/c785670edb8528ec30957140fa78a61495d7728a))
+* handle in proper way disclaimer ([1bef731](https://github.com/zextras/carbonio-admin-console-ui/commit/1bef731f504deea0d98e1d5a520552f4582a4c54))
+* improved window heigth con create account detail section ([9072be7](https://github.com/zextras/carbonio-admin-console-ui/commit/9072be777e314cdc0c9747c7f73d246972b6910a))
+* mailbox quota pagination issue fixed ([#841](https://github.com/zextras/carbonio-admin-console-ui/issues/841)) ([83a10b8](https://github.com/zextras/carbonio-admin-console-ui/commit/83a10b826c1b23e9b61a43c95748939183229763))
+* on create delagate account, regroup all soap request into batch to minimize network load ([240bb34](https://github.com/zextras/carbonio-admin-console-ui/commit/240bb348865f26770ac755a4de8118b42fe6f5a2))
+* redefine max disclaimer lenght by rfc into const ([ba21e9e](https://github.com/zextras/carbonio-admin-console-ui/commit/ba21e9e4c2fdc819c9cc84be063b96b592433d1e))
+* remove await on a non-promise function ([2ec3c74](https://github.com/zextras/carbonio-admin-console-ui/commit/2ec3c742a51a90162701fd3ac89d9bda1b40afb7))
+* removed check undefined, fix format ([952068f](https://github.com/zextras/carbonio-admin-console-ui/commit/952068f5281c51a615b3f08dc55e68dc398ee459))
+* rename account + change password in same time ([0a953ef](https://github.com/zextras/carbonio-admin-console-ui/commit/0a953efccf0e9dbcd1b0c11cf100e44c48469c85))
+* restore account date attribute added ([#842](https://github.com/zextras/carbonio-admin-console-ui/issues/842)) ([e64dadd](https://github.com/zextras/carbonio-admin-console-ui/commit/e64dadd47e66d76aa34276abd473e81f3731ece8))
+* reversed string for edit account delegates section ([70db053](https://github.com/zextras/carbonio-admin-console-ui/commit/70db0538043a6ca11142bdb9093278fe1e074f6e))
+* run batch after obtained all info do to delete on handleSimpleDeleteDelegate ([9b3cd62](https://github.com/zextras/carbonio-admin-console-ui/commit/9b3cd62a2da175dbf666e0f74323d076e5c2c4c1))
+* unable to change bucketList ( forced to use sendAnalytics ) ([bd8882e](https://github.com/zextras/carbonio-admin-console-ui/commit/bd8882e46005b320b3136d20f5153bd9c5e27034))
+* use 'selection' instead of 'defaultSelection' in account status select ([754371f](https://github.com/zextras/carbonio-admin-console-ui/commit/754371f92d0a52796c318976825f5c218eb27d48))
+* use label accounts.phoneNumber.tooltip ([a53b89b](https://github.com/zextras/carbonio-admin-console-ui/commit/a53b89b183c6b5fd0edc0cbeed0e12001749f8f5))
+* use new line as separator when concatenatig certificates ([43acabf](https://github.com/zextras/carbonio-admin-console-ui/commit/43acabf46f46a8f6cf636a81fafd523a90fee707))
+
 ### [0.10.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.2...v0.10.3) (2025-02-27)
 
 
