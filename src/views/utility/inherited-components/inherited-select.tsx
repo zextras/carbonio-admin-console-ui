@@ -12,7 +12,8 @@ import {
 	Text,
 	Row,
 	Container,
-	Padding
+	Padding,
+	SelectItem
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +22,7 @@ const InheritedSelect: FC<{
 	items: any[];
 	subValue: any;
 	inheritedValue: any;
-	background: any;
+	background?: any;
 	selectName: any;
 	onChange: any;
 	onChangeReset: any;
@@ -33,7 +34,8 @@ const InheritedSelect: FC<{
 	items,
 	subValue,
 	inheritedValue,
-	background,
+	background = 'gray5',
+	selectName,
 	onChange,
 	onChangeReset,
 	fromSubValue,
@@ -46,10 +48,15 @@ const InheritedSelect: FC<{
 		if (!subValue) {
 			selectValue = inheritedValue;
 		}
-		return items.find((item: any) => item.value === selectValue);
+		return (
+			items.find((item: SelectItem) => item.value === selectValue) || {
+				label: selectValue,
+				value: selectValue
+			}
+		);
 	}, [subValue, inheritedValue, items]);
 	return (
-		<Container orientation="horizontal">
+		<Container orientation="horizontal" data-testid={`inherited-${selectName}`}>
 			<Row takeAvailableSpace>
 				<Select
 					label={label}

@@ -154,8 +154,7 @@ const BucketListPanel: FC = () => {
 		if (isStoreSelect) {
 			if (selectedOperationItem) {
 				if (selectedOperationItem === DATA_VOLUMES || selectedOperationItem === HSM_SETTINGS) {
-					globalCarbonioSendAnalytics &&
-						replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
+					replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
 				} else {
 					replaceHistory(`/${selectedOperationItem}`);
 				}

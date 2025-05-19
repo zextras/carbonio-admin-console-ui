@@ -162,6 +162,7 @@ const Paging: FC<{
 					icon="ChevronRight"
 					color="primary"
 					onClick={onNextPage}
+					data-testid="next-page"
 					disabled={isNextPageDisabled || currentPage === totalPages}
 				/>
 			</Row>

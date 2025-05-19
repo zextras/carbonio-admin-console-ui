@@ -18,6 +18,7 @@ import {
 	TextArea
 } from '@zextras/carbonio-design-system';
 import { useIntegratedComponent, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { encode } from 'html-entities';
 import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -156,26 +157,63 @@ const DomainDisclaimer: FC = () => {
 		body.id = domainId;
 		body._jsns = ZIMBRA_ADMIN_URN;
 
-		attributes.push({
-			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-			_content: domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
-		});
+		// by rfc max char per line is 998 bytes with new line
+		// newline is 1 byte char as result real max char is 997 bytes
+		const maxNumberOfCharsPerLine = 998 - '\n'.length;
+		const longLineRg = new RegExp(`(.{${maxNumberOfCharsPerLine}})`, 'g');
 
-		attributes.push({
-			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
-			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
-		});
+		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText) {
+			// Convert accented char
+			const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
+				.normalize('NFD')
+				.replace(/\p{Diacritic}/gu, "'");
+			// add new line after 997 char
+			const limitTextSignature = convertDiatrictTextSignature.replace(longLineRg, '$1\n');
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+				_content: limitTextSignature
+			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+				_content: ''
+			});
+		}
 
-		attributes.push({
-			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML
-		});
+		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML) {
+			// Convert nonAsciiPrintableOnly entities into html entities
+			const encodeHtmlSignature = encode(domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML, {
+				mode: 'nonAsciiPrintableOnly'
+			});
+			// add new line after 997 char
+			const limitHtmlSignature = encodeHtmlSignature.replace(longLineRg, '$1\n');
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+				_content: limitHtmlSignature
+			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+				_content: ''
+			});
+		}
+
 		if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+			attributes.push({
+				n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+				_content: TRUE
+			});
+
 			attributes.push({
 				n: AMAVIS_DISCLAIMER_OPTIONS,
 				_content: domainName
 			});
 		} else {
+			attributes.push({
+				n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+				_content: FALSE
+			});
+
 			attributes.push({
 				n: AMAVIS_DISCLAIMER_OPTIONS,
 				_content: ''

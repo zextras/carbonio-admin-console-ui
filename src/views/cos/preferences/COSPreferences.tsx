@@ -16,7 +16,6 @@ import { GeneralOptions } from './GeneralOptions';
 import { useHasUnsavedChanges } from './hooks/useHasUnsavedChanges';
 import { MailOptions } from './MailOptions';
 import { ReceivingMails } from './ReceivingMails';
-import { SaveCancelBar } from './SaveCancelBar';
 import { SendingMails } from './SendingMails';
 import { CosAttributes, CosPrefAttributes } from '../../../../types';
 import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
@@ -24,6 +23,7 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
+import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { AttributeValue } from '../constants/types';
@@ -132,20 +132,13 @@ export const COSPreferences = (): React.JSX.Element => {
 	}, [cosInformation, setInitialValues]);
 
 	return (
-		<Container mainAlignment="flex-start" background={'gray6'} padding={{ all: 'large' }}>
-			<SaveCancelBar
-				hasUnsavedChanges={hasUnsavedChanges}
-				onSave={handleSave}
-				onCancel={handleCancel}
-			/>
-			<Divider />
-			<Container
-				mainAlignment="flex-start"
-				width="100%"
-				orientation="vertical"
-				style={{ overflow: 'auto' }}
-				padding={{ top: 'large' }}
-			>
+		<PageLayout
+			title={t('cos.preferences', 'Preferences')}
+			onSave={handleSave}
+			onCancel={handleCancel}
+			unSavedChanges={hasUnsavedChanges}
+		>
+			<Container mainAlignment="flex-start" width="100%" orientation="vertical">
 				<GeneralOptions
 					cosPrefAttributes={draftCosPrefAttributes}
 					isReadOnlyCosEntry={isReadOnlyCos}
@@ -192,6 +185,6 @@ export const COSPreferences = (): React.JSX.Element => {
 					onSwitchOptionChanged={handleSwitchOptionChange}
 				/>
 			</Container>
-		</Container>
+		</PageLayout>
 	);
 };

@@ -15,9 +15,11 @@ import {
 	Padding,
 	Table,
 	Divider,
-	useSnackbar
+	useSnackbar,
+	THeader
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -47,6 +49,58 @@ import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
 
+export const formatQuota = (
+	quotaUsed: number,
+	quotaLimit: number,
+	t: TFunction
+): [string, number] => {
+	if (quotaLimit === 0) {
+		// eslint-disable-next-line sonarjs/no-duplicate-string
+		return [t('label.unlimited', 'Unlimited'), 0];
+	}
+	if (quotaLimit >= BYTE_PER_MB) {
+		return [BytesToGB(quotaLimit), (quotaUsed / quotaLimit) * 100];
+	}
+	return ['1', (quotaUsed / quotaLimit) * 100];
+};
+
+export const getQuotaData = (
+	usedQuota: Array<unknown>,
+	t: TFunction,
+	isAdvance = false
+): Array<MailBoxQuota> => {
+	const quota: Array<MailBoxQuota> = [];
+	usedQuota.forEach((item: any): void => {
+		const [mailQuota, mailQuotaPercentage] = formatQuota(
+			item?.mailsQuotaUsed ?? 0,
+			item.mailsQuotaLimit ?? 0,
+			t
+		);
+
+		const data: Partial<MailBoxQuota> = {
+			name: !isAdvance ? item?.name : item?.accountName,
+			id: !isAdvance ? item?.id : item?.accountId,
+			mailsQuota: mailQuota,
+			mailsQuotaUsed: BytesToGB(item?.mailsQuotaUsed || 0).toFixed(2),
+			mailsQuotaUsedPercentage: mailQuotaPercentage.toFixed(0)
+		};
+
+		if (isAdvance) {
+			const [fileQuota, fileQuotaPercentage] = formatQuota(
+				item?.filesQuotaUsed ?? 0,
+				item?.filesQuotaLimit ?? 0,
+				t
+			);
+			data.filesQuota = fileQuota;
+			data.filesQuotaUsed = BytesToGB(item?.filesQuotaUsed || 0).toFixed(2);
+			data.filesQuotaUsedPercentage = fileQuotaPercentage.toFixed(0);
+		}
+
+		quota.push(data as MailBoxQuota);
+	});
+	return quota;
+};
+
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -54,7 +108,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
-	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState();
+	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
 		useState<string>('');
@@ -91,6 +145,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const [selectedSortType, setSelectedSortType] = useState<string>('');
 	const [isDownloadInProgress, setIsDownloadInProgress] = useState<boolean>(false);
 	const [fileStorageEnabled, setFileStorageEnabled] = useState<boolean>(isAdvanced);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const quotaPolicy: any = useMemo(
 		() => [
@@ -113,55 +168,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const [zimbraDomainAggregateQuotaPolicy, setZimbraDomainAggregateQuotaPolicy] = useState<any>(
 		quotaPolicy[0]
 	);
-
-	const onSortChange = useCallback(
-		(v: any): any => {
-			if (
-				v &&
-				v.length > 0 &&
-				v !== null &&
-				domainData?.zimbraDomainName &&
-				v[0].value !== selectedSortType
-			) {
-				setOffset(0);
-				setTotalAccount(0);
-				setUsageQuota([]);
-				setSelectedSortType(v[0].value);
-			}
-		},
-		[domainData?.zimbraDomainName, selectedSortType]
-	);
-
-	const headers: any = useMemo(() => {
-		const baseHeaders = [
-			{
-				id: 'account',
-				label: t('label.account', 'Account'),
-				width: '40%',
-				bold: true
-			},
-			{
-				id: 'quota',
-				label: t('label.mails', 'Mails'),
-				width: fileStorageEnabled ? '30%' : '55%',
-				bold: true,
-				items: [
-					{ label: t('label.sort_by_total_quota', 'Sort by Total Quota'), value: TOTAL_USED },
-					{ label: t('label.sort_by_percentage', 'Sort by Percentage'), value: PERCENT_USED }
-				],
-				onChange: onSortChange
-			}
-		];
-		if (fileStorageEnabled) {
-			baseHeaders.push({
-				id: 'files',
-				label: t('label.files', 'Files'),
-				width: '30%',
-				bold: true
-			});
-		}
-		return baseHeaders;
-	}, [t, fileStorageEnabled, onSortChange]);
 
 	const [isShowDownload, setIsShowDownload] = useState<boolean>(false);
 	const csvHeader: Array<{ label: string; key: string }> = useMemo(() => {
@@ -204,54 +210,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [fileStorageEnabled, t]);
 
 	const [csvQuotaData, setCsvQuotaData] = useState<Array<MailBoxQuota>>();
-
-	const formatQuota = useCallback(
-		(quotaUsed: number, quotaLimit: number): [string, number] => {
-			if (quotaLimit === 0) {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
-				return [t('label.unlimited', 'Unlimited'), 0];
-			}
-			if (quotaLimit >= BYTE_PER_MB) {
-				return [BytesToGB(quotaLimit), (quotaUsed / quotaLimit) * 100];
-			}
-			return ['1', (quotaUsed / quotaLimit) * 100];
-		},
-		[t]
-	);
-
-	const getQuotaData = useCallback(
-		(usedQuota: Array<unknown>, isAdvance = false): Array<MailBoxQuota> => {
-			const quota: Array<MailBoxQuota> = [];
-			usedQuota.forEach((item: any): void => {
-				const [mailQuota, mailQuotaPercentage] = formatQuota(
-					item?.mailsQuotaUsed ?? 0,
-					item.mailsQuotaLimit ?? 0
-				);
-
-				const data: Partial<MailBoxQuota> = {
-					name: !isAdvance ? item?.name : item?.accountName,
-					id: !isAdvance ? item?.id : item?.accountId,
-					mailsQuota: mailQuota,
-					mailsQuotaUsed: BytesToGB(item?.mailsQuotaUsed || 0).toFixed(2),
-					mailsQuotaUsedPercentage: mailQuotaPercentage.toFixed(0)
-				};
-
-				if (isAdvance) {
-					const [fileQuota, fileQuotaPercentage] = formatQuota(
-						item?.filesQuotaUsed ?? 0,
-						item?.filesQuotaLimit ?? 0
-					);
-					data.filesQuota = fileQuota;
-					data.filesQuotaUsed = BytesToGB(item?.filesQuotaUsed || 0).toFixed(2);
-					data.filesQuotaUsedPercentage = fileQuotaPercentage.toFixed(0);
-				}
-
-				quota.push(data as MailBoxQuota);
-			});
-			return quota;
-		},
-		[formatQuota]
-	);
 
 	const generateQuotaRows = useCallback(
 		(quota: MailBoxQuota[]) => {
@@ -309,7 +267,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						if (data?.searchTotal) {
 							setTotalAccount(data?.searchTotal);
 						}
-						return getQuotaData(data.account);
+						return getQuotaData(data.account, t);
 					}
 					return [];
 				})
@@ -329,7 +287,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					throw new Error();
 				});
 		},
-		[createSnackbar, getQuotaData, t]
+		[createSnackbar, t]
 	);
 
 	const fetchQuotaForAdvance = useCallback(
@@ -342,7 +300,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						if (data?.total) {
 							setTotalAccount(data?.total);
 						}
-						return getQuotaData(data.accounts, true);
+						return getQuotaData(data.accounts, t, true);
 					}
 					return [];
 				})
@@ -351,32 +309,26 @@ const DomainMailboxQuotaSetting: FC = () => {
 					setFileStorageEnabled(false);
 				});
 		},
-		[getQuotaData]
+		[t]
 	);
 
-	const getQuotaUsageInformation = useCallback(() => {
-		setUsageQuota([]);
-		const fetchFunction = fileStorageEnabled ? fetchQuotaForAdvance : fetchQuotaForCE;
-		fetchFunction(domainData?.zimbraDomainName, offset, limit, selectedSortType).then((data) => {
-			const quotaData = generateQuotaRows(data);
-			setUsageQuota(quotaData);
-		});
-	}, [
-		fileStorageEnabled,
-		fetchQuotaForAdvance,
-		domainData?.zimbraDomainName,
-		offset,
-		limit,
-		selectedSortType,
-		generateQuotaRows,
-		fetchQuotaForCE
-	]);
+	const getQuotaUsageInformation = useCallback(
+		(zimbraDomainName: string, pageOffset: number, pageLimit: number, sortBy: string) => {
+			setUsageQuota([]);
+			const fetchFunction = fileStorageEnabled ? fetchQuotaForAdvance : fetchQuotaForCE;
+			fetchFunction(zimbraDomainName, pageOffset, pageLimit, sortBy).then((data) => {
+				const quotaData = generateQuotaRows(data);
+				setUsageQuota(quotaData);
+			});
+		},
+		[fileStorageEnabled, fetchQuotaForAdvance, generateQuotaRows, fetchQuotaForCE]
+	);
 
 	useEffect(() => {
 		if (domainData?.zimbraDomainName) {
-			getQuotaUsageInformation();
+			getQuotaUsageInformation(domainData?.zimbraDomainName, 0, RECORD_DISPLAY_LIMIT, '');
 		}
-	}, [selectedSortType, getQuotaUsageInformation, domainData?.zimbraDomainName]);
+	}, [getQuotaUsageInformation, domainData?.zimbraDomainName]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -476,6 +428,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 		setZimbraDomainAggregateQuotaPolicy(
 			quotaPolicy.find((item: any) => item.value === domainData.zimbraDomainAggregateQuotaPolicy)
 		);
+		setHasError(false);
 		setIsDirty(false);
 	};
 
@@ -579,6 +532,70 @@ const DomainMailboxQuotaSetting: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [zimbraMailDomainQuota]);
 
+	const handlePageChangeOffset = (pageNumber: number): void => {
+		getQuotaUsageInformation(
+			domainData?.zimbraDomainName,
+			(pageNumber - 1) * limit,
+			limit,
+			selectedSortType
+		);
+		setOffset((pageNumber - 1) * limit);
+	};
+
+	const changePerPageItems = (value: number): void => {
+		setLimit(value);
+		setOffset(0);
+		getQuotaUsageInformation(domainData?.zimbraDomainName, 0, value, selectedSortType);
+	};
+
+	const onSortChange = useCallback(
+		(
+			value: {
+				label: string;
+				value: string;
+			}[]
+		): void => {
+			setSelectedSortType(value[0]?.value ?? '');
+			getQuotaUsageInformation(domainData?.zimbraDomainName, 0, 10, value[0]?.value ?? '');
+		},
+		[domainData?.zimbraDomainName, getQuotaUsageInformation]
+	);
+
+	const headers: THeader[] = useMemo(() => {
+		const baseHeaders: THeader[] = [
+			{
+				id: 'account',
+				label: t('label.account', 'Account'),
+				width: '40%',
+				bold: true
+			},
+			{
+				id: 'quota',
+				label: t('label.mails', 'Mails'),
+				width: fileStorageEnabled ? '30%' : '55%',
+				bold: true,
+				...(onSortChange && {
+					items: [
+						{ label: t('label.sort_by_total_quota', 'Sort by Total Quota'), value: TOTAL_USED },
+						{ label: t('label.sort_by_percentage', 'Sort by Percentage'), value: PERCENT_USED }
+					],
+					onChange: onSortChange
+				})
+			}
+		];
+
+		if (fileStorageEnabled) {
+			baseHeaders.push({
+				id: 'files',
+				label: t('label.files', 'Files'),
+				width: '30%',
+				bold: true
+			});
+		}
+
+		return baseHeaders;
+	}, [t, fileStorageEnabled, onSortChange]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -611,11 +628,18 @@ const DomainMailboxQuotaSetting: FC = () => {
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
 										onClick={onCancel}
+										data-testid="cancel-button"
 									/>
 								)}
 							</Padding>
 							{isDirty && (
-								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+								<Button
+									disabled={hasError}
+									label={t('label.save', 'Save')}
+									color="primary"
+									onClick={onSave}
+									data-testid="save-button"
+								/>
 							)}
 						</Row>
 					</Row>
@@ -669,9 +693,26 @@ const DomainMailboxQuotaSetting: FC = () => {
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										backgroundColor="gray5"
-										onChange={(e: any): any => {
-											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+										type="number"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											if (e.target.value.trim() === '') {
+												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setHasError(true);
+											} else if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {
+												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setHasError(false);
+											}
 										}}
+										data-testid="zimbraDomainAggregateQuotaWarnPercent"
+										hasError={hasError}
+										description={
+											hasError
+												? t(
+														'domain.mailSpaceQuotaThresholdError.description',
+														'Mail space quota threshold should be between 0 to 100'
+												  )
+												: ''
+										}
 									/>
 								</Container>
 							</ListRow>
@@ -766,7 +807,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 							</Row>
 							<Container orientation="horizontal" mainAlignment="space-between" width="100%">
 								<Container crossAlignment="flex-start">
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									<Paging
+										currentPageProp={offset / limit + 1}
+										totalItem={totalAccount}
+										onPageChange={handlePageChangeOffset}
+										pageSize={limit}
+									/>
 								</Container>
 								<Container
 									crossAlignment="flex-end"
@@ -774,7 +820,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ top: 'small' }}
 								>
-									<TrackNumberPerPage setPageSize={setLimit} />
+									<TrackNumberPerPage setPageSize={changePerPageItems} />
 								</Container>
 							</Container>
 						</Container>

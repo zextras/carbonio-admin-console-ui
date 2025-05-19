@@ -91,6 +91,7 @@ const InheritedInput: FC<InheritedInputProps> = ({
 
 	return (
 		<InputComponent
+			data-testid={`inherited-${inputName}`}
 			label={label}
 			value={subValue === undefined ? inheritedValue || '' : subValue}
 			background={background}

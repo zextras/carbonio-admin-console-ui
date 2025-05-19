@@ -60,6 +60,7 @@ const RestoreDeleteAccountWizard: FC<{
 		isEmailNotificationEnable: boolean;
 		notificationReceiver: string;
 		copyDomain: string;
+		serverName: string;
 	}
 	const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
 		name: '',
@@ -73,7 +74,8 @@ const RestoreDeleteAccountWizard: FC<{
 		dataSource: false,
 		isEmailNotificationEnable: false,
 		notificationReceiver: '',
-		copyDomain: ''
+		copyDomain: '',
+		serverName: ''
 	});
 
 	const onRestoreAccount = useCallback(() => {
@@ -89,7 +91,8 @@ const RestoreDeleteAccountWizard: FC<{
 			restoreAccountDetail?.dataSource,
 			restoreAccountDetail?.notificationReceiver,
 			restoreAccountDetail?.isEmailNotificationEnable,
-			restoreAccountDetail?.copyDomain
+			restoreAccountDetail?.copyDomain,
+			restoreAccountDetail?.serverName
 		);
 	}, [restoreAccountDetail, restoreAccountRequest]);
 
@@ -143,7 +146,7 @@ const RestoreDeleteAccountWizard: FC<{
 				label: t('label.config', 'Config'),
 				icon: 'OptionsOutline',
 				view: RestoreAccountConfigSection,
-				canGoNext: (): any => restoreAccountDetail?.copyAccount,
+				canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
 				CancelButton: (props: any): ReactElement => (
 					<Button
 						{...props}
@@ -218,11 +221,12 @@ const RestoreDeleteAccountWizard: FC<{
 		],
 		[
 			t,
-			restoreAccountDetail?.name,
+			restoreAccountDetail?.id,
 			restoreAccountDetail?.copyAccount,
+			restoreAccountDetail?.copyDomain,
+			restoreAccountDetail?.name,
 			backToFirstTab,
-			isRequestInProgress,
-			restoreAccountDetail?.id
+			isRequestInProgress
 		]
 	);
 

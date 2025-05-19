@@ -7,4 +7,5 @@
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const batchService = async (reqObject: any): Promise<any> => soapFetch('Batch', reqObject);
+export const batchService = async (reqObject: any, otherAccount?: any): Promise<any> =>
+	soapFetch('Batch', reqObject, otherAccount);

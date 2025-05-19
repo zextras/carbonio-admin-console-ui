@@ -20,7 +20,8 @@
 		"test": "TZ=Europe/Rome jest --testTimeout=20000 --maxWorkers=50%",
 		"test:watch": "npm run test:dev -- --onlyChanged --watch",
 		"sdk-setup": "npm ci --prefix sdk",
-		"build:dev": "sdk build --dev --pkgRel $(date +%s)"
+		"build:dev": "sdk build --dev --pkgRel $(date +%s)",
+		"dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy"
 	},
 	"keywords": [],
 	"author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
@@ -76,6 +77,7 @@
 		"@zextras/carbonio-shell-ui": "^8.0.1",
 		"core-js": "^3.33.2",
 		"history": "^5.3.0",
+		"html-entities": "^2.6.0",
 		"i18next": "^22.5.1",
 		"immer": "^10.0.2",
 		"jest-junit": "^16.0.0",
