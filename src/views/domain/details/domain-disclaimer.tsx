@@ -157,13 +157,18 @@ const DomainDisclaimer: FC = () => {
 		body.id = domainId;
 		body._jsns = ZIMBRA_ADMIN_URN;
 
+		// by rfc max char per line is 998 bytes with new line
+		// newline is 1 byte char as result real max char is 997 bytes
+		const maxNumberOfCharsPerLine = 998 - '\n'.length;
+		const longLineRg = new RegExp(`(.{${maxNumberOfCharsPerLine}})`, 'g');
+
 		if (domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText) {
 			// Convert accented char
 			const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
 				.normalize('NFD')
 				.replace(/\p{Diacritic}/gu, "'");
-			// add new line after 996 char
-			const limitTextSignature = convertDiatrictTextSignature.replace(/(.{996})/g, '$1\n');
+			// add new line after 997 char
+			const limitTextSignature = convertDiatrictTextSignature.replace(longLineRg, '$1\n');
 			attributes.push({
 				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
 				_content: limitTextSignature
@@ -180,8 +185,8 @@ const DomainDisclaimer: FC = () => {
 			const encodeHtmlSignature = encode(domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML, {
 				mode: 'nonAsciiPrintableOnly'
 			});
-			// add new line after 996 char
-			const limitHtmlSignature = encodeHtmlSignature.replace(/(.{996})/g, '$1\n');
+			// add new line after 997 char
+			const limitHtmlSignature = encodeHtmlSignature.replace(longLineRg, '$1\n');
 			attributes.push({
 				n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
 				_content: limitHtmlSignature
