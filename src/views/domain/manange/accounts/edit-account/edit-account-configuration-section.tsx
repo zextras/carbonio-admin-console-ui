@@ -24,12 +24,13 @@ import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
+import { WscSettings } from '../../../../cos/wscSettings/wsc-settings';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountConfigrationSection: FC = () => {
+const EditAccountConfigurationSection: FC = () => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
@@ -222,7 +223,7 @@ const EditAccountConfigrationSection: FC = () => {
 								}));
 							}}
 							ChipComponent={CustomChip}
-							defaultValue={prefMailForwardingAddress}
+							defaultValue={[]}
 							value={prefMailForwardingAddress}
 							background="gray5"
 							hasError={some(prefMailForwardingAddress || [], { error: true })}
@@ -248,7 +249,7 @@ const EditAccountConfigrationSection: FC = () => {
 									zimbraMailForwardingAddress: map(data, 'label').join(', ')
 								}));
 							}}
-							defaultValue={mailForwardingAddress}
+							defaultValue={[]}
 							value={mailForwardingAddress}
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
@@ -275,7 +276,7 @@ const EditAccountConfigrationSection: FC = () => {
 									zimbraPrefCalendarForwardInvitesTo: map(data, 'label').join(', ')
 								}));
 							}}
-							defaultValue={prefCalendarForwardInvitesTo}
+							defaultValue={[]}
 							value={prefCalendarForwardInvitesTo}
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
@@ -298,7 +299,7 @@ const EditAccountConfigrationSection: FC = () => {
 						inputName="zimbraMailTransport"
 						label={t('label.mail_transport_map', 'Mail Transport Map')}
 						backgroundColor="gray5"
-						defaultValue={accountDetail?.zimbraMailTransport || ''}
+						defaultValue={''}
 						value={accountDetail?.zimbraMailTransport || ''}
 						CustomIcon={(): React.ReactElement => (
 							<Tooltip
@@ -319,6 +320,18 @@ const EditAccountConfigrationSection: FC = () => {
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.wsc', 'Chat')}
+					</Text>
+				</Row>
+				<WscSettings
+					featuresDetail={accountDetail}
+					setFeaturesDetail={setAccountDetail}
+					cosDetail={cosDetail}
+					accSpecificDetail={accSpecificDetail}
+					setEmptyValue={setEmptyValue}
+				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
@@ -339,4 +352,4 @@ const EditAccountConfigrationSection: FC = () => {
 	);
 };
 
-export default EditAccountConfigrationSection;
+export default EditAccountConfigurationSection;

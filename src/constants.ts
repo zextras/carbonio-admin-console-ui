@@ -62,6 +62,7 @@ export const SERVICES_ROUTE_ID = 'services';
 export const COS_ROUTE_ID = 'cos';
 export const COS_LIST = 'cos_list';
 export const FEATURES = 'features';
+export const WSC = 'wsc';
 export const PREFERENCES = 'preferences';
 export const COS_MANAGE_VIEW = 'cos';
 export const COS_DETAIL_VIEW = 'default';

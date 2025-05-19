@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 
 import { Container, Input, Row } from '@zextras/carbonio-design-system';
 import moment from 'moment';
@@ -18,6 +18,16 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 	const context = useContext(RestoreDeleteAccountContext);
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const restoreDateTimeValue = useMemo(() => {
+		if (!restoreAccountDetail?.dateTime) return '';
+
+		const selectedDate =
+			restoreAccountDetail.dateTime > restoreAccountDetail.createDate
+				? restoreAccountDetail.dateTime
+				: restoreAccountDetail.createDate;
+
+		return moment(selectedDate).format('D MMMM YYYY | hh:mm:ss A');
+	}, [restoreAccountDetail?.createDate, restoreAccountDetail?.dateTime]);
 	return (
 		<Container
 			orientation="column"
@@ -40,14 +50,14 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 								<Input
 									backgroundColor="gray6"
 									label={t('label.account', 'Account')}
-									value={restoreAccountDetail?.name}
+									defaultValue={restoreAccountDetail?.name}
 								/>
 							</Container>
 							<Container padding={{ bottom: 'medium' }}>
 								<Input
 									backgroundColor="gray6"
 									label={t('label.destination_account', 'Destination Account')}
-									value={
+									defaultValue={
 										restoreAccountDetail?.copyAccount === ''
 											? ''
 											: `${restoreAccountDetail?.copyAccount.split('@')[0]}@${
@@ -62,7 +72,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 								<Input
 									backgroundColor="gray6"
 									label={t('label.use_last_available_status', 'Use last available status')}
-									value={
+									defaultValue={
 										restoreAccountDetail?.lastAvailableStatus
 											? t('label.yes', 'Yes')
 											: t('label.no', 'NO')
@@ -73,11 +83,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 								<Input
 									backgroundColor="gray6"
 									label={t('label.date_and_hour', 'Date & Hour')}
-									value={
-										restoreAccountDetail?.dateTime === null
-											? ''
-											: moment(restoreAccountDetail?.dateTime).format('D MMMM YYYY | hh:mm:ss A')
-									}
+									defaultValue={restoreDateTimeValue}
 								/>
 							</Container>
 						</ListRow>
@@ -89,7 +95,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 										'label.apply_hsm_policy_after_the_restore',
 										'Apply HSM Policies after the restore'
 									)}
-									value={
+									defaultValue={
 										restoreAccountDetail?.hsmApply ? t('label.yes', 'Yes') : t('label.no', 'NO')
 									}
 								/>
@@ -100,7 +106,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 								<Input
 									backgroundColor="gray6"
 									label={t('label.mail_notifications', 'Email Notifications')}
-									value={
+									defaultValue={
 										restoreAccountDetail?.notificationReceiver === ''
 											? '-'
 											: restoreAccountDetail?.notificationReceiver

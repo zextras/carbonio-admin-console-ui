@@ -33,7 +33,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import EditAccountAdministrationSection from './edit-account-administration-section';
-import EditAccountConfigrationSection from './edit-account-configration-section';
+import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountDelegatesSection from './edit-account-delegates-section';
 import EditAccountGeneralSection from './edit-account-general-section';
@@ -751,12 +751,12 @@ const EditAccount: FC<{
 		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
-				handlePasswordChange(modifiedKeys);
+				await handlePasswordChange(modifiedKeys);
 				isPasswordChange = true;
 			}
 		}
 
-		handleAccountRename(modifiedKeys);
+		await handleAccountRename(modifiedKeys);
 
 		await handleCoreAttributesModification(modifiedKeys);
 
@@ -799,6 +799,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 				accountDetail.userPassword = 'VALUE-BLOCKED';
+				accountDetail.zimbraPasswordMustChange = 'FALSE';
 			}
 			setInitAccountDetail({ ...accountDetail });
 		}
@@ -970,8 +971,10 @@ const EditAccount: FC<{
 		deleteAccount(selectedAccount?.id)
 			.then((data: any) => {
 				onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
+				setShowEditAccountView(false);
+				setDefaultTab('general');
 			})
-			.then((error: any) => {
+			.catch((error) => {
 				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
@@ -985,7 +988,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [selectedAccount?.id, onSuccess, t, createSnackbar]);
+	}, [selectedAccount?.id, onSuccess, t, createSnackbar, setDefaultTab, setShowEditAccountView]);
 
 	return (
 		<>
@@ -1083,7 +1086,7 @@ const EditAccount: FC<{
 					<Displayer buttons={buttons} pinIcon={isSticky} />
 					{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
 					{change === PROFILE && <EditAccountContactsSection />}
-					{change === CONFIGURATION && <EditAccountConfigrationSection />}
+					{change === CONFIGURATION && <EditAccountConfigurationSection />}
 					{change === USER_PREFERENCES && (
 						<EditAccountUserPrefrencesSection
 							signatureItems={signatureItems}

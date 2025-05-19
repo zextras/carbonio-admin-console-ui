@@ -10,9 +10,15 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const doRestoreDeleteAccount = async (dataItem: unknown): Promise<any> => {
+export const doRestoreDeleteAccount = async (
+	dataItem: unknown,
+	targetServers: string
+): Promise<any> => {
 	const data: any = dataItem;
-	return fetchExternalSoap(`/service/extension/zextras_admin/backup/doRestoreOnNewAccount`, {
-		...data
-	});
+	return fetchExternalSoap(
+		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
+		{
+			...data
+		}
+	);
 };

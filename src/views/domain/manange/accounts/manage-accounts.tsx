@@ -124,6 +124,7 @@ const ManageAccounts: FC = () => {
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 	const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
 	const account = useUserAccount();
+	const [accountSearchCurrentPage, setAccountSearchCurrentPage] = useState(1);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -810,12 +811,13 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+		const offsetParam = offset ?? 0;
 		accountListDirectory(
 			attrs,
 			type,
 			domainName,
 			searchQuery,
-			offset,
+			offsetParam,
 			limit,
 			sortedColumn,
 			sortOrder
@@ -1005,6 +1007,10 @@ const ManageAccounts: FC = () => {
 			getAccountList();
 		}
 	}, [domainName, getAccountList]);
+
+	useEffect(() => {
+		setAccountSearchCurrentPage(1);
+	}, [searchQuery]);
 
 	const closeAccountDetailDialog = useCallback(() => {
 		if (showAccountDetailView) {
@@ -1291,7 +1297,13 @@ const ManageAccounts: FC = () => {
 										height="auto"
 									>
 										<Container crossAlignment="flex-start">
-											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+											<Paging
+												totalItem={totalAccount}
+												setOffset={setOffset}
+												pageSize={limit}
+												currentPageProp={accountSearchCurrentPage}
+												onPageChange={setAccountSearchCurrentPage}
+											/>
 										</Container>
 										<Container
 											crossAlignment="flex-end"

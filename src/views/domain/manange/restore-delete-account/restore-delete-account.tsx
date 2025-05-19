@@ -7,13 +7,13 @@
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
-import { useDomainStore } from '../../../../store/domain/store';
 
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
@@ -24,7 +24,6 @@ const RestoreDeleteAccount: FC = () => {
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
-	const domainName = useDomainStore((state) => state.domain?.name);
 
 	const backToFirstTab = useCallback(() => {
 		const lastloc = history?.location?.pathname;
@@ -71,7 +70,8 @@ const RestoreDeleteAccount: FC = () => {
 			dataSource: boolean,
 			notificationReceiver: string,
 			isEmailNotificationEnable: boolean,
-			copyDomain: string
+			copyDomain: string,
+			serverName: string
 		) => {
 			const body: any = {
 				srcAccountName: id,
@@ -84,8 +84,14 @@ const RestoreDeleteAccount: FC = () => {
 			if (copyAccount !== '') {
 				body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
 			}
+			if (dateTime) {
+				body.date = moment(dateTime).valueOf();
+			}
+			if (body?.date < createDate) {
+				body.date = createDate;
+			}
 			setIsRequestWorkInProgress(true);
-			doRestoreDeleteAccount(body)
+			doRestoreDeleteAccount(body, serverName)
 				.then((data) => {
 					let error = data?.error?.details?.cause || data?.error?.message;
 					const success = data?.operationId;

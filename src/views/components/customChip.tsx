@@ -24,7 +24,7 @@ const CustomChip = (props: any): any => {
 					onClick: () => copyClipboard(label)
 				}
 		  ];
-	return <Chip {...props} actions={actions}></Chip>;
+	return <Chip {...props} actions={actions} color="black"></Chip>;
 };
 
 export default CustomChip;

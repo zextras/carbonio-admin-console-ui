@@ -42,7 +42,11 @@ const InheritedSwitch: FC<{
 	const [t] = useTranslation();
 
 	return (
-		<Container mainAlignment="flex-start" orientation="horizontal">
+		<Container
+			data-testid={`inherited-${inputName}`}
+			mainAlignment="flex-start"
+			orientation="horizontal"
+		>
 			<Row mainAlignment="flex-start">
 				<Switch
 					value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}

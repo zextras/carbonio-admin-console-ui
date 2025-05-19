@@ -252,9 +252,9 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		const zimbraId =
 			domainInformation &&
 			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-		const concatedCertiFile = objDomainCertificate?.content.concat(
-			objDomainCertificateCaChain.content
-		);
+		const concatedCertiFile = objDomainCertificate?.content
+			? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
+			: objDomainCertificateCaChain.content;
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = zimbraId;

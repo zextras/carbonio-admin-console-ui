@@ -157,8 +157,11 @@ const CreateAccountDetailSection: FC = () => {
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-			style={{ overflow: 'auto' }}
-			height="calc(100vh - 18.75rem)"
+			style={{
+				overflow: 'auto',
+				transition: 'left 0.2s ease-in-out',
+				maxHeight: '100%'
+			}}
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 				<Text size="small" color="gray0" weight="bold">
@@ -294,7 +297,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="20%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.defaultCOS}
 							onClick={(): void => changeSwitchOption('defaultCOS')}
@@ -302,7 +305,7 @@ const CreateAccountDetailSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					<Row width="64%" mainAlignment="flex-start">
+					<Row width="80%" mainAlignment="flex-start">
 						{cosItems?.length === cosList?.length ? (
 							<Select
 								items={cosItems}
