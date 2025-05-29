@@ -360,14 +360,14 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							subValue={featuresDetail?.zimbraFeatureTasksEnabled}
+							subValue={featuresDetail?.carbonioFeatureTasksEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
-							inheritedValue={cosDetail?.zimbraFeatureTasksEnabled}
-							fromSubValue={accSpecificDetail?.zimbraFeatureTasksEnabled}
-							inputName={'zimbraFeatureTasksEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureTasksEnabled')}
+							inheritedValue={cosDetail?.carbonioFeatureTasksEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureTasksEnabled}
+							inputName={'carbonioFeatureTasksEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureTasksEnabled')}
 							disabled={readonlyFeatures}
 						/>
 					</Row>
