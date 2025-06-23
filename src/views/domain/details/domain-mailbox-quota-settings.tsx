@@ -20,6 +20,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { TFunction } from 'i18next';
+import { trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -218,6 +219,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 				quota.forEach((item: MailBoxQuota, index) => {
 					quotaData.push({
 						id: index.toString(),
+						clickable: false,
+						selectionMode: false,
 						columns: [
 							<Text color="gray0" weight="regular" key={item?.id}>
 								{item?.name}
@@ -328,7 +331,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 		if (domainData?.zimbraDomainName) {
 			getQuotaUsageInformation(domainData?.zimbraDomainName, 0, RECORD_DISPLAY_LIMIT, '');
 		}
-	}, [getQuotaUsageInformation, domainData?.zimbraDomainName]);
+		if (domainData?.zimbraMailDomainQuota) {
+			setZimbramailQuotaGBValue(BytesToGB(domainData.zimbraMailDomainQuota).toFixed(2));
+		}
+	}, [getQuotaUsageInformation, domainData?.zimbraDomainName, domainData?.zimbraMailDomainQuota]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -680,7 +686,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbramailQuotaGBValue(e.target.value);
-											setZimbraMailDomainQuota(GbToBytes(e.target.value));
+											if (trim(e.target.value) === '') {
+												setZimbraMailDomainQuota('');
+											} else {
+												setZimbraMailDomainQuota(GbToBytes(e.target.value));
+											}
 										}}
 										disabled={!isGlobalAdmin}
 									/>
@@ -777,6 +787,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										showCheckbox={false}
 										RowFactory={CustomRowFactory}
 										HeaderFactory={CustomHeaderFactory}
+										multiSelect={false}
 									/>
 									{isRequestInProgress && (
 										<Container
