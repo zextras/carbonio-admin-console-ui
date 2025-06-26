@@ -38,7 +38,6 @@ import {
 } from '../../constants';
 import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
 import ManageAccounts from './manange/accounts/manage-accounts';
-import DomainAclList from './manange/acl-groups/domain-acl-list';
 import ActiveSync from './manange/active-sync/active-sync';
 import ManageDelegates from './manange/delegates/manage-delegates';
 import DomainMailingList from './manange/mailing-list/domain-mailing-list';
@@ -129,7 +128,8 @@ const DomainOperations: FC = (): React.JSX.Element => {
 					case DISTRIBUTION_LIST:
 						return <DomainMailingList />;
 					case SECURITY_GROUP:
-						return <DomainAclList />;
+						// We were returning <DomainAclList />
+						return null;
 					case RESOURCES:
 						return <DomainResources />;
 					case RESTORE_ACCOUNT:
