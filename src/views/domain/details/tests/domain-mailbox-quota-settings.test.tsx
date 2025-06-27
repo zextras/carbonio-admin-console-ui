@@ -175,6 +175,22 @@ describe('Mailbox Quota Settings', () => {
 		expect(screen.getByTestId(TEST_ID_CANCEL_BUTTON)).toBeInTheDocument();
 	});
 
+	test('click on save button', async () => {
+		let user: ReturnType<typeof userEvent.setup> = userEvent.setup();
+		await act(async () => {
+			user = setup(<DomainMailboxQuotaSetting />).user;
+		});
+		const input = screen.getByLabelText(LABEL_MAX_MAILBOX_QUOTA);
+		await act(async () => {
+			await user.type(input, '10');
+		});
+		expect(screen.getByTestId(TEST_ID_SAVE_BUTTON)).toBeInTheDocument();
+
+		await act(async () => {
+			await user.click(screen.getByTestId(TEST_ID_SAVE_BUTTON));
+		});
+	});
+
 	test('hides save and cancel buttons on cancel', async () => {
 		let user: ReturnType<typeof userEvent.setup>;
 

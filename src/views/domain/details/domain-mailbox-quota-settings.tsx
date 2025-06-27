@@ -20,6 +20,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { TFunction } from 'i18next';
+import { isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -107,15 +108,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
-	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState<string>('');
-	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
-	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
-		useState<string>('');
-	const [
-		zimbraDomainAggregateQuotaWarnEmailRecipient,
-		setZimbraDomainAggregateQuotaWarnEmailRecipient
-	] = useState<string>('');
+
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
 
@@ -130,12 +123,18 @@ const DomainMailboxQuotaSetting: FC = () => {
 
 	const [domainData, setDomainData]: any = useState({
 		zimbraMailDomainQuota: '',
-		zimbraDomainMaxAccounts: '',
-		zimbraDomainAggregateQuota: '',
 		zimbraDomainAggregateQuotaWarnPercent: '',
 		zimbraDomainAggregateQuotaWarnEmailRecipient: '',
 		zimbraDomainAggregateQuotaPolicy: ALLOW_SEND_RECEIVE
 	});
+
+	const [initDomainData, setInitDomainData]: any = useState({
+		zimbraMailDomainQuota: '',
+		zimbraDomainAggregateQuotaWarnPercent: '',
+		zimbraDomainAggregateQuotaWarnEmailRecipient: '',
+		zimbraDomainAggregateQuotaPolicy: ALLOW_SEND_RECEIVE
+	});
+
 	const [usageQuota, setUsageQuota] = useState<any[]>([]);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [offset, setOffset] = useState<number>(0);
@@ -163,10 +162,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 			}
 		],
 		[t]
-	);
-
-	const [zimbraDomainAggregateQuotaPolicy, setZimbraDomainAggregateQuotaPolicy] = useState<any>(
-		quotaPolicy[0]
 	);
 
 	const [isShowDownload, setIsShowDownload] = useState<boolean>(false);
@@ -218,6 +213,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 				quota.forEach((item: MailBoxQuota, index) => {
 					quotaData.push({
 						id: index.toString(),
+						clickable: false,
+						selectionMode: false,
 						columns: [
 							<Text color="gray0" weight="regular" key={item?.id}>
 								{item?.name}
@@ -325,143 +322,78 @@ const DomainMailboxQuotaSetting: FC = () => {
 	);
 
 	useEffect(() => {
-		if (domainData?.zimbraDomainName) {
-			getQuotaUsageInformation(domainData?.zimbraDomainName, 0, RECORD_DISPLAY_LIMIT, '');
-		}
-	}, [getQuotaUsageInformation, domainData?.zimbraDomainName]);
-
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
+
 			domainInformation.forEach((item: any) => {
-				obj[item?.n] = item._content;
+				if (
+					[
+						'zimbraId',
+						'zimbraDomainName',
+						'zimbraMailDomainQuota',
+						'zimbraDomainAggregateQuotaWarnPercent',
+						'zimbraDomainAggregateQuotaWarnEmailRecipient',
+						'zimbraDomainAggregateQuotaPolicy'
+					].includes(item?.n)
+				) {
+					obj[item?.n] = item._content;
+				}
 			});
 			if (obj.zimbraMailDomainQuota) {
-				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
+				obj.zimbraMailDomainQuota = BytesToGB(obj.zimbraMailDomainQuota).toFixed(2);
 			} else {
 				obj.zimbraMailDomainQuota = '';
-				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
 			}
 
-			if (obj.zimbraDomainMaxAccounts) {
-				setZimbraDomainMaxAccounts(obj.zimbraDomainMaxAccounts);
-			} else {
-				obj.zimbraDomainMaxAccounts = '';
-				setZimbraDomainMaxAccounts(obj.zimbraDomainMaxAccounts);
-			}
-
-			if (obj.zimbraDomainAggregateQuotaWarnPercent) {
-				setZimbraDomainAggregateQuotaWarnPercent(obj.zimbraDomainAggregateQuotaWarnPercent);
-			} else {
-				obj.zimbraDomainAggregateQuotaWarnPercent = '';
-				setZimbraDomainAggregateQuotaWarnPercent(obj.zimbraDomainAggregateQuotaWarnPercent);
-			}
-
-			if (obj.zimbraDomainAggregateQuotaWarnEmailRecipient) {
-				setZimbraDomainAggregateQuotaWarnEmailRecipient(
-					obj.zimbraDomainAggregateQuotaWarnEmailRecipient
-				);
-			} else {
-				obj.zimbraDomainAggregateQuotaWarnEmailRecipient = '';
-				setZimbraDomainAggregateQuotaWarnEmailRecipient(
-					obj.zimbraDomainAggregateQuotaWarnEmailRecipient
-				);
-			}
-
-			if (obj.zimbraDomainAggregateQuotaPolicy) {
-				setZimbraDomainAggregateQuotaPolicy(
-					quotaPolicy.find((item: any) => item.value === obj.zimbraDomainAggregateQuotaPolicy)
-				);
-			} else {
-				obj.zimbraDomainAggregateQuotaPolicy = ALLOW_SEND_RECEIVE;
-				setZimbraDomainAggregateQuotaPolicy(quotaPolicy[0]);
-			}
-			setDomainData(obj);
+			setDomainData({ ...obj });
+			setInitDomainData({ ...obj });
 			setIsDirty(false);
 		}
 	}, [domainInformation, quotaPolicy]);
 
 	useEffect(() => {
-		if (domainData.zimbraMailDomainQuota !== zimbraMailDomainQuota) {
+		if (!isEqual(domainData, initDomainData)) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
-	}, [domainData, zimbraMailDomainQuota]);
-
-	useEffect(() => {
-		if (domainData.zimbraDomainMaxAccounts !== zimbraDomainMaxAccounts) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDomainMaxAccounts]);
-
-	useEffect(() => {
-		if (
-			domainData.zimbraDomainAggregateQuotaWarnPercent !== zimbraDomainAggregateQuotaWarnPercent
-		) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDomainAggregateQuotaWarnPercent]);
-
-	useEffect(() => {
-		if (
-			domainData.zimbraDomainAggregateQuotaWarnEmailRecipient !==
-			zimbraDomainAggregateQuotaWarnEmailRecipient
-		) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDomainAggregateQuotaWarnEmailRecipient]);
-
-	useEffect(() => {
-		if (domainData.zimbraDomainAggregateQuotaPolicy !== zimbraDomainAggregateQuotaPolicy.value) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDomainAggregateQuotaPolicy]);
+	}, [domainData, initDomainData]);
 
 	const onCancel = (): void => {
-		setZimbramailQuotaGBValue(BytesToGB(domainData.zimbraMailDomainQuota).toFixed(2));
-		setZimbraMailDomainQuota(domainData.zimbraMailDomainQuota);
-		setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-		setZimbraDomainAggregateQuotaWarnPercent(domainData.zimbraDomainAggregateQuotaWarnPercent);
-		setZimbraDomainAggregateQuotaWarnEmailRecipient(
-			domainData.zimbraDomainAggregateQuotaWarnEmailRecipient
-		);
-		setZimbraDomainAggregateQuotaPolicy(
-			quotaPolicy.find((item: any) => item.value === domainData.zimbraDomainAggregateQuotaPolicy)
-		);
+		setDomainData(initDomainData);
 		setHasError(false);
 		setIsDirty(false);
 	};
 
+	const findModifiedKeys = (): string[] =>
+		reduce(
+			domainData,
+			(result, value, key): any =>
+				isEqual(value, initDomainData[key]) ? result : [...result, key],
+			[]
+		);
+
 	const onSave = (): void => {
 		const body: any = {};
-		const attributes: any[] = [];
+		body.a = [];
+		const modifiedData: any = {};
 		body.id = domainData.zimbraId;
 		body._jsns = ZIMBRA_ADMIN_URN;
-		attributes.push({
-			n: 'zimbraDomainMaxAccounts',
-			_content: zimbraDomainMaxAccounts
+
+		const modifiedKeys = findModifiedKeys();
+		modifiedKeys.forEach((ele: any) => {
+			modifiedData[ele] = domainData[ele];
 		});
-		if (isGlobalAdmin) {
-			attributes.push({
-				n: 'zimbraMailDomainQuota',
-				_content: zimbraMailDomainQuota
-			});
+
+		if (isGlobalAdmin && modifiedKeys.includes('zimbraMailDomainQuota')) {
+			modifiedData.zimbraMailDomainQuota = GbToBytes(domainData.zimbraMailDomainQuota);
 		}
-		attributes.push({
-			n: 'zimbraDomainAggregateQuotaWarnPercent',
-			_content: zimbraDomainAggregateQuotaWarnPercent
+		Object.keys(modifiedData).forEach((ele: any): void => {
+			body.a.push({
+				n: ele,
+				_content: modifiedData[ele]
+			});
 		});
-
-		attributes.push({
-			n: 'zimbraDomainAggregateQuotaWarnEmailRecipient',
-			_content: zimbraDomainAggregateQuotaWarnEmailRecipient
-		});
-
-		attributes.push({
-			n: 'zimbraDomainAggregateQuotaPolicy',
-			_content: zimbraDomainAggregateQuotaPolicy.value
-		});
-		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
 				createSnackbar({
@@ -495,8 +427,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	};
 
 	const onZimbraDomainAggregateQuotaPolicy = (v: any): any => {
-		const it = quotaPolicy.find((item: any) => item.value === v);
-		setZimbraDomainAggregateQuotaPolicy(it);
+		setDomainData({ ...domainData, zimbraDomainAggregateQuotaPolicy: v });
 	};
 
 	const downloadQuotaReport = useCallback(() => {
@@ -526,11 +457,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 	]);
 
 	useEffect(() => {
-		if (zimbraMailDomainQuota && zimbramailQuotaGBValue === undefined) {
-			setZimbramailQuotaGBValue(BytesToGB(zimbraMailDomainQuota).toFixed(2));
+		if (domainData?.zimbraDomainName) {
+			getQuotaUsageInformation(domainData?.zimbraDomainName, 0, RECORD_DISPLAY_LIMIT, '');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [zimbraMailDomainQuota]);
+	}, [getQuotaUsageInformation, domainData?.zimbraDomainName]);
 
 	const handlePageChangeOffset = (pageNumber: number): void => {
 		getQuotaUsageInformation(
@@ -676,11 +606,13 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'label.max_mainbox_quota_for_the_mails_in_gb',
 											'Max mailbox quota for the Mails (GB)'
 										)}
-										value={zimbramailQuotaGBValue}
+										value={domainData?.zimbraMailDomainQuota}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
-											setZimbramailQuotaGBValue(e.target.value);
-											setZimbraMailDomainQuota(GbToBytes(e.target.value));
+											setDomainData({
+												...domainData,
+												zimbraMailDomainQuota: e.target.value
+											});
 										}}
 										disabled={!isGlobalAdmin}
 									/>
@@ -691,15 +623,21 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'domain.mail_space_quota_threshold_warning',
 											'Mail Space Quota threshold (%) warning'
 										)}
-										value={zimbraDomainAggregateQuotaWarnPercent}
+										value={domainData?.zimbraDomainAggregateQuotaWarnPercent ?? ''}
 										backgroundColor="gray5"
 										type="number"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value.trim() === '') {
-												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setDomainData({
+													...domainData,
+													zimbraDomainAggregateQuotaWarnPercent: e.target.value
+												});
 												setHasError(true);
 											} else if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {
-												setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+												setDomainData({
+													...domainData,
+													zimbraDomainAggregateQuotaWarnPercent: e.target.value
+												});
 												setHasError(false);
 											}
 										}}
@@ -723,7 +661,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 										background="gray5"
 										label={t('label.mail_over_quota_criteria', 'Mail Over-quota Criteria')}
 										showCheckbox={false}
-										selection={zimbraDomainAggregateQuotaPolicy}
+										selection={
+											quotaPolicy.find(
+												(el: any) => el.value === domainData.zimbraDomainAggregateQuotaPolicy
+											) ?? quotaPolicy[0]
+										}
 										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
@@ -733,10 +675,13 @@ const DomainMailboxQuotaSetting: FC = () => {
 											'domain.receiver_of_quota_warning_email',
 											'Receiver of Quota warning (email)'
 										)}
-										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										value={domainData.zimbraDomainAggregateQuotaWarnEmailRecipient}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
-											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
+											setDomainData({
+												...domainData,
+												zimbraDomainAggregateQuotaWarnEmailRecipient: e.target.value
+											});
 										}}
 									/>
 								</Container>
@@ -777,6 +722,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										showCheckbox={false}
 										RowFactory={CustomRowFactory}
 										HeaderFactory={CustomHeaderFactory}
+										multiSelect={false}
 									/>
 									{isRequestInProgress && (
 										<Container
