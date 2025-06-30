@@ -347,11 +347,6 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: SECURITY_GROUP,
-				name: t('label.security_group', 'Security Groups'),
-				isSelected: isDomainSelect
-			},
-			{
 				id: RESOURCES,
 				name: t('label.resources', 'Resources'),
 				isSelected: isDomainSelect
