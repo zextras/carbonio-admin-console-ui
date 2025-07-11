@@ -199,21 +199,21 @@ const DomainVirtualHosts: FC = () => {
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
-				// Check for warnings in the response - warnings are directly in the response object
 				if (data?.warning && Array.isArray(data.warning) && data.warning.length > 0) {
-					// Show warning for each warning message
 					data.warning.forEach((warning: any) => {
 						createSnackbar({
-							key: `warning-${warning.type || Date.now()}`,
+							key: `warning-${warning.type ?? Date.now()}`,
 							severity: 'warning',
-							label: warning.message || t('label.warning_message', 'A warning occurred during the operation'),
+							label:
+								warning.message ??
+								t('label.warning_message', 'A warning occurred during the operation'),
 							autoHideTimeout: 5000,
 							hideButton: true,
 							replace: false
 						});
 					});
 				}
-				
+
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -331,7 +331,7 @@ const DomainVirtualHosts: FC = () => {
 					label: t('domain.certificate_removed', `The certificates has been removed`),
 					autoHideTimeout: 3000,
 					hideButton: true,
-					replace: false
+					replace: true
 				});
 				if (isGlobalAdmin) {
 					flushCache('domain', 'id', zimbraId);
