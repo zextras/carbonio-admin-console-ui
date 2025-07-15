@@ -199,18 +199,33 @@ const DomainVirtualHosts: FC = () => {
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
+				if (data?.warning && Array.isArray(data.warning) && data.warning.length > 0) {
+					data.warning.forEach((warning: any) => {
+						createSnackbar({
+							key: `warning-${warning.type ?? Date.now()}`,
+							severity: 'warning',
+							label:
+								warning.message ??
+								t('label.warning_message', 'A warning occurred during the operation'),
+							autoHideTimeout: 5000,
+							hideButton: true,
+							replace: false
+						});
+					});
+				}
+
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
 					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
-					replace: true
+					replace: false
 				});
 				if (isGlobalAdmin) {
 					flushCache('domain', 'id', zimbraId);
 				}
-				const domainData: any = data?.domain[0];
+				const domainData: any = data?.domain?.[0];
 				if (domainData) {
 					setDomain(domainData);
 				}
