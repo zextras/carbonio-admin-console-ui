@@ -72,6 +72,21 @@ export const Features: FC<{
 							disabled={readonlyFeatures}
 						/>
 					</Row>
+					{isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
+								onChange={changeSwitchOption}
+								label={t('cos.features.active_sync_access', 'Active Sync Access')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
+								inputName={'zimbraFeatureMobileSyncEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					)}
 				</Container>
 				{cosLevelFeatures && (
 					<Container
@@ -156,22 +171,6 @@ export const Features: FC<{
 							disabled={readonlyFeatures}
 						/>
 					</Row>
-					{isAdvanced && (
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
-								onChange={changeSwitchOption}
-								// eslint-disable-next-line sonarjs/no-duplicate-string
-								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
-								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
-								inputName={'zimbraFeatureMobileSyncEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
-								disabled={readonlyFeatures}
-							/>
-						</Row>
-					)}
 				</Container>
 				{isAdvanced && (
 					<Container
@@ -244,23 +243,6 @@ export const Features: FC<{
 							disabled={readonlyFeatures}
 						/>
 					</Row>
-					{isAdvanced && (
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.mobileContactFeatureSync}
-								onChange={changeSwitchOption}
-								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.mobileContactFeatureSync}
-								fromSubValue={accSpecificDetail?.mobileContactFeatureSync}
-								inputName={'mobileContactFeatureSync'}
-								onChangeReset={(): void => setEmptyValue?.('mobileContactFeatureSync')}
-								disabled={
-									featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE' || readonlyFeatures
-								}
-							/>
-						</Row>
-					)}
 				</Container>
 				<Container
 					mainAlignment="flex-start"
@@ -285,23 +267,6 @@ export const Features: FC<{
 							disabled={readonlyFeatures}
 						/>
 					</Row>
-					{isAdvanced && (
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.mobileCalendarFeatureSync}
-								onChange={changeSwitchOption}
-								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.mobileCalendarFeatureSync}
-								fromSubValue={accSpecificDetail?.mobileCalendarFeatureSync}
-								inputName={'mobileCalendarFeatureSync'}
-								onChangeReset={(): void => setEmptyValue?.('mobileCalendarFeatureSync')}
-								disabled={
-									featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE' || readonlyFeatures
-								}
-							/>
-						</Row>
-					)}
 				</Container>
 				<Divider />
 			</Row>
