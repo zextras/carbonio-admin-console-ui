@@ -5,11 +5,10 @@
  */
 import { useCallback, useEffect } from 'react';
 
+import { useIsAdvanced } from '@zextras/carbonio-admin-ui';
 import { useUserAccount } from '@zextras/carbonio-shell-ui';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
-
-import { useAdvanceStore } from '../store/advanced/store';
 
 export interface Tracker {
 	capture: (
@@ -33,7 +32,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
 
 export const useTracker = (): Tracker => {
 	const postHog = usePostHog();
-	const { isAdvanced } = useAdvanceStore();
+	const isAdvanced = useIsAdvanced();
 	const isCarbonioCE = !isAdvanced;
 	const account = useUserAccount();
 
