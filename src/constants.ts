@@ -190,6 +190,7 @@ export const SWIFT = 'SWIFT';
 export const CEPH = 'CEPH';
 export const CLOUDIAN = 'CLOUDIAN';
 export const SCALITYS3 = 'SCALITYS3';
+export const MINIO = 'MINIO';
 export const COS = 'cos';
 export const ACCOUNT = 'account';
 export const MOBILE_CALENDAR_FEATURE_SYNC = 'mobileCalendarFeatureSync';
