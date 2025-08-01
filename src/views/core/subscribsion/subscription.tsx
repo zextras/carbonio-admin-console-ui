@@ -531,7 +531,7 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.date_start', 'Date Start')}
+								label={t('core.subscription.start_date', 'Start Date')}
 								value={
 									services.response.dateStart
 										? moment(services.response.dateStart).format('DD MMM YYYY')
@@ -546,7 +546,7 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.date_end', 'Date End')}
+								label={t('core.subscription.end_date', 'End Date')}
 								value={
 									services.response.notYetValid || !services.response.authenticationToken
 										? ''
