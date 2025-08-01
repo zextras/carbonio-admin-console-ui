@@ -173,6 +173,7 @@ const Subscription: FC = () => {
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const [isLoader, setIsLoader] = useState(false);
+	const [isActivateLoading, setIsActivateLoading] = useState(false);
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
 
@@ -261,7 +262,7 @@ const Subscription: FC = () => {
 	}, [getLicence]);
 
 	const activeLicence = (): void => {
-		setDisableActiveBtn(true);
+		setIsActivateLoading(true);
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
@@ -269,7 +270,7 @@ const Subscription: FC = () => {
 			token: licenseKey
 		})
 			.then((res) => {
-				setDisableActiveBtn(false);
+				setIsActivateLoading(false);
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
 					createSnackbar({
@@ -291,7 +292,7 @@ const Subscription: FC = () => {
 				}
 				getLicence();
 			})
-			.catch(() => setDisableActiveBtn(false));
+			.catch(() => setIsActivateLoading(false));
 	};
 
 	const doRemoveLicense = (): void => {
@@ -308,9 +309,17 @@ const Subscription: FC = () => {
 					severity: 'success',
 					label:
 						response.message ||
-						t('core.subscription.license_activated_successfully', 'License activated successfully'),
+						t(
+							'core.subscription.license_deactivated_successfully',
+							'License deactivated successfully'
+						),
 					replace: true
 				});
+				// Clear form fields and reset state after successful deactivation
+				setServices({});
+				setModules([]);
+				setLicenseKey('');
+				setVersion(undefined);
 			} else {
 				createSnackbar({
 					key: '1',
@@ -322,7 +331,6 @@ const Subscription: FC = () => {
 				});
 			}
 			setOpen(false);
-			getLicence();
 		});
 	};
 
@@ -338,7 +346,7 @@ const Subscription: FC = () => {
 		return (accountCount / licensedUsers) * 100;
 	}, [services.response]);
 
-	const refreshLicence = (): void => {
+	const renewLicence = (): void => {
 		setIsLoader(true);
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
@@ -435,28 +443,29 @@ const Subscription: FC = () => {
 					>
 						<Button
 							label={
-								services && services.response && services.response.expired
+								!services || !services.response || services.response.expired
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
-							disabled={!allowSetSubsciption || !licenseKey || disableActiveBtn}
+							disabled={!allowSetSubsciption || !licenseKey || isActivateLoading}
 							type="outlined"
 							color={
-								services && services.response && services.response.expired ? 'primary' : 'error'
+								!services || !services.response || services.response.expired ? 'primary' : 'error'
 							}
 							onClick={
-								services && services.response && services.response.expired
+								!services || !services.response || services.response.expired
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
+							loading={isActivateLoading}
 							size="extralarge"
 						/>
 						<Button
-							label={t('core.subscription.refresh', 'Refresh')}
-							disabled={!allowSetSubsciption || !licenseKey}
+							label={t('core.subscription.renew', 'Renew')}
+							disabled={!allowSetSubsciption || !licenseKey || !services || !services.response}
 							type="outlined"
 							color="primary"
-							onClick={(): void => refreshLicence()}
+							onClick={(): void => renewLicence()}
 							loading={isLoader}
 							size="extralarge"
 						/>
