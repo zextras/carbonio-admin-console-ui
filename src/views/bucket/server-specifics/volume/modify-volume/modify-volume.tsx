@@ -37,6 +37,7 @@ import {
 	EMC,
 	FILEBLOB,
 	INDEX,
+	MINIO,
 	OPENIO,
 	PRIMARY,
 	PRIMARY_TYPE_VALUE,
@@ -209,6 +210,7 @@ const ModifyVolume: FC<{
 					externalVolDetail?.storeType?.toUpperCase() === CLOUDIAN?.toUpperCase() ||
 					externalVolDetail?.storeType?.toUpperCase() === EMC?.toUpperCase() ||
 					externalVolDetail?.storeType?.toUpperCase() === SCALITYS3?.toUpperCase() ||
+					externalVolDetail?.storeType?.toUpperCase() === MINIO ||
 					externalVolDetail?.storeType?.toUpperCase() === CUSTOM_S3?.toUpperCase()
 				) {
 					obj.volumePrefix = volumePrefix;
