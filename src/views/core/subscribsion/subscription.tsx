@@ -46,6 +46,8 @@ type AllModuleConfig = {
 	enabled: boolean;
 };
 
+const DATE_FORMAT = 'DD MMM YYYY';
+
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
 	chats_recording: { value: 'Video recording', label: 'Chats' },
@@ -534,7 +536,7 @@ const Subscription: FC = () => {
 								label={t('core.subscription.start_date', 'Start Date')}
 								value={
 									services.response.dateStart
-										? moment(services.response.dateStart).format('DD MMM YYYY')
+										? moment(services.response.dateStart).format(DATE_FORMAT)
 										: ''
 								}
 							/>
@@ -550,10 +552,44 @@ const Subscription: FC = () => {
 								value={
 									services.response.notYetValid || !services.response.authenticationToken
 										? ''
-										: moment(services.response.dateEnd).format('DD MMM YYYY')
+										: moment(services.response.dateEnd).format(DATE_FORMAT)
 								}
 							/>
 						</Row>
+						{services.response.type === 'ISP' && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input
+									label={t('core.subscription.last_validation_date', 'Last Validation Date')}
+									value={
+										services.response.lastLicenseValidation
+											? moment(services.response.lastLicenseValidation).format(DATE_FORMAT)
+											: ''
+									}
+								/>
+							</Row>
+						)}
+						{services.response.type === 'ISP' && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input
+									label={t('core.subscription.next_validation_date', 'Next Validation Date')}
+									value={
+										services.response.nextLicenseValidation
+											? moment(services.response.nextLicenseValidation).format(DATE_FORMAT)
+											: ''
+									}
+								/>
+							</Row>
+						)}
 						<Row
 							width="49.5%"
 							mainAlignment="flex-start"
