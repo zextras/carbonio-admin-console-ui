@@ -435,25 +435,17 @@ const Subscription: FC = () => {
 					>
 						<Button
 							label={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
+								services && services.response && services.response.expired
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
 							disabled={!allowSetSubsciption || !licenseKey || disableActiveBtn}
 							type="outlined"
 							color={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
-									? 'primary'
-									: 'error'
+								services && services.response && services.response.expired ? 'primary' : 'error'
 							}
 							onClick={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
+								services && services.response && services.response.expired
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
@@ -555,10 +547,18 @@ const Subscription: FC = () => {
 						</Row>
 						<Row
 							width="49.5%"
-							orientation="vertical"
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
+						</Row>
+						<Row
+							width="49.5%"
+							orientation="vertical"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'large', right: 'small' }}
 							style={{ gap: '.5rem', marginLeft: '.5rem' }}
 						>
 							<Text size="small" color="#828282">
@@ -578,14 +578,6 @@ const Subscription: FC = () => {
 									style={{ borderRadius: '2px' }}
 								/>
 							</Row>
-						</Row>
-						<Row
-							width="49.5%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'large', right: 'small' }}
-						>
-							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
 						</Row>
 					</Container>
 				)}
