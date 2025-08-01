@@ -556,6 +556,19 @@ const Subscription: FC = () => {
 								}
 							/>
 						</Row>
+						{services.response.maintenanceEndDate && (
+							<Row
+								width="100%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input
+									label={t('core.subscription.maintenance_end_date', 'Maintenance End Date')}
+									value={moment(services.response.maintenanceEndDate).format(DATE_FORMAT)}
+								/>
+							</Row>
+						)}
 						{services.response.type === 'ISP' && (
 							<Row
 								width="49.5%"
