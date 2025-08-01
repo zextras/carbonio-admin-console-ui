@@ -9,7 +9,6 @@ import {
 	Button,
 	Container,
 	Divider,
-	Icon,
 	Padding,
 	Row,
 	Text,
@@ -520,17 +519,10 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.status', 'Status')}
-								value={
-									services.response.notYetValid || !services.response.authenticationToken
-										? ''
-										: `${t('core.subscription.valid_until', 'Valid until') || ''} ${moment(
-												services.response.dateEnd
-										  ).format('DD MMM YYYY')}`
-								}
+								label={t('core.subscription.order_id', 'Order ID')}
+								value={services.response?.infrastructureId || ''}
 							/>
 						</Row>
-
 						<Row
 							width="49.5%"
 							mainAlignment="flex-start"
@@ -538,16 +530,27 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t(
-									'core.subscription.refresh_subscription_last_check',
-									'Refresh Subscription (Last Check)'
-								)}
+								label={t('core.subscription.date_start', 'Date Start')}
 								value={
 									services.response.dateStart
 										? moment(services.response.dateStart).format('DD MMM YYYY')
 										: ''
 								}
-								CustomIcon={(): JSX.Element => <Icon icon="Refresh" size="large" color="primary" />}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.date_end', 'Date End')}
+								value={
+									services.response.notYetValid || !services.response.authenticationToken
+										? ''
+										: moment(services.response.dateEnd).format('DD MMM YYYY')
+								}
 							/>
 						</Row>
 						<Row
@@ -581,17 +584,6 @@ const Subscription: FC = () => {
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('core.subscription.order_id', 'Order ID')}
-								value={services.response?.infrastructureId || ''}
-							/>
-						</Row>
-						<Row
-							width="49.5%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
 						</Row>
