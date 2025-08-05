@@ -533,7 +533,7 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.start_date', 'Start Date')}
+								label={t('core.subscription.date_start', 'Date Start')}
 								value={
 									services.response.dateStart
 										? moment(services.response.dateStart).format(DATE_FORMAT)
@@ -548,7 +548,7 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.end_date', 'End Date')}
+								label={t('core.subscription.date_end', 'Date End')}
 								value={
 									services.response.notYetValid || !services.response.authenticationToken
 										? ''
@@ -579,8 +579,8 @@ const Subscription: FC = () => {
 								<Input
 									label={t('core.subscription.last_validation_date', 'Last Validation Date')}
 									value={
-										services.response.lastLicenseValidation
-											? moment(services.response.lastLicenseValidation).format(DATE_FORMAT)
+										services.response.lastValidationDate
+											? moment(services.response.lastValidationDate).format(DATE_FORMAT)
 											: ''
 									}
 								/>
@@ -594,10 +594,13 @@ const Subscription: FC = () => {
 								padding={{ top: 'small', bottom: 'small', right: 'small' }}
 							>
 								<Input
-									label={t('core.subscription.next_validation_date', 'Next Validation Date')}
+									label={t(
+										'core.subscription.next_validation_deadline',
+										'Next Validation Deadline'
+									)}
 									value={
-										services.response.nextLicenseValidation
-											? moment(services.response.nextLicenseValidation).format(DATE_FORMAT)
+										services.response.nextValidationDeadline
+											? moment(services.response.nextValidationDeadline).format(DATE_FORMAT)
 											: ''
 									}
 								/>
