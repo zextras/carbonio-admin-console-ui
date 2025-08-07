@@ -371,9 +371,9 @@ const Subscription: FC = () => {
 			if (subType === 'PERPETUAL' || subType === 'REGULAR') {
 				return `${type} - ${subType}`;
 			}
-			return subType || '';
+			return subType ?? '';
 		}
-		return type || '';
+		return type ?? '';
 	};
 
 	const renewLicence = (): void => {
@@ -481,17 +481,15 @@ const Subscription: FC = () => {
 					>
 						<Button
 							label={
-								!services || !services.response || services.response.expired
+								!services?.response || services.response.expired
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
 							disabled={!allowSetSubsciption || !licenseKey || isActivateLoading}
 							type="outlined"
-							color={
-								!services || !services.response || services.response.expired ? 'primary' : 'error'
-							}
+							color={!services?.response || services.response.expired ? 'primary' : 'error'}
 							onClick={
-								!services || !services.response || services.response.expired
+								!services?.response || services.response.expired
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
@@ -500,7 +498,7 @@ const Subscription: FC = () => {
 						/>
 						<Button
 							label={t('core.subscription.renew', 'Renew')}
-							disabled={!allowSetSubsciption || !licenseKey || !services || !services.response}
+							disabled={!allowSetSubsciption || !licenseKey || !services?.response}
 							type="outlined"
 							color="primary"
 							onClick={(): void => renewLicence()}
@@ -556,7 +554,7 @@ const Subscription: FC = () => {
 						>
 							<Input
 								label={t('core.subscription.order_id', 'Order ID')}
-								value={services.response?.infrastructureId || ''}
+								value={services.response?.infrastructureId ?? ''}
 							/>
 						</Row>
 						<Row
