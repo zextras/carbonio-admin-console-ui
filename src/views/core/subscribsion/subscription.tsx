@@ -15,7 +15,8 @@ import {
 	Input,
 	useSnackbar,
 	Modal,
-	Quota
+	Quota,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { find } from 'lodash';
@@ -576,14 +577,25 @@ const Subscription: FC = () => {
 								crossAlignment="flex-start"
 								padding={{ top: 'small', bottom: 'small', right: 'small' }}
 							>
-								<Input
-									label={t('core.subscription.last_validation_date', 'Last Validation Date')}
-									value={
-										services.response.lastValidationDate
-											? moment(services.response.lastValidationDate).format(DATE_FORMAT)
-											: ''
+								<Tooltip
+									label={
+										<Text style={{ whiteSpace: 'pre-line' }}>
+											{t(
+												'core.subscription.last_validation_check_tooltip',
+												'This date represents the last day on which the license was validated by the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.'
+											)}
+										</Text>
 									}
-								/>
+								>
+									<Input
+										label={t('core.subscription.last_validation_check', 'Last Validation Check')}
+										value={
+											services.response.lastValidationCheck
+												? moment(services.response.lastValidationCheck).format(DATE_FORMAT)
+												: ''
+										}
+									/>
+								</Tooltip>
 							</Row>
 						)}
 						{services.response.type === 'ISP' && (
@@ -593,17 +605,28 @@ const Subscription: FC = () => {
 								crossAlignment="flex-start"
 								padding={{ top: 'small', bottom: 'small', right: 'small' }}
 							>
-								<Input
-									label={t(
-										'core.subscription.next_validation_deadline',
-										'Next Validation Deadline'
-									)}
-									value={
-										services.response.nextValidationDeadline
-											? moment(services.response.nextValidationDeadline).format(DATE_FORMAT)
-											: ''
+								<Tooltip
+									label={
+										<Text style={{ whiteSpace: 'pre-line' }}>
+											{t(
+												'core.subscription.next_validation_deadline_tooltip',
+												'This date represents the last day the license will remain fully functional if usage data is not sent to the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.'
+											)}
+										</Text>
 									}
-								/>
+								>
+									<Input
+										label={t(
+											'core.subscription.next_validation_deadline',
+											'Next Validation Deadline'
+										)}
+										value={
+											services.response.nextValidationDeadline
+												? moment(services.response.nextValidationDeadline).format(DATE_FORMAT)
+												: ''
+										}
+									/>
+								</Tooltip>
 							</Row>
 						)}
 						<Row
