@@ -282,6 +282,7 @@ const Subscription: FC = () => {
 						label: response.message,
 						replace: true
 					});
+					getLicence();
 				} else {
 					createSnackbar({
 						key: '1',
@@ -292,8 +293,11 @@ const Subscription: FC = () => {
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						replace: true
 					});
+					setServices({});
+					setModules([]);
+					setLicenseKey('');
+					setVersion(undefined);
 				}
-				getLicence();
 			})
 			.catch(() => setIsActivateLoading(false));
 	};
