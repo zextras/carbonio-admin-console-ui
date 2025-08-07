@@ -581,7 +581,7 @@ const Subscription: FC = () => {
 						</Row>
 						{services.response.maintenanceEndDate && (
 							<Row
-								width="100%"
+								width="99%"
 								mainAlignment="flex-start"
 								crossAlignment="flex-start"
 								padding={{ top: 'small', bottom: 'small', right: 'small' }}
@@ -665,7 +665,7 @@ const Subscription: FC = () => {
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'large', right: 'small' }}
-							style={{ gap: '.5rem', marginLeft: '.5rem' }}
+							style={{ gap: '.5rem' }}
 						>
 							<Text size="small" color="#828282">
 								{t('core.subscription.accounts', 'Accounts')}
