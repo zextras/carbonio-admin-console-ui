@@ -245,7 +245,14 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				formatAndSetModulesStats(response);
+				if (response.response && response.response.type === 'None') {
+					setServices({});
+					setModules([]);
+					setLicenseKey('');
+					setVersion(undefined);
+				} else {
+					formatAndSetModulesStats(response);
+				}
 			}
 		});
 		fetchSoap('zextras', {
@@ -293,10 +300,14 @@ const Subscription: FC = () => {
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						replace: true
 					});
-					setServices({});
-					setModules([]);
-					setLicenseKey('');
-					setVersion(undefined);
+					if (response.response && response.response.type === 'None') {
+						setServices({});
+						setModules([]);
+						setLicenseKey('');
+						setVersion(undefined);
+					} else {
+						getLicence();
+					}
 				}
 			})
 			.catch(() => setIsActivateLoading(false));
@@ -322,7 +333,6 @@ const Subscription: FC = () => {
 						),
 					replace: true
 				});
-				// Clear form fields and reset state after successful deactivation
 				setServices({});
 				setModules([]);
 				setLicenseKey('');
@@ -371,6 +381,7 @@ const Subscription: FC = () => {
 					label: response.message,
 					replace: true
 				});
+				getLicence();
 			} else {
 				setIsLoader(false);
 				createSnackbar({
@@ -381,8 +392,15 @@ const Subscription: FC = () => {
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					replace: true
 				});
+				if (response.response && response.response.type === 'None') {
+					setServices({});
+					setModules([]);
+					setLicenseKey('');
+					setVersion(undefined);
+				} else {
+					getLicence();
+				}
 			}
-			getLicence();
 		});
 	};
 
