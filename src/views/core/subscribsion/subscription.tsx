@@ -363,6 +363,19 @@ const Subscription: FC = () => {
 		return (accountCount / licensedUsers) * 100;
 	}, [services.response]);
 
+	const getTypeDisplayValue = (): string => {
+		const { type } = services.response;
+		const { subType } = services.response;
+
+		if (type === 'Purchased') {
+			if (subType === 'PERPETUAL' || subType === 'REGULAR') {
+				return `${type} - ${subType}`;
+			}
+			return subType || '';
+		}
+		return type || '';
+	};
+
 	const renewLicence = (): void => {
 		setIsLoader(true);
 		fetchSoap('zextras', {
@@ -533,10 +546,7 @@ const Subscription: FC = () => {
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
-							<Input
-								label={t('core.subscription.type', 'Type')}
-								value={services.response.type || ''}
-							/>
+							<Input label={t('core.subscription.type', 'Type')} value={getTypeDisplayValue()} />
 						</Row>
 						<Row
 							width="49.5%"
