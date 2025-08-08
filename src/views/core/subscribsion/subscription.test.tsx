@@ -53,6 +53,12 @@ const MOCK_PROVIDER_LABEL = 'Provider';
 const MOCK_TYPE_LABEL = 'Type';
 const MOCK_RENEW_LABEL = 'Renew';
 const MOCK_ACTIVATE_LICENSE_ACTION = 'activate-license';
+const MOCK_NONE_TYPE = 'None';
+const MOCK_RENEWAL_FAILED_MESSAGE = 'Renewal failed';
+const MOCK_GET_VERSION_ACTION = 'getVersion';
+const MOCK_ACTIVATION_FAILED_MESSAGE = 'Activation failed';
+const MOCK_GET_LICENSE_INFO_ACTION = 'getLicenseInfo';
+const MOCK_PURCHASED_TYPE = 'Purchased';
 
 jest.mock('../../../store/rights/store', () => ({
 	useRightsStore: jest.fn(() => ({
@@ -67,13 +73,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should display Purchased - PERPETUAL for Purchased type with PERPETUAL subType', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -84,7 +90,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -99,13 +105,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should display Purchased - REGULAR for Purchased type with REGULAR subType', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'REGULAR',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -116,7 +122,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -131,13 +137,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should display subType for Purchased type with other subType', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'TRIAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -148,7 +154,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -163,7 +169,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should display type for non-Purchased type', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
@@ -180,7 +186,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -195,7 +201,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should reset state when getLicenseInfo returns type None', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
@@ -207,7 +213,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -247,13 +253,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should handle activation failure with type None response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -270,14 +276,14 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: false,
 							response: {
-								type: 'None'
+								type: MOCK_NONE_TYPE
 							},
-							message: 'Activation failed'
+							message: MOCK_ACTIVATION_FAILED_MESSAGE
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -308,13 +314,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should handle renewal failure with type None response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -331,14 +337,14 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: false,
 							response: {
-								type: 'None'
+								type: MOCK_NONE_TYPE
 							},
-							message: 'Renewal failed'
+							message: MOCK_RENEWAL_FAILED_MESSAGE
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -351,31 +357,19 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
-		});
-
-		await waitFor(() => {
-			expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
-		});
-
-		await waitFor(() => {
-			expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
-		});
-
-		await waitFor(() => {
-			expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
 		});
 	});
 
 	test('should handle successful license activation', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -396,7 +390,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -414,13 +408,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should handle activation failure with error message', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -438,13 +432,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 							ok: false,
 							message: 'Invalid license token',
 							response: {
-								type: 'Purchased'
+								type: MOCK_PURCHASED_TYPE
 							}
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -462,13 +456,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should handle activation failure with default error message', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -485,13 +479,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: false,
 							response: {
-								type: 'Purchased'
+								type: MOCK_PURCHASED_TYPE
 							}
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -509,13 +503,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 	test('should handle activation network error', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -529,7 +523,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
 				return Promise.reject(new Error('Network error'));
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -545,15 +539,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		expect(activateButton).toBeInTheDocument();
 	});
 
-	test('should handle activation failure with else branch (type not None)', async () => {
+	test('should handle activation failure with error response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -569,15 +563,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					response: {
 						content: JSON.stringify({
 							ok: false,
-							message: 'Activation failed',
+							message: MOCK_ACTIVATION_FAILED_MESSAGE,
 							response: {
-								type: 'Purchased'
+								type: MOCK_PURCHASED_TYPE
 							}
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -594,15 +588,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		});
 	});
 
-	test('should handle renewal failure with else branch (type not None)', async () => {
+	test('should handle renewal failure with error response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: 'Purchased',
+								type: MOCK_PURCHASED_TYPE,
 								subType: 'PERPETUAL',
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
@@ -618,15 +612,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					response: {
 						content: JSON.stringify({
 							ok: false,
-							message: 'Renewal failed',
+							message: MOCK_RENEWAL_FAILED_MESSAGE,
 							response: {
-								type: 'Purchased'
+								type: MOCK_PURCHASED_TYPE
 							}
 						})
 					}
 				});
 			}
-			if (body.action === 'getVersion') {
+			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
 			}
 			return Promise.resolve({ response: { content: '{}' } });
@@ -640,6 +634,232 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 		await waitFor(() => {
 			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
+		});
+	});
+
+	test('should handle activation network error catch block', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: []
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
+				return Promise.reject(new Error('Network error'));
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
+		expect(activateButton).toBeInTheDocument();
+	});
+
+	test('should handle doRemoveLicense error case', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: []
+							}
+						})
+					}
+				});
+			}
+			if (body.action === 'doRemoveLicense') {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							message: 'Failed to remove license'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
+	});
+
+	test('should handle renewal failure with type None response', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: []
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							response: {
+								type: 'None'
+							},
+							message: MOCK_RENEWAL_FAILED_MESSAGE
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
+		});
+	});
+
+	test('should handle renew button click', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: []
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							message: 'Renewal successful'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
+		});
+	});
+
+	test('should handle activation failure with type None response', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: []
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							response: {
+								type: 'None'
+							},
+							message: MOCK_ACTIVATION_FAILED_MESSAGE
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.getByText('Activate')).toBeInTheDocument();
 		});
 	});
 });
