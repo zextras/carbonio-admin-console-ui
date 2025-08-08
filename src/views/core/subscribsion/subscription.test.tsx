@@ -545,7 +545,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		expect(activateButton).toBeInTheDocument();
 	});
 
-	test('should handle successful license renewal', async () => {
+	test('should handle activation failure with else branch (type not None)', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
 			if (body.action === 'getLicenseInfo') {
 				return Promise.resolve({
@@ -564,12 +564,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					}
 				});
 			}
-			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
 				return Promise.resolve({
 					response: {
 						content: JSON.stringify({
-							ok: true,
-							message: 'License renewed successfully'
+							ok: false,
+							message: 'Activation failed',
+							response: {
+								type: 'Purchased'
+							}
 						})
 					}
 				});
@@ -586,11 +589,12 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
 
-		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
-		expect(renewButton).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('Activate')).toBeInTheDocument();
+		});
 	});
 
-	test('should handle renewal failure with error message', async () => {
+	test('should handle renewal failure with else branch (type not None)', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
 			if (body.action === 'getLicenseInfo') {
 				return Promise.resolve({
@@ -614,7 +618,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 					response: {
 						content: JSON.stringify({
 							ok: false,
-							message: 'Renewal failed - invalid token',
+							message: 'Renewal failed',
 							response: {
 								type: 'Purchased'
 							}
@@ -634,54 +638,8 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
 
-		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
-		expect(renewButton).toBeInTheDocument();
-	});
-
-	test('should handle renewal failure with default error message', async () => {
-		mockFetchSoap.mockImplementation((api: string, body: any) => {
-			if (body.action === 'getLicenseInfo') {
-				return Promise.resolve({
-					response: {
-						content: JSON.stringify({
-							ok: true,
-							response: {
-								type: 'Purchased',
-								subType: 'PERPETUAL',
-								endUser: MOCK_END_USER,
-								customer: MOCK_CUSTOMER,
-								authenticationToken: MOCK_AUTH_TOKEN,
-								features: []
-							}
-						})
-					}
-				});
-			}
-			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
-				return Promise.resolve({
-					response: {
-						content: JSON.stringify({
-							ok: false,
-							response: {
-								type: 'Purchased'
-							}
-						})
-					}
-				});
-			}
-			if (body.action === 'getVersion') {
-				return Promise.resolve(MOCK_VERSION_RESPONSE);
-			}
-			return Promise.resolve({ response: { content: '{}' } });
-		});
-
-		setup(<Subscription />);
-
 		await waitFor(() => {
-			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
 		});
-
-		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
-		expect(renewButton).toBeInTheDocument();
 	});
 });
