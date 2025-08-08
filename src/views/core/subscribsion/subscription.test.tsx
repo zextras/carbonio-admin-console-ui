@@ -369,12 +369,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: MOCK_PURCHASED_TYPE,
-								subType: 'PERPETUAL',
-								endUser: MOCK_END_USER,
-								customer: MOCK_CUSTOMER,
-								authenticationToken: MOCK_AUTH_TOKEN,
-								features: []
+								type: 'None'
 							}
 						})
 					}
@@ -402,8 +397,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
 
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
 		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
-		expect(activateButton).toBeInTheDocument();
+		fireEvent.click(activateButton);
+
+		await waitFor(() => {
+			expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
+		});
 	});
 
 	test('should handle activation failure with error message', async () => {
@@ -547,12 +549,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: MOCK_PURCHASED_TYPE,
-								subType: 'PERPETUAL',
-								endUser: MOCK_END_USER,
-								customer: MOCK_CUSTOMER,
-								authenticationToken: MOCK_AUTH_TOKEN,
-								features: []
+								type: 'None'
 							}
 						})
 					}
@@ -583,8 +580,14 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
 
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
+		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
+		fireEvent.click(activateButton);
+
 		await waitFor(() => {
-			expect(screen.getByText('Activate')).toBeInTheDocument();
+			expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
 		});
 	});
 
@@ -631,6 +634,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		await waitFor(() => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
+		});
+
+		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
+		fireEvent.click(renewButton);
 
 		await waitFor(() => {
 			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
@@ -690,7 +700,8 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
 								authenticationToken: MOCK_AUTH_TOKEN,
-								features: []
+								features: [],
+								expired: false
 							}
 						})
 					}
