@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 
 jest.mock('../../../services/subscription-service', () => ({
 	fetchSoap: jest.fn()
@@ -645,12 +645,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: true,
 							response: {
-								type: MOCK_PURCHASED_TYPE,
-								subType: 'PERPETUAL',
-								endUser: MOCK_END_USER,
-								customer: MOCK_CUSTOMER,
-								authenticationToken: MOCK_AUTH_TOKEN,
-								features: []
+								type: 'None'
 							}
 						})
 					}
@@ -671,8 +666,15 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 		});
 
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
 		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
-		expect(activateButton).toBeInTheDocument();
+		fireEvent.click(activateButton);
+
+		await waitFor(() => {
+			expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
+		});
 	});
 
 	test('should handle doRemoveLicense error case', async () => {
