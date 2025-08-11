@@ -1188,6 +1188,29 @@ const EditAccountGeneralSection: FC<{
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
+			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+				<Text size="small" color="gray0" weight="bold">
+					{t('label.external_ldap', 'External LDAP')}
+				</Text>
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="100%" mainAlignment="space-between">
+					<Input
+						label={t(
+							'label.external_ldap_reference_for_authentication',
+							'External LDAP Reference for Authentication'
+						)}
+						backgroundColor="gray5"
+						value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+						defaultValue={''}
+						onChange={changeAccDetail}
+						inputName="zimbraAuthLdapExternalDn"
+					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
+				<Divider color="gray2" />
+			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
