@@ -114,17 +114,16 @@ describe('WscSettings - general', () => {
 				setEmptyValue={setEmptyValue}
 			/>
 		);
-		
-		const element1 = screen.getByTestId('icon: RefreshOutline').parentElement.parentElement;
-		expect(element1).toHaveStyle('pointer-events: none');
-		// await waitFor(() => {
-		// 	const element = screen.getByTestId('icon: RefreshOutline');
-		// 	expect(element).not.toHaveStyle('pointer-events: none');
-		// });
 
-		// const element = screen.getByTestId(`inherited-carbonioFeatureWscEnabled`);
-		// await user.click(within(element).getByTestId(iconRefreshOutline));
-		// expect(setEmptyValue).toHaveBeenCalledWith('carbonioFeatureWscEnabled');
+		const iconCheckbox = screen.getByTestId('reset-inherited-carbonioFeatureWscEnabled');
+		expect(iconCheckbox).toHaveStyle('pointer-events: none');
+		await waitFor(() => {
+			expect(iconCheckbox).not.toHaveStyle('pointer-events: none');
+		});
+		expect(iconCheckbox).toHaveStyle('pointer-events: all');
+
+		await user.click(iconCheckbox);
+		expect(setEmptyValue).toHaveBeenCalledWith('carbonioFeatureWscEnabled');
 	});
 });
 
