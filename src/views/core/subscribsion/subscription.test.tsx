@@ -13,13 +13,15 @@ jest.mock('../../../services/subscription-service', () => ({
 
 import Subscription from './subscription';
 import { fetchSoap } from '../../../services/subscription-service';
+import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
 
 const mockFetchSoap = fetchSoap as jest.MockedFunction<typeof fetchSoap>;
+const mockUseRightsStore = useRightsStore as jest.MockedFunction<typeof useRightsStore>;
 
 const MOCK_RIGHTS = [
 	{
-		type: 'CONFIG',
+		type: 'config',
 		all: [
 			{
 				setAttrs: [
@@ -59,6 +61,10 @@ const MOCK_GET_VERSION_ACTION = 'getVersion';
 const MOCK_ACTIVATION_FAILED_MESSAGE = 'Activation failed';
 const MOCK_GET_LICENSE_INFO_ACTION = 'getLicenseInfo';
 const MOCK_PURCHASED_TYPE = 'Purchased';
+const MOCK_DEACTIVATE_BUTTON_TEXT = 'Deactivate';
+const MOCK_DEACTIVATE_TOKEN_TEXT = 'Deactivate Token';
+const MOCK_YES_DEACTIVATE_TEXT = 'Yes, Deactivate';
+const MOCK_NETWORK_ERROR = 'Network error';
 
 jest.mock('../../../store/rights/store', () => ({
 	useRightsStore: jest.fn(() => ({
@@ -523,7 +529,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 				});
 			}
 			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
-				return Promise.reject(new Error('Network error'));
+				return Promise.reject(new Error(MOCK_NETWORK_ERROR));
 			}
 			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
@@ -662,7 +668,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 				});
 			}
 			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
-				return Promise.reject(new Error('Network error'));
+				return Promise.reject(new Error(MOCK_NETWORK_ERROR));
 			}
 			if (body.action === MOCK_GET_VERSION_ACTION) {
 				return Promise.resolve(MOCK_VERSION_RESPONSE);
@@ -757,7 +763,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 						content: JSON.stringify({
 							ok: false,
 							response: {
-								type: 'None'
+								type: MOCK_NONE_TYPE
 							},
 							message: MOCK_RENEWAL_FAILED_MESSAGE
 						})
@@ -874,5 +880,395 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		await waitFor(() => {
 			expect(screen.getByText('Activate')).toBeInTheDocument();
 		});
+	});
+
+	test('should handle doRemoveLicense success path', async () => {
+		mockUseRightsStore.mockReturnValue({
+			rights: [
+				{
+					type: 'config',
+					all: [
+						{
+							setAttrs: [
+								{
+									all: true
+								}
+							]
+						}
+					]
+				}
+			]
+		});
+
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: [],
+								expired: false
+							}
+						})
+					}
+				});
+			}
+			if (body.action === 'doRemoveLicense') {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							message: 'License deactivated successfully'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TYPE_LABEL)).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			const deactivateButton = screen.getByText(MOCK_DEACTIVATE_BUTTON_TEXT);
+			expect(deactivateButton).toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			const deactivateButton = screen.getByText(MOCK_DEACTIVATE_BUTTON_TEXT);
+			expect(deactivateButton).not.toBeDisabled();
+		});
+
+		const deactivateButton = screen.getByText(MOCK_DEACTIVATE_BUTTON_TEXT);
+		fireEvent.click(deactivateButton);
+
+		await waitFor(() => {
+			expect(screen.getByText(MOCK_DEACTIVATE_TOKEN_TEXT)).toBeInTheDocument();
+		});
+
+		const confirmButton = screen.getByText(MOCK_YES_DEACTIVATE_TEXT);
+		fireEvent.click(confirmButton);
+
+		await waitFor(() => {
+			expect(screen.queryByText(MOCK_DEACTIVATE_TOKEN_TEXT)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+		});
+
+		expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+	});
+
+	test('should handle doRemoveLicense success with default message', async () => {
+		mockUseRightsStore.mockReturnValue({
+			rights: [
+				{
+					type: 'config',
+					all: [
+						{
+							setAttrs: [
+								{
+									all: true
+								}
+							]
+						}
+					]
+				}
+			]
+		});
+
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: [],
+								expired: false
+							}
+						})
+					}
+				});
+			}
+			if (body.action === 'doRemoveLicense') {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TYPE_LABEL)).toBeInTheDocument();
+		});
+
+		const deactivateButton = screen.getByText(MOCK_DEACTIVATE_BUTTON_TEXT);
+		fireEvent.click(deactivateButton);
+
+		const confirmButton = screen.getByText(MOCK_YES_DEACTIVATE_TEXT);
+		fireEvent.click(confirmButton);
+
+		await waitFor(() => {
+			expect(screen.queryByText(MOCK_DEACTIVATE_TOKEN_TEXT)).not.toBeInTheDocument();
+		});
+	});
+
+	test('should handle activation network error in catch block', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: 'None'
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
+				return Promise.reject(new Error(MOCK_NETWORK_ERROR));
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
+		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
+		fireEvent.click(activateButton);
+
+		await waitFor(() => {
+			expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
+		});
+	});
+
+	test('should handle renewal network error in catch block', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: [],
+								expired: false
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
+				return Promise.reject(new Error(MOCK_NETWORK_ERROR));
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TYPE_LABEL)).toBeInTheDocument();
+		});
+
+		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
+		fireEvent.click(renewButton);
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: MOCK_RENEW_LABEL })).toBeInTheDocument();
+		});
+	});
+
+	test('should handle renewal with type None response and state clearing', async () => {
+		mockUseRightsStore.mockReturnValue({
+			rights: [
+				{
+					type: 'config',
+					all: [
+						{
+							setAttrs: [
+								{
+									all: true
+								}
+							]
+						}
+					]
+				}
+			]
+		});
+
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: MOCK_PURCHASED_TYPE,
+								subType: 'PERPETUAL',
+								endUser: MOCK_END_USER,
+								customer: MOCK_CUSTOMER,
+								authenticationToken: MOCK_AUTH_TOKEN,
+								features: [],
+								expired: false
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && body.renewal === true) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							response: {
+								type: 'None'
+							},
+							message: 'Renewal failed'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TYPE_LABEL)).toBeInTheDocument();
+		});
+
+		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL });
+		fireEvent.click(renewButton);
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+		});
+
+		expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+	});
+
+	test('should handle activation with type None response and state clearing', async () => {
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: 'None'
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							response: {
+								type: 'None'
+							},
+							message: 'Activation failed'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
+		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
+		fireEvent.click(activateButton);
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
+		});
+
+		await waitFor(() => {
+			expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+		});
+
+		expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
 	});
 });
