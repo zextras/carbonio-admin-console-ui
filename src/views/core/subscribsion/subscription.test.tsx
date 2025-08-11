@@ -71,7 +71,7 @@ jest.mock('../../../store/rights/store', () => ({
 		const mockState = {
 			rights: MOCK_RIGHTS
 		};
-		return selector ? selector(mockState) : mockState.rights;
+		return selector ? selector(mockState) : mockState;
 	})
 }));
 
@@ -1029,21 +1029,27 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 	});
 
 	test('should handle renewal failure with type None response and clear state', async () => {
-		mockUseRightsStore.mockReturnValue({
-			rights: [
-				{
-					type: 'config',
-					all: [
-						{
-							setAttrs: [
-								{
-									all: true
-								}
-							]
-						}
-					]
-				}
-			]
+		mockUseRightsStore.mockImplementation((selector) => {
+			const mockState = {
+				rights: [
+					{
+						type: 'config',
+						all: [
+							{
+								setAttrs: [
+									{
+										all: true
+									}
+								]
+							}
+						]
+					}
+				],
+				setRights: jest.fn(),
+				userType: 'admin',
+				setUserType: jest.fn()
+			};
+			return selector ? selector(mockState) : mockState;
 		});
 
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
@@ -1058,7 +1064,13 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 								endUser: MOCK_END_USER,
 								customer: MOCK_CUSTOMER,
 								authenticationToken: MOCK_AUTH_TOKEN,
-								features: [],
+								features: [
+									{
+										name: 'storages_basic',
+										quantity: '1',
+										enabled: true
+									}
+								],
 								expired: false
 							}
 						})
@@ -1089,6 +1101,9 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		await waitFor(() => {
 			expect(screen.getByLabelText(MOCK_TYPE_LABEL)).toBeInTheDocument();
 		});
+
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
 
 		const renewButton = screen.getByRole('button', { name: MOCK_RENEW_LABEL }) as HTMLButtonElement;
 
