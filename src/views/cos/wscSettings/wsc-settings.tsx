@@ -63,8 +63,8 @@ export const WscSettings: FC<{
 				const isWscBasicLicensed = find(
 					response.response?.features,
 					(feature) => feature.name === 'wsc_basic'
-				);
-				setIsLicensed(isWscBasicLicensed?.enabled);
+				)?.enabled;
+				setIsLicensed(isWscBasicLicensed);
 			}
 		});
 	}, []);
