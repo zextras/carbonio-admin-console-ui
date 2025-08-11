@@ -1126,4 +1126,83 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toHaveValue('');
 		}
 	});
+
+	test('should handle activation failure with type None response and clear state', async () => {
+		mockUseRightsStore.mockImplementation((selector) => {
+			const mockState = {
+				rights: [
+					{
+						type: 'config',
+						all: [
+							{
+								setAttrs: [
+									{
+										all: true
+									}
+								]
+							}
+						]
+					}
+				],
+				setRights: jest.fn(),
+				userType: 'admin',
+				setUserType: jest.fn()
+			};
+			return selector ? selector(mockState) : mockState;
+		});
+
+		mockFetchSoap.mockImplementation((api: string, body: any) => {
+			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: {
+								type: 'None'
+							}
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_ACTIVATE_LICENSE_ACTION && !body.renewal) {
+				return Promise.resolve({
+					response: {
+						content: JSON.stringify({
+							ok: false,
+							response: {
+								type: 'None'
+							},
+							message: 'Activation failed with None type'
+						})
+					}
+				});
+			}
+			if (body.action === MOCK_GET_VERSION_ACTION) {
+				return Promise.resolve(MOCK_VERSION_RESPONSE);
+			}
+			return Promise.resolve({ response: { content: '{}' } });
+		});
+
+		setup(<Subscription />);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		});
+
+		expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+
+		const tokenInput = screen.getByLabelText(MOCK_TOKEN_LABEL);
+		fireEvent.change(tokenInput, { target: { value: MOCK_AUTH_TOKEN } });
+
+		expect(tokenInput).toHaveValue(MOCK_AUTH_TOKEN);
+
+		expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
+
+		expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
+		expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
+	});
 });
