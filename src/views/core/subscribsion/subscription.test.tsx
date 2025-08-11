@@ -1198,11 +1198,20 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 
 		expect(tokenInput).toHaveValue(MOCK_AUTH_TOKEN);
 
+		await waitFor(() => {
+			const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL) as HTMLButtonElement;
+			expect(activateButton).not.toBeDisabled();
+		});
+
+		const activateButton = screen.getByText(MOCK_ACTIVATE_LABEL);
+		fireEvent.click(activateButton);
+
+		await waitFor(() => {
+			expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toHaveValue('');
+		});
+
 		expect(screen.queryByLabelText(MOCK_COMPANY_NAME_LABEL)).not.toBeInTheDocument();
 		expect(screen.queryByLabelText(MOCK_PROVIDER_LABEL)).not.toBeInTheDocument();
 		expect(screen.queryByLabelText(MOCK_TYPE_LABEL)).not.toBeInTheDocument();
-
-		expect(screen.getByLabelText(MOCK_TOKEN_LABEL)).toBeInTheDocument();
-		expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
 	});
 });
