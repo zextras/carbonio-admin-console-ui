@@ -1190,14 +1190,14 @@ const EditAccountGeneralSection: FC<{
 			</Row>
 			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 				<Text size="small" color="gray0" weight="bold">
-					{t('label.external_ldap', 'External LDAP')}
+					{t('domain.accounts.editAccount.externalldap', 'External LDAP')}
 				</Text>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="100%" mainAlignment="space-between">
 					<Input
 						label={t(
-							'label.external_ldap_reference_for_authentication',
+							'domain.accounts.editAccount.externalldapReferenceForAuthentication',
 							'External LDAP Reference for Authentication'
 						)}
 						backgroundColor="gray5"
