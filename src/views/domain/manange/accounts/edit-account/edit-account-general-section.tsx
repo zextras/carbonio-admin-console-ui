@@ -1201,7 +1201,7 @@ const EditAccountGeneralSection: FC<{
 							'External LDAP Reference for Authentication'
 						)}
 						backgroundColor="gray5"
-						value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+						value={accountDetail?.zimbraAuthLdapExternalDn ?? ''}
 						defaultValue={''}
 						onChange={changeAccDetail}
 						inputName="zimbraAuthLdapExternalDn"
