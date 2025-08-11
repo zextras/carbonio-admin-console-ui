@@ -22,10 +22,10 @@ import {
 	SERVER_POOLS,
 	WSC
 } from '../../constants';
-import WscCosSettings from './wscSettings/wsc-cos-settings';
 import { getCosGeneralInformation } from '../../services/cos-general-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
+import WscCosSettings from '../../wsc/wsc-cos-settings';
 
 const CosDetailOperation: FC = () => {
 	const { operation, cosId }: { operation: string; cosId: string } = useParams();

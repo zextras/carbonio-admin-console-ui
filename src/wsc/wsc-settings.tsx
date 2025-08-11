@@ -3,29 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	Dispatch,
-	FC,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 
-import { Banner, Container, Padding } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
+import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
-import { fetchSoap } from '../../../services/subscription-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
-import { BoxLayout, SettingLayout } from '../../page-layout';
-import InheritedInput from '../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../utility/inherited-components/inherited-switch';
+import { useWscLicense } from './hooks/useWscLicense';
+import { useAuthIsAdvanced } from '../store/auth-advanced/store';
+import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
+import { BoxLayout, SettingLayout } from '../views/page-layout';
+import InheritedInput from '../views/utility/inherited-components/inherited-input';
+import InheritedSelect from '../views/utility/inherited-components/inherited-select';
+import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
 	featuresDetail: AccountType;
@@ -44,7 +33,6 @@ export const WscSettings: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const [isLicensed, setIsLicensed] = useState<boolean | undefined>(undefined);
 
 	// TODO: add translation key and validate the message
 	const wscLicenseDisabledWarningLabel = t(
@@ -52,22 +40,7 @@ export const WscSettings: FC<{
 		"These settings can't be changed because your Chats license is not valid."
 	);
 
-	useEffect(() => {
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'getLicenseInfo'
-		}).then((res) => {
-			const response = JSON.parse(res.response.content);
-			if (response.ok) {
-				const isWscBasicLicensed = find(
-					response.response?.features,
-					(feature) => feature.name === 'wsc_basic'
-				)?.enabled;
-				setIsLicensed(isWscBasicLicensed);
-			}
-		});
-	}, []);
+	const { isLicensed, isLoading } = useWscLicense();
 
 	const changeSwitchOption = useCallback(
 		(key: keyof AccountType): void => {
@@ -138,9 +111,17 @@ export const WscSettings: FC<{
 		];
 	}, [t]);
 
+	if (isLoading) {
+		return (
+			<Container height="fit" padding="large" style={{ userSelect: 'none' }}>
+				<Spinner color={'primary'} />
+			</Container>
+		);
+	}
+
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-			{isLicensed === false && (
+			{!isLoading && !isLicensed && (
 				<Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
 			)}
 			<BoxLayout

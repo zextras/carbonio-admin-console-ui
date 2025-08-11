@@ -9,19 +9,19 @@ import { jest } from '@jest/globals';
 import { screen, within } from '@testing-library/react';
 
 import WscCosSettings from './wsc-cos-settings';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyCos } from '../../../services/modify-cos-service';
-import { useCosStore } from '../../../store/cos/store';
-import { setup } from '../../../tests/testUtils';
+import { flushCache } from '../services/flush-cache-service';
+import { modifyCos } from '../services/modify-cos-service';
+import { useCosStore } from '../store/cos/store';
+import { setup } from '../tests/testUtils';
 
 const mock = (fn: any): jest.MockedFunction<(body: any) => Promise<any>> =>
 	fn as jest.MockedFunction<typeof fn>;
 
-jest.mock('../../../services/flush-cache-service', () => ({
+jest.mock('../services/flush-cache-service', () => ({
 	flushCache: jest.fn()
 }));
 
-jest.mock('../../../services/modify-cos-service', () => ({
+jest.mock('../services/modify-cos-service', () => ({
 	modifyCos: jest.fn()
 }));
 
