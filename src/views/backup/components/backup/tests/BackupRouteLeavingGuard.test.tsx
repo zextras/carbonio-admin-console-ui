@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -7,10 +7,10 @@ import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import BackupRouteLeavingGuard from './BackupRouteLeavingGuard';
-import { setup } from '../../../../tests/testUtils';
+import { setup } from '../../../../../tests/testUtils';
+import BackupRouteLeavingGuard from '../BackupRouteLeavingGuard';
 
-jest.mock('../../../../views/ui-extras/nav-guard', () => ({
+jest.mock('../../../../../views/ui-extras/nav-guard', () => ({
 	RouteLeavingGuard: ({
 		when,
 		onSave,
