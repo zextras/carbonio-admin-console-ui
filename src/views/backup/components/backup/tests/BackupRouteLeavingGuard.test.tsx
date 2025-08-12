@@ -37,8 +37,10 @@ describe('BackupRouteLeavingGuard', () => {
 		t: mockT
 	};
 
-	const UNSAVED_CHANGES_DETAIL = 'Are you sure you want to leave this page without saving?';
-	const UNSAVED_CHANGES_TITLE = 'All your unsaved changes will be lost';
+	const UNSAVED_CHANGES_MODAL_DETAIL = [
+		'Are you sure you want to leave this page without saving?',
+		'All your unsaved changes will be lost'
+	];
 	const ROUTE_LEAVING_GUARD = 'route-leaving-guard';
 
 	beforeEach(() => {
@@ -48,8 +50,8 @@ describe('BackupRouteLeavingGuard', () => {
 	test('renders warning messages correctly', () => {
 		setup(<BackupRouteLeavingGuard {...defaultProps} />);
 
-		expect(screen.getByText(UNSAVED_CHANGES_DETAIL)).toBeInTheDocument();
-		expect(screen.getByText(UNSAVED_CHANGES_TITLE)).toBeInTheDocument();
+		expect(screen.getByText(UNSAVED_CHANGES_MODAL_DETAIL[0])).toBeInTheDocument();
+		expect(screen.getByText(UNSAVED_CHANGES_MODAL_DETAIL[1])).toBeInTheDocument();
 	});
 
 	test('passes isDirty prop to RouteLeavingGuard as when prop', () => {
@@ -93,11 +95,11 @@ describe('BackupRouteLeavingGuard', () => {
 		).toBeInTheDocument();
 		expect(mockTranslation).toHaveBeenCalledWith(
 			'label.unsaved_changes_line1',
-			UNSAVED_CHANGES_DETAIL
+			UNSAVED_CHANGES_MODAL_DETAIL[0]
 		);
 		expect(mockTranslation).toHaveBeenCalledWith(
 			'label.unsaved_changes_line2',
-			UNSAVED_CHANGES_TITLE
+			UNSAVED_CHANGES_MODAL_DETAIL[1]
 		);
 	});
 
@@ -109,7 +111,7 @@ describe('BackupRouteLeavingGuard', () => {
 		expect(routeLeavingGuard).toBeInTheDocument();
 
 		// Check that the text content is within the guard
-		expect(screen.getByText(UNSAVED_CHANGES_DETAIL)).toBeInTheDocument();
-		expect(screen.getByText(UNSAVED_CHANGES_TITLE)).toBeInTheDocument();
+		expect(screen.getByText(UNSAVED_CHANGES_MODAL_DETAIL[0])).toBeInTheDocument();
+		expect(screen.getByText(UNSAVED_CHANGES_MODAL_DETAIL[1])).toBeInTheDocument();
 	});
 });
