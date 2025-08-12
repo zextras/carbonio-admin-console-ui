@@ -34,7 +34,7 @@ export const useWscLicense = (): WscLicenseHook => {
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
-			action: 'getLicenseInfos'
+			action: 'getLicenseInfo'
 		})
 			.then((res) => {
 				const response = JSON.parse(res.response.content);
