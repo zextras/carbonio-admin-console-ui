@@ -39,7 +39,7 @@ export const useWscLicense = (): WscLicenseHook => {
 			.then((res) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const features = response.response?.features || [];
+					const features = response.response?.features ?? [];
 					const wscFeature = features.find(
 						(feature: { name: string }) => feature.name === 'wsc_basic'
 					);
@@ -47,9 +47,6 @@ export const useWscLicense = (): WscLicenseHook => {
 				} else {
 					throw new Error(response?.error?.message);
 				}
-			})
-			.finally(() => {
-				setIsLoading(false);
 			})
 			.catch((err) => {
 				setError(err?.message);
@@ -59,6 +56,9 @@ export const useWscLicense = (): WscLicenseHook => {
 					severity: 'error',
 					autoHideTimeout: 5000
 				});
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 	}, [createSnackbar, wscLicenseErrorLabel]);
 
