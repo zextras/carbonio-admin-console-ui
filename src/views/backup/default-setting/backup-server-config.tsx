@@ -32,7 +32,7 @@ const BackupServerConfig: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>(cloneDeep(globalConfig));
+	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
@@ -45,24 +45,24 @@ const BackupServerConfig: FC = () => {
 	}, [rights]);
 
 	const onCancel = (): void => {
-		setInitBackupDetail({ ...globalConfig });
+		setBackupDetail({ ...globalConfig });
 	};
 	const onSave = (): void => {
 		const modifiedKeys: any = reduce(
 			globalConfig,
 			function (result, value, key): any {
-				return isEqual(value, initbackupDetail[key]) ? result : [...result, key];
+				return isEqual(value, backupDetail[key]) ? result : [...result, key];
 			},
 			[]
 		);
 		const modifiedData: any = {};
 		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = initbackupDetail[ele];
+			modifiedData[ele] = backupDetail[ele];
 		});
 		modifyBackupRequest(modifiedData)
 			.then((data) => {
 				if (data?.status === 200 || isEmpty(data)) {
-					setGlobalConfig(initbackupDetail);
+					setGlobalConfig(backupDetail);
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
@@ -103,32 +103,32 @@ const BackupServerConfig: FC = () => {
 			});
 	};
 	useEffect(() => {
-		if (!isEqual(globalConfig, initbackupDetail)) {
+		if (!isEqual(globalConfig, backupDetail)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [globalConfig, initbackupDetail]);
+	}, [globalConfig, backupDetail]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setInitBackupDetail((prev: any) => ({
+			setBackupDetail((prev: any) => ({
 				...prev,
-				[key]: initbackupDetail[key] !== true
+				[key]: backupDetail[key] !== true
 			}));
 		},
-		[initbackupDetail]
+		[backupDetail]
 	);
 
 	const changeBackupDetail = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
-		[setInitBackupDetail]
+		[setBackupDetail]
 	);
 	const changeBackupSchedulerDetail = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({
+			setBackupDetail((prev: any) => ({
 				...prev,
 				[e.target.name]: {
 					...[e.target.name],
@@ -136,7 +136,7 @@ const BackupServerConfig: FC = () => {
 				}
 			}));
 		},
-		[setInitBackupDetail]
+		[setBackupDetail]
 	);
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
@@ -207,7 +207,7 @@ const BackupServerConfig: FC = () => {
 							<ListRow>
 								<Switch
 									label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-									value={initbackupDetail.ZxBackup_RealTimeScanner}
+									value={backupDetail.ZxBackup_RealTimeScanner}
 									onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
@@ -216,7 +216,7 @@ const BackupServerConfig: FC = () => {
 						)}
 						<ListRow>
 							<Switch
-								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
+								value={backupDetail.ZxBackup_ModuleEnabledAtStartup}
 								label={t(
 									'backup.backup_is_enable_at_the_startup',
 									'Backup is enabled at the startup'
@@ -228,7 +228,7 @@ const BackupServerConfig: FC = () => {
 						</ListRow>
 						<ListRow>
 							<Switch
-								value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
+								value={backupDetail.ZxBackup_DoSmartScanOnStartup}
 								label={t(
 									'backup.run_the_smart_scan_at_the_startup',
 									'Run the Smartscan at the startup'
@@ -247,8 +247,8 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'large' }}>
 								<Input
 									label={t('backup.backup_path', 'Backup Path')}
-									value={initbackupDetail.ZxBackup_DestPath}
-									defaultValue={initbackupDetail.ZxBackup_DestPath}
+									value={backupDetail.ZxBackup_DestPath}
+									defaultValue={backupDetail.ZxBackup_DestPath}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DestPath"
 									backgroundColor="gray5"
@@ -263,8 +263,8 @@ const BackupServerConfig: FC = () => {
 										'label.mb',
 										'MB'
 									)})`}
-									value={initbackupDetail.ZxBackup_SpaceThreshold}
-									defaultValue={initbackupDetail.ZxBackup_SpaceThreshold}
+									value={backupDetail.ZxBackup_SpaceThreshold}
+									defaultValue={backupDetail.ZxBackup_SpaceThreshold}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_SpaceThreshold"
 									backgroundColor="gray5"
@@ -279,8 +279,8 @@ const BackupServerConfig: FC = () => {
 										'label.mb',
 										'MB'
 									)})`}
-									value={initbackupDetail.backupLocalMetadataThreshold}
-									defaultValue={initbackupDetail.backupLocalMetadataThreshold}
+									value={backupDetail.backupLocalMetadataThreshold}
+									defaultValue={backupDetail.backupLocalMetadataThreshold}
 									onChange={changeBackupDetail}
 									inputName="backupLocalMetadataThreshold"
 									backgroundColor="gray5"
@@ -296,7 +296,7 @@ const BackupServerConfig: FC = () => {
 						<ListRow>
 							<Padding bottom="large">
 								<Switch
-									value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
+									value={backupDetail.ZxBackup_SmartScanSchedulingEnabled}
 									onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
 									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 									iconColor="primary"
@@ -309,8 +309,8 @@ const BackupServerConfig: FC = () => {
 								<Input
 									label={t('backup.schedule', 'Schedule')}
 									// eslint-disable-next-line sonarjs/no-duplicate-string
-									value={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
-									defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupSmartScanScheduler"
 									backgroundColor="gray5"
@@ -336,8 +336,8 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'large' }}>
 								<Input
 									label={t('backup.schedule', 'Schedule')}
-									value={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
-									defaultValue={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
+									value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
+									defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupPurgeScheduler"
 									backgroundColor="gray5"
@@ -349,8 +349,8 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'small' }}>
 								<Input
 									label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-									value={initbackupDetail.ZxBackup_DataRetentionDays}
-									defaultValue={initbackupDetail.ZxBackup_DataRetentionDays}
+									value={backupDetail.ZxBackup_DataRetentionDays}
+									defaultValue={backupDetail.ZxBackup_DataRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DataRetentionDays"
 									backgroundColor="gray5"
@@ -376,8 +376,8 @@ const BackupServerConfig: FC = () => {
 										'backup.keep_delete_accounts_in_backup',
 										'Keep deleted accounts in the backup'
 									)}
-									value={initbackupDetail.backupAccountsRetentionDays}
-									defaultValue={initbackupDetail.backupAccountsRetentionDays}
+									value={backupDetail.backupAccountsRetentionDays}
+									defaultValue={backupDetail.backupAccountsRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="backupAccountsRetentionDays"
 									backgroundColor="gray5"

@@ -32,7 +32,7 @@ const BackupAdvanced: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>(cloneDeep(globalConfig));
+	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const allowSetBackup = useMemo(() => {
@@ -41,23 +41,23 @@ const BackupAdvanced: FC = () => {
 	}, [rights]);
 
 	const onCancel = (): void => {
-		setInitBackupDetail({ ...globalConfig });
+		setBackupDetail({ ...globalConfig });
 	};
 	const onSave = (): void => {
 		const modifiedKeys: any = reduce(
 			globalConfig,
 			function (result, value, key): any {
-				return isEqual(value, initbackupDetail[key]) ? result : [...result, key];
+				return isEqual(value, backupDetail[key]) ? result : [...result, key];
 			},
 			[]
 		);
 		const modifiedData: any = {};
 		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = initbackupDetail[ele];
+			modifiedData[ele] = backupDetail[ele];
 		});
 		modifyBackupRequest(modifiedData).then((data) => {
 			if (data?.status === 200 || isEmpty(data)) {
-				setGlobalConfig(initbackupDetail);
+				setGlobalConfig(backupDetail);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -87,27 +87,27 @@ const BackupAdvanced: FC = () => {
 	};
 
 	useEffect(() => {
-		if (!isEqual(globalConfig, initbackupDetail)) {
+		if (!isEqual(globalConfig, backupDetail)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [globalConfig, initbackupDetail]);
+	}, [globalConfig, backupDetail]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setInitBackupDetail((prev: any) => ({
+			setBackupDetail((prev: any) => ({
 				...prev,
-				[key]: initbackupDetail[key] !== true
+				[key]: backupDetail[key] !== true
 			}));
 		},
-		[initbackupDetail]
+		[backupDetail]
 	);
 	const changeBackupDetail = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
-		[setInitBackupDetail]
+		[setBackupDetail]
 	);
 
 	const compressLevelItems = useMemo(
@@ -128,7 +128,7 @@ const BackupAdvanced: FC = () => {
 		[]
 	);
 	const onBackupCompressionLevelChange = (v: any): any => {
-		setInitBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
+		setBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
 	};
 	return (
 		<>
@@ -198,8 +198,8 @@ const BackupAdvanced: FC = () => {
 												'backup.kb',
 												'KB'
 											)})`}
-											value={initbackupDetail.backupLatencyHighThreshold}
-											defaultValue={initbackupDetail.backupLatencyHighThreshold}
+											value={backupDetail.backupLatencyHighThreshold}
+											defaultValue={backupDetail.backupLatencyHighThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyHighThreshold"
 											backgroundColor="gray5"
@@ -214,8 +214,8 @@ const BackupAdvanced: FC = () => {
 												'backup.kb',
 												'KB'
 											)})`}
-											value={initbackupDetail.backupLatencyLowThreshold}
-											defaultValue={initbackupDetail.backupLatencyLowThreshold}
+											value={backupDetail.backupLatencyLowThreshold}
+											defaultValue={backupDetail.backupLatencyLowThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyLowThreshold"
 											backgroundColor="gray5"
@@ -231,7 +231,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ldapDumpEnabled}
+											value={backupDetail.ldapDumpEnabled}
 											onClick={(): void => changeSwitchOption('ldapDumpEnabled')}
 											label={t('backup.ldap_dump', 'LDAP Dump')}
 											iconColor="primary"
@@ -247,7 +247,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ZxBackup_BackupCustomizations}
+											value={backupDetail.ZxBackup_BackupCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_BackupCustomizations')}
 											label={t(
 												'backup.store_server_configurations_in_the_backup',
@@ -266,7 +266,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ZxBackup_PurgeCustomizations}
+											value={backupDetail.ZxBackup_PurgeCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_PurgeCustomizations')}
 											label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
 											iconColor="primary"
@@ -282,7 +282,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.backupSaveIndex}
+											value={backupDetail.backupSaveIndex}
 											onClick={(): void => changeSwitchOption('backupSaveIndex')}
 											label={t('backup.save_index', 'Save Index')}
 											iconColor="primary"
@@ -294,8 +294,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.metatdata_size', 'Metadata Size')}
-											value={initbackupDetail.ZxBackup_MaxMetadataSize}
-											defaultValue={initbackupDetail.ZxBackup_MaxMetadataSize}
+											value={backupDetail.ZxBackup_MaxMetadataSize}
+											defaultValue={backupDetail.ZxBackup_MaxMetadataSize}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxMetadataSize"
 											backgroundColor="gray5"
@@ -310,8 +310,8 @@ const BackupAdvanced: FC = () => {
 												'backup.ms',
 												'MS'
 											)})`}
-											value={initbackupDetail.ZxBackup_MaxWaitingTime}
-											defaultValue={initbackupDetail.ZxBackup_MaxWaitingTime}
+											value={backupDetail.ZxBackup_MaxWaitingTime}
+											defaultValue={backupDetail.ZxBackup_MaxWaitingTime}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxWaitingTime"
 											backgroundColor="gray5"
@@ -323,8 +323,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.max_operations_account', 'Max Operations / Account')}
-											value={initbackupDetail.ZxBackup_MaxOperationPerAccount}
-											defaultValue={initbackupDetail.ZxBackup_MaxOperationPerAccount}
+											value={backupDetail.ZxBackup_MaxOperationPerAccount}
+											defaultValue={backupDetail.ZxBackup_MaxOperationPerAccount}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxOperationPerAccount"
 											backgroundColor="gray5"
@@ -352,8 +352,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.threads_for_items', 'Threads For Items')}
-											value={initbackupDetail.backupNumberThreadsForAccounts}
-											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
+											value={backupDetail.backupNumberThreadsForAccounts}
+											defaultValue={backupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											backgroundColor="gray5"
@@ -365,8 +365,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.threads_for_account', 'Threads For Account')}
-											value={initbackupDetail.backupNumberThreadsForAccounts}
-											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
+											value={backupDetail.backupNumberThreadsForAccounts}
+											defaultValue={backupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											backgroundColor="gray5"
@@ -382,7 +382,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.backupOnTheFlyMetadata}
+											value={backupDetail.backupOnTheFlyMetadata}
 											onClick={(): void => changeSwitchOption('backupOnTheFlyMetadata')}
 											label={t(
 												'backup.flash_metadata_in_the_disk_at_every_save',
@@ -401,7 +401,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.scheduledMetadataArchivingEnabled}
+											value={backupDetail.scheduledMetadataArchivingEnabled}
 											onClick={(): void => changeSwitchOption('scheduledMetadataArchivingEnabled')}
 											label={t(
 												'backup.archive_user_metadata_folder_in_the_remote_backup',
