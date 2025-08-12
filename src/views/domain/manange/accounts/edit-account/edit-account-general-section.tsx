@@ -1202,13 +1202,6 @@ const EditAccountGeneralSection: FC<{
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="100%" mainAlignment="space-between">
-					{/* <Input
-						backgroundColor="gray5"
-						value={accountDetail?.zimbraAuthLdapExternalDn ?? ''}
-						defaultValue={''}
-						onChange={changeAccDetail}
-						inputName="zimbraAuthLdapExternalDn"
-					/> */}
 					{renderInputRow(
 						'zimbraAuthLdapExternalDn',
 						t(
