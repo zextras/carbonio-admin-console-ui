@@ -76,9 +76,9 @@ export const useBackupConfig = (): {
 						key: 'error',
 						severity: 'error',
 						label:
-							data?.errors?.[0]?.error ||
-							data?.statusText ||
-							data?.error ||
+							data?.errors?.[0]?.error ??
+							data?.statusText ??
+							data?.error ??
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -91,8 +91,8 @@ export const useBackupConfig = (): {
 					key: 'error',
 					severity: 'error',
 					label:
-						err?.errors?.[0]?.error ||
-						err?.statusText ||
+						err?.errors?.[0]?.error ??
+						err?.statusText ??
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
