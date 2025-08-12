@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 
 import { Text } from '@zextras/carbonio-design-system';
 
-import { RouteLeavingGuard } from '../../views/ui-extras/nav-guard';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 interface BackupRouteLeavingGuardProps {
 	isDirty: boolean;

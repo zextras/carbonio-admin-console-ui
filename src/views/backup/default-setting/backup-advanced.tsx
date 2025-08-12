@@ -7,11 +7,11 @@ import React, { FC, useMemo } from 'react';
 
 import { Container, Row, Divider, Input, Switch, Select } from '@zextras/carbonio-design-system';
 
-import BackupConfigHeader from '../../../components/backup/BackupConfigHeader';
-import BackupRouteLeavingGuard from '../../../components/backup/BackupRouteLeavingGuard';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
 import ListRow from '../../list/list-row';
+import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
 const BackupAdvanced: FC = () => {
 	const {
