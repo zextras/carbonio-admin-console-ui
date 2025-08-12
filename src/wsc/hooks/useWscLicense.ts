@@ -5,6 +5,9 @@
  */
 import { useEffect, useState } from 'react';
 
+import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
+
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/subscription-service';
 
@@ -19,11 +22,19 @@ export const useWscLicense = (): WscLicenseHook => {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+
+	const wscLicenseErrorLabel = t(
+		'wsc.section.license.error',
+		'Error fetching license details. Please try again later.'
+	);
+
 	useEffect(() => {
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
-			action: 'getLicenseInfo'
+			action: 'getLicenseInfos'
 		})
 			.then((res) => {
 				const response = JSON.parse(res.response.content);
@@ -33,6 +44,8 @@ export const useWscLicense = (): WscLicenseHook => {
 						(feature: { name: string }) => feature.name === 'wsc_basic'
 					);
 					setIsLicensed(!!wscFeature?.enabled);
+				} else {
+					throw new Error(response?.error?.message);
 				}
 			})
 			.finally(() => {
@@ -40,8 +53,14 @@ export const useWscLicense = (): WscLicenseHook => {
 			})
 			.catch((err) => {
 				setError(err?.message);
+				createSnackbar({
+					key: 'wsc-license-error',
+					label: wscLicenseErrorLabel,
+					severity: 'error',
+					autoHideTimeout: 5000
+				});
 			});
-	}, []);
+	}, [createSnackbar, wscLicenseErrorLabel]);
 
 	return { isLicensed, isLoading, error };
 };

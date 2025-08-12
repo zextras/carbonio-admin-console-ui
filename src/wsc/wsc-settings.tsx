@@ -33,14 +33,12 @@ export const WscSettings: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const { isLicensed, isLoading, error } = useWscLicense();
 
-	// TODO: add translation key and validate the message
 	const wscLicenseDisabledWarningLabel = t(
-		'',
+		'wsc.section.license.warning',
 		"These settings can't be changed because your Chats license is not valid."
 	);
-
-	const { isLicensed, isLoading } = useWscLicense();
 
 	const changeSwitchOption = useCallback(
 		(key: keyof AccountType): void => {
@@ -121,7 +119,7 @@ export const WscSettings: FC<{
 
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-			{!isLoading && !isLicensed && (
+			{!isLoading && !isLicensed && !error && (
 				<Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
 			)}
 			<BoxLayout

@@ -322,10 +322,10 @@ const EditAccountConfigurationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.wsc', 'Chat')}
+						{t('label.features', 'Features')}
 					</Text>
 				</Row>
-				<WscSettings
+				<Features
 					featuresDetail={accountDetail}
 					setFeaturesDetail={setAccountDetail}
 					cosDetail={cosDetail}
@@ -337,10 +337,10 @@ const EditAccountConfigurationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.features', 'Features')}
+						{t('label.wsc', 'Chat')}
 					</Text>
 				</Row>
-				<Features
+				<WscSettings
 					featuresDetail={accountDetail}
 					setFeaturesDetail={setAccountDetail}
 					cosDetail={cosDetail}
