@@ -725,14 +725,29 @@ const EditAccountGeneralSection: FC<{
 		</Row>
 	);
 
-	const renderInputRow = (
-		id: string,
-		label: string,
-		inputName: string,
-		value: string,
-		width: string,
-		onChange: (e: ChangeEvent<HTMLInputElement>) => void
-	): React.JSX.Element => (
+	const renderRowHeader = ({ label }: { label: string }): React.JSX.Element => (
+		<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+			<Text size="small" color="gray0" weight="bold">
+				{label}
+			</Text>
+		</Row>
+	);
+
+	const renderInputRow = ({
+		id,
+		label,
+		inputName,
+		value,
+		width,
+		onChange
+	}: {
+		id: string;
+		label: string;
+		inputName: string;
+		value: string;
+		width: string;
+		onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	}): React.JSX.Element => (
 		<Row width={width} mainAlignment="space-between">
 			<Input
 				data-testid={id}
@@ -783,30 +798,30 @@ const EditAccountGeneralSection: FC<{
 						)}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					{renderInputRow(
-						'surname-input',
-						t('label.surname', 'Surname'),
-						'sn',
-						accountDetail?.sn,
-						'32%',
-						changeAccDetail
-					)}
-					{renderInputRow(
-						'middlename-input',
-						t('label.second_name_initials', 'Middle Name Initials'),
-						'initials',
-						accountDetail?.initials,
-						'32%',
-						changeAccDetail
-					)}
-					{renderInputRow(
-						'name-input',
-						t('label.person_name', 'Name'),
-						'givenName',
-						accountDetail?.givenName,
-						'32%',
-						changeAccDetail
-					)}
+					{renderInputRow({
+						id: 'surname-input',
+						label: t('label.surname', 'Surname'),
+						inputName: 'sn',
+						value: accountDetail?.sn,
+						width: '32%',
+						onChange: changeAccDetail
+					})}
+					{renderInputRow({
+						id: 'middlename-input',
+						label: t('label.second_name_initials', 'Middle Name Initials'),
+						inputName: 'initials',
+						value: accountDetail?.initials,
+						width: '32%',
+						onChange: changeAccDetail
+					})}
+					{renderInputRow({
+						id: 'name-input',
+						label: t('label.person_name', 'Name'),
+						inputName: 'givenName',
+						value: accountDetail?.givenName,
+						width: '32%',
+						onChange: changeAccDetail
+					})}
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="47%" mainAlignment="flex-start">
@@ -1195,24 +1210,23 @@ const EditAccountGeneralSection: FC<{
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
-			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-				<Text size="small" color="gray0" weight="bold">
-					{t('domain.accounts.editAccount.externalldap', 'External LDAP')}
-				</Text>
-			</Row>
+
+			{renderRowHeader({
+				label: t('domain.accounts.editAccount.externalldap', 'External LDAP')
+			})}
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="100%" mainAlignment="space-between">
-					{renderInputRow(
-						'zimbraAuthLdapExternalDn',
-						t(
+					{renderInputRow({
+						id: 'zimbraAuthLdapExternalDn',
+						label: t(
 							'domain.accounts.editAccount.externalldapReferenceForAuthentication',
 							'External LDAP Reference for Authentication'
 						),
-						'zimbraAuthLdapExternalDn',
-						accountDetail?.zimbraAuthLdapExternalDn,
-						'100%',
-						changeAccDetail
-					)}
+						inputName: 'zimbraAuthLdapExternalDn',
+						value: accountDetail?.zimbraAuthLdapExternalDn,
+						width: '100%',
+						onChange: changeAccDetail
+					})}
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
