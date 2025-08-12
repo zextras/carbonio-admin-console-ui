@@ -113,8 +113,10 @@ describe('WscSettings - general', () => {
 			/>
 		);
 
-		await user.click(await screen.findByTestId('reset-inherited-carbonioFeatureWscEnabled'));
+		const element = await screen.findByTestId('inherited-carbonioFeatureWscEnabled');
+		await user.click(within(element).getByTestId(iconRefreshOutline));
 		expect(setEmptyValue).toHaveBeenCalledWith('carbonioFeatureWscEnabled');
+		await user.hover(element);
 	});
 });
 

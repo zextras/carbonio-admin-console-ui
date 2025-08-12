@@ -25,6 +25,25 @@ jest.mock('../services/modify-cos-service', () => ({
 	modifyCos: jest.fn()
 }));
 
+jest.mock('../services/subscription-service', () => ({
+	fetchSoap: (): Promise<unknown> =>
+		Promise.resolve({
+			response: {
+				content: JSON.stringify({
+					ok: true,
+					response: {
+						features: [
+							{
+								name: 'wsc_basic',
+								enabled: true
+							}
+						]
+					}
+				})
+			}
+		})
+}));
+
 beforeEach(() => {
 	useCosStore.setState({
 		cos: {
@@ -40,7 +59,7 @@ describe('WscCosSettings', () => {
 		mock(modifyCos).mockResolvedValue({});
 		mock(flushCache).mockResolvedValue({});
 		const { user } = setup(<WscCosSettings />);
-		const inheritedSwitch = screen.getByTestId(`inherited-carbonioFeatureWscEnabled`);
+		const inheritedSwitch = await screen.findByTestId(`inherited-carbonioFeatureWscEnabled`);
 		const switchIcon = within(inheritedSwitch).getByTestId('icon: ToggleLeftOutline');
 		await user.click(switchIcon);
 		await user.click(screen.getByText('Save'));
@@ -51,7 +70,7 @@ describe('WscCosSettings', () => {
 	test('User cancel his changes, resetting the values', async () => {
 		mock(modifyCos).mockResolvedValue({});
 		const { user } = setup(<WscCosSettings />);
-		const inheritedSwitch = screen.getByTestId(`inherited-carbonioFeatureWscEnabled`);
+		const inheritedSwitch = await screen.findByTestId(`inherited-carbonioFeatureWscEnabled`);
 		const switchIcon = within(inheritedSwitch).getByTestId('icon: ToggleLeftOutline');
 		await user.click(switchIcon);
 		await user.click(screen.getByText('Cancel'));

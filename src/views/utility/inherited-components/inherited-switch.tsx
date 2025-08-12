@@ -78,7 +78,6 @@ const InheritedSwitch: FC<{
 					}
 				>
 					<IconCheckbox
-						data-testid={`reset-inherited-${inputName}`}
 						icon="RefreshOutline"
 						value={false}
 						onClick={onChangeReset}
