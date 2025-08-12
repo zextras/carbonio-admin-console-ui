@@ -32,7 +32,7 @@ const BackupAdvanced: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
+	const [initbackupDetail, setInitBackupDetail] = useState<any>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const allowSetBackup = useMemo(() => {
@@ -85,11 +85,6 @@ const BackupAdvanced: FC = () => {
 			}
 		});
 	};
-	useEffect(() => {
-		if (!initbackupDetail?.privateKeyAlgorithm && globalConfig?.privateKeyAlgorithm) {
-			setInitBackupDetail(cloneDeep(globalConfig));
-		}
-	}, [globalConfig, initbackupDetail]);
 
 	useEffect(() => {
 		if (!isEqual(globalConfig, initbackupDetail)) {

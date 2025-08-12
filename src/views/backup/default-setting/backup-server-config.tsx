@@ -32,7 +32,7 @@ const BackupServerConfig: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
+	const [initbackupDetail, setInitBackupDetail] = useState<any>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
@@ -102,11 +102,6 @@ const BackupServerConfig: FC = () => {
 				});
 			});
 	};
-	useEffect(() => {
-		if (!initbackupDetail?.privateKeyAlgorithm && globalConfig?.privateKeyAlgorithm) {
-			setInitBackupDetail(cloneDeep(globalConfig));
-		}
-	}, [globalConfig, initbackupDetail]);
 	useEffect(() => {
 		if (!isEqual(globalConfig, initbackupDetail)) {
 			setIsDirty(true);
