@@ -3,141 +3,42 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	Padding,
-	Button,
 	Text,
 	Divider,
 	Switch,
 	Input,
-	useSnackbar
+	Padding
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
-import { useTranslation } from 'react-i18next';
 
-import { BACKUP_BASIC, CONFIG, BACKUP_REALTIME } from '../../../constants';
-import { modifyBackupRequest } from '../../../services/modify-backup';
-import { useBackupStore } from '../../../store/backup/store';
+import BackupConfigHeader from '../../../components/backup/BackupConfigHeader';
+import BackupRouteLeavingGuard from '../../../components/backup/BackupRouteLeavingGuard';
+import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
+import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupServerConfig: FC = () => {
-	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const globalConfig = useBackupStore((state) => state.globalConfig);
-	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
-	const createSnackbar = useSnackbar();
+	const {
+		isDirty,
+		backupDetail,
+		allowSetBackup,
+		onCancel,
+		onSave,
+		changeSwitchOption,
+		changeBackupDetail,
+		changeBackupSchedulerDetail,
+		t
+	} = useBackupConfig();
+
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
 		useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
-
-	const onCancel = (): void => {
-		setBackupDetail({ ...globalConfig });
-	};
-	const onSave = (): void => {
-		const modifiedKeys: any = reduce(
-			globalConfig,
-			function (result, value, key): any {
-				return isEqual(value, backupDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		const modifiedData: any = {};
-		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = backupDetail[ele];
-		});
-		modifyBackupRequest(modifiedData)
-			.then((data) => {
-				if (data?.status === 200 || isEmpty(data)) {
-					setGlobalConfig(backupDetail);
-					createSnackbar({
-						key: 'success',
-						severity: 'success',
-						label: t(
-							'label.the_last_changes_has_been_saved_successfully',
-							'Changes have been saved successfully'
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				} else {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label:
-							data?.errors?.[0]?.error ||
-							data?.statusText ||
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				}
-			})
-			.catch((err) => {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label:
-						err?.errors?.[0]?.error ||
-						err?.statusText ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	};
-	useEffect(() => {
-		if (!isEqual(globalConfig, backupDetail)) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
-		}
-	}, [globalConfig, backupDetail]);
-
-	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setBackupDetail((prev: any) => ({
-				...prev,
-				[key]: backupDetail[key] !== true
-			}));
-		},
-		[backupDetail]
-	);
-
-	const changeBackupDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setBackupDetail]
-	);
-	const changeBackupSchedulerDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setBackupDetail((prev: any) => ({
-				...prev,
-				[e.target.name]: {
-					...[e.target.name],
-					'cron-pattern': e.target.value
-				}
-			}));
-		},
-		[setBackupDetail]
-	);
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
@@ -160,36 +61,13 @@ const BackupServerConfig: FC = () => {
 		<>
 			{isBackupModuleLicensed && (
 				<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-					<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large', right: 'large' }}>
-						<Container
-							orientation="vertical"
-							mainAlignment="space-around"
-							background="gray6"
-							height="58px"
-						>
-							<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-								<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-									<Text size="medium" weight="bold" color="gray0">
-										{t('label.server_config', 'Server Config')}
-									</Text>
-								</Row>
-								<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-									<Padding right="small">
-										{isDirty && (
-											<Button
-												label={t('label.cancel', 'Cancel')}
-												color="secondary"
-												onClick={onCancel}
-											/>
-										)}
-									</Padding>
-									{isDirty && (
-										<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-									)}
-								</Row>
-							</Row>
-						</Container>
-					</Row>
+					<BackupConfigHeader
+						title={t('label.server_config', 'Server Config')}
+						isDirty={isDirty}
+						onCancel={onCancel}
+						onSave={onSave}
+						t={t}
+					/>
 					<Row orientation="horizontal" width="100%" background="gray6">
 						<Divider />
 					</Row>
@@ -399,15 +277,7 @@ const BackupServerConfig: FC = () => {
 				</Container>
 			)}
 
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
+			<BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
 		</>
 	);
 };

@@ -3,112 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { FC, useMemo } from 'react';
 
-import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
-	Input,
-	Button,
-	useSnackbar,
-	Switch,
-	Select
-} from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
-import { useTranslation } from 'react-i18next';
+import { Container, Row, Divider, Input, Switch, Select } from '@zextras/carbonio-design-system';
 
-import { CONFIG } from '../../../constants';
-import { modifyBackupRequest } from '../../../services/modify-backup';
+import BackupConfigHeader from '../../../components/backup/BackupConfigHeader';
+import BackupRouteLeavingGuard from '../../../components/backup/BackupRouteLeavingGuard';
+import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupAdvanced: FC = () => {
-	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const {
+		isDirty,
+		backupDetail,
+		setBackupDetail,
+		allowSetBackup,
+		onCancel,
+		onSave,
+		changeSwitchOption,
+		changeBackupDetail,
+		t
+	} = useBackupConfig();
+
 	const globalConfig = useBackupStore((state) => state.globalConfig);
-	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
-	const createSnackbar = useSnackbar();
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
-
-	const onCancel = (): void => {
-		setBackupDetail({ ...globalConfig });
-	};
-	const onSave = (): void => {
-		const modifiedKeys: any = reduce(
-			globalConfig,
-			function (result, value, key): any {
-				return isEqual(value, backupDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		const modifiedData: any = {};
-		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = backupDetail[ele];
-		});
-		modifyBackupRequest(modifiedData).then((data) => {
-			if (data?.status === 200 || isEmpty(data)) {
-				setGlobalConfig(backupDetail);
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t(
-						'label.the_last_changes_has_been_saved_successfully',
-						'Changes have been saved successfully'
-					),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			} else {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label:
-						data?.errors?.[0]?.error ||
-						data?.statusText ||
-						data?.error ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			}
-		});
-	};
-
-	useEffect(() => {
-		if (!isEqual(globalConfig, backupDetail)) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
-		}
-	}, [globalConfig, backupDetail]);
-
-	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setBackupDetail((prev: any) => ({
-				...prev,
-				[key]: backupDetail[key] !== true
-			}));
-		},
-		[backupDetail]
-	);
-	const changeBackupDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setBackupDetail]
-	);
 
 	const compressLevelItems = useMemo(
 		() => [
@@ -141,37 +59,13 @@ const BackupAdvanced: FC = () => {
 				>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container orientation="vertical" mainAlignment="space-around" height="56px">
-							<Row orientation="horizontal" width="100%">
-								<Row
-									padding={{ all: 'large' }}
-									mainAlignment="flex-start"
-									width="50%"
-									crossAlignment="flex-start"
-								>
-									<Text size="medium" weight="bold" color="gray0">
-										{t('label.advanced', 'Advanced')}
-									</Text>
-								</Row>
-								<Row
-									padding={{ all: 'large' }}
-									width="50%"
-									mainAlignment="flex-end"
-									crossAlignment="flex-end"
-								>
-									<Padding right="small">
-										{isDirty && (
-											<Button
-												label={t('label.cancel', 'Cancel')}
-												color="secondary"
-												onClick={onCancel}
-											/>
-										)}
-									</Padding>
-									{isDirty && (
-										<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-									)}
-								</Row>
-							</Row>
+							<BackupConfigHeader
+								title={t('label.advanced', 'Advanced')}
+								isDirty={isDirty}
+								onCancel={onCancel}
+								onSave={onSave}
+								t={t}
+							/>
 						</Container>
 						<Divider color="gray2" />
 					</Row>
@@ -417,15 +311,7 @@ const BackupAdvanced: FC = () => {
 					</Container>
 				</Container>
 			</Container>
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
+			<BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
 		</>
 	);
 };
