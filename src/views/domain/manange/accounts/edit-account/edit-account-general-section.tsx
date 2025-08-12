@@ -115,7 +115,10 @@ const EditAccountGeneralSection: FC<{
 	const cosList = useDomainStore((state) => state.cosList);
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
-	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+	const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(
+		() => AccountStatus(t),
+		[t]
+	);
 	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
 	const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
@@ -727,9 +730,10 @@ const EditAccountGeneralSection: FC<{
 		label: string,
 		inputName: string,
 		value: string,
+		width: string,
 		onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	): React.JSX.Element => (
-		<Row width="32%" mainAlignment="space-between">
+		<Row width={width} mainAlignment="space-between">
 			<Input
 				data-testid={id}
 				label={label}
@@ -784,6 +788,7 @@ const EditAccountGeneralSection: FC<{
 						t('label.surname', 'Surname'),
 						'sn',
 						accountDetail?.sn,
+						'32%',
 						changeAccDetail
 					)}
 					{renderInputRow(
@@ -791,6 +796,7 @@ const EditAccountGeneralSection: FC<{
 						t('label.second_name_initials', 'Middle Name Initials'),
 						'initials',
 						accountDetail?.initials,
+						'32%',
 						changeAccDetail
 					)}
 					{renderInputRow(
@@ -798,6 +804,7 @@ const EditAccountGeneralSection: FC<{
 						t('label.person_name', 'Name'),
 						'givenName',
 						accountDetail?.givenName,
+						'32%',
 						changeAccDetail
 					)}
 				</Row>
@@ -1195,17 +1202,24 @@ const EditAccountGeneralSection: FC<{
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="100%" mainAlignment="space-between">
-					<Input
-						label={t(
-							'domain.accounts.editAccount.externalldapReferenceForAuthentication',
-							'External LDAP Reference for Authentication'
-						)}
+					{/* <Input
 						backgroundColor="gray5"
 						value={accountDetail?.zimbraAuthLdapExternalDn ?? ''}
 						defaultValue={''}
 						onChange={changeAccDetail}
 						inputName="zimbraAuthLdapExternalDn"
-					/>
+					/> */}
+					{renderInputRow(
+						'zimbraAuthLdapExternalDn',
+						t(
+							'domain.accounts.editAccount.externalldapReferenceForAuthentication',
+							'External LDAP Reference for Authentication'
+						),
+						'zimbraAuthLdapExternalDn',
+						accountDetail?.zimbraAuthLdapExternalDn,
+						'100%',
+						changeAccDetail
+					)}
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
@@ -1228,7 +1242,8 @@ const EditAccountGeneralSection: FC<{
 								onChange={onAccountStatusChange}
 								selection={
 									ACCOUNT_STATUS.find(
-										(item: any) => item.value === accountDetail?.zimbraAccountStatus
+										(item: { value: string; label: string }) =>
+											item.value === accountDetail?.zimbraAccountStatus
 									) ?? ACCOUNT_STATUS[0]
 								}
 							/>
