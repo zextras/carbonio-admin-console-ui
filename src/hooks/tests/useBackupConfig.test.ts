@@ -40,7 +40,8 @@ describe('useBackupConfig', () => {
 		backupSelfUndeleteAllowed: false,
 		abqMode: 'Interactive',
 		scheduler: {
-			'cron-pattern': '0 2 * * *'
+			'cron-pattern': '0 2 * * *',
+			'cron-enabled': false
 		}
 	};
 
@@ -88,7 +89,8 @@ describe('useBackupConfig', () => {
 			expect(typeof result.current.onSave).toBe('function');
 			expect(typeof result.current.changeSwitchOption).toBe('function');
 			expect(typeof result.current.changeBackupDetail).toBe('function');
-			expect(typeof result.current.changeBackupSchedulerDetail).toBe('function');
+			expect(typeof result.current.changeBackupSchedulerInput).toBe('function');
+			expect(typeof result.current.changeBackupSchedulerSwitch).toBe('function');
 			expect(typeof result.current.t).toBe('function');
 		});
 
@@ -238,7 +240,7 @@ describe('useBackupConfig', () => {
 		});
 	});
 
-	describe('changeBackupSchedulerDetail', () => {
+	describe('changeBackupSchedulerInput', () => {
 		it('should update scheduler cron pattern', () => {
 			const { result } = renderHook(() => useBackupConfig());
 
@@ -250,10 +252,22 @@ describe('useBackupConfig', () => {
 			} as React.ChangeEvent<HTMLInputElement>;
 
 			act(() => {
-				result.current.changeBackupSchedulerDetail(mockEvent);
+				result.current.changeBackupSchedulerInput(mockEvent);
 			});
 
 			expect(result.current.backupDetail.scheduler['cron-pattern']).toBe('0 3 * * *');
+		});
+	});
+
+	describe('changeBackupSchedulerSwitch', () => {
+		it('should toggle scheduler cron-enabled status', () => {
+			const { result } = renderHook(() => useBackupConfig());
+
+			act(() => {
+				result.current.changeBackupSchedulerSwitch('scheduler');
+			});
+
+			expect(result.current.backupDetail.scheduler['cron-enabled']).toBe(true);
 		});
 	});
 

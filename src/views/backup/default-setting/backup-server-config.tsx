@@ -31,7 +31,8 @@ const BackupServerConfig: FC = () => {
 		onSave,
 		changeSwitchOption,
 		changeBackupDetail,
-		changeBackupSchedulerDetail,
+		changeBackupSchedulerInput,
+		changeBackupSchedulerSwitch,
 		t
 	} = useBackupConfig();
 
@@ -174,8 +175,8 @@ const BackupServerConfig: FC = () => {
 						<ListRow>
 							<Padding bottom="large">
 								<Switch
-									value={backupDetail.ZxBackup_SmartScanSchedulingEnabled}
-									onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
+									value={backupDetail.backupSmartScanScheduler?.['cron-enabled']}
+									onClick={(): void => changeBackupSchedulerSwitch('backupSmartScanScheduler')}
 									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
@@ -189,7 +190,7 @@ const BackupServerConfig: FC = () => {
 									// eslint-disable-next-line sonarjs/no-duplicate-string
 									value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
-									onChange={changeBackupSchedulerDetail}
+									onChange={changeBackupSchedulerInput}
 									inputName="backupSmartScanScheduler"
 									backgroundColor="gray5"
 									disabled={!allowSetBackup}
@@ -203,10 +204,14 @@ const BackupServerConfig: FC = () => {
 						</ListRow>
 
 						<ListRow>
-							<Padding bottom="medium">
-								<Text size="medium" weight="regular">
-									{t('backup.backup_purge', 'Backup Purge')}
-								</Text>
+							<Padding bottom="large">
+								<Switch
+									value={backupDetail.backupPurgeScheduler?.['cron-enabled']}
+									onClick={(): void => changeBackupSchedulerSwitch('backupPurgeScheduler')}
+									label={t('backup.schedule_purge', 'Schedule Purge')}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
 							</Padding>
 						</ListRow>
 
@@ -216,11 +221,16 @@ const BackupServerConfig: FC = () => {
 									label={t('backup.schedule', 'Schedule')}
 									value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
 									defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
-									onChange={changeBackupSchedulerDetail}
+									onChange={changeBackupSchedulerInput}
 									inputName="backupPurgeScheduler"
 									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ top: 'small', bottom: 'extralarge' }}>
+								<Divider />
 							</Container>
 						</ListRow>
 						<ListRow>

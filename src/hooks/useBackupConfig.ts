@@ -23,7 +23,8 @@ export const useBackupConfig = (): {
 	onSave: () => void;
 	changeSwitchOption: (key: string) => void;
 	changeBackupDetail: (e: ChangeEvent<HTMLInputElement>) => void;
-	changeBackupSchedulerDetail: (e: ChangeEvent<HTMLInputElement>) => void;
+	changeBackupSchedulerInput: (e: ChangeEvent<HTMLInputElement>) => void;
+	changeBackupSchedulerSwitch: (key: string) => void;
 	t: (key: string, fallback?: string) => string;
 } => {
 	const [t] = useTranslation();
@@ -123,15 +124,33 @@ export const useBackupConfig = (): {
 		setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 	}, []);
 
-	const changeBackupSchedulerDetail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-		setBackupDetail((prev: any) => ({
-			...prev,
-			[e.target.name]: {
-				...[e.target.name],
-				'cron-pattern': e.target.value
-			}
-		}));
-	}, []);
+	const changeBackupSchedulerInput = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) => {
+			setBackupDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: {
+					...[e.target.name],
+					'cron-pattern': e.target.value,
+					'cron-enabled': backupDetail[e.target.name]['cron-enabled']
+				}
+			}));
+		},
+		[backupDetail]
+	);
+
+	const changeBackupSchedulerSwitch = useCallback(
+		(key: string): void => {
+			setBackupDetail((prev: any) => ({
+				...prev,
+				[key]: {
+					...[key],
+					'cron-pattern': backupDetail[key]['cron-pattern'],
+					'cron-enabled': backupDetail[key]['cron-enabled'] !== true
+				}
+			}));
+		},
+		[backupDetail]
+	);
 
 	return {
 		isDirty,
@@ -142,7 +161,8 @@ export const useBackupConfig = (): {
 		onSave,
 		changeSwitchOption,
 		changeBackupDetail,
-		changeBackupSchedulerDetail,
+		changeBackupSchedulerInput,
+		changeBackupSchedulerSwitch,
 		t
 	};
 };
