@@ -180,6 +180,7 @@ const BackupServerConfig: FC = () => {
 									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
+									data-testid={'smart-scan-toggle'}
 								/>
 							</Padding>
 						</ListRow>
@@ -211,6 +212,7 @@ const BackupServerConfig: FC = () => {
 									label={t('backup.config.schedule_purge', 'Schedule Purge')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
+									data-testid={'backup-purge-toggle'}
 								/>
 							</Padding>
 						</ListRow>

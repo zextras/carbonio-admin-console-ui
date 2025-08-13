@@ -408,6 +408,19 @@ describe('BackupServerConfig', () => {
 		});
 	});
 
+	it('should render scheduler toggle and click', async () => {
+		const { user } = setup(<BackupServerConfig />);
+		const smartScanToggle = screen.getByTestId('smart-scan-toggle');
+		expect(smartScanToggle).toBeInTheDocument();
+		await user.click(smartScanToggle);
+	});
+	it('should render purge scheduler toggle and click', async () => {
+		const { user } = setup(<BackupServerConfig />);
+		const backupPurgeToggle = screen.getByTestId('backup-purge-toggle');
+		expect(backupPurgeToggle).toBeInTheDocument();
+		await user.click(backupPurgeToggle);
+	});
+
 	describe('Module License Integration', () => {
 		it('should render scheduler functions when backup module is licensed', () => {
 			setup(<BackupServerConfig />);
