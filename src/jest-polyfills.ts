@@ -21,3 +21,6 @@ window.matchMedia = function matchMedia(query: string): MediaQueryList {
 };
 
 window.fetch = require('node-fetch');
+
+// Set BASE_PATH for carbonio-shell-ui
+process.env.BASE_PATH = '/carbonio';
