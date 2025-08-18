@@ -65,7 +65,7 @@ describe('BackupServerConfig', () => {
 	const mockT = jest.fn((key: string, fallback?: string) => {
 		const translations: Record<string, string> = {
 			'backup.schedule_smart_scan': 'Schedule Smartscan',
-			'backup.config.schedule_purge': 'Schedule Purge',
+			'backup.config.scheduleBackupPurge': 'Schedule Backup Purge',
 			'backup.schedule': 'Schedule',
 			'backup.enable_realtime_scanner': 'Enable Realtime Scanner',
 			'backup.backup_is_enable_at_the_startup': 'Backup is enabled at the startup',

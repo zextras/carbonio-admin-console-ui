@@ -209,7 +209,7 @@ const BackupServerConfig: FC = () => {
 								<Switch
 									value={backupDetail.backupPurgeScheduler?.['cron-enabled']}
 									onClick={(): void => changeBackupSchedulerSwitch('backupPurgeScheduler')}
-									label={t('backup.config.schedule_purge', 'Schedule Purge')}
+									label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
 									data-testid={'backup-purge-toggle'}
