@@ -9,14 +9,14 @@ import {
 	Button,
 	Container,
 	Divider,
-	Icon,
 	Padding,
 	Row,
 	Text,
 	Input,
 	useSnackbar,
 	Modal,
-	Quota
+	Quota,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { find } from 'lodash';
@@ -46,6 +46,8 @@ type AllModuleConfig = {
 	quantity: string;
 	enabled: boolean;
 };
+
+const DATE_FORMAT = 'DD MMM YYYY';
 
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
@@ -174,6 +176,7 @@ const Subscription: FC = () => {
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const [isLoader, setIsLoader] = useState(false);
+	const [isActivateLoading, setIsActivateLoading] = useState(false);
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
 
@@ -242,7 +245,14 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				formatAndSetModulesStats(response);
+				if (response.response && response.response.type === 'None') {
+					setServices({});
+					setModules([]);
+					setLicenseKey('');
+					setVersion(undefined);
+				} else {
+					formatAndSetModulesStats(response);
+				}
 			}
 		});
 		fetchSoap('zextras', {
@@ -262,7 +272,7 @@ const Subscription: FC = () => {
 	}, [getLicence]);
 
 	const activeLicence = (): void => {
-		setDisableActiveBtn(true);
+		setIsActivateLoading(true);
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
@@ -270,7 +280,7 @@ const Subscription: FC = () => {
 			token: licenseKey
 		})
 			.then((res) => {
-				setDisableActiveBtn(false);
+				setIsActivateLoading(false);
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
 					createSnackbar({
@@ -279,6 +289,7 @@ const Subscription: FC = () => {
 						label: response.message,
 						replace: true
 					});
+					getLicence();
 				} else {
 					createSnackbar({
 						key: '1',
@@ -289,10 +300,17 @@ const Subscription: FC = () => {
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						replace: true
 					});
+					if (response.response && response.response.type === 'None') {
+						setServices({});
+						setModules([]);
+						setLicenseKey('');
+						setVersion(undefined);
+					} else {
+						getLicence();
+					}
 				}
-				getLicence();
 			})
-			.catch(() => setDisableActiveBtn(false));
+			.catch(() => setIsActivateLoading(false));
 	};
 
 	const doRemoveLicense = (): void => {
@@ -309,9 +327,16 @@ const Subscription: FC = () => {
 					severity: 'success',
 					label:
 						response.message ||
-						t('core.subscription.license_activated_successfully', 'License activated successfully'),
+						t(
+							'core.subscription.license_deactivated_successfully',
+							'License deactivated successfully'
+						),
 					replace: true
 				});
+				setServices({});
+				setModules([]);
+				setLicenseKey('');
+				setVersion(undefined);
 			} else {
 				createSnackbar({
 					key: '1',
@@ -323,7 +348,6 @@ const Subscription: FC = () => {
 				});
 			}
 			setOpen(false);
-			getLicence();
 		});
 	};
 
@@ -339,7 +363,20 @@ const Subscription: FC = () => {
 		return (accountCount / licensedUsers) * 100;
 	}, [services.response]);
 
-	const refreshLicence = (): void => {
+	const getTypeDisplayValue = (): string => {
+		const { type } = services.response;
+		const { subType } = services.response;
+
+		if (type === 'Purchased') {
+			if (subType === 'PERPETUAL' || subType === 'REGULAR') {
+				return `${type} - ${subType}`;
+			}
+			return subType ?? '';
+		}
+		return type ?? '';
+	};
+
+	const renewLicence = (): void => {
 		setIsLoader(true);
 		fetchSoap('zextras', {
 			_jsns: ZIMBRA_ADMIN_URN,
@@ -357,6 +394,7 @@ const Subscription: FC = () => {
 					label: response.message,
 					replace: true
 				});
+				getLicence();
 			} else {
 				setIsLoader(false);
 				createSnackbar({
@@ -367,8 +405,15 @@ const Subscription: FC = () => {
 						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					replace: true
 				});
+				if (response.response && response.response.type === 'None') {
+					setServices({});
+					setModules([]);
+					setLicenseKey('');
+					setVersion(undefined);
+				} else {
+					getLicence();
+				}
 			}
-			getLicence();
 		});
 	};
 
@@ -436,36 +481,27 @@ const Subscription: FC = () => {
 					>
 						<Button
 							label={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
+								!services?.response || services.response.expired
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
-							disabled={!allowSetSubsciption || !licenseKey || disableActiveBtn}
+							disabled={!allowSetSubsciption || !licenseKey || isActivateLoading}
 							type="outlined"
-							color={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
-									? 'primary'
-									: 'error'
-							}
+							color={!services?.response || services.response.expired ? 'primary' : 'error'}
 							onClick={
-								services &&
-								services.response &&
-								(services.response.expired || services.response.type !== 'Purchased')
+								!services?.response || services.response.expired
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
+							loading={isActivateLoading}
 							size="extralarge"
 						/>
 						<Button
-							label={t('core.subscription.refresh', 'Refresh')}
-							disabled={!allowSetSubsciption || !licenseKey}
+							label={t('core.subscription.renew', 'Renew')}
+							disabled={!allowSetSubsciption || !licenseKey || !services?.response}
 							type="outlined"
 							color="primary"
-							onClick={(): void => refreshLicence()}
+							onClick={(): void => renewLicence()}
 							loading={isLoader}
 							size="extralarge"
 						/>
@@ -508,9 +544,17 @@ const Subscription: FC = () => {
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
+							<Input label={t('core.subscription.type', 'Type')} value={getTypeDisplayValue()} />
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
 							<Input
-								label={t('core.subscription.type', 'Type')}
-								value={services.response.type || ''}
+								label={t('core.subscription.order_id', 'Order ID')}
+								value={services.response?.infrastructureId ?? ''}
 							/>
 						</Row>
 						<Row
@@ -520,43 +564,116 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.status', 'Status')}
+								label={t('core.subscription.date_start', 'Date Start')}
+								value={
+									services.response.dateStart
+										? moment(services.response.dateStart).format(DATE_FORMAT)
+										: ''
+								}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.date_end', 'Date End')}
 								value={
 									services.response.notYetValid || !services.response.authenticationToken
 										? ''
-										: `${t('core.subscription.valid_until', 'Valid until') || ''} ${moment(
-												services.response.dateEnd
-										  ).format('DD MMM YYYY')}`
+										: moment(services.response.dateEnd).format(DATE_FORMAT)
 								}
 							/>
 						</Row>
-
+						{services.response.maintenanceEndDate && (
+							<Row
+								width="99%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input
+									label={t('core.subscription.maintenance_end_date', 'Maintenance End Date')}
+									value={moment(services.response.maintenanceEndDate).format(DATE_FORMAT)}
+								/>
+							</Row>
+						)}
+						{services.response.type === 'ISP' && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Tooltip
+									label={
+										<Text style={{ whiteSpace: 'pre-line' }}>
+											{t(
+												'core.subscription.last_validation_check_tooltip',
+												'This date represents the last day on which the license was validated by the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.'
+											)}
+										</Text>
+									}
+								>
+									<Input
+										label={t('core.subscription.last_validation_check', 'Last Validation Check')}
+										value={
+											services.response.lastValidationCheck
+												? moment(services.response.lastValidationCheck).format(DATE_FORMAT)
+												: ''
+										}
+									/>
+								</Tooltip>
+							</Row>
+						)}
+						{services.response.type === 'ISP' && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Tooltip
+									label={
+										<Text style={{ whiteSpace: 'pre-line' }}>
+											{t(
+												'core.subscription.next_validation_deadline_tooltip',
+												'This date represents the last day the license will remain fully functional if usage data is not sent to the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.'
+											)}
+										</Text>
+									}
+								>
+									<Input
+										label={t(
+											'core.subscription.next_validation_deadline',
+											'Next Validation Deadline'
+										)}
+										value={
+											services.response.nextValidationDeadline
+												? moment(services.response.nextValidationDeadline).format(DATE_FORMAT)
+												: ''
+										}
+									/>
+								</Tooltip>
+							</Row>
+						)}
 						<Row
 							width="49.5%"
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
-							<Input
-								label={t(
-									'core.subscription.refresh_subscription_last_check',
-									'Refresh Subscription (Last Check)'
-								)}
-								value={
-									services.response.dateStart
-										? moment(services.response.dateStart).format('DD MMM YYYY')
-										: ''
-								}
-								CustomIcon={(): JSX.Element => <Icon icon="Refresh" size="large" color="primary" />}
-							/>
+							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
 						</Row>
 						<Row
 							width="49.5%"
 							orientation="vertical"
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small', right: 'small' }}
-							style={{ gap: '.5rem', marginLeft: '.5rem' }}
+							padding={{ top: 'small', bottom: 'large', right: 'small' }}
+							style={{ gap: '.5rem' }}
 						>
 							<Text size="small" color="#828282">
 								{t('core.subscription.accounts', 'Accounts')}
@@ -575,25 +692,6 @@ const Subscription: FC = () => {
 									style={{ borderRadius: '2px' }}
 								/>
 							</Row>
-						</Row>
-						<Row
-							width="49.5%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('core.subscription.order_id', 'Order ID')}
-								value={services.response?.infrastructureId || ''}
-							/>
-						</Row>
-						<Row
-							width="49.5%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small', right: 'small' }}
-						>
-							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
 						</Row>
 					</Container>
 				)}
