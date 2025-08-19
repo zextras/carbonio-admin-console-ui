@@ -33,7 +33,7 @@ export const WscSettings: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const { isLicensed, isLoading, error } = useWscLicense();
+	const { isLicensed, isLoading, error, requiresLicenseCheck } = useWscLicense();
 
 	const wscLicenseDisabledWarningLabel = t(
 		'wsc.section.license.warning',
@@ -77,8 +77,11 @@ export const WscSettings: FC<{
 	);
 
 	const disableWscSettings = useMemo(
-		() => featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' || readonlyFeatures || !isLicensed,
-		[featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures, isLicensed]
+		() =>
+			featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
+			readonlyFeatures ||
+			(requiresLicenseCheck && !isLicensed),
+		[featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures, isLicensed, requiresLicenseCheck]
 	);
 
 	const deleteMessageOptions = useMemo(() => {
@@ -109,7 +112,7 @@ export const WscSettings: FC<{
 		];
 	}, [t]);
 
-	if (isLoading) {
+	if (requiresLicenseCheck && isLoading) {
 		return (
 			<Container height="fit" padding="large" style={{ userSelect: 'none' }}>
 				<Spinner color={'primary'} />
@@ -119,7 +122,7 @@ export const WscSettings: FC<{
 
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-			{!isLoading && !isLicensed && !error && (
+			{requiresLicenseCheck && !isLoading && !isLicensed && !error && (
 				<Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
 			)}
 			<BoxLayout
@@ -128,7 +131,7 @@ export const WscSettings: FC<{
 					'wsc.section.header.description.general',
 					'Manage the activation of core features and applications.'
 				)}
-				disabled={!isLicensed}
+				disabled={requiresLicenseCheck && !isLicensed}
 			>
 				<SettingLayout
 					description={t(
@@ -145,7 +148,7 @@ export const WscSettings: FC<{
 						fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
 						inputName={'carbonioFeatureWscEnabled'}
 						onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
-						disabled={!isLicensed}
+						disabled={requiresLicenseCheck && !isLicensed}
 					/>
 				</SettingLayout>
 			</BoxLayout>
