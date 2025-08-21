@@ -22,9 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { ACCOUNT } from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
-import { WscSettings } from '../../../../cos/wscSettings/wsc-settings';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
@@ -322,10 +322,10 @@ const EditAccountConfigurationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.wsc', 'Chat')}
+						{t('label.features', 'Features')}
 					</Text>
 				</Row>
-				<WscSettings
+				<Features
 					featuresDetail={accountDetail}
 					setFeaturesDetail={setAccountDetail}
 					cosDetail={cosDetail}
@@ -337,10 +337,10 @@ const EditAccountConfigurationSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.features', 'Features')}
+						{t('label.wsc', 'Chat')}
 					</Text>
 				</Row>
-				<Features
+				<WscSettings
 					featuresDetail={accountDetail}
 					setFeaturesDetail={setAccountDetail}
 					cosDetail={cosDetail}

@@ -10,14 +10,14 @@ import { find, forEach, isEqual, size } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from './wsc-settings';
-import { Attribute, Cos } from '../../../../types';
-import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
-import { useCosStore } from '../../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
-import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
-import { PageLayout } from '../../page-layout';
+import { Attribute, Cos } from '../../types';
+import { COS, ZIMBRA_ADMIN_URN } from '../constants';
+import { flushCache } from '../services/flush-cache-service';
+import { modifyCos, ModifyCosBody } from '../services/modify-cos-service';
+import { useCosStore } from '../store/cos/store';
+import { Right, Rights, useRightsStore } from '../store/rights/store';
+import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
+import { PageLayout } from '../views/page-layout';
 
 const WscCosSettings: FC = () => {
 	const [t] = useTranslation();

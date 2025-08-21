@@ -68,14 +68,15 @@ export const PageLayout: FC<{
 export const BoxLayout: FC<{
 	title: string;
 	description: string;
+	disabled?: boolean;
 	children: ReactNode | ReactNode[];
-}> = ({ title, description, children }) => (
+}> = ({ title, description, disabled = false, children }) => (
 	<Container orientation="vertical" height="fit" gap="1rem">
 		<Container orientation="vertical" height="fit" crossAlignment="flex-start" gap="0.5rem">
-			<Text weight="bold" overflow="break-word">
+			<Text weight="bold" overflow="break-word" disabled={disabled}>
 				{title}
 			</Text>
-			<Text size="small" overflow="break-word">
+			<Text size="small" overflow="break-word" disabled={disabled}>
 				{description}
 			</Text>
 		</Container>

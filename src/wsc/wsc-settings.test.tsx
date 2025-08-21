@@ -3,16 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import React from 'react';
 
-import { jest } from '@jest/globals';
-import { act, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { filter } from 'lodash';
 
 import { WscSettings } from './wsc-settings';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { setup } from '../../../tests/testUtils';
-import { accountDetail } from '../../domain/manange/accounts/edit-account/tests/mock-edit-account-data';
+import { useAuthIsAdvanced } from '../store/auth-advanced/store';
+import { setup } from '../tests/testUtils';
+import { accountDetail } from '../views/domain/manange/accounts/edit-account/tests/mock-edit-account-data';
 
 const wscAttrs = [
 	{ name: 'carbonioFeatureWscEnabled', type: 'switch' },
@@ -35,23 +35,40 @@ const wscCeAttrs = filter(wscAttrs, (attr) => !attr.advanced);
 
 const iconRefreshOutline = 'icon: RefreshOutline';
 
+jest.mock('../services/subscription-service', () => ({
+	fetchSoap: (): Promise<unknown> =>
+		Promise.resolve({
+			response: {
+				content: JSON.stringify({
+					ok: true,
+					response: {
+						features: [
+							{
+								name: 'wsc_basic',
+								enabled: true
+							}
+						]
+					}
+				})
+			}
+		})
+}));
+
 describe('WscSettings - general', () => {
-	test.each(wscCeAttrs)('CE: should render the input for changing $name', (attr) => {
+	test.each(wscCeAttrs)('CE: should render the input for changing $name', async (attr) => {
 		setup(<WscSettings featuresDetail={accountDetail} setFeaturesDetail={jest.fn()} />);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
-		expect(element).toBeInTheDocument();
+		expect(await screen.findByTestId(`inherited-${attr.name}`)).toBeVisible();
 	});
 
-	test.each(wscAttrs)('Advanced: should render the input for changing $name', (attr) => {
+	test.each(wscAttrs)('Advanced: should render the input for changing $name', async (attr) => {
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		setup(<WscSettings featuresDetail={accountDetail} setFeaturesDetail={jest.fn()} />);
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
-		const element = screen.getByTestId(`inherited-${attr.name}`);
-		expect(element).toBeInTheDocument();
+		expect(await screen.findByTestId(`inherited-${attr.name}`)).toBeVisible();
 	});
 
-	test('when carbonioWscVideoCallEnabled is false, all the related attrs are disabled', () => {
+	test('when carbonioWscVideoCallEnabled is false, all the related attrs are disabled', async () => {
 		const setFeaturesDetail = jest.fn();
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		const { user } = setup(
 			<WscSettings
 				featuresDetail={{
@@ -61,16 +78,16 @@ describe('WscSettings - general', () => {
 				setFeaturesDetail={setFeaturesDetail}
 			/>
 		);
-		user.click(screen.getByTestId('inherited-carbonioWscVirtualBackgroundEnabled'));
+		await user.click(await screen.findByTestId('inherited-carbonioWscVirtualBackgroundEnabled'));
 		expect(setFeaturesDetail).not.toHaveBeenCalled();
 
-		user.click(screen.getByTestId('inherited-carbonioWscRecordingEnabled'));
+		await user.click(screen.getByTestId('inherited-carbonioWscRecordingEnabled'));
 		expect(setFeaturesDetail).not.toHaveBeenCalled();
 	});
 
-	test('when carbonioWscAttachmentUpload is false, all the related attrs are disabled', () => {
+	test('when carbonioWscAttachmentUpload is false, all the related attrs are disabled', async () => {
 		const setFeaturesDetail = jest.fn();
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		const { user } = setup(
 			<WscSettings
 				featuresDetail={{
@@ -80,7 +97,7 @@ describe('WscSettings - general', () => {
 				setFeaturesDetail={setFeaturesDetail}
 			/>
 		);
-		user.click(screen.getByTestId('inherited-carbonioWscMaxAttachmentSize'));
+		await user.click(await screen.findByTestId('inherited-carbonioWscMaxAttachmentSize'));
 		expect(setFeaturesDetail).not.toHaveBeenCalled();
 	});
 
@@ -95,7 +112,8 @@ describe('WscSettings - general', () => {
 				setEmptyValue={setEmptyValue}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-carbonioFeatureWscEnabled`);
+
+		const element = await screen.findByTestId('inherited-carbonioFeatureWscEnabled');
 		await user.click(within(element).getByTestId(iconRefreshOutline));
 		expect(setEmptyValue).toHaveBeenCalledWith('carbonioFeatureWscEnabled');
 		await user.hover(element);
@@ -109,8 +127,8 @@ const switchAttrs = filter(
 describe('WscSettings - Switch attrs', () => {
 	test.each(switchAttrs)(
 		'$name switch is disabled when carbonioFeatureWscEnabled is false',
-		(attr) => {
-			act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		async (attr) => {
+			useAuthIsAdvanced.getState().setIsAdvanced(true);
 			setup(
 				<WscSettings
 					featuresDetail={{
@@ -121,15 +139,16 @@ describe('WscSettings - Switch attrs', () => {
 					setFeaturesDetail={jest.fn()}
 				/>
 			);
-			const element = screen.getByTestId(`inherited-${attr.name}`);
-			const switchIcon = within(element).getByTestId('icon: ToggleLeftOutline');
+			const switchIcon = within(await screen.findByTestId(`inherited-${attr.name}`)).getByTestId(
+				'icon: ToggleLeftOutline'
+			);
 			expect(switchIcon).toHaveStyle('color: #AAC8EE');
 		}
 	);
 
 	test.each(switchAttrs)('Reset $name switch', async (attr) => {
 		const setEmptyValue = jest.fn();
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		const { user } = setup(
 			<WscSettings
 				featuresDetail={{
@@ -141,7 +160,7 @@ describe('WscSettings - Switch attrs', () => {
 				setEmptyValue={setEmptyValue}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
+		const element = await screen.findByTestId(`inherited-${attr.name}`);
 		await user.click(within(element).getByTestId(iconRefreshOutline));
 		expect(setEmptyValue).toHaveBeenCalledWith(attr.name);
 		await user.hover(element);
@@ -152,7 +171,7 @@ const selectAttrs = filter(wscAttrs, (attr) => attr.type === 'select');
 describe('WscSettings - Select attrs', () => {
 	test.each(selectAttrs)(
 		'$name select is disabled when carbonioFeatureWscEnabled is false',
-		(attr) => {
+		async (attr) => {
 			setup(
 				<WscSettings
 					featuresDetail={{
@@ -163,7 +182,7 @@ describe('WscSettings - Select attrs', () => {
 					setFeaturesDetail={jest.fn()}
 				/>
 			);
-			const element = screen.getByTestId(`inherited-${attr.name}`);
+			const element = await screen.findByTestId(`inherited-${attr.name}`);
 			const selectIcon = within(element).getByTestId('icon: ArrowDown');
 			expect(selectIcon).toHaveStyle('color: #CFD5DC');
 		}
@@ -171,7 +190,7 @@ describe('WscSettings - Select attrs', () => {
 
 	test.each(selectAttrs)('Change selection $name', async (attr) => {
 		const setFeaturesDetails = jest.fn();
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		const { user } = setup(
 			<WscSettings
 				featuresDetail={{
@@ -181,7 +200,7 @@ describe('WscSettings - Select attrs', () => {
 				setFeaturesDetail={setFeaturesDetails}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
+		const element = await screen.findByTestId(`inherited-${attr.name}`);
 		await user.click(within(element).getByText('5 minute time limit'));
 		await user.click(screen.getByText('10 minute time limit'));
 		expect(setFeaturesDetails).toHaveBeenCalled();
@@ -189,7 +208,7 @@ describe('WscSettings - Select attrs', () => {
 
 	test.each(selectAttrs)('Reset select $name', async (attr) => {
 		const setEmptyValue = jest.fn();
-		act(() => useAuthIsAdvanced.getState().setIsAdvanced(true));
+		useAuthIsAdvanced.getState().setIsAdvanced(true);
 		const { user } = setup(
 			<WscSettings
 				featuresDetail={{
@@ -202,7 +221,7 @@ describe('WscSettings - Select attrs', () => {
 				setEmptyValue={setEmptyValue}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
+		const element = await screen.findByTestId(`inherited-${attr.name}`);
 		await user.click(within(element).getByTestId('icon: RefreshOutline'));
 		expect(setEmptyValue).toHaveBeenCalledWith(attr.name);
 		await user.hover(element);
@@ -213,7 +232,7 @@ const inputAttrs = filter(wscAttrs, (attr) => attr.type === 'input');
 describe('WscSettings - Input attrs', () => {
 	test.each(inputAttrs)(
 		'$name input is disabled when carbonioFeatureWscEnabled is false',
-		(attr) => {
+		async (attr) => {
 			setup(
 				<WscSettings
 					featuresDetail={{
@@ -223,7 +242,7 @@ describe('WscSettings - Input attrs', () => {
 					setFeaturesDetail={jest.fn()}
 				/>
 			);
-			const element = screen.getByTestId(`inherited-${attr.name}`);
+			const element = await screen.findByTestId(`inherited-${attr.name}`);
 			const inputElement = within(element).getByRole('textbox');
 			expect(inputElement).toBeDisabled();
 		}
@@ -240,7 +259,7 @@ describe('WscSettings - Input attrs', () => {
 				setFeaturesDetail={setFeaturesDetails}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
+		const element = await screen.findByTestId(`inherited-${attr.name}`);
 		const inputElement = within(element).getByRole('textbox');
 		await user.type(inputElement, '100');
 		expect(setFeaturesDetails).toHaveBeenCalled();
@@ -260,7 +279,7 @@ describe('WscSettings - Input attrs', () => {
 				setEmptyValue={setEmptyValue}
 			/>
 		);
-		const element = screen.getByTestId(`inherited-${attr.name}`);
+		const element = await screen.findByTestId(`inherited-${attr.name}`);
 		await user.click(within(element).getByTestId(iconRefreshOutline));
 		expect(setEmptyValue).toHaveBeenCalledWith(attr.name);
 		await user.hover(element);

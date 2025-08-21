@@ -5,15 +5,16 @@
  */
 import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 
-import { Container, Padding } from '@zextras/carbonio-design-system';
+import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
-import { BoxLayout, SettingLayout } from '../../page-layout';
-import InheritedInput from '../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../utility/inherited-components/inherited-switch';
+import { useWscLicense } from './hooks/useWscLicense';
+import { useAuthIsAdvanced } from '../store/auth-advanced/store';
+import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
+import { BoxLayout, SettingLayout } from '../views/page-layout';
+import InheritedInput from '../views/utility/inherited-components/inherited-input';
+import InheritedSelect from '../views/utility/inherited-components/inherited-select';
+import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
 	featuresDetail: AccountType;
@@ -32,6 +33,12 @@ export const WscSettings: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const { isLicensed, isLoading, error, requiresLicenseCheck } = useWscLicense();
+
+	const wscLicenseDisabledWarningLabel = t(
+		'wsc.section.license.warning',
+		"These settings can't be changed because your Chats license is not valid."
+	);
 
 	const changeSwitchOption = useCallback(
 		(key: keyof AccountType): void => {
@@ -70,8 +77,11 @@ export const WscSettings: FC<{
 	);
 
 	const disableWscSettings = useMemo(
-		() => featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' || readonlyFeatures,
-		[featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures]
+		() =>
+			featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
+			readonlyFeatures ||
+			(requiresLicenseCheck && !isLicensed),
+		[featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures, isLicensed, requiresLicenseCheck]
 	);
 
 	const deleteMessageOptions = useMemo(() => {
@@ -102,14 +112,26 @@ export const WscSettings: FC<{
 		];
 	}, [t]);
 
+	if (requiresLicenseCheck && isLoading) {
+		return (
+			<Container height="fit" padding="large" style={{ userSelect: 'none' }}>
+				<Spinner color={'primary'} />
+			</Container>
+		);
+	}
+
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
+			{requiresLicenseCheck && !isLoading && !isLicensed && !error && (
+				<Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
+			)}
 			<BoxLayout
 				title={t('wsc.section.header.title.general', 'General Settings')}
 				description={t(
 					'wsc.section.header.description.general',
 					'Manage the activation of core features and applications.'
 				)}
+				disabled={requiresLicenseCheck && !isLicensed}
 			>
 				<SettingLayout
 					description={t(
@@ -126,6 +148,7 @@ export const WscSettings: FC<{
 						fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
 						inputName={'carbonioFeatureWscEnabled'}
 						onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
+						disabled={requiresLicenseCheck && !isLicensed}
 					/>
 				</SettingLayout>
 			</BoxLayout>
@@ -137,6 +160,7 @@ export const WscSettings: FC<{
 							'wsc.section.header.description.messaging',
 							'Manage the visibility of chats and user status.'
 						)}
+						disabled={disableWscSettings}
 					>
 						<SettingLayout
 							description={t(
@@ -221,6 +245,7 @@ export const WscSettings: FC<{
 							'wsc.section.header.description.chats',
 							'Manage Chats creation and Group settings.'
 						)}
+						disabled={disableWscSettings}
 					>
 						<SettingLayout
 							description={t(
@@ -314,6 +339,7 @@ export const WscSettings: FC<{
 							'wsc.section.header.description.videocall',
 							'Configure video calls, recording, and virtual backgrounds.'
 						)}
+						disabled={disableWscSettings}
 					>
 						<SettingLayout
 							description={t(
@@ -387,6 +413,7 @@ export const WscSettings: FC<{
 							'wsc.section.header.description.attachments',
 							'Manage file sharing and attachment limits.'
 						)}
+						disabled={disableWscSettings}
 					>
 						<SettingLayout
 							description={t(
