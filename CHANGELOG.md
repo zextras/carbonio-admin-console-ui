@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.7...v0.10.8) (2025-08-25)
+
+
+### Features
+
+* [CO-2182] add maitenance and next validation deadline ([#874](https://github.com/zextras/carbonio-admin-console-ui/issues/874)) ([befbec9](https://github.com/zextras/carbonio-admin-console-ui/commit/befbec9a8ea744a51c5a48a8cef5eb4be7e8a52f))
+* add support for slovenian language ([0b4b380](https://github.com/zextras/carbonio-admin-console-ui/commit/0b4b380815d06b2134557b905df5751a2f128e99)), closes [#869](https://github.com/zextras/carbonio-admin-console-ui/issues/869)
+* add support to WSC license subscription ref: WSC-1837 ([#876](https://github.com/zextras/carbonio-admin-console-ui/issues/876)) ([0329e50](https://github.com/zextras/carbonio-admin-console-ui/commit/0329e5052d04797d938aa037b76a6652d9be1c13))
+
+
+### Bug Fixes
+
+* added store type missing condition ([f9c7a16](https://github.com/zextras/carbonio-admin-console-ui/commit/f9c7a161412dcb2811d12cabf74cb9d336ed9377))
+* backup switch tabs modal appears ([#877](https://github.com/zextras/carbonio-admin-console-ui/issues/877)) ([7751578](https://github.com/zextras/carbonio-admin-console-ui/commit/775157815f98aeabf2248ff4940dd2b1281e977c))
+* disable account selection on table reporting quota usage ([9e71d94](https://github.com/zextras/carbonio-admin-console-ui/commit/9e71d94fd14e24073516f7e2269e89ea36f90f65))
+* mailbox quota fixed table selection and quota value ([2ad8e37](https://github.com/zextras/carbonio-admin-console-ui/commit/2ad8e376ce4c9917b5ef5666616701ede90eb6ec))
+* smartscan attribute change and request payload changes ([#878](https://github.com/zextras/carbonio-admin-console-ui/issues/878)) ([b3d474c](https://github.com/zextras/carbonio-admin-console-ui/commit/b3d474ca8355d97248e24c49c302cd06cb132587))
+* sonarqube error ([cc6e304](https://github.com/zextras/carbonio-admin-console-ui/commit/cc6e30450e776a1dfb0ed8e6696598031e97600f))
+* sonarqube error ([6ec5b90](https://github.com/zextras/carbonio-admin-console-ui/commit/6ec5b9018b35d8ab82e4b3ff7b83a6f1c119b639))
+* sonarqube error ([e89859f](https://github.com/zextras/carbonio-admin-console-ui/commit/e89859f629c25754cccebe2e1bd32bb20939902b))
+* sonarqube error fixed ([e35b66e](https://github.com/zextras/carbonio-admin-console-ui/commit/e35b66edd34471fa4902f72cdfecd15dd70ce671))
+
 ### 0.10.7 (2025-06-12)
 
 ### 0.10.6 (2025-06-06)
