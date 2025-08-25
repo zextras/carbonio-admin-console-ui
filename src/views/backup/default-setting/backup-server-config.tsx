@@ -3,146 +3,43 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import {
 	Container,
 	Row,
-	Padding,
-	Button,
 	Text,
 	Divider,
 	Switch,
 	Input,
-	useSnackbar
+	Padding
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
-import { useTranslation } from 'react-i18next';
 
-import { BACKUP_BASIC, CONFIG, BACKUP_REALTIME } from '../../../constants';
-import { modifyBackupRequest } from '../../../services/modify-backup';
-import { useBackupStore } from '../../../store/backup/store';
+import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
+import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
 const BackupServerConfig: FC = () => {
-	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const globalConfig = useBackupStore((state) => state.globalConfig);
-	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
-	const createSnackbar = useSnackbar();
+	const {
+		isDirty,
+		backupDetail,
+		allowSetBackup,
+		onCancel,
+		onSave,
+		changeSwitchOption,
+		changeBackupDetail,
+		changeBackupSchedulerInput,
+		changeBackupSchedulerSwitch,
+		t
+	} = useBackupConfig();
+
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
 		useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
-
-	const onCancel = (): void => {
-		setInitBackupDetail({ ...globalConfig });
-	};
-	const onSave = (): void => {
-		const modifiedKeys: any = reduce(
-			globalConfig,
-			function (result, value, key): any {
-				return isEqual(value, initbackupDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		const modifiedData: any = {};
-		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = initbackupDetail[ele];
-		});
-		modifyBackupRequest(modifiedData)
-			.then((data) => {
-				if (data?.status === 200 || isEmpty(data)) {
-					setGlobalConfig(initbackupDetail);
-					createSnackbar({
-						key: 'success',
-						severity: 'success',
-						label: t(
-							'label.the_last_changes_has_been_saved_successfully',
-							'Changes have been saved successfully'
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				} else {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label:
-							data?.errors?.[0]?.error ||
-							data?.statusText ||
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				}
-			})
-			.catch((err) => {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label:
-						err?.errors?.[0]?.error ||
-						err?.statusText ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	};
-	useEffect(() => {
-		if (!initbackupDetail?.privateKeyAlgorithm && globalConfig?.privateKeyAlgorithm) {
-			setInitBackupDetail(cloneDeep(globalConfig));
-		}
-	}, [globalConfig, initbackupDetail]);
-	useEffect(() => {
-		if (!isEqual(globalConfig, initbackupDetail)) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
-		}
-	}, [globalConfig, initbackupDetail]);
-
-	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setInitBackupDetail((prev: any) => ({
-				...prev,
-				[key]: initbackupDetail[key] !== true
-			}));
-		},
-		[initbackupDetail]
-	);
-
-	const changeBackupDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setInitBackupDetail]
-	);
-	const changeBackupSchedulerDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({
-				...prev,
-				[e.target.name]: {
-					...[e.target.name],
-					'cron-pattern': e.target.value
-				}
-			}));
-		},
-		[setInitBackupDetail]
-	);
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
@@ -165,36 +62,13 @@ const BackupServerConfig: FC = () => {
 		<>
 			{isBackupModuleLicensed && (
 				<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-					<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large', right: 'large' }}>
-						<Container
-							orientation="vertical"
-							mainAlignment="space-around"
-							background="gray6"
-							height="58px"
-						>
-							<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-								<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-									<Text size="medium" weight="bold" color="gray0">
-										{t('label.server_config', 'Server Config')}
-									</Text>
-								</Row>
-								<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-									<Padding right="small">
-										{isDirty && (
-											<Button
-												label={t('label.cancel', 'Cancel')}
-												color="secondary"
-												onClick={onCancel}
-											/>
-										)}
-									</Padding>
-									{isDirty && (
-										<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-									)}
-								</Row>
-							</Row>
-						</Container>
-					</Row>
+					<BackupConfigHeader
+						title={t('label.server_config', 'Server Config')}
+						isDirty={isDirty}
+						onCancel={onCancel}
+						onSave={onSave}
+						t={t}
+					/>
 					<Row orientation="horizontal" width="100%" background="gray6">
 						<Divider />
 					</Row>
@@ -212,7 +86,7 @@ const BackupServerConfig: FC = () => {
 							<ListRow>
 								<Switch
 									label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-									value={initbackupDetail.ZxBackup_RealTimeScanner}
+									value={backupDetail.ZxBackup_RealTimeScanner}
 									onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
@@ -221,7 +95,7 @@ const BackupServerConfig: FC = () => {
 						)}
 						<ListRow>
 							<Switch
-								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
+								value={backupDetail.ZxBackup_ModuleEnabledAtStartup}
 								label={t(
 									'backup.backup_is_enable_at_the_startup',
 									'Backup is enabled at the startup'
@@ -233,7 +107,7 @@ const BackupServerConfig: FC = () => {
 						</ListRow>
 						<ListRow>
 							<Switch
-								value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
+								value={backupDetail.ZxBackup_DoSmartScanOnStartup}
 								label={t(
 									'backup.run_the_smart_scan_at_the_startup',
 									'Run the Smartscan at the startup'
@@ -252,8 +126,8 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'large' }}>
 								<Input
 									label={t('backup.backup_path', 'Backup Path')}
-									value={initbackupDetail.ZxBackup_DestPath}
-									defaultValue={initbackupDetail.ZxBackup_DestPath}
+									value={backupDetail.ZxBackup_DestPath}
+									defaultValue={backupDetail.ZxBackup_DestPath}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DestPath"
 									backgroundColor="gray5"
@@ -268,8 +142,8 @@ const BackupServerConfig: FC = () => {
 										'label.mb',
 										'MB'
 									)})`}
-									value={initbackupDetail.ZxBackup_SpaceThreshold}
-									defaultValue={initbackupDetail.ZxBackup_SpaceThreshold}
+									value={backupDetail.ZxBackup_SpaceThreshold}
+									defaultValue={backupDetail.ZxBackup_SpaceThreshold}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_SpaceThreshold"
 									backgroundColor="gray5"
@@ -284,8 +158,8 @@ const BackupServerConfig: FC = () => {
 										'label.mb',
 										'MB'
 									)})`}
-									value={initbackupDetail.backupLocalMetadataThreshold}
-									defaultValue={initbackupDetail.backupLocalMetadataThreshold}
+									value={backupDetail.backupLocalMetadataThreshold}
+									defaultValue={backupDetail.backupLocalMetadataThreshold}
 									onChange={changeBackupDetail}
 									inputName="backupLocalMetadataThreshold"
 									backgroundColor="gray5"
@@ -301,11 +175,12 @@ const BackupServerConfig: FC = () => {
 						<ListRow>
 							<Padding bottom="large">
 								<Switch
-									value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
-									onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
+									value={backupDetail.backupSmartScanScheduler?.['cron-enabled']}
+									onClick={(): void => changeBackupSchedulerSwitch('backupSmartScanScheduler')}
 									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 									iconColor="primary"
 									disabled={!allowSetBackup}
+									data-testid={'smart-scan-toggle'}
 								/>
 							</Padding>
 						</ListRow>
@@ -314,9 +189,9 @@ const BackupServerConfig: FC = () => {
 								<Input
 									label={t('backup.schedule', 'Schedule')}
 									// eslint-disable-next-line sonarjs/no-duplicate-string
-									value={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
-									defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
-									onChange={changeBackupSchedulerDetail}
+									value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									onChange={changeBackupSchedulerInput}
 									inputName="backupSmartScanScheduler"
 									backgroundColor="gray5"
 									disabled={!allowSetBackup}
@@ -330,10 +205,15 @@ const BackupServerConfig: FC = () => {
 						</ListRow>
 
 						<ListRow>
-							<Padding bottom="medium">
-								<Text size="medium" weight="regular">
-									{t('backup.backup_purge', 'Backup Purge')}
-								</Text>
+							<Padding bottom="large">
+								<Switch
+									value={backupDetail.backupPurgeScheduler?.['cron-enabled']}
+									onClick={(): void => changeBackupSchedulerSwitch('backupPurgeScheduler')}
+									label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+									data-testid={'backup-purge-toggle'}
+								/>
 							</Padding>
 						</ListRow>
 
@@ -341,9 +221,9 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'large' }}>
 								<Input
 									label={t('backup.schedule', 'Schedule')}
-									value={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
-									defaultValue={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
-									onChange={changeBackupSchedulerDetail}
+									value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
+									defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
+									onChange={changeBackupSchedulerInput}
 									inputName="backupPurgeScheduler"
 									backgroundColor="gray5"
 									disabled={!allowSetBackup}
@@ -351,11 +231,16 @@ const BackupServerConfig: FC = () => {
 							</Container>
 						</ListRow>
 						<ListRow>
+							<Container padding={{ top: 'small', bottom: 'extralarge' }}>
+								<Divider />
+							</Container>
+						</ListRow>
+						<ListRow>
 							<Container padding={{ bottom: 'small' }}>
 								<Input
 									label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-									value={initbackupDetail.ZxBackup_DataRetentionDays}
-									defaultValue={initbackupDetail.ZxBackup_DataRetentionDays}
+									value={backupDetail.ZxBackup_DataRetentionDays}
+									defaultValue={backupDetail.ZxBackup_DataRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DataRetentionDays"
 									backgroundColor="gray5"
@@ -381,8 +266,8 @@ const BackupServerConfig: FC = () => {
 										'backup.keep_delete_accounts_in_backup',
 										'Keep deleted accounts in the backup'
 									)}
-									value={initbackupDetail.backupAccountsRetentionDays}
-									defaultValue={initbackupDetail.backupAccountsRetentionDays}
+									value={backupDetail.backupAccountsRetentionDays}
+									defaultValue={backupDetail.backupAccountsRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="backupAccountsRetentionDays"
 									backgroundColor="gray5"
@@ -404,15 +289,7 @@ const BackupServerConfig: FC = () => {
 				</Container>
 			)}
 
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
+			<BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
 		</>
 	);
 };

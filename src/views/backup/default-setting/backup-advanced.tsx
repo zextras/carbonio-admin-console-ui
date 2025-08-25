@@ -3,117 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { FC, useMemo } from 'react';
 
-import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
-	Input,
-	Button,
-	useSnackbar,
-	Switch,
-	Select
-} from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
-import { useTranslation } from 'react-i18next';
+import { Container, Row, Divider, Input, Switch, Select } from '@zextras/carbonio-design-system';
 
-import { CONFIG } from '../../../constants';
-import { modifyBackupRequest } from '../../../services/modify-backup';
+import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
 const BackupAdvanced: FC = () => {
-	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const {
+		isDirty,
+		backupDetail,
+		setBackupDetail,
+		allowSetBackup,
+		onCancel,
+		onSave,
+		changeSwitchOption,
+		changeBackupDetail,
+		t
+	} = useBackupConfig();
+
 	const globalConfig = useBackupStore((state) => state.globalConfig);
-	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
-	const createSnackbar = useSnackbar();
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
-
-	const onCancel = (): void => {
-		setInitBackupDetail({ ...globalConfig });
-	};
-	const onSave = (): void => {
-		const modifiedKeys: any = reduce(
-			globalConfig,
-			function (result, value, key): any {
-				return isEqual(value, initbackupDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		const modifiedData: any = {};
-		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = initbackupDetail[ele];
-		});
-		modifyBackupRequest(modifiedData).then((data) => {
-			if (data?.status === 200 || isEmpty(data)) {
-				setGlobalConfig(initbackupDetail);
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t(
-						'label.the_last_changes_has_been_saved_successfully',
-						'Changes have been saved successfully'
-					),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			} else {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label:
-						data?.errors?.[0]?.error ||
-						data?.statusText ||
-						data?.error ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			}
-		});
-	};
-	useEffect(() => {
-		if (!initbackupDetail?.privateKeyAlgorithm && globalConfig?.privateKeyAlgorithm) {
-			setInitBackupDetail(cloneDeep(globalConfig));
-		}
-	}, [globalConfig, initbackupDetail]);
-
-	useEffect(() => {
-		if (!isEqual(globalConfig, initbackupDetail)) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
-		}
-	}, [globalConfig, initbackupDetail]);
-
-	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setInitBackupDetail((prev: any) => ({
-				...prev,
-				[key]: initbackupDetail[key] !== true
-			}));
-		},
-		[initbackupDetail]
-	);
-	const changeBackupDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setInitBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setInitBackupDetail]
-	);
 
 	const compressLevelItems = useMemo(
 		() => [
@@ -133,7 +46,7 @@ const BackupAdvanced: FC = () => {
 		[]
 	);
 	const onBackupCompressionLevelChange = (v: any): any => {
-		setInitBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
+		setBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
 	};
 	return (
 		<>
@@ -146,37 +59,13 @@ const BackupAdvanced: FC = () => {
 				>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container orientation="vertical" mainAlignment="space-around" height="56px">
-							<Row orientation="horizontal" width="100%">
-								<Row
-									padding={{ all: 'large' }}
-									mainAlignment="flex-start"
-									width="50%"
-									crossAlignment="flex-start"
-								>
-									<Text size="medium" weight="bold" color="gray0">
-										{t('label.advanced', 'Advanced')}
-									</Text>
-								</Row>
-								<Row
-									padding={{ all: 'large' }}
-									width="50%"
-									mainAlignment="flex-end"
-									crossAlignment="flex-end"
-								>
-									<Padding right="small">
-										{isDirty && (
-											<Button
-												label={t('label.cancel', 'Cancel')}
-												color="secondary"
-												onClick={onCancel}
-											/>
-										)}
-									</Padding>
-									{isDirty && (
-										<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-									)}
-								</Row>
-							</Row>
+							<BackupConfigHeader
+								title={t('label.advanced', 'Advanced')}
+								isDirty={isDirty}
+								onCancel={onCancel}
+								onSave={onSave}
+								t={t}
+							/>
 						</Container>
 						<Divider color="gray2" />
 					</Row>
@@ -203,8 +92,8 @@ const BackupAdvanced: FC = () => {
 												'backup.kb',
 												'KB'
 											)})`}
-											value={initbackupDetail.backupLatencyHighThreshold}
-											defaultValue={initbackupDetail.backupLatencyHighThreshold}
+											value={backupDetail.backupLatencyHighThreshold}
+											defaultValue={backupDetail.backupLatencyHighThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyHighThreshold"
 											backgroundColor="gray5"
@@ -219,8 +108,8 @@ const BackupAdvanced: FC = () => {
 												'backup.kb',
 												'KB'
 											)})`}
-											value={initbackupDetail.backupLatencyLowThreshold}
-											defaultValue={initbackupDetail.backupLatencyLowThreshold}
+											value={backupDetail.backupLatencyLowThreshold}
+											defaultValue={backupDetail.backupLatencyLowThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyLowThreshold"
 											backgroundColor="gray5"
@@ -236,7 +125,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ldapDumpEnabled}
+											value={backupDetail.ldapDumpEnabled}
 											onClick={(): void => changeSwitchOption('ldapDumpEnabled')}
 											label={t('backup.ldap_dump', 'LDAP Dump')}
 											iconColor="primary"
@@ -252,7 +141,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ZxBackup_BackupCustomizations}
+											value={backupDetail.ZxBackup_BackupCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_BackupCustomizations')}
 											label={t(
 												'backup.store_server_configurations_in_the_backup',
@@ -271,7 +160,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.ZxBackup_PurgeCustomizations}
+											value={backupDetail.ZxBackup_PurgeCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_PurgeCustomizations')}
 											label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
 											iconColor="primary"
@@ -287,7 +176,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.backupSaveIndex}
+											value={backupDetail.backupSaveIndex}
 											onClick={(): void => changeSwitchOption('backupSaveIndex')}
 											label={t('backup.save_index', 'Save Index')}
 											iconColor="primary"
@@ -299,8 +188,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.metatdata_size', 'Metadata Size')}
-											value={initbackupDetail.ZxBackup_MaxMetadataSize}
-											defaultValue={initbackupDetail.ZxBackup_MaxMetadataSize}
+											value={backupDetail.ZxBackup_MaxMetadataSize}
+											defaultValue={backupDetail.ZxBackup_MaxMetadataSize}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxMetadataSize"
 											backgroundColor="gray5"
@@ -315,8 +204,8 @@ const BackupAdvanced: FC = () => {
 												'backup.ms',
 												'MS'
 											)})`}
-											value={initbackupDetail.ZxBackup_MaxWaitingTime}
-											defaultValue={initbackupDetail.ZxBackup_MaxWaitingTime}
+											value={backupDetail.ZxBackup_MaxWaitingTime}
+											defaultValue={backupDetail.ZxBackup_MaxWaitingTime}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxWaitingTime"
 											backgroundColor="gray5"
@@ -328,8 +217,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.max_operations_account', 'Max Operations / Account')}
-											value={initbackupDetail.ZxBackup_MaxOperationPerAccount}
-											defaultValue={initbackupDetail.ZxBackup_MaxOperationPerAccount}
+											value={backupDetail.ZxBackup_MaxOperationPerAccount}
+											defaultValue={backupDetail.ZxBackup_MaxOperationPerAccount}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxOperationPerAccount"
 											backgroundColor="gray5"
@@ -357,8 +246,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.threads_for_items', 'Threads For Items')}
-											value={initbackupDetail.backupNumberThreadsForAccounts}
-											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
+											value={backupDetail.backupNumberThreadsForAccounts}
+											defaultValue={backupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											backgroundColor="gray5"
@@ -370,8 +259,8 @@ const BackupAdvanced: FC = () => {
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('backup.threads_for_account', 'Threads For Account')}
-											value={initbackupDetail.backupNumberThreadsForAccounts}
-											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
+											value={backupDetail.backupNumberThreadsForAccounts}
+											defaultValue={backupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											backgroundColor="gray5"
@@ -387,7 +276,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.backupOnTheFlyMetadata}
+											value={backupDetail.backupOnTheFlyMetadata}
 											onClick={(): void => changeSwitchOption('backupOnTheFlyMetadata')}
 											label={t(
 												'backup.flash_metadata_in_the_disk_at_every_save',
@@ -406,7 +295,7 @@ const BackupAdvanced: FC = () => {
 										padding={{ all: 'small' }}
 									>
 										<Switch
-											value={initbackupDetail.scheduledMetadataArchivingEnabled}
+											value={backupDetail.scheduledMetadataArchivingEnabled}
 											onClick={(): void => changeSwitchOption('scheduledMetadataArchivingEnabled')}
 											label={t(
 												'backup.archive_user_metadata_folder_in_the_remote_backup',
@@ -422,15 +311,7 @@ const BackupAdvanced: FC = () => {
 					</Container>
 				</Container>
 			</Container>
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
+			<BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
 		</>
 	);
 };
