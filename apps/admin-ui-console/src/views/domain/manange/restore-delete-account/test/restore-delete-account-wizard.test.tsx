@@ -3,21 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { act } from 'react';
+import React from 'react';
+import { act } from 'react';
 
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn } from '@zextras/carbonio-design-system';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { getSoapFetchRequest } from '@zextras/carbonio-shell-ui';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
 
 import { setup } from '../../../../../tests/testUtils';
 import RestoreDeleteAccountWizard from '../restore-delete-account-wizard';
-
-jest.mock('@zextras/carbonio-shell-ui', () => ({
-	getSoapFetchRequest: jest.fn(),
-	fetchExternalSoap: jest.fn()
-}));
 
 jest.mock('@zextras/carbonio-design-system', () => {
 	const actual: CreateSnackbarFn = jest.requireActual('@zextras/carbonio-design-system');

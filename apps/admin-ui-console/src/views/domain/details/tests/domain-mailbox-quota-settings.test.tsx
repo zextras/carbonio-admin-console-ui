@@ -7,8 +7,8 @@ import React from 'react';
 
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
 
 import { TRUE } from '../../../../constants';
 import { getQuotaUsageAdvance } from '../../../../services/get-file-quota-accounts-usage';
@@ -51,10 +51,6 @@ const mockDomain = {
 		{ n: 'dc', _content: 'demo' }
 	]
 };
-
-jest.mock('@zextras/carbonio-shell-ui', () => ({
-	useUserSettings: jest.fn()
-}));
 
 jest.mock('../../../../store/auth-advanced/store', () => ({
 	useAuthIsAdvanced: jest.fn()

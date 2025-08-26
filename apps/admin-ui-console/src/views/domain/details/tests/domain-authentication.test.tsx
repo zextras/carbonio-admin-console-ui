@@ -20,7 +20,7 @@ import DomainAuthentication from '../domain-authentication';
 
 const createSnackbar = (arg: any): CreateSnackbarFn => arg;
 const createSnackbarSpy = jest.fn(createSnackbar);
-jest.mock('@zextras/carbonio-shell-ui', () => ({
+jest.mock('@zextras/admin-ui-bootstrapper', () => ({
 	useUserSettings: jest.fn()
 }));
 

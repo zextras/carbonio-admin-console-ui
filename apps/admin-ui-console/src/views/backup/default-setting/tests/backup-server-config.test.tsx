@@ -4,9 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Set BASE_PATH before any imports
-process.env.BASE_PATH = '/carbonio';
-
 import React from 'react';
 
 import { screen, fireEvent, within } from '@testing-library/react';
@@ -17,7 +14,6 @@ import { useModuleLicenseStore } from '../../../../store/module-license/store';
 import { setup } from '../../../../tests/testUtils';
 import BackupServerConfig from '../backup-server-config';
 
-// Mock dependencies
 jest.mock('../../../../services/modify-backup', () => ({
 	modifyBackupRequest: jest.fn()
 }));

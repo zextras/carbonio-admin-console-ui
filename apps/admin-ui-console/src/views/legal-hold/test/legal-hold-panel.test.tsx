@@ -3,18 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { act } from 'react';
+import React from 'react';
+import { act } from 'react';
 
 import { screen } from '@testing-library/react';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrapper';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	getSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	useDomainInformation
-} from '@zextras/carbonio-shell-ui';
 
 import { useDomainStore } from '../../../store/domain/store';
 import { setup } from '../../../tests/testUtils';
@@ -25,16 +19,9 @@ import LegalHoldPanel from '../legal-hold-panel';
 const createSnackbar = (arg: any): CreateSnackbarFn => arg;
 const createSnackbarSpy = jest.fn(createSnackbar);
 
-// eslint-disable-next-line sonarjs/no-duplicate-string
 jest.mock('@zextras/carbonio-design-system', () => ({
 	...jest.requireActual('@zextras/carbonio-design-system'),
 	useSnackbar: jest.fn()
-}));
-
-jest.mock('@zextras/carbonio-shell-ui', () => ({
-	getSoapFetchRequest: jest.fn(),
-	useDomainInformation: jest.fn(),
-	useUserSettings: jest.fn()
 }));
 
 jest.mock('@zextras/carbonio-design-system', () => {

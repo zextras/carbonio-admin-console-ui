@@ -8,16 +8,9 @@ import React from 'react';
 import { screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 
-import DomainGeneralSettings from './domain-general-settings';
 import { useDomainStore } from '../../../store/domain/store';
 import { setup } from '../../../tests/testUtils';
-
-// Mock the hooks used in the component
-jest.mock('@zextras/carbonio-shell-ui');
-
-jest.mock('@zextras/carbonio-shell-ui', () => ({
-	useUserSettings: jest.fn()
-}));
+import DomainGeneralSettings from './domain-general-settings';
 
 const createSnackbar = (arg: any): CreateSnackbarFn => arg;
 const createSnackbarSpy = jest.fn(createSnackbar);
