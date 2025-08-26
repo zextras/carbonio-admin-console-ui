@@ -4,12 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	fetchExternalSoap
-} from '@zextras/carbonio-shell-ui';
+import { fetchExternalSoap } from '@zextras/admin-ui-bootstrapper';
 
 export const modifyBackupRequest = async (modifiedData: any): Promise<any> => {
 	const request: any = {};

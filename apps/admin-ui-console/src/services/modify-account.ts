@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const modifyAccountRequest = async (id: string, modifiedData: any): Promise<any> => {

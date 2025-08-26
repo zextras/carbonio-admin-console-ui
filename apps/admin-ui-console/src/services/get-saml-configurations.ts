@@ -4,11 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	getSoapFetchRequest
-} from '@zextras/carbonio-shell-ui';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
 
 export const getSamlConfig = async (domain: string, raw?: boolean): Promise<any> => {
 	let url = `/service/extension/zextras_admin/auth/saml/${domain}`;

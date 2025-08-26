@@ -3,13 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	postSoapFetchRequest
-} from '@zextras/carbonio-shell-ui';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const sendMail = async (api: string, body: any): Promise<any> =>
 	postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`).then((res: any) =>
 		res.Body?.response?.content ? JSON.parse(res.Body.response.content) : res.Body

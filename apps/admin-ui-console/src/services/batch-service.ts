@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const batchService = async (reqObject: any, otherAccount?: any): Promise<any> =>
