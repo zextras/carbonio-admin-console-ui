@@ -9,8 +9,6 @@ import '@testing-library/jest-dom';
 import server from './mocks/server';
 
 beforeEach(() => {
-	// Do not useFakeTimers with `whatwg-fetch` if using mocked server
-	// https://github.com/mswjs/msw/issues/448
 	jest.useFakeTimers();
 });
 beforeAll(() => server.listen());

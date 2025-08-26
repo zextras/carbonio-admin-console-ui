@@ -1,5 +1,3 @@
-// Copyright (C) 2011-2020 Zextras
-/* eslint-disable import/no-extraneous-dependencies */
 /*
  * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
  *
@@ -22,5 +20,5 @@ window.matchMedia = function matchMedia(query: string): MediaQueryList {
 
 window.fetch = require('node-fetch');
 
-// Set BASE_PATH for carbonio-shell-ui
+// Set BASE_PATH for admin-ui-bootstrapper
 process.env.BASE_PATH = '/carbonio';
