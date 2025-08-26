@@ -3,6 +3,7 @@ export const getSoapFetchRequest = jest.fn();
 export const useDomainInformation = jest.fn();
 export const useUserSettings = jest.fn();
 export const fetchExternalSoap = jest.fn();
+export const postSoapFetchRequest = jest.fn();
 
 // Add any other exports the module has
 export default {};
