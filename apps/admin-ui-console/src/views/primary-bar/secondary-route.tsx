@@ -7,7 +7,7 @@
 import React, { FC } from 'react';
 
 import { Container, useSnackbar, Button } from '@zextras/carbonio-design-system';
-import { pushHistory } from '@zextras/carbonio-shell-ui';
+import { pushHistory } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 
 import { SECONDARY_ROUTE } from '../../constants';

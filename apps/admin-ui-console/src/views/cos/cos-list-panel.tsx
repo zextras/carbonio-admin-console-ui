@@ -6,7 +6,7 @@
 import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';

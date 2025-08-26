@@ -14,7 +14,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -17,7 +17,7 @@ import {
 	Modal,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useIntegratedComponent } from '@zextras/carbonio-shell-ui';
+import { useIntegratedComponent } from '@zextras/admin-ui-bootstrapper';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

@@ -27,7 +27,7 @@ import {
 	Modal,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';

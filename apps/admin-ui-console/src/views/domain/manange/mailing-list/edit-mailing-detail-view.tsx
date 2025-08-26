@@ -19,7 +19,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';

@@ -12,21 +12,13 @@ import {
 	removeRoute,
 	registerActions,
 	setAppContext,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	getSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	postSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	useAllConfig,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	useIsAdvanced,
 	useUserAccounts,
 	useUserSettings
-} from '@zextras/carbonio-shell-ui';
+} from '@zextras/admin-ui-bootstrapper';
 import { find } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
@@ -655,8 +647,6 @@ const App: FC = () => {
 				label: t('label.storage', 'Storage') || '',
 				primaryBar: 'HardDriveOutline',
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...managementSection },
 				tooltip: StorageTooltipView,
 				trackerLabel: PRIMARY_BAR_STORAGE
@@ -671,8 +661,6 @@ const App: FC = () => {
 				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
 				primaryBar: 'MailFolderOutline',
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...managementSection },
 				tooltip: MTATooltipView,
 				trackerLabel: PRIMARY_BAR_MTA
@@ -686,8 +674,6 @@ const App: FC = () => {
 					// primaryBar: 'HistoryOutline',
 					primaryBar: backupPrimaryBar,
 					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
 					primarybarSection: { ...servicesSection },
 					tooltip: BackupTooltipView,
 					trackerLabel: PRIMARY_BAR_BACKUP
@@ -699,8 +685,6 @@ const App: FC = () => {
 					label: t('label.legal_hold', 'Legal Hold') || '',
 					primaryBar: 'LockOutline',
 					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
 					primarybarSection: { ...servicesSection },
 					tooltip: LegalHoldTooltipView,
 					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
@@ -714,8 +698,6 @@ const App: FC = () => {
 				label: t('label.privacy', 'Privacy') || '',
 				primaryBar: 'ShieldOutline',
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...managementSection },
 				tooltip: PrivacyTooltipView,
 				trackerLabel: PRIMARY_BAR_PRIVACY
@@ -749,8 +731,6 @@ const App: FC = () => {
 			label: t('label.dashboard', 'Dashboard') || '',
 			primaryBar: 'HomeOutline',
 			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			tooltip: HomeTooltipView,
 			trackerLabel: PRIMARY_BAR_DASHBOARD
 		});
@@ -762,8 +742,6 @@ const App: FC = () => {
 			label: t('label.domains', 'Domains') || '',
 			primaryBar: 'AtOutline',
 			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			primarybarSection: { ...managementSection },
 			tooltip: DomainTooltipView,
 			trackerLabel: PRIMARY_BAR_DOMAINS
@@ -778,8 +756,6 @@ const App: FC = () => {
 				label: t('label.cos', 'COS') || '',
 				primaryBar: cosPrimaryBar,
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...managementSection },
 				tooltip: CosTooltipView,
 				trackerLabel: PRIMARY_BAR_COS
@@ -797,8 +773,6 @@ const App: FC = () => {
 					label: t('label.subscriptions', 'Subscriptions') || '',
 					primaryBar: 'AwardOutline',
 					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
 					primarybarSection: { ...managementSection },
 					tooltip: SubscriptionTooltipView,
 					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
@@ -811,8 +785,6 @@ const App: FC = () => {
 					label: t('label.legal_hold', 'Legal Hold') || '',
 					primaryBar: 'LockOutline',
 					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
 					primarybarSection: { ...servicesSection },
 					tooltip: LegalHoldTooltipView,
 					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
@@ -829,8 +801,6 @@ const App: FC = () => {
 				label: t('label.notifications', 'Notifications') || '',
 				primaryBar: 'BellOutline',
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
 				tooltip: NotificationTooltipView,
 				trackerLabel: PRIMARY_BAR_NOTIFICATIONS
@@ -843,8 +813,6 @@ const App: FC = () => {
 				label: t('label.operations', 'Operations') || '',
 				primaryBar: 'ListOutline',
 				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
 				tooltip: OperationTooltipView,
 				trackerLabel: PRIMARY_BAR_OPERATIONS

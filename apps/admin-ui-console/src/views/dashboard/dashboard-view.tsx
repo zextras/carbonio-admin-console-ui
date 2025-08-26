@@ -7,12 +7,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import {
-	useUserAccounts,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	useDomainInformation
-} from '@zextras/carbonio-shell-ui';
+import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 

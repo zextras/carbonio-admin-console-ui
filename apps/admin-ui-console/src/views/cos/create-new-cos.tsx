@@ -16,7 +16,7 @@ import {
 	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';

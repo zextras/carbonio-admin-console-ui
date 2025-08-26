@@ -27,7 +27,7 @@ import {
 	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { debounce, sortedUniq, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 

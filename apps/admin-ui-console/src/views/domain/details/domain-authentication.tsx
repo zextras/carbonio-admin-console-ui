@@ -22,7 +22,7 @@ import {
 	Tooltip as TooltipDefault,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 

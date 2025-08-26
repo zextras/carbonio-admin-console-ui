@@ -15,12 +15,7 @@ import {
 	useSnackbar,
 	THeader
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	postSoapFetchRequest,
-	soapFetch
-} from '@zextras/carbonio-shell-ui';
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -530,7 +525,7 @@ const VolumesDetailPanel: FC = () => {
 						? error?.message
 						: t('label.volume_detail_error', '{{message}}', {
 								message: 'Something went wrong, please try again'
-						  }),
+							}),
 					autoHideTimeout: 5000
 				});
 				return error;
@@ -670,7 +665,7 @@ const VolumesDetailPanel: FC = () => {
 							? error?.message
 							: t('label.volume_detail_error', '{{message}}', {
 									message: 'Something went wrong, please try again'
-							  }),
+								}),
 						autoHideTimeout: 5000
 					});
 					setIsLoading(false);

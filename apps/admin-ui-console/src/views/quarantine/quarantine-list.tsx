@@ -20,7 +20,7 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { getTags } from '@zextras/carbonio-shell-ui';
+import { getTags } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

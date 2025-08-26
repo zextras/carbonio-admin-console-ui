@@ -17,7 +17,7 @@ import {
 	Switch,
 	TextArea
 } from '@zextras/carbonio-design-system';
-import { useIntegratedComponent, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { encode } from 'html-entities';
 import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';

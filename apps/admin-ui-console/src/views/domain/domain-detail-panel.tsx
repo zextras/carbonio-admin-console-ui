@@ -6,7 +6,7 @@
 import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
 
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';

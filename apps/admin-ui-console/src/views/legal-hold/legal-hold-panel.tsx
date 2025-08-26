@@ -19,14 +19,7 @@ import {
 	useScreenMode,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	getSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	useDomainInformation
-} from '@zextras/carbonio-shell-ui';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrapper';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -547,7 +540,7 @@ const LegalHoldPanel: FC = () => {
 							</>
 						)
 					}
-			  ]
+				]
 			: domainList.map(
 					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
 						id: domain.id,
@@ -571,7 +564,7 @@ const LegalHoldPanel: FC = () => {
 							</Row>
 						)
 					})
-			  );
+				);
 
 	useEffect(() => {
 		if (selectedAccountRows.length > 0) {

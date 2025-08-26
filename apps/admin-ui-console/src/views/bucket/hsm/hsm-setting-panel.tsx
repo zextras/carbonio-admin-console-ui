@@ -19,12 +19,7 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	getSoapFetchRequest,
-	soapFetch
-} from '@zextras/carbonio-shell-ui';
+import { getSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 

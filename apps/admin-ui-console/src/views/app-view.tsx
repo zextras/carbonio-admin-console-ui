@@ -7,11 +7,7 @@
 import React, { FC, Suspense } from 'react';
 
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	usePrimaryBarState
-} from '@zextras/carbonio-shell-ui';
+import { usePrimaryBarState } from '@zextras/admin-ui-bootstrapper';
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 

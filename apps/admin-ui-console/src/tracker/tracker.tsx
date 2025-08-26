@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect } from 'react';
 
-import { useUserAccount } from '@zextras/carbonio-shell-ui';
+import { useUserAccount } from '@zextras/admin-ui-bootstrapper';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
 

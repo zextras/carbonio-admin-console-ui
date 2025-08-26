@@ -18,16 +18,10 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	getSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	postSoapFetchRequest,
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	fetchExternalSoap
-} from '@zextras/carbonio-shell-ui';
+} from '@zextras/admin-ui-bootstrapper';
 import { isEmpty, find } from 'lodash';
 import { useTranslation, Trans } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -346,7 +340,7 @@ const BackupConfiguration: FC = () => {
 							label: error?.message
 								? error?.message
 								: // eslint-disable-next-line sonarjs/no-duplicate-string
-								  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+									t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true

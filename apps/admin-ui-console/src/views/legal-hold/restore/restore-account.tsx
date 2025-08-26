@@ -18,12 +18,7 @@ import {
 	Padding,
 	Switch
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	postSoapFetchRequest,
-	soapFetch
-} from '@zextras/carbonio-shell-ui';
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, debounce, unionBy } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

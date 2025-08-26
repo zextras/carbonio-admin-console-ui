@@ -6,7 +6,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 
 import {

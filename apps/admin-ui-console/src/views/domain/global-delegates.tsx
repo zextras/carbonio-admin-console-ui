@@ -14,11 +14,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	postSoapFetchRequest
-} from '@zextras/carbonio-shell-ui';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
 import { flatMapDeep, filter, debounce } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
@@ -270,7 +266,7 @@ const GlobalDelegates: FC = () => {
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true

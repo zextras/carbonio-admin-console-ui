@@ -7,7 +7,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { Container } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 
 import { LIST } from '../../constants';

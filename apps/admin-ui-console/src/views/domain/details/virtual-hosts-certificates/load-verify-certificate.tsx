@@ -16,7 +16,7 @@ import {
 	Container,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';

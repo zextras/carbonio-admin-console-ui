@@ -6,7 +6,7 @@
 import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -243,8 +243,8 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 			trusteeAddress = isArray(trusteeList)
 				? (trusteeList as string[])
 				: typeof trusteeList === 'string'
-				? trusteeList?.split(',')
-				: [`${trusteeList}`];
+					? trusteeList?.split(',')
+					: [`${trusteeList}`];
 		}
 		if (trusteeAddress.length > 0) {
 			const domainName = address.substring(address.lastIndexOf('@') + 1);

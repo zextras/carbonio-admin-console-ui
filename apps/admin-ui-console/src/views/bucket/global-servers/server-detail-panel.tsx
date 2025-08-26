@@ -16,11 +16,7 @@ import {
 	Table,
 	Button
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	getSoapFetchRequest
-} from '@zextras/carbonio-shell-ui';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -16,12 +16,10 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	postSoapFetchRequest,
 	useUserAccount,
 	useUserSettings
-} from '@zextras/carbonio-shell-ui';
+} from '@zextras/admin-ui-bootstrapper';
 import { debounce, filter, flatMapDeep } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
@@ -318,7 +316,7 @@ const ManageDelegates: FC = () => {
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -577,7 +575,7 @@ const ManageDelegates: FC = () => {
 									accname: accountName.split('@')[0],
 									description: des
 								};
-						  })
+							})
 						: [];
 					setAccountDistributionList(tableList || []);
 				})
@@ -721,7 +719,7 @@ const ManageDelegates: FC = () => {
 						: t(
 								'label.the_last_changes_has_been_saved_successfully',
 								'Changes have been saved successfully'
-						  ),
+							),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

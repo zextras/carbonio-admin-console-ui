@@ -18,12 +18,7 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	postSoapFetchRequest,
-	useUserAccount
-} from '@zextras/carbonio-shell-ui';
+import { postSoapFetchRequest, useUserAccount } from '@zextras/admin-ui-bootstrapper';
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
@@ -614,7 +609,7 @@ const ManageAccounts: FC = () => {
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true

@@ -21,7 +21,7 @@ import {
 	Tooltip,
 	Link
 } from '@zextras/carbonio-design-system';
-import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 import { isEmpty } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';

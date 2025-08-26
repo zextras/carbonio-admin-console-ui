@@ -21,7 +21,7 @@ import {
 	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { replaceHistory, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { replaceHistory, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
