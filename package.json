@@ -6,6 +6,17 @@
     "apps/*"
   ],
   "devDependencies": {
-    "turbo": "latest"
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@zextras/carbonio-ui-configs": "^0.1.13",
+    "eslint": "^8.45.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest-dom": "^5.1.0",
+    "eslint-plugin-notice": "^0.9.0",
+    "eslint-plugin-sonarjs": "^0.25.0",
+    "eslint-plugin-testing-library": "^6.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "turbo": "latest",
+    "typescript": "^5.1.6"
   }
 }
