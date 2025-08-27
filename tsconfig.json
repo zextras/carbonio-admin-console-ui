@@ -16,8 +16,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@app/*": ["apps/*/src/*"],
-      "@pkg/*": ["packages/*/src/*"]
+      "@app/*": [
+        "apps/admin-ui-console/src/*",
+        "apps/admin-ui-bootstrapper/src/*"
+      ]
     }
   },
   "include": ["src", "apps/**/src", "packages/**/src", "**/*.d.ts"],
