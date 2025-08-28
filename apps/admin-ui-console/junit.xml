@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="270" failures="0" errors="0" time="8.374">
+  <testsuite name="BackupServerConfig" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="2.231" tests="20">
+    <testcase classname="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput when smart scan schedule input changes" name="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput when smart scan schedule input changes" time="0.357">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput when purge schedule input changes" name="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput when purge schedule input changes" time="0.023">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerInput Function Coverage should handle empty input value for scheduler input" name="BackupServerConfig changeBackupSchedulerInput Function Coverage should handle empty input value for scheduler input" time="0.021">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerInput Function Coverage should handle special characters in scheduler input" name="BackupServerConfig changeBackupSchedulerInput Function Coverage should handle special characters in scheduler input" time="0.02">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput with different scheduler names" name="BackupServerConfig changeBackupSchedulerInput Function Coverage should call changeBackupSchedulerInput with different scheduler names" time="0.024">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch function is available and can be called" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch function is available and can be called" time="0.023">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch can handle different scheduler keys" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch can handle different scheduler keys" time="0.02">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch function behavior with different states" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch function behavior with different states" time="0.022">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch handles edge cases" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch handles edge cases" time="0.025">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should call changeBackupSchedulerSwitch with backupSmartScanScheduler when smart scan switch is clicked" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should call changeBackupSchedulerSwitch with backupSmartScanScheduler when smart scan switch is clicked" time="0.03">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should call changeBackupSchedulerSwitch with backupPurgeScheduler when purge switch is clicked" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should call changeBackupSchedulerSwitch with backupPurgeScheduler when purge switch is clicked" time="0.022">
+    </testcase>
+    <testcase classname="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch onClick handlers are properly configured" name="BackupServerConfig changeBackupSchedulerSwitch Function Coverage should verify changeBackupSchedulerSwitch onClick handlers are properly configured" time="0.037">
+    </testcase>
+    <testcase classname="BackupServerConfig Component Rendering with Scheduler Functions should render component with scheduler inputs and switches" name="BackupServerConfig Component Rendering with Scheduler Functions should render component with scheduler inputs and switches" time="0.035">
+    </testcase>
+    <testcase classname="BackupServerConfig Component Rendering with Scheduler Functions should handle disabled state for scheduler functions" name="BackupServerConfig Component Rendering with Scheduler Functions should handle disabled state for scheduler functions" time="0.213">
+    </testcase>
+    <testcase classname="BackupServerConfig Component Rendering with Scheduler Functions should handle edge cases with undefined scheduler objects" name="BackupServerConfig Component Rendering with Scheduler Functions should handle edge cases with undefined scheduler objects" time="0.031">
+    </testcase>
+    <testcase classname="BackupServerConfig Component Rendering with Scheduler Functions should handle edge cases with missing cron properties" name="BackupServerConfig Component Rendering with Scheduler Functions should handle edge cases with missing cron properties" time="0.032">
+    </testcase>
+    <testcase classname="BackupServerConfig should render scheduler toggle and click" name="BackupServerConfig should render scheduler toggle and click" time="0.039">
+    </testcase>
+    <testcase classname="BackupServerConfig should render purge scheduler toggle and click" name="BackupServerConfig should render purge scheduler toggle and click" time="0.035">
+    </testcase>
+    <testcase classname="BackupServerConfig Module License Integration should render scheduler functions when backup module is licensed" name="BackupServerConfig Module License Integration should render scheduler functions when backup module is licensed" time="0.019">
+    </testcase>
+    <testcase classname="BackupServerConfig Module License Integration should not render scheduler functions when backup module is not licensed" name="BackupServerConfig Module License Integration should not render scheduler functions when backup module is not licensed" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="Subscription Component - getTypeDisplayValue Logic" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="2.85" tests="23">
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should display Purchased - PERPETUAL for Purchased type with PERPETUAL subType" name="Subscription Component - getTypeDisplayValue Logic should display Purchased - PERPETUAL for Purchased type with PERPETUAL subType" time="0.368">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should display Purchased - REGULAR for Purchased type with REGULAR subType" name="Subscription Component - getTypeDisplayValue Logic should display Purchased - REGULAR for Purchased type with REGULAR subType" time="0.036">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should display subType for Purchased type with other subType" name="Subscription Component - getTypeDisplayValue Logic should display subType for Purchased type with other subType" time="0.041">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should display type for non-Purchased type" name="Subscription Component - getTypeDisplayValue Logic should display type for non-Purchased type" time="0.073">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should reset state when getLicenseInfo returns type None" name="Subscription Component - getTypeDisplayValue Logic should reset state when getLicenseInfo returns type None" time="0.139">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response" time="0.016">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response" name="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response" time="0.053">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle successful license activation" name="Subscription Component - getTypeDisplayValue Logic should handle successful license activation" time="0.025">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with error message" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with error message" time="0.012">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with default error message" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with default error message" time="0.023">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation network error" name="Subscription Component - getTypeDisplayValue Logic should handle activation network error" time="0.022">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with error response" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with error response" time="0.039">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with error response" name="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with error response" time="0.077">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation network error catch block" name="Subscription Component - getTypeDisplayValue Logic should handle activation network error catch block" time="0.035">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle doRemoveLicense error case" name="Subscription Component - getTypeDisplayValue Logic should handle doRemoveLicense error case" time="0.015">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response" name="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response" time="0.052">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renew button click" name="Subscription Component - getTypeDisplayValue Logic should handle renew button click" time="0.053">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response" time="0.011">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation network error in catch block" name="Subscription Component - getTypeDisplayValue Logic should handle activation network error in catch block" time="0.028">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renewal network error in catch block" name="Subscription Component - getTypeDisplayValue Logic should handle renewal network error in catch block" time="0.14">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation with type None response and state clearing" name="Subscription Component - getTypeDisplayValue Logic should handle activation with type None response and state clearing" time="0.035">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response and clear state" name="Subscription Component - getTypeDisplayValue Logic should handle renewal failure with type None response and clear state" time="0.397">
+    </testcase>
+    <testcase classname="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response and clear state" name="Subscription Component - getTypeDisplayValue Logic should handle activation failure with type None response and clear state" time="0.048">
+    </testcase>
+  </testsuite>
+  <testsuite name="DomainGeneralSettings Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="2.789" tests="3">
+    <testcase classname="DomainGeneralSettings Component renders the component" name="DomainGeneralSettings Component renders the component" time="0.994">
+    </testcase>
+    <testcase classname="DomainGeneralSettings Component should get the domain name and id" name="DomainGeneralSettings Component should get the domain name and id" time="0.245">
+    </testcase>
+    <testcase classname="DomainGeneralSettings Component should get the domain name and id" name="DomainGeneralSettings Component should get the domain name and id" time="0.18">
+    </testcase>
+  </testsuite>
+  <testsuite name="CalendarOptions Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="3.263" tests="9">
+    <testcase classname="CalendarOptions Component should render correctly the initial state" name="CalendarOptions Component should render correctly the initial state" time="0.312">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle time zone change" name="CalendarOptions Component should handle time zone change" time="0.499">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle default appointment duration change" name="CalendarOptions Component should handle default appointment duration change" time="0.179">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle appointment reminder change" name="CalendarOptions Component should handle appointment reminder change" time="0.187">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle Default Calendar View change" name="CalendarOptions Component should handle Default Calendar View change" time="0.107">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle Week start change" name="CalendarOptions Component should handle Week start change" time="0.102">
+    </testcase>
+    <testcase classname="CalendarOptions Component should handle default appointment visibility change" name="CalendarOptions Component should handle default appointment visibility change" time="0.125">
+    </testcase>
+    <testcase classname="CalendarOptions Component should render switches and handles switch toggling" name="CalendarOptions Component should render switches and handles switch toggling" time="0.334">
+    </testcase>
+    <testcase classname="CalendarOptions Component should disable inputs when isReadonlyCOSEntry is true" name="CalendarOptions Component should disable inputs when isReadonlyCOSEntry is true" time="0.26">
+    </testcase>
+  </testsuite>
+  <testsuite name="COSPreferences" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="3.955" tests="7">
+    <testcase classname="COSPreferences should render the component correctly" name="COSPreferences should render the component correctly" time="0.605">
+    </testcase>
+    <testcase classname="COSPreferences should toggle Save/Cancel bar visibility when there are changes to save" name="COSPreferences should toggle Save/Cancel bar visibility when there are changes to save" time="0.625">
+    </testcase>
+    <testcase classname="COSPreferences should call modifyCos, flushCache, and createSnackbar when Save button is clicked" name="COSPreferences should call modifyCos, flushCache, and createSnackbar when Save button is clicked" time="0.331">
+    </testcase>
+    <testcase classname="COSPreferences should not allow modification of COS preferences when COS entry is read-only" name="COSPreferences should not allow modification of COS preferences when COS entry is read-only" time="0.191">
+    </testcase>
+    <testcase classname="COSPreferences clicking Cancel button should reset modifications and hide save/cancel buttons" name="COSPreferences clicking Cancel button should reset modifications and hide save/cancel buttons" time="0.353">
+    </testcase>
+    <testcase classname="COSPreferences should call handleSwitchOptionChange, modifyCos, flushCache, and createSnackbar when toggling a switch" name="COSPreferences should call handleSwitchOptionChange, modifyCos, flushCache, and createSnackbar when toggling a switch" time="0.327">
+    </testcase>
+    <testcase classname="COSPreferences should show snackBar with correct error when modifyCos call fails" name="COSPreferences should show snackBar with correct error when modifyCos call fails" time="0.339">
+    </testcase>
+  </testsuite>
+  <testsuite name="EditAccountGeneralSection" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:31" time="1.94" tests="2">
+    <testcase classname="EditAccountGeneralSection renders the component" name="EditAccountGeneralSection renders the component" time="1.197">
+    </testcase>
+    <testcase classname="EditAccountGeneralSection sure name shuld be valid" name="EditAccountGeneralSection sure name shuld be valid" time="0.356">
+    </testcase>
+  </testsuite>
+  <testsuite name="MailOptions" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:32" time="1.005" tests="6">
+    <testcase classname="MailOptions should render MailOptions with the correct elements" name="MailOptions should render MailOptions with the correct elements" time="0.133">
+    </testcase>
+    <testcase classname="MailOptions should call changeSwitchOption when a switch is toggled" name="MailOptions should call changeSwitchOption when a switch is toggled" time="0.069">
+    </testcase>
+    <testcase classname="MailOptions should call onFileUploadMaxSizePerFileChange when the file upload size changes" name="MailOptions should call onFileUploadMaxSizePerFileChange when the file upload size changes" time="0.143">
+    </testcase>
+    <testcase classname="MailOptions should not call onFileUploadMaxSizePerFileChange when the file upload size is non numeric" name="MailOptions should not call onFileUploadMaxSizePerFileChange when the file upload size is non numeric" time="0.068">
+    </testcase>
+    <testcase classname="MailOptions should call onGroupByChange when a different group by option is selected" name="MailOptions should call onGroupByChange when a different group by option is selected" time="0.153">
+    </testcase>
+    <testcase classname="MailOptions should call onCharactorSetChange when a different charset is selected" name="MailOptions should call onCharactorSetChange when a different charset is selected" time="0.22">
+    </testcase>
+  </testsuite>
+  <testsuite name="LegalHoldPanel Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:32" time="1.263" tests="6">
+    <testcase classname="LegalHoldPanel Component renders list" name="LegalHoldPanel Component renders list" time="0.144">
+    </testcase>
+    <testcase classname="LegalHoldPanel Component renders Legal Hold section with valid data" name="LegalHoldPanel Component renders Legal Hold section with valid data" time="0.025">
+    </testcase>
+    <testcase classname="LegalHoldPanel Component displays correct input fields" name="LegalHoldPanel Component displays correct input fields" time="0.029">
+    </testcase>
+    <testcase classname="LegalHoldPanel Component handles input changes correctly" name="LegalHoldPanel Component handles input changes correctly" time="0.269">
+    </testcase>
+    <testcase classname="LegalHoldPanel Component displays set/unset legal hold and restore buttons after selecting an account" name="LegalHoldPanel Component displays set/unset legal hold and restore buttons after selecting an account" time="0.196">
+    </testcase>
+    <testcase classname="LegalHoldPanel Component clicking set/unset legal hold button calls setUnsetLegalHold" name="LegalHoldPanel Component clicking set/unset legal hold button calls setUnsetLegalHold" time="0.296">
+    </testcase>
+  </testsuite>
+  <testsuite name="RestoreDeleteAccountWizard Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:32" time="1.12" tests="2">
+    <testcase classname="RestoreDeleteAccountWizard Component renders" name="RestoreDeleteAccountWizard Component renders" time="0.653">
+    </testcase>
+    <testcase classname="RestoreDeleteAccountWizard Component restoreAccountRequest callback works as expected" name="RestoreDeleteAccountWizard Component restoreAccountRequest callback works as expected" time="0.08">
+    </testcase>
+  </testsuite>
+  <testsuite name="GeneralOptions" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.373" tests="3">
+    <testcase classname="GeneralOptions should render correctly with the given props" name="GeneralOptions should render correctly with the given props" time="0.033">
+    </testcase>
+    <testcase classname="GeneralOptions should call onPrefLocaleChange when a different locale is selected" name="GeneralOptions should call onPrefLocaleChange when a different locale is selected" time="0.105">
+    </testcase>
+    <testcase classname="GeneralOptions should disable the select dropdown when readonlyCOS is true" name="GeneralOptions should disable the select dropdown when readonlyCOS is true" time="0.051">
+    </testcase>
+  </testsuite>
+  <testsuite name="WscCosSettings" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:33" time="1.212" tests="2">
+    <testcase classname="WscCosSettings User changes an attribute and saves" name="WscCosSettings User changes an attribute and saves" time="0.586">
+    </testcase>
+    <testcase classname="WscCosSettings User cancel his changes, resetting the values" name="WscCosSettings User cancel his changes, resetting the values" time="0.301">
+    </testcase>
+  </testsuite>
+  <testsuite name="RestoreDeleteAccount Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:33" time="0.928" tests="2">
+    <testcase classname="RestoreDeleteAccount Component renders" name="RestoreDeleteAccount Component renders" time="0.518">
+    </testcase>
+    <testcase classname="RestoreDeleteAccount Component renders empty" name="RestoreDeleteAccount Component renders empty" time="0.092">
+    </testcase>
+  </testsuite>
+  <testsuite name="ReceivingMails" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:33" time="0.993" tests="5">
+    <testcase classname="ReceivingMails should render correctly with the given props" name="ReceivingMails should render correctly with the given props" time="0.124">
+    </testcase>
+    <testcase classname="ReceivingMails should call onMailMinPollingIntervalChange when the minimum polling interval is changed" name="ReceivingMails should call onMailMinPollingIntervalChange when the minimum polling interval is changed" time="0.139">
+    </testcase>
+    <testcase classname="ReceivingMails should call onPollingIntervalChange when a different polling interval is selected" name="ReceivingMails should call onPollingIntervalChange when a different polling interval is selected" time="0.201">
+    </testcase>
+    <testcase classname="ReceivingMails should call onCosAttributeChanged when a prefMailPollingIntervalType is changed" name="ReceivingMails should call onCosAttributeChanged when a prefMailPollingIntervalType is changed" time="0.155">
+    </testcase>
+    <testcase classname="ReceivingMails should disable input and select fields when isReadonlyCOSEntry is true" name="ReceivingMails should disable input and select fields when isReadonlyCOSEntry is true" time="0.066">
+    </testcase>
+  </testsuite>
+  <testsuite name="Domain Authentication" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="5.537" tests="16">
+    <testcase classname="Domain Authentication Auth Method renders Auth Method section with valid domain data" name="Domain Authentication Auth Method renders Auth Method section with valid domain data" time="0.375">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method displays Carbonio as default auth method" name="Domain Authentication Auth Method displays Carbonio as default auth method" time="0.117">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method displays URL, Filter, Search Bind User, and Password fields" name="Domain Authentication Auth Method displays URL, Filter, Search Bind User, and Password fields" time="0.368">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method expands to show additional LDAP/AD options when Carbonio is clicked" name="Domain Authentication Auth Method expands to show additional LDAP/AD options when Carbonio is clicked" time="0.339">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method displays save and cancel buttons after modifying fields" name="Domain Authentication Auth Method displays save and cancel buttons after modifying fields" time="0.746">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method clicking save button calls modifyDomain" name="Domain Authentication Auth Method clicking save button calls modifyDomain" time="0.791">
+    </testcase>
+    <testcase classname="Domain Authentication Auth Method clicking cancel button hides save and cancel button" name="Domain Authentication Auth Method clicking cancel button hides save and cancel button" time="0.738">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned on when zimbraFeatureResetPasswordStatus is enabled" name="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned on when zimbraFeatureResetPasswordStatus is enabled" time="0.042">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is disabled" name="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is disabled" time="0.059">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is suspended" name="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is suspended" time="0.066">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is undefined" name="Domain Authentication Verify Auth: Toggle switches reset password switch must be turned off when zimbraFeatureResetPasswordStatus is undefined" time="0.04">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned on when zimbraAuthLdapStartTlsEnabled is TRUE" name="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned on when zimbraAuthLdapStartTlsEnabled is TRUE" time="0.07">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned off when zimbraAuthLdapStartTlsEnabled is FALSE" name="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned off when zimbraAuthLdapStartTlsEnabled is FALSE" time="0.067">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned off when zimbraAuthLdapStartTlsEnabled is undefined" name="Domain Authentication Verify Auth: Toggle switches enable secure connection switch must be turned turned off when zimbraAuthLdapStartTlsEnabled is undefined" time="0.047">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches should show cancel/save buttons when zimbraFeatureResetPasswordStatus switch is toggled" name="Domain Authentication Verify Auth: Toggle switches should show cancel/save buttons when zimbraFeatureResetPasswordStatus switch is toggled" time="0.139">
+    </testcase>
+    <testcase classname="Domain Authentication Verify Auth: Toggle switches should show cancel/save buttons when zimbraAuthLdapStartTlsEnabled switch is toggled" name="Domain Authentication Verify Auth: Toggle switches should show cancel/save buttons when zimbraAuthLdapStartTlsEnabled switch is toggled" time="0.162">
+    </testcase>
+  </testsuite>
+  <testsuite name="SendingMails" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.771" tests="5">
+    <testcase classname="SendingMails should render correctly with initial value" name="SendingMails should render correctly with initial value" time="0.06">
+    </testcase>
+    <testcase classname="SendingMails should call changeSwitchOption when &quot;Save to sent&quot; switch is clicked" name="SendingMails should call changeSwitchOption when &quot;Save to sent&quot; switch is clicked" time="0.086">
+    </testcase>
+    <testcase classname="SendingMails should call onMailSendReadReceipts when a new read receipt option is selected" name="SendingMails should call onMailSendReadReceipts when a new read receipt option is selected" time="0.223">
+    </testcase>
+    <testcase classname="SendingMails should disable controls if readonlyCOS is true" name="SendingMails should disable controls if readonlyCOS is true" time="0.123">
+    </testcase>
+    <testcase classname="SendingMails should not call changeSwitchOption when disabled switch is clicked" name="SendingMails should not call changeSwitchOption when disabled switch is clicked" time="0.023">
+    </testcase>
+  </testsuite>
+  <testsuite name="PageSettings" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.42" tests="5">
+    <testcase classname="PageSettings PageLayout with only title prop does not show save and cancel button" name="PageSettings PageLayout with only title prop does not show save and cancel button" time="0.02">
+    </testcase>
+    <testcase classname="PageSettings PageLayout without unsavedChanges does not show save and cancel button" name="PageSettings PageLayout without unsavedChanges does not show save and cancel button" time="0.006">
+    </testcase>
+    <testcase classname="PageSettings PageLayout with unsavedChanges shows save and cancel button" name="PageSettings PageLayout with unsavedChanges shows save and cancel button" time="0.027">
+    </testcase>
+    <testcase classname="PageSettings User clicks on save button to run save action" name="PageSettings User clicks on save button to run save action" time="0.038">
+    </testcase>
+    <testcase classname="PageSettings User clicks on cancel button to run cancel action" name="PageSettings User clicks on cancel button to run cancel action" time="0.036">
+    </testcase>
+  </testsuite>
+  <testsuite name="RestoreDeleteInheritedSelectSection Component" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.599" tests="1">
+    <testcase classname="RestoreDeleteInheritedSelectSection Component renders" name="RestoreDeleteInheritedSelectSection Component renders" time="0.291">
+    </testcase>
+  </testsuite>
+  <testsuite name="GeneralOptions" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.405" tests="4">
+    <testcase classname="GeneralOptions should render contact options correctly" name="GeneralOptions should render contact options correctly" time="0.036">
+    </testcase>
+    <testcase classname="GeneralOptions should call changeSwitchOption when auto-add contacts switch is clicked" name="GeneralOptions should call changeSwitchOption when auto-add contacts switch is clicked" time="0.045">
+    </testcase>
+    <testcase classname="GeneralOptions should call changeSwitchOption when use GAL auto-fill switch is clicked" name="GeneralOptions should call changeSwitchOption when use GAL auto-fill switch is clicked" time="0.034">
+    </testcase>
+    <testcase classname="GeneralOptions should disable switches when readonlyCOS is true" name="GeneralOptions should disable switches when readonlyCOS is true" time="0.077">
+    </testcase>
+  </testsuite>
+  <testsuite name="useBackupConfig" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.325" tests="18">
+    <testcase classname="useBackupConfig initialization should initialize with correct default values" name="useBackupConfig initialization should initialize with correct default values" time="0.01">
+    </testcase>
+    <testcase classname="useBackupConfig initialization should set allowSetBackup to false when user lacks permissions" name="useBackupConfig initialization should set allowSetBackup to false when user lacks permissions" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig initialization should set allowSetBackup to false when config rights are not found" name="useBackupConfig initialization should set allowSetBackup to false when config rights are not found" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig isDirty state management should set isDirty to true when backupDetail changes" name="useBackupConfig isDirty state management should set isDirty to true when backupDetail changes" time="0.004">
+    </testcase>
+    <testcase classname="useBackupConfig isDirty state management should set isDirty to false when backupDetail matches globalConfig" name="useBackupConfig isDirty state management should set isDirty to false when backupDetail matches globalConfig" time="0.003">
+    </testcase>
+    <testcase classname="useBackupConfig onCancel should reset backupDetail to globalConfig" name="useBackupConfig onCancel should reset backupDetail to globalConfig" time="0.004">
+    </testcase>
+    <testcase classname="useBackupConfig changeSwitchOption should toggle boolean values correctly" name="useBackupConfig changeSwitchOption should toggle boolean values correctly" time="0.003">
+    </testcase>
+    <testcase classname="useBackupConfig changeBackupDetail should update backup detail with input values" name="useBackupConfig changeBackupDetail should update backup detail with input values" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig changeBackupSchedulerInput should update scheduler cron pattern" name="useBackupConfig changeBackupSchedulerInput should update scheduler cron pattern" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig changeBackupSchedulerSwitch should toggle scheduler cron-enabled status" name="useBackupConfig changeBackupSchedulerSwitch should toggle scheduler cron-enabled status" time="0.004">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should save changes successfully and show success snackbar" name="useBackupConfig onSave should save changes successfully and show success snackbar" time="0.006">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should handle empty response as success" name="useBackupConfig onSave should handle empty response as success" time="0.004">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should show error snackbar when save fails with error response" name="useBackupConfig onSave should show error snackbar when save fails with error response" time="0.003">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should show error snackbar with statusText when no error message" name="useBackupConfig onSave should show error snackbar with statusText when no error message" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should handle request rejection and show error snackbar" name="useBackupConfig onSave should handle request rejection and show error snackbar" time="0.004">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should only send modified fields to the API" name="useBackupConfig onSave should only send modified fields to the API" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig onSave should not call API when no changes are made" name="useBackupConfig onSave should not call API when no changes are made" time="0.002">
+    </testcase>
+    <testcase classname="useBackupConfig translation function should return translation function" name="useBackupConfig translation function should return translation function" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="BackupConfigHeader" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.451" tests="7">
+    <testcase classname="BackupConfigHeader renders title correctly" name="BackupConfigHeader renders title correctly" time="0.023">
+    </testcase>
+    <testcase classname="BackupConfigHeader does not show save and cancel buttons when isDirty is false" name="BackupConfigHeader does not show save and cancel buttons when isDirty is false" time="0.02">
+    </testcase>
+    <testcase classname="BackupConfigHeader shows save and cancel buttons when isDirty is true" name="BackupConfigHeader shows save and cancel buttons when isDirty is true" time="0.037">
+    </testcase>
+    <testcase classname="BackupConfigHeader calls onCancel when cancel button is clicked" name="BackupConfigHeader calls onCancel when cancel button is clicked" time="0.053">
+    </testcase>
+    <testcase classname="BackupConfigHeader calls onSave when save button is clicked" name="BackupConfigHeader calls onSave when save button is clicked" time="0.035">
+    </testcase>
+    <testcase classname="BackupConfigHeader uses translation function for button labels" name="BackupConfigHeader uses translation function for button labels" time="0.013">
+    </testcase>
+    <testcase classname="BackupConfigHeader renders with custom title" name="BackupConfigHeader renders with custom title" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="WscSettings - general" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="5.972" tests="61">
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioFeatureWscEnabled" name="WscSettings - general CE: should render the input for changing carbonioFeatureWscEnabled" time="0.331">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscShowMessageReads" name="WscSettings - general CE: should render the input for changing carbonioWscShowMessageReads" time="0.077">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscShowUsersPresence" name="WscSettings - general CE: should render the input for changing carbonioWscShowUsersPresence" time="0.077">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscVirtualBackgroundEnabled" name="WscSettings - general CE: should render the input for changing carbonioWscVirtualBackgroundEnabled" time="0.076">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscVideoCallEnabled" name="WscSettings - general CE: should render the input for changing carbonioWscVideoCallEnabled" time="0.056">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscGroupChatCreation" name="WscSettings - general CE: should render the input for changing carbonioWscGroupChatCreation" time="0.063">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscPrivateChatCreation" name="WscSettings - general CE: should render the input for changing carbonioWscPrivateChatCreation" time="0.045">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscAttachmentUpload" name="WscSettings - general CE: should render the input for changing carbonioWscAttachmentUpload" time="0.048">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscMessageDeleteTimeLimit" name="WscSettings - general CE: should render the input for changing carbonioWscMessageDeleteTimeLimit" time="0.06">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscMessageEditTimeLimit" name="WscSettings - general CE: should render the input for changing carbonioWscMessageEditTimeLimit" time="0.062">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscMaxGroupMembers" name="WscSettings - general CE: should render the input for changing carbonioWscMaxGroupMembers" time="0.06">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscMaxRoomPictureSize" name="WscSettings - general CE: should render the input for changing carbonioWscMaxRoomPictureSize" time="0.042">
+    </testcase>
+    <testcase classname="WscSettings - general CE: should render the input for changing carbonioWscMaxAttachmentSize" name="WscSettings - general CE: should render the input for changing carbonioWscMaxAttachmentSize" time="0.037">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioFeatureWscEnabled" name="WscSettings - general Advanced: should render the input for changing carbonioFeatureWscEnabled" time="0.106">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscShowMessageReads" name="WscSettings - general Advanced: should render the input for changing carbonioWscShowMessageReads" time="0.046">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscShowUsersPresence" name="WscSettings - general Advanced: should render the input for changing carbonioWscShowUsersPresence" time="0.045">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscVirtualBackgroundEnabled" name="WscSettings - general Advanced: should render the input for changing carbonioWscVirtualBackgroundEnabled" time="0.074">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscVideoCallEnabled" name="WscSettings - general Advanced: should render the input for changing carbonioWscVideoCallEnabled" time="0.067">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscGroupChatCreation" name="WscSettings - general Advanced: should render the input for changing carbonioWscGroupChatCreation" time="0.065">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscPrivateChatCreation" name="WscSettings - general Advanced: should render the input for changing carbonioWscPrivateChatCreation" time="0.067">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscAttachmentUpload" name="WscSettings - general Advanced: should render the input for changing carbonioWscAttachmentUpload" time="0.053">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscRecordingEnabled" name="WscSettings - general Advanced: should render the input for changing carbonioWscRecordingEnabled" time="0.068">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscMessageDeleteTimeLimit" name="WscSettings - general Advanced: should render the input for changing carbonioWscMessageDeleteTimeLimit" time="0.061">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscMessageEditTimeLimit" name="WscSettings - general Advanced: should render the input for changing carbonioWscMessageEditTimeLimit" time="0.063">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscMaxGroupMembers" name="WscSettings - general Advanced: should render the input for changing carbonioWscMaxGroupMembers" time="0.062">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscMaxRoomPictureSize" name="WscSettings - general Advanced: should render the input for changing carbonioWscMaxRoomPictureSize" time="0.047">
+    </testcase>
+    <testcase classname="WscSettings - general Advanced: should render the input for changing carbonioWscMaxAttachmentSize" name="WscSettings - general Advanced: should render the input for changing carbonioWscMaxAttachmentSize" time="0.058">
+    </testcase>
+    <testcase classname="WscSettings - general when carbonioWscVideoCallEnabled is false, all the related attrs are disabled" name="WscSettings - general when carbonioWscVideoCallEnabled is false, all the related attrs are disabled" time="0.145">
+    </testcase>
+    <testcase classname="WscSettings - general when carbonioWscAttachmentUpload is false, all the related attrs are disabled" name="WscSettings - general when carbonioWscAttachmentUpload is false, all the related attrs are disabled" time="0.079">
+    </testcase>
+    <testcase classname="WscSettings - general Reset carbonioFeatureWscEnabled" name="WscSettings - general Reset carbonioFeatureWscEnabled" time="0.15">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscShowMessageReads switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscShowMessageReads switch is disabled when carbonioFeatureWscEnabled is false" time="0.066">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscShowUsersPresence switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscShowUsersPresence switch is disabled when carbonioFeatureWscEnabled is false" time="0.047">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscVirtualBackgroundEnabled switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscVirtualBackgroundEnabled switch is disabled when carbonioFeatureWscEnabled is false" time="0.06">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscVideoCallEnabled switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscVideoCallEnabled switch is disabled when carbonioFeatureWscEnabled is false" time="0.023">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscGroupChatCreation switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscGroupChatCreation switch is disabled when carbonioFeatureWscEnabled is false" time="0.052">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscPrivateChatCreation switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscPrivateChatCreation switch is disabled when carbonioFeatureWscEnabled is false" time="0.04">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscAttachmentUpload switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscAttachmentUpload switch is disabled when carbonioFeatureWscEnabled is false" time="0.034">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs carbonioWscRecordingEnabled switch is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Switch attrs carbonioWscRecordingEnabled switch is disabled when carbonioFeatureWscEnabled is false" time="0.044">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscShowMessageReads switch" name="WscSettings - Switch attrs Reset carbonioWscShowMessageReads switch" time="0.111">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscShowUsersPresence switch" name="WscSettings - Switch attrs Reset carbonioWscShowUsersPresence switch" time="0.116">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscVirtualBackgroundEnabled switch" name="WscSettings - Switch attrs Reset carbonioWscVirtualBackgroundEnabled switch" time="0.094">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscVideoCallEnabled switch" name="WscSettings - Switch attrs Reset carbonioWscVideoCallEnabled switch" time="0.078">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscGroupChatCreation switch" name="WscSettings - Switch attrs Reset carbonioWscGroupChatCreation switch" time="0.06">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscPrivateChatCreation switch" name="WscSettings - Switch attrs Reset carbonioWscPrivateChatCreation switch" time="0.061">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscAttachmentUpload switch" name="WscSettings - Switch attrs Reset carbonioWscAttachmentUpload switch" time="0.088">
+    </testcase>
+    <testcase classname="WscSettings - Switch attrs Reset carbonioWscRecordingEnabled switch" name="WscSettings - Switch attrs Reset carbonioWscRecordingEnabled switch" time="0.059">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs carbonioWscMessageDeleteTimeLimit select is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Select attrs carbonioWscMessageDeleteTimeLimit select is disabled when carbonioFeatureWscEnabled is false" time="0.034">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs carbonioWscMessageEditTimeLimit select is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Select attrs carbonioWscMessageEditTimeLimit select is disabled when carbonioFeatureWscEnabled is false" time="0.047">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs Change selection carbonioWscMessageDeleteTimeLimit" name="WscSettings - Select attrs Change selection carbonioWscMessageDeleteTimeLimit" time="0.208">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs Change selection carbonioWscMessageEditTimeLimit" name="WscSettings - Select attrs Change selection carbonioWscMessageEditTimeLimit" time="0.11">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs Reset select carbonioWscMessageDeleteTimeLimit" name="WscSettings - Select attrs Reset select carbonioWscMessageDeleteTimeLimit" time="0.084">
+    </testcase>
+    <testcase classname="WscSettings - Select attrs Reset select carbonioWscMessageEditTimeLimit" name="WscSettings - Select attrs Reset select carbonioWscMessageEditTimeLimit" time="0.082">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs carbonioWscMaxGroupMembers input is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Input attrs carbonioWscMaxGroupMembers input is disabled when carbonioFeatureWscEnabled is false" time="0.053">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs carbonioWscMaxRoomPictureSize input is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Input attrs carbonioWscMaxRoomPictureSize input is disabled when carbonioFeatureWscEnabled is false" time="0.059">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs carbonioWscMaxAttachmentSize input is disabled when carbonioFeatureWscEnabled is false" name="WscSettings - Input attrs carbonioWscMaxAttachmentSize input is disabled when carbonioFeatureWscEnabled is false" time="0.045">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Change carbonioWscMaxGroupMembers input" name="WscSettings - Input attrs Change carbonioWscMaxGroupMembers input" time="0.131">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Change carbonioWscMaxRoomPictureSize input" name="WscSettings - Input attrs Change carbonioWscMaxRoomPictureSize input" time="0.109">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Change carbonioWscMaxAttachmentSize input" name="WscSettings - Input attrs Change carbonioWscMaxAttachmentSize input" time="0.104">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Reset carbonioWscMaxGroupMembers input" name="WscSettings - Input attrs Reset carbonioWscMaxGroupMembers input" time="0.12">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Reset carbonioWscMaxRoomPictureSize input" name="WscSettings - Input attrs Reset carbonioWscMaxRoomPictureSize input" time="0.146">
+    </testcase>
+    <testcase classname="WscSettings - Input attrs Reset carbonioWscMaxAttachmentSize input" name="WscSettings - Input attrs Reset carbonioWscMaxAttachmentSize input" time="0.17">
+    </testcase>
+  </testsuite>
+  <testsuite name="BackupRouteLeavingGuard" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.284" tests="6">
+    <testcase classname="BackupRouteLeavingGuard renders warning messages correctly" name="BackupRouteLeavingGuard renders warning messages correctly" time="0.018">
+    </testcase>
+    <testcase classname="BackupRouteLeavingGuard passes isDirty prop to RouteLeavingGuard as when prop" name="BackupRouteLeavingGuard passes isDirty prop to RouteLeavingGuard as when prop" time="0.006">
+    </testcase>
+    <testcase classname="BackupRouteLeavingGuard passes isDirty false to RouteLeavingGuard" name="BackupRouteLeavingGuard passes isDirty false to RouteLeavingGuard" time="0.005">
+    </testcase>
+    <testcase classname="BackupRouteLeavingGuard passes onSave callback to RouteLeavingGuard" name="BackupRouteLeavingGuard passes onSave callback to RouteLeavingGuard" time="0.02">
+    </testcase>
+    <testcase classname="BackupRouteLeavingGuard uses translation function for warning messages" name="BackupRouteLeavingGuard uses translation function for warning messages" time="0.007">
+    </testcase>
+    <testcase classname="BackupRouteLeavingGuard renders children inside RouteLeavingGuard" name="BackupRouteLeavingGuard renders children inside RouteLeavingGuard" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="bytesToHumanReadable" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.105" tests="12">
+    <testcase classname="bytesToHumanReadable Zero bytes" name="bytesToHumanReadable Zero bytes" time="0.002">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Bytes under 1 KB" name="bytesToHumanReadable Bytes under 1 KB" time="0.005">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Kilobytes" name="bytesToHumanReadable Kilobytes" time="0">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Megabytes" name="bytesToHumanReadable Megabytes" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Gigabytes" name="bytesToHumanReadable Gigabytes" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Terabytes" name="bytesToHumanReadable Terabytes" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Petabytes" name="bytesToHumanReadable Petabytes" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable Extremely large numbers" name="bytesToHumanReadable Extremely large numbers" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable should give 1 mb of 1048576 bytes" name="bytesToHumanReadable should give 1 mb of 1048576 bytes" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable should give 0 if pass 0" name="bytesToHumanReadable should give 0 if pass 0" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable should give 2097152 bytes if pass 2 mb" name="bytesToHumanReadable should give 2097152 bytes if pass 2 mb" time="0.001">
+    </testcase>
+    <testcase classname="bytesToHumanReadable should give 0 bytes if pass 0 mb" name="bytesToHumanReadable should give 0 bytes if pass 0 mb" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="DomainListChipInput" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:34" time="0.443" tests="3">
+    <testcase classname="DomainListChipInput renders the component" name="DomainListChipInput renders the component" time="0.054">
+    </testcase>
+    <testcase classname="DomainListChipInput calls getAllDomainList on input type" name="DomainListChipInput calls getAllDomainList on input type" time="0.045">
+    </testcase>
+    <testcase classname="DomainListChipInput should get the chip of already added domain name" name="DomainListChipInput should get the chip of already added domain name" time="0.121">
+    </testcase>
+  </testsuite>
+  <testsuite name="useHasUnsavedChanges Hook" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.176" tests="2">
+    <testcase classname="useHasUnsavedChanges Hook should return true when there are unsaved changes" name="useHasUnsavedChanges Hook should return true when there are unsaved changes" time="0.004">
+    </testcase>
+    <testcase classname="useHasUnsavedChanges Hook should return false when there are no unsaved changes" name="useHasUnsavedChanges Hook should return false when there are no unsaved changes" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="ForwardingOptions" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.337" tests="4">
+    <testcase classname="ForwardingOptions should render correctly with the given props" name="ForwardingOptions should render correctly with the given props" time="0.033">
+    </testcase>
+    <testcase classname="ForwardingOptions should call changeSwitchOption with the correct key when the forwarding switch is clicked" name="ForwardingOptions should call changeSwitchOption with the correct key when the forwarding switch is clicked" time="0.036">
+    </testcase>
+    <testcase classname="ForwardingOptions should call changeSwitchOption with the correct key when the mail forwarding filter switch is clicked" name="ForwardingOptions should call changeSwitchOption with the correct key when the mail forwarding filter switch is clicked" time="0.02">
+    </testcase>
+    <testcase classname="ForwardingOptions should disable switches when isReadonlyCOSEntry is true" name="ForwardingOptions should disable switches when isReadonlyCOSEntry is true" time="0.034">
+    </testcase>
+  </testsuite>
+  <testsuite name="SaveCancelBar" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.388" tests="4">
+    <testcase classname="SaveCancelBar should renders SaveCancelBar with buttons when isDirty is true" name="SaveCancelBar should renders SaveCancelBar with buttons when isDirty is true" time="0.061">
+    </testcase>
+    <testcase classname="SaveCancelBar should not show buttons when isDirty is false" name="SaveCancelBar should not show buttons when isDirty is false" time="0.01">
+    </testcase>
+    <testcase classname="SaveCancelBar should call onSave when Save button is clicked" name="SaveCancelBar should call onSave when Save button is clicked" time="0.044">
+    </testcase>
+    <testcase classname="SaveCancelBar should call onCancel when Cancel button is clicked" name="SaveCancelBar should call onCancel when Cancel button is clicked" time="0.033">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.32" tests="5">
+    <testcase classname=" renders title correctly" name=" renders title correctly" time="0.019">
+    </testcase>
+    <testcase classname=" renders close button when showClose is true" name=" renders close button when showClose is true" time="0.012">
+    </testcase>
+    <testcase classname=" renders children correctly" name=" renders children correctly" time="0.005">
+    </testcase>
+    <testcase classname=" renders title and footer correctly" name=" renders title and footer correctly" time="0.019">
+    </testcase>
+    <testcase classname=" calls onClose when close button is clicked" name=" calls onClose when close button is clicked" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="RestoreDeleteAccountStartSection" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="0.427" tests="3">
+    <testcase classname="RestoreDeleteAccountStartSection renders" name="RestoreDeleteAccountStartSection renders" time="0.094">
+    </testcase>
+    <testcase classname="RestoreDeleteAccountStartSection displays correct email notifications value" name="RestoreDeleteAccountStartSection displays correct email notifications value" time="0.024">
+    </testcase>
+    <testcase classname="RestoreDeleteAccountStartSection displays correct destination account value" name="RestoreDeleteAccountStartSection displays correct destination account value" time="0.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="CosAdvanced" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:29" time="6.865" tests="12">
+    <testcase classname="CosAdvanced COS General Options should render the component correctly" name="CosAdvanced COS General Options should render the component correctly" time="0.828">
+    </testcase>
+    <testcase classname="CosAdvanced COS General Options should render Advanced toggles" name="CosAdvanced COS General Options should render Advanced toggles" time="0.212">
+    </testcase>
+    <testcase classname="CosAdvanced COS General Options should not render Advanced toggles when is not an Advanced environment" name="CosAdvanced COS General Options should not render Advanced toggles when is not an Advanced environment" time="0.197">
+    </testcase>
+    <testcase classname="CosAdvanced COS General Options should toggle/untoggle Backup based on initial state" name="CosAdvanced COS General Options should toggle/untoggle Backup based on initial state" time="0.573">
+    </testcase>
+    <testcase classname="CosAdvanced COS Forwarding should modify the forwarding addresses max length" name="CosAdvanced COS Forwarding should modify the forwarding addresses max length" time="0.609">
+    </testcase>
+    <testcase classname="CosAdvanced COS Quotas should render Quota advanced field" name="CosAdvanced COS Quotas should render Quota advanced field" time="0.22">
+    </testcase>
+    <testcase classname="CosAdvanced COS Quotas should render Quota default fields" name="CosAdvanced COS Quotas should render Quota default fields" time="0.208">
+    </testcase>
+    <testcase classname="CosAdvanced COS Quotas should modify the mails quota limit" name="CosAdvanced COS Quotas should modify the mails quota limit" time="0.604">
+    </testcase>
+    <testcase classname="CosAdvanced COS Password should enable prevent user from changing password" name="CosAdvanced COS Password should enable prevent user from changing password" time="0.333">
+    </testcase>
+    <testcase classname="CosAdvanced COS Failed Login Policy should enable failed login lockout" name="CosAdvanced COS Failed Login Policy should enable failed login lockout" time="0.307">
+    </testcase>
+    <testcase classname="CosAdvanced COS Timeout Policy should modify admin auth token timeout" name="CosAdvanced COS Timeout Policy should modify admin auth token timeout" time="0.86">
+    </testcase>
+    <testcase classname="CosAdvanced COS Email Retention Policy should modify admin email retention policy lifetime" name="CosAdvanced COS Email Retention Policy should modify admin email retention policy lifetime" time="0.62">
+    </testcase>
+  </testsuite>
+  <testsuite name="Mailbox Quota Settings" errors="0" failures="0" skipped="0" timestamp="2025-08-28T10:08:35" time="1.726" tests="12">
+    <testcase classname="Mailbox Quota Settings renders Mailbox Quota section with valid data" name="Mailbox Quota Settings renders Mailbox Quota section with valid data" time="0.313">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings displays correct input fields" name="Mailbox Quota Settings displays correct input fields" time="0.06">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings handles input changes correctly" name="Mailbox Quota Settings handles input changes correctly" time="0.173">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings handles mailbox quota threshold changes correctly" name="Mailbox Quota Settings handles mailbox quota threshold changes correctly" time="0.089">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings handles empty mailbox quota threshold correctly" name="Mailbox Quota Settings handles empty mailbox quota threshold correctly" time="0.116">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings shows save and cancel buttons after editing fields" name="Mailbox Quota Settings shows save and cancel buttons after editing fields" time="0.085">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings click on save button" name="Mailbox Quota Settings click on save button" time="0.123">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings hides save and cancel buttons on cancel" name="Mailbox Quota Settings hides save and cancel buttons on cancel" time="0.125">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings handles pagination changes correctly" name="Mailbox Quota Settings handles pagination changes correctly" time="0.239">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings formats basic quota data correctly" name="Mailbox Quota Settings formats basic quota data correctly" time="0.001">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings formats advanced quota data correctly" name="Mailbox Quota Settings formats advanced quota data correctly" time="0">
+    </testcase>
+    <testcase classname="Mailbox Quota Settings formats small quota values properly" name="Mailbox Quota Settings formats small quota values properly" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>
