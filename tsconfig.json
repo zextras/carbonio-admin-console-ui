@@ -22,6 +22,6 @@
       ]
     }
   },
-  "include": ["src", "apps/**/src", "packages/**/src", "**/*.d.ts"],
+  "include": ["src", "apps/**/src", "**/*.d.ts"],
   "exclude": ["node_modules", "dist", "build"]
 }
