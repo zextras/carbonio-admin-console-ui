@@ -349,7 +349,7 @@ export const ServicesPassphrase: FC = () => {
 									icon="CopyOutline"
 									size="large"
 									color="Gray0"
-									onClick={(e): any => {
+									onClick={(e: React.MouseEvent): void => {
 										e.preventDefault();
 										e.stopPropagation();
 										navigator.clipboard.writeText(

@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	ChangeEvent,
+	FC,
+	KeyboardEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -656,7 +664,7 @@ const DomainCosLink: FC<{
 							value={maxAccountValue}
 							backgroundColor="gray6"
 							type="number"
-							onKeyDown={(e): void => {
+							onKeyDown={(e: KeyboardEvent<HTMLInputElement>): void => {
 								if (
 									![
 										'Backspace',

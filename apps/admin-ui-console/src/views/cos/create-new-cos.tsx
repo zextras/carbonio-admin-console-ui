@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 
 import {
 	Container,
@@ -170,7 +170,7 @@ const CreateCos: FC = () => {
 										label={t('label.cos_name', 'Cos Name')}
 										backgroundColor="gray5"
 										value={cosName}
-										onChange={(e): void => {
+										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setCosName(e.target.value);
 										}}
 									/>

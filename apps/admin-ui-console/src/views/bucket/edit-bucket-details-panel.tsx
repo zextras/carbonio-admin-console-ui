@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -360,7 +360,7 @@ const EditBucketDetailPanel: FC<{
 		const upperBucketType =
 			bucketDetail?.storeType !== EMC
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
-				  bucketDetail.storeType.slice(1).toLowerCase()
+					bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail?.storeType;
 		const bucketTypeValue: any = find(
 			bucketTypeItems,
@@ -425,7 +425,7 @@ const EditBucketDetailPanel: FC<{
 		const upperBucketType =
 			bucketDetail?.storeType !== EMC && bucketDetail?.storeType !== AMAZON_WEB_SERVICE_S3
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
-				  bucketDetail.storeType.slice(1).toLowerCase()
+					bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail?.storeType;
 		const customType =
 			bucketDetail?.storeType === CUSTOM_S3 &&
@@ -453,7 +453,7 @@ const EditBucketDetailPanel: FC<{
 		const upperBucketType =
 			bucketDetail.storeType !== EMC
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
-				  bucketDetail.storeType.slice(1).toLowerCase()
+					bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail.storeType;
 		const regionValue: any = find(
 			bucketDetail?.region !== undefined && upperBucketType === ALIBABA
@@ -507,7 +507,7 @@ const EditBucketDetailPanel: FC<{
 		const upperBucketType =
 			bucketDetail.storeType !== EMC
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
-				  bucketDetail.storeType.slice(1).toLowerCase()
+					bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail.storeType;
 		const regionValue: any = find(
 			bucketDetail?.region !== undefined && upperBucketType === ALIBABA
@@ -599,7 +599,7 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.label', 'Label')}
 						inputName="label"
 						value={bucketLabel}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setBucketLabel(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}
@@ -614,7 +614,7 @@ const EditBucketDetailPanel: FC<{
 							label={t('label.bucket_name', 'Bucket Name')}
 							inputName="bucketName"
 							value={bucketName}
-							onChange={(ev): void => {
+							onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 								setBucketName(ev.target.value);
 								checkIfChanged(ev.target.name, ev.target.value);
 							}}
@@ -646,7 +646,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="access_key"
 							label={t('label.access_key', 'Access Key')}
 							value={accessKeyData}
-							onChange={(e): void => {
+							onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 								setAccessKeyData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -658,7 +658,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="secret"
 							label={t('label.secret_key', 'Secret Key')}
 							value={secretKey}
-							onChange={(e): void => {
+							onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 								setSecretKey(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -671,7 +671,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="url"
 							label={t('label.url', 'URL')}
 							value={urlData}
-							onChange={(e): void => {
+							onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 								setUrlData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -691,7 +691,7 @@ const EditBucketDetailPanel: FC<{
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
 						value={bucketNotes}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setBucketNotes(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}

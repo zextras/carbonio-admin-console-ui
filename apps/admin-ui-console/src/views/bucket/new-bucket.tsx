@@ -31,7 +31,6 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-// eslint-disable-next-line no-empty-pattern
 const NewBucket: FC<{
 	setToggleWizardSection: any;
 	setDetailsBucket: any;

@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -375,7 +375,7 @@ const ServerDetailPanel: FC = () => {
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}
 										value={searchServer}
-										onChange={(e): void => {
+										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setSearchServer(e.target.value);
 										}}
 									/>

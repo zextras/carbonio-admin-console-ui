@@ -636,7 +636,7 @@ const MTAStatsMail: FC<{
 						selectedRows={selectedRow}
 						rows={mailRows}
 						headers={headers}
-						onSelectionChange={(selected): void => {
+						onSelectionChange={(selected: Array<string>): void => {
 							setSelectedRow(selected);
 						}}
 						style={{ overflow: 'auto', height: '100%', width: '100%' }}

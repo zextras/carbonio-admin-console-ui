@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -1137,7 +1137,7 @@ const BackupConfiguration: FC = () => {
 									)}
 									value={backupDestPath || ''}
 									backgroundColor="gray5"
-									onChange={(e): void => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setBackupDestPath(e.target.value);
 									}}
 								/>
@@ -1207,7 +1207,7 @@ const BackupConfiguration: FC = () => {
 									label={t('label.path', 'Path')}
 									value={rootVolumePath || ''}
 									backgroundColor="gray5"
-									onChange={(e): void => {
+									onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 										!allowSetBackup && setRootVolumePath(e.target.value);
 									}}
 								/>
@@ -1296,7 +1296,7 @@ const BackupConfiguration: FC = () => {
 												label={t('backup.local_mountpoint', 'Local Mountpoint')}
 												value={manageExternalVolumeNewLocalMountpoint || ''}
 												backgroundColor="gray5"
-												onChange={(e): void => {
+												onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 													!allowSetBackup &&
 														setManageExternalVolumeNewLocalMountpoint(e.target.value);
 												}}
@@ -1407,7 +1407,7 @@ const BackupConfiguration: FC = () => {
 								<Input
 									label={t('backup.schedule', 'Schedule')}
 									value={scheduleSmartScan}
-									onChange={(e): void => {
+									onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 										setScheduleSmartScan(e.target.value);
 									}}
 									disabled={!isScheduleSmartScan || !allowSetBackup}
@@ -1483,7 +1483,7 @@ const BackupConfiguration: FC = () => {
 									label={t('backup.schedule', 'Schedule')}
 									backgroundColor="gray5"
 									value={retentionPolicySchedule}
-									onChange={(e): void => {
+									onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 										setRetentionPolicySchedule(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}

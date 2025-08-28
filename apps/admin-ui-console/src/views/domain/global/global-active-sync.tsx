@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import {
 	Button,
@@ -342,7 +342,7 @@ const GlobalActiveSync: FC = () => {
 								backgroundColor="gray5"
 								value={mobileAntiDosServiceJailDuration}
 								type="number"
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									if (intMobileAntiDosServiceJailDuration !== e.target.value) {
 										setIsDirty(true);
 									}
@@ -358,7 +358,7 @@ const GlobalActiveSync: FC = () => {
 								value={mobileAntiDosServiceMaxRequests}
 								backgroundColor="gray5"
 								type="number"
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									if (intMobileAntiDosServiceMaxRequests !== e.target.value) {
 										setIsDirty(true);
 									}
@@ -375,7 +375,7 @@ const GlobalActiveSync: FC = () => {
 								type="number"
 								value={mobileAntiDosServiceTimeWindow}
 								backgroundColor="gray5"
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									if (intMobileAntiDosServiceTimeWindow !== e.target.value) {
 										setIsDirty(true);
 									}

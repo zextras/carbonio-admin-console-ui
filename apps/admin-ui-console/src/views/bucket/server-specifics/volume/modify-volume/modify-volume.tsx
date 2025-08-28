@@ -314,7 +314,6 @@ const ModifyVolume: FC<{
 						isCurrent: isCurrent ? 1 : 0
 					}
 				},
-				undefined,
 				selectedServerId
 			)
 				.then(() => {
@@ -328,7 +327,6 @@ const ModifyVolume: FC<{
 								id,
 								type: type?.value
 							},
-							undefined,
 							selectedServerId
 						).catch(() => {
 							createSnackbar({
@@ -684,7 +682,6 @@ const ModifyVolume: FC<{
 					module: 'ZxPowerstore',
 					id: volId
 				},
-				undefined,
 				selectedServerId
 			)
 				.then((response) => {

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo, ChangeEvent } from 'react';
 
 import {
 	Container,
@@ -413,7 +413,7 @@ const Connection: FC<{
 					backgroundColor="gray5"
 					label={t('label.label', 'Label')}
 					value={bucketLabel}
-					onChange={(ev): void => {
+					onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 						setBucketLabel(ev.target.value);
 					}}
 				/>
@@ -424,7 +424,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						label={t('label.bucket_name', 'Bucket Name')}
 						value={bucketName}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setBucketName(ev.target.value);
 							onSelection({ bucketName: ev.target.value }, false);
 						}}
@@ -456,7 +456,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						label={t('label.access_key', 'Access Key')}
 						value={accessKeyData}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setAccessKeyData(ev.target.value);
 							onSelection({ accessKey: ev.target.value }, false);
 						}}
@@ -468,7 +468,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						label={t('label.secret_key', 'Secret Key')}
 						value={secretKey}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setSecretKey(ev.target.value);
 							onSelection({ secret: ev.target.value }, false);
 						}}
@@ -481,7 +481,7 @@ const Connection: FC<{
 						label={t('label.url', 'URL')}
 						backgroundColor="gray5"
 						value={urlInput}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setUrlInput(ev.target.value);
 						}}
 					/>
@@ -493,7 +493,7 @@ const Connection: FC<{
 						label={t('label.prefix', 'Prefix')}
 						backgroundColor="gray5"
 						value={prefix}
-						onChange={(ev): void => {
+						onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 							setPrefix(ev.target.value);
 							if (ev.target.value !== '') {
 								if (prefixRegex.test(ev.target.value)) {
@@ -524,7 +524,7 @@ const Connection: FC<{
 					backgroundColor="gray5"
 					label={t('label.description', 'Description')}
 					value={bucketNotes}
-					onChange={(ev): void => {
+					onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
 						setBucketNotes(ev.target.value);
 					}}
 				/>

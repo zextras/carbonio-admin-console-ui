@@ -191,7 +191,7 @@ export const MailOptions = ({
 								value={cosPrefAttributes?.zimbraFileUploadMaxSizePerFile}
 								backgroundColor={'gray5'}
 								disabled={isReadOnlyCosEntry}
-								onKeyDown={(e): void => {
+								onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => {
 									if (
 										![
 											'Backspace',

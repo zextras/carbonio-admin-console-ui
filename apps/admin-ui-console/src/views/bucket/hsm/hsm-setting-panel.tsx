@@ -262,7 +262,6 @@ const HSMsettingPanel: FC = () => {
 				{
 					_jsns: ZIMBRA_ADMIN_URN
 				},
-				undefined,
 				serverId
 			).then((response: any) => {
 				setIsVolumeInProgress(false);

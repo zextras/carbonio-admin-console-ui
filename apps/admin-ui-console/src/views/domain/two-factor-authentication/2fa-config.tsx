@@ -12,7 +12,8 @@ import {
 	Text,
 	Button,
 	Select,
-	ChipInput
+	ChipInput,
+	ChipItem
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -140,7 +141,7 @@ export const TwoFactorAuthencationConfig: FC<{
 							<ChipInput
 								background="gray5"
 								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-								onChange={(ips): void => {
+								onChange={(ips: Array<ChipItem>): void => {
 									const data: any = [];
 									map(ips, (ip: IpRangeValue) => {
 										isValidIpRange(ip.label ?? '')
@@ -206,7 +207,7 @@ export const TwoFactorAuthencationConfig: FC<{
 								<ChipInput
 									background="gray5"
 									placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-									onChange={(ips): void => {
+									onChange={(ips: Array<ChipItem>): void => {
 										const data: any = [];
 										map(ips, (ip: IpRangeValue) => {
 											isValidIpRange(ip.label ?? '')

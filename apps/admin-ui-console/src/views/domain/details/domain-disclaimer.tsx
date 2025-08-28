@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -402,7 +402,7 @@ const DomainDisclaimer: FC = () => {
 						<TextAreaEditor
 							label={''}
 							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
-							onChange={(event): void => {
+							onChange={(event: ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
 							}}
 							maxHeight="20.5rem"

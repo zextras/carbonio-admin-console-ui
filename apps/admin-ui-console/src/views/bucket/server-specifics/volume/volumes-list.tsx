@@ -273,7 +273,6 @@ const VolumesDetailPanel: FC = () => {
 				{
 					_jsns: ZIMBRA_ADMIN_URN
 				},
-				undefined,
 				selectedServerId
 			)
 				.then((response) => {
@@ -356,7 +355,6 @@ const VolumesDetailPanel: FC = () => {
 					action: 'DeleteVolumeRequest',
 					id
 				},
-				undefined,
 				selectedServerId
 			)
 				.then((res) => {
@@ -558,7 +556,8 @@ const VolumesDetailPanel: FC = () => {
 					isCurrent: attr?.isCurrent === 1
 				},
 				'zextras'
-			).then(async (res: { Body: { response: { content: string } } }) => {
+				// @ts-ignore
+			).then(async (res: { Body: { response: { content: string } } }): Promise<void> => {
 				const result = JSON.parse(res?.Body?.response?.content);
 				const responseData = Object.values(result?.response)[0];
 				const typeRes = responseData as { ok: boolean; error: string };

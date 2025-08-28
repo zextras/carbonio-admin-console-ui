@@ -33,7 +33,7 @@ const TrackNumberPerPage: FC<{
 					data-testid="pagination-select"
 					background="gray5"
 					defaultSelection={paginationItems[1]}
-					onChange={(e): void => setPageSize(e)}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setPageSize(e)}
 					showCheckbox={false}
 					itemTextSize="1rem"
 					style={{ minWidth: '4rem' }}

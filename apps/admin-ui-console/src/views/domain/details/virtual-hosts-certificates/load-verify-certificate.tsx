@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Button,
@@ -364,7 +364,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					items={certificateTypes}
 					background="gray5"
 					label={t('label.certificate_type', 'Certificate Type')}
-					onChange={(e): void => {
+					onChange={(e: React.MouseEvent): void => {
 						setSelectedCertType(e);
 					}}
 					defaultSelection={certificateTypes?.filter(
@@ -447,7 +447,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificate.fileName}
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									setObjDomainCertificate({
 										...objDomainCertificate,
 										fileName: e.target.value
@@ -518,7 +518,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificateCaChain.fileName || ''}
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									setObjDomainCertificateCaChain({
 										...objDomainCertificateCaChain,
 										fileName: e.target.value
@@ -589,7 +589,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificatePrivateKey.fileName || ''}
-								onChange={(e): void => {
+								onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 									setObjDomainCertificatePrivateKey({
 										...objDomainCertificatePrivateKey,
 										fileName: e.target.value

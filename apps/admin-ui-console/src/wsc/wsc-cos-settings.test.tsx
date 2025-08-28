@@ -5,7 +5,6 @@
  */
 import React from 'react';
 
-import { jest } from '@jest/globals';
 import { screen, within } from '@testing-library/react';
 
 import WscCosSettings from './wsc-cos-settings';

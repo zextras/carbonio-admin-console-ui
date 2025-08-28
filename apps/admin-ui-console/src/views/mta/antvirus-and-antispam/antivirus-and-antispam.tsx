@@ -895,8 +895,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamTagPercentChange}
 							disabled={!allowSetMTA}
 						/>
@@ -920,8 +918,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamDestinyChange}
 							disabled={!allowSetMTA}
 						/>
@@ -936,8 +932,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamKillPercentChange}
 							disabled={
 								mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS ||

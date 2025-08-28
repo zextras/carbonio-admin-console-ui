@@ -19,7 +19,8 @@ import {
 	Shimmer,
 	Modal,
 	ChipInput,
-	useSnackbar
+	useSnackbar,
+	ChipItem
 } from '@zextras/carbonio-design-system';
 import { replaceHistory, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
@@ -1128,7 +1129,7 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										defaultValue={carbonioNotificationRecipients}
 										value={carbonioNotificationRecipients}
-										onChange={(emails): void => {
+										onChange={(emails: Array<ChipItem>): void => {
 											const data: objectType[] = [];
 											map(emails, (email: objectType) => {
 												if (isValidEmail(email.label ?? '')) data.push(email);

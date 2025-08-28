@@ -1004,7 +1004,7 @@ const EditAccountSecuritySection: FC = () => {
 											backgroundColor="gray5"
 											label={t('label.user_recovery_email', 'User Recovery Email')}
 											defaultValue={accountDetail?.zimbraPrefPasswordRecoveryAddress || ''}
-											onChange={(e): void => {
+											onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 												if (isValidEmail(e?.target?.value)) {
 													changeValue(e);
 													setRecoveryEmailError(false);

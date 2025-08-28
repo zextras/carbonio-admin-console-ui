@@ -9,7 +9,6 @@
 
 import React, { act } from 'react';
 
-import { jest } from '@jest/globals';
 import { screen } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
 

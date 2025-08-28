@@ -17,7 +17,7 @@ export const RouteLeavingGuard: FC<{
 	children?: React.ReactNode;
 }> = ({ children, when, onSave }) => {
 	const history = useHistory();
-	const lastLocationInitial = useMemo(() => history.location, [history]);
+	const lastLocationInitial = useMemo(() => history.location, [history]) as Location;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
 	const [confirmedNavigation, setConfirmedNavigation] = useState(false);
@@ -50,7 +50,7 @@ export const RouteLeavingGuard: FC<{
 	}, [confirmedNavigation, history, lastLocation]);
 	return (
 		<>
-			<Prompt when={when} message={handleBlockedNavigation} />
+			<Prompt when={when} message={handleBlockedNavigation as any} />
 			{/* Your own alert/dialog/modal component */}
 			<Modal
 				open={modalVisible}

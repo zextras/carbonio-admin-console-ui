@@ -52,6 +52,11 @@ const mockDomain = {
 	]
 };
 
+jest.mock('react-csv', () => ({
+	CSVDownload: jest.fn(({ children }) => children),
+	CSVLink: jest.fn(({ children }) => children)
+}));
+
 jest.mock('../../../../store/auth-advanced/store', () => ({
 	useAuthIsAdvanced: jest.fn()
 }));
