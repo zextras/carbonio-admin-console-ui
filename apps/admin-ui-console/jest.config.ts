@@ -149,9 +149,6 @@ export default {
 	// Allows you to use a custom runner instead of Jest's default test runner
 	// runner: "jest-runner",
 
-	// The paths to modules that run some code to configure or set up the testing environment before each test
-	setupFiles: ['<rootDir>/src/jest-polyfills.ts'],
-
 	// A list of paths to modules that run some code to configure or set up the testing framework before each test
 	setupFilesAfterEnv: ['<rootDir>/src/jest-env-setup.ts'],
 
