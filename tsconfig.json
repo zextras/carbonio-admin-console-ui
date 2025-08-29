@@ -22,6 +22,18 @@
       ]
     }
   },
-  "include": ["src", "apps/**/src", "**/*.d.ts"],
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "include": [
+    "src",
+    "./apps/admin-ui-bootstrapper/src/*.ts",
+    "./apps/admin-ui-bootstrapper/src/globals.d.ts",
+    "./apps/admin-ui-bootstrapper/types/index.d.ts",
+    "./apps/admin-ui-console/src/*.ts",
+    "./apps/admin-ui-console/types/i18next.d.ts",
+    "./apps/admin-ui-console/types/index.d.ts",
+    "./apps/*/*.d.ts"
+  ],
   "exclude": ["node_modules", "dist", "build"]
 }

@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-export type OneOrMany<T> = T | T[];
 
 export type StringOfLength<Min, Max = Min> = string & {
 	min: Min;
