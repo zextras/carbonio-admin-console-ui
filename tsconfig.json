@@ -1,39 +1,37 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["DOM", "DOM.Iterable", "ES6"],
-    "allowJs": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowJs": true,
     "resolveJsonModule": true,
+    "moduleDetection": "force",
     "isolatedModules": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
     "noEmit": true,
-    "jsx": "react-jsx",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "noUncheckedIndexedAccess": false,
+    "preserveSymlinks": true, // IMPORTANT for pnpm!
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@app/*": [
-        "apps/admin-ui-console/src/*",
-        "apps/admin-ui-bootstrapper/src/*"
+      "@zextras/carbonio-design-system": [
+        "node_modules/@zextras/carbonio-design-system",
+        "apps/*/node_modules/@zextras/carbonio-design-system"
       ]
     }
   },
   "ts-node": {
     "transpileOnly": true
   },
-  "include": [
-    "src",
-    "./apps/admin-ui-bootstrapper/src/*.ts",
-    "./apps/admin-ui-bootstrapper/src/globals.d.ts",
-    "./apps/admin-ui-bootstrapper/types/index.d.ts",
-    "./apps/admin-ui-console/src/*.ts",
-    "./apps/admin-ui-console/types/i18next.d.ts",
-    "./apps/admin-ui-console/types/index.d.ts",
-    "./apps/*/*.d.ts"
-  ],
+  "moduleResolution": "node16", // or "nodenext" - better for pnpm
+  "preserveSymlinks": false, // Try false if true doesn't work
+  "resolvePackageJsonExports": true,
+  "resolvePackageJsonImports": true,
+  "include": ["./apps/**/src/**/*", "./apps/**/types/**/*"],
   "exclude": ["node_modules", "dist", "build"]
 }

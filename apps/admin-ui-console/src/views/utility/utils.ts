@@ -6,7 +6,7 @@
  */
 import { useState } from 'react';
 
-import { SelectItem, THeader } from '@zextras/carbonio-design-system';
+import { SelectItem, type THeader } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash';
 

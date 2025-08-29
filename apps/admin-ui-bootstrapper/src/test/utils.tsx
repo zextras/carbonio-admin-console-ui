@@ -5,7 +5,6 @@
  */
 import React, { type ReactElement, useMemo } from 'react';
 
-import { jest } from '@jest/globals';
 import {
 	type ByRoleMatcher,
 	type ByRoleOptions,
