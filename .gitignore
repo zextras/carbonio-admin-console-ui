@@ -1,61 +1,45 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.*
-.pnp.js
+# SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
 
-# Environment Variables
-.env
-.env.*
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-*.local
+# SPDX-License-Identifier: CC0-1.0
 
-# Build Outputs
-.next/
-out/
-build/
-dist/
-pkg/
-sdk/
+# Node modules
+/node_modules/
 
-# Testing
-coverage/
-junit.xml
-e2e/output/
-test-results/
-playwright-report/
-blob-report/
-playwright/.cache/
+# Build output
+/build/
+/dist/
+/pkg/
+/sdk/
 
-# IDEs and Editors
-.idea/
-.vscode/
-*.sublime-workspace
-*.sublime-project
+# Test output
+/coverage
+/coverage/
+/junit.xml
+/e2e/output/
+
+# IDEs and editors
+/.idea/
+/.vscode/
+/*.sublime-workspace
+/*.sublime-project
 *.sw?
+*.DS_Store
+*.log
 
-# OS Files
+# OS files
 .DS_Store
 Thumbs.db
-
-# Logs and Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.log
 
 # TypeScript
 *.tsbuildinfo
 
-# Package Management
-.turbo
-.vercel
+# Misc
+.env
+.env.*
+*.local
 *.tgz
 zextras-carbonio-*.tgz
-tool-versions
+/tool-versions
 
 # Yarn
 .yarn/*
@@ -64,6 +48,14 @@ tool-versions
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+.pnp.*
 
-# Misc
-*.pem
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.turbo
+apps/admin-ui-console/coverage
+apps/admin-ui-console/junit.xml
