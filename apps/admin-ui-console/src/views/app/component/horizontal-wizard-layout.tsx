@@ -295,7 +295,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 					</Padding>
 				</Row>
 				<Row mainAlignment="flex-start">
-					<Padding pippo right="large">
+					<Padding right="large">
 						<PrevButton
 							key="wizard-prev"
 							setCompleteLoading={setCompleteLoading}
