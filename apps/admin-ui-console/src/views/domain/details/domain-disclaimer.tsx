@@ -402,6 +402,7 @@ const DomainDisclaimer: FC = () => {
 						<TextAreaEditor
 							label={''}
 							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
+							// @ts-ignore
 							onChange={(event: ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
 							}}

@@ -29,10 +29,13 @@ const TrackNumberPerPage: FC<{
 			</Row>
 			<Row padding={{ right: 'small' }}>
 				<Select
+					// @ts-ignore
 					items={paginationItems}
 					data-testid="pagination-select"
 					background="gray5"
+					// @ts-ignore
 					defaultSelection={paginationItems[1]}
+					// @ts-ignore
 					onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setPageSize(e)}
 					showCheckbox={false}
 					itemTextSize="1rem"

@@ -382,7 +382,7 @@ export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
 export const ABQ_DISABLED = 'Disabled';
-export const paginationItems = [
+export const paginationItems: Array<{label: string, value: number}> = [
 	{
 		label: '5',
 		value: 5

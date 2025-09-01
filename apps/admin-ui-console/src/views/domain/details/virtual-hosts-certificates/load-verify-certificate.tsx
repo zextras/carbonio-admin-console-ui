@@ -192,8 +192,11 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		} else {
 			soapFetch(`VerifyCertKey`, {
 				_jsns: ZIMBRA_ADMIN_URN,
+				// @ts-ignore
 				ca: objDomainCertificateCaChain.content.replaceAll('\r', ''),
+				// @ts-ignore
 				cert: objDomainCertificate.content.replaceAll('\r', ''),
+				// @ts-ignore
 				privkey: objDomainCertificatePrivateKey.content.replaceAll('\r', '')
 			}).then((data: any) => {
 				if (data?.verifyResult) {
@@ -364,6 +367,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					items={certificateTypes}
 					background="gray5"
 					label={t('label.certificate_type', 'Certificate Type')}
+					// @ts-ignore
 					onChange={(e: React.MouseEvent): void => {
 						setSelectedCertType(e);
 					}}

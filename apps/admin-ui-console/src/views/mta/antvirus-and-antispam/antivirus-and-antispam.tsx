@@ -895,6 +895,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
 							)}
+							// @ts-ignore
 							onChange={onSpamTagPercentChange}
 							disabled={!allowSetMTA}
 						/>
@@ -918,6 +919,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
+							// @ts-ignore
 							onChange={onSpamDestinyChange}
 							disabled={!allowSetMTA}
 						/>
@@ -932,6 +934,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
+							// @ts-ignore
 							onChange={onSpamKillPercentChange}
 							disabled={
 								mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS ||

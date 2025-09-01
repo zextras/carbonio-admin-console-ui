@@ -218,7 +218,7 @@ export const TwoFactorAuthencationConfig: FC<{
 									}}
 									hasError={hasValidIpCheck(cVal)}
 									value={map(
-										// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+										// @ts-ignore
 										arrPoliciesToModify.find((obj: any) => Object.hasOwn(obj, cVal.keyToGet))?.[
 											cVal.keyToGet
 										]?.trustedIpRange,
