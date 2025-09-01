@@ -14,6 +14,7 @@ type AppLinkProps = LinkProps & {
 	route?: string;
 };
 export const AppLink: FC<AppLinkProps> = ({ to, route, ...rest }) => {
+	//@ts-ignore
 	const _to = useMemo(() => parseParams({ path: to, route }), [route, to]);
 	return <RRLink style={{ textDecoration: 'none' }} to={_to} {...rest} />;
 };
