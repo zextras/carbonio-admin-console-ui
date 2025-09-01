@@ -1,13 +1,17 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
     "target": "esnext",
     "module": "commonjs",
     "jsx": "react-jsx"
   },
-  "extends": "../../tsconfig.base.json",
   "include": [
     "src/**/*",
-    "types/**/*"
+    "types/**/*",
+    "translations/**/*"
   ],
   "exclude": ["node_modules", "dist", "build"]
 }

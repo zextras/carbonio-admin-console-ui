@@ -19,6 +19,7 @@ export const RouteLeavingGuard: FC<{
 	const history = useHistory();
 	const lastLocationInitial = useMemo(() => history.location.pathname, [history]);
 	const [modalVisible, setModalVisible] = useState(false);
+	//@ts-ignore
 	const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
 	const [confirmedNavigation, setConfirmedNavigation] = useState(false);
 	const [t] = useTranslation();
@@ -50,7 +51,9 @@ export const RouteLeavingGuard: FC<{
 	}, [confirmedNavigation, history, lastLocation]);
 	return (
 		<>
-			<Prompt when={when} message={handleBlockedNavigation} />
+			<Prompt when={when} 
+			//@ts-ignore
+			message={handleBlockedNavigation} />
 			{/* Your own alert/dialog/modal component */}
 			<Modal
 				open={modalVisible}
