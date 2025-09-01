@@ -1,11 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
-  "ts-node": {
-    "transpileOnly": true
-  },
-  "moduleResolution": "nodenext",
-  "resolvePackageJsonExports": true,
-  "resolvePackageJsonImports": true,
-  "include": ["**/*", ".*.js"],
-  "exclude": ["node_modules", "dist", "build"]
+  "references": [
+    { "path": "./apps/admin-ui-bootstrapper/" },
+    { "path": "./apps/admin-ui-console/" }
+  ]
 }
