@@ -1,14 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "checkJs": false,
-    "noEmit": true,
-    "target": "esnext",
-    "module": "commonjs",
-    "jsx": "react-jsx"
-  },
   "include": [
     "src/**/*",
     "types/**/*",

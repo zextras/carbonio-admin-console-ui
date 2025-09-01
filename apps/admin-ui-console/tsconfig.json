@@ -1,10 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "jsx": "react-jsx"
-  },
   "include": [
     "src/**/*",
     "types/**/*"

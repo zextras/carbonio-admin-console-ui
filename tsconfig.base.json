@@ -1,7 +1,24 @@
 {
   "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
-    "preserveConstEnums": true
+    "checkJs": false,
+    "noEmit": true,
+    "module": "commonjs",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "allowSyntheticDefaultImports": true,
+    "preserveConstEnums": true,
+    "noUncheckedIndexedAccess": false
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]

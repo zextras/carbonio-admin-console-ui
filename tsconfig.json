@@ -1,23 +1,5 @@
 {
   "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "ESNext",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "jsx": "preserve",
-    "allowSyntheticDefaultImports": true,
-    "noUncheckedIndexedAccess": false
-  },
   "ts-node": {
     "transpileOnly": true
   },
