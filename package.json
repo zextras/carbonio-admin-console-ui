@@ -25,6 +25,7 @@
     "dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy"
   },
   "devDependencies": {
+    "@tsconfig/recommended": "^1.0.10",
     "@babel/core": "^7.22.15",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-transform-runtime": "^7.22.15",

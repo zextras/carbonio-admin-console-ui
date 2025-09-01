@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -15,23 +16,14 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
-    "noUncheckedIndexedAccess": false,
-    "preserveSymlinks": true, // IMPORTANT for pnpm!
-    "baseUrl": ".",
-    "paths": {
-      "@zextras/carbonio-design-system": [
-        "node_modules/@zextras/carbonio-design-system",
-        "apps/*/node_modules/@zextras/carbonio-design-system"
-      ]
-    }
+    "noUncheckedIndexedAccess": false
   },
   "ts-node": {
     "transpileOnly": true
   },
-  "moduleResolution": "node16", // or "nodenext" - better for pnpm
-  "preserveSymlinks": false, // Try false if true doesn't work
+  "moduleResolution": "nodenext",
   "resolvePackageJsonExports": true,
   "resolvePackageJsonImports": true,
-  "include": ["./apps/**/src/**/*", "./apps/**/types/**/*"],
+  "include": ["**/*", ".*.js"],
   "exclude": ["node_modules", "dist", "build"]
 }
