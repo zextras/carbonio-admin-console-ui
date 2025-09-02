@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
+import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -170,7 +170,7 @@ const replaceLinkToAnchor = (content: string): string => {
 	});
 };
 
-const _TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
+const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
 	const [showQuotedText, setShowQuotedText] = useState(false);
 	const orignalText = body.content; // getOriginalContent(body.content, false);
 
@@ -183,7 +183,6 @@ const _TextMessageRenderer: FC<{ body: { content: string; contentType: string } 
 		() => replaceLinkToAnchor(plainTextToHTML(contentToDisplay)),
 		[contentToDisplay]
 	);
-	const [t] = useTranslation();
 	return (
 		<>
 			<Text
@@ -204,7 +203,7 @@ type _HtmlMessageRendererType = {
 	parts: MailMessagePart[];
 	participants: Participant[] | undefined;
 };
-const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
+const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 	msgId,
 	body,
 	parts,
@@ -239,7 +238,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		let trusteeAddress: Array<string> = [];
 		let availableInTrusteeList = false;
 		if (trusteeList) {
-			// eslint-disable-next-line no-nested-ternary
+			 
 			trusteeAddress = isArray(trusteeList)
 				? (trusteeList as string[])
 				: typeof trusteeList === 'string'
@@ -282,7 +281,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		[displayBanner, showExternalImage]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useLayoutEffect(() => {
 		if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
 			iframeRef.current.contentDocument.open();
@@ -328,7 +327,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 			parts,
 			(r, v) => {
 				if (!_CI_REGEX.test(v.ci ?? '')) return r;
-				// eslint-disable-next-line no-param-reassign
+				 
 				r[_CI_REGEX.exec(v.ci ?? '')?.[1] ?? ''] = v;
 				return r;
 			},
@@ -472,10 +471,10 @@ const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
 
 	if (mailMsg.body?.contentType === 'text/html') {
 		return (
-			<_HtmlMessageRenderer
+			<HtmlMessageRenderer
 				msgId={mailMsg.id}
 				body={mailMsg.body}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				 
 				// @ts-ignore
 				parts={parts}
 				participants={mailMsg.participants}
@@ -483,7 +482,7 @@ const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
 		);
 	}
 	if (mailMsg.body?.contentType === 'text/plain') {
-		return <_TextMessageRenderer body={mailMsg.body} />;
+		return <TextMessageRenderer body={mailMsg.body} />;
 	}
 	return <EmptyBody />;
 };
