@@ -20,10 +20,10 @@ import { SEARCH_APP_ID } from '../constants';
 import { useAppStore } from '../store/app';
 // import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 const useQuery = (): [Array<QueryChip>, Function] =>
 	useSearchStore((s) => [s.query, s.updateQuery]);
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 const useDisableSearch = (): [boolean, Function] =>
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	useSearchStore((s) => [s.searchDisabled, s.setSearchDisabled]);

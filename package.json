@@ -15,7 +15,7 @@
 		"type-check": "turbo run type-check-task",
 		"type-check-task": "tsc --build --noEmit",
 		"lint": "turbo run lint-task",
-		"lint-task": "eslint --ext .js,.jsx,.ts,.tsx",
+		"lint-task": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
 		"lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx --quiet",
 		"lint-errors": "eslint --ext .js,.jsx,.ts,.tsx --quiet apps/*/src",
 		"lint-stats": "eslint --ext .js,.jsx,.ts,.tsx --format node_modules/eslint-stats/byErrorAndWarningStacked apps/*/src",
@@ -25,7 +25,7 @@
 		"sdk-setup": "pnpm ci --prefix sdk",
 		"build:dev": "sdk build --dev --pkgRel $(date +%s)",
 		"dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy",
-    "reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
+		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
 	},
 	"dependencies": {
 		"react": "^18.3.1"
@@ -41,6 +41,7 @@
 		"eslint-plugin-jest-dom": "^5.5.0",
 		"eslint-plugin-jsx-a11y": "^6.10.2",
 		"eslint-plugin-notice": "^1.0.0",
+		"eslint-plugin-prettier": "^5.5.4",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^5.2.0",
 		"eslint-plugin-sonarjs": "^3.0.5",

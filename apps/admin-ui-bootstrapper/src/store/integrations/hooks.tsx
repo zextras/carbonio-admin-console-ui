@@ -16,13 +16,13 @@ import { Action, ActionFactory, CombinedActionFactory } from '../../../types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import AppContextProvider from '../../boot/app/app-context-provider';
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 export const useIntegratedHook = (id: string): [Function, boolean] => {
 	const integration = useIntegrationsStore((s) => s.hooks?.[id]);
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	return integration ? [integration, true] : [(): void => {}, false];
 };
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 export const useIntegratedFunction = (id: string): [Function, boolean] => {
 	const integration = useIntegrationsStore((s) => s.functions?.[id]);
 	// eslint-disable-next-line @typescript-eslint/no-empty-function

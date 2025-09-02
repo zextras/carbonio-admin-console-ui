@@ -8,7 +8,7 @@ import React, { FC } from 'react';
 import { Container, Input, Row, Padding, PasswordInput } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 
 const Summary: FC<{
 	isActive: any;

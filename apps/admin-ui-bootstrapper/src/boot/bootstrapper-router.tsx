@@ -19,7 +19,7 @@ import { useBridge } from '../store/context-bridge';
 const ContextBridge: FC = () => {
 	const history = useHistory();
 	const createSnackbar = useSnackbar();
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	
 	const createModal = useContext(ModalManagerContext) as Function;
 	useBridge({
 		functions: {

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 // The 'useXXX' functions actually return hooks
-/* eslint-disable react-hooks/rules-of-hooks */
 
 import { reduce } from 'lodash';
 
@@ -72,7 +71,6 @@ import {
 import { useNotify, useRefresh } from '../../store/network';
 import { getTag, getTags, useTag, useTags } from '../../store/tags';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
 	soapFetch: getSoapFetch(pkg.name),
 	getSoapFetchRequest: getSoapFetchRequest(pkg.name),

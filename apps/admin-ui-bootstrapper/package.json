@@ -21,7 +21,7 @@
 		"type-check": "turbo run type-check-task",
 		"type-check-task": "tsc --noEmit",
 		"lint": "turbo run lint-task",
-		"lint-task": "eslint --ext .js,.jsx,.ts,.tsx",
+		"lint-task": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
 		"build": "sdk build --admin",
 		"build:lib:local": "tsc -p tsconfig.lib.json && npx api-extractor run --verbose --local",
 		"deploy": "sdk deploy --admin",

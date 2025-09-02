@@ -27,7 +27,7 @@ import {
 } from '../../store/app/utils';
 import { useIntegrationsStore } from '../../store/integrations/store';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+
 export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => {
 	const appSetters = useAppStore.getState().setters;
 	const integrations = useIntegrationsStore.getState();
