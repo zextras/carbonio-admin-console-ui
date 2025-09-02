@@ -36,5 +36,4 @@ type cliSettingsNamespace = {
 declare const devUtils: devUtilsNamespace | undefined;
 declare const cliSettings: cliSettingsNamespace | undefined;
 declare module '@zextras/carbonio-design-system';
-declare module 'tinymce';
 declare module '*.svg';
