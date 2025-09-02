@@ -1,55 +1,56 @@
 {
-  "name": "admin-ui",
-  "version": "1.0.0",
-  "private": true,
-  "packageManager": "pnpm@10.15.0",
-  "workspaces": [
-    "apps/*"
-  ],
-  "scripts": {
-    "build": "sdk build",
-    "deploy": "sdk deploy",
-    "start": "sdk watch",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
-    "type-check": "tsc --build --noEmit",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx apps/*/src",
-    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx --quiet",
-    "lint-errors": "eslint --ext .js,.jsx,.ts,.tsx --quiet apps/*/src",
-    "lint-stats": "eslint --ext .js,.jsx,.ts,.tsx --format node_modules/eslint-stats/byErrorAndWarningStacked apps/*/src",
-    "lint-check": "pnpm run lint-errors; pnpm run type-check",
-    "test": "TZ=Europe/Rome jest --testTimeout=20000 --maxWorkers=50%",
-    "test:watch": "pnpm run test:dev -- --onlyChanged --watch",
-    "sdk-setup": "pnpm ci --prefix sdk",
-    "build:dev": "sdk build --dev --pkgRel $(date +%s)",
-    "dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy"
-  },
-  "dependencies": {
-    "react": "^18.3.1"
-  },
-  "devDependencies": {
-    "@tsconfig/node12": "^12.1.4",
-    "@zextras/carbonio-ui-sdk": "^1.7.7",
-    "depcheck": "^1.4.7",
-    "eslint": "^9.34.0",
-    "jest": "^29.6.4",
-    "pinst": "^3.0.0",
-    "pnpm": "^10.15.1",
-    "turbo": "latest",
-    "typescript": "^5.7.2"
-  },
-  "browserslist": [
-    ">1%",
-    "last 1 version",
-    "Firefox ESR",
-    "not dead"
-  ],
-  "carbonio": {
-    "translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
-    "name": "carbonio-admin-console-ui",
-    "priority": 3,
-    "type": "carbonioAdmin",
-    "display": "Manage",
-    "icon": "List"
-  }
+	"name": "admin-ui",
+	"version": "1.0.0",
+	"private": true,
+	"packageManager": "pnpm@10.15.0",
+	"workspaces": [
+		"apps/*"
+	],
+	"scripts": {
+		"build": "sdk build",
+		"deploy": "sdk deploy",
+		"start": "sdk watch",
+		"prepublishOnly": "pinst --disable",
+		"postpublish": "pinst --enable",
+    "type-check": "turbo run type-check-task",
+    "type-check-task": "tsc --build --noEmit",
+		"lint": "eslint --ext .js,.jsx,.ts,.tsx apps/*/src",
+		"lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx --quiet",
+		"lint-errors": "eslint --ext .js,.jsx,.ts,.tsx --quiet apps/*/src",
+		"lint-stats": "eslint --ext .js,.jsx,.ts,.tsx --format node_modules/eslint-stats/byErrorAndWarningStacked apps/*/src",
+		"lint-check": "pnpm run lint-errors; pnpm run type-check",
+		"test": "TZ=Europe/Rome jest --testTimeout=20000 --maxWorkers=50%",
+		"test:watch": "pnpm run test:dev -- --onlyChanged --watch",
+		"sdk-setup": "pnpm ci --prefix sdk",
+		"build:dev": "sdk build --dev --pkgRel $(date +%s)",
+		"dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy"
+	},
+	"dependencies": {
+		"react": "^18.3.1"
+	},
+	"devDependencies": {
+		"@tsconfig/node12": "^12.1.4",
+		"@zextras/carbonio-ui-sdk": "^1.7.7",
+		"depcheck": "^1.4.7",
+		"eslint": "^9.34.0",
+		"jest": "^29.6.4",
+		"pinst": "^3.0.0",
+		"pnpm": "^10.15.1",
+		"turbo": "latest",
+		"typescript": "^5.7.2"
+	},
+	"browserslist": [
+		">1%",
+		"last 1 version",
+		"Firefox ESR",
+		"not dead"
+	],
+	"carbonio": {
+		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
+		"name": "carbonio-admin-console-ui",
+		"priority": 3,
+		"type": "carbonioAdmin",
+		"display": "Manage",
+		"icon": "List"
+	}
 }
