@@ -3,18 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { screen, waitFor, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('../../../services/subscription-service', () => ({
 	fetchSoap: jest.fn()
 }));
 
-import Subscription from './subscription';
 import { fetchSoap } from '../../../services/subscription-service';
 import { useRightsStore } from '../../../store/rights/store';
 import { setup } from '../../../tests/testUtils';
+
+import Subscription from './subscription';
 
 const mockFetchSoap = fetchSoap as jest.MockedFunction<typeof fetchSoap>;
 const mockUseRightsStore = useRightsStore as jest.MockedFunction<typeof useRightsStore>;
@@ -260,7 +261,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		});
 	});
 
-	test('should handle activation failure with type None response', async () => {
+	test('should not show company, provider and type name when activation failure with type None response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
 			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({
@@ -741,7 +742,7 @@ describe('Subscription Component - getTypeDisplayValue Logic', () => {
 		expect(screen.getByText(MOCK_ACTIVATE_LABEL)).toBeInTheDocument();
 	});
 
-	test('should handle renewal failure with type None response', async () => {
+	test('should handle renewal failure with blank response', async () => {
 		mockFetchSoap.mockImplementation((api: string, body: any) => {
 			if (body.action === MOCK_GET_LICENSE_INFO_ACTION) {
 				return Promise.resolve({

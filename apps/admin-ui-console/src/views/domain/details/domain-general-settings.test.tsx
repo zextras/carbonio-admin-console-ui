@@ -3,19 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { screen, within } from '@testing-library/react';
 import { CreateSnackbarFn, useSnackbar } from '@zextras/carbonio-design-system';
+import React from 'react';
 
 import { useDomainStore } from '../../../store/domain/store';
 import { setup } from '../../../tests/testUtils';
+
 import DomainGeneralSettings from './domain-general-settings';
 
 const createSnackbar = (arg: any): CreateSnackbarFn => arg;
 const createSnackbarSpy = jest.fn(createSnackbar);
 
-// eslint-disable-next-line sonarjs/no-duplicate-string
+ 
 jest.mock('@zextras/carbonio-design-system', () => ({
 	...jest.requireActual('@zextras/carbonio-design-system'),
 	useSnackbar: jest.fn()
@@ -145,7 +146,7 @@ describe('DomainGeneralSettings Component', () => {
 		expect(screen.getByText(/General Settings/i)).toBeInTheDocument();
 	});
 
-	test('should get the domain name and id', () => {
+	test('should get the domain name', () => {
 		setup(<DomainGeneralSettings />);
 		expect(screen.getByText(/General Settings/i)).toBeInTheDocument();
 		const domainInput = screen.getByTestId('input-domain-name');
@@ -154,7 +155,7 @@ describe('DomainGeneralSettings Component', () => {
 		expect(domainInputEle).toHaveValue(domain.name);
 	});
 
-	test('should get the domain name and id', () => {
+	test('should get the domain id', () => {
 		setup(<DomainGeneralSettings />);
 		expect(screen.getByText(/General Settings/i)).toBeInTheDocument();
 		const domainIdInput = screen.getByTestId('input-domain-id');
