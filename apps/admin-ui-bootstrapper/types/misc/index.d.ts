@@ -6,9 +6,9 @@
 
 import { ComponentType } from 'react';
 
-import { Store } from '@reduxjs/toolkit';
-import { To } from 'history';
-import { i18n } from 'i18next';
+import { type Store } from '@reduxjs/toolkit';
+import { type To } from 'history';
+import { type i18n } from 'i18next';
 
 import { DARK_READER_VALUES } from '../../src/constants';
 import { CarbonioModule, PanelMode } from '../apps';
@@ -23,13 +23,12 @@ export interface II18nFactory {
 
 export type DRPropValues = 'auto' | 'enabled' | 'disabled';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export type PackageDependentFunction = (app: string) => Function;
-// eslint-disable-next-line @typescript-eslint/ban-types
 
 export type ContextBridgeState = {
 	packageDependentFunctions: Record<string, PackageDependentFunction>;
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	functions: Record<string, Function>;
 	add: (content: Partial<Omit<ContextBridgeState, 'add'>>) => void;
 };

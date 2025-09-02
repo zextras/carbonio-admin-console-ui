@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/ban-types */
+
 import { useEffect } from 'react';
 
 import { reduce } from 'lodash';

@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-/* eslint-disable @typescript-eslint/ban-types */
+
 
 import { ComponentType, FC } from 'react';
 
-import { TFunction } from 'react-i18next';
-import { LinkProps } from 'react-router-dom';
-import { Reducer, Store } from 'redux';
+import { type TFunction } from 'react-i18next';
+import { type LinkProps } from 'react-router-dom';
+import { type Reducer, type Store } from 'redux';
 
 import {
 	AccountSettings,
@@ -80,7 +80,9 @@ declare const getActionFactory: <T>(
 	type: string,
 	id: string
 ) => [ActionFactory<T> | undefined, boolean];
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare const useIntegratedHook: (id: string) => [Function, boolean];
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare const useIntegratedFunction: (id: string) => [Function, boolean];
 declare const useIntegratedComponent: (id: string) => [ComponentType<unknown>, boolean];
 declare const useActions: <T>(target: T, type: string) => Array<Action>;
@@ -161,7 +163,7 @@ declare const updatePrimaryBadge: (badge: Partial<BadgeInfo>, id: string) => voi
 declare const updateUtilityBadge: (badge: Partial<BadgeInfo>, id: string) => void;
 //
 // add board
-declare const addBoardView: (data: Object & Partial<BoardView>) => string;
+declare const addBoardView: (data: object & Partial<BoardView>) => string;
 // remove board
 declare const removeBoardView: (id: string) => void;
 //
