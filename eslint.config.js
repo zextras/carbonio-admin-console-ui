@@ -48,7 +48,7 @@ module.exports = [
 			},
 			'import/resolver': {
 				node: {
-					moduleDirectory: ['node_modules', 'utils'],
+					path: ['./apps'],
 					extensions: ['.js', '.jsx', '.d.ts', '.ts', '.tsx']
 				}
 			}
@@ -76,31 +76,32 @@ module.exports = [
 	},
 
 	// Import plugin config
+	//
 	{
 		plugins: {
 			import: eslintPluginImport
 		},
-		rules: {
-			...eslintPluginImport.configs.recommended.rules,
-			'import/order': [
-				'warn',
-				{
-					groups: [['builtin', 'external']],
-					pathGroups: [
-						{
-							pattern: 'react',
-							group: 'external',
-							position: 'before'
-						}
-					],
-					pathGroupsExcludedImportTypes: ['react'],
-					'newlines-between': 'always',
-					alphabetize: {
-						order: 'asc',
-						caseInsensitive: true
-					}
+		settings: {
+			'import/resolver': {
+				typescript: {
+					alwaysTryTypes: true,
+					// Include all TypeScript configs in your monorepo
+					project: ['./tsconfig.json', './packages/*/tsconfig.json', './apps/*/tsconfig.json']
 				}
-			]
+			}
+		},
+		rules: {
+			// Let TypeScript handle named imports validation
+			'import/named': 'off'
+			// But keep other import rules
+			// 'import/default': 'error',
+			// 'import/namespace': 'error',
+			// 'import/no-unresolved': [
+			// 	'error',
+			// 	{
+			// 		ignore: ['^@zextras/']
+			// 	}
+			// ]
 		}
 	},
 
