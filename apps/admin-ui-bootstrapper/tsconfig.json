@@ -1,9 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "include": [
-    "src/**/*",
-    "types/**/*",
-    "translations/**/*"
-  ],
-  "exclude": ["node_modules", "dist", "build"]
+	"extends": "../../tsconfig.base.json",
+	"include": ["src/**/*", "**/types/**/*", "translations/**/*"],
+	"exclude": ["node_modules", "dist", "build"]
 }
