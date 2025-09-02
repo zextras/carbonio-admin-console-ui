@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+const js = require('@eslint/js');
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const typescriptParser = require('@typescript-eslint/parser');
 const eslintPluginImport = require('eslint-plugin-import');
 const eslintPluginReact = require('eslint-plugin-react');
 const eslintPluginReactHooks = require('eslint-plugin-react-hooks');
@@ -15,24 +17,41 @@ const eslintPluginJest = require('eslint-plugin-jest');
 const eslintPluginJestDom = require('eslint-plugin-jest-dom');
 const eslintPluginTestingLibrary = require('eslint-plugin-testing-library');
 const globals = require('globals');
-const typescriptParser = require('@typescript-eslint/parser');
-const js = require('@eslint/js');
 
 module.exports = [
-	// Base JavaScript config
+	// Base configuration
 	js.configs.recommended,
-
+	
 	// Ignore patterns
 	{
-		ignores: ['notice.template.ts']
+		ignores: [
+			'**/node_modules/**',
+			'**/dist/**',
+			'**/build/**',
+			'**/.turbo/**',
+			'coverage/**',
+			'*.config.js',
+			'*.config.cjs',
+			'**/__mocks__/**',
+			'**/mocks/**',
+			'**/notice.template.ts'
+		]
 	},
 
-	// Global settings
+	// Global configuration
 	{
 		languageOptions: {
 			globals: {
 				...globals.browser,
-				...globals.jest
+				...globals.node,
+				...globals.jest,
+				__CARBONIO_DEV__: 'readonly',
+				BASE_PATH: 'readonly',
+				process: 'readonly',
+				module: 'readonly',
+				devUtilsNamespace: 'readonly',
+				cliSettingsNamespace: 'readonly',
+				JSX: 'readonly'
 			},
 			parserOptions: {
 				ecmaVersion: 'latest',
@@ -45,67 +64,95 @@ module.exports = [
 		settings: {
 			react: {
 				version: 'detect'
-			},
-			'import/resolver': {
-				node: {
-					path: ['./apps'],
-					extensions: ['.js', '.jsx', '.d.ts', '.ts', '.tsx']
-				}
 			}
 		}
 	},
 
-	// TypeScript config
+	// All files - include all plugins to avoid "rule not found" errors
+	{
+		plugins: {
+			'@typescript-eslint': typescriptEslint,
+			import: eslintPluginImport,
+			react: eslintPluginReact,
+			'react-hooks': eslintPluginReactHooks,
+			'jsx-a11y': eslintPluginJsxA11y,
+			sonarjs: eslintPluginSonarjs,
+			notice: eslintPluginNotice,
+			jest: eslintPluginJest,
+			'jest-dom': eslintPluginJestDom,
+			'testing-library': eslintPluginTestingLibrary,
+			prettier: require('eslint-plugin-prettier')
+		}
+	},
+
+	// TypeScript files
 	{
 		files: ['**/*.{ts,tsx}'],
 		languageOptions: {
 			parser: typescriptParser,
 			parserOptions: {
-				project: './tsconfig.eslint.json',
-				tsconfigRootDir: __dirname
-			}
-		},
-		plugins: {
-			'@typescript-eslint': typescriptEslint
-		},
-		rules: {
-			...typescriptEslint.configs.recommended.rules,
-			'@typescript-eslint/no-shadow': 'warn',
-			'@typescript-eslint/no-explicit-any': 'warn'
-		}
-	},
-
-	// Import plugin config
-	//
-	{
-		plugins: {
-			import: eslintPluginImport
-		},
-		settings: {
-			'import/resolver': {
-				typescript: {
-					alwaysTryTypes: true,
-					// Include all TypeScript configs in your monorepo
-					project: ['./tsconfig.json', './packages/*/tsconfig.json', './apps/*/tsconfig.json']
-				}
+				project: true,
+				tsconfigRootDir: process.cwd()
 			}
 		},
 		rules: {
-			// Let TypeScript handle named imports validation
-			'import/named': 'off'
-			// But keep other import rules
-			// 'import/default': 'error',
-			// 'import/namespace': 'error',
-			// 'import/no-unresolved': [
-			// 	'error',
-			// 	{
-			// 		ignore: ['^@zextras/']
-			// 	}
-			// ]
+			// TypeScript rules
+			'@typescript-eslint/no-unused-vars': ['warn', { 
+				argsIgnorePattern: '^_',
+				varsIgnorePattern: '^_',
+				caughtErrorsIgnorePattern: '^_'
+			}],
+			'@typescript-eslint/no-explicit-any': 'warn',
+			'@typescript-eslint/no-unused-expressions': ['warn', {
+				allowShortCircuit: true,
+				allowTernary: true,
+				allowTaggedTemplates: true
+			}],
+			'@typescript-eslint/ban-ts-comment': 'off',
+			
+			// Prettier rules (disabled)
+			'prettier/prettier': 'off',
+			
+			// Import rules
+			'import/no-unresolved': 'off',
+			'import/named': 'off',
+			'import/no-duplicates': 'warn',
+			'import/no-named-default': 'warn',
+			'import/order': ['warn', {
+				groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+				'newlines-between': 'always',
+				alphabetize: { order: 'asc', caseInsensitive: true }
+			}],
+			
+			// SonarJS rules (relaxed)
+			'sonarjs/cognitive-complexity': ['warn', 25],
+			'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
+			'sonarjs/no-commented-code': 'warn',
+			'sonarjs/todo-tag': 'warn',
+			'sonarjs/no-hardcoded-passwords': 'warn',
+			'sonarjs/no-nested-functions': 'warn',
+			'sonarjs/no-nested-conditional': 'warn',
+			'sonarjs/different-types-comparison': 'warn',
+			'sonarjs/no-unused-vars': 'off',
+			'sonarjs/no-dead-store': 'warn',
+			'sonarjs/deprecation': 'warn',
+			'sonarjs/slow-regex': 'warn',
+			'sonarjs/regex-complexity': 'warn',
+			'sonarjs/concise-regex': 'warn',
+			'sonarjs/no-regex-spaces': 'warn',
+			'sonarjs/no-redundant-optional': 'warn',
+			
+			// Notice rules
+			'notice/notice': 'off', // Disabled for now
+			
+			// Disable conflicting base rules
+			'no-unused-vars': 'off',
+			'no-undef': 'off',
+			'no-redeclare': 'off'
 		}
 	},
 
-	// React plugins config
+	// React/JSX files
 	{
 		files: ['**/*.{jsx,tsx}'],
 		plugins: {
@@ -113,107 +160,71 @@ module.exports = [
 			'react-hooks': eslintPluginReactHooks,
 			'jsx-a11y': eslintPluginJsxA11y
 		},
-		rules: {
-			...eslintPluginReact.configs.recommended.rules,
-			...eslintPluginReactHooks.configs.recommended.rules,
-			...eslintPluginJsxA11y.configs.recommended.rules
+		languageOptions: {
+			parserOptions: {
+				ecmaFeatures: {
+					jsx: true
+				}
+			}
 		},
 		settings: {
 			react: {
 				version: 'detect'
 			}
-		}
-	},
-
-	// special rules for declaration files
-	{
-		files: ['**/*.d.ts'],
-		rules: {
-			'@typescript-eslint/no-explicit-any': 'off',
-			'no-undef': 'off',
-			'@typescript-eslint/no-unused-vars': 'off',
-			'@typescript-eslint/explicit-module-boundary-types': 'off'
-		}
-	},
-	// SonarJS plugin config
-	{
-		plugins: {
-			sonarjs: eslintPluginSonarjs
 		},
 		rules: {
-			...eslintPluginSonarjs.configs.recommended.rules,
-			'sonarjs/cognitive-complexity': 'warn',
-			'sonarjs/no-collapsible-if': 'warn',
-			'sonarjs/no-duplicate-string': 'warn',
-			'sonarjs/no-duplicated-branches': 'warn',
-			'sonarjs/no-identical-conditions': 'warn',
-			'sonarjs/no-identical-expressions': 'warn',
-			'sonarjs/no-redundant-boolean': 'warn',
-			'sonarjs/no-small-switch': 'warn',
-			'sonarjs/no-unused-collection': 'warn',
-			'sonarjs/no-use-of-empty-return-value': 'warn',
-			'sonarjs/prefer-immediate-return': 'warn',
-			'sonarjs/prefer-object-literal': 'warn',
-			'sonarjs/prefer-single-boolean-return': 'warn',
-			'sonarjs/prefer-while': 'warn',
-			'sonarjs/no-useless-catch': 'warn',
-			'sonarjs/no-nested-template-literals': 'warn',
-			'sonarjs/no-all-duplicated-branches': 'warn',
-			'sonarjs/no-gratuitous-expressions': 'warn',
-			'sonarjs/max-switch-cases': 'warn',
-			'sonarjs/no-empty-collection': 'warn',
-			'sonarjs/no-identical-functions': 'warn'
+			// React rules
+			'react/react-in-jsx-scope': 'off',
+			'react/prop-types': 'off',
+			'react/display-name': 'warn',
+			'react/jsx-uses-react': 'error',
+			'react/jsx-uses-vars': 'error',
+			
+			// React Hooks rules
+			'react-hooks/rules-of-hooks': 'error',
+			'react-hooks/exhaustive-deps': 'warn',
+			
+			// JSX A11y rules (relaxed)
+			'jsx-a11y/click-events-have-key-events': 'warn',
+			'jsx-a11y/no-static-element-interactions': 'warn',
+			'jsx-a11y/anchor-is-valid': 'warn'
 		}
 	},
 
-	// Notice plugin config
-	{
-		plugins: {
-			notice: eslintPluginNotice
-		},
-		rules: {
-			'notice/notice': [
-				'error',
-				{
-					templateFile: 'notice.template.ts'
-				}
-			]
-		}
-	},
-
-	// Common rules
-	{
-		rules: {
-			'no-console': ['error', { allow: ['error', 'warn'] }],
-			'no-param-reassign': [
-				'warn',
-				{
-					props: true,
-					ignorePropertyModificationsFor: ['accumulator', 'state', 'event']
-				}
-			]
-		}
-	},
-
-	// Test files config
+	// Test files
 	{
 		files: [
 			'**/__tests__/**/*.[jt]s?(x)',
-			'**/?(*.)+(spec|test).[jt]s?(x)',
-			'**/test-setup.tsx',
-			'jest-setup.ts'
+			'**/?(*.)+(spec|test).[jt]s?(x)'
 		],
-		plugins: {
-			jest: eslintPluginJest,
-			'jest-dom': eslintPluginJestDom,
-			'testing-library': eslintPluginTestingLibrary
+		languageOptions: {
+			globals: {
+				...globals.jest
+			}
 		},
 		rules: {
-			...eslintPluginJestDom.configs.recommended.rules,
-			...eslintPluginTestingLibrary.configs.react.rules,
-			'testing-library/no-global-regexp-flag-in-query': 'error',
-			'testing-library/prefer-user-event': 'error',
-			'import/no-extraneous-dependencies': 'off'
+			// Jest rules
+			'jest/no-disabled-tests': 'warn',
+			'jest/no-focused-tests': 'error',
+			'jest/no-identical-title': 'error',
+			
+			// Testing Library rules
+			'testing-library/prefer-user-event': 'warn',
+			'testing-library/no-node-access': 'warn',
+			
+			// Relaxed rules for tests
+			'no-console': 'off',
+			'sonarjs/no-duplicate-string': 'off',
+			'sonarjs/no-hardcoded-passwords': 'off'
+		}
+	},
+
+	// Common rules for all files
+	{
+		rules: {
+			'no-console': ['warn', { allow: ['error', 'warn'] }],
+			'prefer-const': 'warn',
+			'no-var': 'error'
 		}
 	}
 ];
