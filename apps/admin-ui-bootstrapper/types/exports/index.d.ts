@@ -70,7 +70,9 @@ declare const ACTION_TYPES: {
 };
 declare const SHELL_MODES: Record<string, ShellModes>;
 declare const BASENAME: string;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare const getIntegratedHook: (id: string) => [Function, boolean];
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare const getIntegratedFunction: (id: string) => [Function, boolean];
 declare const getIntegratedComponent: (id: string) => [ComponentType<unknown>, boolean];
 declare const getActions: <T>(target: T, type: string) => Array<Action>;

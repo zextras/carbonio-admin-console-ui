@@ -12,7 +12,7 @@ import { QueryChip } from '../search/items';
 export type CarbonioModule = {
 	commit: string;
 	description: string;
-	// eslint-disable-next-line camelcase
+	 
 	js_entrypoint: string;
 	name: string;
 	priority: number;
@@ -61,13 +61,18 @@ export type CarbonioAccessoryView<P> = {
 };
 export type PrimaryBarComponentProps = { active: boolean };
 export type SecondaryBarComponentProps = { expanded: boolean };
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type AppViewComponentProps = {};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type BoardViewComponentProps = {};
 export type SearchViewProps = {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	useQuery: () => [QueryChip[], Function];
 	ResultsHeader: FC<{ label: string }>;
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	useDisableSearch: () => [boolean, Function];
 };
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type PrimaryAccessoryViewProps = {};
 export type SecondaryAccessoryViewProps = { expanded: boolean };
 export type PanelMode = 'closed' | 'overlap' | 'open';
@@ -80,6 +85,7 @@ export type PrimaryBarView = Omit<CarbonioView<PrimaryBarComponentProps>, 'compo
 	visible: boolean;
 	label: string;
 	section?: PrimarybarSection;
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	tooltip?: ComponentType<{}>;
 	trackerLabel?: string;
 };
@@ -123,6 +129,7 @@ export type AppRouteDescriptor = {
 	secondaryBar?: ComponentType<SecondaryBarComponentProps>;
 	appView: ComponentType<AppViewComponentProps>;
 	primarybarSection: PrimarybarSection | undefined;
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type, sonarjs/no-redundant-optional
 	tooltip?: ComponentType<{}> | undefined;
 	trackerLabel?: string;
 };

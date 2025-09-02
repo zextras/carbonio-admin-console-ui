@@ -21,6 +21,7 @@ const renderers = {
 	text: Content
 };
 
+// eslint-disable-next-line react/prop-types
 export default function MarkdownContainer({ content }) {
 	return (
 		<div>

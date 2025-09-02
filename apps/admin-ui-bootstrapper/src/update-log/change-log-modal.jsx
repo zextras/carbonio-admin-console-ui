@@ -22,6 +22,7 @@ const Title = styled(Text)`
 	background: ${({ theme }) => theme.palette.gray5.regular};
 `;
 
+// eslint-disable-next-line sonarjs/concise-regex
 const CHANGELOG_VERSION_REGEX = /([0-9]\.[0-9]\.[0-9][0-9]-beta\.[0-9])/;
 
 export default function ChangeLogModal() {

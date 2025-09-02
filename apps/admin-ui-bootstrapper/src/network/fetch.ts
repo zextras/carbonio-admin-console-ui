@@ -22,7 +22,7 @@ import { useNetworkStore } from '../store/network';
 import { handleTagSync } from '../store/tags';
 
 export const noOp = (): void => {
-	// eslint-disable-next-line @typescript-eslint/no-use-before-define
+	 
 	getSoapFetch(SHELL_APP_ID)(
 		'NoOp',
 		useNetworkStore.getState().pollingInterval === 500
@@ -172,7 +172,7 @@ export const getSoapFetch =
 		return fetch(`/service/admin/soap/${api}Request`, {
 			method: 'POST',
 			headers: {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+				 
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
@@ -181,7 +181,7 @@ export const getSoapFetch =
 				},
 				Header: header
 			})
-		}) // TODO proper error handling
+		}) // TO-DO proper error handling
 			.then((res) => res?.json())
 			.then((res: SoapResponse<Response>) => handleResponse(api, res))
 			.catch((e) => {
@@ -207,7 +207,7 @@ export const getXmlSoapFetch =
 			)}${getXmlAccount(account, otherAccount)}<format type="js"/></context></soap:Header>
 			<soap:Body>${body}</soap:Body>
 		</soap:Envelope>`
-		}) // TODO proper error handling
+		}) // TO-DO proper error handling
 			.then((res) => res?.json())
 			.then((res: SoapResponse<Response>) => handleResponse(api, res))
 			.catch((e) => {
@@ -284,13 +284,14 @@ const fetchAccount = (
 
 export const getSoapFetchRequest =
 	(app: string) =>
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	<Request, Response>(apiURL: string): Promise<Response> =>
 		fetch(`${apiURL}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}
-		}) // TODO proper error handling
+		}) // TO-DO proper error handling
 			.then((res) => res?.json())
 			.then((res: SoapResponse<Response>) => handleSoapResponse(res))
 			.catch((e) => {
