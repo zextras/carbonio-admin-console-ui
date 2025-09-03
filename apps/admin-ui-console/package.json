@@ -60,7 +60,7 @@
 		"@types/react-dom": "^18.3.0",
 		"@types/react-router-dom": "^5.3.3",
 		"@types/styled-components": "^5.1.26",
-		"@zextras/carbonio-ui-sdk": "^1.7.7",
+		"@zextras/carbonio-ui-sdk": "workspace:*",
 		"babel-jest": "27.3.1",
 		"babel-plugin-styled-components": "^2.1.4",
 		"eslint": "^9.34.0",
