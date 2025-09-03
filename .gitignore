@@ -57,5 +57,6 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .turbo
-apps/admin-ui-console/coverage
-apps/admin-ui-console/junit.xml
+apps/*/coverage
+apps/*/junit.xml
+apps/admin-ui-bootstrapper/translations
