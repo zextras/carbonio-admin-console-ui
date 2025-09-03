@@ -59,4 +59,3 @@ node_modules/
 .turbo
 apps/*/coverage
 apps/*/junit.xml
-apps/admin-ui-bootstrapper/translations
