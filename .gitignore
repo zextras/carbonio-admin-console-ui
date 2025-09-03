@@ -7,7 +7,7 @@
 
 # Build output
 /build/
-./apps/*/dist/
+apps/*/dist
 /pkg/
 /sdk/
 
