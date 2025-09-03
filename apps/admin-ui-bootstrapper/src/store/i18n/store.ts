@@ -63,11 +63,11 @@ const defaultI18nInitOptions: InitOptions = {
 		escapeValue: false // not needed for react as it escapes by default
 	},
 	missingKeyHandler: (_, __, key) => {
-		// eslint-disable-next-line no-console
+		 
 		console.warn(`Missing translation with key '${key}'`);
 	},
 	backend: {
-		loadPath: `${BASE_PATH}/i18n/{{lng}}.json`
+		loadPath: `/admin-ui-bootstrapper/i18n/{{lng}}.json` // FIX-ADMIN-MONOREPO
 	}
 };
 
@@ -78,7 +78,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 	setLocale: (locale: string): void => {
 		set(
 			produce((state: I18nState) => {
-				// eslint-disable-next-line no-param-reassign
+				 
 				state.locale = locale;
 				forEach(state.instances, (i18nInst) => i18nInst.changeLanguage(locale));
 			})
@@ -88,7 +88,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 		const appsWithShell = addShell(apps);
 		set(
 			produce((state: I18nState) => {
-				// eslint-disable-next-line no-param-reassign
+				 
 				state.instances = reduce<CarbonioModule, Record<string, i18n>>(
 					appsWithShell,
 					(acc, app): Record<string, i18n> => {
@@ -105,19 +105,19 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 								backend: {
 									loadPath:
 										app.name === SHELL_APP_ID
-											? `${BASE_PATH}/i18n/{{lng}}.json`
+											? `/admin-ui-bootstrapper/i18n/{{lng}}.json`
 											: `${dropRight(app.js_entrypoint.split('/')).join('/')}/i18n/{{lng}}.json`
 								}
 							});
-						// eslint-disable-next-line no-param-reassign
+						 
 						acc[app.name] = newI18n;
 						return acc;
 					},
 					{}
 				);
-				// eslint-disable-next-line no-param-reassign
+				 
 				state.defaultI18n.t = state.instances[SHELL_APP_ID].t;
-				// eslint-disable-next-line no-param-reassign
+				 
 				state.locale = locale;
 			})
 		);

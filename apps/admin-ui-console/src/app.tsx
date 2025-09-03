@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -19,8 +17,10 @@ import {
 	useUserAccounts,
 	useUserSettings
 } from '@zextras/admin-ui-bootstrapper';
+import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -176,8 +176,10 @@ const App: FC = () => {
 	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
 
 	useEffect(() => {
-		const { id } = accounts[0];
-		setUserId(id);
+		if (accounts?.length > 0) { // FIX-ADMIN-MONOREPO
+			const { id } = accounts[0];
+			setUserId(id);
+		}
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
@@ -596,7 +598,7 @@ const App: FC = () => {
 	const backupPrimaryBar: FC = useCallback(
 		() => (
 			<PrimaryBarIconButton
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				 
 				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				type="ghost"

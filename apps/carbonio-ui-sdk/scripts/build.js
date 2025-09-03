@@ -68,6 +68,7 @@ exports.handler = async (options) =>
 		printArgs(options, 'Build');
 		const packageName = getAppName();
 		const basePath = `/static/iris/${options.name}/${packageName.split('/')[1]}/`;
+		process.env.BASE_PATH = `/${packageName.split('/')[1]}`;
 		rmSync('dist', {recursive: true, force: true});
 		if (options.external) await runExternalBuild(options, { basePath, commitHash });
 		console.log('Building 1 ==>', chalk.green(options.name));
@@ -76,3 +77,5 @@ exports.handler = async (options) =>
 		const compiler = webpack(config);
 		compiler.run(logBuild(p, options));
 	});
+
+
