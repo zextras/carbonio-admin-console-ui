@@ -147,11 +147,6 @@ export const getSoapFetch =
 		const header: any = {
 			context: {
 				_jsns: 'urn:zimbra',
-				notify: context?.notify?.[0]?.seq
-					? {
-							seq: context?.notify?.[0]?.seq
-						}
-					: undefined,
 				session: context?.session ?? {},
 				account: getAccount(account as Account, otherAccount),
 				userAgent: {
@@ -356,8 +351,6 @@ export const fetchExternalSoap =
 		api?: string,
 		method?: string
 	): Promise<Response> => {
-		const { zimbraVersion, account } = useAccountStore.getState();
-		const { context } = useNetworkStore.getState();
 		let bodyItem;
 		if (api) {
 			bodyItem = {

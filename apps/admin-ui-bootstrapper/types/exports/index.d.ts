@@ -33,14 +33,7 @@ import {
 } from '../apps';
 import { ActionFactory, AnyFunction, CombinedActionFactory, Action } from '../integrations';
 import { HistoryParams, ShellModes } from '../misc';
-import {
-	Mods,
-	TagActionResponse,
-	CreateTagResponse,
-	SoapNotify,
-	SoapRefresh,
-	Attribute
-} from '../network';
+import { Mods, TagActionResponse, CreateTagResponse, Attribute } from '../network';
 import { Tag, Tags } from '../tags';
 
 declare const getBridgedFunctions: () => {
