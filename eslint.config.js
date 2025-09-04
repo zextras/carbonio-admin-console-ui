@@ -16,12 +16,13 @@ const eslintPluginNotice = require('eslint-plugin-notice');
 const eslintPluginJest = require('eslint-plugin-jest');
 const eslintPluginJestDom = require('eslint-plugin-jest-dom');
 const eslintPluginTestingLibrary = require('eslint-plugin-testing-library');
+const unusedImports = require('eslint-plugin-unused-imports');
 const globals = require('globals');
 
 module.exports = [
 	// Base configuration
 	js.configs.recommended,
-	
+
 	// Ignore patterns
 	{
 		ignores: [
@@ -71,6 +72,7 @@ module.exports = [
 	// All files - include all plugins to avoid "rule not found" errors
 	{
 		plugins: {
+			'unused-imports': unusedImports,
 			'@typescript-eslint': typescriptEslint,
 			import: eslintPluginImport,
 			react: eslintPluginReact,
@@ -97,33 +99,43 @@ module.exports = [
 		},
 		rules: {
 			// TypeScript rules
-			'@typescript-eslint/no-unused-vars': ['warn', { 
-				argsIgnorePattern: '^_',
-				varsIgnorePattern: '^_',
-				caughtErrorsIgnorePattern: '^_'
-			}],
+			'@typescript-eslint/no-unused-vars': [
+				'warn',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_'
+				}
+			],
 			'@typescript-eslint/no-explicit-any': 'warn',
-			'@typescript-eslint/no-unused-expressions': ['warn', {
-				allowShortCircuit: true,
-				allowTernary: true,
-				allowTaggedTemplates: true
-			}],
+			'@typescript-eslint/no-unused-expressions': [
+				'warn',
+				{
+					allowShortCircuit: true,
+					allowTernary: true,
+					allowTaggedTemplates: true
+				}
+			],
 			'@typescript-eslint/ban-ts-comment': 'off',
-			
+
 			// Prettier rules (disabled)
 			'prettier/prettier': 'off',
-			
+
 			// Import rules
 			'import/no-unresolved': 'off',
+			'unused-imports/no-unused-imports': 'error',
 			'import/named': 'off',
 			'import/no-duplicates': 'warn',
 			'import/no-named-default': 'warn',
-			'import/order': ['warn', {
-				groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-				'newlines-between': 'always',
-				alphabetize: { order: 'asc', caseInsensitive: true }
-			}],
-			
+			'import/order': [
+				'warn',
+				{
+					groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+					'newlines-between': 'always',
+					alphabetize: { order: 'asc', caseInsensitive: true }
+				}
+			],
+
 			// SonarJS rules (relaxed)
 			'sonarjs/cognitive-complexity': ['warn', 25],
 			'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
@@ -141,10 +153,10 @@ module.exports = [
 			'sonarjs/concise-regex': 'warn',
 			'sonarjs/no-regex-spaces': 'warn',
 			'sonarjs/no-redundant-optional': 'warn',
-			
+
 			// Notice rules
 			'notice/notice': 'off', // Disabled for now
-			
+
 			// Disable conflicting base rules
 			'no-unused-vars': 'off',
 			'no-undef': 'off',
@@ -179,11 +191,11 @@ module.exports = [
 			'react/display-name': 'warn',
 			'react/jsx-uses-react': 'error',
 			'react/jsx-uses-vars': 'error',
-			
+
 			// React Hooks rules
 			'react-hooks/rules-of-hooks': 'error',
 			'react-hooks/exhaustive-deps': 'warn',
-			
+
 			// JSX A11y rules (relaxed)
 			'jsx-a11y/click-events-have-key-events': 'warn',
 			'jsx-a11y/no-static-element-interactions': 'warn',
@@ -193,10 +205,7 @@ module.exports = [
 
 	// Test files
 	{
-		files: [
-			'**/__tests__/**/*.[jt]s?(x)',
-			'**/?(*.)+(spec|test).[jt]s?(x)'
-		],
+		files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 		languageOptions: {
 			globals: {
 				...globals.jest
@@ -207,11 +216,11 @@ module.exports = [
 			'jest/no-disabled-tests': 'warn',
 			'jest/no-focused-tests': 'error',
 			'jest/no-identical-title': 'error',
-			
+
 			// Testing Library rules
 			'testing-library/prefer-user-event': 'warn',
 			'testing-library/no-node-access': 'warn',
-			
+
 			// Relaxed rules for tests
 			'no-console': 'off',
 			'sonarjs/no-duplicate-string': 'off',
