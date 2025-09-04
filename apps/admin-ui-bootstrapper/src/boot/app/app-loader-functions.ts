@@ -68,7 +68,6 @@ import {
 	useIntegratedFunction,
 	useIntegratedHook
 } from '../../store/integrations/hooks';
-import { useNotify, useRefresh } from '../../store/network';
 import { getTag, getTags, useTag, useTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
@@ -114,8 +113,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	getTags,
 	useTag,
 	getTag,
-	useNotify,
-	useRefresh,
 	// BOARDS
 	useAddBoardCallback: getUseAddBoardCallback(pkg.name),
 	useUpdateCurrentBoard,

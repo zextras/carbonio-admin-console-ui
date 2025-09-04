@@ -6,8 +6,6 @@
 
 import _, { find, map } from 'lodash';
 
-import { goToLogin } from './go-to-login';
-import { userAgent } from './user-agent';
 import {
 	Account,
 	ErrorSoapResponse,
@@ -21,8 +19,10 @@ import { useAccountStore } from '../store/account';
 import { useNetworkStore } from '../store/network';
 import { handleTagSync } from '../store/tags';
 
+import { goToLogin } from './go-to-login';
+import { userAgent } from './user-agent';
+
 export const noOp = (): void => {
-	 
 	getSoapFetch(SHELL_APP_ID)(
 		'NoOp',
 		useNetworkStore.getState().pollingInterval === 500
@@ -82,7 +82,6 @@ const getXmlSession = (context?: any): string => {
 
 const normalizeContext = (context: any): SoapContext => {
 	if (context.notify) {
-		// eslint-disable-next-line no-param-reassign
 		context.notify = map(context.notify, (notify) => ({
 			...notify,
 			deleted: notify.deleted?.id?.split(',')
@@ -94,14 +93,13 @@ const normalizeContext = (context: any): SoapContext => {
 const handleResponse = (api: string, res: SoapResponse<any>): any => {
 	const { context, noOpTimeout } = useNetworkStore.getState();
 	const { usedQuota } = useAccountStore.getState();
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 	// @ts-ignore
 	if (noOpTimeout) clearTimeout(noOpTimeout);
 
 	if (res?.Body?.Fault) {
 		if (
 			find(
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				['service.AUTH_REQUIRED', 'service.AUTH_EXPIRED'],
 				(code) => code === (<ErrorSoapResponse>res).Body.Fault.Detail?.Error?.Code
 			)
@@ -148,12 +146,11 @@ export const getSoapFetch =
 		const { context } = useNetworkStore.getState();
 		const header: any = {
 			context: {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbra',
 				notify: context?.notify?.[0]?.seq
 					? {
 							seq: context?.notify?.[0]?.seq
-					  }
+						}
 					: undefined,
 				session: context?.session ?? {},
 				account: getAccount(account as Account, otherAccount),
@@ -172,7 +169,6 @@ export const getSoapFetch =
 		return fetch(`/service/admin/soap/${api}Request`, {
 			method: 'POST',
 			headers: {
-				 
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
@@ -332,7 +328,7 @@ export const postSoapFetchRequest =
 						notify: context?.notify?.[0]?.seq
 							? {
 									seq: context?.notify?.[0]?.seq
-							  }
+								}
 							: undefined,
 						session: context?.session ?? {},
 						account: fetchAccount(account as Account, otherAccount),
@@ -379,10 +375,9 @@ export const fetchExternalSoap =
 				? JSON.stringify(bodyItem)
 				: JSON.stringify({
 						...bodyItem
-				  })
+					})
 		}) // TODO proper error handling
 			.then((res) =>
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				res?.headers?.get('content-length') === null &&
 				!res?.headers?.get('content-type')?.includes('application/json')
 					? res
@@ -412,7 +407,7 @@ export const getCarbonioBackendVersion = async (): Promise<any> => {
 				notify: context?.notify?.[0]?.seq
 					? {
 							seq: context?.notify?.[0]?.seq
-					  }
+						}
 					: undefined,
 				session: context?.session ?? {},
 				account: fetchAccount(account as Account),
@@ -461,7 +456,7 @@ export const searchDirectoryListCount = async (types: string): Promise<any> => {
 				notify: context?.notify?.[0]?.seq
 					? {
 							seq: context?.notify?.[0]?.seq
-					  }
+						}
 					: undefined,
 				session: context?.session ?? {},
 				account: fetchAccount(account as Account),
