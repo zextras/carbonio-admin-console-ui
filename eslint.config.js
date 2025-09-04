@@ -13,8 +13,6 @@ const eslintPluginReactHooks = require('eslint-plugin-react-hooks');
 const eslintPluginJsxA11y = require('eslint-plugin-jsx-a11y');
 const eslintPluginSonarjs = require('eslint-plugin-sonarjs');
 const eslintPluginNotice = require('eslint-plugin-notice');
-const eslintPluginJest = require('eslint-plugin-jest');
-const eslintPluginJestDom = require('eslint-plugin-jest-dom');
 const eslintPluginTestingLibrary = require('eslint-plugin-testing-library');
 const unusedImports = require('eslint-plugin-unused-imports');
 const globals = require('globals');
@@ -46,7 +44,6 @@ module.exports = [
 			globals: {
 				...globals.browser,
 				...globals.node,
-				...globals.jest,
 				__CARBONIO_DEV__: 'readonly',
 				BASE_PATH: 'readonly',
 				process: 'readonly',
@@ -81,8 +78,6 @@ module.exports = [
 			'jsx-a11y': eslintPluginJsxA11y,
 			sonarjs: eslintPluginSonarjs,
 			notice: eslintPluginNotice,
-			jest: eslintPluginJest,
-			'jest-dom': eslintPluginJestDom,
 			'testing-library': eslintPluginTestingLibrary,
 			prettier: require('eslint-plugin-prettier')
 		}
@@ -207,17 +202,8 @@ module.exports = [
 	// Test files
 	{
 		files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
-		languageOptions: {
-			globals: {
-				...globals.jest
-			}
-		},
+		languageOptions: {},
 		rules: {
-			// Jest rules
-			'jest/no-disabled-tests': 'warn',
-			'jest/no-focused-tests': 'error',
-			'jest/no-identical-title': 'error',
-
 			// Testing Library rules
 			'testing-library/prefer-user-event': 'warn',
 			'testing-library/no-node-access': 'warn',

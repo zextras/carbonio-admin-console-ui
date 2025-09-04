@@ -1,10 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "include": [
-    "src/**/*",
-    "types/**/*",
-    "jest.config.ts",
-    "global.d.ts"
-  ],
-  "exclude": ["node_modules", "dist", "build"]
+	"extends": "../../tsconfig.base.json",
+	"include": ["src/**/*", "types/**/*", "global.d.ts"],
+	"exclude": ["node_modules", "dist", "build"]
 }
