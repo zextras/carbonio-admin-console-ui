@@ -12,8 +12,6 @@ const { setupWebpackBuildConfig } = require('./configs/webpack.build.config');
 const { setupWebpackExternalBuildConfig } = require('./configs/webpack.external.config');
 const {logBuild, printArgs} = require('./utils/console');
 const { rmSync } = require('node:fs');
-const path = require('path');
-const fs = require('fs');
 
 exports.command = 'build';
 exports.desc = 'Compile and bundle your project';
@@ -42,40 +40,22 @@ exports.builder = {
 };
 
 const runExternalBuild = (options, buildSetup) => new Promise((...p) => {
-		console.log('Building ==> ', chalk.bold.yellow('external '), chalk.green(options.name));
-		console.log('Using base path ==> ', chalk.green(buildSetup.basePath));
+		console.log('Building ', chalk.bold.yellow('external '), chalk.green(options.name));
+		console.log('Using base path ', chalk.green(buildSetup.basePath));
 		const externalConfig = setupWebpackExternalBuildConfig(options, buildSetup);
 		const compilerExternal = webpack(externalConfig);
 		compilerExternal.run(logBuild(p, options));
 });
-function getAppName() {
-  try {
-    // Find nearest package.json for the app or package
-    const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-    if (fs.existsSync(packageJsonPath)) {
-      const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-      return pkg.name || path.basename(process.cwd());
-    }
-    return path.basename(process.cwd());
-  } catch (error) {
-    console.warn('⚠️ Could not fetch app name:', error.message);
-    return 'unknown-app';
-  }
-}
 
 exports.handler = async (options) =>
 	new Promise(async (...p) => {
 		printArgs(options, 'Build');
-		const packageName = getAppName();
-		const basePath = `/static/iris/${options.name}/${packageName.split('/')[1]}/`;
-		process.env.BASE_PATH = `/${packageName.split('/')[1]}`;
+		const basePath = `/static/iris/${options.name}/${commitHash}/`;
 		rmSync('dist', {recursive: true, force: true});
 		if (options.external) await runExternalBuild(options, { basePath, commitHash });
-		console.log('Building 1 ==>', chalk.green(options.name));
-		console.log('Using base path 1==> ', chalk.green(basePath));
+		console.log('Building ', chalk.green(options.name));
+		console.log('Using base path ', chalk.green(basePath));
 		const config = setupWebpackBuildConfig(options, { basePath, commitHash });
 		const compiler = webpack(config);
 		compiler.run(logBuild(p, options));
 	});
-
-
