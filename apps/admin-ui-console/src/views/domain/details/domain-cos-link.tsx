@@ -3,16 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	FC,
-	KeyboardEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
 
+import { postSoapFetchRequest, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import {
 	Container,
 	Row,
@@ -24,8 +16,8 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { debounce } from 'lodash';
+import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -157,7 +149,7 @@ const DomainCosLink: FC<{
 			} = {};
 			const attributes: Attribute[] = [];
 			body.id = domainId;
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+
 			body._jsns = ZIMBRA_ADMIN_URN;
 			const isOverride = cosMaxAccountList.some((item) => item.id === cId);
 			if (isOverride) {
@@ -196,7 +188,7 @@ const DomainCosLink: FC<{
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -217,8 +209,7 @@ const DomainCosLink: FC<{
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -249,7 +240,6 @@ const DomainCosLink: FC<{
 							}
 						},
 						'GrantRightRequest'
-						// eslint-disable-next-line @typescript-eslint/no-empty-function
 					).then(() => {
 						postSoapFetchRequest(
 							`/service/admin/soap/GrantRightRequest`,
@@ -262,7 +252,6 @@ const DomainCosLink: FC<{
 								}
 							},
 							'GrantRightRequest'
-							// eslint-disable-next-line @typescript-eslint/no-empty-function
 						).then(() => {});
 					});
 				});
@@ -383,7 +372,6 @@ const DomainCosLink: FC<{
 						}
 					},
 					'RevokeRightRequest'
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
 				).then(() => {
 					postSoapFetchRequest(
 						`/service/admin/soap/RevokeRightRequest`,
@@ -396,7 +384,6 @@ const DomainCosLink: FC<{
 							}
 						},
 						'RevokeRightRequest'
-						// eslint-disable-next-line @typescript-eslint/no-empty-function
 					).then(() => {});
 				});
 			});
