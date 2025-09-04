@@ -9,7 +9,6 @@ import { reduce } from 'lodash';
 import { CarbonioModule } from '../../../types';
 import {
 	useGoBackHistoryCallback,
-	useReplaceHistoryCallback,
 	getCurrentRoute,
 	useCurrentRoute,
 	replaceHistory,
@@ -118,7 +117,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useBoardConfig,
 	// HISTORY
 	useGoBackHistoryCallback,
-	useReplaceHistoryCallback,
 	useCurrentRoute,
 	getCurrentRoute,
 	pushHistory,

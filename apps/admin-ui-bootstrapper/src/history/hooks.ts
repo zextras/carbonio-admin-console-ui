@@ -43,14 +43,6 @@ export const parseParams = (params: HistoryParams): To => {
 			};
 };
 
-export const useReplaceHistoryCallback = (): ((params: HistoryParams) => void) => {
-	const history = useHistory();
-	return useCallback(
-		(params: HistoryParams): void => history.replace(parseParams(params)),
-		[history]
-	);
-};
-
 export function useGoBackHistoryCallback(): () => void {
 	const history = useHistory();
 	return history.goBack;
