@@ -35,6 +35,7 @@ module.exports = [
 			'*.config.cjs',
 			'**/__mocks__/**',
 			'**/mocks/**',
+			'./vitest.config.base.ts',
 			'**/notice.template.ts'
 		]
 	},
