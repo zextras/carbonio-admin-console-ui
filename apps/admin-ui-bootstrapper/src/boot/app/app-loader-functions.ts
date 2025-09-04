@@ -3,13 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-// The 'useXXX' functions actually return hooks
 
 import { reduce } from 'lodash';
 
 import { CarbonioModule } from '../../../types';
 import {
-	usePushHistoryCallback,
 	useGoBackHistoryCallback,
 	useReplaceHistoryCallback,
 	getCurrentRoute,
@@ -119,7 +117,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useRemoveCurrentBoard,
 	useBoardConfig,
 	// HISTORY
-	usePushHistoryCallback,
 	useGoBackHistoryCallback,
 	useReplaceHistoryCallback,
 	useCurrentRoute,

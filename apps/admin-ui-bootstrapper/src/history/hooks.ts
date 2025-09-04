@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMemo, useCallback } from 'react';
-
 import { To } from 'history';
 import { find, startsWith, replace, trim } from 'lodash';
+import { useMemo, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import { AppRoute, HistoryParams } from '../../types';
@@ -41,12 +40,7 @@ export const parseParams = (params: HistoryParams): To => {
 				search: params.path.search,
 				hash: params.path.hash,
 				pathname: replace(`/${routeToApply?.route}/${params.path.pathname}`, '//', '/')
-		  };
-};
-
-export const usePushHistoryCallback = (): ((params: HistoryParams) => void) => {
-	const history = useHistory();
-	return useCallback((params: HistoryParams): void => history.push(parseParams(params)), [history]);
+			};
 };
 
 export const useReplaceHistoryCallback = (): ((params: HistoryParams) => void) => {

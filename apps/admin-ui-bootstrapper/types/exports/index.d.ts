@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import { ComponentType, FC } from 'react';
-
 import { type TFunction } from 'react-i18next';
 import { type LinkProps } from 'react-router-dom';
 import { type Reducer, type Store } from 'redux';
@@ -70,9 +68,9 @@ declare const ACTION_TYPES: {
 };
 declare const SHELL_MODES: Record<string, ShellModes>;
 declare const BASENAME: string;
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
 declare const getIntegratedHook: (id: string) => [Function, boolean];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
 declare const getIntegratedFunction: (id: string) => [Function, boolean];
 declare const getIntegratedComponent: (id: string) => [ComponentType<unknown>, boolean];
 declare const getActions: <T>(target: T, type: string) => Array<Action>;
@@ -82,9 +80,9 @@ declare const getActionFactory: <T>(
 	type: string,
 	id: string
 ) => [ActionFactory<T> | undefined, boolean];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
 declare const useIntegratedHook: (id: string) => [Function, boolean];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
 declare const useIntegratedFunction: (id: string) => [Function, boolean];
 declare const useIntegratedComponent: (id: string) => [ComponentType<unknown>, boolean];
 declare const useActions: <T>(target: T, type: string) => Array<Action>;
@@ -122,8 +120,6 @@ declare const store: {
 	store: Store<any>;
 	setReducer(nextReducer: Reducer): void;
 };
-declare const useNotify: () => Array<SoapNotify>;
-declare const useRefresh: () => SoapRefresh;
 declare const Applink: FC<LinkProps>;
 declare const useAddBoardCallback: () => (
 	path: string,
@@ -188,7 +184,6 @@ declare const removePrimaryAccessoryView: (id: string) => void;
 declare const addSecondaryAccessoryView: (data: Partial<SecondaryAccessoryView>) => string;
 // remove secondaryAccessory
 declare const removeSecondaryAccessoryView: (id: string) => void;
-declare const usePushHistoryCallback: () => (params: HistoryParams) => void;
 declare const useReplaceHistoryCallback: () => (params: HistoryParams) => void;
 declare const useGoBackHistoryCallback: () => () => void;
 declare const pushHistory: (params: HistoryParams) => void;
