@@ -7,7 +7,8 @@
 		"apps/*"
 	],
 	"scripts": {
-		"build": "sdk build",
+		"build": "turbo run build-task",
+		"build-task": "sdk build",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"prepublishOnly": "pinst --disable",

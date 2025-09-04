@@ -10,6 +10,8 @@
 		"npm": "v10"
 	},
 	"scripts": {
+		"build": "turbo run build-task",
+		"build-task": "sdk build --admin",
 		"build:clean": "rm -rf lib && rm -rf dist && rm -rf pkg",
 		"test:ci": "jest --testTimeout=10000 --maxWorkers=50%",
 		"test:dev": "jest",
@@ -22,7 +24,6 @@
 		"type-check-task": "tsc --noEmit",
 		"lint": "turbo run lint-task",
 		"lint-task": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
-		"build": "sdk build --admin",
 		"build:lib:local": "tsc -p tsconfig.lib.json && npx api-extractor run --verbose --local",
 		"deploy": "sdk deploy --admin",
 		"start": "sdk watch --admin",
