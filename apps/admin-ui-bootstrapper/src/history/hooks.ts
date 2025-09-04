@@ -6,11 +6,11 @@
 
 import { To } from 'history';
 import { find, startsWith, replace, trim } from 'lodash';
-import { useMemo, useCallback } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { AppRoute, HistoryParams } from '../../types';
-import { useRoutes, getRoutes } from '../store/app';
+import { getRoutes, useRoutes } from '../store/app';
 import { useContextBridge } from '../store/context-bridge';
 
 export const useCurrentRoute = (): AppRoute | undefined => {
@@ -43,20 +43,7 @@ export const parseParams = (params: HistoryParams): To => {
 			};
 };
 
-export function useGoBackHistoryCallback(): () => void {
-	const history = useHistory();
-	return history.goBack;
-}
-
-export const pushHistory = (params: HistoryParams): void => {
-	const history = useContextBridge.getState().functions.getHistory?.();
-	history.push(parseParams(params));
-};
-
 export const replaceHistory = (params: HistoryParams): void => {
 	const history = useContextBridge.getState().functions.getHistory?.();
 	history.replace(parseParams(params));
 };
-
-export const goBackHistory = (): void =>
-	useContextBridge.getState().functions.getHistory?.().goBack();

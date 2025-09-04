@@ -7,14 +7,7 @@
 import { reduce } from 'lodash';
 
 import { CarbonioModule } from '../../../types';
-import {
-	useGoBackHistoryCallback,
-	getCurrentRoute,
-	useCurrentRoute,
-	replaceHistory,
-	goBackHistory,
-	pushHistory
-} from '../../history/hooks';
+import { replaceHistory } from '../../history/hooks';
 import {
 	getSoapFetch,
 	getSoapFetchRequest,
@@ -116,11 +109,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useRemoveCurrentBoard,
 	useBoardConfig,
 	// HISTORY
-	useGoBackHistoryCallback,
-	useCurrentRoute,
-	getCurrentRoute,
-	pushHistory,
-	goBackHistory,
 	replaceHistory,
 	// TAGS
 	createTag,

@@ -184,7 +184,6 @@ declare const removePrimaryAccessoryView: (id: string) => void;
 declare const addSecondaryAccessoryView: (data: Partial<SecondaryAccessoryView>) => string;
 // remove secondaryAccessory
 declare const removeSecondaryAccessoryView: (id: string) => void;
-declare const useGoBackHistoryCallback: () => () => void;
 declare const pushHistory: (params: HistoryParams) => void;
 declare const replaceHistory: (params: HistoryParams) => void;
 declare const goBackHistory: () => void;
