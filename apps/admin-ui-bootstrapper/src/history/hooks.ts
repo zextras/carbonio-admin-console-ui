@@ -21,7 +21,7 @@ export const useCurrentRoute = (): AppRoute | undefined => {
 		[location.pathname, routes]
 	);
 };
-export const getCurrentRoute = (): AppRoute | undefined => {
+const getCurrentRoute = (): AppRoute | undefined => {
 	const history = useContextBridge.getState().functions.getHistory?.();
 	const routes = getRoutes();
 	return find(routes, (r) => startsWith(trim(history.location.pathname, '/'), r.route));
