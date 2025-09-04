@@ -11,7 +11,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 export default {
 	input: 'src/jest-mocks.jsx',
 	output: {
-		file: 'dist/zapp-shell.bundle.js',
+		file: 'dist/zapp-admin-ui.bundle.js',
 		format: 'cjs'
 	},
 	plugins: [

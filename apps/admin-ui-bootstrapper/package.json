@@ -3,7 +3,7 @@
 	"version": "0.9.36",
 	"description": "The Zextras Carbonio web admin",
 	"private": true,
-	"main": "src/index.ts",
+	"main": "dist/zapp-admin-ui.bundle.js",
 	"types": "./types/index.d.ts",
 	"engines": {
 		"node": "v20",

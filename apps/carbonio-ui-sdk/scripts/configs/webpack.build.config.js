@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable import/extensions */
+ 
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -193,7 +193,7 @@ exports.setupWebpackBuildConfig = (options, { basePath, commitHash }, skipCustom
 		'@emotion/react': `__ZAPP_SHARED_LIBRARIES__['@emotion/react']`,
 		'@emotion/styled': `__ZAPP_SHARED_LIBRARIES__['@emotion/styled']`,
 		'@zextras/carbonio-ui-preview': `__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-ui-preview']`,
-		'@zextras/carbonio-shell-ui': `__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-shell-ui']['${options.name}']`,
+		'@zextras/admin-ui-bootstrapper': `__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrapper']['${options.name}']`,
 		darkreader: `__ZAPP_SHARED_LIBRARIES__['darkreader']`,
 		/* Exports for App's Handlers */
 		msw: `__ZAPP_SHARED_LIBRARIES__['msw']`
