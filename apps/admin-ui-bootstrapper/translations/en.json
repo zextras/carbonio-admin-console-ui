@@ -8,7 +8,15 @@
         "reduce": "Reduce board",
         "show_tabs": "Show other tabs"
     },
+    "button": {
+        "refresh_page": "REFRESH"
+    },
     "create": "Create",
+    "error": {
+        "contact_support": "Contact support or try refreshing the page",
+        "loading_page": "We’re sorry, but there was an error trying to load this page.",
+        "something_went_wrong": "Something went wrong"
+    },
     "feedback": {
         "behaviors": "Behaviors",
         "count_user_in_helper_button_text": "YES, COUNT ME IN!",
@@ -39,6 +47,7 @@
         "accounts_list": "Accounts list",
         "add_delegate": "Add delegate",
         "add_external_account": "Add external account",
+        "add_inline_image": "Add inline image",
         "add_new_email": "Add new e-mail address",
         "add_persona": "Add persona",
         "add_recovery_email": "Add recovery e-mail",
@@ -120,6 +129,7 @@
         "save_delegate_folder": "Save a copy of sent messages to delegate’s Sent folder",
         "save_to_my_sent_folder": "Save a copy of sent messages to my Sent folder",
         "secondary": "Secondary",
+        "select_image": "Select image",
         "send_feedback": "Send Feedback",
         "send_feedback_helperText": "<bold>Would you like to suggest any change or tell us something?</bold><br /><br />Share your thoughts with us and help shape a better Carbonio CE. We look forward to hearing from you!",
         "send_feedback_helperText_carbonio": "<bold>Would you like to suggest any change or tell us something?</bold><br /><br />Share your thoughts with us and help shape a better {{carbonio}}. We look forward to hearing from you!",

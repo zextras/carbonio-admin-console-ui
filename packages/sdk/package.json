@@ -1,0 +1,46 @@
+{
+	"name": "@zextras/admin-ui-sdk",
+	"version": "0.0.0-semantically-released",
+	"description": "Zextras Carbonio Web SDK",
+	"main": "scripts/index.js",
+	"bin": {
+		"sdk": "scripts/index.js"
+	},
+	"engines": {
+		"node": ">=20.0.0 <21.0.0",
+		"npm": "v10"
+	},
+	"keywords": [
+		"SDK"
+	],
+	"author": "",
+	"license": "AGPL-3.0-only",
+	"files": [
+		"scripts"
+	],
+	"dependencies": {
+		"babel-loader": "^9.2.1",
+		"chalk": "^4.1.2",
+		"circular-dependency-plugin": "^5.2.2",
+		"copy-webpack-plugin": "^13.0.0",
+		"css-loader": "^6.9.1",
+		"handlebars-loader": "^1.7.3",
+		"html-webpack-plugin": "^5.6.0",
+		"less-loader": "^12.1.0",
+		"mini-css-extract-plugin": "^2.7.7",
+		"node-http-proxy-json": "^0.1.9",
+		"path-browserify": "^1.0.1",
+		"postcss-loader": "^8.0.0",
+		"react-hot-loader": "^4.13.1",
+		"semver": "^7.7.2",
+		"webpack": "^5.101.0",
+		"webpack-bundle-analyzer": "^4.10.0",
+		"webpack-dev-server": "^5.2.0",
+		"yargs": "^18.0.0"
+	},
+	"devDependencies": {
+		"conventional-changelog-conventionalcommits": "^9.1.0",
+		"semantic-release": "^24.2.7",
+		"standard-version": "^9.5.0"
+	}
+}

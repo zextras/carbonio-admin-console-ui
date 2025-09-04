@@ -82,7 +82,7 @@
 		"@types/styled-components": "^5.1.26",
 		"@types/ua-parser-js": "^0.7.39",
 		"@types/webpack-env": "^1.18.8",
-		"@zextras/carbonio-ui-sdk": "workspace:*",
+		"@zextras/admin-ui-sdk": "workspace:*",
 		"autoprefixer": "^10.4.21",
 		"babel-jest": "27.3.1",
 		"babel-plugin-i18next-extract": "^1.1.0",
