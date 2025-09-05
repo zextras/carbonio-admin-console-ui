@@ -1,9 +1,7 @@
-// __mocks__/@zextras/admin-ui-bootstrapper.ts
-export const getSoapFetchRequest = jest.fn();
-export const useDomainInformation = jest.fn();
-export const useUserSettings = jest.fn();
-export const fetchExternalSoap = jest.fn();
-export const postSoapFetchRequest = jest.fn();
+import { vi } from 'vitest';
 
-// Add any other exports the module has
-export default {};
+export const getSoapFetchRequest = vi.fn();
+export const useDomainInformation = vi.fn();
+export const useUserSettings = vi.fn();
+export const fetchExternalSoap = vi.fn();
+export const postSoapFetchRequest = vi.fn();

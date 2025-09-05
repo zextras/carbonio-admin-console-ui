@@ -3,10 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useState, useEffect, useCallback, useMemo, ChangeEvent } from 'react';
 
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
+import {
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+	ChangeEvent,
+	Dispatch,
+	SetStateAction
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../constants';
@@ -17,7 +25,7 @@ import { useRightsStore, Right, Rights } from '../store/rights/store';
 export const useBackupConfig = (): {
 	isDirty: boolean;
 	backupDetail: any;
-	setBackupDetail: React.Dispatch<React.SetStateAction<any>>;
+	setBackupDetail: Dispatch<SetStateAction<any>>;
 	allowSetBackup: boolean;
 	onCancel: () => void;
 	onSave: () => void;

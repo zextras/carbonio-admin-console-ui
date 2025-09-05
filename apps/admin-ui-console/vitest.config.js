@@ -1,5 +1,6 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
 import baseConfig from '../../vitest.config.base.js';
+import path from 'path';
 
 export default mergeConfig(
 	baseConfig,
@@ -9,11 +10,12 @@ export default mergeConfig(
 		},
 		resolve: {
 			alias: {
-				'@zextras/admin-ui-bootstrapper': '../admin-ui-bootstrapper/'
+				'@zextras/admin-ui-bootstrapper': path.resolve(
+					__dirname,
+					'./__mocks__/admin-ui-bootstrapper.ts'
+				),
+				bootstrapper: path.resolve(__dirname, './__mocks__/bootstrapper.ts')
 			}
-		},
-		optimizeDeps: {
-			exclude: ['@zextras/admin-ui-bootstrapper']
 		}
 	})
 );
