@@ -1,9 +1,9 @@
-/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { describe, test, expect } from 'vitest';
 
 import { bytesToHumanReadable, bytesToMB, mbToBytes } from '../utils';
 
@@ -65,5 +65,4 @@ describe('bytesToHumanReadable', () => {
 	test('should give 0 bytes if pass 0 mb', () => {
 		expect(mbToBytes(0)).toBe(0);
 	});
-
 });
