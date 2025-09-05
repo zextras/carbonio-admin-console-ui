@@ -72,6 +72,7 @@
 		"@zextras/admin-ui-sdk": "workspace:*",
 		"babel-plugin-styled-components": "^2.1.4",
 		"eslint": "^9.34.0",
+		"jsdom": "^26.1.0",
 		"msw": "^1.3.0",
 		"pinst": "^3.0.0",
 		"playwright": "^1.55.0",
