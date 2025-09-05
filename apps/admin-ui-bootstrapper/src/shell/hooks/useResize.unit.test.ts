@@ -3,8 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Border, exportForTest } from './useResize';
+import { describe, it, expect } from 'vitest';
+
 import { SizeAndPosition } from '../../utils/utils';
+
+import { Border, exportForTest } from './useResize';
 
 type InitialSizeAndPosition = NonNullable<Parameters<typeof calcNewSizeAndPosition>[1]>;
 
@@ -17,6 +20,7 @@ const {
 describe('Use resize', () => {
 	describe('calcNewSizeAndPosition', () => {
 		const INITIAL: SizeAndPosition = { width: 100, height: 100, left: 25, top: 25 };
+
 		function buildInitialSizeAndPosition(offset: number): InitialSizeAndPosition {
 			return {
 				width: INITIAL.width,
@@ -27,6 +31,7 @@ describe('Use resize', () => {
 				clientTop: INITIAL.top + offset
 			};
 		}
+
 		function buildInitialMousePosition(
 			border: Border,
 			initial: InitialSizeAndPosition
@@ -53,7 +58,6 @@ describe('Use resize', () => {
 			if (border.includes('e') || border.includes('w')) {
 				newMousePosition.clientX += mouseMovement.x;
 			}
-
 			return new MouseEvent('mouseMove', newMousePosition);
 		}
 
