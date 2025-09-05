@@ -18,7 +18,7 @@ export default defineConfig({
 					],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
-					environment: 'node',
+					environment: 'jsdom',
 					globals: true,
 					css: true,
 					clearMocks: true,
