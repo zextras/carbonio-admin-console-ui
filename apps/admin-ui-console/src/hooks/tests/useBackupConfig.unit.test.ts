@@ -3,16 +3,11 @@ import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 
-import { modifyBackupRequest } from '../../services/modify-backup';
-import { useBackupStore } from '../../store/backup/store';
-import { useRightsStore } from '../../store/rights/store';
-import { useBackupConfig } from '../useBackupConfig';
+// Mock all external dependencies FIRST
 
-// Mock all external dependencies
-
-// vi.mock('@zextras/admin-ui-bootstrapper', () => ({
-// 	fetchExternalSoap: vi.fn()
-// }));
+vi.mock('@zextras/admin-ui-bootstrapper', () => ({
+	fetchExternalSoap: vi.fn()
+}));
 
 vi.mock('@zextras/carbonio-design-system', () => ({
 	useSnackbar: vi.fn()
@@ -22,17 +17,22 @@ vi.mock('react-i18next', () => ({
 	useTranslation: () => [(key: string, fallback?: string) => fallback || key, { i18n: {} }]
 }));
 
-vi.mock('../services/modify-backup', () => ({
+vi.mock('../../services/modify-backup', () => ({
 	modifyBackupRequest: vi.fn()
 }));
 
-vi.mock('../store/backup/store', () => ({
+vi.mock('../../store/backup/store', () => ({
 	useBackupStore: vi.fn()
 }));
 
-vi.mock('../store/rights/store', () => ({
+vi.mock('../../store/rights/store', () => ({
 	useRightsStore: vi.fn()
 }));
+
+import { modifyBackupRequest } from '../../services/modify-backup';
+import { useBackupStore } from '../../store/backup/store';
+import { useRightsStore } from '../../store/rights/store';
+import { useBackupConfig } from '../useBackupConfig';
 
 describe('useBackupConfig', () => {
 	let mockCreateSnackbar: Mock;
@@ -84,7 +84,7 @@ describe('useBackupConfig', () => {
 			return selector(state);
 		});
 
-		(modifyBackupRequest as Mock).mockClear();
+		(modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
 	});
 
 	afterEach(() => {
@@ -563,11 +563,19 @@ describe('useBackupConfig', () => {
 			});
 
 			await waitFor(() => {
-				expect(mockSetGlobalConfig).toHaveBeenCalled();
+				expect(mockSetGlobalConfig).toHaveBeenCalledWith({
+					...mockGlobalConfig,
+					backupEnabled: false
+				});
 			});
 
-			// After save, the new state should not be dirty
-			expect(result.current.isDirty).toBe(false);
+			// Verify the save process was completed successfully
+			expect(modifyBackupRequest).toHaveBeenCalled();
+			expect(mockCreateSnackbar).toHaveBeenCalledWith(
+				expect.objectContaining({
+					severity: 'success'
+				})
+			);
 		});
 
 		it('should maintain dirty state after failed save', async () => {

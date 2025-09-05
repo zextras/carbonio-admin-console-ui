@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-param-reassign */
+ 
+ 
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -22,7 +22,7 @@ module.exports = (conf, pkg, options, mode) => {
 		index: path.resolve(process.cwd(), 'src', 'index.tsx')
 	};
 	conf.output.filename =
-		mode === 'development' ? 'zapp-shell.bundle.js' : '[name].[chunkhash:8].js';
+		mode === 'development' ? 'zapp-shell.bundle.js' : 'zapp-admin-ui.bundle.js';
 	conf.resolve.extensions.push('.d.ts');
 	conf.plugins.push(
 		new CopyPlugin({
