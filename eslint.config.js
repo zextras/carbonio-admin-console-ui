@@ -151,7 +151,17 @@ module.exports = [
 			'sonarjs/no-redundant-optional': 'warn',
 
 			// Notice rules
-			'notice/notice': 'off', // Disabled for now
+			'notice/notice': [
+				'error',
+				{
+					templateFile: require('path').resolve(__dirname, 'notice.template.ts'),
+					templateVars: {
+						author: 'Zextras <https://www.zextras.com>',
+						license: 'AGPL-3.0-only'
+					},
+					onNonMatchingHeader: 'replace'
+				}
+			],
 
 			// Disable conflicting base rules
 			'no-unused-vars': 'off',
