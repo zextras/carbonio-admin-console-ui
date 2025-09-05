@@ -12,7 +12,7 @@ export default defineConfig({
 			{
 				test: {
 					include: [
-						'**/*.unit.test.*',
+						'src/**/*.unit.test.{ts,tsx}',
 						'!src/**/*.browser.{test,spec}.{ts,tsx}',
 						'!src/**/*.e2e.{test,spec}.{ts,tsx}'
 					],
@@ -29,7 +29,7 @@ export default defineConfig({
 			},
 			{
 				test: {
-					include: ['/**/*.browser.test.*'],
+					include: ['src/**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						enabled: true,
