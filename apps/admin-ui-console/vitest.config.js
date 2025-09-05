@@ -6,6 +6,14 @@ export default mergeConfig(
 	defineConfig({
 		test: {
 			exclude: ['packages/template/*']
+		},
+		resolve: {
+			alias: {
+				'@zextras/admin-ui-bootstrapper': '../admin-ui-bootstrapper/'
+			}
+		},
+		optimizeDeps: {
+			exclude: ['@zextras/admin-ui-bootstrapper']
 		}
 	})
 );
