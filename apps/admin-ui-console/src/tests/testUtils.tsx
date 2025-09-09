@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import {
-	act,
 	type ByRoleMatcher,
 	type ByRoleOptions,
 	type GetAllBy,
@@ -26,7 +24,7 @@ import React, { type ReactElement, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 
-export type UserEvent = ReturnType<typeof userEvent['setup']> & {
+export type UserEvent = ReturnType<(typeof userEvent)['setup']> & {
 	readonly rightClick: (target: Element) => Promise<void>;
 };
 
@@ -184,7 +182,7 @@ function customRender(
 
 type SetupOptions = Pick<WrapperProps, 'initialRouterEntries'> & {
 	renderOptions?: Omit<RenderOptions, 'queries'>;
-	setupOptions?: Parameters<typeof userEvent['setup']>[0];
+	setupOptions?: Parameters<(typeof userEvent)['setup']>[0];
 };
 
 const setupUserEvent = (options: SetupOptions['setupOptions']): UserEvent => {
@@ -208,25 +206,3 @@ export const setup = (
 		...options?.renderOptions
 	})
 });
-
-export function makeListItemsVisible(): void {
-	const { calls, instances } = (
-		window.IntersectionObserver as any
-	).mock;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	calls.forEach((call: any, index: any) => {
-		const [onChange] = call;
-		// trigger the intersection on the observed element
-		act(() => {
-			onChange(
-				[
-					{
-						intersectionRatio: 0,
-						isIntersecting: true
-					} as IntersectionObserverEntry
-				],
-				instances[index]
-			);
-		});
-	});
-}

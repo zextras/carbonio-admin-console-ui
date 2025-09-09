@@ -14,7 +14,7 @@ import ResourceCreateSection from './resource-create-section';
 import ResourceDetailSection from './resource-detail-section';
 import ResourceSharingSection from './resource-sharing-section';
 import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section';
+import { Section } from '../../../app/component/section-component';
 
 interface ResourceDetailObj {
 	name: string;

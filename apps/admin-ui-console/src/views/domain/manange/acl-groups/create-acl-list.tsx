@@ -17,7 +17,7 @@ import AclListSection from './acl-list-section';
 import { PUB } from '../../../../constants';
 import { useDomainStore } from '../../../../store/domain/store';
 import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section';
+import { Section } from '../../../app/component/section-component';
 import OverlayDivision from '../../../components/overlayDivision';
 
 // eslint-disable-next-line no-shadow

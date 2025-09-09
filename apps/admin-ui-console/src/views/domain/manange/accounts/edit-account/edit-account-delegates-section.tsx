@@ -46,7 +46,7 @@ import { accountListDirectory } from '../../../../../services/account-list-direc
 import { batchService } from '../../../../../services/batch-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section';
+import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
@@ -387,11 +387,11 @@ const EditAccountDelegatesSection: FC = () => {
 						? t(
 								'account_details.delegate_updated_successfully',
 								'Delegate`s rights updated successfully'
-						  )
+							)
 						: t(
 								'account_details.delegate_created_successfully',
 								'Delegate`s rights created successfully'
-						  ),
+							),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

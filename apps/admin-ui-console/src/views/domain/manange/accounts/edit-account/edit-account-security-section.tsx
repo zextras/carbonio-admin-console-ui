@@ -40,7 +40,7 @@ import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section';
+import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';

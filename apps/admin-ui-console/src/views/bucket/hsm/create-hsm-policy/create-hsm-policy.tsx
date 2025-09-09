@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
 import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section';
+import { Section } from '../../../app/component/section-component';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 interface hsmDetailObj {

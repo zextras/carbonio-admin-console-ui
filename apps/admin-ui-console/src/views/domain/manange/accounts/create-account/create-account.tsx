@@ -20,7 +20,7 @@ import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../../../store/config/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section';
+import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`

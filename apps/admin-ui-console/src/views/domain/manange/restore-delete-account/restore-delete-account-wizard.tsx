@@ -15,7 +15,7 @@ import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
 import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section';
+import { Section } from '../../../app/component/section-component';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();

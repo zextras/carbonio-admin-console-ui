@@ -14,7 +14,7 @@ import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { HorizontalWizard } from '../../../../../app/component/hwizard';
-import { Section } from '../../../../../app/component/section';
+import { Section } from '../../../../../app/component/section-component';
 import { volumeTypeList } from '../../../../../utility/utils';
 
 const WizardInSection: FC<any> = ({

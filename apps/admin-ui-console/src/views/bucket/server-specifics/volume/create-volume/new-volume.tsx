@@ -13,7 +13,7 @@ import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section';
+import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
