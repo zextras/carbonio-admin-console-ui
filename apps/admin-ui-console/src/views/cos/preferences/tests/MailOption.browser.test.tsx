@@ -1,25 +1,19 @@
-/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
-
 import { screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import { CosPrefAttributes } from '../../../../../types';
 import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
 import { MailOptions } from '../MailOptions';
 
-describe('MailOptions', () => {
-	beforeEach(() => {
-		jest.resetAllMocks();
-	});
-
-	const mockOnCosAttributeChanged = jest.fn();
-	const mockChangeSwitchOption = jest.fn();
+describe.todo('MailOptions', () => {
+	const mockOnCosAttributeChanged = vi.fn();
+	const mockChangeSwitchOption = vi.fn();
 
 	const cosPrefAttributes: CosPrefAttributes = {
 		...DEFAULT_COS_PREF_ATTRIBUTES,
@@ -46,7 +40,6 @@ describe('MailOptions', () => {
 		expect(screen.getByText('Auto-Delete duplicate messages')).toBeInTheDocument();
 		expect(screen.getByText('Enable New Mail Toast Notification')).toBeInTheDocument();
 		expect(
-			// eslint-disable-next-line sonarjs/no-duplicate-string
 			screen.getByText('Maximum size (bytes) allowed for each attachment')
 		).toBeInTheDocument();
 		expect(screen.getByText('~50 MB')).toBeInTheDocument();

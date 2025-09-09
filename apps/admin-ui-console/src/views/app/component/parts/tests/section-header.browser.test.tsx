@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { screen } from '@testing-library/react';
 import { page } from '@vitest/browser/context';
 import { describe, expect, it, test, vi } from 'vitest';
 
@@ -16,7 +15,7 @@ describe('SectionHeader', () => {
 	const title = 'Test Title';
 	it('renders title correctly', () => {
 		setup(<SectionHeader title={title} onClose={onCloseMock} />);
-		const titleElement = screen.getByText(title);
+		const titleElement = page.getByText(title).element();
 		expect(titleElement).toBeTruthy();
 		expect(titleElement).toBeInstanceOf(HTMLElement);
 	});
