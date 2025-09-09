@@ -15,6 +15,13 @@ void npmLogin(String npmAuthToken) {
     }
 }
 
+def getNodeVersion() {
+    return sh(
+        script: 'sed "s/^[vV]//" .nvmrc | cut -d. -f1',
+        returnStdout: true
+    ).trim()
+}
+
 pipeline {
     agent {
         node {
@@ -76,4 +83,5 @@ pipeline {
                 }
             }
         }
+    }
 }
