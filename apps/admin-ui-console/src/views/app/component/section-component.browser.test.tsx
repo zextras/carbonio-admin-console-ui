@@ -18,7 +18,7 @@ describe('Section component', () => {
 				children={<div>Test Child</div>}
 				title={'section title'}
 				divider={false}
-				onClose={function (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent): void {}}
+				onClose={vi.fn()}
 			/>
 		);
 		const childElement = page.getByText('Test Child').element();
@@ -36,7 +36,7 @@ describe('Section component', () => {
 				footer={footer}
 				children={undefined}
 				divider={false}
-				onClose={function (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent): void {}}
+				onClose={vi.fn()}
 			/>
 		);
 
