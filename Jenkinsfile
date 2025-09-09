@@ -65,14 +65,29 @@ pipeline {
                 }
             }
         }
-        stage('Install dependencies') {
+        stage('Install pnpm') {
             steps {
                 container('nodejs-' + nodeVersion) {
                     script {
                         sh 'npm install -g pnpm@latest-10'
                     }
-                    script {
+                }
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                container('nodejs-' + nodeVersion) {
+                   script {
                         sh 'pnpm install'
+                    }
+                }
+            }
+        }
+        stage('build apps') {
+            steps {
+                container('nodejs-' + nodeVersion) {
+                    script {
+                        sh 'pnpm build'
                     }
                 }
             }
