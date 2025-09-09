@@ -74,14 +74,5 @@ pipeline {
                 }
             }
         }
-        stage('Install dependencies') {
-            steps {
-                container('nodejs-' + nodeVersion) {
-                    script {
-                        sh 'pnpm install'
-                    }
-                }
-            }
-        }
     }
 }
