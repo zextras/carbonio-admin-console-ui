@@ -32,7 +32,9 @@ export default defineConfig({
 					include: ['src/**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
+						provider: 'playwright',
 						enabled: true,
+						headless: true,
 						instances: [{ browser: 'chromium' }]
 					},
 					exclude: ['dist/**', 'node_modules/**'],
@@ -40,7 +42,7 @@ export default defineConfig({
 					css: true,
 					clearMocks: true,
 					testTimeout: 30000,
-					retry: process.env.CI ? 2 : 0, // Retry in CI for flaky tests
+					retry: process.env.CI ? 2 : 0,
 					pool: 'threads',
 					poolOptions: {
 						threads: {
