@@ -1,11 +1,9 @@
-/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { type ReactElement, useMemo } from 'react';
 
 import {
 	act,
@@ -24,6 +22,7 @@ import userEvent from '@testing-library/user-event';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash';
+import React, { type ReactElement, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -203,7 +202,7 @@ export const setup = (
 	ui: ReactElement,
 	options?: SetupOptions
 ): { user: UserEvent } & ReturnType<typeof customRender> => ({
-	user: setupUserEvent({ advanceTimers: jest.advanceTimersByTime, ...options?.setupOptions }),
+	user: setupUserEvent({ ...options?.setupOptions }),
 	...customRender(ui, {
 		initialRouterEntries: options?.initialRouterEntries,
 		...options?.renderOptions
@@ -212,12 +211,10 @@ export const setup = (
 
 export function makeListItemsVisible(): void {
 	const { calls, instances } = (
-		window.IntersectionObserver as jest.Mock<
-			IntersectionObserver,
-			[callback: IntersectionObserverCallback, options?: IntersectionObserverInit]
-		>
+		window.IntersectionObserver as any
 	).mock;
-	calls.forEach((call, index) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	calls.forEach((call: any, index: any) => {
 		const [onChange] = call;
 		// trigger the intersection on the observed element
 		act(() => {

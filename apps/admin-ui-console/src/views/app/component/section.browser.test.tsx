@@ -1,35 +1,38 @@
-/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { screen } from '@testing-library/react';
 import React from 'react';
+import { expect, it, test, vi } from 'vitest';
 
-import { screen, fireEvent } from '@testing-library/react';
-
-import { SectionHeader, SectionBody, Section } from './section';
 import { setup } from '../../../tests/testUtils';
 
-test('renders title correctly', () => {
+import { SectionHeader, SectionBody, Section } from './section';
+
+it('renders title correctly', () => {
   const title = 'Test Title';
-  const { user } = setup(<SectionHeader title={title} />);
+  setup(<SectionHeader title={title} />);
   const titleElement = screen.getByText(title);
-  expect(titleElement).toBeInTheDocument();
+  expect(titleElement).toBeTruthy();
+  expect(titleElement).toBeInstanceOf(HTMLElement);
 });
 
-test('renders close button when showClose is true', () => {
-  const onCloseMock = jest.fn();
+test('renders close button when showClose is true', async () => {
+  const onCloseMock = vi.fn();
   const { user } = setup(<SectionHeader showClose onClose={onCloseMock} />);
   const closeButton = screen.getByTestId('close-button');
-  fireEvent.click(closeButton);
+  await user.click(closeButton);
   expect(onCloseMock).toHaveBeenCalled();
 });
 
 test('renders children correctly', () => {
-  const { user } = setup(<SectionBody padding={{}}><div>Test Child</div></SectionBody>);
+  setup(<SectionBody padding={{}}><div>Test Child</div></SectionBody>);
   const childElement = screen.getByText('Test Child');
-  expect(childElement).toBeInTheDocument();
+  expect(childElement).toBeTruthy();
+  expect(childElement).toBeInstanceOf(HTMLElement);
 });
 
 test('renders title and footer correctly', () => {
@@ -41,14 +44,16 @@ test('renders title and footer correctly', () => {
   const titleElement = getByText(title);
   const footerElement = getByText('Test Footer');
 
-  expect(titleElement).toBeInTheDocument();
-  expect(footerElement).toBeInTheDocument();
+  expect(titleElement).toBeTruthy();
+  expect(titleElement).toBeInstanceOf(HTMLElement);
+  expect(footerElement).toBeTruthy();
+  expect(footerElement).toBeInstanceOf(HTMLElement);
 });
 
-test('calls onClose when close button is clicked', () => {
-  const onCloseMock = jest.fn();
-  const { getByTestId } = setup(<Section showClose onClose={onCloseMock} />);
+test('calls onClose when close button is clicked', async () => {
+  const onCloseMock = vi.fn();
+  const { user, getByTestId } = setup(<Section showClose onClose={onCloseMock} />);
   const closeButton = getByTestId('close-button');
-  fireEvent.click(closeButton);
+  await user.click(closeButton);
   expect(onCloseMock).toHaveBeenCalled();
 });
