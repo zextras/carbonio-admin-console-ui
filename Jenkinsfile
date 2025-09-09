@@ -69,6 +69,9 @@ pipeline {
             steps {
                 container('nodejs-' + nodeVersion) {
                     script {
+                        sh 'npm install -g pnpm@latest-10'
+                    }
+                    script {
                         sh 'pnpm install'
                     }
                 }
