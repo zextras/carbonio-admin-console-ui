@@ -74,7 +74,7 @@ describe('useBackupConfig', () => {
 
 		(useSnackbar as Mock).mockReturnValue(mockCreateSnackbar);
 
-		(useBackupStore as Mock).mockImplementation((selector) => {
+		(useBackupStore as unknown as Mock).mockImplementation((selector) => {
 			const state = {
 				globalConfig: mockGlobalConfig,
 				setGlobalConfig: mockSetGlobalConfig
@@ -82,7 +82,7 @@ describe('useBackupConfig', () => {
 			return selector(state);
 		});
 
-		(useRightsStore as Mock).mockImplementation((selector) => {
+		(useRightsStore as unknown as Mock).mockImplementation((selector) => {
 			const state = {
 				rights: mockRights
 			};
@@ -107,7 +107,7 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle missing rights configuration', () => {
-			(useRightsStore as Mock).mockImplementation((selector) => {
+			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
 				const state = { rights: [] };
 				return selector(state);
 			});
@@ -117,7 +117,7 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle rights without setAttrs', () => {
-			(useRightsStore as Mock).mockImplementation((selector) => {
+			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
 				const state = {
 					rights: [{ type: 'config', all: [] }]
 				};
