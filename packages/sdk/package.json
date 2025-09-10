@@ -37,7 +37,7 @@
 		"webpack": "^5.101.0",
 		"webpack-bundle-analyzer": "^4.10.0",
 		"webpack-dev-server": "^5.2.0",
-		"yargs": "^18.0.0"
+		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
 		"conventional-changelog-conventionalcommits": "^9.1.0",
