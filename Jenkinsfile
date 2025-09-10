@@ -83,6 +83,24 @@ pipeline {
                 }
             }
         }
+        stage('lint projects') {
+            steps {
+                container('nodejs-' + nodeVersion) {
+                    script {
+                        sh 'pnpm lint'
+                    }
+                }
+            }
+        }
+        stage('type check') {
+            steps {
+                container('nodejs-' + nodeVersion) {
+                    script {
+                        sh 'pnpm type-check'
+                    }
+                }
+            }
+        }
         stage('build apps') {
             steps {
                 container('nodejs-' + nodeVersion) {
