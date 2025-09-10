@@ -561,7 +561,7 @@ const HSMsettingPanel: FC = () => {
 				.then((res: any) => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
-						parseResponse(isEditSave, info);
+						parseResponse(isEditSave, info?.response?.[server]);
 					}
 				})
 				.catch((error) => {
@@ -595,7 +595,6 @@ const HSMsettingPanel: FC = () => {
 	);
 
 	const runAllHSMpolicy = useCallback(() => {
-		setIsRequestInProgress(true);
 		hsmPolicyOperation(undefined, undefined, true);
 	}, [hsmPolicyOperation]);
 
