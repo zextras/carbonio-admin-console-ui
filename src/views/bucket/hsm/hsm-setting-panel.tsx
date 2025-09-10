@@ -112,16 +112,16 @@ const HSMsettingPanel: FC = () => {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
-			targetServer: server
+			targetServers: server
 		}).then((res: any) => {
 			if (res?.Body?.response?.content) {
 				const content = JSON.parse(res?.Body?.response?.content);
 				if (
-					content?.response?.policies &&
-					Array.isArray(content?.response?.policies) &&
-					content?.response?.policies?.length > 0
+					content?.response?.[server]?.response?.policies &&
+					Array.isArray(content?.response?.[server]?.response?.policies) &&
+					content?.response?.[server]?.response?.policies?.length > 0
 				) {
-					setPolicies(content?.response?.policies);
+					setPolicies(content?.response?.[server]?.response?.policies);
 				} else {
 					setPolicies([]);
 				}
@@ -524,7 +524,7 @@ const HSMsettingPanel: FC = () => {
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: isRunCustomPolicy ? 'doMoveBlobs' : 'setHSMPolicy',
-				targetServer: server,
+				targetServers: server,
 				policyToAdd: true
 			};
 			if (isRunCustomPolicy) {
