@@ -491,18 +491,26 @@ const HSMsettingPanel: FC = () => {
 	}, []);
 
 	const parseResponse = useCallback(
-		(isEditSave: boolean | undefined, info: any) => {
+		(isEditSave: boolean | undefined, info: any, isRunOperation?: boolean) => {
 			if (info?.ok) {
 				if (isEditSave) {
 					onDeletePolicy(isEditSave);
 				} else {
 					setShowCreateHsmPolicyView(false);
 					getHSMPolicyList();
-					showSnackbar(
-						'success',
-						'success',
-						t('hsm.policies_added_successfully', 'Policies have been added successfully')
-					);
+					if (isRunOperation) {
+						showSnackbar(
+							'success',
+							'success',
+							t('hsm.policies_executed_successfully', 'HSM policies executed successfully')
+						);
+					} else {
+						showSnackbar(
+							'success',
+							'success',
+							t('hsm.policies_added_successfully', 'Policies have been added successfully')
+						);
+					}
 				}
 			} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
 				setIsEditSaveInProgress(false);
@@ -561,7 +569,7 @@ const HSMsettingPanel: FC = () => {
 				.then((res: any) => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
-						parseResponse(isEditSave, info?.response?.[server]);
+						parseResponse(isEditSave, info?.response?.[server], isRunCustomPolicy);
 					}
 				})
 				.catch((error) => {
