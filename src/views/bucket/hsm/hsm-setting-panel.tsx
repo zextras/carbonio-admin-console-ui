@@ -286,13 +286,13 @@ const HSMsettingPanel: FC = () => {
 	}, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
 
 	const onCancel = useCallback(() => {
-		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstore_MoveSchedulingEnabled);
+		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstoreMoveSchedulingEnabled);
 		setPowerstoreMoveSchedulerValue(oldValues?.powerstoreMoveSchedulerValue);
 		setPowerstoreSpaceThreshold(oldValues?.powerstoreSpaceThreshold);
 		setDeduplicateAfterScheduledMoveBlobs(oldValues?.deduplicateAfterScheduledMoveBlobs);
 		setIsDirty(false);
 	}, [
-		oldValues?.isZxPowerstore_MoveSchedulingEnabled,
+		oldValues?.isZxPowerstoreMoveSchedulingEnabled,
 		oldValues?.powerstoreMoveSchedulerValue,
 		oldValues?.powerstoreSpaceThreshold,
 		oldValues?.deduplicateAfterScheduledMoveBlobs
