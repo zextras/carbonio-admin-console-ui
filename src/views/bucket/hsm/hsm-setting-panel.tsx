@@ -414,7 +414,7 @@ const HSMsettingPanel: FC = () => {
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
-				targetServer: server,
+				targetServers: server,
 				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`.trim()
 			})
 				.then((res: any) => {
@@ -422,7 +422,7 @@ const HSMsettingPanel: FC = () => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
 						getHSMPolicyList();
-						if (info?.ok) {
+						if (info?.response?.[server]?.ok) {
 							setSelectedPolicies([]);
 							setShowDeletePolicyView(false);
 							setIsEditSaveInProgress(false);
