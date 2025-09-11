@@ -107,16 +107,16 @@ const HSMsettingPanel: FC = () => {
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
-			targetServer: server
+			targetServers: server
 		}).then((res: any) => {
 			if (res?.Body?.response?.content) {
 				const content = JSON.parse(res?.Body?.response?.content);
 				if (
-					content?.response?.policies &&
-					Array.isArray(content?.response?.policies) &&
-					content?.response?.policies?.length > 0
+					content?.response?.[server]?.response?.policies &&
+					Array.isArray(content?.response?.[server]?.response?.policies) &&
+					content?.response?.[server]?.response?.policies?.length > 0
 				) {
-					setPolicies(content?.response?.policies);
+					setPolicies(content?.response?.[server]?.response?.policies);
 				} else {
 					setPolicies([]);
 				}
@@ -262,6 +262,7 @@ const HSMsettingPanel: FC = () => {
 				{
 					_jsns: ZIMBRA_ADMIN_URN
 				},
+				undefined,
 				serverId
 			).then((response: any) => {
 				setIsVolumeInProgress(false);
@@ -280,13 +281,13 @@ const HSMsettingPanel: FC = () => {
 	}, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
 
 	const onCancel = useCallback(() => {
-		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstore_MoveSchedulingEnabled);
+		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstoreMoveSchedulingEnabled);
 		setPowerstoreMoveSchedulerValue(oldValues?.powerstoreMoveSchedulerValue);
 		setPowerstoreSpaceThreshold(oldValues?.powerstoreSpaceThreshold);
 		setDeduplicateAfterScheduledMoveBlobs(oldValues?.deduplicateAfterScheduledMoveBlobs);
 		setIsDirty(false);
 	}, [
-		oldValues?.isZxPowerstore_MoveSchedulingEnabled,
+		oldValues?.isZxPowerstoreMoveSchedulingEnabled,
 		oldValues?.powerstoreMoveSchedulerValue,
 		oldValues?.powerstoreSpaceThreshold,
 		oldValues?.deduplicateAfterScheduledMoveBlobs
@@ -408,7 +409,7 @@ const HSMsettingPanel: FC = () => {
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
-				targetServer: server,
+				targetServers: server,
 				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`.trim()
 			})
 				.then((res: any) => {
@@ -416,7 +417,7 @@ const HSMsettingPanel: FC = () => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
 						getHSMPolicyList();
-						if (info?.ok) {
+						if (info?.response?.[server]?.ok) {
 							setSelectedPolicies([]);
 							setShowDeletePolicyView(false);
 							setIsEditSaveInProgress(false);
@@ -485,18 +486,26 @@ const HSMsettingPanel: FC = () => {
 	}, []);
 
 	const parseResponse = useCallback(
-		(isEditSave: boolean | undefined, info: any) => {
+		(isEditSave: boolean | undefined, info: any, isRunOperation?: boolean) => {
 			if (info?.ok) {
 				if (isEditSave) {
 					onDeletePolicy(isEditSave);
 				} else {
 					setShowCreateHsmPolicyView(false);
 					getHSMPolicyList();
-					showSnackbar(
-						'success',
-						'success',
-						t('hsm.policies_added_successfully', 'Policies have been added successfully')
-					);
+					if (isRunOperation) {
+						showSnackbar(
+							'success',
+							'success',
+							t('hsm.policies_executed_successfully', 'HSM policies executed successfully')
+						);
+					} else {
+						showSnackbar(
+							'success',
+							'success',
+							t('hsm.policies_added_successfully', 'Policies have been added successfully')
+						);
+					}
 				}
 			} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
 				setIsEditSaveInProgress(false);
@@ -518,7 +527,7 @@ const HSMsettingPanel: FC = () => {
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: isRunCustomPolicy ? 'doMoveBlobs' : 'setHSMPolicy',
-				targetServer: server,
+				targetServers: server,
 				policyToAdd: true
 			};
 			if (isRunCustomPolicy) {
@@ -555,7 +564,7 @@ const HSMsettingPanel: FC = () => {
 				.then((res: any) => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
-						parseResponse(isEditSave, info);
+						parseResponse(isEditSave, info?.response?.[server], isRunCustomPolicy);
 					}
 				})
 				.catch((error) => {
@@ -589,7 +598,6 @@ const HSMsettingPanel: FC = () => {
 	);
 
 	const runAllHSMpolicy = useCallback(() => {
-		setIsRequestInProgress(true);
 		hsmPolicyOperation(undefined, undefined, true);
 	}, [hsmPolicyOperation]);
 
