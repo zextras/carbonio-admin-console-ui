@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
+        [$class: 'GitSCMSource',
+         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+         credentialsId: 'jenkins-integration-with-github-account'])
+
 void npmLogin(String npmAuthToken) {
     if (!fileExists(file: '.npmrc')) {
         sh(
@@ -107,6 +112,13 @@ pipeline {
                     script {
                         sh 'pnpm build'
                     }
+                }
+            }
+        }
+        stage('Build Packages') {
+            steps {
+                script {
+                    buildStage(packages, 'staging', 'build_pkg/packages')()
                 }
             }
         }
