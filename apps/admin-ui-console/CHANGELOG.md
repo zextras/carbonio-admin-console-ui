@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.8...v0.10.9) (2025-09-11)
+
+
+### Bug Fixes
+
+* enable scheduler toogle on reset fixed ([9dacbb2](https://github.com/zextras/carbonio-admin-console-ui/commit/9dacbb24b9762b1aba5cc7a80994f6730f121b8a))
+* fixed delete hsm policy issue ([24136b2](https://github.com/zextras/carbonio-admin-console-ui/commit/24136b223339cc5de1f595831b712df4d2b018ed))
+* hsm policy set issue fixed ([97f42e0](https://github.com/zextras/carbonio-admin-console-ui/commit/97f42e01249c7ea4ad3f204eff72f73d9bcca835))
+* loading save button and hsm run response issue fixed ([c9cb2b1](https://github.com/zextras/carbonio-admin-console-ui/commit/c9cb2b1a1fcd7bfd9c1986ac125f96a3e2edf615))
+* policy execute message ([eae9afc](https://github.com/zextras/carbonio-admin-console-ui/commit/eae9afc5a70d24361c22f5a9cdb9fa21d8b05332))
+
 ### [0.10.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.7...v0.10.8) (2025-08-25)
 
 
