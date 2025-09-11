@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
+import { getSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
 import {
 	Container,
 	Row,
@@ -19,13 +17,10 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
-import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
-import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 import {
 	APPOINTMENT,
 	CONTACT,
@@ -42,6 +37,10 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
+
+import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
+import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
+import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -152,7 +151,6 @@ const HSMsettingPanel: FC = () => {
 		return hsmTypeString;
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const doClickAction = useCallback((): void => {}, []);
 
 	const doDoubleClickAction = useCallback((): void => {

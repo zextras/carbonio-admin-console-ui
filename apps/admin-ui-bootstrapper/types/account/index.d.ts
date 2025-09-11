@@ -13,7 +13,10 @@ export type ZimletProp = {
 export type SoapFetch = <Request, Response>(
 	api: string,
 	body: Request,
-	account?: string
+	account?: string,
+	targetServer?: string,
+	authToken?: string,
+	noSession = false
 ) => Promise<Response>;
 
 export type SoapFetchRequest = <Request, Response>(
