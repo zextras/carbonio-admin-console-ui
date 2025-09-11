@@ -113,7 +113,7 @@ pipeline {
                 container('nodejs-' + nodeVersion) {
                     script {
                         sh 'pnpm build'
-                        stash includes: 'apps', name: 'staging'
+                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
                 }
             }
@@ -121,7 +121,7 @@ pipeline {
         stage('Build Packages') {
             steps {
                 script {
-                    buildStage(packages, 'staging', '.')()
+                    buildStage(packages, 'staging', 'apps')()
                 }
             }
         }
