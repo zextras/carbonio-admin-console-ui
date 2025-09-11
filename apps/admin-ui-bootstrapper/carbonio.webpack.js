@@ -19,16 +19,14 @@ module.exports = (conf, pkg, options, mode) => {
 		index: path.resolve(process.cwd(), 'src', 'index.tsx')
 	};
 	conf.output.filename =
-		mode === 'development'
-			? `source/${commitHash}/zapp-shell.bundle.js`
-			: `source/${commitHash}/zapp-admin-ui.bundle.js`;
+		mode === 'development' ? `zapp-shell.bundle.js` : `zapp-admin-ui.bundle.js`;
 	conf.resolve.extensions.push('.d.ts');
 	conf.plugins.push(
 		new CopyPlugin({
 			patterns: [
 				{
 					from: 'assets/',
-					to: `source/${commitHash}`
+					to: '.'
 				}
 			]
 		}),
@@ -40,14 +38,14 @@ module.exports = (conf, pkg, options, mode) => {
 			inject: true,
 			template: path.resolve(process.cwd(), 'src', 'index.template.html'),
 			chunks: [`index`],
-			filename: `source/current/index.html`,
+			filename: `../current/index.html`,
 			BASE_PATH: baseStaticPath,
 			SHELL_ENV: root
 		}),
 		new HtmlWebpackPlugin({
 			inject: false,
 			template: path.resolve(process.cwd(), 'commit.template'),
-			filename: `source/${commitHash}/commit`,
+			filename: `commit`,
 			COMMIT_ID: commitHash
 		})
 	);
@@ -93,7 +91,7 @@ module.exports = (conf, pkg, options, mode) => {
 			test: /\.(woff(2)?|ttf|eot)$/,
 			type: 'asset/resource',
 			generator: {
-				filename: `./source/${commitHash}/files/[name][ext]`
+				filename: `./files/[name][ext]`
 			}
 		}
 	];

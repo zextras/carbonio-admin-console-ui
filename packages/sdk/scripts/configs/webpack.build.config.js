@@ -29,14 +29,14 @@ exports.setupWebpackBuildConfig = (
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
 			// all options are optional
-			filename: `source/${commitHash}/style.[chunkhash:8].css`,
-			chunkFilename: `source/${commitHash}/[id].css`,
+			filename: `style.[chunkhash:8].css`,
+			chunkFilename: `[id].css`,
 			ignoreOrder: false // Enable to remove warnings about conflicting order
 		}),
 		new HtmlWebpackPlugin({
 			inject: false,
 			template: path.resolve(__dirname, './component.template'),
-			filename: `source/${commitHash}/component.json`,
+			filename: `component.json`,
 			name: options.name,
 			description: pkg.description,
 			version: pkg.version,
@@ -53,7 +53,7 @@ exports.setupWebpackBuildConfig = (
 			inject: false,
 			minify: { collapseWhitespace: false },
 			template: path.resolve(__dirname, './PKGBUILD.template'),
-			filename: 'PKGBUILD',
+			filename: '../../PKGBUILD',
 			name: options.name,
 			description: pkg.description,
 			version: pkg.version,
@@ -64,7 +64,7 @@ exports.setupWebpackBuildConfig = (
 			copyright: '2022, Zextras <https://www.zextras.com>'
 		}),
 		new CopyPlugin({
-			patterns: [{ from: 'CHANGELOG.md', to: `source/${commitHash}`, noErrorOnMissing: true }]
+			patterns: [{ from: 'CHANGELOG.md', to: '.', noErrorOnMissing: true }]
 		})
 	];
 	if (options.analyze) {
@@ -161,10 +161,10 @@ exports.setupWebpackBuildConfig = (
 					...(options.svgr
 						? {
 								use: ['@svgr/webpack']
-						  }
+							}
 						: {
 								type: 'asset/resource'
-						  })
+							})
 				}
 			]
 		},
@@ -176,9 +176,9 @@ exports.setupWebpackBuildConfig = (
 			fallback: { path: require.resolve('path-browserify') }
 		},
 		output: {
-			path: path.resolve(process.cwd(), 'dist'),
-			filename: `source/${commitHash}/[name].[fullhash].js`,
-			chunkFilename: `source/${commitHash}/[name].[chunkhash:8].chunk.js`,
+			path: path.resolve(process.cwd(), `dist/source/${commitHash}/`),
+			filename: `[name].[fullhash].js`,
+			chunkFilename: `[name].[chunkhash:8].chunk.js`,
 			publicPath: basePath
 		},
 		plugins
@@ -201,9 +201,8 @@ exports.setupWebpackBuildConfig = (
 		msw: `__ZAPP_SHARED_LIBRARIES__['msw']`
 	};
 	if (!options.useLocalDS) {
-		defaultConfig.externals[
-			'@zextras/carbonio-design-system'
-		] = `__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-design-system']`;
+		defaultConfig.externals['@zextras/carbonio-design-system'] =
+			`__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-design-system']`;
 	}
 	const confPath = path.resolve(process.cwd(), 'carbonio.webpack.js');
 
