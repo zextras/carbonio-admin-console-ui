@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
- 
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -16,7 +15,11 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { pkg } = require('../utils/pkg.js');
 
-exports.setupWebpackBuildConfig = (options, { basePath, commitHash }, skipCustomization = false) => {
+exports.setupWebpackBuildConfig = (
+	options,
+	{ basePath, commitHash },
+	skipCustomization = false
+) => {
 	const plugins = [
 		new webpack.DefinePlugin({
 			PACKAGE_VERSION: JSON.stringify(pkg.version),
@@ -26,14 +29,14 @@ exports.setupWebpackBuildConfig = (options, { basePath, commitHash }, skipCustom
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
 			// all options are optional
-			filename: 'style.[chunkhash:8].css',
-			chunkFilename: '[id].css',
+			filename: `source/${commitHash}/style.[chunkhash:8].css`,
+			chunkFilename: `source/${commitHash}/[id].css`,
 			ignoreOrder: false // Enable to remove warnings about conflicting order
 		}),
 		new HtmlWebpackPlugin({
 			inject: false,
 			template: path.resolve(__dirname, './component.template'),
-			filename: 'component.json',
+			filename: `source/${commitHash}/component.json`,
 			name: options.name,
 			description: pkg.description,
 			version: pkg.version,
@@ -50,21 +53,18 @@ exports.setupWebpackBuildConfig = (options, { basePath, commitHash }, skipCustom
 			inject: false,
 			minify: { collapseWhitespace: false },
 			template: path.resolve(__dirname, './PKGBUILD.template'),
-			filename: 'package/PKGBUILD',
+			filename: 'PKGBUILD',
 			name: options.name,
 			description: pkg.description,
 			version: pkg.version,
 			commit: commitHash,
-			installMode: (options.admin) ? 'admin' : 'web',
+			installMode: options.admin ? 'admin' : 'web',
 			pkgRel: options.pkgRel ?? 0,
 			maintainer: 'Zextras <packages@zextras.com>',
 			copyright: '2022, Zextras <https://www.zextras.com>'
 		}),
 		new CopyPlugin({
-			patterns: [
-				{ from: 'CHANGELOG.md', to: '.', noErrorOnMissing: true },
-				{ from: path.resolve(__dirname, 'yap.json'), to: '.'}
-			]
+			patterns: [{ from: 'CHANGELOG.md', to: `source/${commitHash}`, noErrorOnMissing: true }]
 		})
 	];
 	if (options.analyze) {
@@ -158,25 +158,27 @@ exports.setupWebpackBuildConfig = (options, { basePath, commitHash }, skipCustom
 				},
 				{
 					test: /\.svg$/,
-					...options.svgr ? {
-						use: ['@svgr/webpack']
-					} : {
-						type: 'asset/resource'
-					}
+					...(options.svgr
+						? {
+								use: ['@svgr/webpack']
+						  }
+						: {
+								type: 'asset/resource'
+						  })
 				}
 			]
 		},
 		resolve: {
 			extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
 			alias: {
-				"app-entrypoint": existsSync(tsxPath) ? tsxPath : jsxPath
+				'app-entrypoint': existsSync(tsxPath) ? tsxPath : jsxPath
 			},
 			fallback: { path: require.resolve('path-browserify') }
 		},
 		output: {
 			path: path.resolve(process.cwd(), 'dist'),
-			filename: '[name].[fullhash].js',
-			chunkFilename: '[name].[chunkhash:8].chunk.js',
+			filename: `source/${commitHash}/[name].[fullhash].js`,
+			chunkFilename: `source/${commitHash}/[name].[chunkhash:8].chunk.js`,
 			publicPath: basePath
 		},
 		plugins

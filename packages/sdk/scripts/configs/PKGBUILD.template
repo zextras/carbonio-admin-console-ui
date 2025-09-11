@@ -22,11 +22,14 @@ depends=(
   "jq"
 )
 
+source=('source')
+sha256sums=('SKIP')
+
+
 package() {
   cd "${srcdir}"
-  mkdir -p "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}/<%- htmlWebpackPlugin.options.commit %>"
-  DIST_DIR=$(find . -type d -name "dist" | head -n 1)
-  cp -a "$DIST_DIR"/* "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}/<%- htmlWebpackPlugin.options.commit %>"
+  mkdir -p "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}"
+  cp -a source/* "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}"
   chown root:root -R "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}/<%- htmlWebpackPlugin.options.commit %>"
   chmod 644 -R "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}/<%- htmlWebpackPlugin.options.commit %>"
   find "${pkgdir}/opt/zextras/<%- htmlWebpackPlugin.options.installMode %>/iris/${pkgname}/<%- htmlWebpackPlugin.options.commit %>" -type d -exec chmod a+x "{}" \;
