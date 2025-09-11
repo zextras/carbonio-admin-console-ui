@@ -9,6 +9,8 @@ library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
          remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
          credentialsId: 'jenkins-integration-with-github-account'])
 
+def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
+
 void npmLogin(String npmAuthToken) {
     if (!fileExists(file: '.npmrc')) {
         sh(
@@ -111,6 +113,7 @@ pipeline {
                 container('nodejs-' + nodeVersion) {
                     script {
                         sh 'pnpm build'
+                        stash includes: 'apps', name: 'staging'
                     }
                 }
             }
@@ -118,7 +121,7 @@ pipeline {
         stage('Build Packages') {
             steps {
                 script {
-                    buildStage(packages, 'staging', 'build_pkg/packages')()
+                    buildStage(packages, 'staging', '.')()
                 }
             }
         }
