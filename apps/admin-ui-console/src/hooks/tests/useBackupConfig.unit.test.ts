@@ -8,12 +8,6 @@ import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 
-// Mock all external dependencies FIRST
-
-vi.mock('@zextras/admin-ui-bootstrapper', () => ({
-	fetchExternalSoap: vi.fn()
-}));
-
 vi.mock('@zextras/carbonio-design-system', () => ({
 	useSnackbar: vi.fn()
 }));
