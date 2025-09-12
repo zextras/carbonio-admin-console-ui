@@ -25,6 +25,13 @@
 			"dependsOn": ["^type-check-task"],
 			"outputs": []
 		},
+		"test": {
+			"dependsOn": ["^test"]
+		},
+		"test-task": {
+			"dependsOn": ["^test-task"],
+			"outputs": []
+		},
 		"dev": {
 			"cache": false,
 			"persistent": true
