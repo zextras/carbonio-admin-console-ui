@@ -112,7 +112,7 @@ pipeline {
             steps {
                 container('nodejs-' + nodeVersion) {
                     script {
-                        sh 'pnpm exec playwright install'
+                        sh 'pnpm exec playwright install --with-deps'
                         sh 'pnpm test'
                     }
                 }
