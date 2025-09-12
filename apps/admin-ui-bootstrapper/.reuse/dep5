@@ -2,59 +2,123 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: carbonio-admin-ui
 Upstream-Contact: Zextras <https://www.zextras.com>
 
-Files: translations/*
+Files: **/*.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: .idea/*
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: CC0-1.0
-
-Files: .vscode/*
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: CC0-1.0
-
-Files: .husky/*
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: CC0-1.0
-
-Files: .nvmrc
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: CC0-1.0
-
-Files: package.json
+Files: **/tsconfig.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: package-lock.json
+Files: **/package.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: tsconfig.json
+Files: **/package-lock.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: shell.iml
+Files: pnpm-lock.yaml
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: commit.template
+Files: pnpm-workspace.yaml
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: CHANGELOG.md
+Files: turbo.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: assets/*
+Files: **/translations/*.json
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/translations/.gitignore
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/*.iml
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/commit.template
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/CHANGELOG.md
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/__mocks__/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/vitest.config.mjs
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: vitest.setup.jsdom.ts
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/junit.xml
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: packages/sdk/scripts/**/*.js
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: packages/sdk/scripts/configs/*.json
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: apps/yap.json
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: **/assets/*.svg
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: CC-BY-NC-SA-4.0
 
-Files: src/svg/*
+Files: **/assets/*.png
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: CC-BY-NC-SA-4.0
 
-Files: .github/*
+Files: **/src/svg/*.svg
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC-BY-NC-SA-4.0
+
+Files: **/src/assets/*.svg
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC-BY-NC-SA-4.0
+
+Files: **/__screenshots__/**/*.png
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC-BY-NC-SA-4.0
+
+Files: .idea/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC0-1.0
+
+Files: .vscode/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC0-1.0
+
+Files: .github/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC0-1.0
+
+Files: .husky/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC0-1.0
+
+Files: **/.npmrc
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC0-1.0
+
+Files: **/.nvmrc
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: CC0-1.0
 

@@ -5,9 +5,12 @@
  */
 
 library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
-        [$class: 'GitSCMSource',
-         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
-         credentialsId: 'jenkins-integration-with-github-account'])
+    [
+        $class: 'GitSCMSource',
+        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        credentialsId: 'jenkins-integration-with-github-account'
+    ]
+)
 
 def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
 
@@ -43,6 +46,13 @@ pipeline {
         booleanParam defaultValue: true, description: 'Enable SonarQube Stage', name: 'RUN_SONARQUBE'
     }
     stages {
+        stage('Licenses checks') {
+            steps {
+                container('reuse') {
+                    sh 'reuse lint'
+                }
+            }
+        }
         stage("Read settings") {
             steps {
                 script {
@@ -84,7 +94,7 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 container('nodejs-' + nodeVersion) {
-                   script {
+                    script {
                         sh 'pnpm install'
                     }
                 }
