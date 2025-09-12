@@ -28,8 +28,16 @@
 		"test": {
 			"dependsOn": ["^test"]
 		},
-		"test-task": {
-			"dependsOn": ["^test-task"],
+		"test-task-all": {
+			"dependsOn": ["^test-task-all"],
+			"outputs": []
+		},
+		"test-task-bootstrapper": {
+			"dependsOn": ["^test-task-bootstrapper"],
+			"outputs": []
+		},
+		"test-task-console": {
+			"dependsOn": ["^test-task-console"],
 			"outputs": []
 		},
 		"dev": {
