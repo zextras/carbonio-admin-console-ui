@@ -108,6 +108,15 @@ pipeline {
                 }
             }
         }
+        stage('test') {
+            steps {
+                container('nodejs-' + nodeVersion) {
+                    script {
+                        sh 'pnpm test'
+                    }
+                }
+            }
+        }
         stage('build apps') {
             steps {
                 container('nodejs-' + nodeVersion) {
