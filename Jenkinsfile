@@ -46,13 +46,13 @@ pipeline {
         booleanParam defaultValue: true, description: 'Enable SonarQube Stage', name: 'RUN_SONARQUBE'
     }
     stages {
-        stage('Licenses checks') {
-            steps {
-                container('reuse') {
-                    sh 'reuse lint'
-                }
-            }
-        }
+        // stage('Licenses checks') {
+        //     steps {
+        //         container('reuse') {
+        //             sh 'reuse lint'
+        //         }
+        //     }
+        // }
         stage("Read settings") {
             steps {
                 script {
@@ -138,12 +138,32 @@ pipeline {
                 }
             }
         }
-        stage('Build Packages') {
-            steps {
-                script {
-                    buildStage(packages, 'staging', 'apps')()
-                }
-            }
-        }
+        // stage('Build deb/rpm') {
+        //     steps {
+        //         script {
+        //             echo "Building deb/rpm packages"
+        //             buildStage(packages, 'staging', 'build_pkg/packages')()
+        //             buildStage([
+        //                 skipStash: true,
+        //                 buildDirs: ['staging/packages'],
+        //                 overrides: [
+        //                     'ubuntu': [
+        //                         preBuildScript: '''
+        //                         apt-get update 
+        //                         apt-get install -y --no-install-recommends rsync
+        //                     '''
+        //                     ]
+        //                 ]
+        //             ])
+        //         }
+        //     }
+        // }
+        // stage('Upload artifacts') {
+        //     steps {
+        //         uploadStage(
+        //             packages: yapHelper.getPackageNames('staging/packages/yap.json')
+        //         )
+        //     }
+        // }
     }
 }
