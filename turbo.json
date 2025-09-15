@@ -28,18 +28,6 @@
 		"test": {
 			"dependsOn": ["^test"]
 		},
-		"test-task-all": {
-			"dependsOn": ["^test-task-all"],
-			"outputs": []
-		},
-		"test-task-bootstrapper": {
-			"dependsOn": ["^test-task-bootstrapper"],
-			"outputs": []
-		},
-		"test-task-console": {
-			"dependsOn": ["^test-task-console"],
-			"outputs": []
-		},
 		"dev": {
 			"cache": false,
 			"persistent": true
