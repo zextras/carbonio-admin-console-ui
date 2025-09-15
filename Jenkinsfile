@@ -85,18 +85,9 @@ pipeline {
                 }
             }
         }
-        stage('Install pnpm') {
-            steps {
-                container('nodejs-' + nodeVersion) {
-                    script {
-                        sh 'npm install -g pnpm@latest-10'
-                    }
-                }
-            }
-        }
         stage('Install dependencies') {
             steps {
-                container('nodejs-' + nodeVersion) {
+                container('pnpm') {
                     script {
                         sh 'pnpm install'
                     }
@@ -105,7 +96,7 @@ pipeline {
         }
         stage('lint projects') {
             steps {
-                container('nodejs-' + nodeVersion) {
+                container('pnpm') {
                     script {
                         sh 'pnpm lint'
                     }
@@ -114,7 +105,7 @@ pipeline {
         }
         stage('type check') {
             steps {
-                container('nodejs-' + nodeVersion) {
+                container('pnpm') {
                     script {
                         sh 'pnpm type-check'
                     }
@@ -138,7 +129,7 @@ pipeline {
         }
         stage('build apps') {
             steps {
-                container('nodejs-' + nodeVersion) {
+                container('pnpm') {
                     script {
                         sh 'pnpm build'
                         stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
