@@ -94,38 +94,6 @@ pipeline {
                 }
             }
         }
-        stage('Code quality') {
-            parallel {
-                stage('lint') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm lint'
-                            }
-                        }
-                    }
-                }
-                stage('type check') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm type-check'
-                            }
-                        }
-                    }
-                }
-                stage('test') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm exec playwright install --with-deps'
-                                sh 'pnpm test'
-                            }
-                        }
-                    }
-                }
-            }
-        }
         stage('SonarQube analysis') {
             paralell {
                 steps {
@@ -150,34 +118,6 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        stage('build apps') {
-            steps {
-                container('pnpm') {
-                    script {
-                        sh 'pnpm build'
-                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
-                    }
-                }
-            }
-        }
-        stage('Build deb/rpm') {
-            steps {
-                script {
-                    echo "Building deb/rpm packages"
-                    buildStage([
-                        skipStash: true,
-                        buildDirs: ['apps'],
-                    ])
-                }
-            }
-        }
-        stage('Upload artifacts') {
-            steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json')
-                )
             }
         }
     }
