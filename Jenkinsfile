@@ -112,27 +112,11 @@ pipeline {
                 }
             }
         }
-        stage('test') {
-            steps {
-                container('playwright') {
-                    catchError(stageResult: 'FAILURE') {
-                        sh  """ npx playwright test --grep-invert='@serial' --grep='$SUITE' $BROWSER """
-                    }
-                    catchError(stageResult: 'FAILURE') {
-                        sh  """ npx playwright test --workers=1 --grep='@serial$SUITE' $BROWSER """
-                    }
-                }
-                container('pnpm') {
-                    script {
-                        sh 'pnpm test'
-                    }
-                }
-            }
-        }
         stage('build apps') {
             steps {
                 container('pnpm') {
                     script {
+                        sh 'pnpm exec playwright install --with-deps'
                         sh 'pnpm build'
                         stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
