@@ -38,6 +38,9 @@ pipeline {
             label 'nodejs-v1'
         }
     }
+    environment {
+        GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+    }
     options {
         timeout(time: 20, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '50'))
@@ -142,7 +145,6 @@ pipeline {
             steps {
                 script {
                     echo "Building deb/rpm packages"
-                    buildStage(packages, 'staging', 'apps')()
                     buildStage([
                         skipStash: true,
                         buildDirs: ['apps'],
