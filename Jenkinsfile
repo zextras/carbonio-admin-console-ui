@@ -112,11 +112,20 @@ pipeline {
                 }
             }
         }
-        stage('build apps') {
+        stage('test') {
             steps {
                 container('pnpm') {
                     script {
                         sh 'pnpm exec playwright install --with-deps'
+                        sh 'pnpm test'
+                    }
+                }
+            }
+        }
+        stage('build apps') {
+            steps {
+                container('pnpm') {
+                    script {
                         sh 'pnpm build'
                         stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
