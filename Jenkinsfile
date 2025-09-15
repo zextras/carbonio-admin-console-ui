@@ -148,14 +148,6 @@ pipeline {
                     buildStage([
                         skipStash: true,
                         buildDirs: ['apps'],
-                        overrides: [
-                            'ubuntu': [
-                                preBuildScript: '''
-                                apt-get update 
-                                apt-get install -y --no-install-recommends rsync
-                            '''
-                            ]
-                        ]
                     ])
                 }
             }
