@@ -127,7 +127,7 @@ pipeline {
             }
         }
         stage('SonarQube analysis') {
-            paralell {
+            parallel {
                 steps {
                     container('pnpm') {
                         withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
