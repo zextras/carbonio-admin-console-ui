@@ -1,7 +1,6 @@
 {
-	"name": "@zextras/admin-ui-sdk",
-	"version": "0.0.0-semantically-released",
-	"description": "Zextras Carbonio Web SDK",
+	"name": "admin-ui-sdk",
+	"description": "Admin-ui-sdk SDK",
 	"main": "scripts/index.js",
 	"bin": {
 		"sdk": "scripts/index.js"
@@ -10,11 +9,11 @@
 		"node": ">=20.0.0 <21.0.0",
 		"pnpm": ">=8.0.0"
 	},
-	"packageManager": "pnpm@8.15.0",
+	"packageManager": "pnpm@10.15.0",
 	"keywords": [
 		"SDK"
 	],
-	"author": "",
+	"author": "zextras",
 	"license": "AGPL-3.0-only",
 	"files": [
 		"scripts"
@@ -40,8 +39,6 @@
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
-		"conventional-changelog-conventionalcommits": "^9.1.0",
-		"semantic-release": "^24.2.7",
-		"standard-version": "^9.5.0"
+		"conventional-changelog-conventionalcommits": "^9.1.0"
 	}
 }
