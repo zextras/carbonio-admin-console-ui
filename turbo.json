@@ -8,11 +8,7 @@
 			"outputs": [".next/**", "!.next/cache/**"]
 		},
 		"lint": {
-			"dependsOn": ["^lint-task"]
-		},
-		"lint-task": {
-			"dependsOn": ["^lint-task"],
-			"outputs": []
+			"dependsOn": ["^lint"]
 		},
 		"type-check": {
 			"dependsOn": ["^type-check"]
