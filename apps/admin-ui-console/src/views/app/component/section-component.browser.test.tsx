@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { page } from '@vitest/browser/context';
+import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { setup } from '../../../tests/testUtils';

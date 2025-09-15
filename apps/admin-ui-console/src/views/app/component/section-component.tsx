@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, PaddingObj } from '@zextras/carbonio-design-system';
+import React from 'react';
 
 import { SectionFooter } from './parts/section-footer';
 import { SectionHeader } from './parts/section-header';

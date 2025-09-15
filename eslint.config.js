@@ -192,7 +192,7 @@ module.exports = [
 		},
 		rules: {
 			// React rules
-			'react/react-in-jsx-scope': 'off',
+			'react/react-in-jsx-scope': 'error',
 			'react/prop-types': 'off',
 			'react/display-name': 'warn',
 			'react/jsx-uses-react': 'error',
