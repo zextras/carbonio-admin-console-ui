@@ -17,10 +17,6 @@
 		"type-check": {
 			"dependsOn": ["^type-check"]
 		},
-		"type-check-task": {
-			"dependsOn": ["^type-check-task"],
-			"outputs": []
-		},
 		"test": {
 			"dependsOn": ["^test"]
 		},
