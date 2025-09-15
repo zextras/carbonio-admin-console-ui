@@ -138,32 +138,32 @@ pipeline {
                 }
             }
         }
-        // stage('Build deb/rpm') {
-        //     steps {
-        //         script {
-        //             echo "Building deb/rpm packages"
-        //             buildStage(packages, 'staging', 'build_pkg/packages')()
-        //             buildStage([
-        //                 skipStash: true,
-        //                 buildDirs: ['staging/packages'],
-        //                 overrides: [
-        //                     'ubuntu': [
-        //                         preBuildScript: '''
-        //                         apt-get update 
-        //                         apt-get install -y --no-install-recommends rsync
-        //                     '''
-        //                     ]
-        //                 ]
-        //             ])
-        //         }
-        //     }
-        // }
-        // stage('Upload artifacts') {
-        //     steps {
-        //         uploadStage(
-        //             packages: yapHelper.getPackageNames('staging/packages/yap.json')
-        //         )
-        //     }
-        // }
+        stage('Build deb/rpm') {
+            steps {
+                script {
+                    echo "Building deb/rpm packages"
+                    buildStage(packages, 'staging', 'apps')()
+                    buildStage([
+                        skipStash: true,
+                        buildDirs: ['apps'],
+                        overrides: [
+                            'ubuntu': [
+                                preBuildScript: '''
+                                apt-get update 
+                                apt-get install -y --no-install-recommends rsync
+                            '''
+                            ]
+                        ]
+                    ])
+                }
+            }
+        }
+        stage('Upload artifacts') {
+            steps {
+                uploadStage(
+                    packages: yapHelper.getPackageNames('apps/yap.json')
+                )
+            }
+        }
     }
 }
