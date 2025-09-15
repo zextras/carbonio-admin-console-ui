@@ -94,30 +94,34 @@ pipeline {
                 }
             }
         }
-        stage('lint projects') {
-            steps {
-                container('pnpm') {
-                    script {
-                        sh 'pnpm lint'
+        stage('Code quality') {
+            parallel {
+                stage('lint') {
+                    steps {
+                        container('pnpm') {
+                            script {
+                                sh 'pnpm lint'
+                            }
+                        }
                     }
                 }
-            }
-        }
-        stage('type check') {
-            steps {
-                container('pnpm') {
-                    script {
-                        sh 'pnpm type-check'
+                stage('type check') {
+                    steps {
+                        container('pnpm') {
+                            script {
+                                sh 'pnpm type-check'
+                            }
+                        }
                     }
                 }
-            }
-        }
-        stage('test') {
-            steps {
-                container('pnpm') {
-                    script {
-                        sh 'pnpm exec playwright install --with-deps'
-                        sh 'pnpm test'
+                stage('test') {
+                    steps {
+                        container('pnpm') {
+                            script {
+                                sh 'pnpm exec playwright install --with-deps'
+                                sh 'pnpm test'
+                            }
+                        }
                     }
                 }
             }
