@@ -121,6 +121,8 @@ pipeline {
                     catchError(stageResult: 'FAILURE') {
                         sh  """ npx playwright test --workers=1 --grep='@serial$SUITE' $BROWSER """
                     }
+                }
+                container('pnpm') {
                     script {
                         sh 'pnpm test'
                     }
