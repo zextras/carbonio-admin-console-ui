@@ -123,9 +123,14 @@ pipeline {
         }
         stage('test') {
             steps {
-                container('nodejs-' + nodeVersion) {
+                container('playwright') {
+                    catchError(stageResult: 'FAILURE') {
+                        sh  """ npx playwright test --grep-invert='@serial' --grep='$SUITE' $BROWSER """
+                    }
+                    catchError(stageResult: 'FAILURE') {
+                        sh  """ npx playwright test --workers=1 --grep='@serial$SUITE' $BROWSER """
+                    }
                     script {
-                        sh 'pnpm exec playwright install --with-deps'
                         sh 'pnpm test'
                     }
                 }
