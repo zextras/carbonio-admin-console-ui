@@ -10,8 +10,7 @@
 		"npm": "v10"
 	},
 	"scripts": {
-		"build": "turbo run build-task",
-		"build-task": "sdk build --admin",
+		"build": "sdk build --admin",
 		"build:clean": "rm -rf lib && rm -rf dist && rm -rf pkg",
 		"prepack": "npm run build:clean && npm run build -- -d",
 		"postpublish": "rm -rf lib",

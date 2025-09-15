@@ -7,8 +7,7 @@
 		"apps/*"
 	],
 	"scripts": {
-		"build": "turbo run build-task",
-		"build-task": "sdk build",
+		"build": "turbo run build",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"test": "turbo run test",

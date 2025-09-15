@@ -5,8 +5,7 @@
 	"description": "Admin module for Zextras Carbonio",
 	"main": "src/app.tsx",
 	"scripts": {
-		"build": "turbo run build-task",
-		"build-task": "sdk build",
+		"build": "sdk build",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"prepublishOnly": "pinst --disable",
