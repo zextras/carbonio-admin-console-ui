@@ -126,26 +126,56 @@ pipeline {
                 }
             }
         }
+        // stage('SonarQube analysis') {
+        //     parallel {
+        //         steps {
+        //             container('pnpm') {
+        //                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+        //                     script {
+        //                         npx.run(
+        //                             script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+        //                         )
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         steps {
+        //             container('pnpm') {
+        //                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+        //                     script {
+        //                         npx.run(
+        //                             script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+        //                         )
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         stage('SonarQube analysis') {
             parallel {
-                steps {
-                    container('pnpm') {
-                        withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                            script {
-                                npx.run(
-                                    script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                                )
+                stage('carbonio-admin-ui analysis') {
+                    steps {
+                        container('pnpm') {
+                            withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                                script {
+                                    npx.run(
+                                        script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                                    )
+                                }
                             }
                         }
                     }
                 }
-                steps {
-                    container('pnpm') {
-                        withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                            script {
-                                npx.run(
-                                    script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                                )
+                stage('carbonio-admin-console-ui analysis') {
+                    steps {
+                        container('pnpm') {
+                            withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                                script {
+                                    npx.run(
+                                        script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                                    )
+                                }
                             }
                         }
                     }
