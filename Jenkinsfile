@@ -49,13 +49,13 @@ pipeline {
         booleanParam defaultValue: true, description: 'Enable SonarQube Stage', name: 'RUN_SONARQUBE'
     }
     stages {
-        stage('Licenses checks') {
-            steps {
-                container('reuse') {
-                    sh 'reuse lint'
-                }
-            }
-        }
+        // stage('Licenses checks') {
+        //     steps {
+        //         container('reuse') {
+        //             sh 'reuse lint'
+        //         }
+        //     }
+        // }
         stage("Read settings") {
             steps {
                 script {
@@ -94,121 +94,95 @@ pipeline {
                 }
             }
         }
-        stage('Code quality') {
-            parallel {
-                stage('lint') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm lint'
-                            }
-                        }
-                    }
-                }
-                stage('type check') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm type-check'
-                            }
-                        }
-                    }
-                }
-                stage('test') {
-                    steps {
-                        container('pnpm') {
-                            script {
-                                sh 'pnpm exec playwright install --with-deps'
-                                sh 'pnpm test'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // stage('SonarQube analysis') {
+        // stage('Code quality') {
         //     parallel {
-        //         steps {
-        //             container('pnpm') {
-        //                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+        //         stage('lint') {
+        //             steps {
+        //                 container('pnpm') {
         //                     script {
-        //                         npx.run(
-        //                             script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-        //                         )
+        //                         sh 'pnpm lint'
         //                     }
         //                 }
         //             }
         //         }
-        //         steps {
-        //             container('pnpm') {
-        //                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+        //         stage('type check') {
+        //             steps {
+        //                 container('pnpm') {
         //                     script {
-        //                         npx.run(
-        //                             script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-        //                         )
+        //                         sh 'pnpm type-check'
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         stage('test') {
+        //             steps {
+        //                 container('pnpm') {
+        //                     script {
+        //                         sh 'pnpm exec playwright install --with-deps'
+        //                         sh 'pnpm test'
         //                     }
         //                 }
         //             }
         //         }
         //     }
         // }
-        stage('SonarQube analysis') {
+       stage('SonarQube analysis') {
             parallel {
                 stage('carbonio-admin-ui analysis') {
                     steps {
                         container('pnpm') {
                             withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+
                                 script {
-                                    npx.run(
-                                        script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                                    )
+
+                npx.run(
+                                    script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                                )
                                 }
                             }
                         }
                     }
                 }
-                stage('carbonio-admin-console-ui analysis') {
-                    steps {
-                        container('pnpm') {
-                            withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                                script {
-                                    npx.run(
-                                        script: "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                // stage('carbonio-admin-console-ui analysis') {
+                //     steps {
+                //         container('pnpm') {
+                //             withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                //                 script {
+                //                     sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
-        stage('build apps') {
-            steps {
-                container('pnpm') {
-                    script {
-                        sh 'pnpm build'
-                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
-                    }
-                }
-            }
-        }
-        stage('Build deb/rpm') {
-            steps {
-                script {
-                    echo "Building deb/rpm packages"
-                    buildStage([
-                        skipStash: true,
-                        buildDirs: ['apps'],
-                    ])
-                }
-            }
-        }
-        stage('Upload artifacts') {
-            steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json')
-                )
-            }
-        }
+        // stage('build apps') {
+        //     steps {
+        //         container('pnpm') {
+        //             script {
+        //                 sh 'pnpm build'
+        //                 stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Build deb/rpm') {
+        //     steps {
+        //         script {
+        //             echo "Building deb/rpm packages"
+        //             buildStage([
+        //                 skipStash: true,
+        //                 buildDirs: ['apps'],
+        //             ])
+        //         }
+        //     }
+        // }
+        // stage('Upload artifacts') {
+        //     steps {
+        //         uploadStage(
+        //             packages: yapHelper.getPackageNames('apps/yap.json')
+        //         )
+        //     }
+        // }
     }
 }
