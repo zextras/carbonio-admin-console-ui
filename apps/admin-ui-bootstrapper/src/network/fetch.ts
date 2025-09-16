@@ -10,6 +10,8 @@ import {
 	Account,
 	ErrorSoapResponse,
 	SoapContext,
+	SoapFetch,
+	SoapFetchPost,
 	SoapResponse,
 	SuccessSoapResponse
 } from '../../types';
@@ -133,7 +135,7 @@ const handleResponse = (api: string, res: SoapResponse<any>): any => {
 	return (<SuccessSoapResponse<any>>res).Body[`${api}Response`] as any;
 };
 export const getSoapFetch =
-	(app: string) =>
+	(app: string): SoapFetch =>
 	<Request, Response>(
 		api: string,
 		body: Request,
@@ -291,7 +293,7 @@ export const getSoapFetchRequest =
 			}) as Promise<Response>;
 
 export const postSoapFetchRequest =
-	(app: string) =>
+	(app: string): SoapFetchPost =>
 	<Request, Response>(
 		apiURL: string,
 		body: Request,
