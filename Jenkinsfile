@@ -128,7 +128,19 @@ pipeline {
         // }
        stage('SonarQube analysis') {
             parallel {
-                stage('carbonio-admin-ui analysis') {
+                stage('admin-ui-bootstrapper') {
+                    steps {
+                        container('pnpm') {
+                            withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                                script {
+                                    sh "npm install -g @sonar/scan"
+                                    sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dproject.settings=sonar-bootstrapper.properties -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('admin-ui-console') {
                     steps {
                         container('pnpm') {
                             withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
@@ -140,17 +152,6 @@ pipeline {
                         }
                     }
                 }
-                // stage('carbonio-admin-console-ui analysis') {
-                //     steps {
-                //         container('pnpm') {
-                //             withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                //                 script {
-                //                     sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
             }
         }
         // stage('build apps') {
