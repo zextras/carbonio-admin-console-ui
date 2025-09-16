@@ -49,13 +49,13 @@ pipeline {
         booleanParam defaultValue: true, description: 'Enable SonarQube Stage', name: 'RUN_SONARQUBE'
     }
     stages {
-        // stage('Licenses checks') {
-        //     steps {
-        //         container('reuse') {
-        //             sh 'reuse lint'
-        //         }
-        //     }
-        // }
+        stage('Licenses checks') {
+            steps {
+                container('reuse') {
+                    sh 'reuse lint'
+                }
+            }
+        }
         stage("Read settings") {
             steps {
                 script {
