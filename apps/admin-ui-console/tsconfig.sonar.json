@@ -20,6 +20,6 @@
 		"preserveConstEnums": true,
 		"noUncheckedIndexedAccess": false
 	},
-	"include": ["apps/admin-ui-console/src/**/*"],
+	"include": ["src/**"],
 	"exclude": ["**/*.spec.ts, ./vitest.config.base.ts"]
 }
