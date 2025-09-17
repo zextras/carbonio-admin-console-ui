@@ -126,25 +126,13 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube bootstrapper') {
-            steps {
-                container('pnpm') {
-                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                        script {
-                            sh "npm install -g @sonar/scan"
-                            sh "cd apps/admin-ui-bootstrapper && sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dproject.settings=sonar-project.properties -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
-                        }
-                    }
-                }
-            }
-        }
         stage('SonarQube console') {
             steps {
                 container('pnpm') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh "npm install -g @sonar/scan"
-                            sh "cd apps/admin-ui-console && sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dproject.settings=sonar-console.properties -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                            sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
                         }
                     }
                 }
