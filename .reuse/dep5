@@ -22,6 +22,10 @@ Files: sonar-bootstrapper.properties
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: **/sonar-project.properties
+Copyright: 2025 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: sonar-console.properties
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
