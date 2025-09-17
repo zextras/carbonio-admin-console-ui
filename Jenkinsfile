@@ -132,7 +132,9 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh "npm install -g @sonar/scan"
-                            sh "cd apps/admin-ui-bootstrapper"
+                            sh "cd apps/admin-ui-bootstrapper && pwd"
+                            sh "echo \"read properties file\""
+                            sh "cat tsconfig.sonar.json"
                             sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-ui -Dproject.settings=sonar-project.properties -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
                         }
                     }
