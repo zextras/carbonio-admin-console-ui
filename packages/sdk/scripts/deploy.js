@@ -69,7 +69,7 @@ exports.handler = async (options) => {
     execSync(
         `scp -r ${options.port && '-P'} ${
             options.port
-        } dist/* ${cpTarget}:${pathPrefix}${options.name}/${commitHash}`
+        } dist/source/* ${cpTarget}:${pathPrefix}${options.name}`
     );
     console.log(`- Updating ${chalkTemplate.bold('components.json')}...`);
     const components = JSON.stringify(
