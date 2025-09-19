@@ -59,3 +59,4 @@ node_modules/
 .turbo
 apps/*/coverage
 apps/*/junit.xml
+.scannerwork

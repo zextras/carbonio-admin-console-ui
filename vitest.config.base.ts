@@ -51,6 +51,26 @@ export default defineConfig({
 					}
 				}
 			}
-		]
+		],
+		coverage: {
+			provider: 'v8', // or 'c8', 'istanbul'
+			reporter: ['text', 'json', 'html'],
+			reportsDirectory: './coverage',
+			exclude: [
+				'coverage/**',
+				'dist/**',
+				'**/node_modules/**',
+				'**/[.]**',
+				'packages/*/test{,s}/**',
+				'**/*.d.ts',
+				'**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+				'**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
+				'**/*.config.{js,ts}',
+				'**/*.test.{ts,tsx}',
+				'**/*.spec.{ts,tsx}'
+			],
+			include: ['src/**/*.{ts,tsx}'],
+			all: true
+		}
 	}
 });
