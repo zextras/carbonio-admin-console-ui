@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import {
 	Container,
 	Button,
@@ -17,9 +16,9 @@ import {
 	Switch,
 	TextArea
 } from '@zextras/carbonio-design-system';
-import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrapper';
 import { encode } from 'html-entities';
 import { isEqual } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -419,7 +418,6 @@ const DomainDisclaimer: FC = () => {
 					>
 						<EditorWrapper>
 							<Composer
-								// eslint-disable-next-line no-use-before-define, @typescript-eslint/ban-ts-comment
 								// @ts-ignore
 								value={defaulRichTextContent}
 								onEditorChange={(ev: any): void => {

@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
-
 import { trim } from 'lodash';
+import React, { FC } from 'react';
 
 import {
 	AppRouteDescriptor,
@@ -22,7 +21,7 @@ import {
 export const normalizeApp = (app: Partial<CarbonioModule>): CarbonioModule => ({
 	commit: app.commit ?? '',
 	description: app.description ?? 'A carbonio Module',
-	// eslint-disable-next-line camelcase
+
 	js_entrypoint: app.js_entrypoint ?? '',
 	name: app.name ?? 'module',
 	priority: app.priority ?? 99,
@@ -45,7 +44,11 @@ export const normalizeBadgeInfo = (badge: Partial<BadgeInfo>): BadgeInfo => ({
 
 export const normalizeRoute = (
 	data: Partial<AppRouteDescriptor>,
-	app: CarbonioModule
+	app: {
+		name: CarbonioModule['name'];
+		priority: CarbonioModule['priority'];
+		icon: CarbonioModule['icon'];
+	}
 ): AppRouteDescriptor => {
 	const route = trim(data.route ?? app.name, '/');
 	return {

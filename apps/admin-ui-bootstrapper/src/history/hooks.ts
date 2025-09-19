@@ -47,3 +47,8 @@ export const replaceHistory = (params: HistoryParams): void => {
 	const history = useContextBridge.getState().functions.getHistory?.();
 	history.replace(parseParams(params));
 };
+
+export const pushHistory = (params: HistoryParams): void => {
+	const history = useContextBridge.getState().functions.getHistory?.();
+	history.push(parseParams(params));
+};
