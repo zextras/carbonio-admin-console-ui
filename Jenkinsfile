@@ -13,18 +13,6 @@ library(
     ])
 )
 
-def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash, String source) {
-  tagsToAdd = []
-  versions.each {
-    version -> tagsToAdd.add("-t " + imageName + ":" + version)
-  }
-  sh 'docker build ' +
-          '--label org.opencontainers.image.vendor="Zextras" ' +
-          '--label org.opencontainers.image.revision="' + commitHash + '" ' +
-          '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' + source
-  sh 'docker push --all-tags ' + imageName
-}
-
 pipeline {
     agent {
         node {
@@ -179,54 +167,41 @@ pipeline {
         }
         stage('Publish containers - devel') {
             when {
-                allOf {
+                anyOf {
                     expression {
                         isDevelBranch == true
+                    }
+                    expression {
+                        params.PLAYGROUND == true
                     }
                 }
             }
             steps {
                 // build bootstrap container
-                script {
-                    def dir = 'admin-ui-bootstrap/'
-                    def dockerfilePath = "apps/${dir}/Dockerfile"
-                    def projectName = 'carbonio-admin-ui'
-                    def commitId = sh(
-                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
-                        returnStdout: true
-                    ).trim()
-                    echo "Building container for ${dir}, project name ${projectName}"
-                    container('dind') {
-                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                            buildContainer(
-                                dockerfilePath,
-                                "registry.dev.zextras.com/dev/${projectName}",
-                                ['latest', 'devel'],
-                                commitId,
-                                "apps/${dir}"
-                            )
-                        }
-                    }
-                }
-                // build console container
-                script {
-                    def dir = 'admin-ui-console/'
-                    def dockerfilePath = "apps/${dir}/Dockerfile"
-                    def projectName = 'carbonio-admin-console-ui'
-                    def commitId = sh(
-                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
-                        returnStdout: true
-                    ).trim()
-                    echo "Building container for ${dir}, project name ${projectName}"
-                    container('dind') {
-                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                            buildContainer(
-                                dockerfilePath,
-                                "registry.dev.zextras.com/dev/${projectName}",
-                                ['latest', 'devel'],
-                                commitId,
-                                "apps/${dir}"
-                            )
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        script {
+                            tags = ['latest', 'devel']
+                            dir('apps/admin-ui-bootstrap/') {
+                                dockerHelper.buildImage([
+                                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui',
+                                    imageTags: tags,
+                                    ocLabels: [
+                                        title: 'Carbonio Admin UI',
+                                        description: 'Carbonio Admin UI Bootstrap Container'
+                                    ]
+                                ])
+                            }
+                            dir('apps/admin-ui-console/') {
+                                dockerHelper.buildImage([
+                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-console',
+                                    imageTags: tags,
+                                    ocLabels: [
+                                        title: 'Carbonio Admin Console',
+                                        description: 'Carbonio Admin Console Container'
+                                    ]
+                                ])
+                            }
                         }
                     }
                 }
