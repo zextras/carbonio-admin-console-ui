@@ -139,10 +139,12 @@ export const getSoapFetch =
 	<Request, Response>(
 		api: string,
 		body: Request,
-		otherAccount?: string,
-		targetServer?: string,
-		authToken?: string,
-		noSession = false
+		options?: {
+			otherAccount?: string,
+			targetServer?: string,
+			authToken?: string,
+			noSession?: boolean
+		}
 	): Promise<Response> => {
 		const { zimbraVersion, account } = useAccountStore.getState();
 		const { context } = useNetworkStore.getState();
@@ -150,16 +152,16 @@ export const getSoapFetch =
 			context: {
 				_jsns: 'urn:zimbra',
 				session: context?.session ?? {},
-				account: getAccount(account as Account, otherAccount),
+				account: getAccount(account as Account, options?.otherAccount),
 				userAgent: {
 					name: userAgent,
 					version: zimbraVersion
 				},
-				targetServer: targetServer || undefined,
-				authToken: authToken ? [{ _content: authToken }] : undefined
+				targetServer: options?.targetServer || undefined,
+				authToken: options?.authToken ? [{ _content: options.authToken }] : undefined
 			}
 		};
-		if (noSession) {
+		if (options?.noSession) {
 			header.context.nosession = {};
 			delete header.context.session;
 		}
