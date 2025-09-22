@@ -157,7 +157,7 @@ export const getSoapFetch =
 					name: userAgent,
 					version: zimbraVersion
 				},
-				targetServer: options?.targetServer || undefined,
+				targetServer: options?.targetServer ?? undefined,
 				authToken: options?.authToken ? [{ _content: options.authToken }] : undefined
 			}
 		};
