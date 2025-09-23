@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useState, useCallback, useReducer, useMemo, FC } from 'react';
-
 import { Severity, Event } from '@sentry/browser';
 import {
 	Text,
@@ -18,24 +16,23 @@ import {
 	Switch,
 	Link
 } from '@zextras/carbonio-design-system';
+import React, { useEffect, useState, useCallback, useReducer, useMemo, FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { feedback } from './functions';
 import Logo from '../../assets/carbonio_feedback.svg';
 import packageJson from '../../package.json';
-import { OPEN_TICKET_URL, SHELL_APP_ID, FORUM_URL, TRUE } from '../constants';
+import { OPEN_TICKET_URL, FORUM_URL, TRUE } from '../constants';
 import {
 	getCarbonioBackendVersion,
 	searchDirectoryListCount,
-	getAllServers,
-	getXmlSoapFetch
+	getAllServers
 } from '../network/fetch';
-import { getAllConfig } from '../network/get-all-config';
 import { useUserAccount } from '../store/account';
 import { getIsAdvanced } from '../store/advance';
-import { useAppList } from '../store/app';
 import { useConfigStore } from '../store/config/store';
+
+import { feedback } from './functions';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -116,7 +113,6 @@ function reducer(state: Event, { type, payload }: { type: string; payload: any }
 
 const Feedback: FC = () => {
 	const [t] = useTranslation();
-	const allApps = useAppList();
 	const feedbackPermission = useConfigStore(
 		(state) =>
 			state.getConfigAttribute('carbonioSendFullErrorStack') === TRUE &&
@@ -166,10 +162,8 @@ const Feedback: FC = () => {
 	}, []);
 
 	const onInputChange = useCallback((ev: any) => {
-		// eslint-disable-next-line no-param-reassign
 		ev.target.style.height = 'auto';
-		// eslint-disable-next-line no-param-reassign
-		// ev.target.style.height = `${25 + ev.target.scrollHeight}px`;
+
 		if (ev.target.value.length <= 500) {
 			setLimit(ev.target.value.length);
 			dispatch({ type: 'set-message', payload: ev.target.value });
@@ -185,7 +179,6 @@ const Feedback: FC = () => {
 			carbonioAdminUIVersion
 		});
 		setToggleFeedback(true);
-		// closeBoard();
 	}, [
 		carbonioAdminUIVersion,
 		carbonioBackendVersion,
@@ -194,20 +187,6 @@ const Feedback: FC = () => {
 		totalDomains,
 		totalServers
 	]);
-
-	const enableFeedback = useCallback(() => {
-		getXmlSoapFetch(SHELL_APP_ID)(
-			'ModifyConfig',
-			`<ModifyConfigRequest xmlns="urn:zimbraAdmin">
-				<a n="carbonioSendAnalytics">TRUE</a>
-				<a n="carbonioAllowFeedback">TRUE</a>
-				<a n="carbonioSendFullErrorStack">TRUE</a>
-			</ModifyConfigRequest>`
-		).then((res: any) => {
-			getAllConfig().then();
-		});
-		// closeBoard();
-	}, []);
 
 	useEffect(() => {
 		dispatch({
@@ -403,10 +382,6 @@ const Feedback: FC = () => {
 										</ul>
 
 										<Padding top="large" />
-										<Button
-											label={t('feedback.enable_feedback', 'Enable Feedback')}
-											onClick={enableFeedback}
-										/>
 									</Text>
 								</Container>
 							</Container>

@@ -4,15 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/no-named-default */
-import { ComponentType } from 'react';
-
 import { Reducer, Store } from '@reduxjs/toolkit';
 import { forOwn } from 'lodash';
+import { ComponentType } from 'react';
 
-import { getAppFunctions } from './app-loader-functions';
-import { getAppSetters } from './app-loader-setters';
 import { IShellWindow, CarbonioModule } from '../../../types';
 import * as CONSTANTS from '../../constants';
 import StoreFactory from '../../redux/store-factory';
@@ -20,19 +15,11 @@ import { report } from '../../reporting';
 import { useAppStore } from '../../store/app';
 import { AppLink } from '../../ui-extras/app-link';
 
+import { getAppFunctions } from './app-loader-functions';
+import { getAppSetters } from './app-loader-setters';
+
 export const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
 let _scriptId = 0;
-// const _revertableActions: { [pkgName: string]: RevertableActionCollection } = {};
-
-// export function updateAppHandlers(appPkg: CarbonioModule, handlers: RequestHandlersList): void {
-// 	if (FLAVOR === 'NPM' && typeof devUtils !== 'undefined') {
-// 		const worker = devUtils.getMSWorker<SetupWorkerApi>();
-// 		if (worker) {
-// 			worker.resetHandlers();
-// 			forEach(handlers, (h) => worker.use(h));
-// 		}
-// 	}
-// }
 
 function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<CarbonioModule> {
 	return new Promise((_resolve, _reject) => {
@@ -51,9 +38,9 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 		};
 		try {
 			// DO NOT RENAME THIS
-			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrapper'][
-				appPkg.name
-			] = {
+			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__[
+				'@zextras/admin-ui-bootstrapper'
+			][appPkg.name] = {
 				store: {
 					store,
 					setReducer: (reducer: Reducer): void => store.replaceReducer(reducer)
@@ -82,7 +69,7 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 			};
 
 			// if (FLAVOR === 'NPM' && typeof cliSettings !== 'undefined' && cliSettings.hasHandlers) {
-			// eslint-disable-next-line max-len
+
 			// (
 			// 	window as unknown as IShellWindow<SharedLibrariesAppsMap, ComponentClass>
 			// ).__ZAPP_HMR_HANDLERS__[appPkg.name] = (handlers: RequestHandlersList): void =>
@@ -98,7 +85,7 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 			_scripts[`${appPkg.name}-loader-${(_scriptId += 1)}`] = script;
 		} catch (err) {
 			console.error(err);
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 			// @ts-ignore
 			reject(err);
 		}

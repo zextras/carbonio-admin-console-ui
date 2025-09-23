@@ -140,10 +140,10 @@ export const getSoapFetch =
 		api: string,
 		body: Request,
 		options?: {
-			otherAccount?: string,
-			targetServer?: string,
-			authToken?: string,
-			noSession?: boolean
+			otherAccount?: string;
+			targetServer?: string;
+			authToken?: string;
+			noSession?: boolean;
 		}
 	): Promise<Response> => {
 		const { zimbraVersion, account } = useAccountStore.getState();
@@ -176,32 +176,6 @@ export const getSoapFetch =
 				},
 				Header: header
 			})
-		}) // TO-DO proper error handling
-			.then((res) => res?.json())
-			.then((res: SoapResponse<Response>) => handleResponse(api, res))
-			.catch((e) => {
-				report(app)(e);
-				throw e;
-			}) as Promise<Response>;
-	};
-
-export const getXmlSoapFetch =
-	(app: string) =>
-	<Request, Response>(api: string, body: Request, otherAccount?: string): Promise<Response> => {
-		const { zimbraVersion, account } = useAccountStore.getState();
-		const { context } = useNetworkStore.getState();
-		return fetch(`/service/admin/soap/${api}Request`, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/soap+xml'
-			},
-			body: `<?xml version="1.0" encoding="utf-8"?>
-		<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
-			<soap:Header><context xmlns="urn:zimbra"><userAgent name="${userAgent}" version="${zimbraVersion}"/>${getXmlSession(
-				context
-			)}${getXmlAccount(account, otherAccount)}<format type="js"/></context></soap:Header>
-			<soap:Body>${body}</soap:Body>
-		</soap:Envelope>`
 		}) // TO-DO proper error handling
 			.then((res) => res?.json())
 			.then((res: SoapResponse<Response>) => handleResponse(api, res))

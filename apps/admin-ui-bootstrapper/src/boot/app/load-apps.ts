@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/no-named-default */
 import { filter, map } from 'lodash';
 
-import { loadApp, unloadApps } from './load-app';
-import { injectSharedLibraries } from './shared-libraries';
 import { CarbonioModule } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
 import StoreFactory from '../../redux/store-factory';
 import { useReporter } from '../../reporting';
 import { getUserSetting } from '../../store/account';
+
+import { loadApp, unloadApps } from './load-app';
+import { injectSharedLibraries } from './shared-libraries';
 
 export function loadApps(storeFactory: StoreFactory, apps: Array<CarbonioModule>): void {
 	injectSharedLibraries();
