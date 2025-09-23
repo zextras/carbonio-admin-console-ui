@@ -4,17 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable react-hooks/rules-of-hooks */
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
+import { sortBy } from 'lodash';
 import { useMemo } from 'react';
 
-import { sortBy } from 'lodash';
-
-import { useAppStore } from './store';
 import { AppRoute, CarbonioModule } from '../../../types';
 
-export const useApp = (appId: string) => (): CarbonioModule => useAppStore((s) => s.apps[appId]);
+import { useAppStore } from './store';
+
 export const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
 export const useAppList = (): Array<CarbonioModule> => {
 	const apps = useApps();
@@ -26,10 +24,6 @@ export const getAppList = (): Array<CarbonioModule> =>
 export const getApp = (appId: string) => (): CarbonioModule => useAppStore.getState().apps[appId];
 export const getApps = (): Record<string, CarbonioModule> => useAppStore.getState().apps;
 
-export const useAppContext = (appId: string) => (): unknown =>
-	useAppStore((s) => s.appContexts[appId]);
-export const getAppContext = (appId: string) => (): unknown =>
-	useAppStore.getState().appContexts[appId];
 export const getShell = (): CarbonioModule => useAppStore.getState().shell;
 export const getRoutes = (): Record<string, AppRoute> => useAppStore.getState().routes;
 export const useRoutes = (): Record<string, AppRoute> => useAppStore((s) => s.routes);

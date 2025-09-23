@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 // The 'useXXX' functions actually return hooks
-/* eslint-disable react-hooks/rules-of-hooks */
 
 import {
 	AppRouteDescriptor,
@@ -15,7 +14,6 @@ import {
 	SecondaryAccessoryView,
 	UtilityView
 } from '../../../types';
-import { getEditSettingsForApp } from '../../network/edit-settings';
 import { useAppStore } from '../../store/app';
 import {
 	normalizeRoute,
@@ -26,7 +24,6 @@ import {
 	normalizeBoardView
 } from '../../store/app/utils';
 import { useIntegrationsStore } from '../../store/integrations/store';
-
 
 export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => {
 	const appSetters = useAppStore.getState().setters;
@@ -76,7 +73,6 @@ export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => 
 		registerActions: integrations.registerActions,
 		removeActions: integrations.removeActions,
 		registerComponents: integrations.registerComponents(pkg.name),
-		removeComponents: integrations.removeComponents,
-		editSettings: getEditSettingsForApp(pkg.name)
+		removeComponents: integrations.removeComponents
 	};
 };

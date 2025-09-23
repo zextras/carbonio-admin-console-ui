@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
 import {
 	Container,
 	Row,
@@ -15,17 +15,11 @@ import {
 	useSnackbar,
 	THeader
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
-import NewVolume from './create-volume/new-volume';
-import { VolumeContext } from './create-volume/volume-context';
-import DeleteVolumeModel from './delete-volume-model';
-import IndexerVolumeTable from './indexer-volume-table';
-import ModifyVolume from './modify-volume/modify-volume';
 import { Volume, objectType } from '../../../../../types';
 import {
 	NO,
@@ -55,6 +49,13 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
 import { volTableHeader, indexerHeaders } from '../../../utility/utils';
+
+import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
+import NewVolume from './create-volume/new-volume';
+import { VolumeContext } from './create-volume/volume-context';
+import DeleteVolumeModel from './delete-volume-model';
+import IndexerVolumeTable from './indexer-volume-table';
+import ModifyVolume from './modify-volume/modify-volume';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -225,7 +226,7 @@ const VolumesDetailPanel: FC = () => {
 	const getAllVolumesRequest = useCallback((): void => {
 		if (isAdvanced) {
 			fetchSoap('zextras', {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+				 
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
@@ -273,7 +274,9 @@ const VolumesDetailPanel: FC = () => {
 				{
 					_jsns: ZIMBRA_ADMIN_URN
 				},
-				selectedServerId
+				{
+					otherAccount: selectedServerId
+				}
 			)
 				.then((response) => {
 					const typedResponse = response as { volume: Volume[]; _jsns: string };
@@ -355,7 +358,9 @@ const VolumesDetailPanel: FC = () => {
 					action: 'DeleteVolumeRequest',
 					id
 				},
-				selectedServerId
+				{
+					otherAccount: selectedServerId
+				}
 			)
 				.then((res) => {
 					const typeResponse = res as { _jsns: string };
@@ -404,7 +409,7 @@ const VolumesDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
 		const bucketDetails = isVolumeAllDetail?.filter(
 			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
@@ -490,7 +495,7 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							severity: 'success',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							label: t('label.volume_created_msg', 'The volume has been created successfully')
 						});
 						setToggleWizardLocal(false);
@@ -530,7 +535,7 @@ const VolumesDetailPanel: FC = () => {
 			});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
@@ -619,7 +624,7 @@ const VolumesDetailPanel: FC = () => {
 				.then(async (res) => {
 					if (res?.volume && Array.isArray(res?.volume)) {
 						const vol = res?.volume[0];
-						// eslint-disable-next-line sonarjs/no-collapsible-if
+						 
 						if (vol && vol?.id) {
 							if (attr?.isCurrent === 1) {
 								await setCurrentVolumeRequest(vol?.id, vol?.type)
