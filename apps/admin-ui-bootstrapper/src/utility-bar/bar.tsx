@@ -5,7 +5,7 @@
  */
 
 import { Container, Tooltip, Dropdown, Text, Button } from '@zextras/carbonio-design-system';
-import { map } from 'lodash';
+import { map, noop } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -103,7 +103,13 @@ export const ShellUtilityBar: FC = () => {
 			</Container>
 			<Tooltip label={t('label.account_menu', 'Account menu')} placement="left-end">
 				<Dropdown items={accountItems}>
-					<Button type="ghost" icon="AvatarOutline" size={'extralarge'} color="primary" />
+					<Button
+						type="ghost"
+						icon="AvatarOutline"
+						size={'extralarge'}
+						color="primary"
+						onClick={noop}
+					/>
 				</Dropdown>
 			</Tooltip>
 		</Container>
