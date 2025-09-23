@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { find, get, join } from 'lodash';
 import { useMemo } from 'react';
 
-import { find, get, join } from 'lodash';
-
-import { useAccountStore } from './store';
 import {
 	Account,
 	AccountRightName,
@@ -17,7 +15,11 @@ import {
 	AccountSettings
 } from '../../../types';
 
-export const useUserAccount = (): Account => useAccountStore((s) => s.account as Account);
+import { useAccountStore } from './store';
+
+export type UseUserAccount = Account;
+
+export const useUserAccount = (): UseUserAccount => useAccountStore((s) => s.account as Account);
 export const useUserAccounts = (): Array<Account> => {
 	const acct = useAccountStore((s) => s.account);
 	return useMemo(() => (acct ? [acct as Account] : []), [acct]);

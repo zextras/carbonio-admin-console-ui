@@ -4,28 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable react-hooks/rules-of-hooks */
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
+import { compact, map } from 'lodash';
 import React, { FunctionComponent } from 'react';
 
-import { compact, map } from 'lodash';
+import { Action, ActionFactory } from '../../../types';
+import AppContextProvider from '../../boot/app/app-context-provider';
 
 import { useIntegrationsStore } from './store';
-import { Action, ActionFactory } from '../../../types';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import AppContextProvider from '../../boot/app/app-context-provider';
 
 export const getIntegratedHook = (id: string): [Function, boolean] => {
 	const integration = useIntegrationsStore.getState().hooks?.[id];
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	return integration ? [integration, true] : [(): void => {}, false];
 };
 
 export const getIntegratedFunction = (id: string): [Function, boolean] => {
 	const integration = useIntegrationsStore.getState().functions?.[id];
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 	return integration ? [integration, true] : [(): void => {}, false];
 };
 
@@ -34,7 +30,7 @@ export const getIntegratedComponent = (id: string): [FunctionComponent<unknown>,
 	if (Integration) {
 		const C: FunctionComponent<unknown> = (props: unknown) => (
 			<AppContextProvider pkg={Integration.app}>
-				{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+				{}
 				{/* @ts-ignore */}
 				<Integration.item {...props} />
 			</AppContextProvider>
@@ -51,7 +47,6 @@ export const getActions = <T,>(target: T, type: string): Array<Action> => {
 			try {
 				return f(target);
 			} catch (e) {
-				// eslint-disable-next-line no-console
 				console.error(e);
 				return undefined;
 			}
@@ -67,7 +62,6 @@ export const getActionsFactory = (type: string): (<T>(target: T) => Array<Action
 				try {
 					return f(target);
 				} catch (e) {
-					// eslint-disable-next-line no-console
 					console.error(e);
 					return undefined;
 				}

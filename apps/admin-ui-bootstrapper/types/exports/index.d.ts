@@ -9,6 +9,7 @@ import { type TFunction } from 'react-i18next';
 import { type LinkProps } from 'react-router-dom';
 import { type Reducer, type Store } from 'redux';
 
+import { UseUserAccount } from '../../src/store/account/hooks';
 import {
 	AccountSettings,
 	Account,
@@ -89,7 +90,7 @@ declare const useApp: () => CarbonioModule;
 declare const getApp: () => CarbonioModule;
 declare const useAppContext: <T>() => T;
 declare const getAppContext: <T>() => T;
-declare const useUserAccount: () => Account;
+declare const useUserAccount: () => UseUserAccount;
 declare const useUserAccounts: () => Array<Account>;
 declare const useUserRights: () => AccountRights;
 declare const useUserRight: (right: AccountRightName) => Array<AccountRightTarget>;
