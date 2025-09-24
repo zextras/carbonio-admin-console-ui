@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 import {
 	Container,
 	Row,
@@ -21,8 +21,8 @@ import {
 	Tooltip,
 	Link
 } from '@zextras/carbonio-design-system';
-import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 import { isEmpty } from 'lodash';
+import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -188,7 +188,7 @@ const ModifyVolume: FC<{
 				type.label = labelMap[type?.value];
 			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+			 
 			obj._jsns = ZIMBRA_ADMIN_URN;
 			obj.module = 'ZxPowerstore';
 			obj.action = 'doUpdateVolume';
@@ -327,7 +327,9 @@ const ModifyVolume: FC<{
 								id,
 								type: type?.value
 							},
-							selectedServerId
+							{
+								otherAccount: selectedServerId
+							}
 						).catch(() => {
 							createSnackbar({
 								key: 'error',
@@ -612,7 +614,7 @@ const ModifyVolume: FC<{
 		}
 	}, [externalVolDetail?.storeType]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useEffect(() => {
 		if (isAdvanced) {
 			if (volumeDetail?.type === 1) {
@@ -682,7 +684,9 @@ const ModifyVolume: FC<{
 					module: 'ZxPowerstore',
 					id: volId
 				},
-				selectedServerId
+				{
+					otherAccount: selectedServerId
+				}
 			)
 				.then((response) => {
 					const typedResponse = response as { volume: Volume[]; _jsns: string };
@@ -808,7 +812,7 @@ const ModifyVolume: FC<{
 							<Text color="secondary" overflow="break-word" size="extrasmall">
 								{t(
 									'the_change_will_not_move_the_data',
-									// eslint-disable-next-line sonarjs/no-duplicate-string
+									 
 									'The change will not move the data'
 								)}
 							</Text>

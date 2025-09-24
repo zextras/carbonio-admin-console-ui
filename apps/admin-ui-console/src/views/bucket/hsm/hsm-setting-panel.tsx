@@ -260,11 +260,12 @@ const HSMsettingPanel: FC = () => {
 				{
 					_jsns: ZIMBRA_ADMIN_URN
 				},
-				undefined,
-				serverId
-			).then((response: any) => {
-				setIsVolumeInProgress(false);
-				if (response?.volume && response?.volume.length > 0) {
+				{
+					targetServer:serverId
+				}
+				).then((response: any) => {
+					setIsVolumeInProgress(false);
+					if (response?.volume && response?.volume.length > 0) {
 					setVolumeList(response?.volume.filter((item: any) => item.type !== VOLUME_INDEX_TYPE));
 				}
 			});

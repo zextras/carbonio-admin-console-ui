@@ -21,5 +21,7 @@ export const getSessions = async (
 			sortBy: 'nameAsc',
 			refresh: 1
 		},
-		accountName
+		{
+			otherAccount: accountName
+		}
 	);

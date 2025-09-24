@@ -6,6 +6,6 @@
 
 import { soapFetch } from '@zextras/admin-ui-bootstrapper';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+ 
 export const batchService = async (reqObject: any, otherAccount?: any): Promise<any> =>
-	soapFetch('Batch', reqObject, otherAccount);
+	soapFetch('Batch', reqObject, {otherAccount});

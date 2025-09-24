@@ -4,30 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable react-hooks/rules-of-hooks */
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
-import React, { useMemo, FunctionComponent, useCallback } from 'react';
-
 import { compact, map } from 'lodash';
+import React, { useMemo, FunctionComponent } from 'react';
 
-import { useIntegrationsStore } from './store';
-import { Action, ActionFactory, CombinedActionFactory } from '../../../types';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { Action } from '../../../types';
 import AppContextProvider from '../../boot/app/app-context-provider';
 
-export const useIntegratedHook = (id: string): [Function, boolean] => {
-	const integration = useIntegrationsStore((s) => s.hooks?.[id]);
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	return integration ? [integration, true] : [(): void => {}, false];
-};
-
-export const useIntegratedFunction = (id: string): [Function, boolean] => {
-	const integration = useIntegrationsStore((s) => s.functions?.[id]);
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	return integration ? [integration, true] : [(): void => {}, false];
-};
+import { useIntegrationsStore } from './store';
 
 export const useIntegratedComponent = (id: string): [FunctionComponent<unknown>, boolean] => {
 	const Integration = useIntegrationsStore((s) => s.components?.[id]);
@@ -35,7 +20,7 @@ export const useIntegratedComponent = (id: string): [FunctionComponent<unknown>,
 		if (Integration) {
 			const C: FunctionComponent<unknown> = (props: unknown) => (
 				<AppContextProvider pkg={Integration.app}>
-					{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+					{}
 					{/* @ts-ignore */}
 					<Integration.item {...props} />
 				</AppContextProvider>
@@ -55,7 +40,6 @@ export const useActions = <T,>(target: T, type: string): Array<Action> => {
 					try {
 						return f(target);
 					} catch (e) {
-						// eslint-disable-next-line no-console
 						console.error(e);
 						return undefined;
 					}
@@ -63,47 +47,4 @@ export const useActions = <T,>(target: T, type: string): Array<Action> => {
 			) ?? [],
 		[factories, target]
 	);
-};
-
-export const useActionsFactory = <T,>(type: string): CombinedActionFactory<T> => {
-	const factories = useIntegrationsStore((s) => s.actions[type]);
-	return useCallback(
-		(target: unknown) =>
-			compact(
-				map(factories, (f) => {
-					try {
-						return f(target);
-					} catch (e) {
-						// eslint-disable-next-line no-console
-						console.error(e);
-						return undefined;
-					}
-				})
-			),
-		[factories]
-	);
-};
-
-export const useAction = <T,>(
-	type: string,
-	id: string,
-	target?: T
-): [Action | undefined, boolean] => {
-	const factory = useIntegrationsStore((s) => s.actions[type][id]);
-	const action = useMemo(() => {
-		try {
-			return factory?.(target);
-		} catch (e) {
-			return undefined;
-		}
-	}, [factory, target]);
-	return [action, !!action];
-};
-
-export const useActionFactory = <T,>(
-	type: string,
-	id: string
-): [ActionFactory<T> | undefined, boolean] => {
-	const factory = useIntegrationsStore((s) => s.actions[type][id]);
-	return [factory, !!factory];
 };

@@ -20,14 +20,9 @@ export const endSession = async (
 			all: 0,
 			excludeCurrent: 0
 		},
-		accountName,
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		undefined,
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		token,
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		true
+		{
+			otherAccount: accountName,
+			authToken: token,
+			noSession: true
+		}
 	);
