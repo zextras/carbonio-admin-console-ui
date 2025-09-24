@@ -16,7 +16,7 @@ import {
 	Switch,
 	Link
 } from '@zextras/carbonio-design-system';
-import React, { useEffect, useState, useCallback, useReducer, useMemo, FC } from 'react';
+import React, { useEffect, useState, useCallback, useReducer, useMemo, FC, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -28,6 +28,7 @@ import {
 	searchDirectoryListCount,
 	getAllServers
 } from '../network/fetch';
+import { BoardValueContext } from '../shell/boards/board-context';
 import { useUserAccount } from '../store/account';
 import { getIsAdvanced } from '../store/advance';
 import { useConfigStore } from '../store/config/store';
@@ -113,6 +114,7 @@ function reducer(state: Event, { type, payload }: { type: string; payload: any }
 
 const Feedback: FC = () => {
 	const [t] = useTranslation();
+	const { largeView } = useContext(BoardValueContext);
 	const feedbackPermission = useConfigStore(
 		(state) =>
 			state.getConfigAttribute('carbonioSendFullErrorStack') === TRUE &&
@@ -214,14 +216,14 @@ const Feedback: FC = () => {
 					>
 						<Row
 							padding={{ right: 'large' }}
-							width="50%"
+							width="100%"
 							crossAlignment="flex-start"
 							mainAlignment="flex-start"
 						>
-							<Container height="11rem" crossAlignment="flex-start" mainAlignment="flex-start">
+							<Container height="6rem" crossAlignment="flex-start" mainAlignment="flex-start">
 								<Button
 									style={{
-										paddingBlock: '3.8rem',
+										paddingBlock: '1rem',
 										flexDirection: 'column',
 										fontSize: '1.625rem'
 									}}
@@ -243,8 +245,9 @@ const Feedback: FC = () => {
 							</Container>
 							<Container
 								padding={{ top: 'large' }}
-								crossAlignment="flex-start"
+								crossAlignment={largeView ? 'center' : 'flex-start'}
 								mainAlignment="flex-start"
+								style={{ textAlign: largeView ? 'center' : 'left' }}
 							>
 								<Text overflow="break-word" weight="regular">
 									{isAdvanced ? (
@@ -260,40 +263,6 @@ const Feedback: FC = () => {
 											components={{ bold: <strong />, break: <br /> }}
 										/>
 									)}
-								</Text>
-							</Container>
-						</Row>
-						<Row width="50%" crossAlignment="flex-start" mainAlignment="flex-start">
-							<Container height="11rem" crossAlignment="flex-center" mainAlignment="flex-center">
-								<Button
-									style={{
-										paddingBlock: '3.8rem',
-										flexDirection: 'column',
-										fontSize: '1.625rem'
-									}}
-									type="outlined"
-									label={t('label.send_feedback', 'Send Feedback')}
-									height="fill"
-									width="fill"
-									size="extralarge"
-									color="primary"
-									onClick={(): void => setIsForum(true)}
-								/>
-							</Container>
-							<Container
-								padding={{ top: 'large' }}
-								crossAlignment="flex-start"
-								mainAlignment="flex-start"
-							>
-								<Text overflow="break-word" weight="regular">
-									<Trans
-										i18nKey="label.send_feedback_helperText_carbonio"
-										defaults="<bold>Would you like to suggest any change or tell us something?</bold><br /><br />Share your thoughts with us and help shape a better {{carbonio}}. We look forward to hearing from you!"
-										components={{ bold: <strong />, break: <br /> }}
-										values={{
-											carbonio: isAdvanced ? 'Carbonio' : 'Carbonio CE'
-										}}
-									/>
 								</Text>
 							</Container>
 						</Row>
@@ -321,7 +290,7 @@ const Feedback: FC = () => {
 						crossAlignment="flex-start"
 						mainAlignment="flex-start"
 					>
-						<Switch
+						<Switch style={{ margin: largeView ? '0 auto' : 'unset' }}
 							label={
 								<Trans
 									i18nKey="label.part_of_project_atom"
