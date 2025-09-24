@@ -11,7 +11,9 @@ import { Account, AccountSettings } from '../../../types';
 
 import { useAccountStore } from './store';
 
-export const useUserAccount = (): Account => useAccountStore((s) => s.account as Account);
+export type UseUserAccount = Account;
+
+export const useUserAccount = (): UseUserAccount => useAccountStore((s) => s.account as Account);
 export const useUserAccounts = (): Array<Account> => {
 	const acct = useAccountStore((s) => s.account);
 	return useMemo(() => (acct ? [acct as Account] : []), [acct]);
