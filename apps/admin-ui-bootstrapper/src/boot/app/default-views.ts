@@ -11,15 +11,8 @@ import { AppState } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
 import DevBoard from '../../dev/dev-board';
 import DevBoardTrigger from '../../dev/dev-board-trigger';
-import Feedback from '../../reporting/feedback';
 import { useAppStore } from '../../store/app';
 
-const feedbackBoardView = {
-	id: 'feedback',
-	app: SHELL_APP_ID,
-	component: Feedback,
-	route: 'feedback'
-};
 const devModeBoardView = {
 	id: 'dev-mode',
 	app: SHELL_APP_ID,
@@ -36,7 +29,6 @@ const devModeTrigger = {
 export const registerDefaultViews = (t: TFunction): void => {
 	useAppStore.setState(
 		produce((s: AppState) => {
-			s.views.board = [feedbackBoardView];
 			if (__CARBONIO_DEV__) {
 				s.views.board.push(devModeBoardView);
 				s.views.primaryBarAccessories.push(devModeTrigger);

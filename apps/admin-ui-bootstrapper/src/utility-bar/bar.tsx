@@ -3,25 +3,25 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Container, Tooltip, Dropdown, Text, Button } from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useUtilityBarStore } from './store';
-import { openLink, useUtilityViews } from './utils';
 import { UtilityView } from '../../types/apps';
-import { CARBONIO_ADMIN_DOCUMENTATION_URL, SHELL_APP_ID } from '../constants';
+import { CARBONIO_ADMIN_DOCUMENTATION_URL } from '../constants';
 import { logout } from '../network/logout';
 import { useUserAccount } from '../store/account';
 import { useConfigStore } from '../store/config';
-import { useContextBridge } from '../store/context-bridge';
+
+import { useUtilityBarStore } from './store';
+import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
 	const { mode, setMode, current, setCurrent } = useUtilityBarStore();
 	const onClick = useCallback((): void => {
-		// eslint-disable-next-line no-nested-ternary
+		 
 		setMode(current !== view.id ? 'open' : mode !== 'open' ? 'open' : 'closed');
 		setCurrent(view.id);
 	}, [current, mode, setCurrent, setMode, view.id]);
@@ -51,16 +51,6 @@ export const ShellUtilityBar: FC = () => {
 	const [t] = useTranslation();
 	const accountItems = useMemo(
 		() => [
-			{
-				id: 'feedback',
-				label: t('label.feedback', 'Feedback'),
-				onClick: () =>
-					useContextBridge.getState().packageDependentFunctions?.addBoard(SHELL_APP_ID)(
-						'/feedback/',
-						{ title: t('label.feedback', 'Feedback') }
-					),
-				icon: 'MessageSquareOutline'
-			},
 			{
 				id: 'help',
 				label: t('label.help_and_documentation', 'Help & Documentation'),
