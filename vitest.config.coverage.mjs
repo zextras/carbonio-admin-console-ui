@@ -6,12 +6,12 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-	optimizeDeps: {
-		include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
-	},
 	test: {
 		projects: [
 			{
+				optimizeDeps: {
+					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+				},
 				test: {
 					include: ['apps/*/src/**/*.unit.test.{ts,tsx}', '!apps/*/src/**/*.browser.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
@@ -26,6 +26,9 @@ export default defineConfig({
 				}
 			},
 			{
+				optimizeDeps: {
+					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+				},
 				test: {
 					include: ['apps/*/src/**/*.browser.test.{ts,tsx}', '!apps/*/src/**/*.unit.test.{ts,tsx}'],
 					name: 'browser',
