@@ -119,7 +119,7 @@ pipeline {
                         container('pnpm') {
                             script {
                                 sh 'pnpm exec playwright install --with-deps'
-                                sh 'pnpm test'
+                                sh 'pnpm test:ci'
                             }
                         }
                     }
