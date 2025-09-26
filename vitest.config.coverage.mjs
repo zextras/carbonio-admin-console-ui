@@ -11,7 +11,7 @@ export default defineConfig({
 		projects: [
 			{
 				test: {
-					include: ['src/**/*.unit.test.{ts,tsx}'],
+					include: ['apps/*/src/**/*.unit.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
 					environment: 'jsdom',
@@ -25,7 +25,7 @@ export default defineConfig({
 			},
 			{
 				test: {
-					include: ['src/**/*.browser.test.{ts,tsx}'],
+					include: ['apps/*/src/**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
@@ -47,6 +47,29 @@ export default defineConfig({
 					}
 				}
 			}
-		]
+		],
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html', 'lcov'],
+			reportsDirectory: './coverage',
+			exclude: [
+				'coverage/**',
+				'dist/**',
+				'**/node_modules/**',
+				'**/[.]**',
+				'packages/*/test{,s}/**',
+				'**/*.d.ts',
+				'**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+				'**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
+				'**/*.config.{js,ts}',
+				'**/*.test.{ts,tsx}',
+				'**/*.spec.{ts,tsx}'
+			],
+			include: [
+				'apps/admin-ui-bootstrapper/src/**/*.{ts,tsx}',
+				'apps/admin-ui-console/src/**/*.{ts,tsx}'
+			],
+			all: true
+		}
 	}
 });
