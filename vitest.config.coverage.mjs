@@ -13,7 +13,7 @@ export default defineConfig({
 		projects: [
 			{
 				test: {
-					include: ['apps/*/src/**/*.unit.test.{ts,tsx}'],
+					include: ['apps/*/src/**/*.unit.test.{ts,tsx}', '!apps/*/src/**/*.browser.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
 					environment: 'jsdom',
@@ -27,7 +27,7 @@ export default defineConfig({
 			},
 			{
 				test: {
-					include: ['apps/*/src/**/*.browser.test.{ts,tsx}'],
+					include: ['apps/*/src/**/*.browser.test.{ts,tsx}', '!apps/*/src/**/*.unit.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
