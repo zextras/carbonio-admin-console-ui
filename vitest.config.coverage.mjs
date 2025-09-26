@@ -41,8 +41,7 @@ export default defineConfig({
 					css: true,
 					clearMocks: true,
 					testTimeout: 30000,
-					teardownTimeout: 10000,
-					retry: process.env.CI ? 2 : 0
+					teardownTimeout: 10000
 				}
 			}
 		],
