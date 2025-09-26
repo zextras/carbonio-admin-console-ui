@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useContext, FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 
 import {
 	Container,
@@ -16,26 +15,26 @@ import {
 	Divider,
 	Popper
 } from '@zextras/carbonio-design-system';
-import { map, isEmpty, trim, filter, sortBy, find } from 'lodash';
+import { map, isEmpty, trim, filter, sortBy } from 'lodash';
+import React, { useContext, FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 // TODO: convert boards management to ts (and maybe a zustand store)
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+ 
 // @ts-ignore
-import BadgeWrap from './badge-wrap';
-import { BoardValueContext, BoardSetterContext } from './boards/board-context';
-import { Collapser } from './collapser';
-import { AppRoute, PrimaryAccessoryView, PrimaryBarView, Right } from '../../types';
+import { AppRoute, PrimaryAccessoryView, PrimaryBarView } from '../../types';
 import AppContextProvider from '../boot/app/app-context-provider';
-import { CONFIG } from '../constants';
 import { getUsersRights } from '../network/get-user-accounts-rights';
 import { useUserAccounts } from '../store/account';
 import { useAppStore } from '../store/app';
-import { useContextBridge } from '../store/context-bridge';
 import { useUtilityBarStore } from '../utility-bar';
 import { checkRoute } from '../utility-bar/utils';
+
+import BadgeWrap from './badge-wrap';
+import { BoardValueContext, BoardSetterContext } from './boards/board-context';
+import { Collapser } from './collapser';
 
 const PrimaryBarContainer = styled(Container)`
 	min-width: 48px;
@@ -67,10 +66,10 @@ const CustomText = styled(Text)`
 	align-items: center;
 `;
 const ToggleBoardIcon: FC = () => {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	 
 	// @ts-ignore
 	const { boards, minimized } = useContext(BoardValueContext);
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	 
 	// @ts-ignore
 	const { toggleMinimized } = useContext(BoardSetterContext);
 
@@ -127,9 +126,9 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
 		<>
 			<Container
 				ref={containerRef}
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				 
 				onMouseEnter={(): void => setOpen(true)}
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				 
 				onMouseLeave={(): void => setOpen(false)}
 				height="52px"
 			>
@@ -161,7 +160,6 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
 				open={open}
 				anchorEl={containerRef}
 				placement="right"
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 				onClose={(): void => setOpen(false)}
 				disableRestoreFocus
 			>
@@ -212,7 +210,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
 	const onCollapserClick = useCallback(() => {
 		setIsOpen(!isOpen);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isOpen, setIsOpen]);
 	const primaryBarViews = useAppStore((s) => s.views.primaryBar);
 	const primarybarSections = useAppStore((s) => s.views.primarybarSections);
@@ -225,7 +222,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	useEffect(() => {
 		setRoutes((r) =>
 			primaryBarViews.reduce((acc, v) => {
-				// eslint-disable-next-line no-param-reassign
 				acc[v?.id] = v.route;
 				return acc;
 			}, r)
@@ -278,11 +274,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 		}
 	}, [primarybarSections, primaryBarViews]);
 
-	const allowShowFeedback = useMemo(() => {
-		const rightsConfig: Right = find(allUserRights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [allUserRights]);
-
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
 			getUsersRights('name', accounts[0].name).then((res) => {
@@ -307,7 +298,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 			>
 				<Container mainAlignment="flex-start">
 					{map(primaryBarViewWithSection, (view, index) =>
-						// eslint-disable-next-line no-nested-ternary
+						 
 						view.visible ? (
 							<React.Fragment key={index}>
 								{view?.section === undefined && (
@@ -358,31 +349,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 						) : null
 					)}
 				</Container>
-				<Container mainAlignment="flex-end" height="fit">
-					{allowShowFeedback && (
-						<PrimaryBarRow
-							width="fill"
-							mainAlignment="flex-start"
-							onClick={(): void => {
-								useContextBridge.getState().packageDependentFunctions?.addBoard('feedbacks')(
-									'/feedback/',
-									{ title: t('label.feedback', 'Feedback') }
-								);
-							}}
-						>
-							<BadgeWrap badge={{ show: false, count: 0 }} isExpanded={isOpen}>
-								<PrimaryBarButton
-									type="ghost"
-									color={'text'}
-									icon="MessageSquareOutline"
-									size="large"
-									onClick={(): void => {
-										null;
-									}}
-								/>
-							</BadgeWrap>
-						</PrimaryBarRow>
-					)}
+				<Container mainAlignment="flex-end" height="fit">					
 					{accessories.map((v) => (
 						<PrimaryBarAccessoryElement view={v} key={v?.id} />
 					))}
