@@ -60,3 +60,4 @@ node_modules/
 apps/*/coverage
 apps/*/junit.xml
 .scannerwork
+**/__screenshots__/**
