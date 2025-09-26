@@ -3,15 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	test: {
 		projects: [
 			{
+				optimizeDeps: {
+					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+				},
 				test: {
-					include: ['src/**/*.unit.test.{ts,tsx}'],
+					include: ['src/**/*.unit.test.{ts,tsx}', '!src/**/*.browser.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
 					environment: 'jsdom',
@@ -24,8 +26,11 @@ export default defineConfig({
 				}
 			},
 			{
+				optimizeDeps: {
+					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+				},
 				test: {
-					include: ['src/**/*.browser.test.{ts,tsx}'],
+					include: ['src/**/*.browser.test.{ts,tsx}', 'src/**/*.unit.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
@@ -37,16 +42,29 @@ export default defineConfig({
 					globals: true,
 					css: true,
 					clearMocks: true,
-					testTimeout: 30000,
-					retry: process.env.CI ? 2 : 0,
-					pool: 'threads',
-					poolOptions: {
-						threads: {
-							singleThread: true
-						}
-					}
+					testTimeout: 30000
 				}
 			}
-		]
+		],
+		coverage: {
+			provider: 'istanbul',
+			reporter: ['text', 'json', 'html', 'lcov'],
+			reportsDirectory: './coverage',
+			exclude: [
+				'coverage/**',
+				'dist/**',
+				'**/node_modules/**',
+				'**/[.]**',
+				'packages/*/test{,s}/**',
+				'**/*.d.ts',
+				'**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+				'**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
+				'**/*.config.{js,ts}',
+				'**/*.test.{ts,tsx}',
+				'**/*.spec.{ts,tsx}'
+			],
+			include: ['src/**/*.{ts,tsx}'],
+			all: true
+		}
 	}
 });
