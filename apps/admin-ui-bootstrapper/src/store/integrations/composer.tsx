@@ -3,11 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useCallback, useMemo, useRef } from 'react';
-
 import type { IAllProps as EditorProps } from '@tinymce/tinymce-react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Container } from '@zextras/carbonio-design-system';
+import React, { useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
 // TinyMCE so the global var exists
@@ -41,10 +40,10 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
 
+import { SUPPORTED_LOCALES } from '../../constants';
 import { useUserSettings } from '../account';
 import { getT } from '../i18n/hooks';
 import { useI18nStore } from '../i18n/store';
-import { SUPPORTED_LOCALES } from '../../constants';
 
 type ComposerProps = EditorProps & {
 	/** The callback invoked when an edit is performed into the editor. `([text, html]) => {}` */

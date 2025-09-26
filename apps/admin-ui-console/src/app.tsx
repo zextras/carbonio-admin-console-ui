@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import {
 	addRoute,
 	removeRoute,
@@ -176,7 +175,8 @@ const App: FC = () => {
 	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
 
 	useEffect(() => {
-		if (accounts?.length > 0) { // FIX-ADMIN-MONOREPO
+		if (accounts?.length > 0) {
+			// FIX-ADMIN-MONOREPO
 			const { id } = accounts[0];
 			setUserId(id);
 		}
@@ -598,7 +598,6 @@ const App: FC = () => {
 	const backupPrimaryBar: FC = useCallback(
 		() => (
 			<PrimaryBarIconButton
-				 
 				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				type="ghost"

@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "references": [
-    { "path": "./apps/admin-ui-bootstrapper/" },
-    { "path": "./apps/admin-ui-console/" }
-  ]
-}

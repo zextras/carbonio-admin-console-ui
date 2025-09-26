@@ -3,18 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useMemo } from 'react';
-
 import { Container, Responsive } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
+import React, { FC, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
+
+import AppContextProvider from '../boot/app/app-context-provider';
 
 import { useUtilityBarStore } from './store';
 import { useUtilityViews } from './utils';
-import AppContextProvider from '../boot/app/app-context-provider';
 
-const Panel = styled(Container)`
-	width: ${({ mode }): number => (mode !== 'closed' ? 256 : 48)}px;
+const Panel: any = styled(Container)`
+	width: ${({ mode }: any): number => (mode !== 'closed' ? 256 : 48)}px;
 	border-radius: 0;
 	height: 100%;
 	position: absolute;
