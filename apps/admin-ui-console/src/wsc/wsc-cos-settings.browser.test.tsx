@@ -46,7 +46,7 @@ import { describe } from 'vitest';
 // 		}
 // 	});
 // });
-describe.todo('WscCosSettings', () => {
+describe.skip('WscCosSettings', () => {
 	// test('User changes an attribute and saves', async () => {
 	// 	mock(modifyCos).mockResolvedValue({});
 	// 	mock(flushCache).mockResolvedValue({});

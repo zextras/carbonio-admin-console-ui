@@ -69,7 +69,7 @@ import { describe } from 'vitest';
 // 	})
 // }));
 
-describe.todo('Subscription Component - getTypeDisplayValue Logic', () => {
+describe.skip('Subscription Component - getTypeDisplayValue Logic', () => {
 	// beforeEach(() => {
 	// 	jest.clearAllMocks();
 	// });

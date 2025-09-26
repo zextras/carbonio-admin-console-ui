@@ -62,7 +62,7 @@ const mockDomain = {
 // 	getQuotaUsageAdvance: jest.fn()
 // }));
 
-describe.todo('Mailbox Quota Settings', () => {
+describe.skip('Mailbox Quota Settings', () => {
 	// const initializeDomainStore = (): void => {
 	// 	useDomainStore.getState().setDomain(mockDomain);
 	// };

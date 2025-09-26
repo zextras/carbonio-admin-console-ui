@@ -47,7 +47,7 @@ const iconRefreshOutline = 'icon: RefreshOutline';
 // 		})
 // }));
 //
-describe.todo('WscSettings - general', () => {
+describe.skip('WscSettings - general', () => {
 	// 	test.each(wscCeAttrs)('CE: should render the input for changing $name', async (attr) => {
 	// 		setup(<WscSettings featuresDetail={accountDetail} setFeaturesDetail={jest.fn()} />);
 	// 		expect(await screen.findByTestId(`inherited-${attr.name}`)).toBeVisible();

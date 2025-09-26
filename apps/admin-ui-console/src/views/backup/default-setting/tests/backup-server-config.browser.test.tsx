@@ -38,7 +38,7 @@ import { describe } from 'vitest';
 // 	typeof useModuleLicenseStore
 // >;
 
-describe.todo('BackupServerConfig', () => {
+describe.skip('BackupServerConfig', () => {
 	// // Constants for cron patterns to avoid duplication
 	// const SMART_SCAN_CRON_PATTERN = '0 2 * * *';
 	// const PURGE_CRON_PATTERN = '0 3 * * *';

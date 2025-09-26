@@ -11,7 +11,7 @@ import { describe } from 'vitest';
 // }));
 
 const DOMAIN_INPUT_NAME = 'domain-input';
-describe.todo('DomainListChipInput', () => {
+describe.skip('DomainListChipInput', () => {
 	// test('renders the component', () => {
 	// 	setup(<DomainListChipInput domainName="test.com" domainList={[]} setDomainList={jest.fn()} />);
 	//

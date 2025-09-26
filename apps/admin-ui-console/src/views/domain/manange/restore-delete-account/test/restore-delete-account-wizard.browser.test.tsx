@@ -59,7 +59,7 @@ import { describe } from 'vitest';
 // 	}
 // };
 
-describe.todo('RestoreDeleteAccountWizard Component', () => {
+describe.skip('RestoreDeleteAccountWizard Component', () => {
 	// beforeEach(() => {
 	// 	jest.resetAllMocks();
 	// 	jest.clearAllMocks();

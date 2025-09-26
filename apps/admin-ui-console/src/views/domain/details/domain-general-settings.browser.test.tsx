@@ -110,7 +110,7 @@ import { describe } from 'vitest';
 // 	]
 // };
 
-describe.todo('DomainGeneralSettings Component', () => {
+describe.skip('DomainGeneralSettings Component', () => {
 	// const setupDomainStore = (): void => {
 	// 	useDomainStore.getState().setCosList([
 	// 		{

@@ -58,7 +58,7 @@ import { describe } from 'vitest';
 // 	}
 // };
 
-describe.todo('RestoreDeleteInheritedSelectSection Component', () => {
+describe.skip('RestoreDeleteInheritedSelectSection Component', () => {
 	// beforeEach(() => {
 	// 	jest.resetAllMocks();
 	// 	jest.clearAllMocks();

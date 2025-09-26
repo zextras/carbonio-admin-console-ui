@@ -6,7 +6,7 @@
 
 import { describe } from 'vitest';
 
-describe.todo('SendingMails', () => {
+describe.skip('SendingMails', () => {
 	// beforeEach(() => {
 	// 	jest.resetAllMocks();
 	// });

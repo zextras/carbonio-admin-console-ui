@@ -74,7 +74,7 @@ import { describe } from 'vitest';
 // 	}
 // };
 
-describe.todo('LegalHoldPanel Component', () => {
+describe.skip('LegalHoldPanel Component', () => {
 	// const setupDomainStore = (): void => {
 	// 	useDomainStore.getState().setDomain(domain);
 	// };

@@ -12,7 +12,7 @@ import { describe } from 'vitest';
 // 	useDomainStore: jest.fn()
 // }));
 
-describe.todo('RestoreDeleteAccountStartSection', () => {
+describe.skip('RestoreDeleteAccountStartSection', () => {
 	// const mockContextValue = {
 	// 	restoreAccountDetail: {
 	// 		name: 'testuser@demo.zextras.io',

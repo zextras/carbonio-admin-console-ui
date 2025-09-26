@@ -6,7 +6,7 @@
 
 import { describe } from 'vitest';
 
-describe.todo('PageSettings', () => {
+describe.skip('PageSettings', () => {
 	// test('PageLayout with only title prop does not show save and cancel button', () => {
 	// 	setup(
 	// 		<PageLayout title="Page title">

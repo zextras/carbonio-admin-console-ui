@@ -71,7 +71,7 @@ import { describe } from 'vitest';
 // 	modifyDomain: jest.fn()
 // }));
 
-describe.todo('Domain Authentication', () => {
+describe.skip('Domain Authentication', () => {
 	// const setupDomainStore = (): void => {
 	// 	useDomainStore.getState().setDomain(getDefaultDomain());
 	// };

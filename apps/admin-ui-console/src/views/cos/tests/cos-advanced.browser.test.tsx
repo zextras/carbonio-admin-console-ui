@@ -188,7 +188,7 @@ const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
 \═══════════════════════════════════════════════════/
 */
 
-describe.todo('CosAdvanced', () => {
+describe.skip('CosAdvanced', () => {
 	// beforeEach(() => {
 	// 	jest.resetAllMocks();
 	// 	setupCosStore();
