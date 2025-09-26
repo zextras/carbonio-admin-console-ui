@@ -77,7 +77,7 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
       vitest-browser-react:
         specifier: ^1.0.1
         version: 1.0.1(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(@vitest/browser@3.2.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@3.2.4)
@@ -276,7 +276,7 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
       vitest-browser-react:
         specifier: ^1.0.1
         version: 1.0.1(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(@vitest/browser@3.2.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@3.2.4)
@@ -386,6 +386,9 @@ importers:
       '@vitest/browser':
         specifier: ^3.2.4
         version: 3.2.4(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(playwright@1.55.1)(vite@7.1.7(@types/node@20.19.17)(jiti@2.6.0)(less@4.4.1)(terser@5.44.0))(vitest@3.2.4)
+      '@vitest/ui':
+        specifier: 3.2.4
+        version: 3.2.4(vitest@3.2.4)
       admin-ui-sdk:
         specifier: workspace:*
         version: link:../../packages/sdk
@@ -421,7 +424,7 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
       vitest-browser-react:
         specifier: ^1.0.1
         version: 1.0.1(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(@vitest/browser@3.2.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@3.2.4)
@@ -2075,6 +2078,11 @@ packages:
   '@vitest/spy@3.2.4':
     resolution: {integrity: sha512-vAfasCOe6AIK70iP5UD11Ac4siNUNJ9i/9PZ3NKx07sG6sUxeag1LWdNrMWeKKYBLlzuK+Gn65Yd5nyL6ds+nw==}
 
+  '@vitest/ui@3.2.4':
+    resolution: {integrity: sha512-hGISOaP18plkzbWEcP/QvtRW1xDXF2+96HbEX6byqQhAUbiS5oH6/9JwW+QsQCIYON2bI6QZBF+2PvOmrRZ9wA==}
+    peerDependencies:
+      vitest: 3.2.4
+
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
 
@@ -3252,6 +3260,9 @@ packages:
 
   fflate@0.4.8:
     resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+
+  fflate@0.8.2:
+    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
 
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
@@ -7643,7 +7654,7 @@ snapshots:
       magic-string: 0.30.19
       sirv: 3.0.2
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
       ws: 8.18.3
     optionalDependencies:
       playwright: 1.55.1
@@ -7662,7 +7673,7 @@ snapshots:
       magic-string: 0.30.19
       sirv: 3.0.2
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
       ws: 8.18.3
     optionalDependencies:
       playwright: 1.55.1
@@ -7684,7 +7695,7 @@ snapshots:
       magicast: 0.3.5
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -7724,6 +7735,17 @@ snapshots:
   '@vitest/spy@3.2.4':
     dependencies:
       tinyspy: 4.0.4
+
+  '@vitest/ui@3.2.4(vitest@3.2.4)':
+    dependencies:
+      '@vitest/utils': 3.2.4
+      fflate: 0.8.2
+      flatted: 3.3.3
+      pathe: 2.0.3
+      sirv: 3.0.2
+      tinyglobby: 0.2.15
+      tinyrainbow: 2.0.0
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -9170,6 +9192,8 @@ snapshots:
       picomatch: 4.0.3
 
   fflate@0.4.8: {}
+
+  fflate@0.8.2: {}
 
   figures@3.2.0:
     dependencies:
@@ -11991,15 +12015,15 @@ snapshots:
 
   vitest-browser-react@1.0.1(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(@vitest/browser@3.2.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vitest@3.2.4):
     dependencies:
-      '@vitest/browser': 3.2.4(playwright@1.55.1)(vite@7.1.7(@types/node@20.19.17)(jiti@2.6.0)(less@4.4.1)(terser@5.44.0))(vitest@3.2.4)
+      '@vitest/browser': 3.2.4(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(playwright@1.55.1)(vite@7.1.7(@types/node@20.19.17)(jiti@2.6.0)(less@4.4.1)(terser@5.44.0))(vitest@3.2.4)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0)
     optionalDependencies:
       '@types/react': 18.3.24
       '@types/react-dom': 18.3.7(@types/react@18.3.24)
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(terser@5.44.0):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -12028,6 +12052,7 @@ snapshots:
       '@types/debug': 4.1.12
       '@types/node': 20.19.17
       '@vitest/browser': 3.2.4(msw@1.3.5(@types/node@20.19.17)(typescript@5.9.2))(playwright@1.55.1)(vite@7.1.7(@types/node@20.19.17)(jiti@2.6.0)(less@4.4.1)(terser@5.44.0))(vitest@3.2.4)
+      '@vitest/ui': 3.2.4(vitest@3.2.4)
       jsdom: 26.1.0
     transitivePeerDependencies:
       - jiti
@@ -12043,7 +12068,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.0)(jsdom@26.1.0)(less@4.4.1)(terser@5.44.0):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -12072,6 +12097,7 @@ snapshots:
       '@types/debug': 4.1.12
       '@types/node': 20.19.17
       '@vitest/browser': 3.2.4(playwright@1.55.1)(vite@7.1.7(@types/node@20.19.17)(jiti@2.6.0)(less@4.4.1)(terser@5.44.0))(vitest@3.2.4)
+      '@vitest/ui': 3.2.4(vitest@3.2.4)
       jsdom: 26.1.0
     transitivePeerDependencies:
       - jiti
