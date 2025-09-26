@@ -34,9 +34,15 @@ export default defineConfig({
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
+						viewport: { width: 834, height: 2000 },
 						enabled: true,
-						headless: true,
-						instances: [{ browser: 'chromium' }]
+						headless: !!process.env.CI,
+						instances: [
+							{
+								browser: 'chromium',
+								screenshotFailures: !process.env.CI
+							}
+						]
 					},
 					exclude: ['dist/**', 'node_modules/**'],
 					globals: true,

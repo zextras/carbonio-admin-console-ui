@@ -18,7 +18,8 @@
 		"lib": ["esnext", "dom", "dom.iterable"],
 		"allowSyntheticDefaultImports": true,
 		"preserveConstEnums": true,
-		"noUncheckedIndexedAccess": false
+		"noUncheckedIndexedAccess": false,
+		"types": ["@vitest/browser/matchers"]
 	},
 	"include": ["src/**/*"],
 	"exclude": ["**/*.spec.ts, ./vitest.config.base.ts"]
