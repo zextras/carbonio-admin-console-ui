@@ -31,7 +31,7 @@
 		"test:watch": "vitest --project=unit",
 		"test:watch:browser": "vitest --project=browser",
 		"test:coverage": "vitest run --project=unit --coverage",
-		"test:ci": "vitest run --coverage",
+		"test:ci": "vitest run --coverage --config ../../vitest.config.coverage.mjs",
 		"test:ui": "vitest --ui",
 		"test:debug": "vitest --project=browser --browser.headless=false"
 	},

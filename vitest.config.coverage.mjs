@@ -13,7 +13,7 @@ export default defineConfig({
 					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
 				},
 				test: {
-					include: ['apps/*/src/**/*.unit.test.{ts,tsx}', '!apps/*/src/**/*.browser.test.{ts,tsx}'],
+					include: ['src/**/*.unit.test.{ts,tsx}', '!src/**/*.browser.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
 					environment: 'jsdom',
@@ -30,7 +30,7 @@ export default defineConfig({
 					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
 				},
 				test: {
-					include: ['apps/*/src/**/*.browser.test.{ts,tsx}', '!apps/*/src/**/*.unit.test.{ts,tsx}'],
+					include: ['src/**/*.browser.test.{ts,tsx}', 'src/**/*.unit.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
@@ -65,10 +65,7 @@ export default defineConfig({
 				'**/*.test.{ts,tsx}',
 				'**/*.spec.{ts,tsx}'
 			],
-			include: [
-				'apps/admin-ui-bootstrapper/src/**/*.{ts,tsx}',
-				'apps/admin-ui-console/src/**/*.{ts,tsx}'
-			],
+			include: ['src/**/*.{ts,tsx}'],
 			all: true
 		}
 	}
