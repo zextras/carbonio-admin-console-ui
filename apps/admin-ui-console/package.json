@@ -66,6 +66,7 @@
 		"@types/styled-components": "^5.1.26",
 		"@vitejs/plugin-react": "^5.0.2",
 		"@vitest/browser": "^3.2.4",
+		"@vitest/ui": "3.2.4",
 		"admin-ui-sdk": "workspace:*",
 		"babel-plugin-styled-components": "^2.1.4",
 		"eslint": "^9.34.0",
