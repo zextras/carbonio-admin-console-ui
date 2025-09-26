@@ -24,7 +24,7 @@ import { describe } from 'vitest';
 // 	};
 // });
 
-describe.todo('COSPreferences', () => {
+describe.skip('COSPreferences', () => {
 	// const setupCosStore = (): void => {
 	// 	useCosStore.getState().setCos({
 	// 		id: 'e00428a1-0c00-11d9-836a-000d93afea2a',

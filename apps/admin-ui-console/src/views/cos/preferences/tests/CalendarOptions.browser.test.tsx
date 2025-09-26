@@ -27,7 +27,7 @@ const cosPrefAttributes: CosPrefAttributes = {
 	zimbraPrefAppleIcalDelegationEnabled: 'TRUE'
 };
 
-describe.todo('CalendarOptions Component', () => {
+describe.skip('CalendarOptions Component', () => {
 	// beforeEach(() => {
 	// 	jest.resetAllMocks();
 	// });

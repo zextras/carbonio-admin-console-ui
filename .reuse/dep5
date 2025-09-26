@@ -78,6 +78,10 @@ Files: **/vitest.config.mjs
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: vitest.config.mjs
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: vitest.setup.jsdom.ts
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only

@@ -71,7 +71,7 @@ import { describe } from 'vitest';
 // 	setAllowedDeletePassword: jest.fn()
 // };
 
-describe.todo('EditAccountGeneralSection', () => {
+describe.skip('EditAccountGeneralSection', () => {
 	// const setupDomainStore = (): void => {
 	// 	useDomainStore.getState().setCosList([
 	// 		{

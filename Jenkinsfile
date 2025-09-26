@@ -119,7 +119,7 @@ pipeline {
                         container('pnpm') {
                             script {
                                 sh 'pnpm exec playwright install --with-deps'
-                                sh 'pnpm test'
+                                sh 'pnpm test:ci'
                             }
                         }
                     }
@@ -132,7 +132,7 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh "npm install -g @sonar/scan"
-                            sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+                            sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui"
                         }
                     }
                 }

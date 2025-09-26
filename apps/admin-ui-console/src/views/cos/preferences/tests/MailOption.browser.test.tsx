@@ -12,7 +12,7 @@ import { setup } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
 import { MailOptions } from '../MailOptions';
 
-describe.todo('MailOptions', () => {
+describe.skip('MailOptions', () => {
 	const mockOnCosAttributeChanged = vi.fn();
 	const mockChangeSwitchOption = vi.fn();
 

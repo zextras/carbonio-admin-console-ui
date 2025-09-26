@@ -6,7 +6,7 @@
 
 import { describe } from 'vitest';
 
-describe.todo('BackupConfigHeader', () => {
+describe.skip('BackupConfigHeader', () => {
 	// const mockT = (key: string, fallback?: string): string => fallback || key;
 	// const defaultProps = {
 	// 	title: 'Backup Configuration',
