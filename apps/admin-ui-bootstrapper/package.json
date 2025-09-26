@@ -29,7 +29,7 @@
 		"test:browser": "vitest run --project=browser --passWithNoTests",
 		"test:all": "vitest run",
 		"test:watch": "vitest --project=unit",
-		"test:watch:browser": "vitest --project=browser",
+		"test:watch:browser": "vitest --browser --watch --ui --open",
 		"test:coverage": "vitest run --project=unit --coverage",
 		"test:ci": "vitest run --coverage",
 		"test:ui": "vitest --ui",
