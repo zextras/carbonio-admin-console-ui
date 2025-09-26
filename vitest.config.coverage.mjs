@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+	optimizeDeps: {
+		include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+	},
 	test: {
 		projects: [
 			{
@@ -31,20 +33,16 @@ export default defineConfig({
 						provider: 'playwright',
 						enabled: true,
 						headless: true,
-						instances: [{ browser: 'chromium' }]
+						instances: [{ browser: 'chromium' }],
+						slowHijackESM: false
 					},
 					exclude: ['dist/**', 'node_modules/**'],
 					globals: true,
 					css: true,
 					clearMocks: true,
 					testTimeout: 30000,
-					retry: process.env.CI ? 2 : 0,
-					pool: 'threads',
-					poolOptions: {
-						threads: {
-							singleThread: true
-						}
-					}
+					teardownTimeout: 10000,
+					retry: process.env.CI ? 2 : 0
 				}
 			}
 		],
