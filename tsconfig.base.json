@@ -22,5 +22,5 @@
 		"types": ["@vitest/browser/matchers"]
 	},
 	"include": ["src/**/*"],
-	"exclude": ["**/*.spec.ts, ./vitest.config.base.ts"]
+	"exclude": ["**/*.spec.ts"]
 }
