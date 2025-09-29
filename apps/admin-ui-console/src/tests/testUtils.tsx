@@ -10,7 +10,7 @@ import {
 	type GetAllBy,
 	queries,
 	queryHelpers,
-	render,
+	render as testingLibraryRender,
 	type RenderOptions,
 	type RenderResult,
 	screen,
@@ -23,6 +23,10 @@ import { filter } from 'lodash';
 import React, { type ReactElement, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
+import {
+	render as browserModeRender,
+	type RenderResult as BrowserModeRenderResult
+} from 'vitest-browser-react';
 
 export type UserEvent = ReturnType<(typeof userEvent)['setup']> & {
 	readonly rightClick: (target: Element) => Promise<void>;
@@ -171,7 +175,7 @@ function customRender(
 		options?: Omit<RenderOptions, 'queries' | 'wrapper'>;
 	} = {}
 ): RenderResult<typeof queries & typeof customQueries> {
-	return render(ui, {
+	return testingLibraryRender(ui, {
 		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
 			<Wrapper initialRouterEntries={initialRouterEntries}>{children}</Wrapper>
 		),
@@ -206,3 +210,13 @@ export const setup = (
 		...options?.renderOptions
 	})
 });
+
+export const setupBrowserTest = (
+	ui: ReactElement,
+	options?: Pick<WrapperProps, 'initialRouterEntries'>
+): BrowserModeRenderResult =>
+	browserModeRender(ui, {
+		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
+			<Wrapper initialRouterEntries={options?.initialRouterEntries}>{children}</Wrapper>
+		)
+	});
