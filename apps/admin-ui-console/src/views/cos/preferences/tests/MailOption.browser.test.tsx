@@ -8,7 +8,7 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CosPrefAttributes } from '../../../../../types';
-import { setupTest } from '../../../../tests/testUtils';
+import { setupUnitTest } from '../../../../tests/testUtils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../constants';
 import { MailOptions } from '../MailOptions';
 
@@ -27,7 +27,7 @@ describe.skip('MailOptions', () => {
 	};
 
 	it('should render MailOptions with the correct elements', () => {
-		setupTest(
+		setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadOnlyCosEntry={false}
@@ -47,7 +47,7 @@ describe.skip('MailOptions', () => {
 	});
 
 	it('should call changeSwitchOption when a switch is toggled', async () => {
-		const { user } = setupTest(
+		const { user } = setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadOnlyCosEntry={false}
@@ -61,7 +61,7 @@ describe.skip('MailOptions', () => {
 	});
 
 	it('should call onFileUploadMaxSizePerFileChange when the file upload size changes', async () => {
-		const { user } = setupTest(
+		const { user } = setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadOnlyCosEntry={false}
@@ -82,7 +82,7 @@ describe.skip('MailOptions', () => {
 			...DEFAULT_COS_PREF_ATTRIBUTES,
 			zimbraFileUploadMaxSizePerFile: 'abc'
 		};
-		const { user } = setupTest(
+		const { user } = setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributesWithNonNumericValue}
 				isReadOnlyCosEntry={false}
@@ -103,7 +103,7 @@ describe.skip('MailOptions', () => {
 	});
 
 	it('should call onGroupByChange when a different group by option is selected', async () => {
-		const { user } = setupTest(
+		const { user } = setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadOnlyCosEntry={false}
@@ -120,7 +120,7 @@ describe.skip('MailOptions', () => {
 	});
 
 	it('should call onCharactorSetChange when a different charset is selected', async () => {
-		const { user } = setupTest(
+		const { user } = setupUnitTest(
 			<MailOptions
 				cosPrefAttributes={cosPrefAttributes}
 				isReadOnlyCosEntry={false}
