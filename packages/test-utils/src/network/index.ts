@@ -51,3 +51,6 @@ export const advancedSupportedApi = {
 			HttpResponse.json({ items: ['carbonio-preview', 'carbonio-mailbox'] }, { status: 200 })
 		)
 };
+
+export const minMaxVersionApi = (supplier: () => HttpResponse<DefaultBodyType>): APIInterceptor =>
+	createAPIInterceptor('get', '/zx/auth/supported', supplier);
