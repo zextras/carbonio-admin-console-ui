@@ -12,7 +12,9 @@ export default defineConfig({
 				optimizeDeps: {
 					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
 				},
+
 				test: {
+					setupFiles: ['../../vitest-unit-setup.ts'],
 					include: ['src/**/*.unit.test.{ts,tsx}', '!src/**/*.browser.test.{ts,tsx}'],
 					exclude: ['dist/**', 'node_modules/**'],
 					name: 'unit',
