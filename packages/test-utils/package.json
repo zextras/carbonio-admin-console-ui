@@ -1,0 +1,22 @@
+{
+	"name": "admin-ui-test-utils",
+	"description": "admin-ui-test-utils",
+	"main": "./src/index.js",
+	"engines": {
+		"node": ">=20.0.0 <21.0.0",
+		"pnpm": ">=10.15.0"
+	},
+	"scripts": {
+		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet"
+	},
+	"packageManager": "pnpm@10.15.0",
+	"author": "zextras",
+	"license": "AGPL-3.0-only",
+	"files": [
+		"utils"
+	],
+	"devDependencies": {
+		"msw": "^2.11.3",
+		"eslint": "^9.34.0"
+	}
+}
