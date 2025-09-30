@@ -7,13 +7,13 @@ import { page } from '@vitest/browser/context';
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
 
-import { setup } from '../../../tests/testUtils';
+import { setupTest } from '../../../tests/testUtils';
 
 import { Section } from './section-component';
 
 describe('Section component', () => {
 	test('renders children correctly', () => {
-		setup(
+		setupTest(
 			<Section
 				children={<div>Test Child</div>}
 				title={'section title'}
@@ -30,7 +30,7 @@ describe('Section component', () => {
 		const title = 'Test Title';
 		const footer = <div>Test Footer</div>;
 
-		setup(
+		setupTest(
 			<Section
 				title={title}
 				footer={footer}
@@ -52,7 +52,7 @@ describe('Section component', () => {
 	test('calls onClose when close button is clicked', async () => {
 		const onCloseMock = vi.fn();
 
-		setup(
+		setupTest(
 			<Section showClose onClose={onCloseMock} title="" divider={false} children={undefined} />
 		);
 

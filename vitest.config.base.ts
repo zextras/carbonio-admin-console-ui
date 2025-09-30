@@ -30,7 +30,7 @@ export default defineConfig({
 					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
 				},
 				test: {
-					setupFiles: ['./vitest-browser-setup.ts'],
+					setupFiles: ['../../vitest-browser-setup.ts'],
 					include: ['src/**/*.browser.test.{ts,tsx}', 'src/**/*.unit.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {

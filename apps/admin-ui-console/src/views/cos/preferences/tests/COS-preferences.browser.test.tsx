@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCosStore } from '../../../../store/cos/store';
 import { useRightsStore } from '../../../../store/rights/store';
-import { setup } from '../../../../tests/testUtils';
+import { setupBrowserTest } from '../../../../tests/testUtils';
 import { COSPreferences } from '../COSPreferences';
 
 vi.mock('../../../../services/modify-cos-service', () => ({
@@ -63,7 +63,7 @@ describe('COSPreferences', () => {
 	});
 
 	it('should render the component correctly', async () => {
-		setup(<COSPreferences />);
+		setupBrowserTest(<COSPreferences />);
 		// Main heading
 		expect(page.getByText('Preferences')).toBeVisible();
 

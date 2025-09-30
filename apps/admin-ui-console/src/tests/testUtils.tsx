@@ -200,7 +200,7 @@ const setupUserEvent = (options: SetupOptions['setupOptions']): UserEvent => {
 	};
 };
 
-export const setup = (
+export const setupTest = (
 	ui: ReactElement,
 	options?: SetupOptions
 ): { user: UserEvent } & ReturnType<typeof customRender> => ({
