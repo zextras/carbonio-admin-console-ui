@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -13,12 +12,12 @@ import {
 	useScreenMode,
 	Button
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { keyframes } from 'styled-components';
 
-import { CreationButton } from './creation-button';
 import { AppRoute, ConfigAttributesState } from '../../types';
-import { CARBONIO_ADMIN_DOCUMENTATION_URL, CARBONIO_LOGO_URL } from '../constants';
+import { CARBONIO_LOGO_URL } from '../constants';
 import { useDarkMode } from '../dark-mode/use-dark-mode';
 import { getDomainInformation } from '../network/get-domain-information';
 import { SearchBar } from '../search/search-bar';
@@ -27,7 +26,8 @@ import { useAppStore } from '../store/app';
 import { useConfigStore } from '../store/config';
 import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
-import { openLink } from '../utility-bar/utils';
+
+import { CreationButton } from './creation-button';
 
 const CustomImg = styled.img`
 	height: 2rem;
@@ -96,9 +96,6 @@ const ShellHeader: FC<{
 }> = ({ activeRoute, mobileNavIsOpen, onMobileMenuClick, children }) => {
 	const screenMode = useScreenMode();
 	const [t] = useTranslation();
-	const helpDocumentationUrl = useConfigStore((state) =>
-		state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL)
-	);
 	const searchEnabled = useAppStore((s) => s.views.search.length > 0);
 	const userName = useUserAccount()?.name;
 	const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
@@ -209,33 +206,6 @@ const ShellHeader: FC<{
 					</Padding>
 				</Container>
 
-				<Container
-					orientation="horizontal"
-					mainAlignment="flex-start"
-					crossAlignment="center"
-					width="100%"
-				>
-					{helpDocumentationUrl && (
-						<FloatingActionButton
-							type={isHelpDocButtonExpanded ? 'outlined' : 'default'}
-							shape="round"
-							label={
-								isHelpDocButtonExpanded ? t('labels.open_documentation', 'Open Documentation') : ''
-							}
-							icon={isHelpDocButtonExpanded ? undefined : 'QuestionMarkOutline'}
-							iconPlacement="left"
-							size="medium"
-							onMouseEnter={(): void => {
-								setIsHelpDocButtonExpanded(true);
-							}}
-							onMouseLeave={(): void => {
-								setIsHelpDocButtonExpanded(false);
-							}}
-							onClick={(): void => openLink(helpDocumentationUrl)}
-							isHelpDocButtonExpanded={isHelpDocButtonExpanded}
-						/>
-					)}
-				</Container>
 				<Responsive mode="desktop">
 					{searchEnabled && (
 						<SearchBar
