@@ -5,8 +5,15 @@
  */
 import 'vitest-browser-react';
 
-import { beforeAll, afterAll } from 'vitest';
+import { beforeAll, afterAll, vi, afterEach } from 'vitest';
+
+vi.stubGlobal('__CARBONIO_DEV__', false);
+vi.stubGlobal('BASE_PATH', '');
 
 beforeAll(() => {});
 
 afterAll(() => {});
+
+afterEach(() => {
+	vi.unstubAllGlobals();
+});
