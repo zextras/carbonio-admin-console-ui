@@ -14,7 +14,7 @@
 		"isolatedModules": true,
 		"strict": true,
 		"noImplicitOverride": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"lib": ["esnext", "dom", "dom.iterable"],
 		"allowSyntheticDefaultImports": true,
 		"preserveConstEnums": true,

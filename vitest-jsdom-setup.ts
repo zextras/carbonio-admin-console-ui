@@ -5,8 +5,23 @@
  */
 
 import { server } from 'admin-ui-test-utils';
+import { noop } from 'lodash';
 import { beforeEach, beforeAll, afterAll, afterEach } from 'vitest';
 
+window.matchMedia = function matchMedia(query: string): MediaQueryList {
+	return {
+		matches: false,
+		media: query,
+		onchange: null,
+		addListener: noop, // Deprecated
+		removeListener: noop, // Deprecated
+		addEventListener: noop,
+		removeEventListener: noop,
+		dispatchEvent: (): boolean => true
+	};
+};
+
+window.fetch = require('node-fetch');
 beforeEach(() => {
 	// cleanup local storage
 	window.localStorage.clear();

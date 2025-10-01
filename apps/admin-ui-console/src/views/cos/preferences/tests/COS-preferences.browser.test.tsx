@@ -5,12 +5,12 @@
  */
 
 import { page } from '@vitest/browser/context';
+import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCosStore } from '../../../../store/cos/store';
 import { useRightsStore } from '../../../../store/rights/store';
-import { setupBrowserTest } from '../../../../tests/testUtils';
 import { COSPreferences } from '../COSPreferences';
 
 vi.mock('../../../../services/modify-cos-service', () => ({
