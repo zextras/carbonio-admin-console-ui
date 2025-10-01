@@ -89,8 +89,8 @@ module.exports = [
 		languageOptions: {
 			parser: typescriptParser,
 			parserOptions: {
-				project: true,
-				tsconfigRootDir: process.cwd()
+				project: './tsconfig.eslint.json', // Changed from `true`
+				tsconfigRootDir: __dirname
 			}
 		},
 		rules: {

@@ -12,7 +12,7 @@
 		"apps/**/src/**/*",
 		"apps/**/types/**/*",
 		"apps/**/translations/**/*",
-		"packages/test-utils/src/**/*"
+		"packages/test-utils/**/*"
 	],
 	"exclude": ["node_modules", "**/node_modules", "**/dist", "**/build", "**/.turbo"]
 }
