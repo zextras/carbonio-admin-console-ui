@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 export const getDelegateAuthRequest = async (id: string, name?: string): Promise<any> => {
 	const request: any = {

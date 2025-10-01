@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const sendMail = async (api: string, body: any): Promise<any> =>
 	postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`).then((res: any) =>

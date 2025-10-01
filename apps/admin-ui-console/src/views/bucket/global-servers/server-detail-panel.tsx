@@ -16,7 +16,7 @@ import {
 	Table,
 	Button
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

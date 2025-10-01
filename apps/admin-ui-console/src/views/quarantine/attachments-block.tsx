@@ -18,7 +18,7 @@ import {
 	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
-import { getIntegratedFunction, soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { getIntegratedFunction, soapFetch } from '@zextras/admin-ui-bootstrap';
 import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';

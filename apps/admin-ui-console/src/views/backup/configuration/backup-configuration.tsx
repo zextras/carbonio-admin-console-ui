@@ -21,7 +21,7 @@ import {
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	fetchExternalSoap
-} from '@zextras/admin-ui-bootstrapper';
+} from '@zextras/admin-ui-bootstrap';
 import { isEmpty, find } from 'lodash';
 import { useTranslation, Trans } from 'react-i18next';
 import { useParams } from 'react-router-dom';

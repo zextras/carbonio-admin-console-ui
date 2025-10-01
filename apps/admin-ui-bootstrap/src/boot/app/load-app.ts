@@ -39,7 +39,7 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 		try {
 			// DO NOT RENAME THIS
 			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__[
-				'@zextras/admin-ui-bootstrapper'
+				'@zextras/admin-ui-bootstrap'
 			][appPkg.name] = {
 				store: {
 					store,

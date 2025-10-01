@@ -23,7 +23,7 @@ import {
 	useSnackbar,
 	DropdownItem
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 

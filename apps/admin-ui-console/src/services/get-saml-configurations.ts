@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const getSamlConfig = async (domain: string, raw?: boolean): Promise<any> => {
 	let url = `/service/extension/zextras_admin/auth/saml/${domain}`;

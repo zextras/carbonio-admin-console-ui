@@ -15,7 +15,7 @@ import {
 	useIsAdvanced,
 	useUserAccounts,
 	useUserSettings
-} from '@zextras/admin-ui-bootstrapper';
+} from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';

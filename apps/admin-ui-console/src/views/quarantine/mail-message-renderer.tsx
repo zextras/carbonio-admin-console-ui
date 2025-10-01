@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
 import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';

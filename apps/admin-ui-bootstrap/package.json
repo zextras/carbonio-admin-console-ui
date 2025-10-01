@@ -1,5 +1,5 @@
 {
-	"name": "@zextras/admin-ui-bootstrapper",
+	"name": "@zextras/admin-ui-bootstrap",
 	"version": "0.9.36",
 	"description": "The Zextras Carbonio web admin",
 	"private": true,

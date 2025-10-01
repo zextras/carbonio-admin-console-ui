@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Button,
