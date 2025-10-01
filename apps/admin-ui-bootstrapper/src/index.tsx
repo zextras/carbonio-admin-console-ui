@@ -3,12 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable import/no-import-module-exports */
 
 import './index.css';
 import React, { Suspense, lazy } from 'react';
-
 import ReactDOM from 'react-dom/client';
 
 import LoadingView from './boot/splash';
@@ -38,7 +35,9 @@ window.addEventListener('contextmenu', (ev) => {
 window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
 const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
 
+// @ts-ignore
 if (module.hot) {
+	// @ts-ignore
 	module.hot.accept();
 }
 

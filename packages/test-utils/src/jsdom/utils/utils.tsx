@@ -10,19 +10,17 @@ import {
 	type GetAllBy,
 	queries,
 	queryHelpers,
-	render,
+	render as testingLibraryRender,
 	type RenderOptions,
 	type RenderResult,
 	screen,
 	within
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
-import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash';
-import React, { type ReactElement, useMemo } from 'react';
-import { I18nextProvider } from 'react-i18next';
-import { MemoryRouter } from 'react-router-dom';
+import React, { type ReactElement } from 'react';
+
+import { Wrapper, WrapperProps } from './wrapper';
 
 export type UserEvent = ReturnType<(typeof userEvent)['setup']> & {
 	readonly rightClick: (target: Element) => Promise<void>;
@@ -118,50 +116,6 @@ const customQueries = {
 	findByRoleWithIcon
 };
 
-const getAppI18n = (): i18n => {
-	const newI18n = i18next.createInstance();
-	newI18n
-		// init i18next
-		// for all options read: https://www.i18next.com/overview/configuration-options
-		.init({
-			lng: 'en',
-			fallbackLng: 'en',
-			debug: false,
-
-			interpolation: {
-				escapeValue: false // not needed for react as it escapes by default
-			},
-			resources: { en: { translation: {} } }
-		});
-	return newI18n;
-};
-
-interface WrapperProps {
-	children?: React.ReactNode | undefined;
-	initialRouterEntries?: string[];
-}
-
-export const I18NextTestProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
-	const i18nInstance = useMemo(() => getAppI18n(), []);
-
-	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
-};
-
-const Wrapper = ({ initialRouterEntries, children }: WrapperProps): JSX.Element => (
-	<MemoryRouter
-		initialEntries={initialRouterEntries}
-		initialIndex={(initialRouterEntries?.length || 1) - 1}
-	>
-		<ThemeProvider>
-			<SnackbarManager>
-				<I18NextTestProvider>
-					<ModalManager>{children}</ModalManager>
-				</I18NextTestProvider>
-			</SnackbarManager>
-		</ThemeProvider>
-	</MemoryRouter>
-);
-
 function customRender(
 	ui: React.ReactElement,
 	{
@@ -171,7 +125,7 @@ function customRender(
 		options?: Omit<RenderOptions, 'queries' | 'wrapper'>;
 	} = {}
 ): RenderResult<typeof queries & typeof customQueries> {
-	return render(ui, {
+	return testingLibraryRender(ui, {
 		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
 			<Wrapper initialRouterEntries={initialRouterEntries}>{children}</Wrapper>
 		),
@@ -196,7 +150,7 @@ const setupUserEvent = (options: SetupOptions['setupOptions']): UserEvent => {
 	};
 };
 
-export const setup = (
+export const setupTest = (
 	ui: ReactElement,
 	options?: SetupOptions
 ): { user: UserEvent } & ReturnType<typeof customRender> => ({

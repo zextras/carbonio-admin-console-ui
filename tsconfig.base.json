@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"checkJs": false,
 		"noEmit": true,
-		"module": "commonjs",
+		"module": "esnext",
 		"jsx": "react-jsx",
 		"esModuleInterop": true,
 		"skipLibCheck": true,
@@ -14,12 +14,13 @@
 		"isolatedModules": true,
 		"strict": true,
 		"noImplicitOverride": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"lib": ["esnext", "dom", "dom.iterable"],
 		"allowSyntheticDefaultImports": true,
 		"preserveConstEnums": true,
-		"noUncheckedIndexedAccess": false
+		"noUncheckedIndexedAccess": false,
+		"types": ["@vitest/browser/matchers"]
 	},
 	"include": ["src/**/*"],
-	"exclude": ["**/*.spec.ts, ./vitest.config.base.ts"]
+	"exclude": ["**/*.spec.ts"]
 }

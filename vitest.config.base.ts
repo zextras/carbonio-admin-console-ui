@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { defineConfig } from 'vitest/config';
+import path from 'node:path';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	test: {
@@ -13,10 +15,17 @@ export default defineConfig({
 					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
 				},
 				test: {
-					include: ['src/**/*.unit.test.{ts,tsx}', '!src/**/*.browser.test.{ts,tsx}'],
-					exclude: ['dist/**', 'node_modules/**'],
-					name: 'unit',
 					environment: 'jsdom',
+					setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
+					alias: {
+						'admin-ui-test-utils': path.resolve(
+							__dirname,
+							'./packages/test-utils/src/index.jsdom.ts'
+						)
+					},
+					include: ['src/**/*.test.{ts,tsx}'],
+					exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
+					name: 'unit',
 					globals: true,
 					css: true,
 					clearMocks: true,
@@ -26,17 +35,51 @@ export default defineConfig({
 				}
 			},
 			{
+				plugins: [
+					svgr({
+						svgrOptions: {
+							ref: true,
+							svgo: false,
+							titleProp: true,
+							exportType: 'default'
+						},
+						include: '**/*.svg'
+					})
+				],
 				optimizeDeps: {
-					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+					include: [
+						'react',
+						'react-dom',
+						'react/jsx-runtime',
+						'react/jsx-dev-runtime',
+						'@zextras/carbonio-design-system',
+						'i18next',
+						'react-i18next',
+						'react-router-dom'
+					]
 				},
 				test: {
-					include: ['src/**/*.browser.test.{ts,tsx}', 'src/**/*.unit.test.{ts,tsx}'],
+					environment: 'browser',
+					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+					alias: {
+						'admin-ui-test-utils': path.resolve(
+							__dirname,
+							'./packages/test-utils/src/index.browser.ts'
+						)
+					},
+					include: ['src/**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
+						viewport: { width: 834, height: 2000 },
 						enabled: true,
-						headless: true,
-						instances: [{ browser: 'chromium' }]
+						headless: !!process.env.CI,
+						instances: [
+							{
+								browser: 'chromium',
+								screenshotFailures: !process.env.CI
+							}
+						]
 					},
 					exclude: ['dist/**', 'node_modules/**'],
 					globals: true,
