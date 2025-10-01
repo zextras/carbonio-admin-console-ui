@@ -7,7 +7,7 @@
 import { DefaultBodyType, http, StrictRequest, HttpResponse } from 'msw';
 import { SetupServer } from 'msw/node';
 
-import server from '../mocks/server';
+import server from '../mocks/msw-server';
 
 export type APIInterceptor = {
 	getLastRequest: () => StrictRequest<DefaultBodyType>;
@@ -54,3 +54,14 @@ export const advancedSupportedApi = {
 
 export const minMaxVersionApi = (supplier: () => HttpResponse<DefaultBodyType>): APIInterceptor =>
 	createAPIInterceptor('get', '/zx/auth/supported', supplier);
+
+export const loginConfigApi = (supplier: () => HttpResponse<DefaultBodyType>): APIInterceptor =>
+	createAPIInterceptor('get', '/zx/login/v3/config', supplier);
+
+export const getInfoRequestApi = (supplier: () => HttpResponse<DefaultBodyType>): APIInterceptor =>
+	createAPIInterceptor('post', '/service/admin/soap/GetInfoRequest', supplier);
+
+export const getAllConfigRequestApi = (
+	supplier: () => HttpResponse<DefaultBodyType>
+): APIInterceptor =>
+	createAPIInterceptor('post', '/service/admin/soap/GetAllConfigRequest', supplier);

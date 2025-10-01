@@ -1,7 +1,13 @@
 {
 	"name": "admin-ui-test-utils",
 	"description": "admin-ui-test-utils",
-	"main": "./src/index.js",
+	"exports": {
+		".": {
+			"browser": "./src/index.browser.ts",
+			"jsdom": "./src/index.node.ts",
+			"default": "./src/index.ts"
+		}
+	},
 	"engines": {
 		"node": ">=20.0.0 <21.0.0",
 		"pnpm": ">=10.15.0"
@@ -17,6 +23,9 @@
 	],
 	"devDependencies": {
 		"msw": "^2.11.3",
-		"eslint": "^9.34.0"
+		"eslint": "^9.34.0",
+		"vitest": "^3.2.4",
+		"vitest-browser-react": "^1.0.1",
+		"@vitest/browser": "^3.2.4"
 	}
 }

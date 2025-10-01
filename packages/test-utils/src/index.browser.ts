@@ -3,5 +3,4 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-export * from './index.browser';
-export * from './index.jsdom';
+export * from './browser';
