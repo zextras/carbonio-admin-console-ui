@@ -5,6 +5,7 @@
  */
 import { defineConfig } from 'vitest/config';
 import path from 'node:path';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	test: {
@@ -34,6 +35,17 @@ export default defineConfig({
 				}
 			},
 			{
+				plugins: [
+					svgr({
+						svgrOptions: {
+							ref: true,
+							svgo: false,
+							titleProp: true,
+							exportType: 'default'
+						},
+						include: '**/*.svg'
+					})
+				],
 				optimizeDeps: {
 					include: [
 						'react',
