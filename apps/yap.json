@@ -5,7 +5,7 @@
 	"output": "artifacts",
 	"projects": [
 		{
-			"name": "admin-ui-bootstrapper/dist"
+			"name": "admin-ui-bootstrap/dist"
 		},
 		{
 			"name": "admin-ui-console/dist"

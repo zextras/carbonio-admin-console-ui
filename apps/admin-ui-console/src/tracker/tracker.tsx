@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect } from 'react';
 
-import { useUserAccount } from '@zextras/admin-ui-bootstrapper';
+import { useUserAccount } from '@zextras/admin-ui-bootstrap';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
 

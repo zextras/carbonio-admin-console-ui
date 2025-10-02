@@ -56,7 +56,7 @@ export function injectSharedLibraries(): void {
 			}
 		},
 		// DO NOT RENAME THIS
-		'@zextras/admin-ui-bootstrapper': {},
+		'@zextras/admin-ui-bootstrap': {},
 		'@zextras/carbonio-design-system': ZappUI
 	};
 	wnd.__ZAPP_HMR_EXPORT__ = {};

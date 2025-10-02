@@ -67,7 +67,7 @@ const defaultI18nInitOptions: InitOptions = {
 		console.warn(`Missing translation with key '${key}'`);
 	},
 	backend: {
-		loadPath: `/admin-ui-bootstrapper/i18n/{{lng}}.json` // FIX-ADMIN-MONOREPO
+		loadPath: `/admin-ui-bootstrap/i18n/{{lng}}.json` // FIX-ADMIN-MONOREPO
 	}
 };
 
@@ -105,7 +105,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 								backend: {
 									loadPath:
 										app.name === SHELL_APP_ID
-											? `/admin-ui-bootstrapper/i18n/{{lng}}.json`
+											? `/admin-ui-bootstrap/i18n/{{lng}}.json`
 											: `${dropRight(app.js_entrypoint.split('/')).join('/')}/i18n/{{lng}}.json`
 								}
 							});

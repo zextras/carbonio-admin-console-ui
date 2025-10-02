@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const deleteSignature = async (id: string, signatureId: string): Promise<any> =>
 	postSoapFetchRequest(

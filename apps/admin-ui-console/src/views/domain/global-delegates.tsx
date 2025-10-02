@@ -14,7 +14,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { flatMapDeep, filter, debounce } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';

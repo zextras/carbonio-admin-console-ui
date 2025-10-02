@@ -8,7 +8,7 @@ import { describe } from 'vitest';
 
 // const createSnackbar = (arg: any): CreateSnackbarFn => arg;
 // const createSnackbarSpy = jest.fn(createSnackbar);
-// jest.mock('@zextras/admin-ui-bootstrapper', () => ({
+// jest.mock('@zextras/admin-ui-bootstrap', () => ({
 // 	useUserSettings: jest.fn()
 // }));
 //

@@ -18,7 +18,7 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, useUserAccount } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest, useUserAccount } from '@zextras/admin-ui-bootstrap';
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';

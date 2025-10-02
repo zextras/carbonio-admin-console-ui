@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const getQuotaUsageAdvance = async (
 	domainName: string,

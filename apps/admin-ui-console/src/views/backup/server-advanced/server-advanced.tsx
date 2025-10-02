@@ -16,7 +16,7 @@ import {
 	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

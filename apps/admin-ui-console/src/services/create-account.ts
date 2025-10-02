@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 export const createAccountRequest = async (
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

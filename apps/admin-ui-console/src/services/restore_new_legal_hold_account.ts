@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { fetchExternalSoap } from '@zextras/admin-ui-bootstrapper';
+import { fetchExternalSoap } from '@zextras/admin-ui-bootstrap';
 
 type RestoreResponse = {
 	operationId: string;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const deleteAccountAliasRequest = async (id: string, alias: string): Promise<any> => {

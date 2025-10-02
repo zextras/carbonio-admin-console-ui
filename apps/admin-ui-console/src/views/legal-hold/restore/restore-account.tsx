@@ -18,7 +18,7 @@ import {
 	Padding,
 	Switch
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, debounce, unionBy } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

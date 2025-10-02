@@ -24,7 +24,7 @@ import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
 // NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
-// as for the moment we do not need to load other apps with admin-ui-bootstrapper.
+// as for the moment we do not need to load other apps with admin-ui-bootstrap.
 // the issue will be dealt with once bootstrapper is refactored
 // to make the admin panel a micro-frontend
 const pkg = { name: 'admin-ui-console', priority: 3, icon: 'List' };

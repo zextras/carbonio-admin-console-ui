@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const bounceMsgRequest = async (message: any): Promise<any> =>
 	postSoapFetchRequest(
