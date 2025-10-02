@@ -1,9 +1,12 @@
 FROM alpine
 
-COPY dist/source /tmp/build
+RUN apk add --no-cache jq
 
-RUN COMMIT_ID=$(ls /tmp/build) \
-    && WEB_PATH="/opt/zextras/admin/iris/carbonio-admin-ui/${COMMIT_ID}" \
-    && mkdir -p "${WEB_PATH}" \
-    && cp -r /tmp/build/* "${WEB_PATH}" \
+COPY dist/source/ /tmp/build/
+
+RUN ADMIN_PATH="/opt/zextras/admin/iris/carbonio-admin-ui" \
+    && mkdir -p "${ADMIN_PATH}" \
+    && cp -r /tmp/build/* "${ADMIN_PATH}/" \
     && rm -r /tmp/build
+
+ENTRYPOINT ["/bin/sh", "-c", "jq -s '{components: .}' $(find /opt/zextras/admin/iris/ -name component.json) > /opt/zextras/admin/iris/components.json"]
