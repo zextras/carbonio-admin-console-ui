@@ -237,7 +237,7 @@ const DomainVirtualHosts: FC = () => {
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -384,7 +384,7 @@ const DomainVirtualHosts: FC = () => {
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
 			{toggleLoadVerifyCertWizard && (
-				<ModalOverlay setOpen={setToggleLoadVerifyCertWizard} open={toggleLoadVerifyCertWizard}>
+				<ModalOverlay open={toggleLoadVerifyCertWizard}>
 					<LoadVerifyCertificateWizard
 						setToggleWizard={setToggleLoadVerifyCertWizard}
 						setAlertToggle={setAlertToggle}

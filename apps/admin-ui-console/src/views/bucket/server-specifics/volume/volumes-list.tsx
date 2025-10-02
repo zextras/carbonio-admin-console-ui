@@ -226,7 +226,7 @@ const VolumesDetailPanel: FC = () => {
 	const getAllVolumesRequest = useCallback((): void => {
 		if (isAdvanced) {
 			fetchSoap('zextras', {
-				 
+
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
@@ -409,7 +409,7 @@ const VolumesDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	 
+
 	const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
 		const bucketDetails = isVolumeAllDetail?.filter(
 			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
@@ -495,7 +495,7 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							severity: 'success',
-							 
+
 							label: t('label.volume_created_msg', 'The volume has been created successfully')
 						});
 						setToggleWizardLocal(false);
@@ -527,15 +527,15 @@ const VolumesDetailPanel: FC = () => {
 					label: error?.message
 						? error?.message
 						: t('label.volume_detail_error', '{{message}}', {
-								message: 'Something went wrong, please try again'
-							}),
+							message: 'Something went wrong, please try again'
+						}),
 					autoHideTimeout: 5000
 				});
 				return error;
 			});
 	};
 
-	 
+
 	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
@@ -624,7 +624,7 @@ const VolumesDetailPanel: FC = () => {
 				.then(async (res) => {
 					if (res?.volume && Array.isArray(res?.volume)) {
 						const vol = res?.volume[0];
-						 
+
 						if (vol && vol?.id) {
 							if (attr?.isCurrent === 1) {
 								await setCurrentVolumeRequest(vol?.id, vol?.type)
@@ -668,8 +668,8 @@ const VolumesDetailPanel: FC = () => {
 						label: error?.message
 							? error?.message
 							: t('label.volume_detail_error', '{{message}}', {
-									message: 'Something went wrong, please try again'
-								}),
+								message: 'Something went wrong, please try again'
+							}),
 						autoHideTimeout: 5000
 					});
 					setIsLoading(false);
@@ -697,7 +697,7 @@ const VolumesDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardExternal && (
-				<ModalOverlay setOpen={setToggleWizardExternal} open={toggleWizardExternal}>
+				<ModalOverlay open={toggleWizardExternal}>
 					<CreateMailstoresVolume
 						setToggleWizardExternal={setToggleWizardExternal}
 						setToggleWizardLocal={setToggleWizardLocal}
@@ -707,7 +707,7 @@ const VolumesDetailPanel: FC = () => {
 				</ModalOverlay>
 			)}
 			{toggleWizardLocal && (
-				<ModalOverlay setOpen={setToggleWizardLocal} open={toggleWizardLocal}>
+				<ModalOverlay open={toggleWizardLocal}>
 					<NewVolume
 						setToggleWizardLocal={setToggleWizardLocal}
 						setToggleWizardExternal={setToggleWizardExternal}
@@ -718,7 +718,7 @@ const VolumesDetailPanel: FC = () => {
 				</ModalOverlay>
 			)}
 			{modifyVolumeToggle && volume && (
-				<ModalOverlay setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
+				<ModalOverlay open={modifyVolumeToggle}>
 					<ModifyVolume
 						volumeId={volume?.id}
 						setOpen={setOpen}
