@@ -5,7 +5,6 @@
  */
 import React, { FC, useEffect, useRef } from 'react';
 
-import { useTranslation } from 'react-i18next';
 
 import { ModalOverlayContainer, ModalSubOverlayContainer } from './styled';
 
@@ -18,8 +17,7 @@ interface ModalOverlayProps {
 const ModalOverlay: FC<ModalOverlayProps> = ({
 	children,
 	open,
-	maxWidth,
-
+	maxWidth
 }) => {
 	const ref = useRef<any>(null);
 
