@@ -990,14 +990,22 @@ const EditAccount: FC<{
 				});
 		}, [selectedAccount?.id, onSuccess, t, createSnackbar, setDefaultTab, setShowEditAccountView]);
 
+		const handleCloseWhenDirty = useCallback(() => {
+			setShowModal(true);
+		}, [setShowModal]);
+
+		const handleCloseWhenClean = useCallback(() => {
+			setShowEditAccountView(false);
+			setDefaultTab('general');
+		}, [setDefaultTab, setShowEditAccountView]);
+
 		const handleClose = useCallback(() => {
 			if (isDirty) {
-				setShowModal(true);
+				handleCloseWhenDirty();
 			} else {
-				setShowEditAccountView(false);
-				setDefaultTab('general');
+				handleCloseWhenClean();
 			}
-		}, [isDirty, setDefaultTab, setShowEditAccountView, setShowModal]);
+		}, [isDirty, handleCloseWhenDirty, handleCloseWhenClean]);
 
 		return (
 			<>
