@@ -14,13 +14,14 @@ library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
 
 def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
 
-def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash) {
+def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash, String source) {
     tagsToAdd = []
     versions.each {
         version -> tagsToAdd.add("-t " + imageName + ":" + version)
     }
-    sh 'docker build ' + '--label org.opencontainers.image.vendor="Zextras" ' + '--label org.opencontainers.image.revision="'
- + commitHash + '" ' + '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
+    sh 'docker build ' + '--label org.opencontainers.image.vendor="Zextras" ' + '--label org.opencontainers.image.revision="' 
+        + commitHash + '" ' + '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' 
+        + source
     sh 'docker push --all-tags ' + imageName
 }
 
@@ -153,7 +154,6 @@ pipeline {
                 container('pnpm') {
                     script {
                         sh 'pnpm build'
-                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
                 }
             }
@@ -170,42 +170,55 @@ pipeline {
             }
         }
         stage('Publish containers - devel') {
-            when {
-                allOf {
-                    expression {
-                        isDevelBranch == true
+            // when {
+            //     allOf {
+            //         expression {
+            //             isDevelBranch == true
+            //         }
+            //     }
+            // }
+            steps {
+                // build bootstrap container
+                script {
+                    def dir = 'admin-ui-bootstrap/'
+                    def dockerfilePath = "apps/${dir}/Dockerfile"
+                    def projectName = 'carbonio-admin-ui'
+                    def commitId = sh(
+                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
+                        returnStdout: true
+                    ).trim()
+                    echo "Building container for ${dir}, project name ${projectName}"
+                    container('dind') {
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            buildContainer(
+                                dockerfilePath,
+                                "registry.dev.zextras.com/dev/${projectName}",
+                                ['latest', 'devel'],
+                                commitId,
+                                "apps/${dir}"
+                            )
+                        }
                     }
                 }
-            }
-            steps {
+                // build console container
                 script {
-                    def dirNames = sh(
-                        script: 'find apps -maxdepth 1 -mindepth 1 -type d -printf "%f\\n"',
+                    def dir = 'admin-ui-console/'
+                    def dockerfilePath = "apps/${dir}/Dockerfile"
+                    def projectName = 'carbonio-admin-console-ui'
+                    def commitId = sh(
+                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
                         returnStdout: true
-                    ).trim().split('\n')
-                    echo "Found directories: ${dirNames}"
-                    dirNames.each {
-                        dir -> def appPath = "apps/${dir}"
-                        def dockerfilePath = "${appPath}/Dockerfile"
-                        if (fileExists(dockerfilePath)) {
-                            def projectName = readJSON(file: "${appPath}/package.json").name
-                            def commitId = sh(
-                                script: "find ${appPath} -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
-                                returnStdout: true,
-                            ).trim()
-                            echo "Building container for ${dir}, project name ${projectName}"
-                            container('dind') {
-                                withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                    buildContainer(
-                                        dockerfilePath,
-                                        "registry.dev.zextras.com/dev/${projectName}",
-['latest', 'devel'],
-                                        commitId
-                                    )
-                                }
-                            }
-                        } else {
-                            echo "No Dockerfile found for ${dir}, skipping..."
+                    ).trim()
+                    echo "Building container for ${dir}, project name ${projectName}"
+                    container('dind') {
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            buildContainer(
+                                dockerfilePath,
+                                "registry.dev.zextras.com/dev/${projectName}",
+                                ['latest', 'devel'],
+                                commitId,
+                                "apps/${dir}"
+                            )
                         }
                     }
                 }
