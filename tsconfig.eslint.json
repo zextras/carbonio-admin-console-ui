@@ -11,7 +11,8 @@
 		"**/*.jsx",
 		"apps/**/src/**/*",
 		"apps/**/types/**/*",
-		"apps/**/translations/**/*"
+		"apps/**/translations/**/*",
+		"packages/test-utils/**/*"
 	],
 	"exclude": ["node_modules", "**/node_modules", "**/dist", "**/build", "**/.turbo"]
 }

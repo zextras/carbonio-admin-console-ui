@@ -19,7 +19,7 @@ import {
 	useScreenMode,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

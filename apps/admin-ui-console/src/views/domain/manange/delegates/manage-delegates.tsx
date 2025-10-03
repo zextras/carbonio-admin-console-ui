@@ -19,7 +19,7 @@ import {
 	postSoapFetchRequest,
 	useUserAccount,
 	useUserSettings
-} from '@zextras/admin-ui-bootstrapper';
+} from '@zextras/admin-ui-bootstrap';
 import { debounce, filter, flatMapDeep } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';

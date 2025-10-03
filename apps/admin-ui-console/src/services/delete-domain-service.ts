@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrapper';
+import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 export const deleteDomain = async (domainId: string): Promise<any> =>
 	soapFetch(`DeleteDomain`, {

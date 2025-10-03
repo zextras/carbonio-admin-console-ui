@@ -18,7 +18,7 @@ import {
 	Icon,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

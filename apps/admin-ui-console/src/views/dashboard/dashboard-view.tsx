@@ -7,7 +7,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrapper';
+import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 

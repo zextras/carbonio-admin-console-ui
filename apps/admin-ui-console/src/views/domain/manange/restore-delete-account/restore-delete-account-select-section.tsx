@@ -16,7 +16,7 @@ import {
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 

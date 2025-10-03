@@ -18,7 +18,7 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrapper';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import { debounce, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 

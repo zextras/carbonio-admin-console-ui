@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrapper';
+import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
 export const getQuarantineMessages = async (id: string): Promise<any> =>
 	postSoapFetchRequest(

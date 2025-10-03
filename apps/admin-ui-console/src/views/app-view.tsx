@@ -7,7 +7,7 @@
 import React, { FC, Suspense } from 'react';
 
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrapper';
+import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 

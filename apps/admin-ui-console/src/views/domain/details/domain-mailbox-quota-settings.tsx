@@ -18,7 +18,7 @@ import {
 	useSnackbar,
 	THeader
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrapper';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
