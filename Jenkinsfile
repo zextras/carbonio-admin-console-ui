@@ -154,6 +154,7 @@ pipeline {
                 container('pnpm') {
                     script {
                         sh 'pnpm build'
+                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
                 }
             }
