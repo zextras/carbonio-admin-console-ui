@@ -10,9 +10,10 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { UtilityView } from '../../types/apps';
-import { CARBONIO_ADMIN_DOCUMENTATION_URL } from '../constants';
+import { CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE, CARBONIO_CE_ADMIN_DOCUMENTATION_URL } from '../constants';
 import { logout } from '../network/logout';
 import { useUserAccount } from '../store/account';
+import { getIsAdvanced } from '../store/advance';
 import { useConfigStore } from '../store/config';
 
 import { useUtilityBarStore } from './store';
@@ -46,8 +47,9 @@ export const ShellUtilityBar: FC = () => {
 	const [accountName, setAccountName] = useState('');
 	const views = useUtilityViews();
 	const acct = useUserAccount();
+	const isAdvanced = getIsAdvanced();
 	const helpDocumentationUrl = useConfigStore((state) =>
-		state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL)
+		isAdvanced ? state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE) : CARBONIO_CE_ADMIN_DOCUMENTATION_URL
 	);
 	const [t] = useTranslation();
 	const accountItems = useMemo(
