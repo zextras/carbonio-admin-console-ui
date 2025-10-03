@@ -19,8 +19,8 @@ def buildContainer(String dockerfile, String imageName, List < String > versions
     versions.each {
         version -> tagsToAdd.add("-t " + imageName + ":" + version)
     }
-    sh 'docker build ' + '--label org.opencontainers.image.vendor="Zextras" ' + '--label org.opencontainers.image.revision="' 
-        + commitHash + '" ' + '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
+    sh 'docker build ' + '--label org.opencontainers.image.vendor="Zextras" ' + '--label org.opencontainers.image.revision="'
+ + commitHash + '" ' + '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
     sh 'docker push --all-tags ' + imageName
 }
 
@@ -170,14 +170,14 @@ pipeline {
             }
         }
         stage('Publish containers - devel') {
-            steps {
-                when {
-                    allOf {
-                        expression {
-                            isDevelBranch == true
-                        }
+            when {
+                allOf {
+                    expression {
+                        isDevelBranch == true
                     }
                 }
+            }
+            steps {
                 script {
                     def dirNames = sh(
                         script: 'find apps -maxdepth 1 -mindepth 1 -type d -printf "%f\\n"',
@@ -199,7 +199,7 @@ pipeline {
                                     buildContainer(
                                         dockerfilePath,
                                         "registry.dev.zextras.com/dev/${projectName}",
-                                        ['latest', 'devel'],
+['latest', 'devel'],
                                         commitId
                                     )
                                 }
