@@ -47,7 +47,7 @@ export const ShellUtilityBar: FC = () => {
 	const [accountName, setAccountName] = useState('');
 	const views = useUtilityViews();
 	const acct = useUserAccount();
-	const isAdvanced = useMemo(() => getIsAdvanced(), []);
+	const isAdvanced = getIsAdvanced();
 	const helpDocumentationUrl = useConfigStore((state) =>
 		isAdvanced ? state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE) : CARBONIO_CE_ADMIN_DOCUMENTATION_URL
 	);
