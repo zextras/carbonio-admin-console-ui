@@ -15,14 +15,15 @@ library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
 def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
 
 def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash, String source) {
-    tagsToAdd = []
-    versions.each {
-        version -> tagsToAdd.add("-t " + imageName + ":" + version)
-    }
-    sh 'docker build ' + '--label org.opencontainers.image.vendor="Zextras" ' + '--label org.opencontainers.image.revision="' 
-        + commitHash + '" ' + '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' 
-        + source
-    sh 'docker push --all-tags ' + imageName
+  tagsToAdd = []
+  versions.each {
+    version -> tagsToAdd.add("-t " + imageName + ":" + version)
+  }
+  sh 'docker build ' +
+          '--label org.opencontainers.image.vendor="Zextras" ' +
+          '--label org.opencontainers.image.revision="' + commitHash + '" ' +
+          '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' + source
+  sh 'docker push --all-tags ' + imageName
 }
 
 void npmLogin(String npmAuthToken) {
