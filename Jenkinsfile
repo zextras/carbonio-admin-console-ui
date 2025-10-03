@@ -172,13 +172,13 @@ pipeline {
             }
         }
         stage('Publish containers - devel') {
-            // when {
-            //     allOf {
-            //         expression {
-            //             isDevelBranch == true
-            //         }
-            //     }
-            // }
+            when {
+                allOf {
+                    expression {
+                        isDevelBranch == true
+                    }
+                }
+            }
             steps {
                 // build bootstrap container
                 script {
