@@ -26,7 +26,7 @@
 		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
 	},
 	"dependencies": {
-		"react": "^18.3.1"
+		"react": "^19.1.0"
 	},
 	"devDependencies": {
 		"@tsconfig/node12": "^12.1.4",
