@@ -319,7 +319,7 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<ModalOverlay setOpen={setToggleWizardSection} open={toggleWizardSection}>
+				<ModalOverlay open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setShowEditDetailView}
@@ -329,7 +329,7 @@ const BucketDetailPanel: FC = () => {
 				</ModalOverlay>
 			)}
 			{showEditDetailView && (
-				<ModalOverlay setOpen={setShowEditDetailView} open={showEditDetailView}>
+				<ModalOverlay open={showEditDetailView}>
 					<EditBucketDetailPanel
 						setBucketDeleteName={setBucketDeleteName}
 						setOpen={setOpen}

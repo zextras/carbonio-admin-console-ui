@@ -527,7 +527,7 @@ const MTAStats: FC = () => {
 						</Container>
 					)}
 					{selectedServer && selectedServer.length > 0 && (
-						<ModalOverlay setOpen={setShowMtaStatDetail} open={showMtaStatDetail}>
+						<ModalOverlay open={showMtaStatDetail}>
 							<MTAStatsMail
 								serverState={mailServerStats.find((item) => item?.id === selectedServer[0])}
 								updateMailCount={updateMailCount}

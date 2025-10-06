@@ -151,7 +151,7 @@ const HSMsettingPanel: FC = () => {
 		return hsmTypeString;
 	};
 
-	const doClickAction = useCallback((): void => {}, []);
+	const doClickAction = useCallback((): void => { }, []);
 
 	const doDoubleClickAction = useCallback((): void => {
 		setShowEditHsmPolicyView(true);
@@ -261,11 +261,11 @@ const HSMsettingPanel: FC = () => {
 					_jsns: ZIMBRA_ADMIN_URN
 				},
 				{
-					targetServer:serverId
+					targetServer: serverId
 				}
-				).then((response: any) => {
-					setIsVolumeInProgress(false);
-					if (response?.volume && response?.volume.length > 0) {
+			).then((response: any) => {
+				setIsVolumeInProgress(false);
+				if (response?.volume && response?.volume.length > 0) {
 					setVolumeList(response?.volume.filter((item: any) => item.type !== VOLUME_INDEX_TYPE));
 				}
 			});
@@ -824,7 +824,7 @@ const HSMsettingPanel: FC = () => {
 				</ListRow>
 			</Container>
 			{showCreateHsmPolicyView && (
-				<ModalOverlay setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
+				<ModalOverlay open={showCreateHsmPolicyView}>
 					<CreateHsmPolicy
 						setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
 						volumeList={volumeList}
