@@ -3,18 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
-
 import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
+import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useWscLicense } from './hooks/useWscLicense';
+import { AccountType } from '../../types';
 import { useAuthIsAdvanced } from '../store/auth-advanced/store';
-import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
 import InheritedInput from '../views/utility/inherited-components/inherited-input';
 import InheritedSelect from '../views/utility/inherited-components/inherited-select';
 import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
+
+import { useWscLicense } from './hooks/useWscLicense';
 
 export const WscSettings: FC<{
 	featuresDetail: AccountType;

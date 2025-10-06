@@ -5,7 +5,6 @@
  */
 
 export const APP_ID = 'carbonio-admin-console-ui';
-export const MAIN_ROUTE = 'example';
 export const SECONDARY_ROUTE = 'something';
 export const MANAGE = 'manage';
 export const MAX_DOMAIN_DISPLAY = 20;
@@ -382,7 +381,7 @@ export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
 export const ABQ_DISABLED = 'Disabled';
-export const paginationItems: Array<{label: string, value: number}> = [
+export const paginationItems: Array<{ label: string; value: number }> = [
 	{
 		label: '5',
 		value: 5

@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC } from 'react';
-
 import {
 	Container,
 	Divider,
@@ -15,10 +13,10 @@ import {
 	Switch,
 	Text
 } from '@zextras/carbonio-design-system';
+import React, { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../../types';
-import { AccountType } from '../../domain/manange/accounts/account-types/account-types';
+import { AccountType, TimeItems } from '../../../../types';
 import ListRow from '../../list/list-row';
 
 type FailedLoginPolicyProps = {

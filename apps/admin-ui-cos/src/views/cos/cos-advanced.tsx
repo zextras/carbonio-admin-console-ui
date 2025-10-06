@@ -3,6 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
+import { find } from 'lodash';
 import React, {
 	ChangeEvent,
 	Dispatch,
@@ -13,19 +16,9 @@ import React, {
 	useMemo,
 	useState
 } from 'react';
-
-import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
-import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
-import COSForwarding from './advanced/cos-forwarding';
-import COSGeneralOptions from './advanced/cos-general-options';
-import COSPassword from './advanced/cos-password';
-import COSQuotas from './advanced/cos-quotas';
-import COSTimeoutPolicy from './advanced/cos-timeout-policy';
-import { Attribute, TimeItems } from '../../../types';
+import { AccountType, Attribute, TimeItems } from '../../../types';
 import {
 	BACKUP_ENABLED,
 	BACKUP_SELF_UNDELETE_ALLOWED,
@@ -42,9 +35,16 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../store/rights/store';
-import { AccountType } from '../domain/manange/accounts/account-types/account-types';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
+
+import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
+import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
+import COSForwarding from './advanced/cos-forwarding';
+import COSGeneralOptions from './advanced/cos-general-options';
+import COSPassword from './advanced/cos-password';
+import COSQuotas from './advanced/cos-quotas';
+import COSTimeoutPolicy from './advanced/cos-timeout-policy';
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
@@ -98,7 +98,6 @@ function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<an
 	}));
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
