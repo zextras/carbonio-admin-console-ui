@@ -13,8 +13,6 @@ library(
     ])
 )
 
-def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
-
 def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash, String source) {
   tagsToAdd = []
   versions.each {
@@ -25,24 +23,6 @@ def buildContainer(String dockerfile, String imageName, List < String > versions
           '--label org.opencontainers.image.revision="' + commitHash + '" ' +
           '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' + source
   sh 'docker push --all-tags ' + imageName
-}
-
-void npmLogin(String npmAuthToken) {
-    if (!fileExists(file: '.npmrc')) {
-        sh(
-            script: """
-                echo "//registry.npmjs.org/:_authToken=${npmAuthToken}" >> .npmrc
-            """,
-            returnStdout: false
-        )
-    }
-}
-
-def getNodeVersion() {
-    return sh(
-        script: 'sed "s/^[vV]//" .nvmrc | cut -d. -f1',
-        returnStdout: true
-    ).trim()
 }
 
 pipeline {
