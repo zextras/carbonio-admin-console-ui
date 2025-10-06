@@ -1,0 +1,663 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+
+import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+
+import GlobalListPanel from './global-list-panel';
+import { DomainResponse } from '../../../types';
+import {
+	ACCOUNTS,
+	ACTIVE_SYNC,
+	AUTHENTICATION,
+	DOMAINS_ROUTE_ID,
+	GAL,
+	GENERAL_SETTINGS,
+	MAILBOX_QUOTA,
+	DISTRIBUTION_LIST,
+	MANAGE_APP_ID,
+	MAX_DOMAIN_DISPLAY,
+	RESTORE_ACCOUNT,
+	VIRTUAL_HOSTS,
+	SAML,
+	CONFIG,
+	GLOBAL_DOMAIN_ROUTE,
+	GLOBAL_2FA_ROUTE,
+	TWO_FACTOR_AUTHENTICATION,
+	SECURITY_GROUP,
+	GLOBAL_ROUTE,
+	GLOBAL_QUARANTINE_ROUTE,
+	BACKUP_BASIC,
+	WHITELABEL_SETTINGS,
+	GLOBAL_WHITELABEL_SETTINGS,
+	DELEGATES_DOMAIN_ADMINS,
+	RESOURCES,
+	DISCLAIMER,
+	GLOBAL_SETTINGS_ROUTE,
+	IS_DETAIL_LIST_EXPANDED,
+	IS_MANAGE_LIST_EXPANDED,
+	GLOBAL_ACTIVE_SYNC_ROUTE,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+	FALSE,
+	BOOLEAN_FALSE,
+	GLOBAL_ADMINISTRATORS
+} from '../../constants';
+import { getDomainList } from '../../services/search-domain-service';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useBackupModuleStore } from '../../store/backup-module/store';
+import { useConfigStore } from '../../store/config/store';
+import { useDomainStore } from '../../store/domain/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useModuleLicenseStore } from '../../store/module-license/store';
+import { Right, useRightsStore } from '../../store/rights/store';
+import DropDownInput from '../components/dropDownInput';
+import OverlayDivision from '../components/overlayDivision';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
+import { getAllRights } from '../utility/utils';
+
+const SelectItem = styled(Row)``;
+
+const CustomIcon = styled(Icon)`
+	width: 1.25rem;
+	height: 1.25rem;
+`;
+const ovelayStyle = styled(Container)`
+	width: 20rem;
+	right: 0;
+	bottom: 0;
+	height: 8rem;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+`;
+
+interface ManageOptions {
+	[key: string]: string | boolean;
+}
+
+const DomainListPanel: FC = () => {
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+	const locationService = useLocation();
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
+	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
+	const [searchDomainName, setSearchDomainName] = useState('');
+	const [domainId, setDomainId] = useState('');
+	const [domainList, setDomainList] = useState<
+		{
+			name: string;
+			id: string;
+			a: { n: string; _content: string }[];
+		}[]
+	>([]);
+	const [isDomainSelect, setIsDomainSelect] = useState(false);
+	const domainInformation = useDomainStore((state) => state.domain);
+	const { setDomainView, isQuickAccess, domainView, setDomain, setIsQuickAccess } = useDomainStore(
+		(state) => state
+	);
+	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
+	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
+	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
+	const rights = useRightsStore((state) => state.rights);
+	const [isShowError, setIsShowError] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const globalConfigInformation = useConfigStore((state) => state.config);
+	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
+
+	useEffect(() => {
+		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
+		setIs2FAAvailable(isAvail2Fa === undefined);
+	}, [domainInformation]);
+
+	const loadingComponent = [
+		{
+			customComponent: (
+				<Container>
+					<OverlayDivision ovelayStyle={ovelayStyle} />
+				</Container>
+			)
+		}
+	];
+
+	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const allRights = getAllRights(rights, CONFIG);
+			if (allRights && allRights.length > 0) {
+				const right: Right = allRights[0];
+				if (
+					right?.all &&
+					Array.isArray(right?.all) &&
+					right?.all.length > 0 &&
+					right?.all[0].getAttrs &&
+					right?.all[0].getAttrs.length > 0
+				) {
+					right?.all[0].getAttrs.forEach((item: Record<string, unknown>) => {
+						if (item?.all && item?.all === true) {
+							setIsShowGlobalConfig(true);
+						}
+					});
+				}
+			}
+		}
+	}, [rights]);
+
+	useEffect(() => {
+		if (!domainInformation?.name) {
+			setSearchDomainName('');
+		}
+	}, [domainInformation]);
+
+	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
+	const getDomainLists = useCallback(
+		(domainName: string): void => {
+			setIsLoading(true);
+			getDomainList(domainName, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+						setIsLoading(false);
+					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+						setIsShowError(true);
+						setDomainList([]);
+						setIsLoading(false);
+					} else {
+						setDomainList([]);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+					setIsLoading(false);
+				});
+		},
+		[createSnackbar, t]
+	);
+
+	useEffect(() => {
+		getDomainLists('');
+	}, [getDomainLists]);
+
+	useMemo(() => {
+		if (domainInformation?.name) {
+			setSearchDomainName(domainInformation?.name);
+			setIsDomainSelect(true);
+			setIsDomainListExpand(false);
+
+			if (domainInformation?.id) {
+				setDomainId(domainInformation?.id);
+			}
+		} else {
+			setIsDomainSelect(false);
+		}
+	}, [domainInformation?.id, domainInformation?.name]);
+
+	useEffect(() => {
+		if (
+			locationService.pathname &&
+			locationService.pathname === `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`
+		) {
+			setDomainList([]);
+			setIsDomainSelect(false);
+			setSearchDomainName('');
+			setIsDomainListExpand(false);
+			setDomainId('');
+			setDomain({});
+		}
+	}, [locationService, setDomain, setDomainView]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainCall = useCallback(
+		debounce((domain) => {
+			getDomainLists(domain);
+		}, 700),
+		[debounce]
+	);
+
+	useEffect(() => {
+		if (!isDomainSelect) {
+			searchDomainCall(searchDomainName);
+		}
+	}, [searchDomainName, isDomainSelect, searchDomainCall]);
+
+	const selectedDomain = useCallback(
+		(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
+			setIsDomainSelect(true);
+			setSearchDomainName(domain?.name);
+			setIsDomainListExpand(false);
+			setDomainId(domain?.id);
+			setDomainView(GENERAL_SETTINGS);
+		},
+		[setDomainView]
+	);
+
+	const getTrakingDetials = (dView: string): any => {
+		const value = dView.split('/');
+		return value[0] === GLOBAL_ROUTE;
+	};
+
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+	useEffect(() => {
+		if (getTrakingDetials(domainView)) {
+			replaceHistory(`/${domainView}`);
+		} else if (isDomainSelect && domainId) {
+			if (domainView) {
+				replaceHistory(`/${domainId}/${domainView}`);
+			} else {
+				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
+			}
+		} else {
+			replaceHistory(`/${domainView}`);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isDomainSelect, domainId, domainView, globalCarbonioSendAnalytics]);
+
+	const isDisclaimerEnable = useMemo(
+		() =>
+			globalConfigInformation.find(
+				(item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+			)?._content,
+		[globalConfigInformation]
+	);
+
+	const detailOptions = useMemo(
+		() => [
+			{
+				id: GENERAL_SETTINGS,
+				name: t('label.general_settings', 'General Settings'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: GAL,
+				name: t('label.global_address_list', 'Global Address List'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: AUTHENTICATION,
+				name: t('label.authentication', 'Authentication'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: VIRTUAL_HOSTS,
+				name: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: MAILBOX_QUOTA,
+				name: t('label.mailbox_quota', 'Mailbox Quota'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: TWO_FACTOR_AUTHENTICATION,
+				name: t('label.2-factor-authentication', '2-Factor-Authentication'),
+				isSelected: isDomainSelect && is2FAAvailable
+			},
+			{
+				id: SAML,
+				name: t('label.saml', 'SAML'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: DISCLAIMER,
+				name: t('label.disclaimer', 'Disclaimer'),
+				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
+			}
+		],
+		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
+	);
+
+	const allManageOptions = useMemo(
+		() => [
+			{
+				id: ACCOUNTS,
+				name: t('label.accounts', 'Accounts'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: DELEGATES_DOMAIN_ADMINS,
+				name: t('label.delegates_domain_admins', 'Delegated Domain Admins'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: DISTRIBUTION_LIST,
+				name: t('label.distribution_list', 'Distribution List'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: RESOURCES,
+				name: t('label.resources', 'Resources'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: ACTIVE_SYNC,
+				name: t('label.active_sync', 'ActiveSync'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: RESTORE_ACCOUNT,
+				name: t('label.restore_account', 'Restore Account'),
+				isSelected: isDomainSelect
+			}
+		],
+		[t, isDomainSelect]
+	);
+
+	const globalOptionItems = useMemo(
+		() => [
+			{
+				id: GLOBAL_SETTINGS_ROUTE,
+				name: t('label.settings', 'Settings'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_ADMINISTRATORS,
+				name: t('label.administrators', 'Administrators'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_DOMAIN_ROUTE,
+				name: t('label.domains', 'Domains'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_2FA_ROUTE,
+				name: t('label.2fa', '2-Factor-Authentication'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_QUARANTINE_ROUTE,
+				name: t('label.quarantine', 'Quarantine'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_ACTIVE_SYNC_ROUTE,
+				name: t('label.active_sync', 'ActiveSync'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+
+	const manageItems = useMemo(
+		() =>
+			!isAdvanced
+				? allManageOptions.filter(
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT &&
+							item?.id !== ACTIVE_SYNC &&
+							item?.id !== DELEGATES_DOMAIN_ADMINS &&
+							item?.id !== SECURITY_GROUP
+				  )
+				: allManageOptions,
+		[allManageOptions, isAdvanced]
+	);
+
+	const detailItems = useMemo(
+		() =>
+			!isAdvanced
+				? detailOptions.filter(
+						(item: ManageOptions) =>
+							item?.id !== WHITELABEL_SETTINGS &&
+							item?.id !== SAML &&
+							item?.id !== TWO_FACTOR_AUTHENTICATION
+				  )
+				: detailOptions,
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[detailOptions, isAdvanced, is2FAAvailable]
+	);
+
+	const globalOptionsItems = useMemo(
+		() =>
+			!isAdvanced
+				? globalOptionItems.filter(
+						(item: ManageOptions) =>
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+							item?.id !== GLOBAL_2FA_ROUTE &&
+							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
+				  )
+				: globalOptionItems,
+		[globalOptionItems, isAdvanced]
+	);
+
+	useEffect(() => {
+		if (!getBackupModuleEnable && !isBackupModuleLicensed) {
+			const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
+			setManageOptions(options);
+		}
+	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed, isDomainSelect]);
+
+	useMemo(() => {
+		setManageOptions(
+			manageItems.map((item: ManageOptions) => {
+				// eslint-disable-next-line no-param-reassign
+				item.isSelected = isDomainSelect;
+				return item;
+			})
+		);
+	}, [isDomainSelect, manageItems]);
+
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
+			);
+			if (backupModule[0] && backupModule[0]?.enabled) {
+				setIsBackupModuleLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
+
+	const toggleDetailView = (): void => {
+		if (isDetailListExpanded) {
+			setIsDetailListExpanded(false);
+			localStorage.setItem(IS_DETAIL_LIST_EXPANDED, 'false');
+		} else {
+			setIsDetailListExpanded(true);
+			localStorage.removeItem(IS_DETAIL_LIST_EXPANDED);
+		}
+	};
+
+	const toggleManageView = (): void => {
+		if (isManageListExpanded) {
+			setIsManageListExpanded(false);
+			localStorage.setItem(IS_MANAGE_LIST_EXPANDED, 'false');
+		} else {
+			setIsManageListExpanded(true);
+			localStorage.removeItem(IS_MANAGE_LIST_EXPANDED);
+		}
+	};
+
+	const customIconDetail = {
+		onClick: (): void => {
+			setIsShowError(false);
+			if (searchDomainName === '') {
+				setIsDomainListExpand(!isDomainListExpand);
+			} else {
+				setDomainId('');
+				setSearchDomainName('');
+				setIsDomainSelect(false);
+			}
+		},
+		style: {
+			width: '1.25rem',
+			height: '1.25rem'
+		},
+		icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline'
+	};
+
+	const items =
+		domainList.length > MAX_DOMAIN_DISPLAY
+			? [
+					{
+						customComponent: (
+							<>
+								<Row mainAlignment="flex-start">
+									<Padding horizontal="small">
+										<CustomIcon icon="InfoOutline"></CustomIcon>
+									</Padding>
+								</Row>
+								<Row
+									mainAlignment="flex-start"
+									width="100%"
+									padding={{
+										all: 'small'
+									}}
+								>
+									<Text overflow="break-word">
+										{t(
+											'many_domain_info_msg',
+											'So many domains! Which one would you like to see? Start typing to filter.'
+										)}
+									</Text>
+								</Row>
+							</>
+						)
+					}
+			  ]
+			: domainList.map(
+					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+						id: domain.id,
+						label: domain.name,
+						customComponent: (
+							<SelectItem
+								style={{
+									display: 'block',
+									textAlign: 'left',
+									height: 'inherit',
+									padding: '0.188rem',
+									width: 'inherit'
+								}}
+								onClick={(): void => {
+									setIsShowError(false);
+									selectedDomain(domain);
+								}}
+							>
+								{domain?.name}
+							</SelectItem>
+						)
+					})
+			  );
+
+	useEffect(() => {
+		const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);
+		if (storedDetailListViewValue === 'false') {
+			setIsDetailListExpanded(false);
+		} else {
+			setIsDetailListExpanded(true);
+		}
+		const storedManageListViewValue = localStorage.getItem(IS_MANAGE_LIST_EXPANDED);
+		if (storedManageListViewValue === 'false') {
+			setIsManageListExpanded(false);
+		} else {
+			setIsManageListExpanded(true);
+		}
+		if (!isQuickAccess) {
+			setDomainView(GLOBAL_DOMAIN_ROUTE);
+		}
+		setIsQuickAccess(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return (
+		<Container
+			orientation="column"
+			crossAlignment="flex-start"
+			mainAlignment="flex-start"
+			background="gray5"
+			style={{ overflow: 'auto', borderTop: '0.063rem solid #FFFFFF' }}
+		>
+			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
+				<GlobalListPanel
+					globalOptionItems={globalOptionsItems}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<DropDownInput
+					items={isLoading ? loadingComponent : items}
+					inputLabel={
+						isDomainSelect
+							? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
+							: t('domain.type_the exact_domain_name', 'Type the exact domain name')
+					}
+					hasError={isShowError}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+						setIsDomainSelect(false);
+						setIsShowError(false);
+						setSearchDomainName(ev.target.value);
+					}}
+					inputValue={searchDomainName}
+					isCustomIcon
+					customIconDetail={customIconDetail}
+				/>
+			</Row>
+			{isShowError && (
+				<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+					<Padding top="large" left="small">
+						<Text size="extrasmall" weight="regular" color="error">
+							{t(
+								'label.not_found_check_the_text_and_try_again',
+								'Not found - check the text and try again'
+							)}
+						</Text>
+					</Padding>
+				</Container>
+			)}
+			<ListPanelItem
+				title={t('domain.manage', 'Manage')}
+				isListExpanded={isManageListExpanded}
+				setToggleView={toggleManageView}
+			/>
+			{isManageListExpanded && (
+				<ListItems
+					items={manageOptions}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+			<ListPanelItem
+				title={t('label.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleDetailView}
+			/>
+			{isDetailListExpanded && (
+				<ListItems
+					items={detailItems}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+		</Container>
+	);
+};
+export default DomainListPanel;

@@ -1,0 +1,903 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
+import {
+	Container,
+	Row,
+	Divider,
+	Input,
+	Table,
+	Text,
+	Switch,
+	Padding,
+	Icon,
+	Modal,
+	Button,
+	useSnackbar
+} from '@zextras/carbonio-design-system';
+import moment from 'moment';
+import { useTranslation, Trans } from 'react-i18next';
+
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
+import { getDistributionList } from '../../../../services/get-distribution-list';
+import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
+import { getGrant } from '../../../../services/get-grant';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomChip from '../../../components/customChip';
+import ListRow from '../../../list/list-row';
+import { getDateFromStr } from '../../../utility/utils';
+
+// eslint-disable-next-line no-shadow
+export enum SUBSCRIBE_UNSUBSCRIBE {
+	ACCEPT = 'ACCEPT',
+	APPROVAL = 'APPROVAL',
+	REJECT = 'REJECT'
+}
+
+// eslint-disable-next-line no-shadow
+export enum TRUE_FALSE {
+	TRUE = 'TRUE',
+	FALSE = 'FALSE'
+}
+
+const AclListDetail: FC<any> = ({
+	selectedAclList,
+	setShowAclListDetailView,
+	setEditAclList,
+	setIsUpdateRecord
+}) => {
+	const [t] = useTranslation();
+	const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [totalGrantRights, setTotalGrantRights] = useState(0);
+	const createSnackbar = useSnackbar();
+	const dlCreateDate = useMemo(
+		() =>
+			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
+				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - hh:MM')
+				: '',
+		[zimbraCreateTimestamp]
+	);
+
+	const memberHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
+		() => [
+			{
+				id: 'members',
+				label: t('label.members', 'Members'),
+				width: '80%',
+				bold: true
+			},
+			{
+				id: 'address',
+				label: t('label.type', 'Type'),
+				width: '20%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const ownerHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
+		() => [
+			{
+				id: 'owners',
+				label: t('label.owners', 'Owners'),
+				width: '100%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const subscriptionUnsubscriptionRequestOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
+		() => [
+			{
+				label: t('label.automatically_accept', 'Automatically accept'),
+				value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT
+			},
+			{
+				label: t('label.require_list_owner_approval', 'Require list owner approval'),
+				value: SUBSCRIBE_UNSUBSCRIBE.APPROVAL
+			},
+			{
+				label: t('label.automatically_reject', 'Automatically reject'),
+				value: SUBSCRIBE_UNSUBSCRIBE.REJECT
+			}
+		],
+		[t]
+	);
+
+	const rightsOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
+		() => [
+			{
+				label: t('label.can_send_receiver', 'Can Send & Receive'),
+				value: TRUE_FALSE.TRUE
+			},
+			{
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
+				value: TRUE_FALSE.FALSE
+			}
+		],
+		[t]
+	);
+
+	const listMemberOfHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
+		() => [
+			{
+				id: 'members',
+				label: t('label.this_list_is_member_of', 'This List is part of'),
+				width: '100%',
+				bold: true
+			}
+		],
+		[t]
+	);
+	const [zimbraMailStatus, setZimbraMailStatus] = useState<{
+		label: string;
+		value: string;
+	}>(rightsOptions[1]);
+	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
+		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
+	const [
+		zimbraDistributionListUnsubscriptionPolicy,
+		setZimbraDistributionListUnsubscriptionPolicy
+	] = useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
+	const [dlId, setdlId] = useState<string>('');
+	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
+	const [dlmTableRows, setDlmTableRows] = useState<any>([]);
+	const [zimbraHideInGal, setZimbraHideInGal] = useState<boolean>(false);
+	const [zimbraMailAlias, setZimbraMailAlias] = useState<any[]>([]);
+	const [dlm, setDlm] = useState<any[]>([]);
+	const [ownersList, setOwnersList] = useState<any[]>([]);
+	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [
+		zimbraDistributionListSendShareMessageToNewMembers,
+		setZimbraDistributionListSendShareMessageToNewMembers
+	] = useState<boolean>(false);
+	const [displayName, setDisplayName] = useState<string>('');
+	const [distributionName, setDistributionName] = useState<string>('');
+	const [dlmMemberOfRows, setDlmMemberOfRows] = useState<any>([]);
+	const [ownerTableRows, setOwnerTableRows] = useState<any[]>([]);
+	const [memberOffset, setMemberOffset] = useState<number>(0);
+	const [ownerOffset, setOwnerOffset] = useState<number>(0);
+	const [memberURL, setMemberURL] = useState<string>();
+	const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
+	const [granteeTotalRights, setGranteeTotalRights] = useState(0);
+	const [targetTotalRights, setTargetTotalRights] = useState(0);
+
+	const onRightsChange = useCallback(
+		(v: any): any => {
+			const it = rightsOptions.find((item: { label: string; value: string }) => item.value === v);
+			if (it) {
+				setZimbraMailStatus(it);
+			}
+		},
+		[rightsOptions]
+	);
+
+	const onSubscriptionChange = useCallback(
+		(v: any): any => {
+			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
+			setZimbraDistributionListSubscriptionPolicy(it);
+		},
+		[subscriptionUnsubscriptionRequestOptions]
+	);
+
+	const onUnSubscriptionChange = useCallback(
+		(v: any): any => {
+			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
+			setZimbraDistributionListUnsubscriptionPolicy(it);
+		},
+		[subscriptionUnsubscriptionRequestOptions]
+	);
+
+	const getAclList = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(id: string, name: string): void => {
+			getDistributionList(id, name).then((data) => {
+				const distributionListMembers = data?.dl[0];
+				if (distributionListMembers) {
+					if (distributionListMembers?.id) {
+						setdlId(distributionListMembers?.id);
+					}
+					if (distributionListMembers?.dlm) {
+						const _dlm = distributionListMembers?.dlm.map((item: any) => item?._content);
+						setDlm(_dlm);
+					}
+					if (distributionListMembers?.owners && distributionListMembers?.owners[0]?.owner) {
+						setOwnersList(distributionListMembers?.owners[0]?.owner);
+					}
+					if (distributionListMembers?.a) {
+						/* Get Gal Hide Information */
+						const _zimbraHideInGal = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'zimbraHideInGal'
+						)?._content;
+						if (_zimbraHideInGal === 'TRUE') {
+							setZimbraHideInGal(true);
+						} else {
+							setZimbraHideInGal(false);
+						}
+
+						const _zimbraNotes = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'zimbraNotes'
+						)?._content;
+
+						setZimbraNotes(_zimbraNotes || '');
+
+						const _zimbraDistributionListSendShareMessageToNewMembers =
+							distributionListMembers?.a?.find(
+								(a: any) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers'
+							)?._content;
+
+						if (_zimbraDistributionListSendShareMessageToNewMembers === 'TRUE') {
+							setZimbraDistributionListSendShareMessageToNewMembers(true);
+						} else {
+							setZimbraDistributionListSendShareMessageToNewMembers(false);
+						}
+
+						const _zimbraMailAlias = distributionListMembers?.a?.filter(
+							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedAclList?.name
+						);
+						if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
+							const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
+							setZimbraMailAlias(allAlias);
+						}
+						const _zimbraCreateTimestamp = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'zimbraCreateTimestamp'
+						)?._content;
+						_zimbraCreateTimestamp
+							? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
+							: setZimbraCreateTimestamp('');
+						/* Mail status */
+
+						const _zimbraMailStatus = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'zimbraMailStatus'
+						)?._content;
+						if (_zimbraMailStatus === 'enabled') {
+							onRightsChange(rightsOptions[0].value);
+						}
+
+						const _memberURL = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'memberURL'
+						)?._content;
+						if (_memberURL) {
+							setMemberURL(_memberURL);
+						}
+					}
+				}
+			});
+		},
+		[selectedAclList?.name, rightsOptions, onRightsChange]
+	);
+
+	const getDistributionListMembershipList = useCallback((id: string): void => {
+		getDistributionListMembership(id).then((data) => {
+			const members = data?.dl;
+			if (members && members.length > 0) {
+				const allMembers = members.map((item: any) => ({
+					label: item?.name,
+					background: 'gray3',
+					color: 'text',
+					id: item?.id,
+					name: item?.name
+				}));
+				setDlMembershipList(allMembers);
+			}
+		});
+	}, []);
+
+	useEffect(() => {
+		if (selectedAclList?.a) {
+			const dsName = selectedAclList?.a?.find((a: any) => a?.n === 'displayName')?._content;
+			if (dsName) {
+				setDisplayName(dsName);
+			} else {
+				setDisplayName('');
+			}
+		}
+		setDistributionName(selectedAclList?.name);
+
+		getAclList(selectedAclList?.id, selectedAclList?.name);
+		getDistributionListMembershipList(selectedAclList?.id);
+	}, [selectedAclList, getAclList, getDistributionListMembershipList]);
+
+	useEffect(() => {
+		if (dlMembershipList && dlMembershipList.length > 0) {
+			const allRows = dlMembershipList.map((item: any) => ({
+				id: item?.id,
+				columns: [
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
+						{item?.label}
+					</Text>,
+					''
+				]
+			}));
+			setDlmMemberOfRows(allRows);
+		} else {
+			setDlmMemberOfRows([]);
+		}
+	}, [dlMembershipList]);
+
+	useEffect(() => {
+		if (dlm && dlm.length > 0) {
+			const allRows = dlm.map((item: any) => ({
+				id: item,
+				columns: [
+					<Text size="medium" weight="light" key={item} color="gray0">
+						{item}
+					</Text>,
+					''
+				]
+			}));
+			setDlmTableRows(allRows);
+		} else {
+			setDlmTableRows([]);
+		}
+	}, [dlm]);
+
+	useEffect(() => {
+		if (ownersList && ownersList.length > 0) {
+			const allRows = ownersList.map((item: any) => ({
+				id: item?.name,
+				columns: [
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
+						{item?.name}
+					</Text>
+				]
+			}));
+			setOwnerTableRows(allRows);
+		} else {
+			setOwnerTableRows([]);
+		}
+	}, [ownersList]);
+
+	const onEditAclList = (): void => {
+		setEditAclList(true);
+	};
+
+	const onCopyLink = useCallback(() => {
+		if (navigator) {
+			navigator.clipboard.writeText(memberURL || '');
+		}
+	}, [memberURL]);
+
+	const closeHandler = useCallback(() => {
+		setIsOpenDeleteDialog(false);
+	}, []);
+
+	const onSuccess = useCallback(
+		(message: string) => {
+			createSnackbar({
+				key: 'success',
+				severity: 'success',
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setIsRequestInProgress(false);
+			closeHandler();
+			setShowAclListDetailView(false);
+			setIsUpdateRecord(true);
+		},
+		[closeHandler, createSnackbar, setIsUpdateRecord, setShowAclListDetailView]
+	);
+
+	const onDeleteHandler = useCallback(() => {
+		setIsRequestInProgress(true);
+		deleteDistributionList(dlId)
+			.then((data: any) => {
+				onSuccess(
+					t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
+						name: distributionName
+					})
+				);
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error.message
+						? error.message
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
+
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const handleClickDeleteEvent = useCallback(() => {
+		setIsDeleteBtnLoading(true);
+		const getGrantBody: any = {};
+		const grantee = {
+			type: 'grp',
+			by: 'name',
+			_content: selectedAclList?.name,
+			all: false
+		};
+		getGrantBody.grantee = grantee;
+		getGrant(getGrantBody)
+			.then((data: any) => {
+				if (data && data?.grant && Array.isArray(data?.grant)) {
+					let granteeTotal = 0;
+
+					const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
+					const granteeRightLenght = granteeRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of granteeRightLenght) {
+						granteeTotal += value;
+					}
+					setGranteeTotalRights(granteeTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+
+		// get grants' rights as target
+		const getGrantBodyTarget: any = {};
+		const target = {
+			type: 'dl',
+			by: 'name',
+			_content: selectedAclList?.name
+		};
+		getGrantBodyTarget.target = target;
+		getGrant(getGrantBodyTarget)
+			.then((resFromTarget: any) => {
+				if (resFromTarget && resFromTarget?.grant && Array.isArray(resFromTarget?.grant)) {
+					let targetTotal = 0;
+					const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
+					const targetRightLenght = targetRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of targetRightLenght) {
+						targetTotal += value;
+					}
+					setTargetTotalRights(targetTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+	}, [createSnackbar, selectedAclList?.name, t]);
+
+	useEffect(() => {
+		const totalRights = targetTotalRights + granteeTotalRights;
+		setTotalGrantRights(totalRights);
+	}, [granteeTotalRights, targetTotalRights]);
+
+	return (
+		<Container
+			background="gray5"
+			mainAlignment="flex-start"
+			style={{
+				position: 'absolute',
+				top: '0rem',
+				overflow: 'hidden',
+				transition: 'left 0.2s ease-in-out'
+			}}
+		>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="white"
+				width="fill"
+				height="2.7rem"
+			>
+				<Row padding={{ horizontal: 'small' }}></Row>
+				<Row takeAvailableSpace mainAlignment="flex-start">
+					<Text size="medium" overflow="ellipsis" weight="bold">
+						{selectedAclList?.name} (
+						{selectedAclList?.dynamic
+							? t('label.dynamic', 'Dynamic')
+							: t('label.standard', 'Standard')}
+						)
+					</Text>
+				</Row>
+				<Row padding={{ right: 'extrasmall' }}>
+					<Button
+						type="ghost"
+						color={'text'}
+						size="medium"
+						icon="CloseOutline"
+						onClick={(): void => setShowAclListDetailView(false)}
+					/>
+				</Row>
+			</Row>
+			<Row>
+				<Divider color="gray3" />
+			</Row>
+			<Container
+				orientation="horizontal"
+				mainAlignment="flex-end"
+				crossAlignment="flex-end"
+				background="gray6"
+				padding={{ all: 'extralarge' }}
+			>
+				<Padding right="large">
+					<Container>
+						<Button
+							type="outlined"
+							color="primary"
+							icon="EditAsNewOutline"
+							onClick={onEditAclList}
+							size="large"
+						/>
+					</Container>
+				</Padding>
+				<Container width="fit">
+					<Button
+						type="outlined"
+						color="error"
+						icon="Trash2Outline"
+						loading={isDeleteBtnLoading}
+						onClick={handleClickDeleteEvent}
+						size="large"
+					/>
+				</Container>
+			</Container>
+			<Container
+				padding={{ all: 'extralarge' }}
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				height="calc(100vh - 14.375rem)"
+				background="white"
+				style={{ overflow: 'auto' }}
+			>
+				<Row>
+					<Text size="medium" weight="bold" color="gray0">
+						{t('domain.list_details', 'List Details')}
+					</Text>
+				</Row>
+				<ListRow>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+						<Input
+							label={t('label.display_name', 'Display Name')}
+							value={displayName}
+							backgroundColor="gray6"
+						/>
+					</Container>
+
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+						<Input
+							label={t('label.address', 'Address')}
+							value={distributionName}
+							backgroundColor="gray6"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+						<Input
+							backgroundColor="gray6"
+							label={t('label.new_subscription_requests', 'New subscriptions requests')}
+							value={zimbraDistributionListSubscriptionPolicy?.label}
+						/>
+					</Container>
+
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+						<Input
+							backgroundColor="gray6"
+							label={t('label.unsubscribe_request', 'Unsubscription requests')}
+							value={zimbraDistributionListUnsubscriptionPolicy?.label}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ right: 'small', top: 'small' }}>
+						<Input
+							backgroundColor="gray6"
+							label={t('label.rights', 'Rights')}
+							value={zimbraMailStatus?.label}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						orientation="vertical"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ right: 'small', top: 'small' }}
+					>
+						<Row padding={{ left: 'large', bottom: 'small' }}>
+							<Text size="small" color="secondary">
+								{t('label.aliases', 'Aliases')}
+							</Text>
+						</Row>
+						<Row width="100%">
+							<Container
+								orientation="horizontal"
+								wrap="wrap"
+								mainAlignment="flex-start"
+								maxWidth="44rem"
+								style={{ gap: '0.5rem' }}
+								padding={{ left: 'large' }}
+							>
+								{zimbraMailAlias?.map((ele, index) => (
+									<CustomChip key={`chip${index}`} label={ele.label} />
+								))}
+							</Container>
+							<Row width="100%" padding={{ top: 'medium' }}>
+								<Divider color="gray2" />
+							</Row>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large', bottom: 'medium' }}
+					>
+						<Switch
+							value={zimbraDistributionListSendShareMessageToNewMembers}
+							label={t(
+								'label.send_new_members_notification_for_share_assigned_to_this_group',
+								'Send new members a notification for the share/delegation assigned to this group'
+							)}
+							disabled
+							iconColor="primary"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large', bottom: 'medium' }}
+					>
+						<Switch
+							value={zimbraHideInGal}
+							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
+							disabled
+							iconColor="primary"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+						<Input
+							label={t('label.members', 'Members')}
+							value={dlm.length}
+							backgroundColor="gray6"
+						/>
+					</Container>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+						<Input
+							label={t('label.alias_in_the_list', 'Alias in the List')}
+							value={zimbraMailAlias.length}
+							backgroundColor="gray6"
+						/>
+					</Container>
+				</ListRow>
+				{selectedAclList?.dynamic && (
+					<ListRow>
+						<Container>
+							<Input
+								label={t('label.list_url', "Acl List's URL")}
+								value={memberURL}
+								backgroundColor="gray6"
+								CustomIcon={(): any => (
+									<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
+								)}
+							/>
+						</Container>
+					</ListRow>
+				)}
+				<ListRow>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} backgroundColor="gray6" />
+					</Container>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+						<Input
+							label={t('label.creation_date', 'Creation Date')}
+							value={dlCreateDate}
+							backgroundColor="gray6"
+						/>
+					</Container>
+				</ListRow>
+				<Row padding={{ top: 'small', bottom: 'small' }}>
+					<Text size="medium" weight="bold" color="gray0">
+						{t('label.manage_list', 'Manage List')}
+					</Text>
+				</Row>
+				{!selectedAclList?.dynamic && (
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small' }}
+							maxHeight="10rem"
+						>
+							<Table
+								rows={dlmMemberOfRows}
+								headers={listMemberOfHeaders}
+								showCheckbox={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+						</Container>
+					</ListRow>
+				)}
+				<ListRow>
+					{!selectedAclList?.dynamic && (
+						<Container
+							mainAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small' }}
+							maxHeight="10rem"
+						>
+							<Table
+								rows={dlmTableRows}
+								headers={memberHeaders}
+								showCheckbox={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+						</Container>
+					)}
+					<Container
+						padding={{
+							left: !selectedAclList?.dynamic ? 'small' : '',
+							top: 'small',
+							bottom: 'small'
+						}}
+						mainAlignment="flex-start"
+						maxHeight="10rem"
+					>
+						<Table
+							rows={ownerTableRows}
+							headers={ownerHeaders}
+							showCheckbox={false}
+							style={{ overflow: 'auto', height: '100%' }}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'large' }}>
+						<Input
+							value={zimbraNotes}
+							label={t('label.description', 'Description')}
+							backgroundColor="gray6"
+						/>
+					</Container>
+				</ListRow>
+			</Container>
+
+			{isOpenDeleteDialog && (
+				<Modal
+					size="medium"
+					title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
+						name: displayName || distributionName
+					})}
+					open={isOpenDeleteDialog}
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="space-between">
+							<Button
+								style={{ marginLeft: '0.6rem' }}
+								type="outlined"
+								label={t('label.help', 'Help')}
+								color="primary"
+								onClick={(): null => null}
+							/>
+							<Row style={{ gap: '0.5rem' }}>
+								<Button
+									label={t('label.cancel', 'Cancel')}
+									color="secondary"
+									type="outlined"
+									onClick={closeHandler}
+									disabled={isRequestInProgress}
+								/>
+								<Button
+									label={t('label.yes_delete_it', 'Yes, Delete it')}
+									color="error"
+									onClick={onDeleteHandler}
+									disabled={isRequestInProgress}
+								/>
+							</Row>
+						</Container>
+					}
+					showCloseIcon
+					onClose={closeHandler}
+				>
+					<Container
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+						style={{ textAlign: 'center' }}
+					>
+						<Padding bottom="small">
+							{totalGrantRights !== 0 && (
+								<Container padding={{ bottom: 'extralarge' }}>
+									<Text size={'extralarge'} overflow="break-word">
+										<Trans
+											i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+											defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+											components={{
+												bold: <strong />,
+												br: <br />
+											}}
+											values={{
+												totalAccRights: totalGrantRights
+											}}
+										/>
+									</Text>
+								</Container>
+							)}
+							<Text size={'extralarge'} overflow="break-word">
+								<Trans
+									i18nKey="label.are_you_sure_delete_distribution_list"
+									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
+									components={{ bold: <strong /> }}
+									values={{
+										name: displayName || distributionName
+									}}
+								/>
+							</Text>
+						</Padding>
+					</Container>
+				</Modal>
+			)}
+		</Container>
+	);
+};
+
+export default AclListDetail;
