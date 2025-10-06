@@ -14,15 +14,3 @@ export const getCosGeneralInformation = async (cosId: string): Promise<any> =>
 			_content: cosId
 		}
 	});
-
-export type CosA = {
-	n: string;
-	_content: string;
-};
-export type GetCosResponse = {
-	cos: {
-		name: string;
-		id: string;
-		a: CosA[];
-	}[];
-};
