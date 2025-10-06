@@ -834,7 +834,6 @@ const DomainAclList: FC = () => {
 			</Container>
 			{showAclListDetailView && (
 				<ModalOverlay
-					setOpen={setShowAclListDetailView}
 					open={showAclListDetailView}
 					maxWidth="40.375rem"
 				>
@@ -847,7 +846,7 @@ const DomainAclList: FC = () => {
 				</ModalOverlay>
 			)}
 			{showCreateAclListView && (
-				<ModalOverlay setOpen={setShowCreateAclListView} open={showCreateAclListView}>
+				<ModalOverlay open={showCreateAclListView}>
 					<CreateAclList
 						setShowCreateAclListView={setShowCreateAclListView}
 						createAclListReq={createAclListReq}

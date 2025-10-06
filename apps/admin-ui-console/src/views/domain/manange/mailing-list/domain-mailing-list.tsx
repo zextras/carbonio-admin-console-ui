@@ -817,7 +817,7 @@ const DomainMailingList: FC = () => {
 				</Row>
 			</Container>
 			{showMailingListDetailView && (
-				<ModalOverlay setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
+				<ModalOverlay open={showMailingListDetailView}>
 					<EditMailingListView
 						selectedMailingList={selectedMailingList}
 						setIsUpdateRecord={setIsUpdateRecord}
@@ -827,7 +827,7 @@ const DomainMailingList: FC = () => {
 			)}
 
 			{showCreateMailingListView && (
-				<ModalOverlay setOpen={setShowCreateMailingListView} open={showCreateMailingListView}>
+				<ModalOverlay open={showCreateMailingListView}>
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}

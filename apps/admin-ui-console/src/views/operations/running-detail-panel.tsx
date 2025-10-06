@@ -91,7 +91,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 	return (
 		<>
 			{wizardDetailToggle && (
-				<ModalOverlay setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
+				<ModalOverlay open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen={setOpen}

@@ -371,7 +371,7 @@ const ManageAccounts: FC = () => {
 				setAccSpecificDetail({ ...accountObj });
 			})
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			.catch((error) => {});
+			.catch((error) => { });
 	}, []);
 	const getCosDetail = useCallback((id: string): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
@@ -609,7 +609,7 @@ const ManageAccounts: FC = () => {
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
-								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -1314,11 +1314,8 @@ const ManageAccounts: FC = () => {
 							<AccountContext.Provider value={accountContextValue}>
 								{showEditAccountView && (
 									<ModalOverlay
-										setOpen={setShowEditAccountView}
 										open={showEditAccountView}
 										maxWidth="58.75rem"
-										setShowModal={setShowModal}
-										isDirty={isDirty}
 									>
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
@@ -1343,7 +1340,7 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<ModalOverlay setOpen={setShowCreateAccountView} open={showCreateAccountView}>
+				<ModalOverlay open={showCreateAccountView}>
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
 						getAccountList={getAccountList}

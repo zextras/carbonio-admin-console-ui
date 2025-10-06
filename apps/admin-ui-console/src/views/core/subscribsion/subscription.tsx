@@ -57,7 +57,7 @@ const moduleName: ModuleName = {
 	storages_basic: { value: 'Basic', label: 'Storages' },
 	appmail_basic: { value: 'Basic', label: 'MailApp' },
 	backup_basic: { value: 'Basic', label: 'Backup' },
-	ha_basic: { value: 'Basic', label: 'HA' },
+	mail_replica: { value: '', label: 'MailReplica' },
 	storages_conn_basic: { value: 'S3 Connectors', label: 'Storages' },
 	storages_centralized: { value: 'Centralized Volumes', label: 'Storages' },
 	appmail_advanced: { value: 'Advanced', label: 'MailApp' },
