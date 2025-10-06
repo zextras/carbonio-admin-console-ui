@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 
-import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
+import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import GeneralListPanel from './general-list-panel';
 import {
 	GENERAL_INFORMATION,
 	FEATURES,
@@ -36,6 +35,8 @@ import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
+
+import GeneralListPanel from './general-list-panel';
 
 const SelectItem = styled(Row)``;
 
@@ -66,7 +67,6 @@ const loadingComponent = [
 ];
 
 const CosListPanel: FC = () => {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
@@ -300,7 +300,7 @@ const CosListPanel: FC = () => {
 							</>
 						)
 					}
-			  ]
+				]
 			: cosList.map((cosData: any) => ({
 					id: cosData.id,
 					label: cosData.name,
@@ -320,7 +320,7 @@ const CosListPanel: FC = () => {
 							{cosData?.name}
 						</SelectItem>
 					)
-			  }));
+				}));
 
 	useEffect(() => {
 		const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
