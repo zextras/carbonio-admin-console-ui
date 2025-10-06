@@ -291,13 +291,13 @@ const NotificationView: FC<{
 						setIsRequestInProgress(false);
 						const message = item?.ack
 							? t(
-									'notification.notification_mark_unread_successfully',
-									'Notification mark as unread successfully'
-							  )
+								'notification.notification_mark_unread_successfully',
+								'Notification mark as unread successfully'
+							)
 							: t(
-									'notification.notification_mark_read_successfully',
-									'Notification mark as read successfully'
-							  );
+								'notification.notification_mark_read_successfully',
+								'Notification mark as read successfully'
+							);
 						if (isShowMessage) {
 							createSnackbar({
 								key: 'success',
@@ -533,7 +533,7 @@ const NotificationView: FC<{
 				</Container>
 			</ListRow>
 			{showNotificationDetail && (
-				<ModalOverlay setOpen={setShowNotificationDetail} open={showNotificationDetail}>
+				<ModalOverlay open={showNotificationDetail}>
 					<NotificationDetail
 						notification={selectedNotification}
 						setShowNotificationDetail={setShowNotificationDetail}

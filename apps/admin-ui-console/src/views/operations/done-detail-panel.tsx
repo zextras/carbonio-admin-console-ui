@@ -112,7 +112,7 @@ const DoneDetailPanel: FC = () => {
 	return (
 		<>
 			{wizardDetailToggle && (
-				<ModalOverlay setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
+				<ModalOverlay open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen={(): void => {

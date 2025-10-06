@@ -4,32 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
-    [
+library(
+    identifier: 'jenkins-packages-build-library@1.0.4',
+    retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
         credentialsId: 'jenkins-integration-with-github-account'
-    ]
+    ])
 )
 
-def packages = ["carbonio-admin-console-ui", "carbonio-admin-ui"]
-
-void npmLogin(String npmAuthToken) {
-    if (!fileExists(file: '.npmrc')) {
-        sh(
-            script: """
-                echo "//registry.npmjs.org/:_authToken=${npmAuthToken}" >> .npmrc
-            """,
-            returnStdout: false
-        )
-    }
-}
-
-def getNodeVersion() {
-    return sh(
-        script: 'sed "s/^[vV]//" .nvmrc | cut -d. -f1',
-        returnStdout: true
-    ).trim()
+def buildContainer(String dockerfile, String imageName, List < String > versions, String commitHash, String source) {
+  tagsToAdd = []
+  versions.each {
+    version -> tagsToAdd.add("-t " + imageName + ":" + version)
+  }
+  sh 'docker build ' +
+          '--label org.opencontainers.image.vendor="Zextras" ' +
+          '--label org.opencontainers.image.revision="' + commitHash + '" ' +
+          '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' ' + source
+  sh 'docker push --all-tags ' + imageName
 }
 
 pipeline {
@@ -46,7 +39,15 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '50'))
     }
     parameters {
-        booleanParam defaultValue: true, description: 'Enable SonarQube Stage', name: 'RUN_SONARQUBE'
+        booleanParam defaultValue: true,
+            description: 'Enable SonarQube Stage',
+            name: 'RUN_SONARQUBE'
+        booleanParam defaultValue: false,
+            description: 'Whether to upload the packages in playground repositories',
+            name: 'PLAYGROUND'
+    }
+    tools {
+        jfrog 'jfrog-cli'
     }
     stages {
         stage('Licenses checks') {
@@ -59,6 +60,8 @@ pipeline {
         stage("Read settings") {
             steps {
                 script {
+                    gitMetadata()
+
                     isReleaseBranch = "${BRANCH_NAME}" ==~ /release/
                     echo "isReleaseBranch: ${isReleaseBranch}"
                     isDevelBranch = "${BRANCH_NAME}" ==~ /devel/
@@ -69,18 +72,27 @@ pipeline {
                     echo "isSonarQubeEnabled: ${isSonarQubeEnabled}"
                     branchName = env.CHANGE_BRANCH
                     echo "branchName: ${branchName}"
-                    nodeVersion = getNodeVersion()
+                    nodeVersion = sh(
+                        script: 'sed "s/^[vV]//" .nvmrc | cut -d. -f1',
+                        returnStdout: true
+                    ).trim()
                     echo "NodeJS Major Version: $nodeVersion"
                 }
                 withCredentials([
                     usernamePassword(
-                        credentialsId: "npm-zextras-bot-auth-token",
-                        usernameVariable: "NPM_USERNAME",
-                        passwordVariable: "NPM_PASSWORD"
+                        credentialsId: 'npm-zextras-bot-auth-token',
+                        usernameVariable: 'NPM_USERNAME',
+                        passwordVariable: 'NPM_PASSWORD'
                     )
                 ]) {
                     script {
-                        npmLogin(NPM_PASSWORD)
+                        sh '''
+                            if [ -f '.npmrc' ]; then
+                                echo 'File .npmrc already exists'
+                            else
+                                echo "//registry.npmjs.org/:_authToken=${NPM_PASSWORD}" >> .npmrc
+                            fi
+                        '''
                     }
                 }
             }
@@ -118,8 +130,10 @@ pipeline {
                     steps {
                         container('pnpm') {
                             script {
-                                sh 'pnpm exec playwright install --with-deps'
-                                sh 'pnpm test:ci'
+                                sh '''
+                                    pnpm exec playwright install --with-deps
+                                    pnpm test
+                                '''
                             }
                         }
                     }
@@ -131,8 +145,12 @@ pipeline {
                 container('pnpm') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
-                            sh "npm install -g @sonar/scan"
-                            sh "sonar-scanner -Dsonar.projectKey=carbonio-admin-console-ui"
+                            sh '''
+                                npm install -g @sonar/scan
+                                sonar-scanner \
+                                    -Dsonar.projectKey=carbonio-admin-console-ui \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                            '''
                         }
                     }
                 }
@@ -143,19 +161,74 @@ pipeline {
                 container('pnpm') {
                     script {
                         sh 'pnpm build'
-                        stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                     }
+                    stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                 }
             }
         }
         stage('Build deb/rpm') {
             steps {
                 script {
-                    echo "Building deb/rpm packages"
+                    echo 'Building deb/rpm packages'
                     buildStage([
                         skipStash: true,
                         buildDirs: ['apps'],
                     ])
+                }
+            }
+        }
+        stage('Publish containers - devel') {
+            when {
+                allOf {
+                    expression {
+                        isDevelBranch == true
+                    }
+                }
+            }
+            steps {
+                // build bootstrap container
+                script {
+                    def dir = 'admin-ui-bootstrap/'
+                    def dockerfilePath = "apps/${dir}/Dockerfile"
+                    def projectName = 'carbonio-admin-ui'
+                    def commitId = sh(
+                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
+                        returnStdout: true
+                    ).trim()
+                    echo "Building container for ${dir}, project name ${projectName}"
+                    container('dind') {
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            buildContainer(
+                                dockerfilePath,
+                                "registry.dev.zextras.com/dev/${projectName}",
+                                ['latest', 'devel'],
+                                commitId,
+                                "apps/${dir}"
+                            )
+                        }
+                    }
+                }
+                // build console container
+                script {
+                    def dir = 'admin-ui-console/'
+                    def dockerfilePath = "apps/${dir}/Dockerfile"
+                    def projectName = 'carbonio-admin-console-ui'
+                    def commitId = sh(
+                        script: "find apps/${dir}/dist/source -maxdepth 1 -mindepth 1 -type d -printf '%f\\n' | grep -v 'current' | head -n 1",
+                        returnStdout: true
+                    ).trim()
+                    echo "Building container for ${dir}, project name ${projectName}"
+                    container('dind') {
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            buildContainer(
+                                dockerfilePath,
+                                "registry.dev.zextras.com/dev/${projectName}",
+                                ['latest', 'devel'],
+                                commitId,
+                                "apps/${dir}"
+                            )
+                        }
+                    }
                 }
             }
         }
