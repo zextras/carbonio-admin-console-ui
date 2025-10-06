@@ -1,8 +1,8 @@
 {
-	"name": "@zextras/admin-ui-console",
+	"name": "@zextras/admin-ui-cos",
 	"private": true,
 	"version": "0.10.9",
-	"description": "Admin module for Zextras Carbonio",
+	"description": "Cos module for Zextras Carbonio Admin Panel",
 	"main": "src/app.tsx",
 	"scripts": {
 		"build": "sdk build",
