@@ -9,6 +9,9 @@
 		},
 		{
 			"name": "admin-ui-console/dist"
+		},
+		{
+			"name": "admin-ui-cos/dist"
 		}
 	]
 }
