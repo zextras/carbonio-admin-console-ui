@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
 import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
-import { useAuthIsAdvanced } from '../store/auth-advanced/store';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
 import InheritedInput from '../views/utility/inherited-components/inherited-input';
 import InheritedSelect from '../views/utility/inherited-components/inherited-select';
@@ -32,7 +32,8 @@ export const WscSettings: FC<{
 	readonlyFeatures = false
 }) => {
 	const [t] = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const { isLicensed, isLoading, error, requiresLicenseCheck } = useWscLicense();
 
 	const wscLicenseDisabledWarningLabel = t(

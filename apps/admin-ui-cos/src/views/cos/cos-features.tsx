@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import _, { find, isEqual, reduce } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Features } from './features';
 import {
 	COS,
 	MOBILE_CALENDAR_FEATURE_SYNC,
@@ -20,10 +19,11 @@ import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { PageLayout } from '../page-layout';
+
+import { Features } from './features';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -35,7 +35,7 @@ const CosFeatures: FC = () => {
 	const [zimbraId, setZimbraId] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({});
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const readonlyCOS = useMemo(() => {
@@ -78,8 +78,7 @@ const CosFeatures: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
