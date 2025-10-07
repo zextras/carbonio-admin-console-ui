@@ -1,12 +1,13 @@
-import { TFunction } from 'i18next';
-
-import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
-
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { TFunction } from 'i18next';
+
+import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
+
 export const generateSnackbarFromError = (
 	error: Error,
 	t: TFunction<'translation', undefined, 'translation'>
