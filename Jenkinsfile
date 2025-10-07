@@ -161,6 +161,8 @@ pipeline {
                     buildStage([
                         skipStash: true,
                         buildDirs: ['apps'],
+                        ubuntuSinglePkg: true,
+                        rockySinglePkg: true,
                     ])
                 }
             }
@@ -210,7 +212,9 @@ pipeline {
         stage('Upload artifacts') {
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json')
+                    packages: yapHelper.getPackageNames('apps/yap.json'),
+                    ubuntuSinglePkg: true,
+                    rockySinglePkg: true,
                 )
             }
         }
