@@ -9,7 +9,6 @@ import {
 	removeRoute,
 	registerActions,
 	setAppContext,
-	getSoapFetchRequest,
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
@@ -50,7 +49,6 @@ import {
 	getAllServers,
 	getMailstoresServers
 } from './services/get-all-servers-service';
-import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
@@ -87,8 +85,6 @@ const App: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
@@ -278,19 +274,6 @@ const App: FC = () => {
 		history.push(`/${DASHBOARD}`);
 	}, [createCosRight, history, setCosView, t]);
 
-	const checkIsBackupModuleEnable = useCallback(() => {
-		getSoapFetchRequest(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`).then(
-			(data: any) => {
-				const backupServer = data?.servers;
-				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
-					setBackupServerList(backupServer);
-					setBackupModuleEnable(true);
-				} else {
-					setBackupModuleEnable(false);
-				}
-			}
-		);
-	}, [setBackupModuleEnable, setBackupServerList]);
 	const getGlobalConfig = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
@@ -313,7 +296,6 @@ const App: FC = () => {
 			if (server && Array.isArray(server) && server.length > 0) {
 				setServerList(server);
 				if (isAdvanced) {
-					checkIsBackupModuleEnable();
 					getGlobalConfig();
 				}
 				setAllServersList(server);
@@ -325,14 +307,7 @@ const App: FC = () => {
 				setMtaServerList(server);
 			}
 		});
-	}, [
-		setServerList,
-		isAdvanced,
-		setAllServersList,
-		checkIsBackupModuleEnable,
-		getGlobalConfig,
-		setMtaServerList
-	]);
+	}, [setServerList, isAdvanced, setAllServersList, getGlobalConfig, setMtaServerList]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {
