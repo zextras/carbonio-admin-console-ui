@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
 	Container,
 	Input,
@@ -15,9 +13,10 @@ import {
 	Switch,
 	Text
 } from '@zextras/carbonio-design-system';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CosPrefAttributes } from '../../../../types';
+import { CosPrefAttributes } from '../../../../types/cos';
 import ListRow from '../../list/list-row';
 import { bytesToHumanReadable, charactorSet, conversationGroupBy } from '../../utility/utils';
 import { AttributeValue } from '../constants/types';

@@ -18,7 +18,9 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType, Attribute, TimeItems } from '../../../types';
+import { AccountType } from '../../../types/account';
+import { Attribute } from '../../../types/attribute';
+import { TimeItems } from '../../../types/general';
 import {
 	BACKUP_ENABLED,
 	BACKUP_SELF_UNDELETE_ALLOWED,

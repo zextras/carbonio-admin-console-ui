@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -18,11 +17,11 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import { debounce, find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../types';
+import { Attribute } from '../../../types/attribute';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
@@ -271,8 +270,8 @@ const CosGeneralInformation: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						:  
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -373,7 +372,7 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getAccountList = useCallback((): void => {
 		if (!searchAccountQuery) {
 			return;
@@ -394,11 +393,11 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									// eslint-disable-next-line no-param-reassign
+									 
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								// eslint-disable-next-line no-param-reassign
+								 
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -413,7 +412,7 @@ const CosGeneralInformation: FC = () => {
 								</Text>,
 								<>
 									{
-										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+										 
 										item?.mail?.length - 1 || 0 ? (
 											<Tooltip
 												key={item?.id}
@@ -423,7 +422,7 @@ const CosGeneralInformation: FC = () => {
 											>
 												<Text size="small" weight="light" key={item?.id} color="#828282">
 													{
-														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+														 
 														item?.mail?.length - 1 || 0
 													}
 												</Text>
@@ -496,7 +495,7 @@ const CosGeneralInformation: FC = () => {
 		searchAccountList(searchAccountString, cosDetail.id);
 	}, [cosDetail?.id, searchAccountList, searchAccountString]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getDomainList = useCallback((): void => {
 		if (!searchDomainQuery) {
 			return;
@@ -517,11 +516,11 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									// eslint-disable-next-line no-param-reassign
+									 
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								// eslint-disable-next-line no-param-reassign
+								 
 								item[ele?.n] = ele._content;
 							}
 						});

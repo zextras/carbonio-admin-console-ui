@@ -7,7 +7,7 @@ import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-sy
 import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../types';
+import { AccountType } from '../../types/account';
 import { useAuthIsAdvanced } from '../store/auth-advanced/store';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
 import InheritedInput from '../views/utility/inherited-components/inherited-input';

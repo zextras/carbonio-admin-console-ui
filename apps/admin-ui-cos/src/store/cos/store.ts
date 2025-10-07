@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -8,7 +7,7 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { Cos } from '../../../types';
+import { Cos } from '../../../types/cos';
 
 type CosState = {
 	cos: Cos;

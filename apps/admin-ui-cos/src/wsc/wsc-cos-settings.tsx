@@ -9,7 +9,9 @@ import { find, forEach, isEqual, size } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType, Attribute, Cos } from '../../types';
+import { AccountType } from '../../types/account';
+import { Attribute } from '../../types/attribute';
+import { Cos } from '../../types/cos';
 import { COS, ZIMBRA_ADMIN_URN } from '../constants';
 import { flushCache } from '../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../services/modify-cos-service';

@@ -6,7 +6,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
-import { CosPrefAttributes } from '../../../../../../types';
+import { CosPrefAttributes } from '../../../../../../types/cos';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../../constants';
 import { useHasUnsavedChanges } from '../useHasUnsavedChanges';
 

@@ -16,7 +16,8 @@ import {
 import React, { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType, TimeItems } from '../../../../types';
+import { AccountType } from '../../../../types/account';
+import { TimeItems } from '../../../../types/general';
 import ListRow from '../../list/list-row';
 
 type FailedLoginPolicyProps = {

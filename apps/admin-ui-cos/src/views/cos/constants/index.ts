@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CosPrefAttributes } from '../../../../types';
+import { CosPrefAttributes } from '../../../../types/cos';
 
 export const DEFAULT_COS_PREF_ATTRIBUTES: CosPrefAttributes = {
 	zimbraPrefMessageViewHtmlPreferred: 'FALSE',

@@ -5,7 +5,7 @@
  */
 import { useCallback } from 'react';
 
-import { CosPrefAttributes } from '../../../../../types';
+import { CosPrefAttributes } from '../../../../../types/cos';
 
 export const useHasUnsavedChanges = (
 	currentCosAttributes: Partial<CosPrefAttributes> | undefined,

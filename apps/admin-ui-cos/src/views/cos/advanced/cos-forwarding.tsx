@@ -7,7 +7,7 @@ import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import React, { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../types';
+import { AccountType } from '../../../../types/account';
 import ListRow from '../../list/list-row';
 
 type ForwardingProps = {

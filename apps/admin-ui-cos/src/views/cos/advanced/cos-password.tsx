@@ -17,7 +17,7 @@ import React, { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { AccountType } from '../../../../types';
+import { AccountType } from '../../../../types/account';
 import ListRow from '../../list/list-row';
 
 const CustomIcon = styled(Icon)`

@@ -7,7 +7,7 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { Server } from '../../../types';
+import { Server } from '../../../types/server';
 import { SERVER_DETAIL_VIEW } from '../../constants';
 
 type ServerState = {
@@ -33,14 +33,12 @@ export const useServerStore = create<ServerState>()(
 		removeServer: (): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
 					state.server = {};
 				})
 			),
 		setServerView: (serverView): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
 					state.serverView = serverView;
 				}),
 				false,

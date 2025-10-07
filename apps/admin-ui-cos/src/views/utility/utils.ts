@@ -10,7 +10,7 @@ import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash';
 import { useState } from 'react';
 
-import { TwoFactorPolicy } from '../../../types';
+import { TwoFactorPolicy } from '../../../types/domain';
 import {
 	ABQ_DISABLED,
 	ACTIVE,

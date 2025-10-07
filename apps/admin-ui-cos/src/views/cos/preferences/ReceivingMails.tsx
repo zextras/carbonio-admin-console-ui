@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
 import { Container, Input, Row, Select, SelectItem, Text } from '@zextras/carbonio-design-system';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CosPrefAttributes } from '../../../../types';
+import { CosPrefAttributes } from '../../../../types/cos';
 import ListRow from '../../list/list-row';
 import { AttributeValue } from '../constants/types';
 
@@ -136,7 +135,7 @@ export const ReceivingMails = ({
 									prefMailPollingIntervalType === ''
 										? TIME_TYPES[-1]
 										: TIME_TYPES.find((item) => item.value === prefMailPollingIntervalType) ||
-										  TIME_TYPES[0]
+											TIME_TYPES[0]
 								}
 								onChange={onPrefMailPollingIntervalTypeChange}
 								disabled={isReadOnlyCosEntry}
@@ -163,9 +162,8 @@ export const ReceivingMails = ({
 									cosPrefAttributes?.zimbraPrefMailPollingInterval === ''
 										? POLLING_INTERVAL[-1]
 										: POLLING_INTERVAL.find(
-												// eslint-disable-next-line max-len
 												(item) => item.value === cosPrefAttributes?.zimbraPrefMailPollingInterval
-										  ) || POLLING_INTERVAL[0]
+											) || POLLING_INTERVAL[0]
 								}
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailPollingInterval', value)

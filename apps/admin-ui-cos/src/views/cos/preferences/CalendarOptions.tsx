@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useMemo } from 'react';
-
 import { Container, Row, Select, SelectItem, Switch, Text } from '@zextras/carbonio-design-system';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CosPrefAttributes } from '../../../../types';
+import { CosPrefAttributes } from '../../../../types/cos';
 import ListRow from '../../list/list-row';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
 import { AttributeValue } from '../constants/types';

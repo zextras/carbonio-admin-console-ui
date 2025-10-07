@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
 	Button,
 	Container,
@@ -19,10 +17,11 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { Attribute } from '../../../types';
+import { Attribute } from '../../../types/attribute';
 import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
@@ -347,7 +346,7 @@ const CosServerPools: FC = () => {
 				: allServers.map((item) => ({
 						n: 'zimbraMailHostPool',
 						_content: item?._content
-				  }));
+					}));
 		const body: ModifyCosBody = {
 			_jsns: ZIMBRA_ADMIN_URN,
 			id: {
@@ -421,7 +420,7 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
+		 
 		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
@@ -481,7 +480,7 @@ const CosServerPools: FC = () => {
 											<Input
 												value={searchServer}
 												disabled={
-													// eslint-disable-next-line max-len
+													 
 													(serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
 												}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}
