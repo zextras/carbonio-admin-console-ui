@@ -33,817 +33,817 @@ import { Right, Rights } from '../../store/rights/store';
 export const timeZoneList = (
 	t: TFunction
 ): Array<{ value: string; label: string; offSet?: string }> => [
-		{
-			value: NOT_SET,
-			label: t('label.not_set', 'Not Set')
-		},
-		{
-			value: 'Etc/GMT+12',
-			label: t('timezone.etc_gmt+12', { value: 'GMT -12:00', defaultValue: '{{value}} Dateline' })
-		},
-		{
-			value: 'Pacific/Midway',
-			label: t('timezone.pacific_midway', { value: 'GMT -11:00', defaultValue: '{{value}} Samoa' })
-		},
-		{
-			value: 'America/Adak',
-			label: t('timezone.america_adak', { value: 'GMT -10:00', defaultValue: '{{value}} Adak' })
-		},
-		{
-			value: 'Pacific/Honolulu',
-			label: t('timezone.pacific_honolulu', { value: 'GMT -10:00', defaultValue: '{{value}} Hawaii' })
-		},
-		{
-			value: 'Pacific/Marquesas',
-			label: t('timezone.pacific_marquesas', {
-				value: 'GMT -09:30',
-				defaultValue: '{{value}} Marquesas'
-			})
-		},
-		{
-			value: 'America/Anchorage',
-			label: t('timezone.america_anchorage', {
-				value: 'GMT -09:00',
-				defaultValue: '{{value}} Alaska'
-			})
-		},
-		{
-			value: 'America/Los_Angeles',
-			label: t('timezone.america_los_angeles', {
-				value: 'GMT -08:00',
-				defaultValue: '{{value}} US/Canada Pacific'
-			})
-		},
-		{
-			value: 'America/Tijuana',
-			label: t('timezone.america_tijuana', {
-				value: 'GMT -08:00',
-				defaultValue: '{{value}} Baja California'
-			})
-		},
-		{
-			value: 'America/Chihuahua',
-			label: t('timezone.america_chihuahua', {
-				value: 'GMT -07:00',
-				defaultValue: '{{value}} Chihuahua, La Paz, Mazatlan'
-			})
-		},
-		{
-			value: 'America/Denver',
-			label: t('timezone.america_denver', {
-				value: 'GMT -07:00',
-				defaultValue: '{{value}} US/Canada Mountain'
-			})
-		},
-		{
-			value: 'America/Fort_Nelson',
-			label: t('timezone.america_fort_nelson', {
-				value: 'GMT -07:00',
-				defaultValue: '{{value}} Fort Nelson'
-			})
-		},
-		{
-			value: 'America/Phoenix',
-			label: t('timezone.america_phoenix', { value: 'GMT -07:00', defaultValue: '{{value}} Arizona' })
-		},
-		{
-			value: 'America/Whitehorse',
-			label: t('timezone.america_whitehorse', {
-				value: 'GMT -07:00',
-				defaultValue: '{{value}} Yukon'
-			})
-		},
-		{
-			value: 'America/Chicago',
-			label: t('timezone.america_chicago', {
-				value: 'GMT -06:00',
-				defaultValue: '{{value}} US/Canada Central'
-			})
-		},
-		{
-			value: 'America/Guatemala',
-			label: t('timezone.america_guatemala', {
-				value: 'GMT -06:00',
-				defaultValue: '{{value}} Central America'
-			})
-		},
-		{
-			value: 'America/Mexico_City',
-			label: t('timezone.america_mexico_city', {
-				value: 'GMT -06:00',
-				defaultValue: '{{value}} Guadalajara, Mexico City, Monterrey'
-			})
-		},
-		{
-			value: 'America/Regina',
-			label: t('timezone.america_regina', {
-				value: 'GMT -06:00',
-				defaultValue: '{{value}} Saskatchewan'
-			})
-		},
-		{
-			value: 'Pacific/Easter',
-			label: t('timezone.pacific_easter', { value: 'GMT -06:00', defaultValue: '{{value}} Easter' })
-		},
-		{
-			value: 'America/Bogota',
-			label: t('timezone.america_bogota', { value: 'GMT -05:00', defaultValue: '{{value}} Colombia' })
-		},
-		{
-			value: 'America/Cancun',
-			label: t('timezone.america_cancun', {
-				value: 'GMT -05:00',
-				defaultValue: '{{value}} Cancun, Chetumal'
-			})
-		},
-		{
-			value: 'America/Grand_Turk',
-			label: t('timezone.america_grand_turk', {
-				value: 'GMT -05:00',
-				defaultValue: '{{value}} Turks and Caicos Islands'
-			})
-		},
-		{
-			value: 'America/Havana',
-			label: t('timezone.america_havana', { value: 'GMT -05:00', defaultValue: '{{value}} Havana' })
-		},
-		{
-			value: 'America/Indiana/Indianapolis',
-			label: t('timezone.america_indiana_indianapolis', {
-				value: 'GMT -05:00',
-				defaultValue: '{{value}} Indiana (East)'
-			})
-		},
-		{
-			value: 'America/New_York',
-			label: t('timezone.america_new_york', {
-				value: 'GMT -05:00',
-				defaultValue: '{{value}} US/Canada Eastern'
-			})
-		},
-		{
-			value: 'America/Port-au-Prince',
-			label: t('timezone.america_port-au-prince', {
-				value: 'GMT -05:00',
-				defaultValue: '{{value}} Port-au-Prince'
-			})
-		},
-		{
-			value: 'America/Asuncion',
-			label: t('timezone.america_asuncion', {
-				value: 'GMT -04:00',
-				defaultValue: '{{value}} Asuncion'
-			})
-		},
-		{
-			value: 'America/Caracas',
-			label: t('timezone.america_caracas', { value: 'GMT -04:00', defaultValue: '{{value}} Caracas' })
-		},
-		{
-			value: 'America/Cuiaba',
-			label: t('timezone.america_cuiaba', { value: 'GMT -04:00', defaultValue: '{{value}} Cuiaba' })
-		},
-		{
-			value: 'America/Guyana',
-			label: t('timezone.america_guyana', {
-				value: 'GMT -04:00',
-				defaultValue: '{{value}} Georgetown, La Paz, Manaus, San Juan'
-			})
-		},
-		{
-			value: 'America/Halifax',
-			label: t('timezone.america_halifax', {
-				value: 'GMT -04:00',
-				defaultValue: '{{value}} Atlantic Time (Canada)'
-			})
-		},
-		{
-			value: 'America/Santiago',
-			label: t('timezone.america_santiago', {
-				value: 'GMT -04:00',
-				defaultValue: '{{value}} Pacific South America'
-			})
-		},
-		{
-			value: 'America/St_Johns',
-			label: t('timezone.america_st_johns', {
-				value: 'GMT -03:30',
-				defaultValue: '{{value}} Newfoundland'
-			})
-		},
-		{
-			value: 'America/Araguaina',
-			label: t('timezone.america_araguaina', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Araguaina'
-			})
-		},
-		{
-			value: 'America/Argentina/Buenos_Aires',
-			label: t('timezone.america_argentina_buenos_aires', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Argentina'
-			})
-		},
-		{
-			value: 'America/Bahia',
-			label: t('timezone.america_bahia', { value: 'GMT -03:00', defaultValue: '{{value}} Salvador' })
-		},
-		{
-			value: 'America/Cayenne',
-			label: t('timezone.america_cayenne', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Cayenne, Fortaleza'
-			})
-		},
-		{
-			value: 'America/Miquelon',
-			label: t('timezone.america_miquelon', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Miquelon'
-			})
-		},
-		{
-			value: 'America/Montevideo',
-			label: t('timezone.america_montevideo', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Montevideo'
-			})
-		},
-		{
-			value: 'America/Punta_Arenas',
-			label: t('timezone.america_punta_arenas', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Punta_Arenas'
-			})
-		},
-		{
-			value: 'America/Sao_Paulo',
-			label: t('timezone.america_sao_paulo', {
-				value: 'GMT -03:00',
-				defaultValue: '{{value}} Brasilia'
-			})
-		},
-		{
-			value: 'Atlantic/South_Georgia',
-			label: t('timezone.atlantic_south_georgia', {
-				value: 'GMT -02:00',
-				defaultValue: '{{value}} Mid-Atlantic'
-			})
-		},
-		{
-			value: 'Atlantic/Azores',
-			label: t('timezone.atlantic_azores', { value: 'GMT -01:00', defaultValue: '{{value}} Azores' })
-		},
-		{
-			value: 'Atlantic/Cape_Verde',
-			label: t('timezone.atlantic_cape_verde', {
-				value: 'GMT -01:00',
-				defaultValue: '{{value}} Cape Verde Is.'
-			})
-		},
-		{
-			value: 'Africa/Monrovia',
-			label: t('timezone.africa_monrovia', {
-				value: 'GMT +00:00',
-				defaultValue: '{{value}} Monrovia'
-			})
-		},
-		{
-			value: 'Africa/Sao_Tome',
-			label: t('timezone.africa_sao_tome', {
-				value: 'GMT +00:00',
-				defaultValue: '{{value}} Sao Tome'
-			})
-		},
-		{
-			value: 'Europe/London',
-			label: t('timezone.europe_london', {
-				value: 'GMT +00:00',
-				defaultValue: '{{value}} Britain, Ireland, Portugal'
-			})
-		},
-		{
-			value: 'UTC',
-			label: t('timezone.utc', {
-				value: 'GMT/UTC',
-				defaultValue: '{{value}} Coordinated Universal Time'
-			})
-		},
-		{
-			value: 'Africa/Algiers',
-			label: t('timezone.africa_algiers', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} West Central Africa'
-			})
-		},
-		{
-			value: 'Africa/Casablanca',
-			label: t('timezone.africa_casablanca', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} Casablanca'
-			})
-		},
-		{
-			value: 'Europe/Belgrade',
-			label: t('timezone.europe_belgrade', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} Belgrade, Bratislava, Budapest, Ljubljana, Prague'
-			})
-		},
-		{
-			value: 'Europe/Berlin',
-			label: t('timezone.europe_berlin', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna'
-			})
-		},
-		{
-			value: 'Europe/Brussels',
-			label: t('timezone.europe_brussels', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} Brussels, Copenhagen, Madrid, Paris'
-			})
-		},
-		{
-			value: 'Europe/Warsaw',
-			label: t('timezone.europe_warsaw', {
-				value: 'GMT +01:00',
-				defaultValue: '{{value}} Sarajevo, Skopje, Warsaw, Zagreb'
-			})
-		},
-		{
-			value: 'Africa/Cairo',
-			label: t('timezone.africa_cairo', { value: 'GMT +02:00', defaultValue: '{{value}} Egypt' })
-		},
-		{
-			value: 'Africa/Harare',
-			label: t('timezone.africa_harare', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Harare, Pretoria'
-			})
-		},
-		{
-			value: 'Africa/Juba',
-			label: t('timezone.africa_juba', { value: 'GMT +02:00', defaultValue: '{{value}} Juba' })
-		},
-		{
-			value: 'Africa/Khartoum',
-			label: t('timezone.africa_khartoum', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Khartoum'
-			})
-		},
-		{
-			value: 'Africa/Tripoli',
-			label: t('timezone.africa_tripoli', { value: 'GMT +02:00', defaultValue: '{{value}} Tripoli' })
-		},
-		{
-			value: 'Africa/Windhoek',
-			label: t('timezone.africa_windhoek', { value: 'GMT +02:00', defaultValue: '{{value}} Namibia' })
-		},
-		{
-			value: 'Asia/Amman',
-			label: t('timezone.asia_amman', { value: 'GMT +02:00', defaultValue: '{{value}} Jordan' })
-		},
-		{
-			value: 'Asia/Beirut',
-			label: t('timezone.asia_beirut', { value: 'GMT +02:00', defaultValue: '{{value}} Beirut' })
-		},
-		{
-			value: 'Asia/Damascus',
-			label: t('timezone.asia_damascus', { value: 'GMT +02:00', defaultValue: '{{value}} Damascus' })
-		},
-		{
-			value: 'Asia/Gaza',
-			label: t('timezone.asia_gaza', { value: 'GMT +02:00', defaultValue: '{{value}} Gaza' })
-		},
-		{
-			value: 'Asia/Jerusalem',
-			label: t('timezone.asia_jerusalem', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Jerusalem'
-			})
-		},
-		{
-			value: 'Europe/Athens',
-			label: t('timezone.europe_athens', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Athens, Beirut, Bucharest, Istanbul'
-			})
-		},
-		{
-			value: 'Europe/Bucharest',
-			label: t('timezone.europe_bucharest', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Bucharest'
-			})
-		},
-		{
-			value: 'Europe/Chisinau',
-			label: t('timezone.europe_chisinau', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Chisinau'
-			})
-		},
-		{
-			value: 'Europe/Helsinki',
-			label: t('timezone.europe_helsinki', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius'
-			})
-		},
-		{
-			value: 'Europe/Kaliningrad',
-			label: t('timezone.europe_kaliningrad', {
-				value: 'GMT +02:00',
-				defaultValue: '{{value}} Kaliningrad (RTZ 1)'
-			})
-		},
-		{
-			value: 'Africa/Nairobi',
-			label: t('timezone.africa_nairobi', { value: 'GMT +03:00', defaultValue: '{{value}} Nairobi' })
-		},
-		{
-			value: 'Asia/Baghdad',
-			label: t('timezone.asia_baghdad', { value: 'GMT +03:00', defaultValue: '{{value}} Iraq' })
-		},
-		{
-			value: 'Asia/Kuwait',
-			label: t('timezone.asia_kuwait', {
-				value: 'GMT +03:00',
-				defaultValue: '{{value}} Kuwait, Riyadh'
-			})
-		},
-		{
-			value: 'Europe/Istanbul',
-			label: t('timezone.europe_istanbul', {
-				value: 'GMT +03:00',
-				defaultValue: '{{value}} Istanbul'
-			})
-		},
-		{
-			value: 'Europe/Minsk',
-			label: t('timezone.europe_minsk', { value: 'GMT +03:00', defaultValue: '{{value}} Minsk' })
-		},
-		{
-			value: 'Europe/Moscow',
-			label: t('timezone.europe_moscow', {
-				value: 'GMT +03:00',
-				defaultValue: '{{value}} Moscow, St. Petersburg, Volgograd (RTZ 2)'
-			})
-		},
-		{
-			value: 'Europe/Volgograd',
-			label: t('timezone.europe_volgograd', {
-				value: 'GMT +03:00',
-				defaultValue: '{{value}} Volgograd'
-			})
-		},
-		{
-			value: 'Asia/Tehran',
-			label: t('timezone.asia_tehran', { value: 'GMT +03:30', defaultValue: '{{value}} Tehran' })
-		},
-		{
-			value: 'Asia/Baku',
-			label: t('timezone.asia_baku', { value: 'GMT +04:00', defaultValue: '{{value}} Baku' })
-		},
-		{
-			value: 'Asia/Muscat',
-			label: t('timezone.asia_muscat', {
-				value: 'GMT +04:00',
-				defaultValue: '{{value}} Abu Dhabi, Muscat'
-			})
-		},
-		{
-			value: 'Asia/Tbilisi',
-			label: t('timezone.asia_tbilisi', { value: 'GMT +04:00', defaultValue: '{{value}} Tbilisi' })
-		},
-		{
-			value: 'Asia/Yerevan',
-			label: t('timezone.asia_yerevan', { value: 'GMT +04:00', defaultValue: '{{value}} Yerevan' })
-		},
-		{
-			value: 'Europe/Astrakhan',
-			label: t('timezone.europe_astrakhan', {
-				value: 'GMT +04:00',
-				defaultValue: '{{value}} Astrakhan'
-			})
-		},
-		{
-			value: 'Europe/Samara',
-			label: t('timezone.europe_samara', {
-				value: 'GMT +04:00',
-				defaultValue: '{{value}} Izhevsk, Samara (RTZ 3)'
-			})
-		},
-		{
-			value: 'Europe/Saratov',
-			label: t('timezone.europe_saratov', { value: 'GMT +04:00', defaultValue: '{{value}} Saratov' })
-		},
-		{
-			value: 'Indian/Mauritius',
-			label: t('timezone.indian_mauritius', {
-				value: 'GMT +04:00',
-				defaultValue: '{{value}} Port Louis'
-			})
-		},
-		{
-			value: 'Asia/Kabul',
-			label: t('timezone.asia_kabul', { value: 'GMT +04:30', defaultValue: '{{value}} Kabul' })
-		},
-		{
-			value: 'Asia/Karachi',
-			label: t('timezone.asia_karachi', {
-				value: 'GMT +05:00',
-				defaultValue: '{{value}} Islamabad, Karachi'
-			})
-		},
-		{
-			value: 'Asia/Qyzylorda',
-			label: t('timezone.asia_qyzylorda', {
-				value: 'GMT +05:00',
-				defaultValue: '{{value}} Qyzylorda'
-			})
-		},
-		{
-			value: 'Asia/Tashkent',
-			label: t('timezone.asia_tashkent', { value: 'GMT +05:00', defaultValue: '{{value}} Tashkent' })
-		},
-		{
-			value: 'Asia/Yekaterinburg',
-			label: t('timezone.asia_yekaterinburg', {
-				value: 'GMT +05:00',
-				defaultValue: '{{value}} Ekaterinburg (RTZ 4)'
-			})
-		},
-		{
-			value: 'Asia/Colombo',
-			label: t('timezone.asia_colombo', {
-				value: 'GMT +05:30',
-				defaultValue: '{{value}} Sri Jayawardenepura Kotte'
-			})
-		},
-		{
-			value: 'Asia/Kolkata',
-			label: t('timezone.asia_kolkata', {
-				value: 'GMT +05:30',
-				defaultValue: '{{value}} Chennai, Kolkata, Mumbai, New Delhi'
-			})
-		},
-		{
-			value: 'Asia/Kathmandu',
-			label: t('timezone.asia_kathmandu', {
-				value: 'GMT +05:45',
-				defaultValue: '{{value}} Kathmandu'
-			})
-		},
-		{
-			value: 'Asia/Almaty',
-			label: t('timezone.asia_almaty', { value: 'GMT +06:00', defaultValue: '{{value}} Astana' })
-		},
-		{
-			value: 'Asia/Dhaka',
-			label: t('timezone.asia_dhaka', { value: 'GMT +06:00', defaultValue: '{{value}} Dhaka' })
-		},
-		{
-			value: 'Asia/Omsk',
-			label: t('timezone.asia_omsk', { value: 'GMT +06:00', defaultValue: '{{value}} Omsk' })
-		},
-		{
-			value: 'Asia/Yangon',
-			label: t('timezone.asia_yangon', { value: 'GMT +06:30', defaultValue: '{{value}} Yangon' })
-		},
-		{
-			value: 'Asia/Bangkok',
-			label: t('timezone.asia_bangkok', {
-				value: 'GMT +07:00',
-				defaultValue: '{{value}} Bangkok, Hanoi, Jakarta'
-			})
-		},
-		{
-			value: 'Asia/Barnaul',
-			label: t('timezone.asia_barnaul', { value: 'GMT +07:00', defaultValue: '{{value}} Barnaul' })
-		},
-		{
-			value: 'Asia/Hovd',
-			label: t('timezone.asia_hovd', { value: 'GMT +07:00', defaultValue: '{{value}} Hovd' })
-		},
-		{
-			value: 'Asia/Krasnoyarsk',
-			label: t('timezone.asia_krasnoyarsk', {
-				value: 'GMT +07:00',
-				defaultValue: '{{value}} Krasnoyarsk (RTZ 6)'
-			})
-		},
-		{
-			value: 'Asia/Novosibirsk',
-			label: t('timezone.asia_novosibirsk', {
-				value: 'GMT +07:00',
-				defaultValue: '{{value}} Novosibirsk (RTZ 5)'
-			})
-		},
-		{
-			value: 'Asia/Tomsk',
-			label: t('timezone.asia_tomsk', { value: 'GMT +07:00', defaultValue: '{{value}} Tomsk' })
-		},
-		{
-			value: 'Asia/Hong_Kong',
-			label: t('timezone.asia_hong_kong', {
-				value: 'GMT +08:00',
-				defaultValue: '{{value}} Beijing, Chongqing, Hong Kong, Urumqi'
-			})
-		},
-		{
-			value: 'Asia/Irkutsk',
-			label: t('timezone.asia_irkutsk', {
-				value: 'GMT +08:00',
-				defaultValue: '{{value}} Irkutsk (RTZ 7)'
-			})
-		},
-		{
-			value: 'Asia/Kuala_Lumpur',
-			label: t('timezone.asia_kuala_lumpur', {
-				value: 'GMT +08:00',
-				defaultValue: '{{value}} Kuala Lumpur'
-			})
-		},
-		{
-			value: 'Asia/Singapore',
-			label: t('timezone.asia_singapore', {
-				value: 'GMT +08:00',
-				defaultValue: '{{value}} Singapore'
-			})
-		},
-		{
-			value: 'Asia/Taipei',
-			label: t('timezone.asia_taipei', { value: 'GMT +08:00', defaultValue: '{{value}} Taipei' })
-		},
-		{
-			value: 'Asia/Ulaanbaatar',
-			label: t('timezone.asia_ulaanbaatar', {
-				value: 'GMT +08:00',
-				defaultValue: '{{value}} Ulaanbaatar'
-			})
-		},
-		{
-			value: 'Australia/Perth',
-			label: t('timezone.australia_perth', { value: 'GMT +08:00', defaultValue: '{{value}} Perth' })
-		},
-		{
-			value: 'Australia/Eucla',
-			label: t('timezone.australia_eucla', { value: 'GMT +08:45', defaultValue: '{{value}} Eucla' })
-		},
-		{
-			value: 'Asia/Chita',
-			label: t('timezone.asia_chita', { value: 'GMT +09:00', defaultValue: '{{value}} Chita' })
-		},
-		{
-			value: 'Asia/Pyongyang',
-			label: t('timezone.asia_pyongyang', {
-				value: 'GMT +09:00',
-				defaultValue: '{{value}} Pyongyang'
-			})
-		},
-		{
-			value: 'Asia/Seoul',
-			label: t('timezone.asia_seoul', { value: 'GMT +09:00', defaultValue: '{{value}} Korea' })
-		},
-		{
-			value: 'Asia/Tokyo',
-			label: t('timezone.asia_tokyo', { value: 'GMT +09:00', defaultValue: '{{value}} Japan' })
-		},
-		{
-			value: 'Asia/Yakutsk',
-			label: t('timezone.asia_yakutsk', {
-				value: 'GMT +09:00',
-				defaultValue: '{{value}} Yakutsk (RTZ 8)'
-			})
-		},
-		{
-			value: 'Australia/Adelaide',
-			label: t('timezone.australia_adelaide', {
-				value: 'GMT +09:30',
-				defaultValue: '{{value}} Adelaide'
-			})
-		},
-		{
-			value: 'Australia/Darwin',
-			label: t('timezone.australia_darwin', { value: 'GMT +09:30', defaultValue: '{{value}} Darwin' })
-		},
-		{
-			value: 'Asia/Vladivostok',
-			label: t('timezone.asia_vladivostok', {
-				value: 'GMT +10:00',
-				defaultValue: '{{value}} Vladivostok, Magadan (RTZ 9)'
-			})
-		},
-		{
-			value: 'Australia/Brisbane',
-			label: t('timezone.australia_brisbane', {
-				value: 'GMT +10:00',
-				defaultValue: '{{value}} Brisbane'
-			})
-		},
-		{
-			value: 'Australia/Hobart',
-			label: t('timezone.australia_hobart', { value: 'GMT +10:00', defaultValue: '{{value}} Hobart' })
-		},
-		{
-			value: 'Australia/Sydney',
-			label: t('timezone.australia_sydney', {
-				value: 'GMT +10:00',
-				defaultValue: '{{value}} Canberra, Melbourne, Sydney'
-			})
-		},
-		{
-			value: 'Pacific/Guam',
-			label: t('timezone.pacific_guam', {
-				value: 'GMT +10:00',
-				defaultValue: '{{value}} Guam, Port Moresby'
-			})
-		},
-		{
-			value: 'Australia/Lord_Howe',
-			label: t('timezone.australia_lord_howe', {
-				value: 'GMT +10:30',
-				defaultValue: '{{value}} Lord_Howe'
-			})
-		},
-		{
-			value: 'Asia/Magadan',
-			label: t('timezone.asia_magadan', { value: 'GMT +11:00', defaultValue: '{{value}} Magadan' })
-		},
-		{
-			value: 'Asia/Sakhalin',
-			label: t('timezone.asia_sakhalin', { value: 'GMT +11:00', defaultValue: '{{value}} Sakhalin' })
-		},
-		{
-			value: 'Asia/Srednekolymsk',
-			label: t('timezone.asia_srednekolymsk', {
-				value: 'GMT +11:00',
-				defaultValue: '{{value}} Chokurdakh (RTZ 10)'
-			})
-		},
-		{
-			value: 'Pacific/Bougainville',
-			label: t('timezone.pacific_bougainville', {
-				value: 'GMT +11:00',
-				defaultValue: '{{value}} Bougainville Standard Time'
-			})
-		},
-		{
-			value: 'Pacific/Guadalcanal',
-			label: t('timezone.pacific_guadalcanal', {
-				value: 'GMT +11:00',
-				defaultValue: '{{value}} Solomon Is. / New Caledonia'
-			})
-		},
-		{
-			value: 'Pacific/Norfolk',
-			label: t('timezone.pacific_norfolk', { value: 'GMT +11:00', defaultValue: '{{value}} Norfolk' })
-		},
-		{
-			value: 'Asia/Kamchatka',
-			label: t('timezone.asia_kamchatka', {
-				value: 'GMT +12:00',
-				defaultValue: '{{value}} Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)'
-			})
-		},
-		{
-			value: 'Pacific/Auckland',
-			label: t('timezone.pacific_auckland', {
-				value: 'GMT +12:00',
-				defaultValue: '{{value}} New Zealand'
-			})
-		},
-		{
-			value: 'Pacific/Fiji',
-			label: t('timezone.pacific_fiji', { value: 'GMT +12:00', defaultValue: '{{value}} Fiji' })
-		},
-		{
-			value: 'Pacific/Chatham',
-			label: t('timezone.pacific_chatham', { value: 'GMT +12:45', defaultValue: '{{value}} Chatham' })
-		},
-		{
-			value: 'Pacific/Apia',
-			label: t('timezone.pacific_apia', { value: 'GMT +13:00', defaultValue: '{{value}} Samoa' })
-		},
-		{
-			value: 'Pacific/Tongatapu',
-			label: t('timezone.pacific_tongatapu', {
-				value: 'GMT +13:00',
-				defaultValue: '{{value}} Nuku’alofa'
-			})
-		},
-		{
-			value: 'Pacific/Kiritimati',
-			label: t('timezone.pacific_kiritimati', {
-				value: 'GMT +14:00',
-				defaultValue: '{{value}} Kiritimati Island'
-			})
-		}
-	];
+	{
+		value: NOT_SET,
+		label: t('label.not_set', 'Not Set')
+	},
+	{
+		value: 'Etc/GMT+12',
+		label: t('timezone.etc_gmt+12', { value: 'GMT -12:00', defaultValue: '{{value}} Dateline' })
+	},
+	{
+		value: 'Pacific/Midway',
+		label: t('timezone.pacific_midway', { value: 'GMT -11:00', defaultValue: '{{value}} Samoa' })
+	},
+	{
+		value: 'America/Adak',
+		label: t('timezone.america_adak', { value: 'GMT -10:00', defaultValue: '{{value}} Adak' })
+	},
+	{
+		value: 'Pacific/Honolulu',
+		label: t('timezone.pacific_honolulu', { value: 'GMT -10:00', defaultValue: '{{value}} Hawaii' })
+	},
+	{
+		value: 'Pacific/Marquesas',
+		label: t('timezone.pacific_marquesas', {
+			value: 'GMT -09:30',
+			defaultValue: '{{value}} Marquesas'
+		})
+	},
+	{
+		value: 'America/Anchorage',
+		label: t('timezone.america_anchorage', {
+			value: 'GMT -09:00',
+			defaultValue: '{{value}} Alaska'
+		})
+	},
+	{
+		value: 'America/Los_Angeles',
+		label: t('timezone.america_los_angeles', {
+			value: 'GMT -08:00',
+			defaultValue: '{{value}} US/Canada Pacific'
+		})
+	},
+	{
+		value: 'America/Tijuana',
+		label: t('timezone.america_tijuana', {
+			value: 'GMT -08:00',
+			defaultValue: '{{value}} Baja California'
+		})
+	},
+	{
+		value: 'America/Chihuahua',
+		label: t('timezone.america_chihuahua', {
+			value: 'GMT -07:00',
+			defaultValue: '{{value}} Chihuahua, La Paz, Mazatlan'
+		})
+	},
+	{
+		value: 'America/Denver',
+		label: t('timezone.america_denver', {
+			value: 'GMT -07:00',
+			defaultValue: '{{value}} US/Canada Mountain'
+		})
+	},
+	{
+		value: 'America/Fort_Nelson',
+		label: t('timezone.america_fort_nelson', {
+			value: 'GMT -07:00',
+			defaultValue: '{{value}} Fort Nelson'
+		})
+	},
+	{
+		value: 'America/Phoenix',
+		label: t('timezone.america_phoenix', { value: 'GMT -07:00', defaultValue: '{{value}} Arizona' })
+	},
+	{
+		value: 'America/Whitehorse',
+		label: t('timezone.america_whitehorse', {
+			value: 'GMT -07:00',
+			defaultValue: '{{value}} Yukon'
+		})
+	},
+	{
+		value: 'America/Chicago',
+		label: t('timezone.america_chicago', {
+			value: 'GMT -06:00',
+			defaultValue: '{{value}} US/Canada Central'
+		})
+	},
+	{
+		value: 'America/Guatemala',
+		label: t('timezone.america_guatemala', {
+			value: 'GMT -06:00',
+			defaultValue: '{{value}} Central America'
+		})
+	},
+	{
+		value: 'America/Mexico_City',
+		label: t('timezone.america_mexico_city', {
+			value: 'GMT -06:00',
+			defaultValue: '{{value}} Guadalajara, Mexico City, Monterrey'
+		})
+	},
+	{
+		value: 'America/Regina',
+		label: t('timezone.america_regina', {
+			value: 'GMT -06:00',
+			defaultValue: '{{value}} Saskatchewan'
+		})
+	},
+	{
+		value: 'Pacific/Easter',
+		label: t('timezone.pacific_easter', { value: 'GMT -06:00', defaultValue: '{{value}} Easter' })
+	},
+	{
+		value: 'America/Bogota',
+		label: t('timezone.america_bogota', { value: 'GMT -05:00', defaultValue: '{{value}} Colombia' })
+	},
+	{
+		value: 'America/Cancun',
+		label: t('timezone.america_cancun', {
+			value: 'GMT -05:00',
+			defaultValue: '{{value}} Cancun, Chetumal'
+		})
+	},
+	{
+		value: 'America/Grand_Turk',
+		label: t('timezone.america_grand_turk', {
+			value: 'GMT -05:00',
+			defaultValue: '{{value}} Turks and Caicos Islands'
+		})
+	},
+	{
+		value: 'America/Havana',
+		label: t('timezone.america_havana', { value: 'GMT -05:00', defaultValue: '{{value}} Havana' })
+	},
+	{
+		value: 'America/Indiana/Indianapolis',
+		label: t('timezone.america_indiana_indianapolis', {
+			value: 'GMT -05:00',
+			defaultValue: '{{value}} Indiana (East)'
+		})
+	},
+	{
+		value: 'America/New_York',
+		label: t('timezone.america_new_york', {
+			value: 'GMT -05:00',
+			defaultValue: '{{value}} US/Canada Eastern'
+		})
+	},
+	{
+		value: 'America/Port-au-Prince',
+		label: t('timezone.america_port-au-prince', {
+			value: 'GMT -05:00',
+			defaultValue: '{{value}} Port-au-Prince'
+		})
+	},
+	{
+		value: 'America/Asuncion',
+		label: t('timezone.america_asuncion', {
+			value: 'GMT -04:00',
+			defaultValue: '{{value}} Asuncion'
+		})
+	},
+	{
+		value: 'America/Caracas',
+		label: t('timezone.america_caracas', { value: 'GMT -04:00', defaultValue: '{{value}} Caracas' })
+	},
+	{
+		value: 'America/Cuiaba',
+		label: t('timezone.america_cuiaba', { value: 'GMT -04:00', defaultValue: '{{value}} Cuiaba' })
+	},
+	{
+		value: 'America/Guyana',
+		label: t('timezone.america_guyana', {
+			value: 'GMT -04:00',
+			defaultValue: '{{value}} Georgetown, La Paz, Manaus, San Juan'
+		})
+	},
+	{
+		value: 'America/Halifax',
+		label: t('timezone.america_halifax', {
+			value: 'GMT -04:00',
+			defaultValue: '{{value}} Atlantic Time (Canada)'
+		})
+	},
+	{
+		value: 'America/Santiago',
+		label: t('timezone.america_santiago', {
+			value: 'GMT -04:00',
+			defaultValue: '{{value}} Pacific South America'
+		})
+	},
+	{
+		value: 'America/St_Johns',
+		label: t('timezone.america_st_johns', {
+			value: 'GMT -03:30',
+			defaultValue: '{{value}} Newfoundland'
+		})
+	},
+	{
+		value: 'America/Araguaina',
+		label: t('timezone.america_araguaina', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Araguaina'
+		})
+	},
+	{
+		value: 'America/Argentina/Buenos_Aires',
+		label: t('timezone.america_argentina_buenos_aires', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Argentina'
+		})
+	},
+	{
+		value: 'America/Bahia',
+		label: t('timezone.america_bahia', { value: 'GMT -03:00', defaultValue: '{{value}} Salvador' })
+	},
+	{
+		value: 'America/Cayenne',
+		label: t('timezone.america_cayenne', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Cayenne, Fortaleza'
+		})
+	},
+	{
+		value: 'America/Miquelon',
+		label: t('timezone.america_miquelon', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Miquelon'
+		})
+	},
+	{
+		value: 'America/Montevideo',
+		label: t('timezone.america_montevideo', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Montevideo'
+		})
+	},
+	{
+		value: 'America/Punta_Arenas',
+		label: t('timezone.america_punta_arenas', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Punta_Arenas'
+		})
+	},
+	{
+		value: 'America/Sao_Paulo',
+		label: t('timezone.america_sao_paulo', {
+			value: 'GMT -03:00',
+			defaultValue: '{{value}} Brasilia'
+		})
+	},
+	{
+		value: 'Atlantic/South_Georgia',
+		label: t('timezone.atlantic_south_georgia', {
+			value: 'GMT -02:00',
+			defaultValue: '{{value}} Mid-Atlantic'
+		})
+	},
+	{
+		value: 'Atlantic/Azores',
+		label: t('timezone.atlantic_azores', { value: 'GMT -01:00', defaultValue: '{{value}} Azores' })
+	},
+	{
+		value: 'Atlantic/Cape_Verde',
+		label: t('timezone.atlantic_cape_verde', {
+			value: 'GMT -01:00',
+			defaultValue: '{{value}} Cape Verde Is.'
+		})
+	},
+	{
+		value: 'Africa/Monrovia',
+		label: t('timezone.africa_monrovia', {
+			value: 'GMT +00:00',
+			defaultValue: '{{value}} Monrovia'
+		})
+	},
+	{
+		value: 'Africa/Sao_Tome',
+		label: t('timezone.africa_sao_tome', {
+			value: 'GMT +00:00',
+			defaultValue: '{{value}} Sao Tome'
+		})
+	},
+	{
+		value: 'Europe/London',
+		label: t('timezone.europe_london', {
+			value: 'GMT +00:00',
+			defaultValue: '{{value}} Britain, Ireland, Portugal'
+		})
+	},
+	{
+		value: 'UTC',
+		label: t('timezone.utc', {
+			value: 'GMT/UTC',
+			defaultValue: '{{value}} Coordinated Universal Time'
+		})
+	},
+	{
+		value: 'Africa/Algiers',
+		label: t('timezone.africa_algiers', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} West Central Africa'
+		})
+	},
+	{
+		value: 'Africa/Casablanca',
+		label: t('timezone.africa_casablanca', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} Casablanca'
+		})
+	},
+	{
+		value: 'Europe/Belgrade',
+		label: t('timezone.europe_belgrade', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} Belgrade, Bratislava, Budapest, Ljubljana, Prague'
+		})
+	},
+	{
+		value: 'Europe/Berlin',
+		label: t('timezone.europe_berlin', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna'
+		})
+	},
+	{
+		value: 'Europe/Brussels',
+		label: t('timezone.europe_brussels', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} Brussels, Copenhagen, Madrid, Paris'
+		})
+	},
+	{
+		value: 'Europe/Warsaw',
+		label: t('timezone.europe_warsaw', {
+			value: 'GMT +01:00',
+			defaultValue: '{{value}} Sarajevo, Skopje, Warsaw, Zagreb'
+		})
+	},
+	{
+		value: 'Africa/Cairo',
+		label: t('timezone.africa_cairo', { value: 'GMT +02:00', defaultValue: '{{value}} Egypt' })
+	},
+	{
+		value: 'Africa/Harare',
+		label: t('timezone.africa_harare', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Harare, Pretoria'
+		})
+	},
+	{
+		value: 'Africa/Juba',
+		label: t('timezone.africa_juba', { value: 'GMT +02:00', defaultValue: '{{value}} Juba' })
+	},
+	{
+		value: 'Africa/Khartoum',
+		label: t('timezone.africa_khartoum', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Khartoum'
+		})
+	},
+	{
+		value: 'Africa/Tripoli',
+		label: t('timezone.africa_tripoli', { value: 'GMT +02:00', defaultValue: '{{value}} Tripoli' })
+	},
+	{
+		value: 'Africa/Windhoek',
+		label: t('timezone.africa_windhoek', { value: 'GMT +02:00', defaultValue: '{{value}} Namibia' })
+	},
+	{
+		value: 'Asia/Amman',
+		label: t('timezone.asia_amman', { value: 'GMT +02:00', defaultValue: '{{value}} Jordan' })
+	},
+	{
+		value: 'Asia/Beirut',
+		label: t('timezone.asia_beirut', { value: 'GMT +02:00', defaultValue: '{{value}} Beirut' })
+	},
+	{
+		value: 'Asia/Damascus',
+		label: t('timezone.asia_damascus', { value: 'GMT +02:00', defaultValue: '{{value}} Damascus' })
+	},
+	{
+		value: 'Asia/Gaza',
+		label: t('timezone.asia_gaza', { value: 'GMT +02:00', defaultValue: '{{value}} Gaza' })
+	},
+	{
+		value: 'Asia/Jerusalem',
+		label: t('timezone.asia_jerusalem', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Jerusalem'
+		})
+	},
+	{
+		value: 'Europe/Athens',
+		label: t('timezone.europe_athens', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Athens, Beirut, Bucharest, Istanbul'
+		})
+	},
+	{
+		value: 'Europe/Bucharest',
+		label: t('timezone.europe_bucharest', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Bucharest'
+		})
+	},
+	{
+		value: 'Europe/Chisinau',
+		label: t('timezone.europe_chisinau', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Chisinau'
+		})
+	},
+	{
+		value: 'Europe/Helsinki',
+		label: t('timezone.europe_helsinki', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius'
+		})
+	},
+	{
+		value: 'Europe/Kaliningrad',
+		label: t('timezone.europe_kaliningrad', {
+			value: 'GMT +02:00',
+			defaultValue: '{{value}} Kaliningrad (RTZ 1)'
+		})
+	},
+	{
+		value: 'Africa/Nairobi',
+		label: t('timezone.africa_nairobi', { value: 'GMT +03:00', defaultValue: '{{value}} Nairobi' })
+	},
+	{
+		value: 'Asia/Baghdad',
+		label: t('timezone.asia_baghdad', { value: 'GMT +03:00', defaultValue: '{{value}} Iraq' })
+	},
+	{
+		value: 'Asia/Kuwait',
+		label: t('timezone.asia_kuwait', {
+			value: 'GMT +03:00',
+			defaultValue: '{{value}} Kuwait, Riyadh'
+		})
+	},
+	{
+		value: 'Europe/Istanbul',
+		label: t('timezone.europe_istanbul', {
+			value: 'GMT +03:00',
+			defaultValue: '{{value}} Istanbul'
+		})
+	},
+	{
+		value: 'Europe/Minsk',
+		label: t('timezone.europe_minsk', { value: 'GMT +03:00', defaultValue: '{{value}} Minsk' })
+	},
+	{
+		value: 'Europe/Moscow',
+		label: t('timezone.europe_moscow', {
+			value: 'GMT +03:00',
+			defaultValue: '{{value}} Moscow, St. Petersburg, Volgograd (RTZ 2)'
+		})
+	},
+	{
+		value: 'Europe/Volgograd',
+		label: t('timezone.europe_volgograd', {
+			value: 'GMT +03:00',
+			defaultValue: '{{value}} Volgograd'
+		})
+	},
+	{
+		value: 'Asia/Tehran',
+		label: t('timezone.asia_tehran', { value: 'GMT +03:30', defaultValue: '{{value}} Tehran' })
+	},
+	{
+		value: 'Asia/Baku',
+		label: t('timezone.asia_baku', { value: 'GMT +04:00', defaultValue: '{{value}} Baku' })
+	},
+	{
+		value: 'Asia/Muscat',
+		label: t('timezone.asia_muscat', {
+			value: 'GMT +04:00',
+			defaultValue: '{{value}} Abu Dhabi, Muscat'
+		})
+	},
+	{
+		value: 'Asia/Tbilisi',
+		label: t('timezone.asia_tbilisi', { value: 'GMT +04:00', defaultValue: '{{value}} Tbilisi' })
+	},
+	{
+		value: 'Asia/Yerevan',
+		label: t('timezone.asia_yerevan', { value: 'GMT +04:00', defaultValue: '{{value}} Yerevan' })
+	},
+	{
+		value: 'Europe/Astrakhan',
+		label: t('timezone.europe_astrakhan', {
+			value: 'GMT +04:00',
+			defaultValue: '{{value}} Astrakhan'
+		})
+	},
+	{
+		value: 'Europe/Samara',
+		label: t('timezone.europe_samara', {
+			value: 'GMT +04:00',
+			defaultValue: '{{value}} Izhevsk, Samara (RTZ 3)'
+		})
+	},
+	{
+		value: 'Europe/Saratov',
+		label: t('timezone.europe_saratov', { value: 'GMT +04:00', defaultValue: '{{value}} Saratov' })
+	},
+	{
+		value: 'Indian/Mauritius',
+		label: t('timezone.indian_mauritius', {
+			value: 'GMT +04:00',
+			defaultValue: '{{value}} Port Louis'
+		})
+	},
+	{
+		value: 'Asia/Kabul',
+		label: t('timezone.asia_kabul', { value: 'GMT +04:30', defaultValue: '{{value}} Kabul' })
+	},
+	{
+		value: 'Asia/Karachi',
+		label: t('timezone.asia_karachi', {
+			value: 'GMT +05:00',
+			defaultValue: '{{value}} Islamabad, Karachi'
+		})
+	},
+	{
+		value: 'Asia/Qyzylorda',
+		label: t('timezone.asia_qyzylorda', {
+			value: 'GMT +05:00',
+			defaultValue: '{{value}} Qyzylorda'
+		})
+	},
+	{
+		value: 'Asia/Tashkent',
+		label: t('timezone.asia_tashkent', { value: 'GMT +05:00', defaultValue: '{{value}} Tashkent' })
+	},
+	{
+		value: 'Asia/Yekaterinburg',
+		label: t('timezone.asia_yekaterinburg', {
+			value: 'GMT +05:00',
+			defaultValue: '{{value}} Ekaterinburg (RTZ 4)'
+		})
+	},
+	{
+		value: 'Asia/Colombo',
+		label: t('timezone.asia_colombo', {
+			value: 'GMT +05:30',
+			defaultValue: '{{value}} Sri Jayawardenepura Kotte'
+		})
+	},
+	{
+		value: 'Asia/Kolkata',
+		label: t('timezone.asia_kolkata', {
+			value: 'GMT +05:30',
+			defaultValue: '{{value}} Chennai, Kolkata, Mumbai, New Delhi'
+		})
+	},
+	{
+		value: 'Asia/Kathmandu',
+		label: t('timezone.asia_kathmandu', {
+			value: 'GMT +05:45',
+			defaultValue: '{{value}} Kathmandu'
+		})
+	},
+	{
+		value: 'Asia/Almaty',
+		label: t('timezone.asia_almaty', { value: 'GMT +06:00', defaultValue: '{{value}} Astana' })
+	},
+	{
+		value: 'Asia/Dhaka',
+		label: t('timezone.asia_dhaka', { value: 'GMT +06:00', defaultValue: '{{value}} Dhaka' })
+	},
+	{
+		value: 'Asia/Omsk',
+		label: t('timezone.asia_omsk', { value: 'GMT +06:00', defaultValue: '{{value}} Omsk' })
+	},
+	{
+		value: 'Asia/Yangon',
+		label: t('timezone.asia_yangon', { value: 'GMT +06:30', defaultValue: '{{value}} Yangon' })
+	},
+	{
+		value: 'Asia/Bangkok',
+		label: t('timezone.asia_bangkok', {
+			value: 'GMT +07:00',
+			defaultValue: '{{value}} Bangkok, Hanoi, Jakarta'
+		})
+	},
+	{
+		value: 'Asia/Barnaul',
+		label: t('timezone.asia_barnaul', { value: 'GMT +07:00', defaultValue: '{{value}} Barnaul' })
+	},
+	{
+		value: 'Asia/Hovd',
+		label: t('timezone.asia_hovd', { value: 'GMT +07:00', defaultValue: '{{value}} Hovd' })
+	},
+	{
+		value: 'Asia/Krasnoyarsk',
+		label: t('timezone.asia_krasnoyarsk', {
+			value: 'GMT +07:00',
+			defaultValue: '{{value}} Krasnoyarsk (RTZ 6)'
+		})
+	},
+	{
+		value: 'Asia/Novosibirsk',
+		label: t('timezone.asia_novosibirsk', {
+			value: 'GMT +07:00',
+			defaultValue: '{{value}} Novosibirsk (RTZ 5)'
+		})
+	},
+	{
+		value: 'Asia/Tomsk',
+		label: t('timezone.asia_tomsk', { value: 'GMT +07:00', defaultValue: '{{value}} Tomsk' })
+	},
+	{
+		value: 'Asia/Hong_Kong',
+		label: t('timezone.asia_hong_kong', {
+			value: 'GMT +08:00',
+			defaultValue: '{{value}} Beijing, Chongqing, Hong Kong, Urumqi'
+		})
+	},
+	{
+		value: 'Asia/Irkutsk',
+		label: t('timezone.asia_irkutsk', {
+			value: 'GMT +08:00',
+			defaultValue: '{{value}} Irkutsk (RTZ 7)'
+		})
+	},
+	{
+		value: 'Asia/Kuala_Lumpur',
+		label: t('timezone.asia_kuala_lumpur', {
+			value: 'GMT +08:00',
+			defaultValue: '{{value}} Kuala Lumpur'
+		})
+	},
+	{
+		value: 'Asia/Singapore',
+		label: t('timezone.asia_singapore', {
+			value: 'GMT +08:00',
+			defaultValue: '{{value}} Singapore'
+		})
+	},
+	{
+		value: 'Asia/Taipei',
+		label: t('timezone.asia_taipei', { value: 'GMT +08:00', defaultValue: '{{value}} Taipei' })
+	},
+	{
+		value: 'Asia/Ulaanbaatar',
+		label: t('timezone.asia_ulaanbaatar', {
+			value: 'GMT +08:00',
+			defaultValue: '{{value}} Ulaanbaatar'
+		})
+	},
+	{
+		value: 'Australia/Perth',
+		label: t('timezone.australia_perth', { value: 'GMT +08:00', defaultValue: '{{value}} Perth' })
+	},
+	{
+		value: 'Australia/Eucla',
+		label: t('timezone.australia_eucla', { value: 'GMT +08:45', defaultValue: '{{value}} Eucla' })
+	},
+	{
+		value: 'Asia/Chita',
+		label: t('timezone.asia_chita', { value: 'GMT +09:00', defaultValue: '{{value}} Chita' })
+	},
+	{
+		value: 'Asia/Pyongyang',
+		label: t('timezone.asia_pyongyang', {
+			value: 'GMT +09:00',
+			defaultValue: '{{value}} Pyongyang'
+		})
+	},
+	{
+		value: 'Asia/Seoul',
+		label: t('timezone.asia_seoul', { value: 'GMT +09:00', defaultValue: '{{value}} Korea' })
+	},
+	{
+		value: 'Asia/Tokyo',
+		label: t('timezone.asia_tokyo', { value: 'GMT +09:00', defaultValue: '{{value}} Japan' })
+	},
+	{
+		value: 'Asia/Yakutsk',
+		label: t('timezone.asia_yakutsk', {
+			value: 'GMT +09:00',
+			defaultValue: '{{value}} Yakutsk (RTZ 8)'
+		})
+	},
+	{
+		value: 'Australia/Adelaide',
+		label: t('timezone.australia_adelaide', {
+			value: 'GMT +09:30',
+			defaultValue: '{{value}} Adelaide'
+		})
+	},
+	{
+		value: 'Australia/Darwin',
+		label: t('timezone.australia_darwin', { value: 'GMT +09:30', defaultValue: '{{value}} Darwin' })
+	},
+	{
+		value: 'Asia/Vladivostok',
+		label: t('timezone.asia_vladivostok', {
+			value: 'GMT +10:00',
+			defaultValue: '{{value}} Vladivostok, Magadan (RTZ 9)'
+		})
+	},
+	{
+		value: 'Australia/Brisbane',
+		label: t('timezone.australia_brisbane', {
+			value: 'GMT +10:00',
+			defaultValue: '{{value}} Brisbane'
+		})
+	},
+	{
+		value: 'Australia/Hobart',
+		label: t('timezone.australia_hobart', { value: 'GMT +10:00', defaultValue: '{{value}} Hobart' })
+	},
+	{
+		value: 'Australia/Sydney',
+		label: t('timezone.australia_sydney', {
+			value: 'GMT +10:00',
+			defaultValue: '{{value}} Canberra, Melbourne, Sydney'
+		})
+	},
+	{
+		value: 'Pacific/Guam',
+		label: t('timezone.pacific_guam', {
+			value: 'GMT +10:00',
+			defaultValue: '{{value}} Guam, Port Moresby'
+		})
+	},
+	{
+		value: 'Australia/Lord_Howe',
+		label: t('timezone.australia_lord_howe', {
+			value: 'GMT +10:30',
+			defaultValue: '{{value}} Lord_Howe'
+		})
+	},
+	{
+		value: 'Asia/Magadan',
+		label: t('timezone.asia_magadan', { value: 'GMT +11:00', defaultValue: '{{value}} Magadan' })
+	},
+	{
+		value: 'Asia/Sakhalin',
+		label: t('timezone.asia_sakhalin', { value: 'GMT +11:00', defaultValue: '{{value}} Sakhalin' })
+	},
+	{
+		value: 'Asia/Srednekolymsk',
+		label: t('timezone.asia_srednekolymsk', {
+			value: 'GMT +11:00',
+			defaultValue: '{{value}} Chokurdakh (RTZ 10)'
+		})
+	},
+	{
+		value: 'Pacific/Bougainville',
+		label: t('timezone.pacific_bougainville', {
+			value: 'GMT +11:00',
+			defaultValue: '{{value}} Bougainville Standard Time'
+		})
+	},
+	{
+		value: 'Pacific/Guadalcanal',
+		label: t('timezone.pacific_guadalcanal', {
+			value: 'GMT +11:00',
+			defaultValue: '{{value}} Solomon Is. / New Caledonia'
+		})
+	},
+	{
+		value: 'Pacific/Norfolk',
+		label: t('timezone.pacific_norfolk', { value: 'GMT +11:00', defaultValue: '{{value}} Norfolk' })
+	},
+	{
+		value: 'Asia/Kamchatka',
+		label: t('timezone.asia_kamchatka', {
+			value: 'GMT +12:00',
+			defaultValue: '{{value}} Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)'
+		})
+	},
+	{
+		value: 'Pacific/Auckland',
+		label: t('timezone.pacific_auckland', {
+			value: 'GMT +12:00',
+			defaultValue: '{{value}} New Zealand'
+		})
+	},
+	{
+		value: 'Pacific/Fiji',
+		label: t('timezone.pacific_fiji', { value: 'GMT +12:00', defaultValue: '{{value}} Fiji' })
+	},
+	{
+		value: 'Pacific/Chatham',
+		label: t('timezone.pacific_chatham', { value: 'GMT +12:45', defaultValue: '{{value}} Chatham' })
+	},
+	{
+		value: 'Pacific/Apia',
+		label: t('timezone.pacific_apia', { value: 'GMT +13:00', defaultValue: '{{value}} Samoa' })
+	},
+	{
+		value: 'Pacific/Tongatapu',
+		label: t('timezone.pacific_tongatapu', {
+			value: 'GMT +13:00',
+			defaultValue: '{{value}} Nuku’alofa'
+		})
+	},
+	{
+		value: 'Pacific/Kiritimati',
+		label: t('timezone.pacific_kiritimati', {
+			value: 'GMT +14:00',
+			defaultValue: '{{value}} Kiritimati Island'
+		})
+	}
+];
 
 export const AccountStatus = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
@@ -966,6 +966,24 @@ export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: str
 	{
 		label: t('buckets.s3_types.minio', 'minIO'),
 		value: 'Minio'
+	}
+];
+
+export const delegateDomainHeaders = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
+	{
+		id: 'id',
+		label: t('label.account', 'Account'),
+		width: '100%',
+		bold: true,
+		align: 'left'
 	}
 ];
 
@@ -1113,6 +1131,38 @@ export const GalServerTableheaders = (t: TFunction): Array<any> => [
 	}
 ];
 
+export const volumeConfigHeader = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
+	{
+		id: 'name',
+		label: t('volume.volume_config_header.name', 'Name'),
+		width: '33%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'hsm_scheduled',
+		label: t('volume.volume_config_header.hsm_scheduled', 'HSM Scheduled'),
+		width: '33%',
+		align: 'center',
+		bold: true
+	},
+	{
+		id: 'status',
+		label: t('volume.volume_config_header.status', 'Status'),
+		width: '33%',
+		align: 'center',
+		bold: true
+	}
+];
+
 export const MessageTableHeaders = (t: TFunction): Array<object> => [
 	{
 		id: 'date_time',
@@ -1155,56 +1205,95 @@ export const headerAdvanced = (
 	bold: boolean;
 	i18nAllLabel: string;
 }> => [
-		{
-			id: 'Server',
-			label: t('volume.server_list_header.server', 'Server'),
-			i18nAllLabel: 'All',
-			width: '187px',
-			bold: true
-		},
-		{
-			id: 'Primary',
-			label: t('volume.server_list_header.primary', 'Primary'),
-			i18nAllLabel: 'All',
-			width: '87px',
-			bold: true
-		},
-		{
-			id: 'Secondary',
-			label: t('volume.server_list_header.secondary', 'Secondary'),
-			i18nAllLabel: 'All',
-			width: '87px',
-			bold: true
-		},
-		{
-			id: 'Index',
-			label: t('volume.server_list_header.index', 'Index'),
-			i18nAllLabel: 'All',
-			width: '87px',
-			bold: true
-		},
-		{
-			id: 'HSM Scheduling',
-			label: t('volume.server_list_header.HSM Scheduling', 'HSM Scheduling'),
-			i18nAllLabel: 'All',
-			width: '138px',
-			bold: true
-		},
-		{
-			id: 'Indexer',
-			label: t('volume.server_list_header.indexer', 'Indexer'),
-			i18nAllLabel: 'All',
-			width: '100px',
-			bold: true
-		},
-		{
-			id: 'Description',
-			label: t('volume.server_list_header.description', 'Description'),
-			i18nAllLabel: 'All',
-			width: '177px',
-			bold: true
-		}
-	];
+	{
+		id: 'Server',
+		label: t('volume.server_list_header.server', 'Server'),
+		i18nAllLabel: 'All',
+		width: '187px',
+		bold: true
+	},
+	{
+		id: 'Primary',
+		label: t('volume.server_list_header.primary', 'Primary'),
+		i18nAllLabel: 'All',
+		width: '87px',
+		bold: true
+	},
+	{
+		id: 'Secondary',
+		label: t('volume.server_list_header.secondary', 'Secondary'),
+		i18nAllLabel: 'All',
+		width: '87px',
+		bold: true
+	},
+	{
+		id: 'Index',
+		label: t('volume.server_list_header.index', 'Index'),
+		i18nAllLabel: 'All',
+		width: '87px',
+		bold: true
+	},
+	{
+		id: 'HSM Scheduling',
+		label: t('volume.server_list_header.HSM Scheduling', 'HSM Scheduling'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true
+	},
+	{
+		id: 'Indexer',
+		label: t('volume.server_list_header.indexer', 'Indexer'),
+		i18nAllLabel: 'All',
+		width: '100px',
+		bold: true
+	},
+	{
+		id: 'Description',
+		label: t('volume.server_list_header.description', 'Description'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true
+	}
+];
+
+export const headerCE = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	i18nAllLabel: string;
+}> => [
+	{
+		id: 'server_name',
+		label: t('volume.server_list_header.server_name', 'Server Name'),
+		i18nAllLabel: 'All',
+		width: '260px',
+		bold: true
+	},
+	{
+		id: 'primary',
+		label: t('volume.server_list_header.primary', 'Primary'),
+		i18nAllLabel: 'All',
+		width: '120px',
+		bold: true
+	},
+	{
+		id: 'index',
+		label: t('volume.server_list_header.index', 'Index'),
+		i18nAllLabel: 'All',
+		width: '120px',
+		bold: true
+	},
+	{
+		id: 'description',
+		label: t('volume.server_list_header.description', 'Description'),
+		i18nAllLabel: 'All',
+		width: '169px',
+		bold: true
+	}
+];
 
 export const OperationsHeader = (
 	t: TFunction
@@ -1216,47 +1305,47 @@ export const OperationsHeader = (
 	i18nAllLabel: string;
 	align: string;
 }> => [
-		{
-			id: 'Server',
-			label: t('operations.operations_list_header.server', 'Server'),
-			i18nAllLabel: 'All',
-			width: '127px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Operation',
-			label: t('operations.operations_list_header.operation', 'Operation'),
-			i18nAllLabel: 'All',
-			width: '127px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Secondary',
-			label: t('operations.operations_list_header.author', 'Author'),
-			i18nAllLabel: 'All',
-			width: '177px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Index',
-			label: t('operations.operations_list_header.submit_date', 'Submit date'),
-			i18nAllLabel: 'All',
-			width: '138px',
-			bold: true,
-			align: 'center'
-		},
-		{
-			id: 'HSM Scheduling',
-			label: t('operations.operations_list_header.start_date', 'Start date'),
-			i18nAllLabel: 'All',
-			width: '138px',
-			bold: true,
-			align: 'center'
-		}
-	];
+	{
+		id: 'Server',
+		label: t('operations.operations_list_header.server', 'Server'),
+		i18nAllLabel: 'All',
+		width: '127px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.operation', 'Operation'),
+		i18nAllLabel: 'All',
+		width: '127px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Secondary',
+		label: t('operations.operations_list_header.author', 'Author'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Index',
+		label: t('operations.operations_list_header.submit_date', 'Submit date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
+	},
+	{
+		id: 'HSM Scheduling',
+		label: t('operations.operations_list_header.start_date', 'Start date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
+	}
+];
 
 export const OperationsDoneHeader = (
 	t: TFunction
@@ -1268,55 +1357,55 @@ export const OperationsDoneHeader = (
 	i18nAllLabel: string;
 	align: string;
 }> => [
-		{
-			id: 'Server',
-			label: t('operations.operations_list_header.server', 'Server'),
-			i18nAllLabel: 'All',
-			width: '177px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Operation',
-			label: t('operations.operations_list_header.operation', 'Operation'),
-			i18nAllLabel: 'All',
-			width: '77px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Operation',
-			label: t('operations.operations_list_header.status', 'Status'),
-			i18nAllLabel: 'All',
-			width: '57px',
-			bold: true,
-			align: 'center'
-		},
-		{
-			id: 'Secondary',
-			label: t('operations.operations_list_header.author', 'Author'),
-			i18nAllLabel: 'All',
-			width: '177px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'Index',
-			label: t('operations.operations_list_header.submit_date', 'Submit date'),
-			i18nAllLabel: 'All',
-			width: '138px',
-			bold: true,
-			align: 'left'
-		},
-		{
-			id: 'HSM Scheduling',
-			label: t('operations.operations_list_header.start_date', 'Start date'),
-			i18nAllLabel: 'All',
-			width: '138px',
-			bold: true,
-			align: 'left'
-		}
-	];
+	{
+		id: 'Server',
+		label: t('operations.operations_list_header.server', 'Server'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.operation', 'Operation'),
+		i18nAllLabel: 'All',
+		width: '77px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.status', 'Status'),
+		i18nAllLabel: 'All',
+		width: '57px',
+		bold: true,
+		align: 'center'
+	},
+	{
+		id: 'Secondary',
+		label: t('operations.operations_list_header.author', 'Author'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Index',
+		label: t('operations.operations_list_header.submit_date', 'Submit date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'HSM Scheduling',
+		label: t('operations.operations_list_header.start_date', 'Start date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'left'
+	}
+];
 
 export const localeList = (t: TFunction): SelectItem[] => [
 	{
@@ -1664,13 +1753,26 @@ export const getAllEmailFromString = (str: string): any =>
 		.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
 		?.map((item: any) => item.replace('>', ''));
 
+export const getEmailDisplayNameFromString = (str: string): any => str.match(/".*?"|'.*?'/g);
+
 export const isValidLdapQuery = (query: string): boolean => {
 	const re = /\([^\\(\\)\\=]+=[^\\(\\)\\=]+\)/;
 	return re.test(query);
 };
 
+export const isValidLdapBaseDN = (basedn: string): boolean => {
+	const reqex =
+		/(?:(?<cn>CN=(?<name>[^,]*)),)?(?:(?<path>(?:(?:CN|OU)=[^,]+,?)+),)?(?<domain>(?:DC=[^,]+,?)+)$/gi;
+	return reqex.test(basedn);
+};
+
 export const isValidHttpsUrl = (url: string): boolean => {
 	const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+	return reqex.test(url);
+};
+
+export const isValidUrl = (url: string): boolean => {
+	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 	return reqex.test(url);
 };
 
@@ -1694,31 +1796,31 @@ export const deligateSendSettings = (
 	t: TFunction,
 	email: string
 ): Array<{ value: string; label: string }> => [
-		{
-			label: t('label.save_it_only_in_folder', 'Save it only in {{email}} folder', {
+	{
+		label: t('label.save_it_only_in_folder', 'Save it only in {{email}} folder', {
+			email
+		}),
+		value: 'owner'
+	},
+	{
+		label: t(
+			'label.save_it_only_in_sender_folder',
+			'Save it in {{email}} and the Delegate`s folder',
+			{
 				email
-			}),
-			value: 'owner'
-		},
-		{
-			label: t(
-				'label.save_it_only_in_sender_folder',
-				'Save it in {{email}} and the Delegate`s folder',
-				{
-					email
-				}
-			),
-			value: 'sender'
-		},
-		{
-			label: t('label.save_it_only_deligates_folder', 'Save it only in the Delegate`s folder'),
-			value: 'both'
-		},
-		{
-			label: t('label.dont_save_it', `Don't save it`),
-			value: 'none'
-		}
-	];
+			}
+		),
+		value: 'sender'
+	},
+	{
+		label: t('label.save_it_only_deligates_folder', 'Save it only in the Delegate`s folder'),
+		value: 'both'
+	},
+	{
+		label: t('label.dont_save_it', `Don't save it`),
+		value: 'none'
+	}
+];
 
 export const delegateType = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
@@ -1958,15 +2060,15 @@ export const getServiceUrl = (protocol: string, publicServerHostName: string): s
 export const ServicesPassphraseStatus = (
 	t: TFunction
 ): Array<{ value: boolean; label: string }> => [
-		{
-			label: t('label.active', 'Active'),
-			value: true
-		},
-		{
-			label: t('label.inactive', 'Inactive'),
-			value: false
-		}
-	];
+	{
+		label: t('label.active', 'Active'),
+		value: true
+	},
+	{
+		label: t('label.inactive', 'Inactive'),
+		value: false
+	}
+];
 
 export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value: number; label: string }> => [
 	{
@@ -2106,6 +2208,11 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 ];
 
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
+
+export const IsValidFQDN = (value: string): boolean => {
+	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9]+([-]+[a-zA-Z0-9]+)*\.)*[a-zA-Z0-9]{2,}$/;
+	return fqdnRegex.test(value);
+};
 
 export const isValidProxy = (value: string): boolean => {
 	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';

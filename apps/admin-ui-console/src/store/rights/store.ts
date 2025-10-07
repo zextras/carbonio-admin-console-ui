@@ -27,9 +27,7 @@ export interface Right {
 		}[];
 	}[];
 }
-
 export type Rights = Right[];
-
 type RightsState = {
 	rights: Rights;
 	setRights: (rights: Rights) => void;
