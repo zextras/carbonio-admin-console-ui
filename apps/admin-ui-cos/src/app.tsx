@@ -58,7 +58,6 @@ import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
@@ -100,7 +99,6 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
-	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
@@ -354,35 +352,11 @@ const App: FC = () => {
 		});
 	}, [setVolumeList, setAllMailstoreList]);
 
-	const getModuleLicense = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxCore',
-				action: 'getLicenseInfo'
-			}
-		})
-			.then((res: any) => res.Body)
-			.then((res: any) => {
-				const response = JSON.parse(res.response.content);
-				if (response.ok) {
-					const allModules = response?.response?.features?.map((module: any) => ({
-						...module,
-						name: module?.name
-					}));
-					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
-						setModuleLicense(allModules);
-					}
-				}
-			});
-	}, [setModuleLicense]);
-
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-		getModuleLicense();
-	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
+	}, [getAllServersRequest, getMailstoresServersRequest]);
 
 	return null;
 };
