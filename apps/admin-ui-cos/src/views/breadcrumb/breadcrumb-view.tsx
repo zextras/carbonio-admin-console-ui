@@ -10,7 +10,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
-import { useLastLoginTimestamp } from '../../store/last-login-time-stamp';
+import { useLastLoginTimestamp } from '../../store/last-login-time-stamp/store';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};

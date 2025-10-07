@@ -56,7 +56,7 @@ import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
-import { useLastLoginTimestamp } from './store/last-login-time-stamp';
+import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
