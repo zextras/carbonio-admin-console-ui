@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
+import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
 
@@ -20,11 +20,6 @@ export interface ThemeObj {
 
 export type DefaultTheme = ThemeObj;
 
-type IconButtonProps = {
-	icon: keyof DefaultTheme['icons'];
-	onClick: (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => void;
-};
-
 type THeader = {
 	id: string;
 	label: string;
@@ -36,23 +31,6 @@ type THeader = {
 	onChange: () => void;
 	onSortChange: (id: string, order: typeof ASC | typeof DESC) => void;
 	sortable?: boolean;
-};
-interface THeaderProps {
-	headers: THeader[];
-	onChange: () => void;
-	allSelected: boolean;
-	selectionMode: boolean;
-	multiSelect: boolean;
-	showCheckbox: boolean;
-}
-
-type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
-	headers: Array<
-		THeaderProps['headers'][number] & {
-			onClick?: IconButtonProps['onClick'];
-			icon?: keyof DefaultTheme['icons'];
-		}
-	>;
 };
 
 const CustomHeaderFactory: FC<any> = ({
@@ -177,7 +155,6 @@ const CustomHeaderFactory: FC<any> = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
 									multiple
 									items={column.items}
