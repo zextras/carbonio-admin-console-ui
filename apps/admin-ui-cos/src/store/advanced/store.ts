@@ -6,7 +6,13 @@
 
 import { create } from 'zustand';
 
-import { AdvanceState } from './types';
+type AdvanceState = {
+	maxApiVersion: number;
+	minApiVersion: number;
+	version: string;
+	domain: string;
+	isAdvanced: boolean;
+};
 
 export const useAdvanceStore = create<AdvanceState>(() => ({
 	maxApiVersion: 1,
