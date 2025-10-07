@@ -1,5 +1,5 @@
 {
-	"name": "@zextras/carbonio-admin-cos",
+	"name": "@zextras/admin-ui-cos",
 	"private": true,
 	"version": "0.10.9",
 	"description": "Cos module for Zextras Carbonio Admin Panel",
