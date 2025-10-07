@@ -5,7 +5,15 @@
  */
 import { describe, test, expect } from 'vitest';
 
-import { bytesToHumanReadable, bytesToMB, mbToBytes } from '../utils';
+import { bytesToHumanReadable } from '../utils';
+
+function bytesToMB(bytes: number): number {
+	return parseFloat((bytes / 1024 / 1024).toFixed(2));
+}
+
+function mbToBytes(mb: number): number {
+	return mb * 1024 * 1024;
+}
 
 describe('bytesToHumanReadable', () => {
 	test('Zero bytes', () => {

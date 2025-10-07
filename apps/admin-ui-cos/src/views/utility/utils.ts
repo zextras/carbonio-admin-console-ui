@@ -8,18 +8,8 @@
 import { SelectItem } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash';
-import { useState } from 'react';
 
-import { TwoFactorPolicy } from '../../../types/domain';
-import {
-	MANAGE_NO_SEND,
-	NOT_SET,
-	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
-	SEND_READ_MAILS,
-	SEND_READ_MANAGE_MAILS
-} from '../../constants';
-import { Right, Rights } from '../../store/rights/store';
+import { NOT_SET } from '../../constants';
 
 export const timeZoneList = (
 	t: TFunction
@@ -928,27 +918,6 @@ export const localeList = (t: TFunction): SelectItem[] => [
 	}
 ];
 
-export const CertificateTypes = (t: TFunction): Array<{ value: string; label: string }> => [
-	{
-		label: t(
-			'domain.certificate_type_use_letsencrypt_long_chain',
-			'I want to use a Let’s Encrypt (longChain) certificate'
-		),
-		value: '1'
-	},
-	{
-		label: t(
-			'domain.certificate_type_use_letsencrypt_short_chain',
-			'I want to use a Let’s Encrypt (shortChain) certificate'
-		),
-		value: '2'
-	},
-	{
-		label: t('domain.certificate_type_use_custom', 'I want to use a Custom Certificate'),
-		value: '3'
-	}
-];
-
 export const getDateFromStr = (serverStr: string): any => {
 	if (serverStr === null || serverStr === undefined) return null;
 	const d = new Date();
@@ -973,56 +942,6 @@ export const getFormatedDate = (date: Date): any => {
 	return `${yyyy}/${mm}/${dd} | ${hour}:${minutes}:${seconds}`;
 };
 
-export const isValidEmail = (email: string): boolean => {
-	const re =
-		/^[_A-Za-z0-9-\\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
-	return re.test(email);
-};
-
-export const isValidIpRange = (ipRange: string): boolean => {
-	const re = /^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/gim;
-	return re.test(ipRange);
-};
-
-export const isValidLdapBaseUrl = (url: string): boolean => {
-	const reqex =
-		/^(?:ldap)s?:\/\/(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])(:[0-9]+)?$/;
-	return reqex.test(url);
-};
-
-export const getAllEmailFromString = (str: string): any =>
-	str
-		.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
-		?.map((item: any) => item.replace('>', ''));
-
-export const getEmailDisplayNameFromString = (str: string): any => str.match(/".*?"|'.*?'/g);
-
-export const isValidLdapQuery = (query: string): boolean => {
-	const re = /\([^\\(\\)\\=]+=[^\\(\\)\\=]+\)/;
-	return re.test(query);
-};
-
-export const isValidLdapBaseDN = (basedn: string): boolean => {
-	const reqex =
-		/(?:(?<cn>CN=(?<name>[^,]*)),)?(?:(?<path>(?:(?:CN|OU)=[^,]+,?)+),)?(?<domain>(?:DC=[^,]+,?)+)$/gi;
-	return reqex.test(basedn);
-};
-
-export const isValidHttpsUrl = (url: string): boolean => {
-	const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-	return reqex.test(url);
-};
-
-export const isValidUrl = (url: string): boolean => {
-	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-	return reqex.test(url);
-};
-
-export const isValidPhoneNumber = (str: string): boolean => {
-	const reqex = /^[0-9-+()/,. ]*$/;
-	return reqex.test(str);
-};
-
 export const conversationGroupBy = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1031,76 +950,6 @@ export const conversationGroupBy = (t: TFunction): Array<{ value: string; label:
 	{
 		label: t('label.conversation', 'Conversation'),
 		value: 'conversation'
-	}
-];
-
-export const deligateSendSettings = (
-	t: TFunction,
-	email: string
-): Array<{ value: string; label: string }> => [
-	{
-		label: t('label.save_it_only_in_folder', 'Save it only in {{email}} folder', {
-			email
-		}),
-		value: 'owner'
-	},
-	{
-		label: t(
-			'label.save_it_only_in_sender_folder',
-			'Save it in {{email}} and the Delegate`s folder',
-			{
-				email
-			}
-		),
-		value: 'sender'
-	},
-	{
-		label: t('label.save_it_only_deligates_folder', 'Save it only in the Delegate`s folder'),
-		value: 'both'
-	},
-	{
-		label: t('label.dont_save_it', `Don't save it`),
-		value: 'none'
-	}
-];
-
-export const delegateType = (t: TFunction): Array<{ value: string; label: string }> => [
-	{
-		label: t('account_details.a_user', 'A User'),
-		value: 'usr'
-	},
-	{
-		label: t('account_details.an_existing_group', 'An Existing Group'),
-		value: 'grp'
-	}
-];
-
-export const delegateRightsType = (t: TFunction): Array<{ value: string; label: string }> => [
-	{
-		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
-		value: SEND_MAILS_ONLY
-	},
-	{
-		label: t('account_details.read_mails_only', 'Read Mails only (no rights to send mails)'),
-		value: READ_MAILS_ONLY
-	},
-	{
-		label: t(
-			'account_details.send_read_mails',
-			'Send and Read Mails (no rights to create folders / manage mails)'
-		),
-		value: SEND_READ_MAILS
-	},
-	{
-		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
-		value: MANAGE_NO_SEND
-	},
-	{
-		label: t(
-			'account_details.send_read_manage_mails',
-			'Send, Read and Manage Mails (all of the above)'
-		),
-		value: SEND_READ_MANAGE_MAILS
 	}
 ];
 
@@ -1246,291 +1095,13 @@ export const charactorSet = (): Array<{ value: string; label: string }> => [
 	{ label: 'windows-31j', value: 'windows-31j' }
 ];
 
-export const getFormatedShortDate = (date: Date): any => {
-	if (date === null || date === undefined) return null;
-	const dd = date.getDate();
-	const mm = date.getMonth() + 1; // January is 0!
-	const yyyy = date.getFullYear();
-	const hour = date.getHours();
-	const minutes = date.getMinutes();
-	const seconds = date.getSeconds();
-	return `${mm}/${dd}/${yyyy}`;
-};
-
-export const bytesToSize = (bytes: number): string => {
-	const sizes: string[] = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-	if (bytes === 0) return 'n/a';
-	const i: number = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString(), 10);
-	if (i === 0) return `${bytes} ${sizes[i]}`;
-	return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
-};
-
-export const copyTextToClipboard = (text: string): void => {
-	if (navigator) {
-		navigator.clipboard.writeText(text);
-	}
-};
-
-export const download = (content: BlobPart, fileName: string, contentType: string): void => {
-	const a = document.createElement('a');
-	const file = new Blob([content], { type: contentType });
-	a.href = URL.createObjectURL(file);
-	a.download = fileName;
-	a.click();
-};
-
-export const getSPEntityId = (
-	protocol: string,
-	publicServerHostName: string,
-	domain: string
-): string => {
-	let url = '';
-	if (publicServerHostName) {
-		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/samlMetadata?domain=${domain}`;
-	}
-	return url;
-};
-
-export const getServiceUrl = (protocol: string, publicServerHostName: string): string => {
-	let url = '';
-	if (publicServerHostName) {
-		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/saml`;
-	}
-	return url;
-};
-
-export const ServicesPassphraseStatus = (
-	t: TFunction
-): Array<{ value: boolean; label: string }> => [
-	{
-		label: t('label.active', 'Active'),
-		value: true
-	},
-	{
-		label: t('label.inactive', 'Inactive'),
-		value: false
-	}
-];
-
-export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value: number; label: string }> => [
-	{
-		label: t('label.disable_2fa', 'Disable 2FA'),
-		value: 0
-	},
-	{
-		label: t('label.trust_ip', 'Trust the IP'),
-		value: 1
-	},
-	{
-		label: t('label.trust_the_device', 'Trust the device'),
-		value: 2
-	}
-];
-
-export const ServicesPassphraseServices = (): Array<{ value: string; label: string }> => [
-	{
-		label: 'Dav(Web/Card/Cal)',
-		value: 'DAV'
-	},
-	{
-		label: 'EAS',
-		value: 'EAS'
-	},
-	{
-		label: 'WebUI',
-		value: 'WebUI'
-	},
-	{
-		label: 'WebAdminUI',
-		value: 'WebAdminUI'
-	},
-	{
-		label: 'MobileApp',
-		value: 'MobileApp'
-	},
-	{
-		label: 'DesktopApp',
-		value: 'DesktopApp'
-	},
-	{
-		label: 'ZmWebUI',
-		value: 'ZmWebUI'
-	},
-	{
-		label: 'CLI',
-		value: 'CLI'
-	},
-	{
-		label: 'SMTP',
-		value: 'SMTP'
-	},
-	{
-		label: 'IMAP',
-		value: 'IMAP'
-	},
-	{
-		label: 'POP3',
-		value: 'POP3'
-	}
-];
-
-export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
-	let right: Array<Record<string, string>> = [];
-	const filteredType = rights.filter((item: Right) => item?.type === type);
-
-	if (filteredType && filteredType.length > 0) {
-		if (
-			filteredType[0]?.all &&
-			Array.isArray(filteredType[0]?.all) &&
-			filteredType[0]?.all.length > 0
-		) {
-			right = filteredType[0]?.all[0].right || [];
-		}
-	}
-	return right;
-};
-
-export const getAllRights = (rights: Rights, type: string): Right[] =>
-	rights.filter((item: Right) => item?.type === type);
-
-export function useLocalStorage<T>(key: string, initialValue: T): any {
-	const [storedValue, setStoredValue] = useState<T>(() => {
-		try {
-			const item = window.localStorage.getItem(key);
-			return item ? JSON.parse(item) : initialValue;
-		} catch (error) {
-			return initialValue;
-		}
-	});
-	const setValue = (value: T | ((val: T) => T)): any => {
-		const valueToStore = value instanceof Function ? value(storedValue) : value;
-		setStoredValue(valueToStore);
-		localStorage.setItem(key, JSON.stringify(valueToStore));
-	};
-	return [storedValue, setValue] as const;
-}
-
-export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
-	{
-		label: t('domain.admin_api', 'Admin API'),
-		keyToGet: 'WebAdminUI'
-	},
-	{
-		label: t('domain.web_ui', 'WebUI'),
-		keyToGet: 'WebUI'
-	},
-	{
-		label: t('domain.mobile_apps', 'Mobile Apps'),
-		keyToGet: 'MobileApp'
-	},
-	{
-		label: t('domain.active_sync', 'ActiveSync'),
-		keyToGet: 'EAS'
-	},
-	{
-		label: t('domain.desktop_sync', 'DesktopSync'),
-		keyToGet: 'DesktopApp'
-	},
-	{
-		label: t('domain.dav', 'DAV'),
-		keyToGet: 'Dav'
-	},
-	{
-		label: t('domain.pop', 'POP'),
-		keyToGet: 'Pop3'
-	},
-	{
-		label: t('domain.imap', 'IMAP'),
-		keyToGet: 'Imap'
-	},
-	{
-		label: t('domain.smtp', 'SMTP'),
-		keyToGet: 'Smtp'
-	}
-];
-
-export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
-
-export const IsValidFQDN = (value: string): boolean => {
-	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9]+([-]+[a-zA-Z0-9]+)*\.)*[a-zA-Z0-9]{2,}$/;
-	return fqdnRegex.test(value);
-};
-
-export const isValidProxy = (value: string): boolean => {
-	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
-	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
-	return validProxyRegex.test(value);
-};
-export const isSpaceAvailableInString = (value: string): boolean => {
-	const spaceRegex = /^\S*$/;
-	return !spaceRegex.test(value);
-};
-
-export const isValidHostname = (hostname: string): boolean => {
-	const hostnameRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*(?<!-)$/;
-	return hostnameRegex.test(hostname);
-};
-
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
 export const GbToBytes = (data: any): any => multiply(data, 1024 ** 3);
 
-export const isValidHexColor = (value: string): boolean => {
-	const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-	return regex.test(value);
-};
-
-export const validateIpAddress = (value: string): boolean => {
-	const ipv4Regex =
-		/^(!?)(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\/([0-9]|[12][0-9]|3[0-2])$/;
-	const ipv6Regex =
-		/^(!?)\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\]\/([0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$/;
-
-	return ipv4Regex.test(value) || ipv6Regex.test(value);
-};
-
-export const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
-export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
-export const convertToAscii = (inputString: string): string => {
-	const normalizedString = inputString.normalize('NFKD');
-	return normalizedString.replace(/[^\p{ASCII}]/gu, '');
-};
-
 export const isValidDecimalNumber = (value: string): boolean => {
 	const regex = /^\d*\.?\d*$/;
 	return regex.test(value);
-};
-
-export const isValidVirtualHostname = (hostname: string): boolean => {
-	const hostnamePartRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/;
-	const tldRegex = /^[A-Za-z]{2,}$/;
-	const parts = hostname.split('.');
-	if (parts.length < 2) {
-		return false;
-	}
-	const tld = parts.pop();
-	return tldRegex.test(tld!) && parts.every((part) => hostnamePartRegex.test(part));
-};
-
-type Details = {
-	[key: string]: string;
-};
-
-type ErrorResponse = {
-	code: string;
-	details: Details;
-	message: string;
-	time: number;
-};
-
-export const formatedErrorMessage = (response: ErrorResponse): ErrorResponse => {
-	if (response.details) {
-		Object.entries(response.details).forEach(([key, value]) => {
-			const placeholder = `{${key}}`;
-			response.message = response.message.replace(placeholder, value);
-		});
-	}
-	return response;
 };
 
 export function bytesToHumanReadable(bytes: number): string {
@@ -1539,12 +1110,4 @@ export function bytesToHumanReadable(bytes: number): string {
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
 	const sizeIndex = Math.min(i, sizes.length - 1);
 	return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
-}
-
-export function bytesToMB(bytes: number): number {
-	return parseFloat((bytes / 1024 / 1024).toFixed(2));
-}
-
-export function mbToBytes(mb: number): number {
-	return mb * 1024 * 1024;
 }
