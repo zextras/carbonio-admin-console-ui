@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import {
 	Container,
 	Button,
@@ -21,9 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-// TODO: convert boards management to ts (and maybe a zustand store)
- 
-// @ts-ignore
 import { AppRoute, PrimaryAccessoryView, PrimaryBarView } from '../../types';
 import AppContextProvider from '../boot/app/app-context-provider';
 import { getUsersRights } from '../network/get-user-accounts-rights';
@@ -66,10 +62,9 @@ const CustomText = styled(Text)`
 	align-items: center;
 `;
 const ToggleBoardIcon: FC = () => {
-	 
 	// @ts-ignore
 	const { boards, minimized } = useContext(BoardValueContext);
-	 
+
 	// @ts-ignore
 	const { toggleMinimized } = useContext(BoardSetterContext);
 
@@ -126,9 +121,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
 		<>
 			<Container
 				ref={containerRef}
-				 
 				onMouseEnter={(): void => setOpen(true)}
-				 
 				onMouseLeave={(): void => setOpen(false)}
 				height="52px"
 			>
@@ -298,7 +291,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 			>
 				<Container mainAlignment="flex-start">
 					{map(primaryBarViewWithSection, (view, index) =>
-						 
 						view.visible ? (
 							<React.Fragment key={index}>
 								{view?.section === undefined && (
@@ -349,7 +341,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 						) : null
 					)}
 				</Container>
-				<Container mainAlignment="flex-end" height="fit">					
+				<Container mainAlignment="flex-end" height="fit">
 					{accessories.map((v) => (
 						<PrimaryBarAccessoryElement view={v} key={v?.id} />
 					))}

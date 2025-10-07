@@ -41,6 +41,7 @@ import {
 	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
+import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
@@ -215,8 +216,7 @@ const App: FC = () => {
 	const cosPrimaryBar = useCallback(
 		() => (
 			<PrimaryBarIcon
-				// TODO: CO-2596 remove once testing is done
-				icon={'VideoOutline'}
+				icon={SettingsModOutline}
 				size="large"
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
 			/>
