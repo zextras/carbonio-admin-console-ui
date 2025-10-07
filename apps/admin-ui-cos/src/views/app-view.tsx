@@ -14,7 +14,7 @@ import { COS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
 import { BreadCrumb } from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
 import CosDetailPanel from './cos/cos-detail-panel';
-import CosListPanel from './cos/cos-list-panel';
+import { CosListPanel } from './cos/cos-list-panel';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

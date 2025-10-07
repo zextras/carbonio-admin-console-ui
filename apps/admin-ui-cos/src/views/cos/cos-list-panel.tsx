@@ -66,7 +66,7 @@ const loadingComponent = [
 	}
 ];
 
-const CosListPanel: FC = () => {
+export const CosListPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
@@ -387,5 +387,3 @@ const CosListPanel: FC = () => {
 		</Container>
 	);
 };
-
-export default CosListPanel;
