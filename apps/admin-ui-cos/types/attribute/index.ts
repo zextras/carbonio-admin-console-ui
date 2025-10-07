@@ -9,7 +9,3 @@ export type Attribute = {
 	_content: string;
 	c?: boolean;
 };
-
-export type objectType = { [key: string]: string };
-
-export type objAll = { [key: string]: string | boolean | number };
