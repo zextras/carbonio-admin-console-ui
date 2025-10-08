@@ -179,7 +179,6 @@ pipeline {
                 }
             }
             steps {
-                // build bootstrap container
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         script {
@@ -201,6 +200,16 @@ pipeline {
                                     ocLabels: [
                                         title: 'Carbonio Admin Console',
                                         description: 'Carbonio Admin Console Container'
+                                    ]
+                                ])
+                            }
+                            dir('apps/admin-ui-cos/') {
+                                dockerHelper.buildImage([
+                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-cos',
+                                    imageTags: tags,
+                                    ocLabels: [
+                                        title: 'Carbonio Admin COS module',
+                                        description: 'Carbonio Admin COS module Container'
                                     ]
                                 ])
                             }
