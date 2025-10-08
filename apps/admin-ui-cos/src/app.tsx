@@ -42,7 +42,7 @@ import {
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAccountRequest } from './services/get-account';
-import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
+import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
@@ -138,7 +138,7 @@ const App: FC = () => {
 
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRigthsRequest(accounts[0]?.name)
+			getAllEffectiveRightsRequest(accounts[0]?.name)
 				.then((res) => {
 					setRights(res?.target);
 				})

@@ -7,7 +7,7 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { CLOBAL_CONFIG_DETAIL_VIEW } from '../../constants';
+import { GLOBAL_CONFIG_DETAIL_VIEW } from '../../constants';
 
 type GlobalConfigState = {
 	globalConfig: any;
@@ -25,7 +25,7 @@ export const useGlobalConfigStore = create<GlobalConfigState>()(
 	devtools((set) => ({
 		globalConfig: {},
 		globalConfigList: [],
-		globalConfigView: CLOBAL_CONFIG_DETAIL_VIEW,
+		globalConfigView: GLOBAL_CONFIG_DETAIL_VIEW,
 		globalCarbonioSendAnalytics: false,
 		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig'),
 		setGlobalConfigList: (globalConfigList): void =>
@@ -33,14 +33,12 @@ export const useGlobalConfigStore = create<GlobalConfigState>()(
 		removeGlobalConfig: (): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
 					state.globalConfig = {};
 				})
 			),
 		setGlobalConfigView: (globalConfigView): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
 					state.globalConfigView = globalConfigView;
 				}),
 				false,

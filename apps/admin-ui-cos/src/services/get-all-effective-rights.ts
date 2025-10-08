@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
-export const getAllEffectiveRigthsRequest = async (userName: string): Promise<any> => {
+export const getAllEffectiveRightsRequest = async (userName: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		grantee: {
