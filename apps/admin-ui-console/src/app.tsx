@@ -49,7 +49,6 @@ import {
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_BACKUP,
-	PRIMARY_BAR_COS,
 	PRIMARY_BAR_DASHBOARD,
 	PRIMARY_BAR_DOMAINS,
 	PRIMARY_BAR_LEGAL_HOLD,
@@ -749,21 +748,6 @@ const App: FC = () => {
 		});
 
 		setConfigRightsRoute();
-		if (showCOS) {
-			addRoute({
-				route: COS_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.cos', 'COS') || '',
-				primaryBar: cosPrimaryBar,
-				appView: AppView,
-				primarybarSection: { ...managementSection },
-				tooltip: CosTooltipView,
-				trackerLabel: PRIMARY_BAR_COS
-			});
-		} else {
-			removeRoute(COS_ROUTE_ID);
-		}
 
 		if (isAdvanced) {
 			if (hasAllConfigRights) {
