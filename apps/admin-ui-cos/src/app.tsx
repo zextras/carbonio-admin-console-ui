@@ -12,7 +12,8 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings
+	useUserSettings,
+	setAppContext
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
