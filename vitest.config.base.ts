@@ -66,6 +66,10 @@ export default defineConfig({
 						'admin-ui-test-utils': path.resolve(
 							__dirname,
 							'./packages/test-utils/src/index.browser.ts'
+						),
+						'@zextras/admin-ui-bootstrap': path.resolve(
+							__dirname,
+							'./__mocks__/@zextras/admin-ui-bootstrap.js'
 						)
 					},
 					include: ['**/*.browser.test.{ts,tsx}'],

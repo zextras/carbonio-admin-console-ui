@@ -7,14 +7,9 @@
 import { page } from '@vitest/browser/context';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { it, describe, expect, vi } from 'vitest';
+import { it, describe, expect } from 'vitest';
 
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
-
-vi.mock('@zextras/admin-ui-bootstrap', () => ({
-	soapFetch: vi.fn(),
-	replaceHistory: vi.fn()
-}));
 
 describe('CosListPanel', () => {
 	it('should render all parts of the component', async () => {

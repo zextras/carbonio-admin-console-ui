@@ -7,3 +7,4 @@ export const fetchExternalSoap = vi.fn();
 export const postSoapFetchRequest = vi.fn();
 
 export const replaceHistory = vi.fn();
+export const soapFetch = vi.fn();
