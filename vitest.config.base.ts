@@ -67,7 +67,7 @@ export default defineConfig({
 							'./packages/test-utils/src/index.browser.ts'
 						)
 					},
-					include: ['src/**/*.browser.test.{ts,tsx}'],
+					include: ['**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
