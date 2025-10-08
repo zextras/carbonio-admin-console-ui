@@ -1,19 +1,16 @@
-/* eslint-disable import/no-named-as-default */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, Suspense } from 'react';
-
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import React, { FC, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
 	BACKUP_ROUTE_ID,
-	COS_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
@@ -28,6 +25,7 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
+
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
@@ -35,8 +33,6 @@ import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import Subscription from './core/subscribsion/subscription';
-import CosDetailPanel from './cos/cos-detail-panel';
-import CosListPanel from './cos/cos-list-panel';
 import Dashboard from './dashboard/dashboard-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
@@ -124,26 +120,6 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<PrivacyView />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					>
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<CosListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<CosDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>
