@@ -10,9 +10,15 @@ import { beforeAll, afterAll, vi, afterEach } from 'vitest';
 vi.stubGlobal('__CARBONIO_DEV__', false);
 vi.stubGlobal('BASE_PATH', '');
 
-beforeAll(() => {});
+beforeAll(() => {
+	vi.mock('@zextras/admin-ui-bootstrap');
+});
 
-afterAll(() => {});
+beforeEach(() => {});
+
+afterAll(() => {
+	vi.clearAllMocks();
+});
 
 afterEach(() => {
 	vi.unstubAllGlobals();

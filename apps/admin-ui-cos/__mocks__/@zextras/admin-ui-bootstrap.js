@@ -5,3 +5,5 @@ export const useDomainInformation = vi.fn();
 export const useUserSettings = vi.fn();
 export const fetchExternalSoap = vi.fn();
 export const postSoapFetchRequest = vi.fn();
+
+export const replaceHistory = vi.fn();

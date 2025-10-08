@@ -9,6 +9,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	test: {
+		globals: true,
 		projects: [
 			{
 				optimizeDeps: {
