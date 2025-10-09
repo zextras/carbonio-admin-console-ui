@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,9 +14,12 @@ import {
 	Switch,
 	Select,
 	Input,
-	useSnackbar
+	useSnackbar,
+	Radio,
+	RadioGroup
 } from '@zextras/carbonio-design-system';
 import { find, isEqual } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MtaAdvanced } from '../../../../types';
@@ -53,7 +55,9 @@ const MTAAdvanced: FC = () => {
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
 
 	const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] = useState<boolean>(false);
-	const [zimbraMtaMaxMessageSizeState, setZimbraMtaMaxMessageSizeState] = useState<number>(0);
+	const [zimbraMtaMaxMessageSizeState, setZimbraMtaMaxMessageSizeState] = useState<number | string>(
+		0
+	);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -62,6 +66,8 @@ const MTAAdvanced: FC = () => {
 	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaAdvancedDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
+
+	const [limitMaxMessageSize, setLimitMaxMessageSize] = useState<boolean>(false);
 
 	const setInitialAndCurrentValue = useCallback(
 		(key: string, value: unknown) => {
@@ -263,6 +269,7 @@ const MTAAdvanced: FC = () => {
 			if (zimbraMtaMaxMessageSize && zimbraMtaMaxMessageSize?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MESSAGE_SIZE, zimbraMtaMaxMessageSize?._content);
 				setZimbraMtaMaxMessageSizeState(bytesToMB(Number(zimbraMtaMaxMessageSize?._content)));
+				setLimitMaxMessageSize(true);
 			}
 
 			const zimbraMilterMaxConnections = configInformation.find(
@@ -427,12 +434,19 @@ const MTAAdvanced: FC = () => {
 				_content: mtaAdvancedDetail?.zimbraMilterNumThreads
 			});
 		}
-		if (mtaAdvancedDetail?.zimbraMtaMaxMessageSize) {
+
+		if (limitMaxMessageSize === false) {
+			attributes.push({
+				n: ZIMBRA_MTA_MESSAGE_SIZE,
+				_content: ''
+			});
+		} else if (mtaAdvancedDetail?.zimbraMtaMaxMessageSize) {
 			attributes.push({
 				n: ZIMBRA_MTA_MESSAGE_SIZE,
 				_content: mbToBytes(Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize)).toString()
 			});
 		}
+
 		if (mtaAdvancedDetail?.zimbraMilterMaxConnections) {
 			attributes.push({
 				n: ZIMBRA_MILTER_MAX_CONNECTIONS,
@@ -494,7 +508,10 @@ const MTAAdvanced: FC = () => {
 		},
 		[setValue]
 	);
-
+	const hasErrorMaxMessageSize = useMemo(
+		() => Number(zimbraMtaMaxMessageSizeState) <= 0 || isNaN(Number(zimbraMtaMaxMessageSizeState)),
+		[zimbraMtaMaxMessageSizeState]
+	);
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -594,7 +611,6 @@ const MTAAdvanced: FC = () => {
 										item.value === mtaAdvancedDetail?.zimbraAmavisLogLevel
 								) || amavisLogLevelOptions[0]
 							}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onAmavisLogLevelChange}
 							disabled={!allowSetMTA}
@@ -611,7 +627,6 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraAmavisSALogLevel
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onAmavisSALogLevelChange}
 							disabled={!allowSetMTA}
@@ -639,7 +654,6 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaSmtpdTlsLoglevel
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSMTPClientLogLevelChange}
 							disabled={!allowSetMTA}
@@ -659,7 +673,6 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaLmtpTlsLoglevel
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onLMTPTlsLogLevelChange}
 							disabled={!allowSetMTA}
@@ -723,23 +736,7 @@ const MTAAdvanced: FC = () => {
 					height="auto"
 					width="100%"
 				>
-					<Container crossAlignment="flex-start">
-						<Input
-							label={t(
-								'mta.max_size__for_mail_messages',
-								'Max size for mail messages (MB, 0 = "no limit")'
-							)}
-							backgroundColor="gray5"
-							value={zimbraMtaMaxMessageSizeState}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value);
-								setZimbraMtaMaxMessageSizeState(Number(e.target.value));
-							}}
-							disabled={!allowSetMTA}
-						/>
-					</Container>
-
-					<Container crossAlignment="flex-start" padding={{ left: 'medium' }} height="auto">
+					<Container crossAlignment="flex-start" height="auto">
 						<Input
 							label={t(
 								'mta.reject_concurrent_milter_connection_above',
@@ -781,6 +778,74 @@ const MTAAdvanced: FC = () => {
 						}
 						disabled={!allowSetMTA}
 					/>
+				</Container>
+				<Container
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					padding={{ top: 'large' }}
+				>
+					<Text size="medium" overflow="ellipsis" weight="bold">
+						{t('mta.advanced.mail_messages_size', 'Mail messages size')}
+					</Text>
+					<Container crossAlignment="flex-start" padding={{ top: 'large' }} height="auto">
+						<Row  width="100%" mainAlignment="flex-start">
+							<RadioGroup value={limitMaxMessageSize.toString()}>
+								<Radio
+									label={t(
+										'mta.advanced.no_size_limit_for_mail_messages',
+										'No size limit for mail messages'
+									)}
+									value={'false'}
+									onClick={(): void => {
+										setLimitMaxMessageSize(false);
+										setValue(ZIMBRA_MTA_MESSAGE_SIZE, '');
+									}}
+									iconColor="primary"
+								/>
+								<Radio
+									label={t(
+										'mta.advanced.custom_max_size_mail_messages',
+										'Custom max size mail messages (MB)'
+									)}
+									value="true"
+									onClick={(): void => {
+										setLimitMaxMessageSize(true);
+									}}
+									iconColor="primary"
+								/>
+							</RadioGroup>
+						</Row>
+						{limitMaxMessageSize && (
+							<Container
+								crossAlignment="flex-start"
+								mainAlignment="flex-start"
+								padding={{ left: 'extralarge' , top: 'large' }}
+							>
+								<Input
+									label={t(
+										'mta.max_size__for_mail_messages',
+										'Max size for mail messages (MB, 0 = "no limit")'
+									)}
+									backgroundColor="gray5"
+									value={zimbraMtaMaxMessageSizeState}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value);
+										setZimbraMtaMaxMessageSizeState(e.target.value);
+									}}
+									disabled={!allowSetMTA}
+									hasError={hasErrorMaxMessageSize}
+									description={
+										hasErrorMaxMessageSize
+											? t(
+													'mta.advanced.value_0_disables_email_sending',
+													'Value 0 disables email sending: enter a value greater than 0'
+												)
+											: undefined
+									}
+								/>
+							</Container>
+						)}
+					</Container>
 				</Container>
 			</Container>
 		</Container>
