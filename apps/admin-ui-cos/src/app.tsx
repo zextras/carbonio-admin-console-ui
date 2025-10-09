@@ -223,7 +223,6 @@ const App: FC = () => {
 		),
 		[history]
 	);
-
 	useEffect(() => {
 		if (showCOS) {
 			addRoute({
@@ -240,7 +239,7 @@ const App: FC = () => {
 		} else {
 			removeRoute(COS_ROUTE_ID);
 		}
-		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
+		setAppContext({ carbonio_admin_cos_ui: 'carbonio_admin_cos_ui' });
 	}, [CosTooltipView, cosPrimaryBar, managementSection, showCOS, t]);
 
 	useEffect(() => {
