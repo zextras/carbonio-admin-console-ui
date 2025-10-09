@@ -5,18 +5,36 @@
  */
 
 import { page } from '@vitest/browser/context';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { createSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { it, describe, expect } from 'vitest';
+import { it, expect, describe } from 'vitest';
 
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
 
-describe('CosListPanel', () => {
+const mockApiResponse = {
+	cos: [
+		{
+			name: 'firstCOS',
+			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+			isDefaultCos: true
+		},
+		{
+			name: 'secondCOS',
+			id: 'f27456a8-0c00-11d9-280a-286d93afea2g',
+			isDefaultCos: true
+		}
+	],
+	searchTotal: 2,
+	more: false
+};
+describe('', () => {
 	it('should render all parts of the component', async () => {
-		setupBrowserTest(<CosListPanel />, { initialRouterEntries: ['/'] });
+		createSoapAPIInterceptor('SearchDirectory', {});
+		setupBrowserTest(<CosListPanel />);
 		await expect.element(page.getByText('General')).toBeVisible();
 		await expect.element(page.getByText('COS List')).toBeVisible();
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
+		await expect.element(page.getByText('Not found - check the text and try again')).toBeVisible();
 		await expect.element(page.getByText('Details')).toBeVisible();
 		await expect.element(page.getByText('General Information')).toBeVisible();
 		await expect.element(page.getByText('Features')).toBeVisible();
@@ -24,5 +42,38 @@ describe('CosListPanel', () => {
 		await expect.element(page.getByText('Preferences')).toBeVisible();
 		await expect.element(page.getByText('Server Pools')).toBeVisible();
 		await expect.element(page.getByText('Advanced')).toBeVisible();
+	});
+
+	it('should show details grayed out when no COS is selected', async () => {
+		setupBrowserTest(<CosListPanel />);
+		await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
+		await expect.element(page.getByText('Features')).toHaveStyle({ opacity: '0.5' });
+		await expect.element(page.getByText('Chat')).toHaveStyle({ opacity: '0.5' });
+		await expect.element(page.getByText('Preferences')).toHaveStyle({ opacity: '0.5' });
+		await expect.element(page.getByText('Server Pools')).toHaveStyle({ opacity: '0.5' });
+		await expect.element(page.getByText('Advanced')).toHaveStyle({ opacity: '0.5' });
+	});
+
+	it('should show clickable details when COS is selected', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(<CosListPanel />);
+
+		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
+		await page.getByText('Select a Class of Service').click();
+		await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
+		await page.getByText('firstCOS').click();
+		await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '1' });
+	});
+
+	it('should hide details when the details button is pressed', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(<CosListPanel />);
+
+		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
+		await page.getByText('Select a Class of Service').click();
+		await page.getByText('firstCOS').click();
+		await expect.element(page.getByText('General Information')).toBeVisible();
+		await page.getByText('Details').click();
+		expect(page.getByText('General Information').elements()).toHaveLength(0);
 	});
 });
