@@ -19,6 +19,14 @@ type CosState = {
 	setTotalDomain: (totalDomain: number) => void;
 	cosView: string;
 	setCosView: (cosView: string) => void;
+	reset: () => void;
+};
+
+const initialState = {
+	cos: {},
+	totalAccount: 0,
+	totalDomain: 0,
+	cosView: ''
 };
 
 export const useCosStore = create<CosState>()(
@@ -45,6 +53,7 @@ export const useCosStore = create<CosState>()(
 					state.totalAccount = 0;
 					state.totalDomain = 0;
 				})
-			)
+			),
+		reset: (): void => set(initialState, false, 'reset')
 	}))
 );

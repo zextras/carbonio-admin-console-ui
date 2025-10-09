@@ -23,8 +23,10 @@ beforeEach(() => {
 afterAll(() => {
 	stopMockWorker();
 	vi.clearAllMocks();
+	resetMockWorker();
 });
 
 afterEach(() => {
 	vi.unstubAllGlobals();
+	resetMockWorker();
 });

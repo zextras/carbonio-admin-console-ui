@@ -5,10 +5,11 @@
  */
 
 import { page } from '@vitest/browser/context';
-import { createSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { it, expect, describe } from 'vitest';
+import { it, expect, describe, beforeEach, afterEach } from 'vitest';
 
+import { useCosStore } from '../../src/store/cos/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
 
 const mockApiResponse = {
@@ -28,6 +29,16 @@ const mockApiResponse = {
 	more: false
 };
 describe('', () => {
+	beforeEach(() => {
+		useCosStore.getState().reset();
+	});
+
+	// Also reset after each test for extra safety
+	afterEach(() => {
+		resetMockWorker();
+		useCosStore.getState().reset();
+	});
+
 	it('should render all parts of the component', async () => {
 		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(<CosListPanel />);
