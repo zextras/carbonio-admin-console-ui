@@ -27,6 +27,7 @@
 		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
 	},
 	"dependencies": {
+		"@vitest/browser-playwright": "4.0.0-beta.15",
 		"react": "^19.1.0"
 	},
 	"devDependencies": {
@@ -46,6 +47,7 @@
 		"eslint-plugin-sonarjs": "^3.0.5",
 		"eslint-plugin-testing-library": "^7.6.6",
 		"eslint-plugin-unused-imports": "^4.2.0",
+		"msw": "^2.11.4",
 		"pinst": "^3.0.0",
 		"playwright": "^1.55.0",
 		"pnpm": "^10.15.1",
@@ -61,6 +63,11 @@
 		"Firefox ESR",
 		"not dead"
 	],
+	"msw": {
+		"workerDirectory": [
+			"public"
+		]
+	},
 	"carbonio": {
 		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
 		"name": "carbonio-admin-console-ui",
