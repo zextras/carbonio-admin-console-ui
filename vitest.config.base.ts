@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
 
@@ -36,6 +37,7 @@ export default defineConfig({
 			},
 			{
 				plugins: [
+					react(),
 					svgr({
 						svgrOptions: {
 							ref: true,
@@ -48,10 +50,6 @@ export default defineConfig({
 				],
 				optimizeDeps: {
 					include: [
-						'react',
-						'react-dom',
-						'react/jsx-runtime',
-						'react/jsx-dev-runtime',
 						'@zextras/carbonio-design-system',
 						'i18next',
 						'react-i18next',
@@ -65,6 +63,10 @@ export default defineConfig({
 						'admin-ui-test-utils': path.resolve(
 							__dirname,
 							'./packages/test-utils/src/index.browser.ts'
+						),
+						'@zextras/admin-ui-bootstrap': path.resolve(
+							__dirname,
+							'./__mocks__/@zextras/admin-ui-bootstrap.js'
 						)
 					},
 					include: ['src/**/*.browser.test.{ts,tsx}'],
@@ -85,7 +87,7 @@ export default defineConfig({
 					globals: true,
 					css: true,
 					clearMocks: true,
-					testTimeout: 30000
+					testTimeout: 5_000
 				}
 			}
 		],
