@@ -12,8 +12,7 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings,
-	setAppContext
+	useUserSettings
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -223,7 +222,6 @@ const App: FC = () => {
 		),
 		[history]
 	);
-
 	useEffect(() => {
 		if (showCOS) {
 			addRoute({

@@ -5,18 +5,23 @@
  */
 import 'vitest-browser-react';
 
+import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 import { beforeAll, afterAll, vi, afterEach } from 'vitest';
 
 vi.stubGlobal('__CARBONIO_DEV__', false);
 vi.stubGlobal('BASE_PATH', '');
 
-beforeAll(() => {
+beforeAll(async () => {
+	await startMockWorker();
 	vi.mock('@zextras/admin-ui-bootstrap');
 });
 
-beforeEach(() => {});
+beforeEach(() => {
+	resetMockWorker();
+});
 
 afterAll(() => {
+	stopMockWorker();
 	vi.clearAllMocks();
 });
 
