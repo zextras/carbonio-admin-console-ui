@@ -87,4 +87,29 @@ describe('', () => {
 		await page.getByText('Details').click();
 		expect(page.getByText('General Information').elements()).toHaveLength(0);
 	});
+	it('should show detail options in bold when selected after selecting a COS', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(<CosListPanel />);
+		await page.getByText('Select a Class of Service').click();
+		await page.getByText('firstCOS').click();
+		await page.getByText('General Information').click();
+		await expect.element(page.getByText('General Information')).toHaveStyle({ fontWeight: 'bold' });
+
+		await page.getByText('Features').click();
+		await expect.element(page.getByText('Features')).toHaveStyle({ fontWeight: 'bold' });
+		await expect.element(page.getByText('General Information')).not.toHaveStyle({ fontWeight: 'bold' });
+	});
+	it('should change chevron icon when details dropdown is toggled', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(<CosListPanel />);
+		// Assicurati che la chevron sia verso il basso all'inizio
+		const chevron = await page.getByRole('button', { name: /details/i });
+		await expect(chevron).toHaveAttribute('icon', 'ChevronDownOutline');
+		// Clicca per aprire il dropdown
+		await chevron.click();
+		await expect(chevron).toHaveAttribute('icon', 'ChevronUpOutline');
+		// Clicca di nuovo per chiudere
+		await chevron.click();
+		await expect(chevron).toHaveAttribute('icon', 'ChevronDownOutline');
+	});
 });
