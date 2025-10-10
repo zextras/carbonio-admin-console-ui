@@ -95,11 +95,21 @@ describe('', () => {
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
 		await page.getByText('Details').click();
-		await expect.element(page.getByText('General Information')).toHaveStyle({ fontWeight: 'bold' });
-
-		await page.getByText('Features').click();
-		await expect.element(page.getByText('Features')).toHaveStyle({ fontWeight: 'bold' });
-		await expect.element(page.getByText('General Information')).not.toHaveStyle({ fontWeight: 'bold' });
+		const detailOptions = [
+			'General Information',
+			'Features',
+			'Chat',
+			'Preferences',
+			'Server Pools',
+			'Advanced'
+		];
+		for (const option of detailOptions) {
+			await page.getByText(option).click();
+			await expect.element(page.getByText(option)).toHaveStyle({ fontWeight: 'bold' });
+			for (const other of detailOptions.filter(o => o !== option)) {
+				await expect.element(page.getByText(other)).not.toHaveStyle({ fontWeight: 'bold' });
+			}
+		}
 	});
 	it('should change chevron icon when details dropdown is toggled', async () => {
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
@@ -114,6 +124,18 @@ describe('', () => {
 
 		await page.getByText('Details').click();
 		const buttonAfterClick = page.getByRole('button').nth(1).element();
+		expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
+	});
+	it('should change General icon when its section is toggled', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(<CosListPanel />);
+
+		await expect.element(page.getByText('General')).toBeVisible();
+		const buttonBeforeClick = page.getByRole('button').first().element();
+		expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+
+		await page.getByText('General').click();
+		const buttonAfterClick = page.getByRole('button').first().element();
 		expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
 	});
 });
