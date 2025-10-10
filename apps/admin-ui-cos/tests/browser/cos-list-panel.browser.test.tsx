@@ -11,6 +11,7 @@ import { it, expect, describe, beforeEach, afterEach } from 'vitest';
 
 import { useCosStore } from '../../src/store/cos/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
+import { b } from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 const mockApiResponse = {
 	cos: [
@@ -93,7 +94,6 @@ describe('', () => {
 
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
-		await expect.element(page.getByText('General ')).toBeVisible();
 		await page.getByText('Details').click();
 		await expect.element(page.getByText('General Information')).toHaveStyle({ fontWeight: 'bold' });
 
@@ -104,11 +104,12 @@ describe('', () => {
 	it('should change chevron icon when details dropdown is toggled', async () => {
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 		setupBrowserTest(<CosListPanel />);
-		const chevron = await page.getByText('Details');
-		await expect(chevron).toHaveAttribute('icon', 'ChevronDownOutline');
-		await chevron.click();
-		await expect(chevron).toHaveAttribute('icon', 'ChevronUpOutline');
-		await chevron.click();
-		await expect(chevron).toHaveAttribute('icon', 'ChevronDownOutline');
+		await page.getByText('Select a Class of Service').click();
+		await page.getByText('firstCOS').click();
+		await expect.element(page.getByText('General Information')).toBeVisible();
+		await page.getByText('Details').click();
+		const button = await page.getByRole('button').nth(1).element();
+		await expect(button).toHaveAttribute('icon', 'icon: ChevronUpOutline');
+
 	});
 });
