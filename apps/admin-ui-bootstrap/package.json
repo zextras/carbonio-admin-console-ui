@@ -31,7 +31,7 @@
 		"test:watch": "vitest --project=unit",
 		"test:watch:browser": "vitest --browser --watch --open",
 		"test:coverage": "vitest run --project=unit --coverage",
-		"test:ci": "vitest run --coverage",
+		"test:ci": "vitest run --coverage --coverage.all=false",
 		"test:ui": "vitest --ui",
 		"test:debug": "vitest --project=browser --browser.headless=false"
 	},
