@@ -12,25 +12,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import MTAAdvanced from '../mta-advanced/mta-advanced';
 
-function expectGeneralOptionsSectionVisible() {
-
-}
-
-function expectMailOptionsSectionVisible() {
-
-}
-
-function expectReceivingMailsSectionVisible() {
-	
-}
-
-describe('COSPreferences', () => {
-	const setupCosStore = (): void => {
-	};
-
-	const setupRightsStore = (): void => {
-	};
-
+describe('MTAAdvanced', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
 	});
@@ -38,7 +20,19 @@ describe('COSPreferences', () => {
 	it('should render the component correctly', async () => {
 		setupBrowserTest(<MTAAdvanced />);
 		await expect.element(page.getByText('Advanced')).toBeVisible();
-		
-		
 	});
+
+	it('should render the Mail Messages Size components correctly', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+		await expect.element(page.getByText('Mail Messages Size')).toBeVisible();
+		await expect.element(page.getByText('No size limit for mail messages')).toBeVisible();
+		await expect.element(page.getByText('Custom max size mail messages (MB)')).toBeVisible();
+	});
+
+	it('should render the Logging components correctly', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+		await expect.element(page.getByText('Advanced')).toBeVisible();
+		await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
+	});
+	
 });
