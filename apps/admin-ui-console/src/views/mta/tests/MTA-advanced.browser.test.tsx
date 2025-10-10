@@ -9,7 +9,6 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-
 import MTAAdvanced from '../mta-advanced/mta-advanced';
 
 describe('MTAAdvanced', () => {
@@ -32,13 +31,8 @@ describe('MTAAdvanced', () => {
 	it('should render the Logging components correctly', async () => {
 		setupBrowserTest(<MTAAdvanced />);
 		await expect.element(page.getByText('Advanced')).toBeVisible();
-		await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
+		await expect
+			.element(page.getByText('Enable logging of the remote SMTP client port'))
+			.toBeVisible();
 	});
-
-	it('should render the load components correctly', async () => {
-		setupBrowserTest(<MTAAdvanced />);
-		await expect.element(page.getByText('Advanced')).toBeVisible();
-		await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
-	});
-	
 });
