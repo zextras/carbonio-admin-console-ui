@@ -34,5 +34,11 @@ describe('MTAAdvanced', () => {
 		await expect.element(page.getByText('Advanced')).toBeVisible();
 		await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
 	});
+
+	it('should render the load components correctly', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+		await expect.element(page.getByText('Advanced')).toBeVisible();
+		await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
+	});
 	
 });
