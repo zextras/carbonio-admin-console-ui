@@ -329,15 +329,9 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.22.15
         version: 7.27.1(@babel/core@7.28.4)
-      '@eslint/js':
-        specifier: ^9.34.0
-        version: 9.37.0
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.1(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@testing-library/user-event':
-        specifier: ^14.5.2
-        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/lodash':
         specifier: ^4.14.197
         version: 4.17.20
@@ -353,9 +347,6 @@ importers:
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.34
-      '@vitejs/plugin-react':
-        specifier: ^5.0.2
-        version: 5.0.4(vite@7.1.9(@types/node@20.19.20)(jiti@2.6.1)(less@4.4.2)(terser@5.44.0))
       '@vitest/browser':
         specifier: ^3.2.4
         version: 3.2.4(msw@1.3.5(@types/node@20.19.20)(typescript@5.9.3))(playwright@1.56.0)(vite@7.1.9(@types/node@20.19.20)(jiti@2.6.1)(less@4.4.2)(terser@5.44.0))(vitest@3.2.4)
@@ -365,6 +356,9 @@ importers:
       admin-ui-sdk:
         specifier: workspace:*
         version: link:../../packages/sdk
+      admin-ui-test-utils:
+        specifier: workspace:*
+        version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
         version: 2.1.4(@babel/core@7.28.4)(styled-components@5.3.11(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react-is@18.3.1)(react@19.2.0))(supports-color@5.5.0)
@@ -377,33 +371,18 @@ importers:
       msw:
         specifier: ^1.3.0
         version: 1.3.5(@types/node@20.19.20)(typescript@5.9.3)
-      pinst:
-        specifier: ^3.0.0
-        version: 3.0.0
       playwright:
         specifier: ^1.55.0
         version: 1.56.0
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.18.2
       react-dom:
         specifier: ^19.1.0
         version: 19.2.0(react@19.2.0)
-      turbo:
-        specifier: latest
-        version: 2.5.8
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.20)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@26.1.0)(less@4.4.2)(msw@1.3.5(@types/node@20.19.20)(typescript@5.9.3))(terser@5.44.0)
-      vitest-browser-react:
-        specifier: ^1.0.1
-        version: 1.0.1(@types/react-dom@19.2.1(@types/react@18.3.26))(@types/react@18.3.26)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
-      webpack:
-        specifier: ^5.101.3
-        version: 5.102.1
 
   apps/admin-ui-cos:
     dependencies:
@@ -468,9 +447,6 @@ importers:
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.1(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@testing-library/user-event':
-        specifier: ^14.5.2
-        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/lodash':
         specifier: ^4.14.197
         version: 4.17.20
@@ -495,6 +471,9 @@ importers:
       admin-ui-sdk:
         specifier: workspace:*
         version: link:../../packages/sdk
+      admin-ui-test-utils:
+        specifier: workspace:*
+        version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
         version: 2.1.4(@babel/core@7.28.4)(styled-components@5.3.11(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react-is@18.3.1)(react@19.2.0))(supports-color@5.5.0)
@@ -504,36 +483,18 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
-      msw:
-        specifier: ^2.11.0
-        version: 2.11.5(@types/node@20.19.20)(typescript@5.9.3)
-      pinst:
-        specifier: ^3.0.0
-        version: 3.0.0
       playwright:
         specifier: ^1.55.0
         version: 1.56.0
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.18.2
       react-dom:
         specifier: ^19.1.0
         version: 19.2.0(react@19.2.0)
-      turbo:
-        specifier: latest
-        version: 2.5.8
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.20)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@26.1.0)(less@4.4.2)(msw@2.11.5(@types/node@20.19.20)(typescript@5.9.3))(terser@5.44.0)
-      vitest-browser-react:
-        specifier: ^1.0.1
-        version: 1.0.1(@types/react-dom@19.2.1(@types/react@18.3.26))(@types/react@18.3.26)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
-      webpack:
-        specifier: ^5.101.3
-        version: 5.102.1
 
   packages/sdk:
     dependencies:
@@ -4663,11 +4624,6 @@ packages:
   pify@4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
-
-  pinst@3.0.0:
-    resolution: {integrity: sha512-cengSmBxtCyaJqtRSvJorIIZXMXg+lJ3sIljGmtBGUVonMnMsVJbnzl6jGN1HkOWwxNuJynCJ2hXxxqCQrFDdw==}
-    engines: {node: '>=12.0.0'}
-    hasBin: true
 
   pkg-dir@7.0.0:
     resolution: {integrity: sha512-Ie9z/WINcxxLp27BKOCHGde4ITq9UklYKDzVo1nhk5sqGEXU3FpkwP5GM2voTGJkGd9B3Otl+Q4uwSOeSUtOBA==}
@@ -10843,8 +10799,6 @@ snapshots:
 
   pify@4.0.1:
     optional: true
-
-  pinst@3.0.0: {}
 
   pkg-dir@7.0.0:
     dependencies:
