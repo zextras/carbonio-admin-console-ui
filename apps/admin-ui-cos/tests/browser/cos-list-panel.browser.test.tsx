@@ -104,12 +104,16 @@ describe('', () => {
 	it('should change chevron icon when details dropdown is toggled', async () => {
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 		setupBrowserTest(<CosListPanel />);
+
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
 		await expect.element(page.getByText('General Information')).toBeVisible();
-		await page.getByText('Details').click();
-		const button = await page.getByRole('button').nth(1).element();
-		await expect(button).toHaveAttribute('icon', 'icon: ChevronUpOutline');
 
+		const buttonBeforeClick = page.getByRole('button').nth(1).element();
+		expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+
+		await page.getByText('Details').click();
+		const buttonAfterClick = page.getByRole('button').nth(1).element();
+		expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
 	});
 });
