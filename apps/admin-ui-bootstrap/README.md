@@ -32,7 +32,7 @@ pnpm reset
 Starts the development server with hot-reload enabled using the SDK watch mode.
 
 ```bash
-# From apps/admin-ui-console directory
+# From apps/admin-ui-bootstrap directory
  npm run start -- -h <hostname> -p <port>
 ```
 
