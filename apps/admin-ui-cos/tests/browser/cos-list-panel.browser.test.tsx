@@ -11,7 +11,6 @@ import { it, expect, describe, beforeEach, afterEach } from 'vitest';
 
 import { useCosStore } from '../../src/store/cos/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
-import { b } from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 const mockApiResponse = {
 	cos: [
@@ -106,7 +105,7 @@ describe('', () => {
 		for (const option of detailOptions) {
 			await page.getByText(option).click();
 			await expect.element(page.getByText(option)).toHaveStyle({ fontWeight: 'bold' });
-			for (const other of detailOptions.filter(o => o !== option)) {
+			for (const other of detailOptions.filter((o) => o !== option)) {
 				await expect.element(page.getByText(other)).not.toHaveStyle({ fontWeight: 'bold' });
 			}
 		}
