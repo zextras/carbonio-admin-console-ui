@@ -33,7 +33,18 @@ export default defineConfig(({ mode }) => {
 					exportType: 'default'
 				},
 				include: '**/*.svg'
-			})
+			}),
+			{
+				name: 'add-module-registration',
+				generateBundle(_options, bundle) {
+					for (const fileName in bundle) {
+						const chunk = bundle[fileName];
+						if (chunk.type === 'chunk' && fileName.startsWith('app.')) {
+							chunk.code += `\nif (typeof __ZAPP_HMR_EXPORT__ !== 'undefined' && __ZAPP_ENTRY__) { const component = __ZAPP_ENTRY__.default || __ZAPP_ENTRY__; __ZAPP_HMR_EXPORT__['${packageName}'](component); }\n`;
+						}
+					}
+				}
+			}
 		],
 		define: {
 			PACKAGE_VERSION: JSON.stringify(process.env.npm_package_version),
@@ -54,7 +65,7 @@ export default defineConfig(({ mode }) => {
 			sourcemap: true,
 			cssCodeSplit: false, // Bundle all CSS into one file
 			lib: {
-				entry: 'src/main.tsx',
+				entry: 'src/app.tsx',
 				formats: ['iife'],
 				name: '__ZAPP_ENTRY__',
 				fileName: () => 'main.[hash].js'
@@ -76,8 +87,9 @@ export default defineConfig(({ mode }) => {
 					'msw'
 				],
 				output: {
+					exports: 'default',
 					entryFileNames: '[name].[hash].js',
-					// Disable code splitting completely
+					chunkFileNames: '[name].[hash].chunk.js',
 					inlineDynamicImports: true,
 					assetFileNames: (assetInfo) => {
 						if (assetInfo.name?.endsWith('.css')) {
@@ -85,13 +97,14 @@ export default defineConfig(({ mode }) => {
 						}
 						return '[name].[hash][extname]';
 					},
+					interop: 'compat',
 					globals: {
 						react: '__ZAPP_SHARED_LIBRARIES__["react"]',
 						'react-dom': '__ZAPP_SHARED_LIBRARIES__["react-dom"]',
 						'react-i18next': '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
 						lodash: '__ZAPP_SHARED_LIBRARIES__["lodash"]',
 						'react-router-dom': '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
-						'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"].default',
+						'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
 						'@emotion/react': '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
 						'@emotion/styled': '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
 						'@zextras/carbonio-ui-preview':
