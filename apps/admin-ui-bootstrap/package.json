@@ -10,7 +10,7 @@
 		"npm": "v10"
 	},
 	"scripts": {
-		"build": "sdk build --admin",
+		"build": "node ../../packages/sdk/scripts/vite/build-shell.mjs",
 		"build:clean": "rm -rf lib && rm -rf dist && rm -rf pkg",
 		"prepack": "npm run build:clean && npm run build -- -d",
 		"postpublish": "rm -rf lib",
@@ -20,10 +20,10 @@
 		"lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx --quiet",
 		"build:lib:local": "tsc -p tsconfig.lib.json && npx api-extractor run --verbose --local",
 		"deploy": "sdk deploy --admin",
-		"start": "sdk watch --admin",
+		"start": "vite",
 		"pull-translations": "git subtree pull -P translations git@github.com:Zextras/carbonio-admin-ui-i18n.git master --squash",
 		"push-translations": "git subtree push -P translations git@github.com:Zextras/carbonio-admin-ui-i18n.git",
-		"build:dev": "sdk build --dev --pkgRel $(date +%s) --admin",
+		"build:dev": "node ../../packages/sdk/scripts/vite/build.mjs --dev",
 		"test": "pnpm run test:unit && pnpm run test:browser",
 		"test:unit": "vitest run --project=unit --passWithNoTests",
 		"test:browser": "vitest run --project=browser --passWithNoTests",
