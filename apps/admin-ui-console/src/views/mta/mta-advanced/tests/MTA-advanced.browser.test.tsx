@@ -147,5 +147,105 @@ describe('MTAAdvanced', () => {
 
 		const milterInput = page.getByLabelText('MILTER threads (value)');
 		expect(milterInput).toBeVisible();
+		await milterInput.clear();
+		await milterInput.fill('8');
+
+		const connectionsInput = page.getByLabelText('Reject concurrent MILTER connections above (value)');
+		expect(connectionsInput).toBeVisible();
+		await connectionsInput.clear();
+		await connectionsInput.fill('150');
+
+		const smtpdInput = page.getByLabelText('Smtpd sender login maps');
+		expect(smtpdInput).toBeVisible();
+		await smtpdInput.clear();
+		await smtpdInput.fill('proxy:ldap://newhost:389');
+	});
+
+	it('should handle radio button state changes for message size limit', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		// Start with custom size selected (based on mock data)
+		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
+		
+		expect(customSizeRadio).toBeChecked();
+		
+		// Input field should be visible
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		expect(sizeInput).toBeVisible();
+
+		// Click "No size limit" - this should trigger setLimitMaxMessageSize(false) and setValue(ZIMBRA_MTA_MESSAGE_SIZE, '')
+		await noLimitRadio.click();
+
+		// Click back to "Custom size" - this should trigger setLimitMaxMessageSize(true)
+		await customSizeRadio.click();
+		
+		// Input field should be visible again
+		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+	});
+
+	it('should handle message size input changes', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		// Ensure custom size is selected
+		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+		await customSizeRadio.click();
+
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		
+		// Test multiple input changes to trigger setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value) and setZimbraMtaMaxMessageSizeState(e.target.value)
+		await sizeInput.clear();
+		await sizeInput.fill('50');
+		
+		await sizeInput.clear();
+		await sizeInput.fill('100');
+		
+		await sizeInput.clear();
+		await sizeInput.fill('200');
+
+		// Test with invalid value to trigger error state
+		await sizeInput.clear();
+		await sizeInput.fill('0');
+		expect(page.getByText('Value 0 disables email sending: enter a value greater than 0')).toBeVisible();
+
+		// Test with negative value
+		await sizeInput.clear();
+		await sizeInput.fill('-10');
+		expect(page.getByText('Value 0 disables email sending: enter a value greater than 0')).toBeVisible();
+
+		// Test with valid value again
+		await sizeInput.clear();
+		await sizeInput.fill('150');
+	});
+
+	it('should handle component initialization with no message size limit', async () => {
+		// Setup config without message size to test the no-limit initial state
+		useConfigStore.getState().setConfig([
+			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
+			{ n: 'zimbraAmavisLogLevel', _content: '2' },
+			{ n: 'zimbraAmavisSALogLevel', _content: '0' },
+			{ n: 'zimbraMtaSmtpdTlsLoglevel', _content: '1' },
+			{ n: 'zimbraMtaLmtpTlsLoglevel', _content: '1' },
+			{ n: 'zimbraClamAVMaxThreads', _content: '10' },
+			{ n: 'zimbraLmtpNumThreads', _content: '20' },
+			{ n: 'zimbraMilterNumThreads', _content: '5' },
+			{ n: 'zimbraMilterMaxConnections', _content: '100' },
+			{ n: 'zimbraMtaSmtpSaslAuthEnable', _content: 'yes' },
+			{ n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' }
+			// Note: No zimbraMtaMaxMessageSize in this config
+		]);
+
+		setupBrowserTest(<MTAAdvanced />);
+
+		// Should default to "No size limit"
+		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
+		expect(noLimitRadio).toBeChecked();
+
+		// Now switch to custom size to trigger the state change
+		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+		await customSizeRadio.click();
+		
+		// Input field should appear
+		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
 	});
 });
