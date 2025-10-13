@@ -40,4 +40,25 @@ describe('', () => {
 
 		await expect.element(page.getByText('COS List')).toBeVisible();
 	});
+	it('should show the list of COS elements', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(
+			<Route path="/cos">
+				<CosDetailPanel />
+			</Route>,
+			{ initialRouterEntry: '/cos/cos_list' }
+		);
+		await expect.element(page.getByText('firstCOS')).toBeVisible();
+		await expect.element(page.getByText('secondCOS')).toBeVisible();
+	});
+	it.skip('should change the number of visible COS', async () => {
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		setupBrowserTest(
+			<Route path="/cos">
+				<CosDetailPanel />
+			</Route>,
+			{ initialRouterEntry: '/cos/cos_list' }
+		);
+		expect(page.getByText("5")).toBeVisible();
+	})
 });

@@ -105,7 +105,7 @@ describe('', () => {
 		for (const option of detailOptions) {
 			await page.getByText(option).click();
 			await expect.element(page.getByText(option)).toHaveStyle({ fontWeight: 'bold' });
-			for (const other of detailOptions.filter((o) => o !== option)) {
+			for (const other of detailOptions.filter(o => o !== option)) {
 				await expect.element(page.getByText(other)).not.toHaveStyle({ fontWeight: 'bold' });
 			}
 		}
