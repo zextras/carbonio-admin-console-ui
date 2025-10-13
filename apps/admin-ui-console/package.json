@@ -5,7 +5,7 @@
 	"description": "Admin module for Zextras Carbonio",
 	"main": "src/app.tsx",
 	"scripts": {
-		"build": "sdk build",
+		"build": "node ../../packages/sdk/scripts/vite/build.mjs",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"prepublishOnly": "pinst --disable",
