@@ -58,10 +58,7 @@ describe('MTAAdvanced', () => {
 				type: 'config',
 				all: [
 					{
-						right: [
-							{ n: 'modifyConfig' },
-							{ n: 'getConfig' }
-						],
+						right: [{ n: 'modifyConfig' }, { n: 'getConfig' }],
 						setAttrs: [{ all: true }],
 						getAttrs: [{ all: true }]
 					}
@@ -82,5 +79,73 @@ describe('MTAAdvanced', () => {
 		expectLoggingSectionVisible();
 		expectTuningSectionVisible();
 		expectMailMessagesSizeSectionVisible();
+	});
+
+	it('should handle mail message size radio button interactions', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
+		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+
+		expect(noLimitRadio).toBeVisible();
+		expect(customSizeRadio).toBeVisible();
+
+		expect(customSizeRadio).toBeChecked();
+
+		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+
+		await noLimitRadio.click();
+
+		await customSizeRadio.click();
+
+		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+	});
+
+	it('should show error message for invalid message size input', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+		await customSizeRadio.click();
+
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+
+		await sizeInput.clear();
+		await sizeInput.fill('0');
+
+		expect(
+			page.getByText('Value 0 disables email sending: enter a value greater than 0')
+		).toBeVisible();
+
+		await sizeInput.clear();
+		await sizeInput.fill('100');
+	});
+
+	it('should handle switch interactions', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		const loggingSwitchLabel = page.getByText('Enable logging of the remote SMTP client port');
+		expect(loggingSwitchLabel).toBeVisible();
+		await loggingSwitchLabel.click();
+
+		const authSwitchLabel = page.getByText('Enable simple authentication and security layer');
+		expect(authSwitchLabel).toBeVisible();
+		await authSwitchLabel.click();
+	});
+
+	it('should handle input field interactions', async () => {
+		setupBrowserTest(<MTAAdvanced />);
+
+		const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
+		expect(antivirusInput).toBeVisible();
+		await antivirusInput.clear();
+		await antivirusInput.fill('15');
+
+		const lmtpInput = page.getByLabelText('LMTP threads (Value)');
+		expect(lmtpInput).toBeVisible();
+		await lmtpInput.clear();
+		await lmtpInput.fill('25');
+
+		const milterInput = page.getByLabelText('MILTER threads (value)');
+		expect(milterInput).toBeVisible();
 	});
 });
