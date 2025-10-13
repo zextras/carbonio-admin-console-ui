@@ -332,12 +332,16 @@ describe('MTAAdvanced', () => {
 		// Test with zero (should show error)
 		await sizeInput.clear();
 		await sizeInput.fill('0');
-		expect(page.getByText('Value 0 disables email sending: enter a value greater than 0')).toBeVisible();
+		expect(
+			page.getByText('Value 0 disables email sending: enter a value greater than 0')
+		).toBeVisible();
 
 		// Test with negative value (should show error)
 		await sizeInput.clear();
 		await sizeInput.fill('-5');
-		expect(page.getByText('Value 0 disables email sending: enter a value greater than 0')).toBeVisible();
+		expect(
+			page.getByText('Value 0 disables email sending: enter a value greater than 0')
+		).toBeVisible();
 
 		// Test with valid value to clear error
 		await sizeInput.clear();
