@@ -9,6 +9,7 @@
 import { spawn } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rmSync, existsSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // The project root is the current working directory where the script is called from
@@ -29,6 +30,13 @@ const env = {
 
 console.log(`Building in ${isDev ? 'development' : 'production'} mode`);
 console.log(`Package release: ${pkgRel}`);
+
+// Clean the dist directory before building
+const distPath = join(projectRoot, 'dist');
+if (existsSync(distPath)) {
+	console.log('Cleaning dist directory...');
+	rmSync(distPath, { recursive: true, force: true });
+}
 
 const vite = spawn('vite', ['build', ...(isDev ? ['--mode', 'development'] : [])], {
 	cwd: projectRoot,

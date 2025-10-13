@@ -21,10 +21,21 @@ declare global {
 }
 
 async function bootApp() {
+	console.log('[COS Module] Attempting to boot...', {
+		PACKAGE_NAME,
+		hasWindow: typeof window !== 'undefined',
+		hasZappExport: !!window.__ZAPP_HMR_EXPORT__,
+		hasFunction: window.__ZAPP_HMR_EXPORT__ && typeof window.__ZAPP_HMR_EXPORT__[PACKAGE_NAME] === 'function'
+	});
+	
 	if (window.__ZAPP_HMR_EXPORT__ && typeof window.__ZAPP_HMR_EXPORT__[PACKAGE_NAME] === 'function') {
+		console.log('[COS Module] Registering app with shell...');
 		window.__ZAPP_HMR_EXPORT__[PACKAGE_NAME](App);
+		console.log('[COS Module] App registered successfully');
 	} else {
-		console.warn('Shell bootstrap not found, app may not load correctly');
+		console.error('[COS Module] Shell bootstrap not found, app may not load correctly', {
+			available: window.__ZAPP_HMR_EXPORT__ ? Object.keys(window.__ZAPP_HMR_EXPORT__) : 'none'
+		});
 	}
 }
 

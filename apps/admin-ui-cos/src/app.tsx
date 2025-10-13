@@ -18,7 +18,7 @@ import {
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -52,16 +52,13 @@ import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { TrackerProvider } from './tracker/provider';
-import { Spinner } from './views/components/spinner';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
-const LazyAppView = lazy(() => import('./views/app-view'));
+import AppViewComponent from './views/app-view';
+import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const AppView: FC = (props) => (
 	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
+		<AppViewComponent {...props} />
 	</TrackerProvider>
 );
 const PrimaryBarIcon = styled(Icon)`

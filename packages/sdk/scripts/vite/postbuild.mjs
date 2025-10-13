@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +18,7 @@ const projectRoot = process.cwd();
 const pkg = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf-8'));
 
 const commitHash =
-	process.env.COMMIT_HASH || execSync('git rev-parse --short HEAD').toString().trim();
+	process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 
 const distDir = join(projectRoot, 'dist', 'source', commitHash);
 
@@ -43,56 +43,101 @@ if (!cssFile) {
 	console.warn('No CSS file found...');
 }
 
+const basePath = `/static/iris/${pkg.carbonio.name}/${commitHash}/`;
+
 const componentJson = {
 	name: pkg.carbonio.name,
-	version: pkg.version,
+	js_entrypoint: `${basePath}${jsFile}`,
 	description: pkg.description,
+	version: pkg.version,
 	commit: commitHash,
 	priority: pkg.carbonio.priority,
 	type: pkg.carbonio.type,
 	attrKey: pkg.carbonio.attrKey || '',
 	icon: pkg.carbonio.icon || 'CubeOutline',
 	display: pkg.carbonio.display,
-	sentryDsn: pkg.carbonio.sentryDsn || '',
-	js: jsFile
+	sentryDsn: pkg.carbonio.sentryDsn || ''
 };
 
-if (cssFile) {
-	componentJson.css = cssFile;
-}
-
-writeFileSync(join(distDir, 'component.json'), JSON.stringify(componentJson, null, 2));
+writeFileSync(join(distDir, 'component.json'), JSON.stringify(componentJson, null, '\t'));
 
 console.log('Generated component.json');
 
+// Copy CHANGELOG.md if it exists
+const changelogPath = join(projectRoot, 'CHANGELOG.md');
+if (existsSync(changelogPath)) {
+	copyFileSync(changelogPath, join(distDir, 'CHANGELOG.md'));
+	console.log('Copied CHANGELOG.md');
+}
+
 const pkgRel = process.env.PKG_REL || '1';
-const pkgBuild = `# Maintainer: Zextras <packages@zextras.com>
+const installMode = pkg.carbonio.installMode || 'admin';
+const copyright = pkg.carbonio.copyright || '2022, Zextras &lt;https://www.zextras.com&gt;';
+
+const pkgBuild = `# This package contains the assets for carbonio ui components (aka zapp)
+
+# the package uses commits paths to reduce caching issues as much as possible
+# but it doesn't support multiple versions installed at the same time
+# this could lead to a loading issue if a user is loading the page exactly during the
+# upgrade, but so far there is nothing we can do about it (we would need to coordinate multiple nginx).
+
 pkgname="${pkg.carbonio.name}"
 pkgver="${pkg.version}"
 pkgrel="${pkgRel}"
 pkgdesc="${pkg.description}"
-arch=('x86_64')
-license=('AGPL3')
-url="https://www.zextras.com/carbonio/"
-depends=('carbonio-admin-ui')
+maintainer="Zextras (packages@zextras.com)"
+arch=("x86_64")
+license=("AGPL-3.0-only")
+copyright=("${copyright}")
+section="admin"
+priority="optional"
+url="https://github.com/zextras"
+depends=(
+  "carbonio-nginx"
+  "carbonio-webui-i18n"
+  "jq"
+)
+
+source=('source')
+sha256sums=('SKIP')
+
 
 package() {
-	cd "\${srcdir}/../source/${commitHash}"
-	install -D -m 644 component.json "\${pkgdir}/usr/share/carbonio/web/iris/static/iris/${pkg.carbonio.name}/${commitHash}/component.json"
-	install -D -m 644 ${jsFile} "\${pkgdir}/usr/share/carbonio/web/iris/static/iris/${pkg.carbonio.name}/${commitHash}/${jsFile}"
-	${cssFile ? `install -D -m 644 ${cssFile} "\${pkgdir}/usr/share/carbonio/web/iris/static/iris/${pkg.carbonio.name}/${commitHash}/${cssFile}"` : ''}
-	
-	# Install source maps if they exist
-	if [ -f "${jsFile}.map" ]; then
-		install -D -m 644 "${jsFile}.map" "\${pkgdir}/usr/share/carbonio/web/iris/static/iris/${pkg.carbonio.name}/${commitHash}/${jsFile}.map"
-	fi
-	${
-		cssFile
-			? `if [ -f "${cssFile}.map" ]; then
-		install -D -m 644 "${cssFile}.map" "\${pkgdir}/usr/share/carbonio/web/iris/static/iris/${pkg.carbonio.name}/${commitHash}/${cssFile}.map"
-	fi`
-			: ''
-	}
+  cd "\${srcdir}"
+  mkdir -p "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}"
+  cp -a source/* "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}"
+  chown root:root -R "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}/${commitHash}"
+  chmod 644 -R "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}/${commitHash}"
+  find "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}/${commitHash}" -type d -exec chmod a+x "{}" \\;
+  ln -sf /opt/zextras/${installMode}/iris/\${pkgname}/i18n "\${pkgdir}/opt/zextras/${installMode}/iris/\${pkgname}/${commitHash}/i18n"
+}
+
+postinst() {
+  # copy the index.html to the current directory, no redirect is needed
+  mkdir -p "/opt/zextras/${installMode}/iris/${pkg.carbonio.name}/current"
+
+  # not every package has a index.html
+  cd "/opt/zextras/${installMode}/iris/${pkg.carbonio.name}/${commitHash}"
+  find . -name "*.html" -exec cp --parents "{}" /opt/zextras/${installMode}/iris/${pkg.carbonio.name}/current/ \\;
+
+  # re-generate the component list, for every component
+  # depth should be 3 since the path should be iris/NAME/COMMIT/component.json
+  find /opt/zextras/${installMode}/iris/ \\
+    -maxdepth 3 \\
+    -mindepth 3 \\
+    -type f \\
+    -name component.json \\
+    -printf '%T@ %p\\n' \\
+    | sort -rn \\
+    | awk '{
+        n = split($2, path, "/")
+        component = path[6]
+
+        if (!seen[component]++) {
+            print $2
+        }
+    }' \\
+    | xargs jq -s '{"components":.}' >/opt/zextras/${installMode}/iris/components.json
 }
 `;
 

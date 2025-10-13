@@ -11,7 +11,7 @@ import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 const commitHash =
-	process.env.COMMIT_HASH || execSync('git rev-parse --short HEAD').toString().trim();
+	process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 const packageName = 'carbonio-admin-cos';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
 
@@ -40,7 +40,8 @@ export default defineConfig(({ mode }) => {
 			ZIMBRA_PACKAGE_VERSION: JSON.stringify(
 				process.env.npm_package_version?.split('-')[0] || '0.0.0'
 			),
-			PACKAGE_NAME: JSON.stringify(packageName)
+			PACKAGE_NAME: JSON.stringify(packageName),
+			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production')
 		},
 		resolve: {
 			alias: {
@@ -76,7 +77,8 @@ export default defineConfig(({ mode }) => {
 				],
 				output: {
 					entryFileNames: '[name].[hash].js',
-					chunkFileNames: '[name].[hash].chunk.js',
+					// Disable code splitting completely
+					inlineDynamicImports: true,
 					assetFileNames: (assetInfo) => {
 						if (assetInfo.name?.endsWith('.css')) {
 							return 'style.[hash].css';
@@ -89,7 +91,7 @@ export default defineConfig(({ mode }) => {
 						'react-i18next': '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
 						lodash: '__ZAPP_SHARED_LIBRARIES__["lodash"]',
 						'react-router-dom': '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
-						'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
+						'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"].default',
 						'@emotion/react': '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
 						'@emotion/styled': '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
 						'@zextras/carbonio-ui-preview':
@@ -104,6 +106,7 @@ export default defineConfig(({ mode }) => {
 			}
 		},
 		base: isDev ? '/' : basePath,
+		publicDir: isDev ? 'public' : false,
 		server: {
 			port: 3000,
 			strictPort: false
