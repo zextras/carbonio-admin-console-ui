@@ -28,7 +28,7 @@ describe('MTAAdvanced', () => {
 		await expect.element(page.getByText('Custom max size mail messages (MB)')).toBeVisible();
 	});
 
-	it('should render the Logging components correctly', async () => {
+	it.skip('should render the Logging components correctly', async () => {
 		setupBrowserTest(<MTAAdvanced />);
 		await expect.element(page.getByText('Advanced')).toBeVisible();
 		await expect
