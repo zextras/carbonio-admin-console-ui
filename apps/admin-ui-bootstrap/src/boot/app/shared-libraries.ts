@@ -29,11 +29,14 @@ import * as ReactRouterDom from 'react-router-dom';
 import * as StyledComponents from 'styled-components';
 
 import { IShellWindow } from '../../../types';
+import * as BootstrapExports from '../../../exports';
 
 export function injectSharedLibraries(): void {
 	// eslint-disable-next-line max-len
 	const wnd: IShellWindow = window as unknown as IShellWindow;
 	if (wnd.__ZAPP_SHARED_LIBRARIES__) {
+		// Ensure bootstrap exports are preserved
+		Object.assign(wnd.__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'], BootstrapExports);
 		return;
 	}
 	wnd.__ZAPP_SHARED_LIBRARIES__ = {
@@ -56,7 +59,7 @@ export function injectSharedLibraries(): void {
 			}
 		},
 		// DO NOT RENAME THIS
-		'@zextras/admin-ui-bootstrap': {},
+		'@zextras/admin-ui-bootstrap': { ...BootstrapExports },
 		'@zextras/carbonio-design-system': ZappUI
 	};
 	wnd.__ZAPP_HMR_EXPORT__ = {};

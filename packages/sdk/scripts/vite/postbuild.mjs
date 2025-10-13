@@ -27,7 +27,9 @@ const cssFile = files.find((f) => f.startsWith('style.') && f.endsWith('.css'));
 
 const jsFile = files.find(
 	(f) =>
-		(f.startsWith('main.') || f.startsWith('index.')) && f.endsWith('.js') && !f.endsWith('.map')
+		(f.startsWith('main.') || f.startsWith('index.') || f.startsWith('app.')) && 
+		f.endsWith('.js') && 
+		!f.endsWith('.map')
 );
 
 if (!jsFile) {
