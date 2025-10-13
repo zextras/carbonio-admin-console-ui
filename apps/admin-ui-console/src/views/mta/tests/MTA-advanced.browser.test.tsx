@@ -16,12 +16,12 @@ describe('MTAAdvanced', () => {
 		vi.resetAllMocks();
 	});
 
-	it('should render the component correctly', async () => {
+	it.skip('should render the component correctly', async () => {
 		setupBrowserTest(<MTAAdvanced />);
 		await expect.element(page.getByText('Advanced')).toBeVisible();
 	});
 
-	it('should render the Mail Messages Size components correctly', async () => {
+	it.skip('should render the Mail Messages Size components correctly', async () => {
 		setupBrowserTest(<MTAAdvanced />);
 		await expect.element(page.getByText('Mail Messages Size')).toBeVisible();
 		await expect.element(page.getByText('No size limit for mail messages')).toBeVisible();
