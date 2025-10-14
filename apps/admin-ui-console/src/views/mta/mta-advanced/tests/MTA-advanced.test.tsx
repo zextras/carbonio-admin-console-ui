@@ -58,7 +58,9 @@ describe('MTAAdvanced Unit Tests', () => {
 		setupStores();
 		const { getByRole, user } = setupTest(<MTAAdvanced />);
 
-		const noLimitRadio = getByRole('radio', { name: 'No size limit for mail messages' });
+		const noLimitRadio = getByRole('radio', {
+			name: 'No size limit for mail messages'
+		}) as HTMLInputElement;
 		await user.click(noLimitRadio);
 
 		expect(noLimitRadio.checked).toBe(true);
@@ -69,8 +71,12 @@ describe('MTAAdvanced Unit Tests', () => {
 		const { getByRole, user } = setupTest(<MTAAdvanced />);
 
 		// First click no limit, then custom size to trigger both paths
-		const noLimitRadio = getByRole('radio', { name: 'No size limit for mail messages' });
-		const customSizeRadio = getByRole('radio', { name: 'Custom max size mail messages (MB)' });
+		const noLimitRadio = getByRole('radio', {
+			name: 'No size limit for mail messages'
+		}) as HTMLInputElement;
+		const customSizeRadio = getByRole('radio', {
+			name: 'Custom max size mail messages (MB)'
+		}) as HTMLInputElement;
 
 		await user.click(noLimitRadio);
 		await user.click(customSizeRadio);
