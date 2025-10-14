@@ -14,6 +14,7 @@ import { useRightsStore } from '../../../store/rights/store';
 import MTAAdvanced from './mta-advanced';
 
 // Mock the services
+
 vi.mock('../../../../services/modify-config', () => ({
 	modifyConfig: vi.fn()
 }));
