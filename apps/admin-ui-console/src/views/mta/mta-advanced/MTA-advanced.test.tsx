@@ -8,9 +8,10 @@ import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { useConfigStore } from '../../../../store/config/store';
-import { useRightsStore } from '../../../../store/rights/store';
-import MTAAdvanced from '../mta-advanced';
+import { useConfigStore } from '../../../store/config/store';
+import { useRightsStore } from '../../../store/rights/store';
+
+import MTAAdvanced from './mta-advanced';
 
 // Mock the services
 vi.mock('../../../../services/modify-config', () => ({
