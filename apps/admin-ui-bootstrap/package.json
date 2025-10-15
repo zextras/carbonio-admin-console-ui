@@ -97,7 +97,7 @@
 	},
 	"carbonio": {
 		"name": "carbonio-admin-ui",
-		"translations_repository": "git@bitbucket.org:zextras/admin-ui.git",
+		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
 		"type": "shell",
 		"priority": -1,
 		"display": "Admin Shell",
