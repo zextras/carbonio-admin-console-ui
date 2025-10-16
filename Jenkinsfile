@@ -120,7 +120,7 @@ pipeline {
                             script {
                                 sh '''
                                     pnpm exec playwright install --with-deps
-                                    pnpm test
+                                    pnpm test:ci
                                 '''
                             }
                         }
@@ -129,7 +129,7 @@ pipeline {
             }
         }
         stage('SonarQube console') {
-            steps {
+                        steps {
                 container('pnpm') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
