@@ -129,7 +129,7 @@ pipeline {
             }
         }
         stage('SonarQube console') {
-                        steps {
+            steps {
                 container('pnpm') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
