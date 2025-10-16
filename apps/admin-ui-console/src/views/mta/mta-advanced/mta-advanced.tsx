@@ -445,6 +445,11 @@ const MTAAdvanced: FC = () => {
 				n: ZIMBRA_MTA_MESSAGE_SIZE,
 				_content: mbToBytes(Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize)).toString()
 			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_MTA_MESSAGE_SIZE,
+				_content: ''
+			});
 		}
 
 		if (mtaAdvancedDetail?.zimbraMilterMaxConnections) {
@@ -490,6 +495,7 @@ const MTAAdvanced: FC = () => {
 		mtaAdvancedDetail?.zimbraMilterMaxConnections,
 		mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable,
 		mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps,
+		limitMaxMessageSize,
 		isErrorInSmtpdProxy,
 		modifyConfigRequest,
 		createSnackbar,
@@ -788,7 +794,7 @@ const MTAAdvanced: FC = () => {
 						{t('mta.advanced.mail_messages_size', 'Mail messages size')}
 					</Text>
 					<Container crossAlignment="flex-start" padding={{ top: 'large' }} height="auto">
-						<Row  width="100%" mainAlignment="flex-start">
+						<Row width="100%" mainAlignment="flex-start">
 							<RadioGroup value={limitMaxMessageSize.toString()}>
 								<Radio
 									label={t(
@@ -819,7 +825,7 @@ const MTAAdvanced: FC = () => {
 							<Container
 								crossAlignment="flex-start"
 								mainAlignment="flex-start"
-								padding={{ left: 'extralarge' , top: 'large' }}
+								padding={{ left: 'extralarge', top: 'large' }}
 							>
 								<Input
 									label={t(
