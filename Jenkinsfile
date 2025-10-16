@@ -120,7 +120,7 @@ pipeline {
                             script {
                                 sh '''
                                     pnpm exec playwright install --with-deps
-                                    pnpm test
+                                    pnpm test:ci
                                 '''
                             }
                         }
