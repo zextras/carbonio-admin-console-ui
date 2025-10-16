@@ -93,13 +93,13 @@ describe('MTAAdvanced', () => {
 
 		expect(customSizeRadio).toBeChecked();
 
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 
 		await noLimitRadio.click();
 
 		await customSizeRadio.click();
 
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 	});
 
 	it('should show error message for invalid message size input', async () => {
@@ -108,7 +108,7 @@ describe('MTAAdvanced', () => {
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
 
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 
 		await sizeInput.clear();
 		await sizeInput.fill('0');
@@ -174,7 +174,7 @@ describe('MTAAdvanced', () => {
 		expect(customSizeRadio).toBeChecked();
 
 		// Input field should be visible
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 		expect(sizeInput).toBeVisible();
 
 		// Click "No size limit" - this should trigger setLimitMaxMessageSize(false) and setValue(ZIMBRA_MTA_MESSAGE_SIZE, '')
@@ -184,7 +184,7 @@ describe('MTAAdvanced', () => {
 		await customSizeRadio.click();
 
 		// Input field should be visible again
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 	});
 
 	it('should handle message size input changes', async () => {
@@ -194,7 +194,7 @@ describe('MTAAdvanced', () => {
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
 
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 
 		// Test multiple input changes to trigger setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value) and setZimbraMtaMaxMessageSizeState(e.target.value)
 		await sizeInput.clear();
@@ -253,7 +253,7 @@ describe('MTAAdvanced', () => {
 		await customSizeRadio.click();
 
 		// Input field should appear
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 	});
 
 	it('should trigger setLimitMaxMessageSize(false) when clicking no limit radio', async () => {
@@ -264,7 +264,7 @@ describe('MTAAdvanced', () => {
 		expect(customSizeRadio).toBeChecked();
 
 		// Input field should be visible
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 
 		// Click "No size limit" - this should trigger setLimitMaxMessageSize(false) and setValue(ZIMBRA_MTA_MESSAGE_SIZE, '')
 		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
@@ -303,7 +303,7 @@ describe('MTAAdvanced', () => {
 		await customSizeRadio.click();
 
 		// Verify the input field appears (indicating the state change worked)
-		expect(page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")')).toBeVisible();
+		expect(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
 
 		// Verify both radio buttons are still visible (indicating the component didn't crash)
 		expect(noLimitRadio).toBeVisible();
@@ -317,7 +317,7 @@ describe('MTAAdvanced', () => {
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
 
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 
 		// Test the onChange handler by filling different values
 		// This should trigger both setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value) and setZimbraMtaMaxMessageSizeState(e.target.value)
@@ -371,7 +371,7 @@ describe('MTAAdvanced', () => {
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
 
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 		await sizeInput.clear();
 		await sizeInput.fill('200');
 
@@ -409,7 +409,7 @@ describe('MTAAdvanced', () => {
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
 
-		const sizeInput = page.getByLabelText('Max size for mail messages (MB, 0 = "no limit")');
+		const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
 		await sizeInput.clear();
 		await sizeInput.fill('150');
 
