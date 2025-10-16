@@ -445,11 +445,6 @@ const MTAAdvanced: FC = () => {
 				n: ZIMBRA_MTA_MESSAGE_SIZE,
 				_content: mbToBytes(Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize)).toString()
 			});
-		} else {
-			attributes.push({
-				n: ZIMBRA_MTA_MESSAGE_SIZE,
-				_content: ''
-			});
 		}
 
 		if (mtaAdvancedDetail?.zimbraMilterMaxConnections) {
