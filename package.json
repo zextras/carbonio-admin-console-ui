@@ -9,25 +9,13 @@
 	],
 	"scripts": {
 		"build": "turbo run build",
-		"deploy": "sdk deploy",
-		"start": "sdk watch",
 		"test": "turbo run test",
 		"test:ci": "turbo run test:ci",
-		"prepublishOnly": "pinst --disable",
-		"postpublish": "pinst --enable",
 		"type-check": "turbo run type-check",
 		"lint": "turbo run lint",
-		"lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx --quiet",
-		"lint-errors": "eslint --ext .js,.jsx,.ts,.tsx --quiet apps/*/src",
-		"lint-stats": "eslint --ext .js,.jsx,.ts,.tsx --format node_modules/eslint-stats/byErrorAndWarningStacked apps/*/src",
-		"lint-check": "pnpm run lint-errors; pnpm run type-check",
-		"sdk-setup": "pnpm ci --prefix sdk",
-		"build:dev": "sdk build --dev --pkgRel $(date +%s)",
-		"dev-deploy": "sdk build --dev --pkgRel $(date +%s) && sdk deploy",
 		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
 	},
 	"dependencies": {
-		"@vitest/browser-playwright": "4.0.0-beta.15",
 		"react": "^19.1.0"
 	},
 	"devDependencies": {
@@ -47,8 +35,6 @@
 		"eslint-plugin-sonarjs": "^3.0.5",
 		"eslint-plugin-testing-library": "^7.6.6",
 		"eslint-plugin-unused-imports": "^4.2.0",
-		"msw": "^2.11.4",
-		"pinst": "^3.0.0",
 		"playwright": "^1.55.0",
 		"pnpm": "^10.15.1",
 		"turbo": "latest",
