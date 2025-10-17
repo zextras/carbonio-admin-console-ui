@@ -6,7 +6,10 @@
 
 import { server } from 'admin-ui-test-utils';
 import { noop } from 'lodash';
-import { beforeEach, beforeAll, afterAll, afterEach } from 'vitest';
+import { beforeEach, beforeAll, afterAll, afterEach, vi } from 'vitest';
+
+vi.stubGlobal('__CARBONIO_DEV__', false);
+vi.stubGlobal('BASE_PATH', '');
 
 window.matchMedia = function matchMedia(query: string): MediaQueryList {
 	return {
