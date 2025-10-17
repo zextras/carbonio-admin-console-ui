@@ -5,13 +5,15 @@
  */
 
 import { page } from '@vitest/browser/context';
-import { createSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { it, expect, describe } from 'vitest';
+import { it, expect, describe, beforeEach, afterEach } from 'vitest';
 
+import { useCosStore } from '../../src/store/cos/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
 
+//do a mock that returns more than two COS items
 const mockApiResponse = {
 	cos: [
 		{
@@ -29,6 +31,15 @@ const mockApiResponse = {
 	more: false
 };
 describe('', () => {
+	beforeEach(() => {
+		useCosStore.getState().reset();
+	});
+
+	// Also reset after each test for extra safety
+	afterEach(() => {
+		resetMockWorker();
+		useCosStore.getState().reset();
+	});
 	it('should render all parts of the component', async () => {
 		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(
@@ -51,7 +62,7 @@ describe('', () => {
 		await expect.element(page.getByText('firstCOS')).toBeVisible();
 		await expect.element(page.getByText('secondCOS')).toBeVisible();
 	});
-	it.skip('should change the number of visible COS', async () => {
+	it('should change the number of visible COS', async () => {
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 		setupBrowserTest(
 			<Route path="/cos">
@@ -59,6 +70,11 @@ describe('', () => {
 			</Route>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
-		expect(page.getByText("5")).toBeVisible();
+		await expect.element(page.getByText('Showing')).toBeVisible();
+		await expect.element(page.getByText('items per page')).toBeVisible();
+		await page.getByText('10').click();
+		await expect.element(page.getByText('15')).toBeVisible();
+		await page.getByText('15').click();
+		expect(page.getByText('10').elements()).toHaveLength(0);
 	})
 });
