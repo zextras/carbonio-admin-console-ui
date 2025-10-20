@@ -74,7 +74,16 @@ describe('', () => {
 		await expect.element(page.getByText('items per page')).toBeVisible();
 		await page.getByText('10').click();
 		await expect.element(page.getByText('15')).toBeVisible();
-		await page.getByText('15').click();
+		await expect.element(page.getByText('25')).toBeVisible();
+		await expect.element(page.getByText('50')).toBeVisible();
+		await expect.element(page.getByText('100')).toBeVisible();
+
+		const listOfElements = page.getByText('10').elements();
+		expect(listOfElements[1]).toHaveStyle({ fontWeight: 'bold' });
+
+		await page.getByText('15').click()
 		expect(page.getByText('10').elements()).toHaveLength(0);
+		// here we check that 15 is now selected and the dropdown is closed
+		expect(page.getByText('15').elements()).toHaveLength(1);
 	})
 });
