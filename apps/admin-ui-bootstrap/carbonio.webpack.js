@@ -27,6 +27,10 @@ module.exports = (conf, pkg, options, mode) => {
 				{
 					from: 'assets/',
 					to: '.'
+				},
+				{
+					from: 'translations/',
+					to: 'i18n/'
 				}
 			]
 		}),
@@ -38,7 +42,6 @@ module.exports = (conf, pkg, options, mode) => {
 			inject: true,
 			template: path.resolve(process.cwd(), 'src', 'index.template.html'),
 			chunks: [`index`],
-			filename: `../current/index.html`,
 			BASE_PATH: baseStaticPath,
 			SHELL_ENV: root
 		}),
