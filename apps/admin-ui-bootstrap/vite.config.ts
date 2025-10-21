@@ -10,8 +10,9 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-const commitHash =
-	process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
+import { createBootstrapRollupOptions } from '../../vite.rollup.config';
+
+const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
 
@@ -49,18 +50,7 @@ export default defineConfig(({ mode }) => {
 			outDir: `dist/${commitHash}`,
 			emptyOutDir: true,
 			sourcemap: true,
-			rollupOptions: {
-				output: {
-					entryFileNames: isDev ? 'zapp-shell.bundle.js' : 'zapp-admin-ui.bundle.js',
-					chunkFileNames: '[name].[hash].chunk.js',
-					assetFileNames: (assetInfo) => {
-						if (assetInfo.name?.endsWith('.css')) {
-							return '[name].[hash].css';
-						}
-						return '[name].[hash][extname]';
-					}
-				}
-			}
+			rollupOptions: createBootstrapRollupOptions(isDev)
 		},
 		base: isDev ? '/' : basePath,
 		publicDir: 'assets',

@@ -10,6 +10,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
+import { createModuleRollupOptions } from '../../vite.rollup.config';
+
 const commitHash =
 	process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 const packageName = 'carbonio-admin-cos';
@@ -70,53 +72,7 @@ export default defineConfig(({ mode }) => {
 				name: '__ZAPP_ENTRY__',
 				fileName: () => 'main.[hash].js'
 			},
-			rollupOptions: {
-				external: [
-					'react',
-					'react-dom',
-					'react-i18next',
-					'lodash',
-					'react-router-dom',
-					'styled-components',
-					'@emotion/react',
-					'@emotion/styled',
-					'@zextras/carbonio-ui-preview',
-					'@zextras/admin-ui-bootstrap',
-					'@zextras/carbonio-design-system',
-					'darkreader',
-					'msw'
-				],
-				output: {
-					exports: 'default',
-					entryFileNames: '[name].[hash].js',
-					chunkFileNames: '[name].[hash].chunk.js',
-					inlineDynamicImports: true,
-					assetFileNames: (assetInfo) => {
-						if (assetInfo.name?.endsWith('.css')) {
-							return 'style.[hash].css';
-						}
-						return '[name].[hash][extname]';
-					},
-					interop: 'compat',
-					globals: {
-						react: '__ZAPP_SHARED_LIBRARIES__["react"]',
-						'react-dom': '__ZAPP_SHARED_LIBRARIES__["react-dom"]',
-						'react-i18next': '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
-						lodash: '__ZAPP_SHARED_LIBRARIES__["lodash"]',
-						'react-router-dom': '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
-						'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
-						'@emotion/react': '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
-						'@emotion/styled': '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
-						'@zextras/carbonio-ui-preview':
-							'__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-ui-preview"]',
-						'@zextras/admin-ui-bootstrap': `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
-						'@zextras/carbonio-design-system':
-							'__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-design-system"]',
-						darkreader: '__ZAPP_SHARED_LIBRARIES__["darkreader"]',
-						msw: '__ZAPP_SHARED_LIBRARIES__["msw"]'
-					}
-				}
-			}
+			rollupOptions: createModuleRollupOptions({ packageName })
 		},
 		base: isDev ? '/' : basePath,
 		publicDir: isDev ? 'public' : false,
