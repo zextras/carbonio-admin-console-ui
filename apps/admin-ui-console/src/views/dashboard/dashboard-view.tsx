@@ -15,6 +15,7 @@ import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import QuickAccess from './quick-access-view';
+import LicenseBanner from './license-banner';
 import packageJson from '../../../package.json';
 import {
 	ACCOUNTS,
@@ -35,6 +36,7 @@ import { useDomainStore } from '../../store/domain/store';
 import { useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
+import { useModuleLicenseStore } from '../../store/module-license/store';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
@@ -46,7 +48,11 @@ const Dashboard: FC = () => {
 
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
+		moduleLicenseInfo?.maintenanceStatus !== "expired" ||
+		moduleLicenseInfo?.maintenanceStatus !== "expiring"
+	);
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
 		{
 			upperText: t('label.domains', 'Domains'),
@@ -155,6 +161,15 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
+				{
+					isLicenseBannerOpen &&
+					<LicenseBanner
+						maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
+						maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
+						setLicenseBannerOpen={setIsLicenseBannerOpen}
+						redirectButtonHasToAppear
+					/>
+				}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />

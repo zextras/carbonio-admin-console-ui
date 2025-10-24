@@ -26,6 +26,8 @@ import { useTranslation } from 'react-i18next';
 import { CONFIG, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useModuleLicenseStore } from '../../../store/module-license/store';
+import LicenseBanner from '../../dashboard/license-banner';
 
 interface Module {
 	value: string;
@@ -158,8 +160,8 @@ const ServiceStatus = ({
 					{data?.quantity !== 'unlimited'
 						? `${data?.quantity} users`
 						: licensed
-						? t('label.enabled', 'Enabled')
-						: t('label.disabled', 'Disabled')}
+							? t('label.enabled', 'Enabled')
+							: t('label.disabled', 'Disabled')}
 				</Text>
 			</Row>
 		</Row>
@@ -179,6 +181,11 @@ const Subscription: FC = () => {
 	const [isActivateLoading, setIsActivateLoading] = useState(false);
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
+		moduleLicenseInfo?.maintenanceStatus !== "expired" ||
+		moduleLicenseInfo?.maintenanceStatus !== "expiring"
+	);
 
 	const allowSetSubsciption = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -419,6 +426,14 @@ const Subscription: FC = () => {
 
 	return (
 		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
+			{
+				isLicenseBannerOpen &&
+				<LicenseBanner
+					maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
+					maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
+					setLicenseBannerOpen={setIsLicenseBannerOpen}
+				/>
+			}
 			<Container
 				orientation="horizontal"
 				mainAlignment="space-around"

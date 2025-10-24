@@ -138,6 +138,7 @@ const App: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
+	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
@@ -953,6 +954,7 @@ const App: FC = () => {
 					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
 						setModuleLicense(allModules);
 					}
+					setLicenseInfo(response.response); // salva tutto il resto
 				}
 			});
 	}, [setModuleLicense]);
