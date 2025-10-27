@@ -10,6 +10,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	test: {
+		globals: true,
 		projects: [
 			{
 				optimizeDeps: {
@@ -57,8 +58,61 @@ export default defineConfig({
 						'@zextras/carbonio-design-system',
 						'i18next',
 						'react-i18next',
-						'react-router-dom'
-					]
+						'react-router-dom',
+						'ua-parser-js',
+						'react-redux',
+						'@tinymce/tinymce-react',
+						'i18next-http-backend',
+						'@sentry/browser',
+						// TinyMCE plugins
+						'tinymce/tinymce',
+						'tinymce/models/dom',
+						'tinymce/themes/silver',
+						'tinymce/icons/default',
+						'tinymce/plugins/advlist',
+						'tinymce/plugins/anchor',
+						'tinymce/plugins/autolink',
+						'tinymce/plugins/autoresize',
+						'tinymce/plugins/charmap',
+						'tinymce/plugins/code',
+						'tinymce/plugins/directionality',
+						'tinymce/plugins/fullscreen',
+						'tinymce/plugins/help',
+						'tinymce/plugins/image',
+						'tinymce/plugins/insertdatetime',
+						'tinymce/plugins/link',
+						'tinymce/plugins/lists',
+						'tinymce/plugins/media',
+						'tinymce/plugins/preview',
+						'tinymce/plugins/quickbars',
+						'tinymce/plugins/searchreplace',
+						'tinymce/plugins/table',
+						'tinymce/plugins/visualblocks',
+						'tinymce/plugins/wordcount',
+						// date-fns locales
+						'date-fns/locale/zh-CN',
+						'date-fns/locale/nl',
+						'date-fns/locale/en-US',
+						'date-fns/locale/de',
+						'date-fns/locale/hi',
+						'date-fns/locale/hu',
+						'date-fns/locale/it',
+						'date-fns/locale/ja',
+						'date-fns/locale/pt',
+						'date-fns/locale/pl',
+						'date-fns/locale/ro',
+						'date-fns/locale/ru',
+						'date-fns/locale/es',
+						'date-fns/locale/th',
+						'date-fns/locale/tr',
+						'date-fns/locale/fr',
+						'date-fns/locale/vi',
+						'date-fns/locale/bs',
+						'date-fns/locale/sl'
+					],
+					exclude: ['@zextras/admin-ui-bootstrap'],
+					// Force optimization on first run to prevent mid-test reloads
+					disabled: false
 				},
 				test: {
 					environment: 'browser',
@@ -67,13 +121,9 @@ export default defineConfig({
 						'admin-ui-test-utils': path.resolve(
 							__dirname,
 							'./packages/test-utils/src/index.browser.ts'
-						),
-						'@zextras/admin-ui-bootstrap': path.resolve(
-							__dirname,
-							'./__mocks__/@zextras/admin-ui-bootstrap.js'
 						)
 					},
-					include: ['src/**/*.browser.test.{ts,tsx}'],
+					include: ['**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
 						provider: 'playwright',
@@ -91,7 +141,8 @@ export default defineConfig({
 					globals: true,
 					css: true,
 					clearMocks: true,
-					testTimeout: 5_000
+					testTimeout: 5_000,
+					hookTimeout: 10_000
 				}
 			}
 		],

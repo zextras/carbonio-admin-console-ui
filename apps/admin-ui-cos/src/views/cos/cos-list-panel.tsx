@@ -31,7 +31,6 @@ import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
-import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -44,27 +43,6 @@ const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
 `;
-
-const ovelayStyle = styled(Container)`
-	width: 20rem;
-	right: 0;
-	bottom: 0;
-	height: 8rem;
-	overflow: hidden;
-	background: #0d0d0d;
-	opacity: 0.4;
-	z-index: 11;
-`;
-
-const loadingComponent = [
-	{
-		customComponent: (
-			<Container>
-				<OverlayDivision ovelayStyle={ovelayStyle} />
-			</Container>
-		)
-	}
-];
 
 export const CosListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -83,22 +61,18 @@ export const CosListPanel: FC = () => {
 	const cosName: any = useCosStore((state) => state.cos?.name);
 	const [isShowError, setIsShowError] = useState(false);
 	const prevCosRef = useRef();
-	const [isLoading, setIsLoading] = useState(false);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
 	const getCosLists = useCallback(
 		(searchData: string): any => {
-			setIsLoading(true);
 			getCosList(searchData)
 				.then((data) => {
 					const searchResponse: any = data;
 					if (!!searchResponse && searchResponse?.searchTotal > 0) {
 						setCosList(searchResponse?.cos);
-						setIsLoading(false);
 					} else {
 						setCosList([]);
 						setIsShowError(true);
-						setIsLoading(false);
 					}
 				})
 				.catch((error) => {
@@ -343,7 +317,7 @@ export const CosListPanel: FC = () => {
 			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
 			<Row mainAlignment="flex-start" width="100%">
 				<DropDownInput
-					items={isLoading ? loadingComponent : items}
+					items={items}
 					inputLabel={
 						isCosSelect
 							? t('cos.i_want_to_see_this_cos', 'I want to see this COS')

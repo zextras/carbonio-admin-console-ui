@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// Pre-import bootstrap to ensure the mock is loaded before any component imports it
+import '@zextras/admin-ui-bootstrap';
 import { page } from '@vitest/browser/context';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
