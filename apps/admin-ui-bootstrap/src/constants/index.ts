@@ -41,9 +41,6 @@ export const darkReaderDynamicThemeFixes: DynamicThemeFix = {
 
 export const BASENAME = `/carbonioAdmin`;
 
-export const EMAIL_VALIDATION_REGEX =
-	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
-
 export const CARBONIO_HELP_ADMIN_URL = 'https://docs.zextras.com/carbonio-ce/html/management.html';
 export const CARBONIO_HELP_ADVANCED_URL =
 	'https://docs.zextras.com/carbonio/html/administration.html';
