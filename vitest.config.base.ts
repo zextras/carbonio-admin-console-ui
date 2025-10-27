@@ -58,8 +58,14 @@ export default defineConfig({
 						'@zextras/carbonio-design-system',
 						'i18next',
 						'react-i18next',
-						'react-router-dom'
-					]
+						'react-router-dom',
+						'ua-parser-js',
+						'react-redux',
+						'@tinymce/tinymce-react',
+						'i18next-http-backend',
+						'@sentry/browser'
+					],
+					exclude: ['@zextras/admin-ui-bootstrap']
 				},
 				test: {
 					environment: 'browser',
