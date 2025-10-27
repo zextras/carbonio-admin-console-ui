@@ -8,6 +8,7 @@ import { find, isArray, map } from 'lodash';
 
 import {
 	Account,
+	ErrorSoapResponse,
 	SoapContext,
 	SoapFetch,
 	SoapFetchPost,
@@ -35,12 +36,11 @@ export const noOp = (): void => {
 
 const getAccount = (
 	acc?: Account,
-	otherAccount?: string,
-	otherAccountBy: 'name' | 'id' = 'name'
+	otherAccount?: string
 ): { by: string; _content: string } | undefined => {
 	if (otherAccount) {
 		return {
-			by: otherAccountBy,
+			by: 'name',
 			_content: otherAccount
 		};
 	}
@@ -71,19 +71,6 @@ const normalizeContext = (context: any): SoapContext => {
 	return context;
 };
 
-const checkAuthError = (res: SoapResponse<any>): void => {
-	if (res?.Body?.Fault) {
-		if (
-			find(
-				['service.AUTH_REQUIRED', 'service.AUTH_EXPIRED'],
-				(code) => code === res.Body.Fault.Detail?.Error?.Code
-			)
-		) {
-			goToLogin();
-		}
-	}
-};
-
 const handleResponse = (api: string, res: SoapResponse<any>): any => {
 	const { context, noOpTimeout } = useNetworkStore.getState();
 	const { usedQuota } = useAccountStore.getState();
@@ -92,12 +79,22 @@ const handleResponse = (api: string, res: SoapResponse<any>): any => {
 	if (noOpTimeout) clearTimeout(noOpTimeout);
 
 	if (res?.Body?.Fault) {
-		checkAuthError(res);
+		if (
+			find(
+				['service.AUTH_REQUIRED', 'service.AUTH_EXPIRED'],
+				(code) => code === (<ErrorSoapResponse>res).Body.Fault.Detail?.Error?.Code
+			)
+		) {
+			goToLogin();
+		}
 		const errMessage = res?.Body?.Fault?.Reason?.Text
 			? res?.Body?.Fault?.Reason?.Text
 			: res?.Body?.Fault?.Detail?.Error?.Detail;
 
-		throw new Error(`${errMessage}`);
+		throw new Error(
+			`${errMessage}
+			`
+		);
 	}
 	if (res?.Header?.context) {
 		const responseUsedQuota =
@@ -175,14 +172,51 @@ export const getSoapFetch =
 
 const handleSoapResponse = (res: any): any => {
 	if (res?.Body?.Fault) {
-		checkAuthError(res);
+		if (
+			find(
+				['service.AUTH_REQUIRED', 'service.AUTH_EXPIRED'],
+				(code) => code === (<any>res).Body.Fault.Detail?.Error?.Code
+			)
+		) {
+			goToLogin();
+		}
 		let errMessage = res?.Body?.Fault?.Reason?.Text ? res?.Body?.Fault?.Reason?.Text : res;
 		if (res?.error) {
 			errMessage = res?.error?.message;
 		}
-		throw new Error(`${errMessage}`);
+		throw new Error(
+			`${errMessage}
+		`
+		);
 	}
 	return <SuccessSoapResponse<any>>res;
+};
+
+const fetchAccount = (
+	acc?: Account,
+	otherAccount?: string
+): { by: string; _content: string } | undefined => {
+	if (otherAccount) {
+		return {
+			by: 'id',
+			_content: otherAccount
+		};
+	}
+	if (acc) {
+		if (acc.name) {
+			return {
+				by: 'name',
+				_content: acc.name
+			};
+		}
+		if (acc.id) {
+			return {
+				by: 'id',
+				_content: acc.id
+			};
+		}
+	}
+	return undefined;
 };
 
 export const getSoapFetchRequest =
@@ -243,7 +277,7 @@ export const postSoapFetchRequest =
 									}
 								: undefined,
 							session: context?.session ?? {},
-							account: getAccount(account as Account, otherAccount, 'id'),
+							account: fetchAccount(account as Account, otherAccount),
 							userAgent: {
 								name: userAgent,
 								version: zimbraVersion
