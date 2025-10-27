@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 
-const actual = await vi.importActual('../../apps/admin-ui-bootstrap/exports');
+// Import actual network functions directly - these should not be mocked for browser tests
+export { soapFetch, getSoapFetchRequest, postSoapFetchRequest, fetchExternalSoap } from '@zextras/admin-ui-bootstrap/network/fetch';
 
 export const useDomainInformation = vi.fn();
 export const setAppContext = vi.fn();
@@ -18,9 +19,3 @@ export const useIsAdvanced = vi.fn();
 export const useIntegratedComponent = vi.fn();
 export const replaceHistory = vi.fn();
 export const pushHistory = vi.fn();
-
-// actual bootstrap functions
-export const soapFetch = actual.soapFetch;
-export const getSoapFetchRequest = actual.getSoapFetchRequest;
-export const postSoapFetchRequest = actual.postSoapFetchRequest;
-export const fetchExternalSoap = actual.fetchExternalSoap;
