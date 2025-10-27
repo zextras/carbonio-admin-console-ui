@@ -10,7 +10,8 @@
 		"npm": "v10"
 	},
 	"scripts": {
-		"build": "node ../../packages/sdk/scripts/vite/build-shell.mjs",
+		"build": "sdk build --admin",
+		"build-vite": "sdk vite-build-shell",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
 		"deploy": "sdk deploy --admin",
