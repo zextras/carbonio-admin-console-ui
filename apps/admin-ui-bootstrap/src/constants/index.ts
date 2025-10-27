@@ -40,9 +40,9 @@ export const darkReaderDynamicThemeFixes: DynamicThemeFix = {
 };
 
 export const BASENAME = `/carbonioAdmin`;
+
 export const EMAIL_VALIDATION_REGEX =
-	// eslint-disable-next-line no-control-regex
-	/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
 
 export const CARBONIO_HELP_ADMIN_URL = 'https://docs.zextras.com/carbonio-ce/html/management.html';
 export const CARBONIO_HELP_ADVANCED_URL =
@@ -72,7 +72,8 @@ export const FORUM_URL = 'https://community.zextras.com/forum/';
 export const OPEN_TICKET_URL = 'https://helpdesk.zextras.com/hc/en-us';
 export const CONFIG = 'config';
 export const CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE = 'carbonioAdminDocumentationUrl';
-export const CARBONIO_CE_ADMIN_DOCUMENTATION_URL = 'https://docs.zextras.com/carbonio-ce/html/index.html';
+export const CARBONIO_CE_ADMIN_DOCUMENTATION_URL =
+	'https://docs.zextras.com/carbonio-ce/html/index.html';
 export const CONTENT = '_content';
 export const TRUE = 'TRUE';
 
