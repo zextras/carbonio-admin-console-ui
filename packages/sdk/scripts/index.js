@@ -6,7 +6,7 @@
  */
 
 const yargs = require('yargs/yargs');
-const {hideBin} = require('yargs/helpers');
+const { hideBin } = require('yargs/helpers');
 const { pkg } = require('./utils/pkg');
 
 yargs(hideBin(process.argv))
@@ -38,6 +38,8 @@ yargs(hideBin(process.argv))
 	.command(require('./deploy'))
 	.command(require('./install'))
 	.command(require('./watch'))
+	.command(require('./vite-build'))
+	.command(require('./vite-build-shell'))
 	.usage('Usage: npx $0 <command> [options]')
 	.demandCommand(1, 'You need to specify at least one command')
-	.parse()
+	.parse();
