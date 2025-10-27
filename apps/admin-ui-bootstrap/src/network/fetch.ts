@@ -22,33 +22,7 @@ import { handleTagSync } from '../store/tags';
 
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
-
-async function retry<T>(
-	fn: () => Promise<T>,
-	options: {
-		retries?: number;
-		delay?: number;
-		backoff?: number;
-	} = {}
-): Promise<T> {
-	const { retries = 3, delay = 1000, backoff = 2 } = options;
-
-	try {
-		return await fn();
-	} catch (error) {
-		if (retries > 0) {
-			await new Promise((resolve) => {
-				setTimeout(resolve, delay);
-			});
-			return retry(fn, {
-				retries: retries - 1,
-				delay: delay * backoff,
-				backoff
-			});
-		}
-		throw error;
-	}
-}
+import { retry } from './utils';
 
 export const noOp = (): void => {
 	getSoapFetch(SHELL_APP_ID)(
