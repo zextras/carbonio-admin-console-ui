@@ -34,7 +34,7 @@ yargs(hideBin(process.argv))
 			default: pkg.sdk?.svgr ?? false
 		}
 	})
-	.command(require('./build'))
+	.command(require('./webpack-build'))
 	.command(require('./deploy'))
 	.command(require('./install'))
 	.command(require('./watch'))

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { handler: build } = require('./build');
+const { handler: build } = require('./webpack-build');
 const { handler: deploy } = require('./deploy');
 const chalkTemplate = require('chalk');
 
