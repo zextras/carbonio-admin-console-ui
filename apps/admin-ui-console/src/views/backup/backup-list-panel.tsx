@@ -29,7 +29,6 @@ import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 import { getRights } from '../utility/utils';
-import { set } from 'lodash';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
