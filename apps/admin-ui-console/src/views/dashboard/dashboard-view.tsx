@@ -33,10 +33,11 @@ import {
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useDomainStore } from '../../store/domain/store';
-import { useRightsStore } from '../../store/rights/store';
+import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
 import { useModuleLicenseStore } from '../../store/module-license/store';
+import { has } from 'lodash';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
@@ -53,6 +54,7 @@ const Dashboard: FC = () => {
 		moduleLicenseInfo?.maintenanceStatus !== "expired" ||
 		moduleLicenseInfo?.maintenanceStatus !== "expiring"
 	);
+	const adminHasAllRights = useRightsStore(hasAllRights);
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
 		{
 			upperText: t('label.domains', 'Domains'),
@@ -162,7 +164,7 @@ const Dashboard: FC = () => {
 				height="calc(100vh - 6.55rem)"
 			>
 				{
-					isLicenseBannerOpen &&
+					adminHasAllRights && isLicenseBannerOpen &&
 					<LicenseBanner
 						maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
 						maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}

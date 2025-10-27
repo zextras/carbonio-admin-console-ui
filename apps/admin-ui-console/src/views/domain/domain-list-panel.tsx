@@ -111,7 +111,7 @@ const DomainListPanel: FC = () => {
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
@@ -410,12 +410,12 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: ManageOptions) =>
-							item?.id !== RESTORE_ACCOUNT &&
-							item?.id !== ACTIVE_SYNC &&
-							item?.id !== DELEGATES_DOMAIN_ADMINS &&
-							item?.id !== SECURITY_GROUP
-				  )
+					(item: ManageOptions) =>
+						item?.id !== RESTORE_ACCOUNT &&
+						item?.id !== ACTIVE_SYNC &&
+						item?.id !== DELEGATES_DOMAIN_ADMINS &&
+						item?.id !== SECURITY_GROUP
+				)
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
 	);
@@ -424,11 +424,11 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? detailOptions.filter(
-						(item: ManageOptions) =>
-							item?.id !== WHITELABEL_SETTINGS &&
-							item?.id !== SAML &&
-							item?.id !== TWO_FACTOR_AUTHENTICATION
-				  )
+					(item: ManageOptions) =>
+						item?.id !== WHITELABEL_SETTINGS &&
+						item?.id !== SAML &&
+						item?.id !== TWO_FACTOR_AUTHENTICATION
+				)
 				: detailOptions,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[detailOptions, isAdvanced, is2FAAvailable]
@@ -438,11 +438,11 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? globalOptionItems.filter(
-						(item: ManageOptions) =>
-							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
-							item?.id !== GLOBAL_2FA_ROUTE &&
-							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
-				  )
+					(item: ManageOptions) =>
+						item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+						item?.id !== GLOBAL_2FA_ROUTE &&
+						item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
+				)
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
 	);
@@ -465,15 +465,15 @@ const DomainListPanel: FC = () => {
 	}, [isDomainSelect, manageItems]);
 
 	useEffect(() => {
-		if (moduleLicense && moduleLicense.length > 0) {
-			const backupModule = moduleLicense.filter(
+		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
-	}, [moduleLicense]);
+	}, [moduleLicenseInfo]);
 
 	const toggleDetailView = (): void => {
 		if (isDetailListExpanded) {
@@ -516,55 +516,55 @@ const DomainListPanel: FC = () => {
 	const items =
 		domainList.length > MAX_DOMAIN_DISPLAY
 			? [
-					{
-						customComponent: (
-							<>
-								<Row mainAlignment="flex-start">
-									<Padding horizontal="small">
-										<CustomIcon icon="InfoOutline"></CustomIcon>
-									</Padding>
-								</Row>
-								<Row
-									mainAlignment="flex-start"
-									width="100%"
-									padding={{
-										all: 'small'
-									}}
-								>
-									<Text overflow="break-word">
-										{t(
-											'many_domain_info_msg',
-											'So many domains! Which one would you like to see? Start typing to filter.'
-										)}
-									</Text>
-								</Row>
-							</>
-						)
-					}
-			  ]
-			: domainList.map(
-					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
-						id: domain.id,
-						label: domain.name,
-						customComponent: (
-							<SelectItem
-								style={{
-									display: 'block',
-									textAlign: 'left',
-									height: 'inherit',
-									padding: '0.188rem',
-									width: 'inherit'
-								}}
-								onClick={(): void => {
-									setIsShowError(false);
-									selectedDomain(domain);
+				{
+					customComponent: (
+						<>
+							<Row mainAlignment="flex-start">
+								<Padding horizontal="small">
+									<CustomIcon icon="InfoOutline"></CustomIcon>
+								</Padding>
+							</Row>
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								padding={{
+									all: 'small'
 								}}
 							>
-								{domain?.name}
-							</SelectItem>
-						)
-					})
-			  );
+								<Text overflow="break-word">
+									{t(
+										'many_domain_info_msg',
+										'So many domains! Which one would you like to see? Start typing to filter.'
+									)}
+								</Text>
+							</Row>
+						</>
+					)
+				}
+			]
+			: domainList.map(
+				(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+					id: domain.id,
+					label: domain.name,
+					customComponent: (
+						<SelectItem
+							style={{
+								display: 'block',
+								textAlign: 'left',
+								height: 'inherit',
+								padding: '0.188rem',
+								width: 'inherit'
+							}}
+							onClick={(): void => {
+								setIsShowError(false);
+								selectedDomain(domain);
+							}}
+						>
+							{domain?.name}
+						</SelectItem>
+					)
+				})
+			);
 
 	useEffect(() => {
 		const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);

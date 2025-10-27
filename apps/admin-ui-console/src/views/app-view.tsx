@@ -50,7 +50,7 @@ interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
 }
 
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
+const DetailViewContainer = styled(Container) <ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;
@@ -58,7 +58,7 @@ const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 const AppView: FC = () => {
 	const isPrimaryBarExpanded = usePrimaryBarState();
 	return (
-		<Container>
+		<Container height={"fit"}>
 			<BreadCrumb />
 			<Switch>
 				<Route path={`/${DASHBOARD}`}>

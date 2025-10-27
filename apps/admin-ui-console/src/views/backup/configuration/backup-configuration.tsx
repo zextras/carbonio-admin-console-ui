@@ -158,20 +158,20 @@ const BackupConfiguration: FC = () => {
 	const [bucketConfiguration, setBucketConfiguration] = useState<any>([]);
 	const [bucketListOption, setBucketListOption] = useState<Array<any>>([]);
 
-	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
 		useState<boolean>(false);
 
 	useEffect(() => {
-		if (moduleLicense && moduleLicense.length > 0) {
-			const backupRealtimeModule = moduleLicense.filter(
+		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+			const backupRealtimeModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
 			);
 			if (backupRealtimeModule && backupRealtimeModule[0] && backupRealtimeModule[0]?.enabled) {
 				setIsBackupImportRealtimeFeatureLicensed(true);
 			}
 		}
-	}, [moduleLicense]);
+	}, [moduleLicenseInfo]);
 	const onDestinationChange = useCallback(
 		(v: any): any => {
 			const it = destinationOptions.find((item: any) => item.value === v);
@@ -340,7 +340,7 @@ const BackupConfiguration: FC = () => {
 							label: error?.message
 								? error?.message
 								: // eslint-disable-next-line sonarjs/no-duplicate-string
-									t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true

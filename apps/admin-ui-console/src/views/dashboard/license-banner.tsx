@@ -10,6 +10,8 @@ import ListRow from '../list/list-row';
 import { Button, Container, Icon, Row, Text } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { SUBSCRIPTIONS_ROUTE_ID, MANAGE_APP_ID } from '../../constants';
 
 type licenseBannerProps = {
     maintenanceEndDate: number;
@@ -34,7 +36,11 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
 
     const bannerLabelToShow = useMemo(() => {
         return maintenanceStatus === 'expiring' ? bannerExpiringLabel : bannerExpiredLabel;
-    }, [bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus]); return (
+    }, [bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus]);
+
+    const history = useHistory();
+
+    return (
         <ListRow padding={redirectButtonHasToAppear ? "1.5rem" : { top: '1.5rem' }}>
             <Container
                 width={"fill"}
@@ -56,7 +62,7 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
                     <Row padding={{ right: "0.5rem" }}>
                         <Icon size="large" icon="AlertTriangleOutline" color="gray6" />
                     </Row>
-                    <Row takeAvailableSpace>
+                    <Row takeAvailableSpace mainAlignment='flex-start' crossAlignment='flex-start'>
                         <Text color="gray6" overflow='break-word'>{bannerLabelToShow}</Text>
                     </Row>
                     <Row>
@@ -69,7 +75,7 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
                         backgroundColor='transparent'
                         color="gray6"
                         label='View Subscription Details'
-                        onClick={() => { }}
+                        onClick={() => history.push(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`)}
                     />
                 }
             </Container>
