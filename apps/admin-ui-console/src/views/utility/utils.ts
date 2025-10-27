@@ -1734,8 +1734,7 @@ export const EMAIL_VALIDATION_REGEX =
 	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
 
 export const isValidEmail = (email: string): boolean => {
-	const emailRegex = new RegExp(EMAIL_VALIDATION_REGEX);
-	const match = email.trim().match(emailRegex);
+	const match = email.trim().match(EMAIL_VALIDATION_REGEX);
 	return match !== null && match[0].trim() === email.trim();
 };
 
@@ -1752,8 +1751,7 @@ export const isValidLdapBaseUrl = (url: string): boolean => {
 };
 
 export const getAllEmailFromString = (str: string): any => {
-	const emailRegex = new RegExp(EMAIL_VALIDATION_REGEX);
-	const matches = str.matchAll(emailRegex);
+	const matches = str.matchAll(EMAIL_VALIDATION_REGEX);
 	return Array.from(matches, (match) => match[2]);
 };
 
