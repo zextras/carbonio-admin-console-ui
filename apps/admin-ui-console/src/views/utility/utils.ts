@@ -1730,10 +1730,13 @@ export const getFormatedDate = (date: Date): any => {
 	return `${yyyy}/${mm}/${dd} | ${hour}:${minutes}:${seconds}`;
 };
 
+export const EMAIL_VALIDATION_REGEX =
+	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
+
 export const isValidEmail = (email: string): boolean => {
-	const re =
-		/^[_A-Za-z0-9-\\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
-	return re.test(email);
+	const emailRegex = new RegExp(EMAIL_VALIDATION_REGEX);
+	const match = email.trim().match(emailRegex);
+	return match !== null && match[0].trim() === email.trim();
 };
 
 export const isValidIpRange = (ipRange: string): boolean => {
@@ -1748,10 +1751,11 @@ export const isValidLdapBaseUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
-export const getAllEmailFromString = (str: string): any =>
-	str
-		.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
-		?.map((item: any) => item.replace('>', ''));
+export const getAllEmailFromString = (str: string): any => {
+	const emailRegex = new RegExp(EMAIL_VALIDATION_REGEX);
+	const matches = str.matchAll(emailRegex);
+	return Array.from(matches, (match) => match[2]);
+};
 
 export const getEmailDisplayNameFromString = (str: string): any => str.match(/".*?"|'.*?'/g);
 
