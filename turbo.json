@@ -2,10 +2,15 @@
 	"$schema": "https://turborepo.com/schema.json",
 	"ui": "tui",
 	"tasks": {
+		"build-webpack": {
+			"dependsOn": ["^build-webpack"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["dist/**", "build/**", "lib/**"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", "build/**", "lib/**"]
+			"outputs": ["dist/**"]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]

@@ -12,8 +12,8 @@ const { setupWebpackExternalBuildConfig } = require('./configs/webpack.external.
 const { logBuild, printArgs } = require('./utils/console');
 const { rmSync } = require('node:fs');
 
-exports.command = 'build';
-exports.desc = 'Compile and bundle your project';
+exports.command = 'webpack-build';
+exports.desc = 'Compile and bundle your project using Webpack';
 exports.builder = {
 	analyze: {
 		desc: 'Apply the BundleAnalyzerPlugin and launch its web ui after the compilation',
