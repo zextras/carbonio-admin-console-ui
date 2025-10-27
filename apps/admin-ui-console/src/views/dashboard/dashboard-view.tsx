@@ -37,7 +37,6 @@ import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
 import { useModuleLicenseStore } from '../../store/module-license/store';
-import { has } from 'lodash';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
