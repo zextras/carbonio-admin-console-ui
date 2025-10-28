@@ -46,17 +46,8 @@ const EditAccountUserPrefrencesSection: FC<{
 		cosDetail,
 		accSpecificDetail
 	} = context;
-	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
-		accountDetail?.zimbraPrefMailPollingInterval?.slice(0, -1)
-	);
-	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
-		accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''
-	);
 	const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState(
 		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1)
-	);
-	const [outOfOfficeCacheDurationType, setOutOfOfficeCacheDurationType] = useState(
-		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''
 	);
 	const [zimbraAllowFromAddress, setZimbraAllowFromAddress] = useState<any[]>([]);
 
@@ -64,7 +55,10 @@ const EditAccountUserPrefrencesSection: FC<{
 	const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
 	const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
 	const CHARACTOR_SET = useMemo(() => charactorSet(), []);
-
+	const outOfOfficeCacheDurationType = useMemo(
+		() => accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '',
+		[accountDetail]
+	);
 	const POLLING_INTERVAL = useMemo(
 		() => [
 			{
@@ -148,12 +142,9 @@ const EditAccountUserPrefrencesSection: FC<{
 	const APPOINTMENT_DURATION = useMemo(
 		() => [
 			{
-				 
 				label: t('reminder.minute', {
 					count: 30,
-					 
 					defaultValue_one: '{{count}} minute',
-					 
 					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '30m'
