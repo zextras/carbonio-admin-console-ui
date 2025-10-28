@@ -65,7 +65,7 @@
 		"@types/redux-logger": "3.0.9",
 		"@types/styled-components": "^5.1.26",
 		"@types/ua-parser-js": "^0.7.39",
-		"@vitest/browser": "^3.2.4",
+		"@vitest/browser": "^4.0.0",
 		"@vitest/coverage-istanbul": "^3.2.4",
 		"admin-ui-sdk": "workspace:*",
 		"admin-ui-test-utils": "workspace:*",

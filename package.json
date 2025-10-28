@@ -22,7 +22,7 @@
 		"@tsconfig/node12": "^12.1.4",
 		"@typescript-eslint/eslint-plugin": "^8.41.0",
 		"@vitejs/plugin-react": "^5.0.2",
-		"@vitest/browser": "^3.2.4",
+		"@vitest/browser": "^4.0.0",
 		"@vitest/coverage-istanbul": "^3.2.4",
 		"depcheck": "^1.4.7",
 		"eslint": "^9.34.0",

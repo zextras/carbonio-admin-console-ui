@@ -43,7 +43,7 @@
 		"@types/react-dom": "^19.1.0",
 		"@types/react-router-dom": "^5.3.3",
 		"@types/styled-components": "^5.1.26",
-		"@vitest/browser": "^3.2.4",
+		"@vitest/browser": "^4.0.0",
 		"@vitest/coverage-istanbul": "^3.2.4",
 		"@vitest/ui": "3.2.4",
 		"admin-ui-sdk": "workspace:*",
