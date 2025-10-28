@@ -23,20 +23,31 @@ type licenseBannerProps = {
 const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenanceStatus, setLicenseBannerOpen, redirectButtonHasToAppear }) => {
     const [t] = useTranslation();
     const maintenanceEndDateFormatted = moment(maintenanceEndDate).format('DD MMM YYYY');
+    const bannerExpiredDescription = t('',
+        'Your maintenance expired on {{maintenanceEndDate}}.',
+        { maintenanceEndDate: maintenanceEndDateFormatted }
+    );
+    const bannerExpiringDescription = t('',
+        'Your maintenance will expire on {{maintenanceEndDate}}.',
+        { maintenanceEndDate: maintenanceEndDateFormatted }
+    );
     const bannerExpiringLabel = t(
         '',
-        `Your maintenance period will expire on ${maintenanceEndDateFormatted}. Renew your subscription to be eligible to receive update.`,
-        { maintenanceEndDate: maintenanceEndDateFormatted }
+        'After expiration, you will still be notified of new updates, but you won’t be allowed to install them without risking service issues. Renew on time to ensure smooth, safe upgrades and full support coverage.'
     );
     const bannerExpiredLabel = t(
         '',
-        `Your maintenance expired on ${maintenanceEndDateFormatted}. Do not upgrade Carbonio to newer versions to avoid service disruption. Your current version will continue to function normally. Renew maintenance if you want to upgrade. `,
+        'Your current version will continue to function normally, but you must not install any new Carbonio updates — doing so may cause service disruption. Renew maintenance to safely upgrade and keep your system fully supported.',
         { maintenanceEndDate: maintenanceEndDateFormatted }
     );
 
-    const bannerLabelToShow = useMemo(() => {
+    const labelToShow = useMemo(() => {
         return maintenanceStatus === 'expiring' ? bannerExpiringLabel : bannerExpiredLabel;
     }, [bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus]);
+
+    const descriptionToShow = useMemo(() => {
+        return maintenanceStatus === 'expiring' ? bannerExpiringDescription : bannerExpiredDescription;
+    }, [bannerExpiringDescription, bannerExpiredDescription, maintenanceStatus]);
 
     const history = useHistory();
 
@@ -63,7 +74,8 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
                         <Icon size="large" icon="AlertTriangleOutline" color="gray6" />
                     </Row>
                     <Row takeAvailableSpace mainAlignment='flex-start' crossAlignment='flex-start'>
-                        <Text color="gray6" overflow='break-word'>{bannerLabelToShow}</Text>
+                        <Text color="gray6" overflow='break-word'>{descriptionToShow}</Text>
+                        <Text color="gray6" overflow='break-word'>{labelToShow}</Text>
                     </Row>
                     <Row>
                         <Button type='ghost' icon="CloseOutline" color="gray6" onClick={() => setLicenseBannerOpen(false)} />
