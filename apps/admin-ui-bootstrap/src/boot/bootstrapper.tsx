@@ -17,7 +17,6 @@ import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
 import I18nFactory from '../i18n/i18n-factory';
-import StoreFactory from '../redux/store-factory';
 import { useBridge } from '../store/context-bridge';
 
 const DefaultViewsRegister: FC = () => {
@@ -40,10 +39,9 @@ const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
 
 const Bootstrapper: FC = () => {
 	const i18nFactory = useMemo(() => new I18nFactory(), []);
-	const storeFactory = useMemo(() => new StoreFactory(), []);
 	const [error, setError] = useState(false);
 	useEffect(() => {
-		init(i18nFactory, storeFactory).then((response) => {
+		init(i18nFactory).then((response) => {
 			if (response && 'error' in response) {
 				setError(true);
 			}
@@ -51,7 +49,7 @@ const Bootstrapper: FC = () => {
 		return () => {
 			unloadAllApps();
 		};
-	}, [i18nFactory, storeFactory]);
+	}, [i18nFactory]);
 	return (
 		<ThemeProvider>
 			{error ? (
@@ -59,7 +57,7 @@ const Bootstrapper: FC = () => {
 			) : (
 				<SnackbarManager>
 					<ModalManager>
-						<BootstrapperContextProvider i18nFactory={i18nFactory} storeFactory={storeFactory}>
+						<BootstrapperContextProvider i18nFactory={i18nFactory}>
 							<TBridge i18nFactory={i18nFactory} />
 							<DefaultViewsRegister />
 							<BootstrapperRouter />

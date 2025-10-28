@@ -9,14 +9,12 @@
 
 import React from 'react';
 
-import * as ReduxJSToolkit from '@reduxjs/toolkit';
 import * as ZappUI from '@zextras/carbonio-design-system';
 import * as Lodash from 'lodash';
 import * as Moment from 'moment';
 import * as PropTypes from 'prop-types';
 import * as ReactDOM from 'react-dom';
 import * as ReactI18n from 'react-i18next';
-import * as ReactRedux from 'react-redux';
 import * as ReactRouterDom from 'react-router-dom';
 // import * as Msw from 'msw';
 // import * as Faker from 'faker';
@@ -44,20 +42,10 @@ export function injectSharedLibraries(): void {
 		react: React,
 		'react-dom': ReactDOM,
 		'react-i18next': ReactI18n,
-		'react-redux': ReactRedux,
 		lodash: Lodash,
 		'react-router-dom': ReactRouterDom,
 		moment: Moment,
 		'styled-components': StyledComponents,
-		'@reduxjs/toolkit': {
-			...ReduxJSToolkit,
-			configureStore: (): void => {
-				throw new Error('Apps must use the store given by the Shell.');
-			},
-			createStore: (): void => {
-				throw new Error('Apps must use the store given by the Shell.');
-			}
-		},
 		// DO NOT RENAME THIS
 		'@zextras/admin-ui-bootstrap': { ...BootstrapExports },
 		'@zextras/carbonio-design-system': ZappUI

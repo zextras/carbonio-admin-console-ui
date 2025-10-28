@@ -6,7 +6,6 @@
 
 import { ComponentType } from 'react';
 
-import { type Store } from '@reduxjs/toolkit';
 import { type To } from 'history';
 import { type i18n } from 'i18next';
 

@@ -13,20 +13,17 @@ import { I18nextProvider } from 'react-i18next';
 import { BootstrapperContext } from './bootstrapper-context';
 import { SHELL_APP_ID } from '../constants';
 import I18nFactory from '../i18n/i18n-factory';
-import StoreFactory from '../redux/store-factory';
 import BoardContextProvider from '../shell/boards/board-context-provider';
 import { useI18nStore } from '../store/i18n/store';
 
 const BootstrapperContextProvider: FC<{
 	i18nFactory: I18nFactory;
-	storeFactory: StoreFactory;
 	children: React.ReactNode;
-}> = ({ children, i18nFactory, storeFactory }) => {
+}> = ({ children, i18nFactory }) => {
 	const i18n = useI18nStore((s) => s.instances[SHELL_APP_ID]);
 	return (
 		<BootstrapperContext.Provider
 			value={{
-				storeFactory,
 				i18nFactory
 			}}
 		>
