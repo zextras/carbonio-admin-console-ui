@@ -23,7 +23,7 @@
 		"@fontsource/roboto": "^5.2.6",
 		"@reduxjs/toolkit": "^1.9.3",
 		"@sentry/browser": "^6.17.7",
-		"@tinymce/tinymce-react": "^4.3.2",
+		"@tinymce/tinymce-react": "^6.0.0",
 		"@zextras/carbonio-design-system": "^8.1.0",
 		"darkreader": "^4.9.58",
 		"date-fns": "^4.1.0",
