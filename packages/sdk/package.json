@@ -9,7 +9,7 @@
 		"node": ">=20.0.0 <21.0.0",
 		"pnpm": ">=8.0.0"
 	},
-	"packageManager": "pnpm@10.15.0",
+	"packageManager": "pnpm@10.19.0",
 	"keywords": [
 		"SDK"
 	],

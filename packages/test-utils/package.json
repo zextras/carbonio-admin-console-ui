@@ -21,7 +21,7 @@
       "public"
     ]
   },
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.19.0",
   "author": "zextras",
   "license": "AGPL-3.0-only",
   "files": [
