@@ -21,7 +21,7 @@
 	},
 	"dependencies": {
 		"@fontsource/roboto": "^5.2.6",
-		"@reduxjs/toolkit": "^1.9.3",
+		"@reduxjs/toolkit": "^2.0.0",
 		"@sentry/browser": "^6.17.7",
 		"@tinymce/tinymce-react": "^4.3.2",
 		"@zextras/carbonio-design-system": "^8.1.0",
