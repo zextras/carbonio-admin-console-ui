@@ -410,8 +410,8 @@ const EditAccountUserPrefrencesSection: FC<{
 					/>
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="100%" mainAlignment="flex-start">
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSelect
 						label={t('label.read_receipt_settings', 'Read Receipt settings')}
 						items={SEND_READ_RECEIPTS}
@@ -473,8 +473,8 @@ const EditAccountUserPrefrencesSection: FC<{
 					/>
 				</Row>
 			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
+			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				<Row width="100%" mainAlignment="flex-start">
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
 						onChange={changeSwitchOption}
@@ -490,7 +490,6 @@ const EditAccountUserPrefrencesSection: FC<{
 					/>
 				</Row>
 			</Row>
-			
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
