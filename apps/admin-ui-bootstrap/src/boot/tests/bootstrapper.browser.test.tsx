@@ -28,7 +28,7 @@ describe('Bootstrapper', () => {
 		getAllConfigRequestApiForBrowser(HttpResponse.error);
 
 		setupBrowserTest(<Bootstrapper />, {
-			initialRouterEntries: ['/carbonioAdmin']
+			initialRouterEntry: '/carbonioAdmin'
 		});
 
 		const errorMessage = page.getByText(

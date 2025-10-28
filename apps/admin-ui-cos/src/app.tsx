@@ -12,8 +12,7 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings,
-	setAppContext
+	useUserSettings
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -56,7 +55,6 @@ import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
-
 const AppView: FC = (props) => (
 	<TrackerProvider>
 		<Suspense fallback={<Spinner />}>
@@ -239,7 +237,6 @@ const App: FC = () => {
 		} else {
 			removeRoute(COS_ROUTE_ID);
 		}
-		setAppContext({ carbonio_admin_cos_ui: 'carbonio_admin_cos_ui' });
 	}, [CosTooltipView, cosPrimaryBar, managementSection, showCOS, t]);
 
 	useEffect(() => {
