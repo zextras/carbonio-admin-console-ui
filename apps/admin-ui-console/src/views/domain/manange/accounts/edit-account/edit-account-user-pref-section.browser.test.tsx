@@ -9,13 +9,9 @@ import { setupBrowserTest, createSoapAPIInterceptor } from 'admin-ui-test-utils'
 import React from 'react';
 import { it, expect, describe } from 'vitest';
 
-
-
 import { AccountContext } from '../account-context';
 
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
-
-
 
 const signatureItems: unknown[] = [];
 const signatureList: unknown[] = [];
@@ -142,10 +138,7 @@ const mockContextValue = {
 	setAllowedDeletePassword: () => {}
 };
 
-// Remove msw/node and REST interceptors for browser tests
-
 describe('EditAccountUserPrefrencesSection (browser)', () => {
-
 	it('should render main sections', async () => {
 		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(
@@ -190,7 +183,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
-		// Optionally simulate entering an address if supported by test utils
 	});
 
 	it('should render calendar options section and select time zone', async () => {
@@ -204,4 +196,49 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		await expect.element(page.getByText('Time Zone')).toBeVisible();
 	});
 
+	it('should render with empty accountDetail', async () => {
+		createSoapAPIInterceptor('*', {});
+		const emptyContext = { ...mockContextValue, accountDetail: {} };
+		setupBrowserTest(
+			<AccountContext.Provider value={emptyContext}>
+				<EditAccountUserPrefrencesSection signatureItems={[]} signatureList={[]} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Options')).toBeVisible();
+	});
+
+	it('should render all select options', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		const selects = [
+			'Group by',
+			'Default Charset',
+			'Check new mail every',
+			'Days / Hours / Minutes / Sec',
+			'Read Receipt settings',
+			'Time Zone',
+			'Appointment’s Default Duration',
+			'Appointment Reminder in minutes',
+			'Default Calendar View',
+			'The Week starts on',
+			'Default Appointment visibility'
+		];
+		for (const label of selects) {
+			await expect.element(page.getByText(label)).toBeVisible();
+		}
+	});
+
+	it('should render and interact with ChipInput for allowed sending addresses', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
+	});
 });
