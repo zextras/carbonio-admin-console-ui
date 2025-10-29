@@ -683,4 +683,284 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		);
 		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
 	});
+
+	it('should render with varying boolean preferences as TRUE', async () => {
+		createSoapAPIInterceptor('*', {});
+		const contextWithTrue = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefMessageViewHtmlPreferred: 'TRUE',
+				zimbraPrefOutOfOfficeReplyEnabled: 'TRUE',
+				zimbraPrefMailSignatureEnabled: 'TRUE',
+				zimbraPrefAutoAddAddressEnabled: 'TRUE',
+				zimbraPrefGalAutoCompleteEnabled: 'TRUE'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithTrue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Options')).toBeVisible();
+	});
+
+	it('should render with all sections visible', async () => {
+		createSoapAPIInterceptor('*', {});
+		const fullContext = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraId: 'test-id-123',
+				zimbraPrefGroupMailBy: 'conversation',
+				zimbraPrefMailDefaultCharset: 'UTF-8',
+				zimbraPrefMailPollingInterval: '10m',
+				zimbraPrefTimeZoneId: 'America/New_York',
+				zimbraPrefCalendarDefaultApptDuration: '60m',
+				zimbraPrefCalendarApptReminderWarningTime: '15',
+				zimbraPrefCalendarInitialView: 'week',
+				zimbraPrefCalendarFirstDayOfWeek: '1',
+				zimbraPrefCalendarApptVisibility: 'public'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={fullContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Options')).toBeVisible();
+		await expect.element(page.getByText('Receiving Mails')).toBeVisible();
+		await expect.element(page.getByText('Sending Mails')).toBeVisible();
+		await expect.element(page.getByText('Composing Mails')).toBeVisible();
+		await expect.element(page.getByText('Contact Options')).toBeVisible();
+		await expect.element(page.getByText('Calendar Options')).toBeVisible();
+	});
+
+	it('should render SignatureDetail component', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testSignatureItems = [{ id: '1', name: 'Test Signature' }];
+		const testSignatureList = [{ id: '1', content: 'Test content' }];
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection
+					signatureItems={testSignatureItems}
+					signatureList={testSignatureList}
+				/>
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Signature')).toBeVisible();
+	});
+
+	it('should render with empty signatures', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={[]} signatureList={[]} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Signature')).toBeVisible();
+	});
+
+	it('should render with all possible preference values set', async () => {
+		createSoapAPIInterceptor('*', {});
+		const fullPrefsContext = {
+			...mockContextValue,
+			accountDetail: {
+				zimbraId: 'full-test-id',
+				zimbraPrefMessageViewHtmlPreferred: 'TRUE',
+				zimbraPrefGroupMailBy: 'conversation',
+				zimbraPrefMailDefaultCharset: 'UTF-8',
+				zimbraPrefMailPollingInterval: '5m',
+				zimbraPrefOutOfOfficeReplyEnabled: 'TRUE',
+				zimbraPrefOutOfOfficeCacheDuration: '2d',
+				zimbraPrefMailSendReadReceipts: 'always',
+				zimbraAllowFromAddress: 'test@example.com',
+				zimbraFeatureReadReceiptsEnabled: 'TRUE',
+				zimbraPrefMailSignatureEnabled: 'TRUE',
+				zimbraPrefAutoAddAddressEnabled: 'TRUE',
+				zimbraPrefGalAutoCompleteEnabled: 'TRUE',
+				zimbraPrefTimeZoneId: 'Europe/London',
+				zimbraPrefCalendarDefaultApptDuration: '90m',
+				zimbraPrefCalendarApptReminderWarningTime: '30',
+				zimbraPrefCalendarInitialView: 'month',
+				zimbraPrefCalendarFirstDayOfWeek: '0',
+				zimbraPrefCalendarApptVisibility: 'private',
+				zimbraPrefCalendarShowPastDueReminders: 'TRUE',
+				zimbraPrefCalendarAllowCancelEmailToSelf: 'TRUE',
+				zimbraPrefCalendarAllowForwardedInvite: 'TRUE',
+				zimbraPrefCalendarAllowPublishMethodInvite: 'TRUE',
+				zimbraPrefCalendarAutoAddInvites: 'TRUE',
+				zimbraPrefCalendarSendInviteDeniedAutoReply: 'TRUE',
+				zimbraPrefCalendarNotifyDelegatedChanges: 'TRUE',
+				zimbraPrefAppleIcalDelegationEnabled: 'TRUE',
+				zimbraPrefMessageIdDedupingEnabled: 'TRUE',
+				zimbraPrefMailToasterEnabled: 'TRUE',
+				zimbraPrefSaveToSent: 'TRUE'
+			},
+			cosDetail: mockContextValue.cosDetail,
+			accSpecificDetail: mockContextValue.accSpecificDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={fullPrefsContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Options')).toBeVisible();
+	});
+
+	it('should render with minimal accountDetail', async () => {
+		createSoapAPIInterceptor('*', {});
+		const minimalContext = {
+			...mockContextValue,
+			accountDetail: {
+				zimbraId: 'min-test-id'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={minimalContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Mail Options')).toBeVisible();
+	});
+
+	it('should handle different out of office cache duration with days', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefOutOfOfficeCacheDuration: '1d' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
+	});
+
+	it('should handle different out of office cache duration with hours', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefOutOfOfficeCacheDuration: '24h' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
+	});
+
+	it('should render with read receipt option never', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'never' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
+	});
+
+	it('should render with read receipt option prompt', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'prompt' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
+	});
+
+	it('should render with polling interval 500', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '500' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Check new mail every')).toBeVisible();
+	});
+
+	it('should render with polling interval 15m', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '15m' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Check new mail every')).toBeVisible();
+	});
+
+	it('should render with calendar view day', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'day' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Default Calendar View')).toBeVisible();
+	});
+
+	it('should render with calendar view workWeek', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'workWeek' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Default Calendar View')).toBeVisible();
+	});
+
+	it('should render with first day of week as Tuesday', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '2' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('The Week starts on')).toBeVisible();
+	});
+
+	it('should render with first day of week as Friday', async () => {
+		createSoapAPIInterceptor('*', {});
+		const testContext = {
+			...mockContextValue,
+			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '5' }
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('The Week starts on')).toBeVisible();
+	});
 });
