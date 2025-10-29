@@ -33,7 +33,6 @@ const soapFetch = getSoapFetch(pkg.name);
 const getSoapFetchRequest = getSoapFetchRequestFn(pkg.name);
 const postSoapFetchRequest = postSoapFetchRequestFn(pkg.name);
 const fetchExternalSoap = fetchExternalSoapFn(pkg.name);
-const setAppContext = useAppStore.getState().setters.setAppContext(pkg.name);
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
 	useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);
@@ -44,7 +43,6 @@ export {
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	fetchExternalSoap,
-	setAppContext,
 	addRoute,
 	removeRoute,
 	registerActions,

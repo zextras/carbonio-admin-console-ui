@@ -4,13 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Reducer, Store } from '@reduxjs/toolkit';
 import { forOwn } from 'lodash';
 import { ComponentType } from 'react';
 
 import { IShellWindow, CarbonioModule } from '../../../types';
 import * as CONSTANTS from '../../constants';
-import StoreFactory from '../../redux/store-factory';
 import { report } from '../../reporting';
 import { useAppStore } from '../../store/app';
 import { AppLink } from '../../ui-extras/app-link';
@@ -21,7 +19,7 @@ import { getAppSetters } from './app-loader-setters';
 export const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
 let _scriptId = 0;
 
-function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<CarbonioModule> {
+function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 	return new Promise((_resolve, _reject) => {
 		let resolved = false;
 		const resolve: (...args: any[]) => void = (...args) => {
@@ -41,10 +39,6 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__[
 				'@zextras/admin-ui-bootstrap'
 			][appPkg.name] = {
-				store: {
-					store,
-					setReducer: (reducer: Reducer): void => store.replaceReducer(reducer)
-				},
 				report: report(appPkg.name),
 				AppLink,
 				...getAppSetters(appPkg),
@@ -92,9 +86,8 @@ function loadAppModule(appPkg: CarbonioModule, store: Store<any>): Promise<Carbo
 	});
 }
 
-export function loadApp(pkg: CarbonioModule, storeFactory: StoreFactory): Promise<CarbonioModule> {
-	const store = storeFactory.getStoreForApp(pkg);
-	return loadAppModule(pkg, store);
+export function loadApp(pkg: CarbonioModule): Promise<CarbonioModule> {
+	return loadAppModule(pkg);
 }
 
 export function unloadApps(): Promise<void> {

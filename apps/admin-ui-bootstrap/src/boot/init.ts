@@ -11,7 +11,6 @@ import { getInfo } from '../network/get-info';
 import { getMinMaxAPIVersion } from '../network/get-min-max-api-version';
 import { isAdvancedSupported } from '../network/isAdvancedSupported';
 import { loginConfig } from '../network/login-config';
-import StoreFactory from '../redux/store-factory';
 import { useAccountStore } from '../store/account';
 import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
@@ -21,10 +20,7 @@ import { loadApps } from './app/load-apps';
 type InitError = {
 	error: string;
 };
-export const init = (
-	_i18nFactory: I18nFactory,
-	_storeFactory: StoreFactory
-): Promise<InitError | void> =>
+export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 	isAdvancedSupported().then(async (response): Promise<InitError | void> => {
 		if ('errorMessage' in response) {
 			return { error: response.errorMessage };
@@ -58,7 +54,7 @@ export const init = (
                                        // Update the old i18n factory to match the new store
                                        _i18nFactory.setLocale(currentLocale);
                                }
-				loadApps(_storeFactory, Object.values(useAppStore.getState().apps));
+				loadApps(Object.values(useAppStore.getState().apps));
 			})
 			.catch((error: Error) => ({ error: error.message }));
 	});
