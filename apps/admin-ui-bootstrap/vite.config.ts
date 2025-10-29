@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => {
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
 		},
 		build: {
-			outDir: `dist/${commitHash}`,
+			outDir: `dist/source/${commitHash}`,
 			emptyOutDir: true,
 			sourcemap: true,
 			rollupOptions: createBootstrapRollupOptions(isDev)
