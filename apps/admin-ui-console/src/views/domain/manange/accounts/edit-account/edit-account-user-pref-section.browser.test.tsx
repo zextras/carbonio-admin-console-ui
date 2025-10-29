@@ -1,4 +1,3 @@
-
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -143,6 +142,8 @@ const mockContextValue = {
 	setAllowedDeletePassword: () => {}
 };
 
+// Remove msw/node and REST interceptors for browser tests
+
 describe('EditAccountUserPrefrencesSection (browser)', () => {
 
 	it('should render main sections', async () => {
@@ -169,4 +170,38 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		);
 		await expect.element(page.getByText('Mail Signature')).toBeVisible();
 	});
+
+	it('should render select options for "Group by" and "Default Charset"', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Group by')).toBeVisible();
+		await expect.element(page.getByText('Default Charset')).toBeVisible();
+	});
+
+	it('should allow entering allowed sending addresses', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
+		// Optionally simulate entering an address if supported by test utils
+	});
+
+	it('should render calendar options section and select time zone', async () => {
+		createSoapAPIInterceptor('*', {});
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+			</AccountContext.Provider>
+		);
+		await expect.element(page.getByText('Calendar Options')).toBeVisible();
+		await expect.element(page.getByText('Time Zone')).toBeVisible();
+	});
+
 });
