@@ -23,22 +23,21 @@ type licenseBannerProps = {
 const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenanceStatus, setLicenseBannerOpen, redirectButtonHasToAppear }) => {
     const [t] = useTranslation();
     const maintenanceEndDateFormatted = moment(maintenanceEndDate).format('DD MMM YYYY');
-    const bannerExpiredDescription = t('',
+    const bannerExpiredDescription = t('banner.maintenance-expired-description',
         'Your maintenance expired on {{maintenanceEndDate}}.',
         { maintenanceEndDate: maintenanceEndDateFormatted }
     );
-    const bannerExpiringDescription = t('',
+    const bannerExpiringDescription = t('banner.maintenance-expiring-description',
         'Your maintenance will expire on {{maintenanceEndDate}}.',
         { maintenanceEndDate: maintenanceEndDateFormatted }
     );
     const bannerExpiringLabel = t(
-        '',
+        'banner.maintenance-expiring-label',
         'After expiration, you will still be notified of new updates, but you won’t be allowed to install them without risking service issues. Renew on time to ensure smooth, safe upgrades and full support coverage.'
     );
     const bannerExpiredLabel = t(
-        '',
-        'Your current version will continue to function normally, but you must not install any new Carbonio updates — doing so may cause service disruption. Renew maintenance to safely upgrade and keep your system fully supported.',
-        { maintenanceEndDate: maintenanceEndDateFormatted }
+        'banner.maintenance-expired-label',
+        'Your current version will continue to function normally, but you must not install any new Carbonio updates — doing so may cause service disruption. Renew maintenance to safely upgrade and keep your system fully supported.'
     );
 
     const labelToShow = useMemo(() => {
