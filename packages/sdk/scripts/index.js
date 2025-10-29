@@ -34,12 +34,11 @@ yargs(hideBin(process.argv))
 			default: pkg.sdk?.svgr ?? false
 		}
 	})
-	.command(require('./webpack-build'))
 	.command(require('./deploy'))
 	.command(require('./install'))
 	.command(require('./watch'))
-	.command(require('./vite-build'))
-	.command(require('./vite-build-shell'))
+	.command(require('./build'))
+	.command(require('./build-shell'))
 	.usage('Usage: npx $0 <command> [options]')
 	.demandCommand(1, 'You need to specify at least one command')
 	.parse();

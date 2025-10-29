@@ -7,7 +7,7 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 
-exports.command = 'vite-build-shell';
+exports.command = 'build-shell';
 exports.desc = 'Build shell/bootstrap using Vite';
 exports.builder = {};
 
