@@ -1,10 +1,14 @@
 import { vi } from 'vitest';
 
 // Import actual network functions directly - these should not be mocked for browser tests
-export { soapFetch, getSoapFetchRequest, postSoapFetchRequest, fetchExternalSoap } from '@zextras/admin-ui-bootstrap/network/fetch';
+export {
+	soapFetch,
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	fetchExternalSoap
+} from '@zextras/admin-ui-bootstrap/network/fetch';
 
 export const useDomainInformation = vi.fn();
-export const setAppContext = vi.fn();
 export const addRoute = vi.fn();
 export const removeRoute = vi.fn();
 export const registerActions = vi.fn();
