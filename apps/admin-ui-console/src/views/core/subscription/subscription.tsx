@@ -156,7 +156,7 @@ const ServiceStatus = ({
 			</Row>
 			<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
 				<Text size="extrasmall" weight="regular" color={licensed ? 'text' : 'secondary'}>
-					{}
+					{ }
 					{data?.quantity !== 'unlimited'
 						? `${data?.quantity} users`
 						: licensed
@@ -178,8 +178,7 @@ export const Subscription: FC = () => {
 	const [isActivateLoading, setIsActivateLoading] = useState(false);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== 'expired' ||
-			moduleLicenseInfo?.maintenanceStatus !== 'expiring'
+		moduleLicenseInfo?.maintenanceStatus !== 'active'
 	);
 
 	const rights: Rights = useRightsStore((state) => state.rights);
@@ -420,9 +419,19 @@ export const Subscription: FC = () => {
 		});
 	};
 
+	const licenseBannerShouldBeDisplayed = useMemo(() => {
+		return (
+			isLicenseBannerOpen && moduleLicenseInfo?.subType === "PERPETUAL"
+		);
+	}, [moduleLicenseInfo, isLicenseBannerOpen]);
+
+	useEffect(() => {
+		setIsLicenseBannerOpen(moduleLicenseInfo?.maintenanceStatus !== 'active');
+	}, [moduleLicenseInfo?.maintenanceStatus]);
+
 	return (
 		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
-			{isLicenseBannerOpen && (
+			{licenseBannerShouldBeDisplayed && (
 				<LicenseBanner
 					maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
 					maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}

@@ -6,7 +6,7 @@
 
 import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -50,8 +50,7 @@ const Dashboard: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== 'expired' ||
-			moduleLicenseInfo?.maintenanceStatus !== 'expiring'
+		moduleLicenseInfo?.maintenanceStatus !== 'active'
 	);
 	const adminHasAllRights = useRightsStore(hasAllRights);
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
@@ -150,6 +149,17 @@ const Dashboard: FC = () => {
 		getVersionInformation();
 	}, [getVersionInformation]);
 
+	const licenseBannerShouldBeDisplayed = useMemo(() => {
+		return (
+			adminHasAllRights && isLicenseBannerOpen && moduleLicenseInfo?.subType === "PERPETUAL"
+		);
+	}, [moduleLicenseInfo, adminHasAllRights, isLicenseBannerOpen]);
+
+	useEffect(() => {
+		console.log(moduleLicenseInfo?.maintenanceStatus);
+		setIsLicenseBannerOpen(moduleLicenseInfo?.maintenanceStatus !== 'active');
+	}, [moduleLicenseInfo?.maintenanceStatus]);
+
 	return (
 		<Container>
 			<Divider color="gray6" />
@@ -160,7 +170,7 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{adminHasAllRights && isLicenseBannerOpen && (
+				{licenseBannerShouldBeDisplayed && (
 					<LicenseBanner
 						maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
 						maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
