@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useState, FC, ReactElement, useEffect, useCallback, useMemo } from 'react';
 
 import {
 	Button,
@@ -21,12 +20,13 @@ import {
 import { TFunction } from 'i18next';
 import { find } from 'lodash';
 import moment from 'moment';
+import React, { useState, FC, ReactElement, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import LicenseBanner from '../../dashboard/license-banner';
 
 interface Module {
@@ -156,7 +156,7 @@ const ServiceStatus = ({
 			</Row>
 			<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
 				<Text size="extrasmall" weight="regular" color={licensed ? 'text' : 'secondary'}>
-					{/* eslint-disable-next-line no-nested-ternary */}
+					{}
 					{data?.quantity !== 'unlimited'
 						? `${data?.quantity} users`
 						: licensed
@@ -168,13 +168,10 @@ const ServiceStatus = ({
 	</Row>
 );
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const Subscription: FC = () => {
+export const Subscription: FC = () => {
 	const [services, setServices] = useState<any>({});
 	const [modules, setModules]: any = useState([]);
 	const [open, setOpen] = useState(false);
-	const [disableActiveBtn, setDisableActiveBtn] = useState(false);
-	const [showDisabledModules, setShowDisabledModules] = useState(false);
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const [isLoader, setIsLoader] = useState(false);
@@ -183,8 +180,8 @@ const Subscription: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== "expired" ||
-		moduleLicenseInfo?.maintenanceStatus !== "expiring"
+		moduleLicenseInfo?.maintenanceStatus !== 'expired' ||
+			moduleLicenseInfo?.maintenanceStatus !== 'expiring'
 	);
 
 	const allowSetSubsciption = useMemo(() => {
@@ -194,7 +191,6 @@ const Subscription: FC = () => {
 
 	const { t } = useTranslation();
 
-	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	const formatAndSetModulesStats = (response: {
 		response: { features: ModuleConfig[]; authenticationToken: React.SetStateAction<string> };
 	}) => {
@@ -245,7 +241,6 @@ const Subscription: FC = () => {
 
 	const getLicence = useCallback(() => {
 		fetchSoap('zextras', {
-			// eslint-disable-next-line sonarjs/no-duplicate-string
 			_jsns: ZIMBRA_ADMIN_URN,
 			module: 'ZxCore',
 			action: 'getLicenseInfo'
@@ -303,7 +298,6 @@ const Subscription: FC = () => {
 						severity: 'error',
 						label:
 							response.message ||
-							// eslint-disable-next-line sonarjs/no-duplicate-string
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						replace: true
 					});
@@ -426,14 +420,13 @@ const Subscription: FC = () => {
 
 	return (
 		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
-			{
-				isLicenseBannerOpen &&
+			{isLicenseBannerOpen && (
 				<LicenseBanner
 					maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
 					maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
 					setLicenseBannerOpen={setIsLicenseBannerOpen}
 				/>
-			}
+			)}
 			<Container
 				orientation="horizontal"
 				mainAlignment="space-around"
@@ -522,7 +515,7 @@ const Subscription: FC = () => {
 						/>
 					</Container>
 				</Container>
-				{services && services.response /* && showDisabledModules */ && (
+				{services && services.response && (
 					<Container
 						orientation="horizontal"
 						width="100%"
@@ -742,14 +735,12 @@ const Subscription: FC = () => {
 										}}
 									/>
 								)}
-								{(module.enabled || (!module.enabled && showDisabledModules)) && (
-									<ServiceStatus
-										key={module.name.label}
-										data={module}
-										licensed={module.enabled}
-										t={t}
-									/>
-								)}
+								<ServiceStatus
+									key={module.name.label}
+									data={module}
+									licensed={module.enabled}
+									t={t}
+								/>
 							</React.Fragment>
 						)
 					)}
@@ -791,4 +782,3 @@ const Subscription: FC = () => {
 		</Container>
 	);
 };
-export default Subscription;

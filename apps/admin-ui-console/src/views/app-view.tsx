@@ -32,7 +32,7 @@ import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
-import Subscription from './core/subscribsion/subscription';
+import Subscription from './core/subscription/subscription';
 import Dashboard from './dashboard/dashboard-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
@@ -50,7 +50,7 @@ interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
 }
 
-const DetailViewContainer = styled(Container) <ContainerExtendProps>`
+const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;
@@ -58,7 +58,7 @@ const DetailViewContainer = styled(Container) <ContainerExtendProps>`
 const AppView: FC = () => {
 	const isPrimaryBarExpanded = usePrimaryBarState();
 	return (
-		<Container height={"fit"}>
+		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
 				<Route path={`/${DASHBOARD}`}>
