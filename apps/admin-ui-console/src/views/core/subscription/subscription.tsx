@@ -156,7 +156,7 @@ const ServiceStatus = ({
 			</Row>
 			<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
 				<Text size="extrasmall" weight="regular" color={licensed ? 'text' : 'secondary'}>
-					{ }
+					{}
 					{data?.quantity !== 'unlimited'
 						? `${data?.quantity} users`
 						: licensed
@@ -246,6 +246,7 @@ export const Subscription: FC = () => {
 			module: 'ZxCore',
 			action: 'getLicenseInfo'
 		}).then((res) => {
+			console.log(res);
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
 				if (response.response && response.response.type === 'None') {
@@ -420,9 +421,7 @@ export const Subscription: FC = () => {
 	};
 
 	const licenseBannerShouldBeDisplayed = useMemo(() => {
-		return (
-			isLicenseBannerOpen && moduleLicenseInfo?.subType === "PERPETUAL"
-		);
+		return isLicenseBannerOpen && moduleLicenseInfo?.subType === 'PERPETUAL';
 	}, [moduleLicenseInfo, isLicenseBannerOpen]);
 
 	useEffect(() => {
