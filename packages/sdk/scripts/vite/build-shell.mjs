@@ -19,6 +19,13 @@ const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toS
 console.log('Building shell in production mode');
 console.log(`Commit hash: ${commitHash}`);
 
+// Clean dist directory
+const distPath = path.resolve(cwd, 'dist');
+if (fs.existsSync(distPath)) {
+	fs.rmSync(distPath, { recursive: true, force: true });
+	console.log('Cleaned dist directory');
+}
+
 // Build with Vite
 await build({
 	configFile: path.resolve(cwd, 'vite.config.ts'),
