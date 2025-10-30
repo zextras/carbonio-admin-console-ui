@@ -7,6 +7,7 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
+import { playwright } from '@vitest/browser-playwright';
 
 export default defineConfig({
 	test: {
@@ -115,7 +116,6 @@ export default defineConfig({
 					disabled: false
 				},
 				test: {
-					environment: 'browser',
 					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
 					alias: {
 						'admin-ui-test-utils': path.resolve(
@@ -126,16 +126,12 @@ export default defineConfig({
 					include: ['**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
-						provider: 'playwright',
+						provider: playwright() as any,
+						name: 'chromium',
 						viewport: { width: 834, height: 2000 },
 						enabled: true,
 						headless: !!process.env.CI,
-						instances: [
-							{
-								browser: 'chromium',
-								screenshotFailures: !process.env.CI
-							}
-						]
+						screenshotFailures: !process.env.CI
 					},
 					exclude: ['dist/**', 'node_modules/**'],
 					globals: true,
