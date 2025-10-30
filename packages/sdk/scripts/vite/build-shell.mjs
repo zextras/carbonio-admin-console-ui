@@ -55,23 +55,6 @@ const commitFilePath = path.resolve(distDir, 'commit');
 fs.writeFileSync(commitFilePath, commitHash);
 console.log('Generated commit file');
 
-// Copy translations to i18n directory
-const translationsDir = path.resolve(cwd, 'translations');
-const i18nDir = path.resolve(distDir, 'i18n');
-if (fs.existsSync(translationsDir)) {
-	if (!fs.existsSync(i18nDir)) {
-		fs.mkdirSync(i18nDir, { recursive: true });
-	}
-	const files = fs.readdirSync(translationsDir);
-	for (const file of files) {
-		fs.copyFileSync(
-			path.resolve(translationsDir, file),
-			path.resolve(i18nDir, file)
-		);
-	}
-	console.log('Copied translations to i18n/');
-}
-
 // Generate component.json
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
 
@@ -131,6 +114,7 @@ package() {
   chown root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}"
   chmod 644 -R "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}"
   find "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}" -type d -exec chmod a+x "{}" \\;
+  ln -sf /opt/zextras/admin/iris/\${pkgname}/i18n "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}/i18n"
 }
 
 postinst() {
