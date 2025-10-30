@@ -12,8 +12,3 @@ export function useI18nFactory(): any {
 	const { i18nFactory } = useContext(BootstrapperContext);
 	return i18nFactory;
 }
-
-export function useStoreFactory(): any {
-	const { storeFactory } = useContext(BootstrapperContext);
-	return storeFactory;
-}

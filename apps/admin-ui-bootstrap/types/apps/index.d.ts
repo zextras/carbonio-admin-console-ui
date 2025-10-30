@@ -167,7 +167,6 @@ export type AppSetters = {
 	addSecondaryAccessoryView: (data: SecondaryAccessoryView) => string;
 	// remove secondaryAccessory
 	removeSecondaryAccessoryView: (id: string) => void;
-	setAppContext: (app: string) => <T = unknown>(context: T) => void;
 };
 export type AppState = {
 	apps: Record<string, CarbonioModule>;

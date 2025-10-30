@@ -8,7 +8,6 @@ import {
 	addRoute,
 	removeRoute,
 	registerActions,
-	setAppContext,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	useAllConfig,
@@ -797,7 +796,6 @@ const App: FC = () => {
 				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
-		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
 		t,
 		managementSection,

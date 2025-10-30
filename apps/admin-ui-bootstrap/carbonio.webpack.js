@@ -27,10 +27,6 @@ module.exports = (conf, pkg, options, mode) => {
 				{
 					from: 'assets/',
 					to: '.'
-				},
-				{
-					from: 'translations/',
-					to: 'i18n/'
 				}
 			]
 		}),

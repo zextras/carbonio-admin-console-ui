@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import _, { find, map } from 'lodash';
+import { find, isArray, map } from 'lodash';
 
 import {
 	Account,
@@ -23,6 +23,7 @@ import { handleTagSync } from '../store/tags';
 
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
+import { retry } from './utils';
 
 export const noOp = (): void => {
 	getSoapFetch(SHELL_APP_ID)(
@@ -58,28 +59,6 @@ const getAccount = (
 		}
 	}
 	return undefined;
-};
-
-const getXmlAccount = (acc?: Account, otherAccount?: string): string => {
-	if (otherAccount) {
-		return `<account by="name">${otherAccount}</account>`;
-	}
-	if (acc) {
-		if (acc.name) {
-			return `<account by="name">${acc.name}</account>`;
-		}
-		if (acc.id) {
-			return `<account by="id">${acc.id}</account>`;
-		}
-	}
-	return '';
-};
-
-const getXmlSession = (context?: any): string => {
-	if (context?.session?.id) {
-		return `<session id="${context?.session?.id}"/>`;
-	}
-	return '';
 };
 
 const normalizeContext = (context: any): SoapContext => {
@@ -165,24 +144,28 @@ export const getSoapFetch =
 			header.context.nosession = {};
 			delete header.context.session;
 		}
-		return fetch(`/service/admin/soap/${api}Request`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				Body: {
-					[`${api}Request`]: body
+
+		const fetchFn = (): Promise<Response> =>
+			fetch(`/service/admin/soap/${api}Request`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				Header: header
+				body: JSON.stringify({
+					Body: {
+						[`${api}Request`]: body
+					},
+					Header: header
+				})
 			})
-		}) // TO-DO proper error handling
-			.then((res) => res?.json())
-			.then((res: SoapResponse<Response>) => handleResponse(api, res))
-			.catch((e) => {
-				report(app)(e);
-				throw e;
-			}) as Promise<Response>;
+				.then((res) => res?.json())
+				.then((res: SoapResponse<Response>) => handleResponse(api, res))
+				.catch((e) => {
+					report(app)(e);
+					throw e;
+				});
+
+		return retry(fetchFn);
 	};
 
 /* POST and GET Soap */
@@ -205,21 +188,6 @@ const handleSoapResponse = (res: any): any => {
 			`${errMessage}
 		`
 		);
-	}
-	return <SuccessSoapResponse<any>>res;
-};
-
-const handleSoapResponseWithErrorCode = (res: any): any => {
-	if (res?.Body?.Fault) {
-		if (
-			find(
-				['service.AUTH_REQUIRED', 'service.AUTH_EXPIRED'],
-				(code) => code === (<any>res).Body.Fault.Detail?.Error?.Code
-			)
-		) {
-			goToLogin();
-		}
-		throw res?.Body?.Fault ? res?.Body?.Fault : res;
 	}
 	return <SuccessSoapResponse<any>>res;
 };
@@ -253,20 +221,23 @@ const fetchAccount = (
 
 export const getSoapFetchRequest =
 	(app: string) =>
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	<Request, Response>(apiURL: string): Promise<Response> =>
-		fetch(`${apiURL}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}) // TO-DO proper error handling
-			.then((res) => res?.json())
-			.then((res: SoapResponse<Response>) => handleSoapResponse(res))
-			.catch((e) => {
-				report(app)(e);
-				throw e;
-			}) as Promise<Response>;
+	<_, Response>(apiURL: string): Promise<Response> => {
+		const fetchFn = (): Promise<Response> =>
+			fetch(`${apiURL}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then((res) => res?.json())
+				.then((res: SoapResponse<Response>) => handleSoapResponse(res))
+				.catch((e) => {
+					report(app)(e);
+					throw e;
+				});
+
+		return retry(fetchFn);
+	};
 
 export const postSoapFetchRequest =
 	(app: string): SoapFetchPost =>
@@ -286,39 +257,43 @@ export const postSoapFetchRequest =
 		} else {
 			bodyItem = body;
 		}
-		return fetch(`${apiURL}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				Body: {
-					...bodyItem
+
+		const fetchFn = (): Promise<Response> =>
+			fetch(`${apiURL}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				Header: {
-					context: {
-						_jsns: 'urn:zimbra',
-						notify: context?.notify?.[0]?.seq
-							? {
-									seq: context?.notify?.[0]?.seq
-								}
-							: undefined,
-						session: context?.session ?? {},
-						account: fetchAccount(account as Account, otherAccount),
-						userAgent: {
-							name: userAgent,
-							version: zimbraVersion
+				body: JSON.stringify({
+					Body: {
+						...bodyItem
+					},
+					Header: {
+						context: {
+							_jsns: 'urn:zimbra',
+							notify: context?.notify?.[0]?.seq
+								? {
+										seq: context?.notify?.[0]?.seq
+									}
+								: undefined,
+							session: context?.session ?? {},
+							account: fetchAccount(account as Account, otherAccount),
+							userAgent: {
+								name: userAgent,
+								version: zimbraVersion
+							}
 						}
 					}
-				}
+				})
 			})
-		}) // TODO proper error handling
-			.then((res) => res?.json())
-			.then((res: SoapResponse<Response>) => handleSoapResponse(res))
-			.catch((e) => {
-				report(app)(e);
-				throw e;
-			}) as Promise<Response>;
+				.then((res) => res?.json())
+				.then((res: SoapResponse<Response>) => handleSoapResponse(res))
+				.catch((e) => {
+					report(app)(e);
+					throw e;
+				});
+
+		return retry(fetchFn);
 	};
 
 export const fetchExternalSoap =
@@ -337,133 +312,48 @@ export const fetchExternalSoap =
 		} else {
 			bodyItem = body;
 		}
-		return fetch(`${apiURL}`, {
-			method: method || 'POST',
+
+		const fetchFn = (): Promise<Response> =>
+			fetch(`${apiURL}`, {
+				method: method || 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: isArray(bodyItem)
+					? JSON.stringify(bodyItem)
+					: JSON.stringify({
+							...bodyItem
+						})
+			})
+				.then((res) =>
+					res?.headers?.get('content-length') === null &&
+					!res?.headers?.get('content-type')?.includes('application/json')
+						? res
+						: res?.json()
+				)
+				.then((res: any) => handleSoapResponse(res))
+				.catch((e) => {
+					report(app)(e);
+					throw e;
+				});
+
+		return retry(fetchFn);
+	};
+
+export const getAllServers = async (): Promise<any> => {
+	const fetchFn = (): Promise<any> =>
+		fetch(`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`, {
+			method: 'GET',
 			headers: {
+				Accept: '*/*',
 				'Content-Type': 'application/json'
-			},
-			body: _.isArray(bodyItem)
-				? JSON.stringify(bodyItem)
-				: JSON.stringify({
-						...bodyItem
-					})
-		}) // TODO proper error handling
-			.then((res) =>
-				res?.headers?.get('content-length') === null &&
-				!res?.headers?.get('content-type')?.includes('application/json')
-					? res
-					: res?.json()
-			)
+			}
+		})
+			.then((res) => (res?.headers.get('content-length') === null ? res : res?.json()))
 			.then((res: any) => handleSoapResponse(res))
 			.catch((e) => {
-				report(app)(e);
 				throw e;
-			}) as Promise<Response>;
-	};
+			});
 
-export const getCarbonioBackendVersion = async (): Promise<any> => {
-	const { zimbraVersion, account } = useAccountStore.getState();
-	const { context } = useNetworkStore.getState();
-	const request: any = {
-		Body: {
-			zextras: {
-				_jsns: 'urn:zimbraAdmin',
-				module: 'ZxCore',
-				action: 'getUpdateInfo'
-			}
-		},
-		Header: {
-			context: {
-				_jsns: 'urn:zimbra',
-				notify: context?.notify?.[0]?.seq
-					? {
-							seq: context?.notify?.[0]?.seq
-						}
-					: undefined,
-				session: context?.session ?? {},
-				account: fetchAccount(account as Account),
-				userAgent: {
-					name: userAgent,
-					version: zimbraVersion
-				}
-			}
-		}
-	};
-
-	return fetch(`/service/admin/soap/zextras`, {
-		method: 'POST',
-		headers: {
-			Accept: '*/*',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(request)
-	})
-		.then((res) => (res?.headers.get('content-length') === null ? res : res?.json()))
-		.then((res: any) => handleSoapResponse(res))
-		.catch((e) => {
-			throw e;
-		});
+	return retry(fetchFn);
 };
-
-export const searchDirectoryListCount = async (types: string): Promise<any> => {
-	const { zimbraVersion, account } = useAccountStore.getState();
-	const { context } = useNetworkStore.getState();
-	const request: any = {
-		Body: {
-			SearchDirectoryRequest: {
-				_jsns: 'urn:zimbraAdmin',
-				offset: 0,
-				limit: 1,
-				sortAscending: '1',
-				applyCos: 'false',
-				applyConfig: 'false',
-				attrs: '',
-				types
-			}
-		},
-		Header: {
-			context: {
-				_jsns: 'urn:zimbra',
-				notify: context?.notify?.[0]?.seq
-					? {
-							seq: context?.notify?.[0]?.seq
-						}
-					: undefined,
-				session: context?.session ?? {},
-				account: fetchAccount(account as Account),
-				userAgent: {
-					name: userAgent,
-					version: zimbraVersion
-				}
-			}
-		}
-	};
-
-	return fetch(`/service/admin/soap/SearchDirectoryRequest`, {
-		method: 'POST',
-		headers: {
-			Accept: '*/*',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(request)
-	})
-		.then((res) => (res?.headers.get('content-length') === null ? res : res?.json()))
-		.then((res: any) => handleSoapResponseWithErrorCode(res))
-		.catch((e) => {
-			throw e;
-		});
-};
-
-export const getAllServers = async (): Promise<any> =>
-	fetch(`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`, {
-		method: 'GET',
-		headers: {
-			Accept: '*/*',
-			'Content-Type': 'application/json'
-		}
-	})
-		.then((res) => (res?.headers.get('content-length') === null ? res : res?.json()))
-		.then((res: any) => handleSoapResponse(res))
-		.catch((e) => {
-			throw e;
-		});

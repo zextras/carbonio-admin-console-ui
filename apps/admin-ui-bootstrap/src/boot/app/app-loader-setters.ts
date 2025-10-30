@@ -31,7 +31,6 @@ export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => 
 	return {
 		updatePrimaryBadge: appSetters.updatePrimaryBadge,
 		updateUtilityBadge: appSetters.updateUtilityBadge,
-		setAppContext: appSetters.setAppContext(pkg.name),
 		addRoute: (route: Partial<AppRouteDescriptor>) =>
 			appSetters.addRoute(normalizeRoute(route, pkg)),
 		setRouteVisibility: (routeId: string, visible: boolean) =>

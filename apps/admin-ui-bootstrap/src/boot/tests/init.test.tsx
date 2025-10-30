@@ -17,7 +17,6 @@ import { vi, describe, it, expect } from 'vitest';
 
 import I18nFactory from '../../i18n/i18n-factory';
 import * as mockGoToLogin from '../../network/go-to-login';
-import StoreFactory from '../../redux/store-factory';
 import { useIsAdvanced } from '../../store/advance';
 import { init } from '../init';
 
@@ -33,14 +32,10 @@ const mocki18n: any = {
 	setLocale: vi.fn()
 };
 
-const mockStore: any = {
-	getStoreForApp: vi.fn()
-};
-
 describe('init', () => {
 	it('should return error when advanced supported fails', async () => {
 		advancedSupportedApi.withError();
-		const { result } = renderHook(() => init(mocki18n, mockStore));
+		const { result } = renderHook(() => init(mocki18n));
 		expect(await result.current).toHaveProperty('error');
 	});
 
@@ -52,7 +47,7 @@ describe('init', () => {
 		getInfoRequestApi(HttpResponse.error);
 		getAllConfigRequestApi(HttpResponse.error);
 
-		const { result } = renderHook(() => init(mocki18n, mockStore));
+		const { result } = renderHook(() => init(mocki18n));
 		expect(await result.current).toHaveProperty('error');
 	});
 
@@ -66,7 +61,7 @@ describe('init', () => {
 		getInfoRequestApi(() => HttpResponse.json({}, { status: 200 }));
 		getAllConfigRequestApi(() => HttpResponse.json({}, { status: 200 }));
 
-		await init(new I18nFactory(), new StoreFactory());
+		await init(new I18nFactory());
 
 		const { result: advancedResult } = renderHook(() => useIsAdvanced());
 		await waitFor(() => expect(advancedResult.current).toBeTruthy());
