@@ -5,6 +5,7 @@
  */
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+
 import { CONFIG } from '../../constants';
 
 export interface Right {
@@ -34,6 +35,12 @@ type RightsState = {
 	setRights: (rights: Rights) => void;
 	userType: string;
 	setUserType: (userType: string) => void;
+	reset: () => void;
+};
+
+const initialEmptyState = {
+	rights: [],
+	userType: ''
 };
 
 export const useRightsStore = create<RightsState>()(
@@ -41,17 +48,17 @@ export const useRightsStore = create<RightsState>()(
 		rights: [],
 		setRights: (rights): void => set({ rights }, false, 'setRights'),
 		userType: '',
-		setUserType: (userType): void => set({ userType }, false, 'setUserType')
+		setUserType: (userType): void => set({ userType }, false, 'setUserType'),
+		reset: () => set(initialEmptyState)
 	}))
 );
 
 export const hasAllRights = (state: RightsState): boolean => {
 	const rightsConfig: Right = state.rights.find((r) => r.type === CONFIG) || {
 		all: [],
-		type: CONFIG,
+		type: CONFIG
 	};
 	return Boolean(
-		rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ||
-		rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
+		rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
 	);
 };

@@ -9,11 +9,13 @@ import { devtools } from 'zustand/middleware';
 type ModuleLicenseState = {
 	licenseInfo: Record<string, any> | null;
 	setLicenseInfo: (v: Record<string, any>) => void;
+	reset: () => void;
 };
 
 export const useModuleLicenseStore = create<ModuleLicenseState>()(
 	devtools((set) => ({
 		licenseInfo: null,
 		setLicenseInfo: (licenseInfo) => set({ licenseInfo }, false, 'setLicenseInfo'),
+		reset: () => set({ licenseInfo: null })
 	}))
 );
