@@ -27,7 +27,7 @@ import { CONFIG, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import LicenseBanner from '../../dashboard/license-banner';
+import { LicenseBanner } from '../../dashboard/license-banner';
 
 interface Module {
 	value: string;
@@ -176,13 +176,15 @@ export const Subscription: FC = () => {
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const [isLoader, setIsLoader] = useState(false);
 	const [isActivateLoading, setIsActivateLoading] = useState(false);
-	const createSnackbar = useSnackbar();
-	const rights: Rights = useRightsStore((state) => state.rights);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
 		moduleLicenseInfo?.maintenanceStatus !== 'expired' ||
 			moduleLicenseInfo?.maintenanceStatus !== 'expiring'
 	);
+
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const createSnackbar = useSnackbar();
 
 	const allowSetSubsciption = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };

@@ -4,18 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
-import { Container, Divider } from '@zextras/carbonio-design-system';
 import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
+import { Container, Divider } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
-import CarbonioVersionInformation from './carbonio-version-information-view';
-import DashboardNotification from './dashboard-notification';
-import DashboardServerList from './dashboard-server-list-view';
-import QuickAccess from './quick-access-view';
-import LicenseBanner from './license-banner';
 import packageJson from '../../../package.json';
 import {
 	ACCOUNTS,
@@ -33,10 +27,16 @@ import {
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useDomainStore } from '../../store/domain/store';
+import { useModuleLicenseStore } from '../../store/module-license/store';
 import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
-import { useModuleLicenseStore } from '../../store/module-license/store';
+
+import CarbonioVersionInformation from './carbonio-version-information-view';
+import DashboardNotification from './dashboard-notification';
+import DashboardServerList from './dashboard-server-list-view';
+import { LicenseBanner } from './license-banner';
+import QuickAccess from './quick-access-view';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
@@ -50,8 +50,8 @@ const Dashboard: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== "expired" ||
-		moduleLicenseInfo?.maintenanceStatus !== "expiring"
+		moduleLicenseInfo?.maintenanceStatus !== 'expired' ||
+			moduleLicenseInfo?.maintenanceStatus !== 'expiring'
 	);
 	const adminHasAllRights = useRightsStore(hasAllRights);
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
@@ -119,12 +119,10 @@ const Dashboard: FC = () => {
 
 	const goToMailStoreServerList = useCallback(() => {
 		history.push(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
 
 	const goToMailNotificationt = useCallback(() => {
 		history.push(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
 
 	useEffect(() => {
@@ -162,15 +160,14 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{
-					adminHasAllRights && isLicenseBannerOpen &&
+				{adminHasAllRights && isLicenseBannerOpen && (
 					<LicenseBanner
 						maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
 						maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
 						setLicenseBannerOpen={setIsLicenseBannerOpen}
 						redirectButtonHasToAppear
 					/>
-				}
+				)}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
