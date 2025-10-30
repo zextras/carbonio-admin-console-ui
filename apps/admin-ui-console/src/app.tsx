@@ -940,7 +940,6 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					console.log(response);
 					setLicenseInfo(response.response);
 				}
 			});
