@@ -39,6 +39,7 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
         'banner.maintenance-expired-label',
         'Your current version will continue to function normally, but you must not install any new Carbonio updates — doing so may cause service disruption. Renew maintenance to safely upgrade and keep your system fully supported.'
     );
+    const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 
     const labelToShow = useMemo(() => {
         return maintenanceStatus === 'expiring' ? bannerExpiringLabel : bannerExpiredLabel;
@@ -85,7 +86,7 @@ const LicenseBanner: FC<licenseBannerProps> = ({ maintenanceEndDate, maintenance
                         type='outlined'
                         backgroundColor='transparent'
                         color="gray6"
-                        label='View Subscription Details'
+                        label={detailsButton}
                         onClick={() => history.push(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`)}
                     />
                 }
