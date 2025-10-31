@@ -23,15 +23,6 @@ vi.stubGlobal('BASE_PATH', '');
 
 beforeAll(async () => {
 	await startMockWorker();
-	
-	// Suppress MSW internal errors that occur during cleanup
-	window.addEventListener('unhandledrejection', (event) => {
-		// Suppress MSW deserializeRequest errors that occur during cleanup
-		if (event.reason?.message?.includes('Cannot read properties of undefined')) {
-			event.preventDefault();
-			console.warn('Suppressed MSW cleanup error:', event.reason.message);
-		}
-	});
 });
 
 beforeEach(() => {
