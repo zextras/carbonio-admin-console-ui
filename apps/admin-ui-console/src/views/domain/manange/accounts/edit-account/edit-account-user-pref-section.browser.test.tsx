@@ -7,7 +7,7 @@
 import { page } from '@vitest/browser/context';
 import { setupBrowserTest, createSoapAPIInterceptor } from 'admin-ui-test-utils';
 import React from 'react';
-import { it, expect, describe } from 'vitest';
+import { it, expect, describe, vi } from 'vitest';
 
 import { AccountContext } from '../account-context';
 
@@ -143,7 +143,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Options')).toBeVisible();
@@ -158,7 +161,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Signature')).toBeVisible();
@@ -168,7 +174,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Group by')).toBeVisible();
@@ -179,7 +188,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
@@ -189,7 +201,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Calendar Options')).toBeVisible();
@@ -211,7 +226,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		const selects = [
@@ -236,7 +254,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
@@ -246,11 +267,14 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('View mail as HTML')).toBeVisible();
-		const resetButton = page.getByTestId('reset-zimbraPrefMessageViewHtmlPreferred')
+		const resetButton = page.getByTestId('reset-zimbraPrefMessageViewHtmlPreferred');
 		await expect.element(resetButton).toBeVisible();
 		await expect.element(page.getByText('Auto-Delete duplicate messages')).toBeVisible();
 		await expect.element(page.getByText('Enable New Mail Toast Notification')).toBeVisible();
@@ -260,7 +284,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Can send auto-reply messages')).toBeVisible();
@@ -271,12 +298,15 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Save to sent')).toBeVisible();
 		await expect.element(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
-		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled')
+		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled');
 		await expect.element(resetButton).toBeVisible();
 	});
 
@@ -284,7 +314,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Enable auto-add contacts')).toBeVisible();
@@ -295,10 +328,15 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
-		await expect.element(page.getByText('Enable reminders of appointments in the past')).toBeVisible();
+		await expect
+			.element(page.getByText('Enable reminders of appointments in the past'))
+			.toBeVisible();
 		await expect.element(page.getByText('Allow sending cancellation mail')).toBeVisible();
 		await expect
 			.element(page.getByText('Automatically add forwarded appointments to the calendar'))
@@ -308,9 +346,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			.element(page.getByText('Automatically add appointments when the user is invited'))
 			.toBeVisible();
 		await expect.element(page.getByText('Auto-decline if the sender is blacklisted')).toBeVisible();
-		await expect
-			.element(page.getByText('Notify changes made by delegated accounts'))
-			.toBeVisible();
+		await expect.element(page.getByText('Notify changes made by delegated accounts')).toBeVisible();
 		await expect
 			.element(page.getByText('Use iCal delegation model for shared calendars'))
 			.toBeVisible();
@@ -327,7 +363,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithAddresses}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
@@ -337,11 +376,17 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		const contextWithFalse = {
 			...mockContextValue,
-			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMessageViewHtmlPreferred: 'FALSE' }
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefMessageViewHtmlPreferred: 'FALSE'
+			}
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithFalse}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('View mail as HTML')).toBeVisible();
@@ -355,7 +400,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithGroupBy}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Group by')).toBeVisible();
@@ -369,7 +417,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithPolling}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Check new mail every')).toBeVisible();
@@ -383,11 +434,14 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithReadReceipt}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
-		const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts')
+		const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts');
 		await expect.element(resetButton).toBeVisible();
 	});
 
@@ -399,7 +453,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithOOO}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
@@ -413,7 +470,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithTz}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Time Zone')).toBeVisible();
@@ -430,7 +490,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithDuration}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Calendar Options')).toBeVisible();
@@ -447,7 +510,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithReminder}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Appointment Reminder in minutes')).toBeVisible();
@@ -461,7 +527,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithView}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Default Calendar View')).toBeVisible();
@@ -475,7 +544,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithFirstDay}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
@@ -492,7 +564,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithVisibility}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Default Appointment visibility')).toBeVisible();
@@ -506,7 +581,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithSignature}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Signature')).toBeVisible();
@@ -523,12 +601,13 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithReadReceipt}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
-		await expect
-			.element(page.getByText('Permit the user to ask for read receipt'))
-			.toBeVisible();
+		await expect.element(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
 	});
 
 	it('should render with enabled auto add contacts', async () => {
@@ -539,7 +618,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithAutoAdd}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Enable auto-add contacts')).toBeVisible();
@@ -553,7 +635,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithGal}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Use GAL to auto-fill')).toBeVisible();
@@ -577,7 +662,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithCalendar}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Calendar Options')).toBeVisible();
@@ -591,7 +679,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithoutId}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Calendar Options')).toBeVisible();
@@ -605,7 +696,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithCharset}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Default Charset')).toBeVisible();
@@ -622,7 +716,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithOOO}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Can send auto-reply messages')).toBeVisible();
@@ -636,7 +733,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithSaveToSent}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Save to sent')).toBeVisible();
@@ -653,7 +753,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithDeduping}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Auto-Delete duplicate messages')).toBeVisible();
@@ -667,7 +770,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithToaster}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Enable New Mail Toast Notification')).toBeVisible();
@@ -684,7 +790,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextUndefined}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
@@ -705,7 +814,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={contextWithTrue}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Options')).toBeVisible();
@@ -731,7 +843,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={fullContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Options')).toBeVisible();
@@ -808,7 +923,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={fullPrefsContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Options')).toBeVisible();
@@ -824,7 +942,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={minimalContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Mail Options')).toBeVisible();
@@ -838,7 +959,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
@@ -848,11 +972,17 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
-			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefOutOfOfficeCacheDuration: '24h' }
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefOutOfOfficeCacheDuration: '24h'
+			}
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
@@ -866,7 +996,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
@@ -880,7 +1013,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
@@ -894,7 +1030,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Check new mail every')).toBeVisible();
@@ -908,7 +1047,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Check new mail every')).toBeVisible();
@@ -922,7 +1064,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Default Calendar View')).toBeVisible();
@@ -932,11 +1077,17 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
-			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'workWeek' }
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefCalendarInitialView: 'workWeek'
+			}
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Default Calendar View')).toBeVisible();
@@ -950,7 +1101,10 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
@@ -964,10 +1118,44 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		};
 		setupBrowserTest(
 			<AccountContext.Provider value={testContext}>
-				<EditAccountUserPrefrencesSection signatureItems={signatureItems} signatureList={signatureList} />
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
 	});
-});
 
+	it('should call setEmptyValue when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
+		createSoapAPIInterceptor('*', {});
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraFeatureReadReceiptsEnabled: 'TRUE'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountUserPrefrencesSection
+					signatureItems={signatureItems}
+					signatureList={signatureList}
+				/>
+			</AccountContext.Provider>
+		);
+
+		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled');
+		await expect.element(resetButton).toBeVisible();
+		await resetButton.click();
+
+		expect(mockSetAccountDetail).toHaveBeenCalledWith(expect.any(Function));
+
+		// Test that the function passed to setAccountDetail sets zimbraFeatureReadReceiptsEnabled to undefined
+		const callArgs = mockSetAccountDetail.mock.calls[0][0];
+		const result = callArgs({ zimbraFeatureReadReceiptsEnabled: 'TRUE' });
+		expect(result.zimbraFeatureReadReceiptsEnabled).toBeUndefined();
+	});
+});
