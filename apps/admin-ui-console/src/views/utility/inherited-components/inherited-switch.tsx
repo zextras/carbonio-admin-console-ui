@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import {
 	Switch,
 	Tooltip,
@@ -14,6 +12,7 @@ import {
 	Container,
 	Padding
 } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedSwitch: FC<{
@@ -84,6 +83,7 @@ const InheritedSwitch: FC<{
 						style={{ cursor: 'pointer', pointerEvents: disabled ? 'none' : 'all' }}
 						onChange={(): null => null}
 						disabled={disabled}
+						data-testid={`reset-${inputName}`}
 					/>
 				</Tooltip>
 			) : (

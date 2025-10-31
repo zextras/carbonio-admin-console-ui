@@ -250,6 +250,8 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('View mail as HTML')).toBeVisible();
+		const resetButton = page.getByTestId('reset-zimbraPrefMessageViewHtmlPreferred')
+		await expect.element(resetButton).toBeVisible();
 		await expect.element(page.getByText('Auto-Delete duplicate messages')).toBeVisible();
 		await expect.element(page.getByText('Enable New Mail Toast Notification')).toBeVisible();
 	});
@@ -274,6 +276,8 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		);
 		await expect.element(page.getByText('Save to sent')).toBeVisible();
 		await expect.element(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
+		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled')
+		await expect.element(resetButton).toBeVisible();
 	});
 
 	it('should render contact options switches', async () => {
@@ -383,6 +387,8 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
+		const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts')
+		await expect.element(resetButton).toBeVisible();
 	});
 
 	it('should render with different out of office cache duration', async () => {
@@ -964,3 +970,4 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
 	});
 });
+
