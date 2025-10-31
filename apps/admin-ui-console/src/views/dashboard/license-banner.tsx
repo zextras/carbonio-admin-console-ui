@@ -11,23 +11,23 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { SUBSCRIPTIONS_ROUTE_ID, MANAGE_APP_ID } from '../../constants';
+import { useModuleLicenseInfo } from '../../hooks/use-subscription';
 import ListRow from '../list/list-row';
 
 type licenseBannerProps = {
-	maintenanceEndDate: number;
-	maintenanceStatus: string;
-	setLicenseBannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	redirectButtonHasToAppear?: boolean;
 };
 
-export const LicenseBanner: FC<licenseBannerProps> = ({
-	maintenanceEndDate,
-	maintenanceStatus,
-	setLicenseBannerOpen,
-	redirectButtonHasToAppear
-}) => {
+export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppear }) => {
+	const { moduleLicenseInfo, licenseBannerShouldBeDisplayed, setIsLicenseBannerOpen } =
+		useModuleLicenseInfo();
+
+	const maintenanceStatus = moduleLicenseInfo?.maintenanceStatus ?? 'active';
+	const maintenanceEndDate = moduleLicenseInfo?.maintenanceEndDate ?? 0;
 	const [t] = useTranslation();
+
 	const maintenanceEndDateFormatted = moment(maintenanceEndDate).format('DD MMM YYYY');
+
 	const bannerExpiredDescription = t(
 		'banner.maintenance-expired-description',
 		'Your maintenance expired on {{maintenanceEndDate}}.',
@@ -48,17 +48,20 @@ export const LicenseBanner: FC<licenseBannerProps> = ({
 	);
 	const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 
-	const labelToShow = useMemo(() => {
-		return maintenanceStatus === 'expiring' ? bannerExpiringLabel : bannerExpiredLabel;
-	}, [bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus]);
+	const labelToShow = useMemo(
+		() => (maintenanceStatus === 'expiring' ? bannerExpiringLabel : bannerExpiredLabel),
+		[bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus]
+	);
 
-	const descriptionToShow = useMemo(() => {
-		return maintenanceStatus === 'expiring' ? bannerExpiringDescription : bannerExpiredDescription;
-	}, [bannerExpiringDescription, bannerExpiredDescription, maintenanceStatus]);
+	const descriptionToShow = useMemo(
+		() => (maintenanceStatus === 'expiring' ? bannerExpiringDescription : bannerExpiredDescription),
+		[bannerExpiringDescription, bannerExpiredDescription, maintenanceStatus]
+	);
 
+	const onClose = () => setIsLicenseBannerOpen(false);
 	const history = useHistory();
 
-	return (
+	return licenseBannerShouldBeDisplayed ? (
 		<ListRow padding={redirectButtonHasToAppear ? '1.5rem' : { top: '1.5rem' }}>
 			<Container
 				width={'fill'}
@@ -91,9 +94,10 @@ export const LicenseBanner: FC<licenseBannerProps> = ({
 					<Row>
 						<Button
 							type="ghost"
+							data-testid="license-banner-close-button"
 							icon="CloseOutline"
 							color="gray6"
-							onClick={() => setLicenseBannerOpen(false)}
+							onClick={onClose}
 						/>
 					</Row>
 				</Container>
@@ -108,5 +112,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({
 				)}
 			</Container>
 		</ListRow>
+	) : (
+		<></>
 	);
 };

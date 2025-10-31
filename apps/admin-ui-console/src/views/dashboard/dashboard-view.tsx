@@ -6,11 +6,9 @@
 
 import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import packageJson from '../../../package.json';
 import {
 	ACCOUNTS,
 	DOMAINS_ROUTE_ID,
@@ -27,7 +25,6 @@ import {
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useDomainStore } from '../../store/domain/store';
-import { useModuleLicenseStore } from '../../store/module-license/store';
 import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
@@ -39,40 +36,15 @@ import { LicenseBanner } from './license-banner';
 import QuickAccess from './quick-access-view';
 
 const Dashboard: FC = () => {
-	const [t] = useTranslation();
 	const history = useHistory();
 	const accounts = useUserAccounts();
 	const [userName, setUserName] = useState<string>('');
-	const [version, setVersion] = useState<string>('');
 	const [serverVersion, setServerVersion] = useState<any>({});
 
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
-	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== 'active'
-	);
+
 	const adminHasAllRights = useRightsStore(hasAllRights);
-	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
-		{
-			upperText: t('label.domains', 'Domains'),
-			operationText: t('label.accounts', 'Accounts'),
-			bottomText: t('label.open', 'Open'),
-			operationIcon: 'PersonOutline',
-			bottomIcon: 'ChevronRightOutline',
-			bgColor: 'avatar_39',
-			operation: 'account'
-		},
-		{
-			upperText: t('label.domains', 'Domains'),
-			operationText: t('label.distribution_list', 'Distribution List'),
-			bottomText: t('label.open', 'Open'),
-			operationIcon: 'DistributionListOutline',
-			bottomIcon: 'ChevronRightOutline',
-			bgColor: 'avatar_21',
-			operation: 'malinglist'
-		}
-	]);
 	const domainInformation = useDomainInformation();
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
@@ -110,12 +82,6 @@ const Dashboard: FC = () => {
 		}
 	}, [accounts]);
 
-	useEffect(() => {
-		if (packageJson?.version) {
-			setVersion(packageJson?.version);
-		}
-	}, []);
-
 	const goToMailStoreServerList = useCallback(() => {
 		history.push(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
 	}, [history]);
@@ -149,17 +115,6 @@ const Dashboard: FC = () => {
 		getVersionInformation();
 	}, [getVersionInformation]);
 
-	const licenseBannerShouldBeDisplayed = useMemo(() => {
-		return (
-			adminHasAllRights && isLicenseBannerOpen && moduleLicenseInfo?.subType === "PERPETUAL"
-		);
-	}, [moduleLicenseInfo, adminHasAllRights, isLicenseBannerOpen]);
-
-	useEffect(() => {
-		console.log(moduleLicenseInfo?.maintenanceStatus);
-		setIsLicenseBannerOpen(moduleLicenseInfo?.maintenanceStatus !== 'active');
-	}, [moduleLicenseInfo?.maintenanceStatus]);
-
 	return (
 		<Container>
 			<Divider color="gray6" />
@@ -170,21 +125,13 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{licenseBannerShouldBeDisplayed && (
-					<LicenseBanner
-						maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
-						maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
-						setLicenseBannerOpen={setIsLicenseBannerOpen}
-						redirectButtonHasToAppear
-					/>
-				)}
+				{adminHasAllRights && <LicenseBanner />}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
 					</Container>
 					<Container width={'60'} padding={{ all: 'extralarge' }}>
 						<QuickAccess
-							quickAccessItems={quickAccessItems}
 							openOperationView={openOperationView}
 							domainName={domainInformation?.name}
 						/>

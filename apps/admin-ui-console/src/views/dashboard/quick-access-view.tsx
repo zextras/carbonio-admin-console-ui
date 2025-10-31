@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
-
 import { Container, Text, Icon, Divider, ContainerProps } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -25,11 +24,30 @@ export const OperationContainer = styled(Container)`
 `;
 
 const QuickAccess: FC<{
-	quickAccessItems: Array<any>;
 	openOperationView: (operation: string) => void;
 	domainName: string;
-}> = ({ quickAccessItems, openOperationView, domainName }) => {
+}> = ({ openOperationView, domainName }) => {
 	const [t] = useTranslation();
+	const quickAccessItems = [
+		{
+			upperText: t('label.domains', 'Domains'),
+			operationText: t('label.accounts', 'Accounts'),
+			bottomText: t('label.open', 'Open'),
+			operationIcon: 'PersonOutline',
+			bottomIcon: 'ChevronRightOutline',
+			bgColor: 'avatar_39',
+			operation: 'account'
+		},
+		{
+			upperText: t('label.domains', 'Domains'),
+			operationText: t('label.distribution_list', 'Distribution List'),
+			bottomText: t('label.open', 'Open'),
+			operationIcon: 'DistributionListOutline',
+			bottomIcon: 'ChevronRightOutline',
+			bgColor: 'avatar_21',
+			operation: 'malinglist'
+		}
+	];
 	const handleClickedQuickAccess = (item: string): void => {
 		openOperationView(item);
 	};

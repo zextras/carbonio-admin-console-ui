@@ -8,42 +8,45 @@ import {
 	Button,
 	Container,
 	Divider,
-	Padding,
 	Row,
 	Text,
 	Input,
-	useSnackbar,
 	Modal,
 	Quota,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { TFunction } from 'i18next';
 import { find } from 'lodash';
 import moment from 'moment';
-import React, { useState, FC, ReactElement, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CONFIG, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { fetchSoap } from '../../../services/subscription-service';
-import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { CONFIG } from '../../../constants';
+import {
+	useActivateLicense,
+	useLicenseInfo,
+	useRemoveLicense,
+	useVersion
+} from '../../../hooks/use-subscription';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { LicenseBanner } from '../../dashboard/license-banner';
 
-interface Module {
+import { ServiceStatus } from './service-status';
+
+type Module = {
 	value: string;
 	label: string;
-}
+};
 type ModuleName = {
 	[key: string]: Module;
 };
 
-interface ModuleConfig {
+type ModuleConfig = {
 	name: string;
 	quantity: string;
 	enabled: boolean;
-}
+};
 
-type AllModuleConfig = {
+export type AllModuleConfig = {
 	name: Module;
 	quantity: string;
 	enabled: boolean;
@@ -100,110 +103,38 @@ const getGapColorForLabel = (label: React.Key | null | undefined): string => {
 	}
 };
 
-const ServiceStatus = ({
-	data,
-	licensed,
-	t
-}: {
-	data: any;
-	licensed: any;
-	t: TFunction;
-}): ReactElement => (
-	<Row
-		width="8rem"
-		height="7.688rem"
-		orientation="horizontal"
-		mainAlignment="flex-start"
-		crossAlignment="stretch"
-		borderRadius="regular"
-		style={{
-			padding: '0.75rem 0.75rem 0.75rem 0.5rem',
-			background: '#FFF',
-			boxShadow: `0rem 0rem 0.25rem 0rem rgba(166, 166, 166, 0.50)`,
-			marginBottom: '2.25rem'
-		}}
-	>
-		<Row
-			orientation="vertical"
-			crossAlignment="flex-end"
-			mainAlignment="space-between"
-			width="100%"
-		>
-			<Row orientation="vertical" crossAlignment="flex-start" width="100%" gap="0.25rem">
-				<Row
-					borderRadius="regular"
-					style={{
-						background: '#00506D'
-					}}
-					padding={{ horizontal: 'extrasmall' }}
-				>
-					<Text
-						size="small"
-						weight="bold"
-						style={{
-							color: '#FFF',
-							lineHeight: '1.313rem'
-						}}
-					>
-						{data?.name?.label}
-					</Text>
-				</Row>
-				<Row>
-					<Text size="extrasmall" weight="bold" style={{ whiteSpace: 'break-spaces' }}>
-						{data?.name?.value}
-					</Text>
-				</Row>
-			</Row>
-			<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
-				<Text size="extrasmall" weight="regular" color={licensed ? 'text' : 'secondary'}>
-					{}
-					{data?.quantity !== 'unlimited'
-						? `${data?.quantity} users`
-						: licensed
-							? t('label.enabled', 'Enabled')
-							: t('label.disabled', 'Disabled')}
-				</Text>
-			</Row>
-		</Row>
-	</Row>
-);
-
 export const Subscription: FC = () => {
-	const [services, setServices] = useState<any>({});
-	const [modules, setModules]: any = useState([]);
 	const [open, setOpen] = useState(false);
-	const [version, setVersion] = useState();
-	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
-	const [isLoader, setIsLoader] = useState(false);
-	const [isActivateLoading, setIsActivateLoading] = useState(false);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
-	const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState<boolean>(
-		moduleLicenseInfo?.maintenanceStatus !== 'active'
-	);
+	const [licenseKey, setLicenseKey] = useState('');
 
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const { t } = useTranslation();
 
-	const createSnackbar = useSnackbar();
+	const { data: licenseData } = useLicenseInfo();
+	const { data: version } = useVersion();
+	const activateLicenseMutation = useActivateLicense();
 
+	const removeLicenseMutation = useRemoveLicense();
 	const allowSetSubsciption = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	const { t } = useTranslation();
+	const services = useMemo(() => {
+		if (!licenseData) return null;
+		return licenseData;
+	}, [licenseData]);
 
-	const formatAndSetModulesStats = (response: {
-		response: { features: ModuleConfig[]; authenticationToken: React.SetStateAction<string> };
-	}) => {
-		const featurs: ModuleConfig[] = response?.response?.features;
-		const allModules: AllModuleConfig[] = featurs.map((module: ModuleConfig) => ({
+	const modules: Array<AllModuleConfig> = useMemo(() => {
+		if (!licenseData?.response?.features) return [];
+
+		const featurs = licenseData.response.features;
+		const allModules = featurs.map((module: ModuleConfig) => ({
 			...module,
 			name: moduleName[module.name]
 		}));
 
-		const formatModules: AllModuleConfig[] = allModules.filter(
-			(module: AllModuleConfig) => module.name !== undefined
-		);
+		const formatModules = allModules.filter((module: AllModuleConfig) => module.name !== undefined);
 		const predefinedOrder = [
 			'Storages',
 			'HA',
@@ -230,145 +161,49 @@ export const Subscription: FC = () => {
 			return indexA - indexB;
 		};
 
-		const orderModules: AllModuleConfig[] = formatModules.sort(ModuleSort);
-		const filterModules = orderModules.filter(
-			(module: AllModuleConfig) => module.name.value !== 'SproxyD'
-		);
+		const sortedModules = [...formatModules].sort(ModuleSort);
+		return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
+	}, [licenseData]);
 
-		setServices(response);
-		setModules(filterModules);
-		setLicenseKey(response.response.authenticationToken);
-	};
-
-	const getLicence = useCallback(() => {
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'getLicenseInfo'
-		}).then((res) => {
-			console.log(res);
-			const response = JSON.parse(res.response.content);
-			if (response.ok) {
-				if (response.response && response.response.type === 'None') {
-					setServices({});
-					setModules([]);
-					setLicenseKey('');
-					setVersion(undefined);
-				} else {
-					formatAndSetModulesStats(response);
-				}
-			}
-		});
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'getVersion'
-		}).then((res) => {
-			const response = JSON.parse(res.response.content);
-			if (response.ok) {
-				setVersion(response.response.version);
-			}
-		});
-	}, []);
-
+	// Set license key from response
 	useEffect(() => {
-		getLicence();
-	}, [getLicence]);
+		if (licenseData?.response?.authenticationToken) {
+			setLicenseKey(licenseData.response.authenticationToken);
+		} else {
+			setLicenseKey('');
+		}
+	}, [licenseData]);
 
 	const activeLicence = (): void => {
-		setIsActivateLoading(true);
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'activate-license',
-			token: licenseKey
-		})
-			.then((res) => {
-				setIsActivateLoading(false);
-				const response = JSON.parse(res.response.content);
-				if (response.ok) {
-					createSnackbar({
-						key: '1',
-						severity: 'success',
-						label: response.message,
-						replace: true
-					});
-					getLicence();
-				} else {
-					createSnackbar({
-						key: '1',
-						severity: 'error',
-						label:
-							response.message ||
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						replace: true
-					});
-					if (response.response && response.response.type === 'None') {
-						setServices({});
-						setModules([]);
-						setLicenseKey('');
-						setVersion(undefined);
-					} else {
-						getLicence();
-					}
-				}
-			})
-			.catch(() => setIsActivateLoading(false));
+		activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
 	};
 
 	const doRemoveLicense = (): void => {
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'doRemoveLicense',
-			iamsure: true
-		}).then((res) => {
-			const response = JSON.parse(res.response.content);
-			if (response.ok) {
-				createSnackbar({
-					key: '1',
-					severity: 'success',
-					label:
-						response.message ||
-						t(
-							'core.subscription.license_deactivated_successfully',
-							'License deactivated successfully'
-						),
-					replace: true
-				});
-				setServices({});
-				setModules([]);
-				setLicenseKey('');
-				setVersion(undefined);
-			} else {
-				createSnackbar({
-					key: '1',
-					severity: 'error',
-					label:
-						response.message ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					replace: true
-				});
+		removeLicenseMutation.mutate(undefined, {
+			onSuccess: () => {
+				setOpen(false);
 			}
-			setOpen(false);
 		});
 	};
 
+	const renewLicence = (): void => {
+		activateLicenseMutation.mutate({ token: licenseKey, renewal: true });
+	};
+
 	const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
-		const accountCount = services.response?.accountCount;
-		const licensedUsers = services.response?.licensedUsers;
+		const accountCount = services?.response?.accountCount ?? 0;
+		const licensedUsers = services?.response?.licensedUsers ?? 0;
 
 		if (licensedUsers === 0) {
-			// To avoid division by zero, handle this case appropriately
 			return 0;
 		}
 
 		return (accountCount / licensedUsers) * 100;
-	}, [services.response]);
+	}, [services]);
 
 	const getTypeDisplayValue = (): string => {
-		const { type } = services.response;
-		const { subType } = services.response;
+		if (!services?.response) return '';
+		const { type, subType } = services.response;
 
 		if (type === 'Purchased') {
 			if (subType === 'PERPETUAL' || subType === 'REGULAR') {
@@ -379,64 +214,9 @@ export const Subscription: FC = () => {
 		return type ?? '';
 	};
 
-	const renewLicence = (): void => {
-		setIsLoader(true);
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'activate-license',
-			token: licenseKey,
-			renewal: true
-		}).then((res) => {
-			const response = JSON.parse(res.response.content);
-			if (response.ok) {
-				setIsLoader(false);
-				createSnackbar({
-					key: '1',
-					severity: 'success',
-					label: response.message,
-					replace: true
-				});
-				getLicence();
-			} else {
-				setIsLoader(false);
-				createSnackbar({
-					key: '1',
-					severity: 'error',
-					label:
-						response.message ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					replace: true
-				});
-				if (response.response && response.response.type === 'None') {
-					setServices({});
-					setModules([]);
-					setLicenseKey('');
-					setVersion(undefined);
-				} else {
-					getLicence();
-				}
-			}
-		});
-	};
-
-	const licenseBannerShouldBeDisplayed = useMemo(() => {
-		return isLicenseBannerOpen && moduleLicenseInfo?.subType === 'PERPETUAL';
-	}, [moduleLicenseInfo, isLicenseBannerOpen]);
-
-	useEffect(() => {
-		setIsLicenseBannerOpen(moduleLicenseInfo?.maintenanceStatus !== 'active');
-	}, [moduleLicenseInfo?.maintenanceStatus]);
-
 	return (
 		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
-			{licenseBannerShouldBeDisplayed && (
-				<LicenseBanner
-					maintenanceEndDate={moduleLicenseInfo?.maintenanceEndDate}
-					maintenanceStatus={moduleLicenseInfo?.maintenanceStatus}
-					setLicenseBannerOpen={setIsLicenseBannerOpen}
-				/>
-			)}
+			<LicenseBanner />
 			<Container
 				orientation="horizontal"
 				mainAlignment="space-around"
@@ -503,7 +283,12 @@ export const Subscription: FC = () => {
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
-							disabled={!allowSetSubsciption || !licenseKey || isActivateLoading}
+							disabled={
+								!allowSetSubsciption ||
+								!licenseKey ||
+								activateLicenseMutation.isPending ||
+								removeLicenseMutation.isPending
+							}
 							type="outlined"
 							color={!services?.response || services.response.expired ? 'primary' : 'error'}
 							onClick={
@@ -511,21 +296,31 @@ export const Subscription: FC = () => {
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
-							loading={isActivateLoading}
+							loading={
+								activateLicenseMutation.isPending && !activateLicenseMutation.variables?.renewal
+							}
 							size="extralarge"
 						/>
 						<Button
 							label={t('core.subscription.renew', 'Renew')}
-							disabled={!allowSetSubsciption || !licenseKey || !services?.response}
+							disabled={
+								!allowSetSubsciption ||
+								!licenseKey ||
+								!services?.response ||
+								activateLicenseMutation.isPending ||
+								removeLicenseMutation.isPending
+							}
 							type="outlined"
 							color="primary"
 							onClick={(): void => renewLicence()}
-							loading={isLoader}
+							loading={
+								activateLicenseMutation.isPending && !!activateLicenseMutation.variables?.renewal
+							}
 							size="extralarge"
 						/>
 					</Container>
 				</Container>
-				{services && services.response && (
+				{services?.response && (
 					<Container
 						orientation="horizontal"
 						width="100%"
@@ -727,33 +522,23 @@ export const Subscription: FC = () => {
 					wrap="wrap"
 					height="fit"
 				>
-					{modules.map(
-						(
-							module: { name: { label: React.Key | null | undefined }; enabled: any },
-							index: number
-						) => (
-							<React.Fragment key={module.name.label}>
-								{index > 0 && (
-									<Container
-										style={{
-											width: '2.25rem',
-											height: '7.688rem',
-											background:
-												module.name.label !== modules[index - 1].name.label
-													? 'transperent'
-													: getGapColorForLabel(module.name.label)
-										}}
-									/>
-								)}
-								<ServiceStatus
-									key={module.name.label}
-									data={module}
-									licensed={module.enabled}
-									t={t}
+					{modules.map((module: AllModuleConfig, index: number) => (
+						<>
+							{index > 0 && (
+								<Container
+									style={{
+										width: '2.25rem',
+										height: '7.688rem',
+										background:
+											module.name.label !== modules[index - 1].name.label
+												? 'transperent'
+												: getGapColorForLabel(module.name.label)
+									}}
 								/>
-							</React.Fragment>
-						)
-					)}
+							)}
+							<ServiceStatus key={module.name.label} data={module} />
+						</>
+					))}
 				</Container>
 				<Divider style={{ marginBlockStart: '2rem' }} />
 			</Container>
@@ -768,11 +553,12 @@ export const Subscription: FC = () => {
 							color="secondary"
 							onClick={(): void => setOpen(false)}
 						/>
-						<Padding horizontal="small" />
+						<Container width="0.5rem" />
 						<Button
 							color="error"
 							label={t('core.subscription.modal.deactivate', 'Yes, Deactivate')}
 							onClick={doRemoveLicense}
+							loading={removeLicenseMutation.isPending}
 						/>
 					</>
 				}
