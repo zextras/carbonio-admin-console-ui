@@ -16,6 +16,7 @@
 		"test:ci": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@tanstack/react-query": "^5.90.5",
 		"@types/react-csv": "^1.1.10",
 		"@zextras/admin-ui-bootstrap": "workspace:*",
 		"@zextras/carbonio-design-system": "^8.1.0",
@@ -42,6 +43,7 @@
 		"@babel/preset-env": "^7.22.15",
 		"@babel/preset-react": "^7.22.15",
 		"@babel/preset-typescript": "^7.22.15",
+		"@tanstack/react-query-devtools": "^5.90.2",
 		"@testing-library/react": "^16.0.1",
 		"@types/lodash": "^4.14.197",
 		"@types/react": "^18.3.11",

@@ -67,6 +67,7 @@ import {
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
+import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
@@ -94,11 +95,13 @@ import { getRights } from './views/utility/utils';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<ReactQueryProvider>
+		<TrackerProvider>
+			<Suspense fallback={<Spinner />}>
+				<LazyAppView {...props} />
+			</Suspense>
+		</TrackerProvider>
+	</ReactQueryProvider>
 );
 
 const PrimaryBarIconButton = styled(Button)`
