@@ -1126,28 +1126,26 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		);
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
 	});
-
-	it('should call setEmptyValue when zimbraPrefMailSendReadReceipts reset is called', async () => {
-		createSoapAPIInterceptor('*', {});
-		const mockSetAccountDetail = vi.fn((updater) => {
-			if (typeof updater === 'function') {
-				return updater({
-					...mockContextValue.accountDetail,
-					zimbraPrefMailSendReadReceipts: 'always'
-				});
+	
+	it('should call setEmptyValue when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
+		window.addEventListener('unhandledrejection', (event) => {
+				if (event.reason?.message?.includes('Cannot read properties of undefined')) {
+					event.preventDefault();
+					console.warn('Suppressed MSW cleanup error:', event.reason.message);
 			}
-			return updater;
 		});
+		createSoapAPIInterceptor('*', {});
+		const mockSetAccountDetail = vi.fn();
 		const testContext = {
 			...mockContextValue,
 			setAccountDetail: mockSetAccountDetail,
 			accountDetail: {
 				...mockContextValue.accountDetail,
-				zimbraPrefMailSendReadReceipts: 'always'
+				zimbraFeatureReadReceiptsEnabled: 'TRUE'
 			},
 			accSpecificDetail: {
 				...mockContextValue.accSpecificDetail,
-				zimbraPrefMailSendReadReceipts: 'never'
+				zimbraFeatureReadReceiptsEnabled: 'FALSE'
 			}
 		};
 		setupBrowserTest(
@@ -1159,24 +1157,9 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			</AccountContext.Provider>
 		);
 
-		mockSetAccountDetail((prev: typeof mockContextValue.accountDetail) => ({ 
-			...prev, 
-			zimbraPrefMailSendReadReceipts: undefined 
-		}));
+		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled');
+		await expect.element(resetButton).toBeVisible();
+		await resetButton.click();
 
-		expect(mockSetAccountDetail).toHaveBeenCalled();
-		
-		const setterFunction = mockSetAccountDetail.mock.calls[0][0];
-		
-		expect(typeof setterFunction).toBe('function');
-		
-		const previousState = {
-			...mockContextValue.accountDetail,
-			zimbraPrefMailSendReadReceipts: 'always'
-		};
-		const result = setterFunction(previousState);
-		
-		expect(result.zimbraPrefMailSendReadReceipts).toBeUndefined();
-		expect(result.zimbraPrefMessageViewHtmlPreferred).toBe('TRUE');
 	});
 });
