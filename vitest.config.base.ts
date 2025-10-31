@@ -126,10 +126,10 @@ export default defineConfig({
 					include: ['**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
-						provider: playwright() as any,
-						name: 'chromium',
-						viewport: { width: 834, height: 2000 },
 						enabled: true,
+						provider: playwright() as any,
+						instances: [{ browser: 'chromium' }],
+						viewport: { width: 834, height: 2000 },
 						headless: !!process.env.CI,
 						screenshotFailures: !process.env.CI
 					},
@@ -159,8 +159,7 @@ export default defineConfig({
 				'**/*.test.{ts,tsx}',
 				'**/*.spec.{ts,tsx}'
 			],
-			include: ['src/**/*.{ts,tsx}'],
-			all: true
+			include: ['src/**/*.{ts,tsx}']
 		}
 	}
 });
