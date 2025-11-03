@@ -59,7 +59,7 @@ const fetchVersion = async (): Promise<VersionResponse> => {
 		module: 'ZxCore',
 		action: 'getVersion'
 	});
-	return JSON.parse(res.Body.response.content);
+	return JSON.parse(res.response.content);
 };
 
 const activateLicense = async (token: string, renewal = false): Promise<LicenseResponse> => {
@@ -70,7 +70,7 @@ const activateLicense = async (token: string, renewal = false): Promise<LicenseR
 		token,
 		...(renewal && { renewal: true })
 	});
-	return JSON.parse(res.Body.response.content);
+	return JSON.parse(res.response.content);
 };
 
 const removeLicense = async (): Promise<LicenseResponse> => {
@@ -80,7 +80,7 @@ const removeLicense = async (): Promise<LicenseResponse> => {
 		action: 'doRemoveLicense',
 		iamsure: true
 	});
-	return JSON.parse(res.Body.response.content);
+	return JSON.parse(res.response.content);
 };
 
 const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
@@ -89,7 +89,8 @@ const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
 		module: 'ZxCore',
 		action: 'getLicenseInfo'
 	});
-	return JSON.parse(res.Body.response.content);
+	console.log(res)
+	return JSON.parse(res.response.content);
 };
 
 export const useLicenseInfo = () => {
@@ -209,10 +210,10 @@ export const useModuleLicenseInfo = () => {
 
 	const moduleLicenseInfo: ModuleLicenseInfo | null = licenseData?.response
 		? {
-				maintenanceEndDate: licenseData.response.maintenanceEndDate,
-				maintenanceStatus: licenseData.response.maintenanceStatus,
-				subType: licenseData.response.subType
-			}
+			maintenanceEndDate: licenseData?.response.maintenanceEndDate,
+			maintenanceStatus: licenseData?.response.maintenanceStatus,
+			subType: licenseData?.response.subType
+		}
 		: null;
 
 	const licenseBannerShouldBeDisplayed =
