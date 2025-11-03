@@ -7,14 +7,18 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 
-exports.command = 'vite-build-shell';
-exports.desc = 'Build shell/bootstrap using Vite';
+exports.command = 'build';
+exports.desc = 'Build project using Vite';
 exports.builder = {
 	dev: {
 		desc: 'Build in development mode',
 		alias: 'd',
 		default: false,
 		boolean: true
+	},
+	pkgRel: {
+		desc: 'Package release number',
+		default: '1'
 	}
 };
 
@@ -25,7 +29,11 @@ exports.handler = async (options) => {
 		args.push('--dev');
 	}
 	
-	const scriptPath = resolve(__dirname, 'vite', 'build-shell.mjs');
+	if (options.pkgRel) {
+		args.push(`--pkgRel=${options.pkgRel}`);
+	}
+
+	const scriptPath = resolve(__dirname, 'vite', 'build.mjs');
 	
 	const buildProcess = spawn('node', [scriptPath, ...args], {
 		stdio: 'inherit',

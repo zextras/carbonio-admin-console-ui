@@ -5,8 +5,7 @@
 	"description": "Cos module for Zextras Carbonio Admin Panel",
 	"main": "src/app.tsx",
 	"scripts": {
-		"build": "sdk vite-build",
-		"build:dev": "sdk vite-build --dev",
+		"build": "sdk build",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"type-check": "tsc --noEmit",

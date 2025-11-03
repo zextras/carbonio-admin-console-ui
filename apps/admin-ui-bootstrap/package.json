@@ -10,9 +10,7 @@
 		"npm": "v10"
 	},
 	"scripts": {
-		"build-webpack": "sdk webpack-build --admin",
-		"build": "sdk vite-build-shell",
-		"build:dev": "sdk vite-build-shell --dev",
+		"build": "sdk build-shell",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
 		"deploy": "sdk deploy --admin",
