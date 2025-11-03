@@ -6,6 +6,7 @@
 	"main": "src/app.tsx",
 	"scripts": {
 		"build": "sdk build",
+		"build:dev": "sdk build --dev",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
 		"type-check": "tsc --noEmit",

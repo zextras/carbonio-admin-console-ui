@@ -11,6 +11,7 @@
 	},
 	"scripts": {
 		"build": "sdk build-shell",
+		"build:dev": "sdk build-shell --dev",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
 		"deploy": "sdk deploy --admin",
