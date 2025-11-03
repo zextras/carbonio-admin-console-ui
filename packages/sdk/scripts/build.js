@@ -7,7 +7,7 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 
-exports.command = 'vite-build';
+exports.command = 'build';
 exports.desc = 'Build project using Vite';
 exports.builder = {
 	dev: {

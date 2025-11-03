@@ -36,9 +36,9 @@ window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
 const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
 
 // @ts-ignore
-if (module.hot) {
+if (import.meta.hot) {
 	// @ts-ignore
-	module.hot.accept();
+	import.meta.hot.accept();
 }
 
 const root = ReactDOM.createRoot(document.getElementById('app')!);
