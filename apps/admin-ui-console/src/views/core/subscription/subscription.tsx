@@ -17,7 +17,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
-import React, { useState, FC, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../../constants';
@@ -103,15 +103,16 @@ const getGapColorForLabel = (label: React.Key | null | undefined): string => {
 	}
 };
 
-export const Subscription: FC = () => {
+export const Subscription = (): React.JSX.Element => {
 	const [open, setOpen] = useState(false);
-	const [licenseKey, setLicenseKey] = useState('');
+
+	const { data: version } = useVersion();
+	const { data: licenseData } = useLicenseInfo();
+	const [licenseKey, setLicenseKey] = useState(licenseData?.response?.authenticationToken ?? '');
 
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const { t } = useTranslation();
 
-	const { data: licenseData } = useLicenseInfo();
-	const { data: version } = useVersion();
 	const activateLicenseMutation = useActivateLicense();
 
 	const removeLicenseMutation = useRemoveLicense();
@@ -163,15 +164,6 @@ export const Subscription: FC = () => {
 
 		const sortedModules = [...formatModules].sort(ModuleSort);
 		return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
-	}, [licenseData]);
-
-	// Set license key from response
-	useEffect(() => {
-		if (licenseData?.response?.authenticationToken) {
-			setLicenseKey(licenseData.response.authenticationToken);
-		} else {
-			setLicenseKey('');
-		}
 	}, [licenseData]);
 
 	const activeLicence = (): void => {
