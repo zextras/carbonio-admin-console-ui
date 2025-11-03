@@ -8,10 +8,7 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { build } from 'vite';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const cwd = process.cwd();
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
