@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo } from 'react';
-
 import {
 	Select,
 	Tooltip,
@@ -15,6 +13,7 @@ import {
 	Padding,
 	SelectItem
 } from '@zextras/carbonio-design-system';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedSelect: FC<{
@@ -96,6 +95,7 @@ const InheritedSelect: FC<{
 						onClick={onChangeReset}
 						style={{ cursor: 'pointer' }}
 						onChange={(): null => null}
+						data-testid={`reset-${selectName}`}
 					/>
 				</Tooltip>
 			) : (
