@@ -16,18 +16,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 
-console.log('Building shell in production mode');
+const args = process.argv.slice(2);
+const isDev = args.includes('--dev');
+const mode = isDev ? 'development' : 'production';
+
+console.log(`Building shell in ${mode} mode`);
 console.log(`Commit hash: ${commitHash}`);
 
 // Build with Vite
 await build({
 	configFile: path.resolve(cwd, 'vite.config.ts'),
-	mode: 'production'
+	mode
 });
 
 console.log('\nRunning post-build tasks...');
 
-const distDir = path.resolve(cwd, 'dist', commitHash);
+const distDir = path.resolve(cwd, 'dist', 'source', commitHash);
 const currentDir = path.resolve(cwd, 'dist', 'current');
 
 // Create current directory
@@ -51,9 +55,12 @@ console.log('Generated commit file');
 // Generate component.json
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
 
+// Use different bundle names for dev vs production
+const bundleName = isDev ? 'zapp-shell.bundle.js' : 'zapp-admin-ui.bundle.js';
+
 const componentJson = {
 	name: 'carbonio-admin-ui',
-	js_entrypoint: `/static/iris/carbonio-admin-ui/${commitHash}/zapp-admin-ui.bundle.js`,
+	js_entrypoint: `/static/iris/carbonio-admin-ui/${commitHash}/${bundleName}`,
 	description: packageJson.description || '',
 	version: packageJson.version,
 	commit: commitHash,

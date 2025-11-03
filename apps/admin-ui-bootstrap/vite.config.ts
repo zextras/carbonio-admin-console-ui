@@ -38,7 +38,8 @@ export default defineConfig(({ mode }) => {
 		],
 		define: {
 			COMMIT_ID: JSON.stringify(commitHash),
-			BASE_PATH: JSON.stringify(basePath)
+			BASE_PATH: JSON.stringify(basePath),
+			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production')
 		},
 		resolve: {
 			alias: {
@@ -47,12 +48,12 @@ export default defineConfig(({ mode }) => {
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
 		},
 		build: {
-			outDir: `dist/${commitHash}`,
+			outDir: `dist/source/${commitHash}`,
 			emptyOutDir: true,
 			sourcemap: true,
 			rollupOptions: createBootstrapRollupOptions(isDev)
 		},
-		base: isDev ? '/' : basePath,
+		base: basePath,
 		publicDir: 'assets',
 		server: {
 			port: 3000,

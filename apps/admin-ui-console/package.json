@@ -6,6 +6,7 @@
 	"main": "src/app.tsx",
 	"scripts": {
 		"build": "sdk vite-build",
+		"build:dev": "sdk vite-build --dev",
 		"build-webpack": "sdk webpack-build",
 		"deploy": "sdk deploy",
 		"start": "sdk watch",
