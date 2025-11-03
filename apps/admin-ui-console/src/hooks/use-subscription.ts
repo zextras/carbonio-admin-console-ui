@@ -55,54 +55,48 @@ export const queryKeys = {
 
 const fetchVersion = async (): Promise<VersionResponse> => {
 	const res = await fetchSoap('zextras', {
-		zextras: {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'getVersion'
-		}
+		_jsns: ZIMBRA_ADMIN_URN,
+		module: 'ZxCore',
+		action: 'getVersion'
 	});
 	return JSON.parse(res.Body.response.content);
 };
 
 const activateLicense = async (token: string, renewal = false): Promise<LicenseResponse> => {
 	const res = await fetchSoap('zextras', {
-		zextras: {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'activate-license',
-			token,
-			...(renewal && { renewal: true })
-		}
+		_jsns: ZIMBRA_ADMIN_URN,
+		module: 'ZxCore',
+		action: 'activate-license',
+		token,
+		...(renewal && { renewal: true })
 	});
 	return JSON.parse(res.Body.response.content);
 };
 
 const removeLicense = async (): Promise<LicenseResponse> => {
 	const res = await fetchSoap('zextras', {
-		zextras: {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'doRemoveLicense',
-			iamsure: true
-		}
+		_jsns: ZIMBRA_ADMIN_URN,
+		module: 'ZxCore',
+		action: 'doRemoveLicense',
+		iamsure: true
 	});
 	return JSON.parse(res.Body.response.content);
 };
 
 const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
 	const res = await fetchSoap('zextras', {
-		zextras: {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'getLicenseInfo'
-		}
+		_jsns: ZIMBRA_ADMIN_URN,
+		module: 'ZxCore',
+		action: 'getLicenseInfo'
 	});
 	return JSON.parse(res.Body.response.content);
 };
+
 export const useLicenseInfo = () => {
 	return useQuery({
 		queryKey: queryKeys.license(),
 		queryFn: fetchLicenseInfo,
+		retry: 3,
 		select: (data) => {
 			if (!data.ok || !data.response || data.response.type === 'None') {
 				return null;
@@ -116,6 +110,7 @@ export const useVersion = () => {
 	return useQuery({
 		queryKey: queryKeys.version(),
 		queryFn: fetchVersion,
+		retry: 3,
 		select: (data) => (data.ok ? data.response?.version : undefined)
 	});
 };
