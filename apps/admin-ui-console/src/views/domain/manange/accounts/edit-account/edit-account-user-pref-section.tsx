@@ -3,6 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
+import { map, some } from 'lodash';
 import React, {
 	FC,
 	useCallback,
@@ -12,12 +15,8 @@ import React, {
 	useEffect,
 	ChangeEvent
 } from 'react';
-
-import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { SignatureDetail } from './signature-detail';
 import CustomChip from '../../../../components/customChip';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
@@ -30,6 +29,8 @@ import {
 	isValidEmail
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
+
+import { SignatureDetail } from './signature-detail';
 
 const EditAccountUserPrefrencesSection: FC<{
 	signatureItems: any;
@@ -45,17 +46,8 @@ const EditAccountUserPrefrencesSection: FC<{
 		cosDetail,
 		accSpecificDetail
 	} = context;
-	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
-		accountDetail?.zimbraPrefMailPollingInterval?.slice(0, -1)
-	);
-	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
-		accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''
-	);
 	const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState(
 		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1)
-	);
-	const [outOfOfficeCacheDurationType, setOutOfOfficeCacheDurationType] = useState(
-		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''
 	);
 	const [zimbraAllowFromAddress, setZimbraAllowFromAddress] = useState<any[]>([]);
 
@@ -63,7 +55,10 @@ const EditAccountUserPrefrencesSection: FC<{
 	const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
 	const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
 	const CHARACTOR_SET = useMemo(() => charactorSet(), []);
-
+	const outOfOfficeCacheDurationType = useMemo(
+		() => accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '',
+		[accountDetail]
+	);
 	const POLLING_INTERVAL = useMemo(
 		() => [
 			{
@@ -147,12 +142,9 @@ const EditAccountUserPrefrencesSection: FC<{
 	const APPOINTMENT_DURATION = useMemo(
 		() => [
 			{
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				label: t('reminder.minute', {
 					count: 30,
-					// eslint-disable-next-line sonarjs/no-duplicate-string
 					defaultValue_one: '{{count}} minute',
-					// eslint-disable-next-line sonarjs/no-duplicate-string
 					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '30m'
@@ -411,18 +403,16 @@ const EditAccountUserPrefrencesSection: FC<{
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.ask_read_receipts',
-							`Permit the user to ask for read receipt`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
-						fromSubValue={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
-						inputName={'zimbraFeatureReadReceiptsEnabled'}
-						onChangeReset={(): void => setEmptyValue('zimbraFeatureReadReceiptsEnabled')}
+					<InheritedSelect
+						label={t('label.read_receipt_settings', 'Read Receipt settings')}
+						items={SEND_READ_RECEIPTS}
+						subValue={accountDetail?.zimbraPrefMailSendReadReceipts}
+						inheritedValue={cosDetail.zimbraPrefMailSendReadReceipts}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
+						background="gray5"
+						selectName="zimbraPrefMailSendReadReceipts"
+						onChange={onReadReceiptChange}
+						onChangeReset={(): void => setEmptyValue('zimbraPrefMailSendReadReceipts')}
 					/>
 				</Row>
 			</Row>
@@ -476,16 +466,18 @@ const EditAccountUserPrefrencesSection: FC<{
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="100%" mainAlignment="flex-start">
-					<InheritedSelect
-						label={t('label.read_receipt_settings', 'Read Receipt settings')}
-						items={SEND_READ_RECEIPTS}
-						subValue={accountDetail?.zimbraPrefMailSendReadReceipts}
-						inheritedValue={cosDetail.zimbraPrefMailSendReadReceipts}
-						fromSubValue={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
-						background="gray5"
-						selectName="zimbraPrefMailSendReadReceipts"
-						onChange={onReadReceiptChange}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefMailSendReadReceipts')}
+					<InheritedSwitch
+						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
+						onChange={changeSwitchOption}
+						label={t(
+							'account_details.ask_read_receipts',
+							`Permit the user to ask for read receipt`
+						)}
+						iconColor="primary"
+						inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
+						fromSubValue={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
+						inputName={'zimbraFeatureReadReceiptsEnabled'}
+						onChangeReset={(): void => setEmptyValue('zimbraFeatureReadReceiptsEnabled')}
 					/>
 				</Row>
 			</Row>
