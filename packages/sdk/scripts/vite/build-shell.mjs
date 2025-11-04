@@ -36,7 +36,7 @@ await build({
 console.log('\nRunning post-build tasks...');
 
 const distDir = path.resolve(cwd, 'dist', 'source', commitHash);
-const currentDir = path.resolve(cwd, 'dist', 'current');
+const currentDir = path.resolve(cwd, 'dist', 'source', 'current');
 
 // Create current directory
 if (!fs.existsSync(currentDir)) {
