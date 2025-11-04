@@ -7,7 +7,8 @@
 	"scripts": {
 		"build": "sdk build",
 		"build:dev": "sdk build --dev",
-		"deploy": "sdk deploy",
+		"deploy": "npm run build && sdk deploy",
+		"deploy:dev": "npm run build:dev && sdk deploy",
 		"start": "sdk watch",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",

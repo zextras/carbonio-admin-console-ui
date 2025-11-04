@@ -54,6 +54,25 @@ exports.handler = async (options) => {
       );
       return;
   }
+  
+  // Read the actual commit hash from the built dist instead of using current HEAD
+  // This prevents mismatch when deploying without rebuilding after new commits
+  const distSourcePath = path.resolve(distPath, 'source');
+  const commitDirs = existsSync(distSourcePath) 
+    ? require('node:fs').readdirSync(distSourcePath).filter(f => f !== 'current')
+    : [];
+  
+  let deployCommitHash = commitHash;
+  if (commitDirs.length === 1) {
+    // Use the commit hash from the actual build directory
+    deployCommitHash = commitDirs[0];
+    console.log(`Using built commit hash: ${chalkTemplate.bold(deployCommitHash)}`);
+    if (deployCommitHash !== commitHash) {
+      console.log(chalkTemplate.yellow(`Warning: Current HEAD (${commitHash}) differs from built version (${deployCommitHash})`));
+    }
+  } else if (commitDirs.length > 1) {
+    console.log(chalkTemplate.yellow(`Warning: Multiple commit directories found in dist, using current HEAD: ${commitHash}`));
+  }
   if (options.host) {
     const cpTarget = `${options.user}@${options.host}`;
     const sshTarget = `${options.user}@${options.host}${
@@ -62,8 +81,8 @@ exports.handler = async (options) => {
     console.log(`- Deploying to ${chalkTemplate.bold(sshTarget)}...`);
     execSync(`ssh ${sshTarget} '
         find ${pathPrefix}${options.name} -mindepth 1 -name i18n -prune -o -exec rm -rf {} + &&
-        cd ${pathPrefix} && mkdir -p ${options.name}/${commitHash} ${options.name}/current &&
-        ln -sf ${pathPrefix}${options.name}/i18n "${pathPrefix}${options.name}/${commitHash}/i18n"
+        cd ${pathPrefix} && mkdir -p ${options.name}/${deployCommitHash} ${options.name}/current &&
+        ln -sf ${pathPrefix}${options.name}/i18n "${pathPrefix}${options.name}/${deployCommitHash}/i18n"
     '`);
 
     execSync(
@@ -76,7 +95,7 @@ exports.handler = async (options) => {
       updateJson(
         JSON.parse(
             execSync(
-                `ssh ${sshTarget} cat ${pathPrefix}${options.name}/${commitHash}/component.json`
+                `ssh ${sshTarget} cat ${pathPrefix}${options.name}/${deployCommitHash}/component.json`
             ).toString()
         ),
         JSON.parse(
@@ -92,7 +111,7 @@ exports.handler = async (options) => {
     );
     console.log(`- Updating html indexes...`);
     execSync(
-      `ssh ${sshTarget} "cd ${pathPrefix}${options.name}/${commitHash} && find . -name \"*.html\" -exec cp --parents \"{}\" ${pathPrefix}${options.name}/current/ \\;"`
+      `ssh ${sshTarget} "cd ${pathPrefix}${options.name}/${deployCommitHash} && find . -name \"*.html\" -exec cp --parents \"{}\" ${pathPrefix}${options.name}/current/ \\;"`
     );
     console.log(chalkTemplate.bgBlue.white.bold('Deploy Completed'));
   } else {
