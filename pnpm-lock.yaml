@@ -282,7 +282,7 @@ importers:
         version: 10.20.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.285.0
+        version: 1.285.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.0)
@@ -409,7 +409,7 @@ importers:
         version: 10.20.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.285.0
+        version: 1.285.1
       react:
         specifier: ^19.1.0
         version: 19.2.0
@@ -2469,8 +2469,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.8.23:
-    resolution: {integrity: sha512-616V5YX4bepJFzNyOfce5Fa8fDJMfoxzOIzDCZwaGL8MKVpFrXqfNUoIpRn9YMI5pXf/VKgzjB4htFMsFKKdiQ==}
+  baseline-browser-mapping@2.8.24:
+    resolution: {integrity: sha512-uUhTRDPXamakPyghwrUcjaGvvBqGrWvBHReoiULMIpOJVM9IYzQh83Xk2Onx5HlGI2o10NNCzcs9TG/S3TkwrQ==}
     hasBin: true
 
   batch@0.6.1:
@@ -4761,8 +4761,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.285.0:
-    resolution: {integrity: sha512-rNpxWoqTywb412YcTMeLk4qvWAGkoMO5SLgASyaqulLrPCuDGU0Go53seKiIaEEvHY8jJHL5NGnnVVjErSk6OA==}
+  posthog-js@1.285.1:
+    resolution: {integrity: sha512-+Cn3igI6LoOJuGtsiVsD15a0jGIaR1zE5tEG3Ovd4MLgti3RFHdS1eOisZTJUuQa2bR8X/Bx7HdoXsGNmW9h4Q==}
 
   preact@10.27.2:
     resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
@@ -8211,7 +8211,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.8.23: {}
+  baseline-browser-mapping@2.8.24: {}
 
   batch@0.6.1: {}
 
@@ -8264,7 +8264,7 @@ snapshots:
 
   browserslist@4.27.0:
     dependencies:
-      baseline-browser-mapping: 2.8.23
+      baseline-browser-mapping: 2.8.24
       caniuse-lite: 1.0.30001753
       electron-to-chromium: 1.5.244
       node-releases: 2.0.27
@@ -10976,7 +10976,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.285.0:
+  posthog-js@1.285.1:
     dependencies:
       '@posthog/core': 1.5.0
       core-js: 3.46.0
