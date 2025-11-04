@@ -36,27 +36,27 @@ const BackupServerConfig: FC = () => {
 		t
 	} = useBackupConfig();
 
-	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
 		useState<boolean>(false);
 	useEffect(() => {
-		if (moduleLicense && moduleLicense.length > 0) {
-			const backupModule = moduleLicense.filter(
+		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 
-			const realTime = moduleLicense.filter(
+			const realTime = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
 			);
 			if (realTime && realTime[0] && realTime[0]?.enabled) {
 				setBackupRealTimeFeatureLicensed(true);
 			}
 		}
-	}, [moduleLicense]);
+	}, [moduleLicenseInfo]);
 
 	return (
 		<>

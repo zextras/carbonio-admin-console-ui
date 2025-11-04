@@ -5,9 +5,9 @@
  */
 
 import { page } from '@vitest/browser/context';
-import { setupBrowserTest, createSoapAPIInterceptor } from 'admin-ui-test-utils';
+import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { it, expect, describe, vi } from 'vitest';
+import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 
 import { AccountContext } from '../account-context';
 
@@ -15,6 +15,38 @@ import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 
 const signatureItems: unknown[] = [];
 const signatureList: unknown[] = [];
+
+// Suppress MSW cleanup errors that occur when tests finish
+let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
+
+beforeAll(() => {
+	unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
+		// Suppress MSW deserialization errors that occur during test cleanup
+		if (
+			event.reason?.message?.includes('Cannot read properties of undefined') &&
+			event.reason?.stack?.includes('deserializeRequest')
+		) {
+			event.preventDefault();
+		}
+	};
+	globalThis.addEventListener('unhandledrejection', unhandledRejectionHandler);
+});
+
+afterAll(() => {
+	if (unhandledRejectionHandler) {
+		globalThis.removeEventListener('unhandledrejection', unhandledRejectionHandler);
+	}
+});
+
+beforeEach(() => {
+	// Mock fetch API to handle any SOAP requests
+	vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+		new Response(JSON.stringify({ Body: {} }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	);
+});
 
 const mockContextValue = {
 	accountDetail: {
@@ -140,7 +172,6 @@ const mockContextValue = {
 
 describe('EditAccountUserPrefrencesSection (browser)', () => {
 	it('should render main sections', async () => {
-		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -158,7 +189,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render signature section', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -171,7 +201,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render select options for "Group by" and "Default Charset"', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -185,7 +214,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should allow entering allowed sending addresses', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -198,7 +226,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render calendar options section and select time zone', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -212,7 +239,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with empty accountDetail', async () => {
-		createSoapAPIInterceptor('*', {});
 		const emptyContext = { ...mockContextValue, accountDetail: {} };
 		setupBrowserTest(
 			<AccountContext.Provider value={emptyContext}>
@@ -223,7 +249,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render all select options', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -251,7 +276,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render and interact with ChipInput for allowed sending addresses', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -264,7 +288,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render all mail options switches', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -281,7 +304,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render receiving mails section with switches', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -295,7 +317,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render sending mails section', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -311,7 +332,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render contact options switches', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -325,7 +345,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render all calendar switches', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection
@@ -353,7 +372,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should handle zimbraAllowFromAddress from accountDetail', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithAddresses = {
 			...mockContextValue,
 			accountDetail: {
@@ -373,7 +391,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different zimbraPrefMessageViewHtmlPreferred values', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithFalse = {
 			...mockContextValue,
 			accountDetail: {
@@ -393,7 +410,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different zimbraPrefGroupMailBy values', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithGroupBy = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefGroupMailBy: 'conversation' }
@@ -410,7 +426,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different polling intervals', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithPolling = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '5m' }
@@ -427,7 +442,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different read receipt settings', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithReadReceipt = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'always' }
@@ -446,7 +460,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different out of office cache duration', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithOOO = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefOutOfOfficeCacheDuration: '3h' }
@@ -463,7 +476,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different timezone', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithTz = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefTimeZoneId: 'America/New_York' }
@@ -480,7 +492,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different calendar default appointment duration', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithDuration = {
 			...mockContextValue,
 			accountDetail: {
@@ -500,7 +511,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different calendar reminder warning time', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithReminder = {
 			...mockContextValue,
 			accountDetail: {
@@ -520,7 +530,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different calendar initial view', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithView = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'week' }
@@ -537,7 +546,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different first day of week', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithFirstDay = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '1' }
@@ -554,7 +562,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different appointment visibility', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithVisibility = {
 			...mockContextValue,
 			accountDetail: {
@@ -574,7 +581,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled mail signature', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithSignature = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSignatureEnabled: 'TRUE' }
@@ -591,7 +597,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled read receipts feature', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithReadReceipt = {
 			...mockContextValue,
 			accountDetail: {
@@ -611,7 +616,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled auto add contacts', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithAutoAdd = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefAutoAddAddressEnabled: 'TRUE' }
@@ -628,7 +632,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled GAL autocomplete', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithGal = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefGalAutoCompleteEnabled: 'TRUE' }
@@ -645,7 +648,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with all calendar preferences enabled', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithCalendar = {
 			...mockContextValue,
 			accountDetail: {
@@ -672,7 +674,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render without zimbraId in accountDetail', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithoutId = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraId: undefined }
@@ -689,7 +690,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with different charset', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithCharset = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailDefaultCharset: 'UTF-8' }
@@ -706,7 +706,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled out of office reply', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithOOO = {
 			...mockContextValue,
 			accountDetail: {
@@ -726,7 +725,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled save to sent', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithSaveToSent = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefSaveToSent: 'TRUE' }
@@ -743,7 +741,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled message deduping', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithDeduping = {
 			...mockContextValue,
 			accountDetail: {
@@ -763,7 +760,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with enabled mail toaster', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithToaster = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailToasterEnabled: 'TRUE' }
@@ -780,7 +776,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should handle undefined zimbraPrefOutOfOfficeCacheDuration', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextUndefined = {
 			...mockContextValue,
 			accountDetail: {
@@ -800,7 +795,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with varying boolean preferences as TRUE', async () => {
-		createSoapAPIInterceptor('*', {});
 		const contextWithTrue = {
 			...mockContextValue,
 			accountDetail: {
@@ -824,7 +818,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with all sections visible', async () => {
-		createSoapAPIInterceptor('*', {});
 		const fullContext = {
 			...mockContextValue,
 			accountDetail: {
@@ -858,7 +851,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render SignatureDetail component', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testSignatureItems = [{ id: '1', name: 'Test Signature' }];
 		const testSignatureList = [{ id: '1', content: 'Test content' }];
 		setupBrowserTest(
@@ -873,7 +865,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with empty signatures', async () => {
-		createSoapAPIInterceptor('*', {});
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountUserPrefrencesSection signatureItems={[]} signatureList={[]} />
@@ -883,7 +874,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with all possible preference values set', async () => {
-		createSoapAPIInterceptor('*', {});
 		const fullPrefsContext = {
 			...mockContextValue,
 			accountDetail: {
@@ -933,7 +923,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with minimal accountDetail', async () => {
-		createSoapAPIInterceptor('*', {});
 		const minimalContext = {
 			...mockContextValue,
 			accountDetail: {
@@ -952,7 +941,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should handle different out of office cache duration with days', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefOutOfOfficeCacheDuration: '1d' }
@@ -969,7 +957,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should handle different out of office cache duration with hours', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: {
@@ -989,7 +976,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with read receipt option never', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'never' }
@@ -1006,7 +992,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with read receipt option prompt', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'prompt' }
@@ -1023,7 +1008,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with polling interval 500', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '500' }
@@ -1040,7 +1024,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with polling interval 15m', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '15m' }
@@ -1057,7 +1040,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with calendar view day', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'day' }
@@ -1074,7 +1056,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with calendar view workWeek', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: {
@@ -1094,7 +1075,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with first day of week as Tuesday', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '2' }
@@ -1111,7 +1091,6 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 	});
 
 	it('should render with first day of week as Friday', async () => {
-		createSoapAPIInterceptor('*', {});
 		const testContext = {
 			...mockContextValue,
 			accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '5' }
@@ -1126,15 +1105,8 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		);
 		await expect.element(page.getByText('The Week starts on')).toBeVisible();
 	});
-	
-	it('should call setEmptyValue when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
-		window.addEventListener('unhandledrejection', (event) => {
-				if (event.reason?.message?.includes('Cannot read properties of undefined')) {
-					event.preventDefault();
-					console.warn('Suppressed MSW cleanup error:', event.reason.message);
-			}
-		});
-		createSoapAPIInterceptor('*', {});
+
+	it('should call setAccountDetail when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
 		const mockSetAccountDetail = vi.fn();
 		const testContext = {
 			...mockContextValue,
@@ -1161,5 +1133,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 		await expect.element(resetButton).toBeVisible();
 		await resetButton.click();
 
+		// Verify that setAccountDetail was called with a function
+		expect(mockSetAccountDetail).toHaveBeenCalled();
 	});
 });

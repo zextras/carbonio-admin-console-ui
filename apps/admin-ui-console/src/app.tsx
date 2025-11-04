@@ -27,7 +27,6 @@ import {
 	APP_ID,
 	BACKUP_ROUTE_ID,
 	CARBONIO_SEND_ANALYTICS,
-	CONFIG,
 	COS,
 	COS_ROUTE_ID,
 	CREATE_COS,
@@ -68,6 +67,7 @@ import {
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
+import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
@@ -85,7 +85,7 @@ import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
-import { useRightsStore, Right, Rights } from './store/rights/store';
+import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -95,11 +95,13 @@ import { getRights } from './views/utility/utils';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<ReactQueryProvider>
+		<TrackerProvider>
+			<Suspense fallback={<Spinner />}>
+				<LazyAppView {...props} />
+			</Suspense>
+		</TrackerProvider>
+	</ReactQueryProvider>
 );
 
 const PrimaryBarIconButton = styled(Button)`
@@ -136,7 +138,7 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
-	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
+	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
@@ -145,12 +147,7 @@ const App: FC = () => {
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
-	const hasAllConfigRights = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
-		);
-	}, [rights]);
+	const hasAllConfigRights = useRightsStore(hasAllRights);
 	const userSetting = useUserSettings();
 	const getAccountDetails = useCallback(
 		(id: any) => {
@@ -944,16 +941,10 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const allModules = response?.response?.features?.map((module: any) => ({
-						...module,
-						name: module?.name
-					}));
-					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
-						setModuleLicense(allModules);
-					}
+					setLicenseInfo(response.response);
 				}
 			});
-	}, [setModuleLicense]);
+	}, [setLicenseInfo]);
 
 	useEffect(() => {
 		getAllServersRequest();

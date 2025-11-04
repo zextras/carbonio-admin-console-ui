@@ -7,13 +7,15 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type ModuleLicenseState = {
-	moduleLicense: Array<Record<string, string | number | boolean>>;
-	setModuleLicense: (v: Array<Record<string, string | number | boolean>>) => void;
+	licenseInfo: Record<string, any> | null;
+	setLicenseInfo: (v: Record<string, any>) => void;
+	reset: () => void;
 };
 
 export const useModuleLicenseStore = create<ModuleLicenseState>()(
 	devtools((set) => ({
-		moduleLicense: [],
-		setModuleLicense: (moduleLicense): void => set({ moduleLicense }, false, 'setModuleLicense')
+		licenseInfo: null,
+		setLicenseInfo: (licenseInfo) => set({ licenseInfo }, false, 'setLicenseInfo'),
+		reset: () => set({ licenseInfo: null })
 	}))
 );
