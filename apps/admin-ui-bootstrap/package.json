@@ -11,9 +11,11 @@
 	},
 	"scripts": {
 		"build": "sdk build-shell",
+		"build:dev": "sdk build-shell --dev",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
-		"deploy": "sdk deploy --admin",
+		"deploy": "npm run build && sdk deploy --admin",
+		"deploy:dev": "npm run build:dev && sdk deploy --admin",
 		"start": "sdk watch --admin",
 		"test": "vitest run",
 		"test:watch": "vitest --browser --watch --open",

@@ -6,19 +6,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import {
+	readFileSync,
+	writeFileSync,
+	mkdirSync,
+	readdirSync,
+	copyFileSync,
+	existsSync
+} from 'node:fs';
+import { join } from 'node:path';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 // The project root is the current working directory where the script is called from
 const projectRoot = process.cwd();
 
 const pkg = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf-8'));
 
-const commitHash =
-	process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
+const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 
 const distDir = join(projectRoot, 'dist', 'source', commitHash);
 
@@ -27,8 +31,8 @@ const cssFile = files.find((f) => f.startsWith('style.') && f.endsWith('.css'));
 
 const jsFile = files.find(
 	(f) =>
-		(f.startsWith('main.') || f.startsWith('index.') || f.startsWith('app.')) && 
-		f.endsWith('.js') && 
+		(f.startsWith('main.') || f.startsWith('index.') || f.startsWith('app.')) &&
+		f.endsWith('.js') &&
 		!f.endsWith('.map')
 );
 
