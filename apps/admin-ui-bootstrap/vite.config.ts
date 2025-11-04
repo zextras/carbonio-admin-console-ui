@@ -12,6 +12,8 @@ import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
 
+
+// IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
@@ -47,12 +49,12 @@ export default defineConfig(({ mode }) => {
 			},
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
 		},
-		build: {
-			outDir: `dist/source/${commitHash}`,
-			emptyOutDir: true,
-			sourcemap: true,
-			rollupOptions: createBootstrapRollupOptions(isDev)
-		},
+			build: {
+				outDir: `dist/source/${commitHash}`,
+				emptyOutDir: true,
+				sourcemap: isDev, // Disable sourcemap in production for optimized build
+				rollupOptions: createBootstrapRollupOptions(isDev)
+			},
 		base: basePath,
 		publicDir: 'assets',
 		server: {
