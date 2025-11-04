@@ -125,7 +125,7 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{adminHasAllRights && <LicenseBanner />}
+				{adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />

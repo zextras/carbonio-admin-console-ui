@@ -89,7 +89,6 @@ const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
 		module: 'ZxCore',
 		action: 'getLicenseInfo'
 	});
-	console.log(res)
 	return JSON.parse(res.response.content);
 };
 
