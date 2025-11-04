@@ -9,7 +9,7 @@
 	],
 	"scripts": {
 		"build": "turbo run build",
-		"build-webpack": "turbo run build-webpack",
+		"build:dev": "turbo run build:dev",
 		"test": "turbo run test",
 		"test:ci": "turbo run test:ci",
 		"type-check": "turbo run type-check",

@@ -35,10 +35,9 @@ window.addEventListener('contextmenu', (ev) => {
 window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
 const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
 
-// @ts-ignore
-if (module.hot) {
-	// @ts-ignore
-	module.hot.accept();
+// Hot Module Replacement (only active during dev server, not in builds)
+if (import.meta.hot) {
+	import.meta.hot.accept();
 }
 
 const root = ReactDOM.createRoot(document.getElementById('app')!);

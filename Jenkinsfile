@@ -148,7 +148,7 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'pnpm build-webpack'
+                        sh 'pnpm build'
                     }
                     stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
                 }

@@ -37,3 +37,25 @@ declare const devUtils: devUtilsNamespace | undefined;
 declare const cliSettings: cliSettingsNamespace | undefined;
 declare module '@zextras/carbonio-design-system';
 declare module '*.svg';
+
+interface ImportMetaEnv {
+	readonly MODE: string;
+	readonly DEV: boolean;
+	readonly PROD: boolean;
+	readonly SSR: boolean;
+}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv;
+	readonly hot?: {
+		readonly data: any;
+		accept(): void;
+		accept(cb: (mod: any) => void): void;
+		accept(dep: string, cb: (mod: any) => void): void;
+		accept(deps: readonly string[], cb: (mods: any[]) => void): void;
+		dispose(cb: (data: any) => void): void;
+		decline(): void;
+		invalidate(): void;
+		on(event: string, cb: (...args: any[]) => void): void;
+	};
+}

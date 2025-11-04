@@ -16,7 +16,8 @@ const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toS
 const packageName = 'carbonio-admin-console-ui';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+	mode: mode || process.env.NODE_ENV || 'production',
 	plugins: [
 		react(),
 		{
@@ -51,10 +52,10 @@ export default defineConfig({
 		rollupOptions: createModuleRollupOptions({ packageName }),
 		cssCodeSplit: false,
 		sourcemap: true,
-		minify: 'esbuild',
+		minify: mode === 'development' ? false : 'esbuild',
 		target: 'es2020'
 	},
 	esbuild: {
 		logOverride: { 'this-is-undefined-in-esm': 'silent' }
 	}
-});
+}));
