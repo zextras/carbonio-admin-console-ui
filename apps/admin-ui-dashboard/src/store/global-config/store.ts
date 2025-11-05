@@ -1,0 +1,52 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { produce } from 'immer';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+
+import { CLOBAL_CONFIG_DETAIL_VIEW } from '../../constants';
+
+type GlobalConfigState = {
+	globalConfig: any;
+	globalConfigList: Array<any>;
+	globalConfigView: string;
+	globalCarbonioSendAnalytics: boolean;
+	setGlobalConfig: (config: any) => void;
+	setGlobalConfigList: (configList: Array<any>) => void;
+	removeGlobalConfig: () => void;
+	setGlobalConfigView: (configView: string) => void;
+	setGlobalCarbonioSendAnalytics: (globalCarbonioSendAnalytics: boolean) => void;
+};
+
+export const useGlobalConfigStore = create<GlobalConfigState>()(
+	devtools((set) => ({
+		globalConfig: {},
+		globalConfigList: [],
+		globalConfigView: CLOBAL_CONFIG_DETAIL_VIEW,
+		globalCarbonioSendAnalytics: false,
+		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig'),
+		setGlobalConfigList: (globalConfigList): void =>
+			set({ globalConfigList }, false, 'setGlobalConfigList'),
+		removeGlobalConfig: (): void =>
+			set(
+				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
+					state.globalConfig = {};
+				})
+			),
+		setGlobalConfigView: (globalConfigView): void =>
+			set(
+				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
+					state.globalConfigView = globalConfigView;
+				}),
+				false,
+				'setGlobalConfigView'
+			),
+		setGlobalCarbonioSendAnalytics: (globalCarbonioSendAnalytics): void =>
+			set({ globalCarbonioSendAnalytics }, false, 'setGlobalCarbonioSendAnalytics')
+	}))
+);
