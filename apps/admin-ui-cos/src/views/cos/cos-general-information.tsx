@@ -270,8 +270,8 @@ const CosGeneralInformation: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						:  
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						:
+						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -372,7 +372,7 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
-	 
+
 	const getAccountList = useCallback((): void => {
 		if (!searchAccountQuery) {
 			return;
@@ -393,11 +393,11 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									 
+
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								 
+
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -412,7 +412,7 @@ const CosGeneralInformation: FC = () => {
 								</Text>,
 								<>
 									{
-										 
+
 										item?.mail?.length - 1 || 0 ? (
 											<Tooltip
 												key={item?.id}
@@ -422,7 +422,7 @@ const CosGeneralInformation: FC = () => {
 											>
 												<Text size="small" weight="light" key={item?.id} color="#828282">
 													{
-														 
+
 														item?.mail?.length - 1 || 0
 													}
 												</Text>
@@ -495,7 +495,7 @@ const CosGeneralInformation: FC = () => {
 		searchAccountList(searchAccountString, cosDetail.id);
 	}, [cosDetail?.id, searchAccountList, searchAccountString]);
 
-	 
+
 	const getDomainList = useCallback((): void => {
 		if (!searchDomainQuery) {
 			return;
@@ -516,11 +516,11 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									 
+
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								 
+
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -608,7 +608,7 @@ const CosGeneralInformation: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				// height="calc(100vh - 230px)"
+			// height="calc(100vh - 230px)"
 			>
 				<Row mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -958,7 +958,7 @@ const CosGeneralInformation: FC = () => {
 							color="primary"
 							onClick={(): null => null}
 						/>
-						<Container orientation="horizontal" mainAlignment="flex-end">
+						<Container orientation="horizontal" mainAlignment="flex-end" width="fit">
 							<Padding all="small">
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}
@@ -1005,8 +1005,8 @@ const CosGeneralInformation: FC = () => {
 						</Text>
 					</Padding>
 				</Container>
-			</Modal>
-		</PageLayout>
+			</Modal >
+		</PageLayout >
 	);
 };
 
