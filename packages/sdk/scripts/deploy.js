@@ -63,7 +63,7 @@ exports.handler = async (options) => {
     execSync(`ssh ${sshTarget} '
         find ${pathPrefix}${options.name} -mindepth 1 -name i18n -prune -o -exec rm -rf {} + &&
         cd ${pathPrefix} && mkdir -p ${options.name}/${commitHash} ${options.name}/current &&
-        ln -sf ${pathPrefix}${options.name}/i18n "${pathPrefix}${options.name}/${commitHash}/i18n"
+        ln -sf ${pathPrefix}/i18n "${pathPrefix}${options.name}/${commitHash}/i18n"
     '`);
 
     execSync(
