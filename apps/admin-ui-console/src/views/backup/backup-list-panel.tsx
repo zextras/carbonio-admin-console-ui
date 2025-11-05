@@ -44,21 +44,21 @@ const BackupListPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [serverNames, setServerNames] = useState<any>();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const [isShowError, setIsShowError] = useState(false);
 
 	useEffect(() => {
-		if (moduleLicense && moduleLicense.length > 0) {
-			const backupModule = moduleLicense.filter(
+		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
-	}, [moduleLicense]);
+	}, [moduleLicenseInfo]);
 
 	const defaultSettingsOptions = useMemo(
 		() => [

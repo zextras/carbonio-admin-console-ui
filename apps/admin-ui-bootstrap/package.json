@@ -11,9 +11,11 @@
 	},
 	"scripts": {
 		"build": "sdk build-shell",
+		"build:dev": "sdk build-shell --dev",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
-		"deploy": "sdk deploy --admin",
+		"deploy": "npm run build && sdk deploy --admin",
+		"deploy:dev": "npm run build:dev && sdk deploy --admin",
 		"start": "sdk watch --admin",
 		"test": "vitest run",
 		"test:watch": "vitest --browser --watch --open",
@@ -59,8 +61,8 @@
 		"@types/react-router-dom": "^5.3.3",
 		"@types/styled-components": "^5.1.26",
 		"@types/ua-parser-js": "^0.7.39",
-		"@vitest/browser": "^3.2.4",
-		"@vitest/coverage-istanbul": "^3.2.4",
+		"@vitest/browser": "^4.0.5",
+		"@vitest/coverage-istanbul": "^4.0.5",
 		"admin-ui-sdk": "workspace:*",
 		"admin-ui-test-utils": "workspace:*",
 		"autoprefixer": "^10.4.21",
@@ -74,8 +76,8 @@
 		"playwright": "^1.55.0",
 		"prop-types": "^15.8.1",
 		"typescript": "^5.7.2",
-		"vitest": "^3.2.4",
-		"webpack": "^5.101.3"
+		"vitest": "^4.0.5",
+		"vitest-browser-react": "^2.0.2"
 	},
 	"files": [
 		"dist/",

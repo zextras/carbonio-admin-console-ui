@@ -12,7 +12,7 @@ import { WrapperProps, Wrapper } from './wrapper';
 export const setupBrowserTest = (
 	ui: ReactElement,
 	options?: { initialRouterEntry: string }
-): RenderResult => {
+): Promise<RenderResult> => {
 	if (options?.initialRouterEntry) {
 		window.history.replaceState({}, '', options.initialRouterEntry);
 	}

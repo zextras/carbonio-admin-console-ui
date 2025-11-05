@@ -35,9 +35,8 @@ window.addEventListener('contextmenu', (ev) => {
 window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
 const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
 
-// @ts-ignore
+// Hot Module Replacement (only active during dev server, not in builds)
 if (import.meta.hot) {
-	// @ts-ignore
 	import.meta.hot.accept();
 }
 

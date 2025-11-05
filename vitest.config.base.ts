@@ -7,6 +7,8 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
+import { playwright } from '@vitest/browser-playwright';
+import { optimizeDepsInclude } from './vitest.config.utils';
 
 export default defineConfig({
 	test: {
@@ -54,68 +56,12 @@ export default defineConfig({
 					})
 				],
 				optimizeDeps: {
-					include: [
-						'@zextras/carbonio-design-system',
-						'i18next',
-						'react-i18next',
-						'react-router-dom',
-						'ua-parser-js',
-						'react-redux',
-						'@tinymce/tinymce-react',
-						'i18next-http-backend',
-						'@sentry/browser',
-						// TinyMCE plugins
-						'tinymce/tinymce',
-						'tinymce/models/dom',
-						'tinymce/themes/silver',
-						'tinymce/icons/default',
-						'tinymce/plugins/advlist',
-						'tinymce/plugins/anchor',
-						'tinymce/plugins/autolink',
-						'tinymce/plugins/autoresize',
-						'tinymce/plugins/charmap',
-						'tinymce/plugins/code',
-						'tinymce/plugins/directionality',
-						'tinymce/plugins/fullscreen',
-						'tinymce/plugins/help',
-						'tinymce/plugins/image',
-						'tinymce/plugins/insertdatetime',
-						'tinymce/plugins/link',
-						'tinymce/plugins/lists',
-						'tinymce/plugins/media',
-						'tinymce/plugins/preview',
-						'tinymce/plugins/quickbars',
-						'tinymce/plugins/searchreplace',
-						'tinymce/plugins/table',
-						'tinymce/plugins/visualblocks',
-						'tinymce/plugins/wordcount',
-						// date-fns locales
-						'date-fns/locale/zh-CN',
-						'date-fns/locale/nl',
-						'date-fns/locale/en-US',
-						'date-fns/locale/de',
-						'date-fns/locale/hi',
-						'date-fns/locale/hu',
-						'date-fns/locale/it',
-						'date-fns/locale/ja',
-						'date-fns/locale/pt',
-						'date-fns/locale/pl',
-						'date-fns/locale/ro',
-						'date-fns/locale/ru',
-						'date-fns/locale/es',
-						'date-fns/locale/th',
-						'date-fns/locale/tr',
-						'date-fns/locale/fr',
-						'date-fns/locale/vi',
-						'date-fns/locale/bs',
-						'date-fns/locale/sl'
-					],
+					include: optimizeDepsInclude,
 					exclude: ['@zextras/admin-ui-bootstrap'],
 					// Force optimization on first run to prevent mid-test reloads
 					disabled: false
 				},
 				test: {
-					environment: 'browser',
 					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
 					alias: {
 						'admin-ui-test-utils': path.resolve(
@@ -126,16 +72,12 @@ export default defineConfig({
 					include: ['**/*.browser.test.{ts,tsx}'],
 					name: 'browser',
 					browser: {
-						provider: 'playwright',
-						viewport: { width: 834, height: 2000 },
 						enabled: true,
+						provider: playwright() as any,
+						instances: [{ browser: 'chromium' }],
+						viewport: { width: 834, height: 2000 },
 						headless: !!process.env.CI,
-						instances: [
-							{
-								browser: 'chromium',
-								screenshotFailures: !process.env.CI
-							}
-						]
+						screenshotFailures: !process.env.CI
 					},
 					exclude: ['dist/**', 'node_modules/**'],
 					globals: true,
@@ -163,8 +105,7 @@ export default defineConfig({
 				'**/*.test.{ts,tsx}',
 				'**/*.spec.{ts,tsx}'
 			],
-			include: ['src/**/*.{ts,tsx}'],
-			all: true
+			include: ['src/**/*.{ts,tsx}']
 		}
 	}
 });
