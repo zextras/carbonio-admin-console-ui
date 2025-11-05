@@ -118,7 +118,7 @@ package() {
   chown root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}"
   chmod 644 -R "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}"
   find "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}" -type d -exec chmod a+x "{}" \\;
-  ln -sf /opt/zextras/admin/iris/\${pkgname}/i18n "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}/i18n"
+  ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/\${pkgname}/${commitHash}/i18n"
 }
 
 postinst() {
