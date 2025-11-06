@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -23,7 +24,6 @@ import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';

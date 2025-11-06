@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	ChipInput,
 	ChipInputProps,
@@ -17,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { DomainsByFeature } from '../../../../../types';
 import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { ZimbraDomainResponse } from '../../domain-list/domain-list';
 
 const DomainListChipInput: FC<{

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -32,7 +33,6 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 

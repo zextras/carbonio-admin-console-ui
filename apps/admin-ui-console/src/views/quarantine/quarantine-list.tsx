@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getTags } from '@zextras/admin-ui-bootstrap';
+import { getTags , useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -37,7 +37,6 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';

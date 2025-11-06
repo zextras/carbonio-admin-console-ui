@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	useSnackbar,
@@ -46,7 +47,6 @@ import {
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
 

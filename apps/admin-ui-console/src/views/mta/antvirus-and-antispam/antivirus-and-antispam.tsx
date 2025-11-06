@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -45,7 +46,6 @@ import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';

@@ -5,11 +5,11 @@
  */
 
 import { page } from '@vitest/browser/context';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore } from '../../../store/rights/store';
 
 import MTAAdvanced from './mta-advanced';

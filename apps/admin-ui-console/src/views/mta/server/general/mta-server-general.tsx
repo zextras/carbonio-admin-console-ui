@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useServerStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -40,7 +41,6 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
