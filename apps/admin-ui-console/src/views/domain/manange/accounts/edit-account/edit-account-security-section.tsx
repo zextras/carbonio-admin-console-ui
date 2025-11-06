@@ -4,10 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
-import { sendMail } from '../../../../../services/send-mail-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -35,10 +32,11 @@ import React, {
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-
+import { sendMail } from '../../../../../services/send-mail-service';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
@@ -131,7 +129,6 @@ const EditAccountSecuritySection: FC = () => {
 												<StaticCodesContainer background="gray5">
 													<StaticCodesWrapper>
 														{map(pinCodes, (singleCode: any) => (
-															 
 															<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
 														))}
 													</StaticCodesWrapper>
@@ -1031,7 +1028,6 @@ const EditAccountSecuritySection: FC = () => {
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
 												(item: any) =>
-													 
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
 										/>
@@ -1152,7 +1148,6 @@ const EditAccountSecuritySection: FC = () => {
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
 											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											 
 											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
 											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"
