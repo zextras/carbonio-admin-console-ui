@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useEffect, useState } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/subscription-service';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 export interface WscLicenseHook {
 	isLicensed: boolean;
@@ -20,7 +19,7 @@ export interface WscLicenseHook {
 }
 
 export const useWscLicense = (): WscLicenseHook => {
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [isLicensed, setIsLicensed] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);

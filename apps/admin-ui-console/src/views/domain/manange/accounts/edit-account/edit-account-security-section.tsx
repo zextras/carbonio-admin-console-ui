@@ -37,7 +37,7 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
@@ -103,7 +103,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	const wizardSteps = useMemo(
 		() => [

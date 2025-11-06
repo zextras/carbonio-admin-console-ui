@@ -49,7 +49,7 @@ import { InitDomainForDelegation } from '../../../../services/init-domain-for-de
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -131,7 +131,7 @@ const ManageDelegates: FC = () => {
 	const [isInitDomain, setIsInitDomain] = useState(false);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
-	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const tableRef = useRef<HTMLTableElement>(null);
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 

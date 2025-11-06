@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Domain } from 'domain';
 
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
@@ -19,7 +18,7 @@ import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { useAllConfig } from './src/store/config';
 import { useDomainInformation } from './src/store/domain-information';
-import { Cos } from './src/store/domains';
+import { Cos, Domain } from './src/store/domains';
 import { DomainState, useDomainStore } from './src/store/domains/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';

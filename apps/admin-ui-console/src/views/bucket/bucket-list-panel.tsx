@@ -19,7 +19,7 @@ import {
 	IS_SERVER_LIST_EXPANDED,
 	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -43,7 +43,7 @@ const BucketListPanel: FC = () => {
 	const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [itemsVolume, setItemsVolume] = useState<any>();
 	const [isShowError, setIsShowError] = useState(false);
 

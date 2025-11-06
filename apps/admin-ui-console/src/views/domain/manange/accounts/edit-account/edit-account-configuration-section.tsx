@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ACCOUNT } from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
@@ -39,7 +39,7 @@ const EditAccountConfigurationSection: FC = () => {
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	useEffect(() => {
 		setPrefMailForwardingAddress(

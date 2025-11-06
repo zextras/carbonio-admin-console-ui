@@ -28,7 +28,7 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -198,7 +198,7 @@ const ServersListTable: FC<{
 const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [serversList, setServersList] = useState<any>([]);
 	const [serverListAll, setServerListAll] = useState<any>([]);
 	const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);

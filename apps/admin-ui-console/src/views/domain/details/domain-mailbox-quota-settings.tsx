@@ -38,7 +38,7 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DownloadCSV from '../../app/shared/download-csv';
@@ -105,7 +105,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const createSnackbar = useSnackbar();
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();

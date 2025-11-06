@@ -3,13 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCallback, useEffect } from 'react';
 
-import { useUserAccount } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useUserAccount } from '@zextras/admin-ui-bootstrap';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
-
-import { useAdvanceStore } from '../store/advanced/store';
+import { useCallback, useEffect } from 'react';
 
 export interface Tracker {
 	capture: (
@@ -33,7 +31,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
 
 export const useTracker = (): Tracker => {
 	const postHog = usePostHog();
-	const { isAdvanced } = useAdvanceStore();
+	const isAdvanced = useIsAdvanced();
 	const isCarbonioCE = !isAdvanced;
 	const account = useUserAccount();
 

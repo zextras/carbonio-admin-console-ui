@@ -8,7 +8,7 @@ import React, { FC, useCallback } from 'react';
 import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
 
 export const Features: FC<{
@@ -29,7 +29,7 @@ export const Features: FC<{
 	cosLevelFeatures = false
 }) => {
 	const [t] = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {

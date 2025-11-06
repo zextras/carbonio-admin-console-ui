@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
@@ -76,7 +76,7 @@ const NewVolume: FC<{
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const context = useContext(VolumeContext);
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const { volumeDetail } = context;
 
 	const wizardSteps = [

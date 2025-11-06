@@ -44,7 +44,7 @@ import {
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
@@ -94,7 +94,7 @@ const EditAccountDelegatesSection: FC = () => {
 	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [simpleSelectedList, setSimpleSelectedList] = useState<any>([]);
 	const [identityListItem, setIdentityListItem] = useState<any>([]);
 	const [isSimplified, setIsSimplified] = useState<boolean>(true);

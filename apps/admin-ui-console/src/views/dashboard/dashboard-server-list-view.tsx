@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { Server } from '../../../types';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
@@ -33,7 +33,7 @@ const DashboardServerList: FC<{
 	const [t] = useTranslation();
 	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	useEffect(() => {
 		if (mailstoresList.length > 0) {

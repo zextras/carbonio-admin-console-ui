@@ -50,7 +50,7 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -110,7 +110,7 @@ const DomainListPanel: FC = () => {
 	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);

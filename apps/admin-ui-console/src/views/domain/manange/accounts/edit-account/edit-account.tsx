@@ -68,7 +68,7 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
@@ -155,7 +155,7 @@ const EditAccount: FC<{
 		cosDetail
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();

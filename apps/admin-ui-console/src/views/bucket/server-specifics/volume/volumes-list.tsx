@@ -42,7 +42,7 @@ import {
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -182,7 +182,7 @@ const VolumesDetailPanel: FC = () => {
 	const context = useContext(VolumeContext);
 	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);

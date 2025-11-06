@@ -51,7 +51,7 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
@@ -94,7 +94,7 @@ const ModifyVolume: FC<{
 	setOpen
 }) => {
 	const { t } = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);

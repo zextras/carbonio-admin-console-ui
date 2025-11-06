@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -21,6 +20,7 @@ import {
 	SelectItem
 } from '@zextras/carbonio-design-system';
 import { isEqual, find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
@@ -45,13 +45,13 @@ import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
+
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -72,7 +72,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
 		useState<string>('');
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);

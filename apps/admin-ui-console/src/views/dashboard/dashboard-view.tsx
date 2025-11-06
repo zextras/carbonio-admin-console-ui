@@ -23,7 +23,7 @@ import {
 	STORAGES_ROUTE_ID
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
@@ -41,7 +41,7 @@ const Dashboard: FC = () => {
 	const [serverVersion, setServerVersion] = useState<any>({});
 
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	const adminHasAllRights = useRightsStore(hasAllRights);
 	const domainInformation = useDomainInformation();

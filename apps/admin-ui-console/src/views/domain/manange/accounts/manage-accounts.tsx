@@ -56,7 +56,7 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
@@ -106,7 +106,7 @@ const ManageAccounts: FC = () => {
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const tableRef = useRef<HTMLTableElement>(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');

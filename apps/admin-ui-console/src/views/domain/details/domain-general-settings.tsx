@@ -46,7 +46,7 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
@@ -87,7 +87,7 @@ const DomainGeneralSettings: FC = () => {
 	const createSnackbar = useSnackbar();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;

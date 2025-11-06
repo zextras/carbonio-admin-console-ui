@@ -34,7 +34,7 @@ import {
 	PRIMARY_TYPE_VALUE,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
 const MailstoresCreate: FC<{
@@ -44,7 +44,7 @@ const MailstoresCreate: FC<{
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;

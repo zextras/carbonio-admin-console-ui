@@ -33,7 +33,7 @@ import { getAccountMembershipRequest } from '../../services/get-account-membersh
 import { getSessions } from '../../services/get-sessions';
 import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
@@ -73,7 +73,7 @@ const GlobalDelegates: FC = () => {
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
-	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const tableRef = useRef<HTMLTableElement>(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);

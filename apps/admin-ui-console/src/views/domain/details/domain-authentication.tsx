@@ -30,7 +30,7 @@ import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../co
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidLdapBaseUrl } from '../../utility/utils';
@@ -114,7 +114,7 @@ const DomainAuthentication: FC = () => {
 		}
 	}, [userSetting?.attrs]);
 
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const localLdapTrans = t(
 		'label.method_allows_local_ldap_only',
 		'This method allows usage of Local LDAP'

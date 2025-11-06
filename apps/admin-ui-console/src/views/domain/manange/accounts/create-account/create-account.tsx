@@ -16,7 +16,7 @@ import CreateAccountDetailSection from './create-account-detail-section';
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useConfigStore } from '../../../../../store/config/store';
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
@@ -144,7 +144,7 @@ const CreateAccount: FC<{
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
 	const [accountCreate, setAccountCreate] = useState('');
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [showNext, setShowNext] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
