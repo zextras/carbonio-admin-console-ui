@@ -20,7 +20,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import {
 	CARBONIO_SEND_ANALYTICS,
 	DASHBOARD,
-	MTA,
 	PRIMARY_BAR_DASHBOARD,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
@@ -29,17 +28,12 @@ import {
 import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
-import {
-	getAllServerByService,
-	getAllServers,
-	getMailstoresServers
-} from './services/get-all-servers-service';
+import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useRightsStore } from './store/rights/store';
-import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -58,8 +52,6 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const setServerList = useServerStore((state) => state.setServerList);
-	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const { config, setConfig, setUserId } = useConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
@@ -192,19 +184,12 @@ const App: FC = () => {
 		getAllServers().then((data) => {
 			const server = data?.server;
 			if (server && Array.isArray(server) && server.length > 0) {
-				setServerList(server);
 				if (isAdvanced) {
 					getGlobalConfig();
 				}
 			}
 		});
-		getAllServerByService(MTA).then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setMtaServerList(server);
-			}
-		});
-	}, [setServerList, isAdvanced, getGlobalConfig, setMtaServerList]);
+	}, [isAdvanced, getGlobalConfig]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {
