@@ -40,7 +40,7 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
-import { useConfigStore } from '../../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
@@ -63,7 +63,7 @@ const MTAServerGeneral: FC = () => {
 	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
 	const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
 	const mtaServerList = useServerStore((state) => state.mtaServerList);
-	const configInformation = useConfigStore((state) => state.config);
+	const configInformation = useAdminConfigStore((state) => state.config);
 	const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
 		{ n: string; _content: string }[]
 	>([]);

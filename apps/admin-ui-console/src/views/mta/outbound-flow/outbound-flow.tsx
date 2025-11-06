@@ -43,7 +43,7 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -55,8 +55,8 @@ const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAdminConfigStore((state) => state.config);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const mtaServersList = useServerStore((state) => state.mtaServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 	const rights: Rights = useRightsStore((state) => state.rights);

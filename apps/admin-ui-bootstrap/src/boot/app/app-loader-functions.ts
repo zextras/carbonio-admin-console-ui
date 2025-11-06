@@ -15,6 +15,7 @@ import {
 } from '../../network/fetch';
 import { usePrimaryBarState, useNetworkState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
+import { useAdminConfigStore, useConfigurationAttribute } from '../../store/admin-config';
 import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
@@ -50,5 +51,7 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useDomainStore,
 	useServerStore,
 	useGlobalConfigStore,
-	useBackupModuleStore
+	useBackupModuleStore,
+	useAdminConfigStore,
+	useConfigurationAttribute
 });

@@ -46,7 +46,7 @@ import {
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
 
@@ -60,8 +60,8 @@ const MTAPostScreenTuning: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAdminConfigStore((state) => state.config);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const [mtaPostTuningInitialDetail, setMtaPostTuningInitialDetail] = useState<MtaPostTuning>();
 	const [mtaPostTuningDetail, setMtaPostTuningDetail] = useState<MtaPostTuning>();
 	const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);

@@ -45,7 +45,7 @@ import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
-import { useConfigStore } from './store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useCosStore } from './store/cos/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
@@ -75,7 +75,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { config, setConfig, setUserId } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useAdminConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);

@@ -44,7 +44,7 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
@@ -53,10 +53,10 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const addConfig = useConfigStore((state) => state.addConfig);
-	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const configInformation = useAdminConfigStore((state) => state.config);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
+	const addConfig = useAdminConfigStore((state) => state.addConfig);
+	const removeConfigItems = useAdminConfigStore((state) => state.removeConfigItems);
 	const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
 	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =

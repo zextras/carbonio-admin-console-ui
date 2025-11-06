@@ -9,7 +9,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore } from '../../../store/rights/store';
 
 import MTAAdvanced from './mta-advanced';
@@ -37,7 +37,7 @@ function expectMailMessagesSizeSectionVisible() {
 
 describe('MTAAdvanced', () => {
 	const setupConfigStore = (): void => {
-		useConfigStore.getState().setConfig([
+		useAdminConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },
@@ -227,7 +227,7 @@ describe('MTAAdvanced', () => {
 
 	it('should handle component initialization with no message size limit', async () => {
 		// Setup config without message size to test the no-limit initial state
-		useConfigStore.getState().setConfig([
+		useAdminConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },
@@ -278,7 +278,7 @@ describe('MTAAdvanced', () => {
 
 	it('should trigger setLimitMaxMessageSize(true) when clicking custom size radio', async () => {
 		// Setup config without message size to start with "No size limit" selected
-		useConfigStore.getState().setConfig([
+		useAdminConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },

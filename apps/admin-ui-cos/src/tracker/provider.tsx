@@ -9,7 +9,7 @@ import { PostHogProvider } from 'posthog-js/react';
 import React, { useMemo } from 'react';
 
 import { PH_API_HOST, PH_PROJECT_API_KEY, TRUE } from '../constants';
-import { useConfigurationAttribute } from '../store/config/store';
+import { useConfigurationAttribute } from '@zextras/admin-ui-bootstrap';
 
 import { TrackerPageView } from './page-view';
 

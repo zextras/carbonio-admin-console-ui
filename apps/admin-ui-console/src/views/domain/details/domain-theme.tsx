@@ -23,7 +23,7 @@ import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
@@ -51,7 +51,7 @@ const DomainTheme: FC = () => {
 	const createSnackbar = useSnackbar();
 	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
 	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-	const configInformation = useConfigStore((state) => state.config);
+	const configInformation = useAdminConfigStore((state) => state.config);
 	const domainInformation = useDomainStore((state) => state.domainWithoutConfig?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);

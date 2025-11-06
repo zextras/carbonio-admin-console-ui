@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useConfigStore } from '../../../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
@@ -112,7 +112,7 @@ const CreateAccount: FC<{
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
-	const { userId } = useConfigStore((state) => state);
+	const { userId } = useAdminConfigStore((state) => state);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<AccountDetailObj>({
 		name: '',

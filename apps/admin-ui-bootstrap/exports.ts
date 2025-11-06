@@ -13,6 +13,7 @@ import {
 } from './src/network/fetch';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
+import { useAdminConfigStore, useConfigurationAttribute } from './src/store/admin-config/store';
 import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
@@ -69,6 +70,8 @@ export {
 	useServerStore,
 	useGlobalConfigStore,
 	useBackupModuleStore,
+	useAdminConfigStore,
+	useConfigurationAttribute,
 	type DomainState,
 	type Attribute,
 	type Domain,

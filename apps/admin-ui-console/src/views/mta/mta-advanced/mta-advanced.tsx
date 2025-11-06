@@ -39,7 +39,7 @@ import {
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
@@ -48,8 +48,8 @@ const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAdminConfigStore((state) => state.config);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 
 	const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();

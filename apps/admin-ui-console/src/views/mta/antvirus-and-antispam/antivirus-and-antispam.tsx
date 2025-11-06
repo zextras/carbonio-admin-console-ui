@@ -45,7 +45,7 @@ import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -57,8 +57,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAdminConfigStore((state) => state.config);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const [mtaAntiVirusAndAntispamInitialDetail, setMtaAntiVirusAndAntispamInitialDetail] =
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
@@ -75,7 +75,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
-	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const removeConfigItems = useAdminConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };

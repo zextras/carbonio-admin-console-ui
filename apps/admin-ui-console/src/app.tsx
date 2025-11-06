@@ -77,7 +77,7 @@ import {
 	getMailstoresServers
 } from './services/get-all-servers-service';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
-import { useConfigStore } from './store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useCosStore } from './store/cos/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
@@ -126,7 +126,7 @@ const App: FC = () => {
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig, setUserId } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useAdminConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);

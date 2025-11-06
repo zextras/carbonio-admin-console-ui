@@ -37,7 +37,7 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import { useConfigStore } from '../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';
@@ -344,7 +344,7 @@ const QuarantineList: FC = () => {
 	const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
 	const [openDeliverDialog, setOpenDeliverDialog] = useState<boolean>(false);
 	const [messageListData, setMessageListData] = useState([]);
-	const { config, setConfig } = useConfigStore((state) => state);
+	const { config, setConfig } = useAdminConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
 	const [showTextMsgView, setShowTextMsgView] = useState<boolean>(false);

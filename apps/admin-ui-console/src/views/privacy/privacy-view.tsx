@@ -28,17 +28,17 @@ import {
 	CONFIG
 } from '../../constants';
 import { modifyConfig } from '../../services/modify-config';
-import { useConfigStore } from '../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const { config } = useConfigStore((state) => state);
+	const { config } = useAdminConfigStore((state) => state);
 	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
 	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const [lastState, setLastState]: any = useState({

@@ -50,7 +50,7 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useConfigStore } from '../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
@@ -115,7 +115,7 @@ const DomainListPanel: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const globalConfigInformation = useConfigStore((state) => state.config);
+	const globalConfigInformation = useAdminConfigStore((state) => state.config);
 	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
 	useEffect(() => {

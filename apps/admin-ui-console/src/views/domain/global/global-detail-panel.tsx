@@ -32,7 +32,7 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 
@@ -54,7 +54,7 @@ const GlobalDetailPanel: FC = () => {
 	const [globalConfigData, setGlobalConfigData] = useState<Array<any>>([]);
 	const [globalDisclaimerInitialDetail, setGlobalDisclaimerInitialDetail] =
 		useState<GlobalDisclaimerType>();
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const setGlobalInitialValue = useCallback((key: string, value: unknown): void => {
 		setGlobalDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);

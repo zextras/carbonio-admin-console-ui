@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { DomainsByFeature } from '../../../../../types';
 import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { useConfigStore } from '../../../../store/config/store';
+import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { ZimbraDomainResponse } from '../../domain-list/domain-list';
 
 const DomainListChipInput: FC<{
@@ -26,7 +26,7 @@ const DomainListChipInput: FC<{
 	setDomainList: (domainList: DomainsByFeature[]) => void;
 }> = ({ domainList, setDomainList, domainName }) => {
 	const [t] = useTranslation();
-	const config = useConfigStore((state) => state.config);
+	const config = useAdminConfigStore((state) => state.config);
 	const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
 	const getAllDomainList = useCallback(
 		(searchQuery: string): void => {
