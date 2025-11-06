@@ -16,6 +16,7 @@ import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/ac
 import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
+import { useBackupModuleStore } from './src/store/backup-module/store';
 import { useAllConfig } from './src/store/config';
 import { useDomainInformation } from './src/store/domain-information';
 import { Cos, Domain } from './src/store/domains';
@@ -67,6 +68,7 @@ export {
 	useDomainStore,
 	useServerStore,
 	useGlobalConfigStore,
+	useBackupModuleStore,
 	type DomainState,
 	type Attribute,
 	type Domain,

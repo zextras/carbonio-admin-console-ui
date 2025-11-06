@@ -50,7 +50,7 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useBackupModuleStore } from '../../store/backup-module/store';
+import { useBackupModuleStore } from '@zextras/admin-ui-bootstrap';
 import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useModuleLicenseStore } from '../../store/module-license/store';

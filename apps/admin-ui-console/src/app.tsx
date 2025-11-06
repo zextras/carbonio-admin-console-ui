@@ -76,7 +76,7 @@ import {
 	getAllServers,
 	getMailstoresServers
 } from './services/get-all-servers-service';
-import { useBackupModuleStore } from './store/backup-module/store';
+import { useBackupModuleStore } from '@zextras/admin-ui-bootstrap';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
