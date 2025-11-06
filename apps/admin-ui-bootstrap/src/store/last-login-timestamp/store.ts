@@ -10,9 +10,13 @@ type LastLoginState = {
 	lastLoginTimestamp: string;
 	setLastLoginTimestamp: (arg: string) => void;
 };
+
 export const useLastLoginTimestamp = create<LastLoginState>()(
-	devtools((set) => ({
-		lastLoginTimestamp: '',
-		setLastLoginTimestamp: (lastLoginTimestamp): void => set({ lastLoginTimestamp })
-	}))
+	devtools(
+		(set) => ({
+			lastLoginTimestamp: '',
+			setLastLoginTimestamp: (lastLoginTimestamp): void => set({ lastLoginTimestamp })
+		}),
+		{ name: 'LastLoginTimestampStore' }
+	)
 );

@@ -26,6 +26,7 @@ import { useGlobalConfigStore } from './src/store/global-config/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
+import { useLastLoginTimestamp } from './src/store/last-login-timestamp/store';
 import { useServerStore } from './src/store/servers/store';
 import { getTags } from './src/store/tags';
 import { Attribute } from './types';
@@ -72,6 +73,7 @@ export {
 	useBackupModuleStore,
 	useAdminConfigStore,
 	useConfigurationAttribute,
+	useLastLoginTimestamp,
 	type DomainState,
 	type Attribute,
 	type Domain,

@@ -22,6 +22,7 @@ import { useDomainInformation } from '../../store/domain-information';
 import { useDomainStore } from '../../store/domains/store';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
+import { useLastLoginTimestamp } from '../../store/last-login-timestamp';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
@@ -53,5 +54,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useGlobalConfigStore,
 	useBackupModuleStore,
 	useAdminConfigStore,
-	useConfigurationAttribute
+	useConfigurationAttribute,
+	useLastLoginTimestamp
 });

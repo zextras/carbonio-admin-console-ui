@@ -78,7 +78,7 @@ import {
 } from './services/get-all-servers-service';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useCosStore } from './store/cos/store';
-import { useLastLoginTimestamp } from './store/last-login-time-stamp';
+import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';

@@ -47,7 +47,7 @@ import { getAllEffectiveRightsRequest } from './services/get-all-effective-right
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useCosStore } from './store/cos/store';
-import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
+import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { TrackerProvider } from './tracker/provider';
