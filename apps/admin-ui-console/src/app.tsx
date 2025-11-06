@@ -15,7 +15,7 @@ import {
 	useUserAccounts,
 	useUserSettings,
 	useDomainStore
-, useServerStore , useBackupModuleStore , useGlobalConfigStore , useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+, useServerStore , useBackupModuleStore , useGlobalConfigStore , useAdminConfigStore , useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
@@ -78,7 +78,6 @@ import {
 } from './services/get-all-servers-service';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useCosStore } from './store/cos/store';
-import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
