@@ -17,6 +17,7 @@ import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/ac
 import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
+import { useDomainStore } from '../../store/domains/store';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { getTags } from '../../store/tags';
@@ -43,5 +44,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useAllConfig,
 	useIsAdvanced,
 	getIsAdvanced,
-	useDomainInformation
+	useDomainInformation,
+	useDomainStore
 });

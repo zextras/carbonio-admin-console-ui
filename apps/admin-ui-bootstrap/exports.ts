@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Domain } from 'domain';
+
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
 	getSoapFetch,
@@ -17,10 +19,13 @@ import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { useAllConfig } from './src/store/config';
 import { useDomainInformation } from './src/store/domain-information';
+import { Cos } from './src/store/domains';
+import { DomainState, useDomainStore } from './src/store/domains/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { getTags } from './src/store/tags';
+import { Attribute } from './types';
 import { AppRouteDescriptor } from './types/apps';
 
 // NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
@@ -57,8 +62,10 @@ export {
 	useDomainInformation,
 	useIsAdvanced,
 	useIntegratedComponent,
-	pushHistory
+	pushHistory,
+	useDomainStore,
+	type DomainState,
+	type Attribute,
+	type Domain,
+	type Cos
 };
-
-export { useDomainStore } from './src/store/domains';
-export type { DomainState, Attribute, Domain, Cos } from './src/store/domains';
