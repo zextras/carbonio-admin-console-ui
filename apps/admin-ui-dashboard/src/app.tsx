@@ -13,37 +13,22 @@ import {
 	useUserAccounts,
 	useUserSettings
 } from '@zextras/admin-ui-bootstrap';
-import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
+import { useSnackbar } from '@zextras/carbonio-design-system';
 import moment from 'moment';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
 import {
-	BACKUP_ROUTE_ID,
 	CARBONIO_SEND_ANALYTICS,
-	COS,
-	COS_ROUTE_ID,
-	CREATE_COS,
-	CREATE_TOP_DOMAIN,
 	DASHBOARD,
-	GLOBAL,
-	LIST_COS,
 	LIST_SERVER,
-	LOG_AND_QUEUES,
-	MANAGE_APP_ID,
 	MTA,
 	PRIMARY_BAR_DASHBOARD,
 	SERVER,
-	SERVICES_ROUTE_ID,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
-import SvgBackupOutline from './icons/outline/BackupOutline';
-import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
@@ -52,17 +37,14 @@ import {
 	getAllServers,
 	getMailstoresServers
 } from './services/get-all-servers-service';
-import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
-import { useCosStore } from './store/cos/store';
-import { useDomainStore } from './store/domain/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
-import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
+import { useRightsStore, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -81,31 +63,12 @@ const AppView: FC = (props) => (
 	</ReactQueryProvider>
 );
 
-const PrimaryBarIconButton = styled(Button)`
-	&:hover {
-		background: transparent;
-	}
-	@media (max-width: 60rem) {
-		padding: 0 0 0 0.188rem;
-	}
-`;
-const PrimaryBarIcon = styled(Icon)`
-	&:hover {
-		background: transparent;
-	}
-	@media (max-width: 60rem) {
-		padding: 0 0 0 0.188rem;
-	}
-`;
-
 const App: FC = () => {
 	const [t] = useTranslation();
-	const history = useHistory();
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useConfigStore((state) => state);
@@ -117,14 +80,10 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
-	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
-	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
-	const hasAllConfigRights = useRightsStore(hasAllRights);
 	const userSetting = useUserSettings();
 	const getAccountDetails = useCallback(
 		(id: any) => {
@@ -153,33 +112,6 @@ const App: FC = () => {
 			setUserId(id);
 		}
 	}, [accounts, setUserId]);
-
-	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
-		);
-	}, [rights]);
-
-	const createCosRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
-		);
-	}, [rights]);
-
-	const createDomainRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
-		);
-	}, [rights]);
 
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
@@ -217,188 +149,6 @@ const App: FC = () => {
 		}
 	}, [allConfig, setConfig]);
 
-	useEffect(() => {
-		if (isAdvanced) {
-			setIsAdvanced(isAdvanced);
-		}
-	}, [isAdvanced, setIsAdvanced]);
-
-	const managementSection = useMemo(
-		() => ({
-			id: MANAGE_APP_ID,
-			label: t('label.management', 'Management'),
-			position: 3
-		}),
-		[t]
-	);
-	const servicesSection = useMemo(
-		() => ({
-			id: SERVICES_ROUTE_ID,
-			label: t('label.services', 'Services'),
-			position: 4
-		}),
-		[t]
-	);
-
-	const logAndQueuesSection = useMemo(
-		() => ({
-			id: LOG_AND_QUEUES,
-			label: t('label.long_and_queues', 'Log & Queues'),
-			position: 5
-		}),
-		[t]
-	);
-
-	const backupTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.backup_lbl"
-							defaults="<bold>Backup</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.backup_primarybar_tooltip"
-							defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const BackupTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={backupTooltipItems} />,
-		[backupTooltipItems]
-	);
-
-	const cosTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.class_of_service_lbl"
-							defaults="<bold>Class of Service</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.cos_primarybar_tooltip"
-							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const CosTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={cosTooltipItems} />,
-		[cosTooltipItems]
-	);
-
-	const privacyTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.privacy_lbl"
-							defaults="<bold>Privacy</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.privacy_primarybar_tooltip"
-							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const PrivacyTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={privacyTooltipItems} />,
-		[privacyTooltipItems]
-	);
-
-	const notificationTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.notification_lbl"
-							defaults="<bold>Notifications</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.notification_primarybar_tooltip"
-							defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const NotificationTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={notificationTooltipItems} />,
-		[notificationTooltipItems]
-	);
-
-	const domainsTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.domains_lbl"
-							defaults="<bold>Domains</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.domain_primarybar_tooltip"
-							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
 	const homeTooltipItems = useMemo(
 		() => [
 			{
@@ -419,182 +169,6 @@ const App: FC = () => {
 	const HomeTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={homeTooltipItems} />,
 		[homeTooltipItems]
-	);
-
-	const DomainTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={domainsTooltipItems} />,
-		[domainsTooltipItems]
-	);
-
-	const storagesTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.storage_lbl"
-							defaults="<bold>Storage</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.storage_primarybar_tooltip"
-							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const StorageTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={storagesTooltipItems} />,
-		[storagesTooltipItems]
-	);
-
-	const subscriptionTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.subscription_lbl"
-							defaults="<bold>Subscription</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.subscription_primarybar_tooltip"
-							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const SubscriptionTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={subscriptionTooltipItems} />,
-		[subscriptionTooltipItems]
-	);
-
-	const operationTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.operation_lbl"
-							defaults="<bold>Operations</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.operation_primarybar_tooltip"
-							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const mtaTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.mta_lbl"
-							defaults="<bold>MTA</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.mta_primarybar_tooltip"
-							defaults="Mail Transfer Agent"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const leagalHoldTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<Trans
-						i18nKey="label.legal_hold_lbl"
-						defaults="<bold>Legal Hold</bold>"
-						components={{ bold: <strong /> }}
-						t={t}
-					/>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const OperationTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={operationTooltipItem} />,
-		[operationTooltipItem]
-	);
-
-	const MTATooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={mtaTooltipItem} />,
-		[mtaTooltipItem]
-	);
-
-	const backupPrimaryBar: FC = useCallback(
-		() => (
-			<PrimaryBarIconButton
-				// @ts-ignore // Need to fix it with custom soultion
-				icon={SvgBackupOutline}
-				type="ghost"
-				size={'extralarge'}
-				color={'text'}
-				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
-			/>
-		),
-		[history]
-	);
-
-	const LegalHoldTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
-		[leagalHoldTooltipItem]
-	);
-
-	const cosPrimaryBar = useCallback(
-		() => (
-			<PrimaryBarIcon
-				icon={SettingsModOutline}
-				size="large"
-				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
-			/>
-		),
-		[history]
 	);
 
 	useEffect(() => {
