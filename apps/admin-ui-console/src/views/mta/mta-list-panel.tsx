@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory, useServerStore } from '@zextras/admin-ui-bootstrap';
-import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useGlobalConfigStore, replaceHistory, useServerStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
