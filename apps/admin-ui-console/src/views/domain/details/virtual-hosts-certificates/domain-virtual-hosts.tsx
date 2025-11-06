@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -18,13 +17,11 @@ import {
 	Icon,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import DeleteCertificateModel from './delete-certificate-model';
-import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import { objectType } from '../../../../../types';
 import logo from '../../../../assets/helmet_logo.svg';
 import {
@@ -38,13 +35,15 @@ import {
 } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { isValidVirtualHostname } from '../../../utility/utils';
+
+import DeleteCertificateModel from './delete-certificate-model';
+import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -175,7 +174,7 @@ const DomainVirtualHosts: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
-		// eslint-disable-next-line sonarjs/no-duplicate-string
+
 		body._jsns = ZIMBRA_ADMIN_URN;
 		items.forEach((item: any) => {
 			if (item.columns[0]?.props?.children) {
@@ -236,8 +235,7 @@ const DomainVirtualHosts: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -261,7 +259,7 @@ const DomainVirtualHosts: FC = () => {
 				setIsCertificateAvailbale(true);
 			})
 			// TODO: On no cert found server always returns error so used empty catch for now
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 			.catch((error) => {
 				if (error) {
 					setIsCertificateAvailbale(false);

@@ -13,7 +13,8 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings
+	useUserSettings,
+	useDomainStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -80,7 +81,6 @@ import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';

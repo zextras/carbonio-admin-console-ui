@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -14,8 +13,8 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, isEqual, reduce } from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -25,7 +24,6 @@ import { getDomainInformation } from '../../../services/domain-information-servi
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useConfigStore } from '../../../store/config/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
@@ -75,7 +73,6 @@ const DomainTheme: FC = () => {
 		}
 	}, [userSetting?.attrs]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
@@ -186,14 +183,12 @@ const DomainTheme: FC = () => {
 		const modifiedKeys: any = reduce(
 			domainTheme,
 			function (result, value, key): any {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				return isEqual(value, intialThemeConfig[key]) ? result : [...result, key];
 			},
 			[]
 		);
 		modifiedKeys.forEach((ele: any) => {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			attributes.push({ n: ele, _content: domainTheme[ele] });
 		});

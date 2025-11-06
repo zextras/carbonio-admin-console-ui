@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
+import { useUserAccounts, useDomainInformation, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -24,7 +24,6 @@ import {
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';

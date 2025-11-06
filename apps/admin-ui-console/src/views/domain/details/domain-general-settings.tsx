@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useMemo, useState, useCallback, FC } from 'react';
-
+import { replaceHistory, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -22,13 +21,11 @@ import {
 	useSnackbar,
 	ChipItem
 } from '@zextras/carbonio-design-system';
-import { replaceHistory, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
+import React, { useEffect, useMemo, useState, useCallback, FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import DomainCosLink from './domain-cos-link';
-import DomainListChipInput from './parts/domain-list-chip-input';
 import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
 import {
 	ACTIVE,
@@ -50,13 +47,15 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
+
+import DomainCosLink from './domain-cos-link';
+import DomainListChipInput from './parts/domain-list-chip-input';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -78,7 +77,6 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -128,9 +126,8 @@ const DomainGeneralSettings: FC = () => {
 			},
 			{
 				label: `${t('label.locked', 'Locked')} (${t(
-					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.login_is_disabled',
-					// eslint-disable-next-line sonarjs/no-duplicate-string
+
 					'Login is disabled'
 				)})`,
 				value: LOCKED
@@ -619,7 +616,7 @@ const DomainGeneralSettings: FC = () => {
 
 	const isInvalidEmail = (): boolean =>
 		!(isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '');
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+
 	const onSave = (): void => {
 		if (isInvalidEmail()) {
 			setHasCarbonioNotificationFromError(true);
@@ -721,7 +718,6 @@ const DomainGeneralSettings: FC = () => {
 			dlListArr: AccountDlAlias[],
 			aliasListArr: AccountDlAlias[],
 			calResourceArr: AccountDlAlias[]
-			// eslint-disable-next-line sonarjs/cognitive-complexity
 		): void => {
 			const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 			const attrs =
@@ -732,7 +728,6 @@ const DomainGeneralSettings: FC = () => {
 						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
 							if (zimbraIsSystemAccount) {
-								// eslint-disable-next-line no-param-reassign
 								item.zimbraIsSystemAccount = zimbraIsSystemAccount._content;
 							}
 							return item;
@@ -864,7 +859,6 @@ const DomainGeneralSettings: FC = () => {
 							<Padding right="small">
 								{isDirty && (
 									<Button
-										// eslint-disable-next-line sonarjs/no-duplicate-string
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
 										onClick={onCancel}

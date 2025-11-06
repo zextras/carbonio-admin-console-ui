@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 
+import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -18,9 +18,9 @@ import {
 	useSnackbar,
 	THeader
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash';
+import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -39,7 +39,6 @@ import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DownloadCSV from '../../app/shared/download-csv';
@@ -56,7 +55,6 @@ export const formatQuota = (
 	t: TFunction
 ): [string, number] => {
 	if (quotaLimit === 0) {
-		// eslint-disable-next-line sonarjs/no-duplicate-string
 		return [t('label.unlimited', 'Unlimited'), 0];
 	}
 	if (quotaLimit >= BYTE_PER_MB) {
@@ -275,7 +273,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 						severity: 'error',
 						label:
 							error?.message ??
-							// eslint-disable-next-line sonarjs/no-duplicate-string
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -648,7 +645,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 												? t(
 														'domain.mailSpaceQuotaThresholdError.description',
 														'Mail space quota threshold should be between 0 to 100'
-												  )
+													)
 												: ''
 										}
 									/>

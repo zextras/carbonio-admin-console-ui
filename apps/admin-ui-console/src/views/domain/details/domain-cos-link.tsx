@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -29,7 +29,6 @@ import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import DropDownInput from '../../components/dropDownInput';
