@@ -5,13 +5,7 @@
 	"output": "artifacts",
 	"projects": [
 		{
-			"name": "admin-ui-bootstrap/dist"
-		},
-		{
-			"name": "admin-ui-console/dist"
-		},
-		{
-			"name": "admin-ui-cos/dist"
+			"name": "package"
 		}
 	]
 }

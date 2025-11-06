@@ -13,4 +13,4 @@ docker run -it --rm \
 	-v "$(pwd)/artifacts/${OS}":/artifacts \
 	-v "$(pwd)":/tmp/build \
 	"docker.io/m0rf30/yap-${OS}:1.8" \
-	build "${OS}" /tmp/build/apps
+	build "${OS}" /tmp/build
