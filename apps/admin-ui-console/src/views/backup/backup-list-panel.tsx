@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useGlobalConfigStore, replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +21,6 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import { useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
