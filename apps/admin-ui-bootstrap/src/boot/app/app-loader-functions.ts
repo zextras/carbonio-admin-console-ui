@@ -17,6 +17,7 @@ import { usePrimaryBarState, useNetworkState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useAdminConfigStore, useConfigurationAttribute } from '../../store/admin-config';
 import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
+import { useBucketServersListStore } from '../../store/bucket-server-list';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
 import { useDomainStore } from '../../store/domains/store';
@@ -55,5 +56,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useBackupModuleStore,
 	useAdminConfigStore,
 	useConfigurationAttribute,
-	useLastLoginTimestamp
+	useLastLoginTimestamp,
+	useBucketServersListStore
 });

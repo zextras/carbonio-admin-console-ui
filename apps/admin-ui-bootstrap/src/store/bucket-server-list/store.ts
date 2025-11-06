@@ -14,11 +14,14 @@ type BucketVolumeServersListState = {
 };
 
 export const useBucketServersListStore = create<BucketVolumeServersListState>()(
-	devtools((set) => ({
-		allServersList: [],
-		volumeList: [],
-		setAllServersList: (allServersList): void =>
-			set({ allServersList }, false, 'setAllServersList'),
-		setVolumeList: (volumeList): void => set({ volumeList }, false, 'setVolumeList')
-	}))
+	devtools(
+		(set) => ({
+			allServersList: [],
+			volumeList: [],
+			setAllServersList: (allServersList): void =>
+				set({ allServersList }, false, 'setAllServersList'),
+			setVolumeList: (volumeList): void => set({ volumeList }, false, 'setVolumeList')
+		}),
+		{ name: 'BucketServersListStore' }
+	)
 );

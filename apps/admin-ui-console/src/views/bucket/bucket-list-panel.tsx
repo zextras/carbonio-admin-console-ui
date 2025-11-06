@@ -17,7 +17,7 @@ import {
 	IS_SERVER_LIST_EXPANDED,
 	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';

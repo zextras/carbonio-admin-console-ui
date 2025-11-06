@@ -20,7 +20,7 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';

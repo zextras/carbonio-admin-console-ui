@@ -18,6 +18,7 @@ import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { useBackupModuleStore } from './src/store/backup-module/store';
+import { useBucketServersListStore } from './src/store/bucket-server-list/store';
 import { useAllConfig } from './src/store/config';
 import { useDomainInformation } from './src/store/domain-information';
 import { Cos, Domain } from './src/store/domains';
@@ -74,6 +75,7 @@ export {
 	useAdminConfigStore,
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
+	useBucketServersListStore,
 	type DomainState,
 	type Attribute,
 	type Domain,
