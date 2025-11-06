@@ -38,7 +38,6 @@ import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
@@ -69,7 +68,6 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
-	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const setRights = useRightsStore((state) => state.setRights);
 	const createSnackbar = useSnackbar();
@@ -217,29 +215,11 @@ const App: FC = () => {
 		});
 	}, [setAllMailstoreList]);
 
-	const getModuleLicense = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxCore',
-				action: 'getLicenseInfo'
-			}
-		})
-			.then((res: any) => res.Body)
-			.then((res: any) => {
-				const response = JSON.parse(res.response.content);
-				if (response.ok) {
-					setLicenseInfo(response.response);
-				}
-			});
-	}, [setLicenseInfo]);
-
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-		getModuleLicense();
-	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
+	}, [getAllServersRequest, getMailstoresServersRequest]);
 
 	return null;
 };
