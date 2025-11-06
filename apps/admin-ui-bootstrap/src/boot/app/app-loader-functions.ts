@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useServerStore } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
 import {
@@ -45,5 +46,7 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useIsAdvanced,
 	getIsAdvanced,
 	useDomainInformation,
-	useDomainStore
+	// STORES
+	useDomainStore,
+	useServerStore
 });

@@ -85,7 +85,7 @@ import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
-import { useServerStore } from './store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';

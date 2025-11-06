@@ -25,7 +25,7 @@ import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useServerStore } from '../../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 

@@ -45,7 +45,7 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useServerStore } from '../../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';

@@ -42,7 +42,7 @@ import { getServerInformationByName } from '../../../../services/get-server-info
 import { modifyServer } from '../../../../services/modify-server';
 import { useConfigStore } from '../../../../store/config/store';
 import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
-import { useServerStore } from '../../../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';

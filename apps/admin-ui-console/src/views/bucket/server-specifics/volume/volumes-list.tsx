@@ -44,7 +44,7 @@ import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import { useServerStore } from '../../../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';

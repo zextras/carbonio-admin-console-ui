@@ -15,7 +15,7 @@ import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { stopOperations } from '../../services/stop-operation';
 import { useOperationStore } from '../../store/operation/store';
-import { useServerStore } from '../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import ModalOverlay from '../components/ModalOverlay';
 import { OperationsHeader } from '../utility/utils';
 

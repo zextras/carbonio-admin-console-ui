@@ -18,7 +18,7 @@ import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { useBackupModuleStore } from '../../../store/backup-module/store';
-import { useServerStore } from '../../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';

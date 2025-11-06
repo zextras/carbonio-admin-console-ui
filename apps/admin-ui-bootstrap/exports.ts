@@ -23,6 +23,7 @@ import { DomainState, useDomainStore } from './src/store/domains/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
+import { useServerStore } from './src/store/servers/store';
 import { getTags } from './src/store/tags';
 import { Attribute } from './types';
 import { AppRouteDescriptor } from './types/apps';
@@ -63,6 +64,7 @@ export {
 	useIntegratedComponent,
 	pushHistory,
 	useDomainStore,
+	useServerStore,
 	type DomainState,
 	type Attribute,
 	type Domain,

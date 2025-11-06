@@ -16,7 +16,7 @@ import RunningDetailPanel from './running-detail-panel';
 import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';
 import { useOperationStore } from '../../store/operation/store';
-import { useServerStore } from '../../store/server/store';
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 
 const OperationsDetailOperation: FC = () => {
 	const [t] = useTranslation();
