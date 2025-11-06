@@ -59,3 +59,6 @@ export {
 	useIntegratedComponent,
 	pushHistory
 };
+
+export { useDomainStore } from './src/store/domains';
+export type { DomainState, Attribute, Domain, Cos } from './src/store/domains';

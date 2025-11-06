@@ -24,7 +24,7 @@ import {
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';

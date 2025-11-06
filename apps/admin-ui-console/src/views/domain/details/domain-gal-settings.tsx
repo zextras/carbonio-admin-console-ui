@@ -58,7 +58,7 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';

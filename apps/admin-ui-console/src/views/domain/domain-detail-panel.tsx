@@ -17,7 +17,7 @@ import GlobalDetailPanel from './global/global-detail-panel';
 import GlobalOperations from './global-operation';
 import logo from '../../assets/ninja_robo.svg';
 import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useLocalStorage } from '../utility/utils';
 
 const DomainDetailPanel: FC = () => {

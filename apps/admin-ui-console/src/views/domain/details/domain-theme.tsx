@@ -25,7 +25,7 @@ import { getDomainInformation } from '../../../services/domain-information-servi
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useConfigStore } from '../../../store/config/store';
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';

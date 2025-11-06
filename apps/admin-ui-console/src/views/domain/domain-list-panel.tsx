@@ -54,7 +54,7 @@ import { getDomainList } from '../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';

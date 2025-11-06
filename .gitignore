@@ -61,3 +61,4 @@ apps/*/coverage
 apps/*/junit.xml
 .scannerwork
 **/__screenshots__/**
+packages/stores/dist
