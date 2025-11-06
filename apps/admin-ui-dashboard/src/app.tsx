@@ -21,10 +21,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import {
 	CARBONIO_SEND_ANALYTICS,
 	DASHBOARD,
-	LIST_SERVER,
 	MTA,
 	PRIMARY_BAR_DASHBOARD,
-	SERVER,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
@@ -44,12 +42,11 @@ import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
-import { useRightsStore, Rights } from './store/rights/store';
+import { useRightsStore } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -81,7 +78,6 @@ const App: FC = () => {
 	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const setRights = useRightsStore((state) => state.setRights);
-	const rights: Rights = useRightsStore((state) => state.rights);
 	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
@@ -170,20 +166,6 @@ const App: FC = () => {
 		() => <PrimaryBarTooltip items={homeTooltipItems} />,
 		[homeTooltipItems]
 	);
-
-	useEffect(() => {
-		if (rights && rights.length > 0) {
-			const right = getRights(rights, SERVER);
-			if (right.length > 0) {
-				const findServerRight = right.find(
-					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
-				);
-				if (findServerRight) {
-					sethasListServerRights(true);
-				}
-			}
-		}
-	}, [rights]);
 
 	useEffect(() => {
 		addRoute({
