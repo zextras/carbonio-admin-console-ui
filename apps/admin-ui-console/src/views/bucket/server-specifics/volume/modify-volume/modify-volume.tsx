@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -51,7 +51,6 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';

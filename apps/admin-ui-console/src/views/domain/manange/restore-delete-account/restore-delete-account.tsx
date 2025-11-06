@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
-
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
+import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
+
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreAccountWizard from './restore-delete-account-wizard';
-import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
 
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();

@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
 	Container,
 	Input,
@@ -17,6 +15,7 @@ import {
 	Select,
 	Modal
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/carbonio_defender.svg';
@@ -177,7 +176,7 @@ export const SignatureDetail: FC<any> = ({
 				const item = {
 					content: [
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							type: 'text/plain',
 							_content: signatureContent
 						}
@@ -226,14 +225,14 @@ export const SignatureDetail: FC<any> = ({
 			if (id && name) {
 				const allSignature = signatureList.map((item: any) => {
 					if (item?.id === id) {
-						// eslint-disable-next-line no-param-reassign
+						 
 						item.content = [
 							{
 								type: 'text/plain',
 								_content: content
 							}
 						];
-						// eslint-disable-next-line no-param-reassign
+						 
 						item.name = name;
 					}
 					return item;
@@ -242,7 +241,7 @@ export const SignatureDetail: FC<any> = ({
 				setSignatureList(allSignature);
 				const signItems = signatureItems.map((item: any) => {
 					if (item?.value === id) {
-						// eslint-disable-next-line no-param-reassign
+						 
 						item.name = name;
 					}
 					return item;

@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import { Modal, Row, Button, Text, Container, Padding } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Domain } from '../../../../../types';
@@ -36,7 +35,7 @@ const DisableDelegateAdminModel: FC<{
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore
 								label={
 									<Trans
@@ -51,7 +50,7 @@ const DisableDelegateAdminModel: FC<{
 								onClick={removeAllACLs}
 							/>
 							<Button
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore
 								label={
 									<Trans

@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Divider,
@@ -20,16 +19,17 @@ import {
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
-import ActiveDeviceDetail from './active-device-detail';
 import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
 import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+
+import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {
 	accountEmail: string;

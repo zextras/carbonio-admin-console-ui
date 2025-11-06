@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Button,
@@ -68,7 +68,6 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';

@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { findIndex, isEmpty, take, pick, map } from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { findIndex, isEmpty, take, pick, map } from 'lodash';
 
 type WizardProps = {
 	data: any;
@@ -28,7 +28,7 @@ const useWizard = ({
 	activeRef,
 	title,
 	activeStep
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
+}:  
 WizardProps): any => {
 	const uncontrolledMode = useMemo(() => !data, [data]);
 	const [innerData, setInnerData] = useState(

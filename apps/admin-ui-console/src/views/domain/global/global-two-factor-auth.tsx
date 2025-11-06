@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Text,
@@ -15,6 +14,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { differenceWith, isEqual, map, some } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TwoFactorAuthPolicyValues } from '../../../../types';
@@ -50,7 +50,7 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 					severity: 'error',
 					label: error
 						? error?.error
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						:  
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -64,7 +64,7 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 		setIsDirty(true);
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const handleOnSave = (): void => {
 		const dif = differenceWith(arrPoliciesToModify, arrPolicies, isEqual);
 

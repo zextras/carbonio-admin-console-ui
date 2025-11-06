@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
+ 
 const SettingsModOutline = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
 	<svg
 		width="24"

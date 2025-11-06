@@ -3,16 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useMemo,
-	useContext,
-	useState,
-	ReactElement,
-	useCallback,
-	ChangeEvent
-} from 'react';
 
+
+import { sendMail } from '../../../../../services/send-mail-service';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -29,16 +24,21 @@ import {
 } from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
 import QRCode from 'qrcode.react';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	ReactElement,
+	useCallback,
+	ChangeEvent
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-
-import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { sendMail } from '../../../../../services/send-mail-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
@@ -51,6 +51,8 @@ import InheritedSwitch from '../../../../utility/inherited-components/inherited-
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+
+import { ServicesPassphrase } from './services-passphrase';
 
 const StaticCodesContainer = styled(Row)`
 	max-width: 350px;
@@ -129,7 +131,7 @@ const EditAccountSecuritySection: FC = () => {
 												<StaticCodesContainer background="gray5">
 													<StaticCodesWrapper>
 														{map(pinCodes, (singleCode: any) => (
-															// eslint-disable-next-line max-len
+															 
 															<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
 														))}
 													</StaticCodesWrapper>
@@ -1029,7 +1031,7 @@ const EditAccountSecuritySection: FC = () => {
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
 												(item: any) =>
-													// eslint-disable-next-line max-len
+													 
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
 										/>
@@ -1150,7 +1152,7 @@ const EditAccountSecuritySection: FC = () => {
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
 											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											// eslint-disable-next-line max-len
+											 
 											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
 											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"

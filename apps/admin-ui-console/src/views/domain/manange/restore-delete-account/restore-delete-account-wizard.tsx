@@ -4,18 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-
 import { Container, Button } from '@zextras/carbonio-design-system';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+
+import { HorizontalWizard } from '../../../app/component/hwizard';
+import { Section } from '../../../app/component/section-component';
 
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
-import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section-component';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -123,7 +123,7 @@ const RestoreDeleteAccountWizard: FC<{
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						 
 						label={t('label.cancel', 'Cancel')}
 						color="secondary"
 						icon="CloseOutline"

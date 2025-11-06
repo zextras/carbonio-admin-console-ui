@@ -3,15 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Container, Row, Input } from '@zextras/carbonio-design-system';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
 import ListRow from '../../../../../list/list-row';
 import { volumeTypeList } from '../../../../../utility/utils';
+
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresCreate: FC<{
 	externalData: string;

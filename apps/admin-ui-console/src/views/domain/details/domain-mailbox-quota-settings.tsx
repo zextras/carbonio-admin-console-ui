@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -38,7 +38,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DownloadCSV from '../../app/shared/download-csv';

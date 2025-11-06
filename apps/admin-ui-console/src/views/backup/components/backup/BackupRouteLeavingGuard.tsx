@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Text } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 
-import { Text } from '@zextras/carbonio-design-system';
 
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 

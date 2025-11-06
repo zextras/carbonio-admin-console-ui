@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
+import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
 
@@ -177,7 +177,7 @@ const CustomHeaderFactory: FC<any> = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									 
 									// @ts-ignore // Need to fix it with custom soultion
 									multiple
 									items={column.items}

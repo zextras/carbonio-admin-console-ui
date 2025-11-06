@@ -4,11 +4,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useState } from 'react';
 
 import { SelectItem, type THeader } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash';
+import { useState } from 'react';
 
 import { TwoFactorPolicy } from '../../../types';
 import {
@@ -1745,7 +1745,7 @@ export const isValidIpRange = (ipRange: string): boolean => {
 
 export const isValidLdapBaseUrl = (url: string): boolean => {
 	const reqex =
-		// eslint-disable-next-line max-len
+		 
 		/^(?:ldap)s?:\/\/(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])(:[0-9]+)?$/;
 	return reqex.test(url);
 };
@@ -2137,7 +2137,7 @@ export const ServicesPassphraseServices = (): Array<{ value: string; label: stri
 export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
 	let right: Array<Record<string, string>> = [];
 	const filteredType = rights.filter((item: Right) => item?.type === type);
-	// eslint-disable-next-line sonarjs/no-collapsible-if
+	 
 	if (filteredType && filteredType.length > 0) {
 		if (
 			filteredType[0]?.all &&
@@ -2231,10 +2231,10 @@ export const isValidHostname = (hostname: string): boolean => {
 	return hostnameRegex.test(hostname);
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+ 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+ 
 export const GbToBytes = (data: any): any => multiply(data, 1024 ** 3);
 
 export const isValidHexColor = (value: string): boolean => {
@@ -2244,10 +2244,10 @@ export const isValidHexColor = (value: string): boolean => {
 
 export const validateIpAddress = (value: string): boolean => {
 	const ipv4Regex =
-		// eslint-disable-next-line max-len
+		 
 		/^(!?)(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\/([0-9]|[12][0-9]|3[0-2])$/;
 	const ipv6Regex =
-		// eslint-disable-next-line max-len
+		 
 		/^(!?)\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\]\/([0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$/;
 
 	return ipv4Regex.test(value) || ipv6Regex.test(value);

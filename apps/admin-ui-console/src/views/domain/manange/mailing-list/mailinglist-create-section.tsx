@@ -3,16 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Container, Input, Text, Table, Row } from '@zextras/carbonio-design-system';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MailingListContext } from './mailinglist-context';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
+
+import { MailingListContext } from './mailinglist-context';
 
 const MailingListCreateSection: FC<any> = () => {
 	const { t } = useTranslation();

@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import { Text, Checkbox, Row } from '@zextras/carbonio-design-system';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 export const HoverRowContainer = styled(Row)``;

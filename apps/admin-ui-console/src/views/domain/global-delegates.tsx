@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 
+import { postSoapFetchRequest , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -14,12 +14,9 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { flatMapDeep, filter, debounce } from 'lodash';
-import moment from 'moment';
-import { Trans, useTranslation } from 'react-i18next';
 
-import { AccountContext } from './manange/accounts/account-context';
+import moment from 'moment';
 import logo from '../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
@@ -33,7 +30,9 @@ import { getAccountMembershipRequest } from '../../services/get-account-membersh
 import { getSessions } from '../../services/get-sessions';
 import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
@@ -41,6 +40,8 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+
+import { AccountContext } from './manange/accounts/account-context';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -180,7 +181,7 @@ const GlobalDelegates: FC = () => {
 	const getAccountSpecificDetail = useCallback((id: string): void => {
 		getAccountRequest(id, '', 0).then((res: any) => {
 			const accountObj: any = {};
-			// eslint-disable-next-line array-callback-return
+			 
 			res?.account?.[0]?.a?.forEach((ele: any) => {
 				if (accountObj[ele.n]) {
 					accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
@@ -218,12 +219,12 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
+		 
 		(id: string): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
+					 
 					data?.account?.[0]?.a?.forEach((ele: any) => {
 						if (obj[ele.n]) {
 							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
@@ -258,14 +259,14 @@ const GlobalDelegates: FC = () => {
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				 
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							:  
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -281,7 +282,7 @@ const GlobalDelegates: FC = () => {
 				.then((data: any) => {
 					const directMemArr: any[] = [];
 					const inDirectMemArr: any[] = [];
-					// eslint-disable-next-line array-callback-return
+					 
 					data?.dl?.forEach((ele: any) => {
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -291,7 +292,7 @@ const GlobalDelegates: FC = () => {
 					setDirectMemberList(directMemArr);
 					setInDirectMemberList(inDirectMemArr);
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				 
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
@@ -310,7 +311,7 @@ const GlobalDelegates: FC = () => {
 	const getListOtp = useCallback(
 		(id: string): void => {
 			fetchSoap('zextras', {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+				 
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
@@ -383,7 +384,7 @@ const GlobalDelegates: FC = () => {
 					flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
 					[];
 				allFolder.forEach((ele: any) => {
-					// eslint-disable-next-line prefer-destructuring, no-param-reassign
+					 
 					ele.id = ele.id.split(':')[1];
 					return ele;
 				});
@@ -407,7 +408,7 @@ const GlobalDelegates: FC = () => {
 							if (el?.folder?.length) {
 								el?.folder.push(ele);
 							} else {
-								// eslint-disable-next-line prefer-destructuring, no-param-reassign
+								 
 								el.folder = [ele];
 							}
 						}
@@ -595,7 +596,7 @@ const GlobalDelegates: FC = () => {
 			getCredentialList
 		]
 	);
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';
@@ -616,11 +617,11 @@ const GlobalDelegates: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									// eslint-disable-next-line no-param-reassign
+									 
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								// eslint-disable-next-line no-param-reassign
+								 
 								item[ele?.n] = ele._content;
 							}
 						});

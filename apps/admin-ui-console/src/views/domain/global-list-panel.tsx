@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 
 import { IS_GLOBAL_LIST_EXPANDED } from '../../constants';

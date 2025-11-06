@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-
 import {
 	Container,
 	Text,
@@ -13,6 +11,7 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -152,7 +151,7 @@ const EditHsmPolicyVolumesSection: FC<{
 		}
 	}, [hsmDetail?.allVolumes, selectedDestinationVolume, setHsmDetail]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useMemo(() => {
 		if (currentPolicy && currentPolicy?.hsmQuery && hsmDetail?.isVolumeLoaded === false) {
 			const queries = currentPolicy?.hsmQuery.split(' ');

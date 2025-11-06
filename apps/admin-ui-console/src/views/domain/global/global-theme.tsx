@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -15,6 +14,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

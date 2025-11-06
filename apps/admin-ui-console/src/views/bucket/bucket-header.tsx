@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Container, Button, Breadcrumbs } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 
-import { Container, Button, Breadcrumbs } from '@zextras/carbonio-design-system';
 
 const BucketHeader: FC = () => {
 	const crumbs = [

@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback } from 'react';
-
 import {
 	Container,
 	Modal,
@@ -15,6 +13,7 @@ import {
 	Input,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MESSAGE, DOCUMENT, CONTACT, APPOINTMENT } from '../../../../constants';

@@ -3,15 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	FC,
-	ReactElement,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
 
 import {
 	Container,
@@ -24,10 +15,17 @@ import {
 	TabBar,
 	SelectItem
 } from '@zextras/carbonio-design-system';
+import React, {
+	ChangeEvent,
+	FC,
+	ReactElement,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import AdminPanelThemeConfig from './admin-panel-theme-configs';
-import EndUserThemeConfigs from './end-user-theme-configs';
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
 import { Right, useRightsStore } from '../../../store/rights/store';
@@ -35,6 +33,9 @@ import ListRow from '../../list/list-row';
 import InheritedInput from '../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import { getAllRights } from '../../utility/utils';
+
+import AdminPanelThemeConfig from './admin-panel-theme-configs';
+import EndUserThemeConfigs from './end-user-theme-configs';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;

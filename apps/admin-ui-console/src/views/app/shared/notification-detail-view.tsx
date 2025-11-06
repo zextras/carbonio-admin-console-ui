@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
 
 import { Container, Text, Row, Divider, Input, Button } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useStickyBarStore } from '../../../store/sticky-bar/store';

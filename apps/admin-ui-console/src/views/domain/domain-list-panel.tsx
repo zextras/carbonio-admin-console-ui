@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
@@ -50,7 +50,6 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';

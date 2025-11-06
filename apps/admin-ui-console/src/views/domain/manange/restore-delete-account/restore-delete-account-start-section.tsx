@@ -3,15 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useMemo } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Input, Row } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../../list/list-row';
+
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {
 	const { t } = useTranslation();

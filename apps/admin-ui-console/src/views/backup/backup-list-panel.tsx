@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
-import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {

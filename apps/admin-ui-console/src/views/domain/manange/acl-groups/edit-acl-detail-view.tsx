@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -21,6 +20,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -40,7 +40,6 @@ import { renameDistributionList } from '../../../../services/rename-distribution
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
@@ -53,14 +52,14 @@ import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
-// eslint-disable-next-line no-shadow
+ 
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
 	APPROVAL = 'APPROVAL',
 	REJECT = 'REJECT'
 }
 
-// eslint-disable-next-line no-shadow
+ 
 export enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
@@ -297,7 +296,7 @@ const EditAclListView: FC<any> = ({
 	);
 
 	const getAclList = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
+		 
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -659,9 +658,9 @@ const EditAclListView: FC<any> = ({
 						setIsShowError(true);
 						setOwnerErrorMessage(
 							t(
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								'label.acl_list_already_in_list_error',
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								'The Acl List / User is already in the list'
 							)
 						);
@@ -728,7 +727,7 @@ const EditAclListView: FC<any> = ({
 		[grantTypeOptions]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
@@ -811,7 +810,7 @@ const EditAclListView: FC<any> = ({
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						:  
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -879,7 +878,7 @@ const EditAclListView: FC<any> = ({
 		setIsDirty(false);
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const onUndo = (): void => {
 		previousDetail?.displayName ? setDisplayName(previousDetail?.displayName) : setDisplayName('');
 		if (selectedAclList?.dynamic) {
@@ -925,7 +924,7 @@ const EditAclListView: FC<any> = ({
 		Promise.all(requests)
 			.then((response: any) => Promise.all(response))
 			.then((data: any) => {
-				// eslint-disable-next-line no-shadow
+				 
 				let isError = false;
 				let errorMessage = '';
 				data.forEach((item: any) => {
@@ -1252,12 +1251,12 @@ const EditAclListView: FC<any> = ({
 		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
 			const deleteAliasArr = differenceBy(zimbraDefaultMailAlias, zimbraMailAlias, 'label');
 			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
-			// eslint-disable-next-line array-callback-return
+			 
 			deleteAliasArr.forEach((aliasName: any) => {
 				callAllRequest(deleteAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`));
 			});
 
-			// eslint-disable-next-line array-callback-return
+			 
 			addAliasArr.forEach((aliasName: any) => {
 				callAllRequest(addAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`));
 			});
@@ -1579,7 +1578,7 @@ const EditAclListView: FC<any> = ({
 		{
 			align: 'right',
 			color: 'error',
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+			 
 			label: t('label.delete', 'Delete'),
 			disabled: !selectedAclList,
 			onClick: (): void => {
@@ -1632,7 +1631,7 @@ const EditAclListView: FC<any> = ({
 					severity: 'error',
 					label: error?.message
 						? error.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						:  
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 
 					autoHideTimeout: 3000,

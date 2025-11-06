@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useUserAccount, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, useUserAccount, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -56,7 +56,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';

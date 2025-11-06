@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -21,6 +20,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, some, map, join, split, trim } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
@@ -45,7 +45,6 @@ import {
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
@@ -206,7 +205,7 @@ const MTAOutBoundFlow: FC = () => {
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			setMtaInitialValues();
@@ -626,7 +625,7 @@ const MTAOutBoundFlow: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							 
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onTlsSecurityOptions}
 							disabled={!allowSetMTA}

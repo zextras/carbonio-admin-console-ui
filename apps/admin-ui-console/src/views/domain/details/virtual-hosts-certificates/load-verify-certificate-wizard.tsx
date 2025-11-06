@@ -5,12 +5,12 @@
  */
 
 import React, { FC, ReactElement, useState } from 'react';
-
 import { useTranslation } from 'react-i18next';
 
-import LoadAndVerifyCert from './load-verify-certificate';
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section-component';
+
+import LoadAndVerifyCert from './load-verify-certificate';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();

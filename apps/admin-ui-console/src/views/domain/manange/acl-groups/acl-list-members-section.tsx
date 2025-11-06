@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -17,9 +16,9 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AclListContext } from './acl-list-context';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
@@ -29,6 +28,8 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
+
+import { AclListContext } from './acl-list-context';
 
 const AclListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -150,7 +151,7 @@ const AclListMembersSection: FC<any> = () => {
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						 
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,

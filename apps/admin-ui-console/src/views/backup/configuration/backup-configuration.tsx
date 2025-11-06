@@ -3,8 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import {
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	fetchExternalSoap
+, useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,12 +20,8 @@ import {
 	Select,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import {
-	getSoapFetchRequest,
-	postSoapFetchRequest,
-	fetchExternalSoap
-} from '@zextras/admin-ui-bootstrap';
 import { isEmpty, find } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -45,7 +44,6 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -187,7 +185,7 @@ const BackupConfiguration: FC = () => {
 		},
 		[externalVolumeOptions]
 	);
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
@@ -244,7 +242,7 @@ const BackupConfiguration: FC = () => {
 
 							if (attributes?.backupSmartScanScheduler) {
 								const value = attributes?.backupSmartScanScheduler?.value;
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								if (value && value?.['cron-enabled']) {
 									setIsScheduleSmartScan(value['cron-enabled']);
 									currentBackupObject.isScheduleSmartScan = true;
@@ -252,7 +250,7 @@ const BackupConfiguration: FC = () => {
 									setIsScheduleSmartScan(false);
 									currentBackupObject.isScheduleSmartScan = false;
 								}
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								if (value && value['cron-pattern']) {
 									setScheduleSmartScan(value['cron-pattern']);
 									currentBackupObject.scheduleSmartScan = value['cron-pattern'];
@@ -744,7 +742,7 @@ const BackupConfiguration: FC = () => {
 	}, [server, createSnackbar, t]);
 
 	const onBackupExternalVolume = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
+		 
 		(body: any) => {
 			setIsExternalVolumeRequestRunning(true);
 			fetchExternalSoap(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
@@ -987,7 +985,7 @@ const BackupConfiguration: FC = () => {
 									<Padding right="small">
 										{isDirty && (
 											<Button
-												// eslint-disable-next-line sonarjs/no-duplicate-string
+												 
 												label={t('label.cancel', 'Cancel')}
 												color="secondary"
 												onClick={onCancel}
@@ -1509,7 +1507,7 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedItemInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									 
 									// @ts-ignore // DS only support string
 									description={
 										<Trans
@@ -1550,7 +1548,7 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedAccountsInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									 
 									// @ts-ignore // DS only support string
 									description={
 										<Trans

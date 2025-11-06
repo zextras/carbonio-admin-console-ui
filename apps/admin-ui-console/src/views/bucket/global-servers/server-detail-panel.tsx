@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { getSoapFetchRequest , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -16,8 +15,8 @@ import {
 	Table,
 	Button
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { TFunction } from 'i18next';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -28,7 +27,6 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -205,7 +203,7 @@ const ServerDetailPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getServersListType = useCallback((): void => {
 		if (isAdvanced) {
 			setIsRequestInProgress(true);
@@ -224,7 +222,7 @@ const ServerDetailPanel: FC = () => {
 							setIsRequestInProgress(false);
 							const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
 							const responseData = JSON.parse(res?.Body?.response?.content);
-							// eslint-disable-next-line sonarjs/no-collapsible-if
+							 
 							if (responseData && responseData.ok) {
 								if (allServersList.length > 0) {
 									const serverList = allServersList.map((item) => {
@@ -238,14 +236,14 @@ const ServerDetailPanel: FC = () => {
 											(s: any) => s.name === item?.name
 										);
 										if (findPowerStoreServer) {
-											// eslint-disable-next-line max-len
+											 
 											indexer = findPowerStoreServer?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
 											hsmScheduled =
 												findPowerStoreServer?.ZxPowerstore?.attributes?.powerstoreMoveScheduler
 													?.value?.[HSM_SCHEDULED_KEY];
 										}
 										if (
-											// eslint-disable-next-line sonarjs/no-gratuitous-expressions
+											 
 											responseData &&
 											responseData?.response &&
 											responseData?.response[item.name]
@@ -285,7 +283,7 @@ const ServerDetailPanel: FC = () => {
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
 				});
-			// eslint-disable-next-line sonarjs/no-collapsible-if
+			 
 		} else if (!isAdvanced) {
 			if (allServersList.length > 0) {
 				const serverList = allServersList.map((item) => {

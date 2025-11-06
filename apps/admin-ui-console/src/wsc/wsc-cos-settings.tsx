@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { find, forEach, isEqual, size } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { WscSettings } from './wsc-settings';
 import { Attribute, Cos } from '../../types';
 import { COS, ZIMBRA_ADMIN_URN } from '../constants';
 import { flushCache } from '../services/flush-cache-service';
@@ -18,6 +17,8 @@ import { useCosStore } from '../store/cos/store';
 import { Right, Rights, useRightsStore } from '../store/rights/store';
 import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
 import { PageLayout } from '../views/page-layout';
+
+import { WscSettings } from './wsc-settings';
 
 const WscCosSettings: FC = () => {
 	const [t] = useTranslation();

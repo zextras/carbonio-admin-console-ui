@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -18,9 +18,9 @@ import {
 	Padding,
 	Switch
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, debounce, unionBy } from 'lodash';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BackupAccountItem } from '../../../../types';

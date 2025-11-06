@@ -3,16 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useEffect,
-	useCallback,
-	useMemo,
-	useContext,
-	useState,
-	ChangeEvent
-} from 'react';
 
+
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -24,10 +17,17 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { find, head } from 'lodash';
+import React, {
+	FC,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	ChangeEvent
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountContext } from './account-context';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import Textarea from '../../../../components/textarea';
 import {
 	AccountStatus,
@@ -36,6 +36,8 @@ import {
 	getModifiedName
 } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
+
+import { AccountContext } from './account-context';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -52,7 +54,7 @@ const CreateAccountDetailSection: FC = () => {
 
 	const domainStatus = useMemo(() => {
 		const status = find(domain?.a, { n: 'zimbraDomainStatus' });
-		// eslint-disable-next-line sonarjs/prefer-single-boolean-return
+		 
 		if (status?._content === 'closed') {
 			return true;
 		}
@@ -116,10 +118,10 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
-			// eslint-disable-next-line sonarjs/no-nested-template-literals
+			 
 			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-				// eslint-disable-next-line sonarjs/no-nested-template-literals
+				 
 			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
 	);
@@ -224,7 +226,7 @@ const CreateAccountDetailSection: FC = () => {
 							<Input
 								label={t('label.domain_name', 'Domain Name')}
 								backgroundColor="gray6"
-								// eslint-disable-next-line sonarjs/no-nested-template-literals
+								 
 								value={`${domainName} ${domainStatus ? `(${t('label.closed', 'Closed')})` : ''}`}
 								disabled
 							/>

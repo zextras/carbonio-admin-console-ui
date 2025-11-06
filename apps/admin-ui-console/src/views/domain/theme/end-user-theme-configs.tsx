@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import { Container, Divider, Padding, Text } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types';
@@ -167,9 +166,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'label.logo_for_login_page',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'Logo for Login Page'
 						)}
 					</Text>
@@ -260,9 +259,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'label.logo_for_webapp',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'Logo for WebApp'
 						)}
 					</Text>
@@ -431,9 +430,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'label.background_login_page',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							'Background Login Page'
 						)}
 					</Text>

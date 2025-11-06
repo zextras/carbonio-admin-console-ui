@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -17,6 +16,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {

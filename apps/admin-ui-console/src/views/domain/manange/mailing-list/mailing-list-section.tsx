@@ -3,16 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	FC,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
 
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Text,
@@ -27,11 +19,18 @@ import {
 	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MailingListContext } from './mailinglist-context';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
 import { ALL, EMAIL, GRP, LDAP, LDAP_QUERY, PUB, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
@@ -44,6 +43,8 @@ import Textarea from '../../../components/textarea';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
+
+import { MailingListContext } from './mailinglist-context';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();

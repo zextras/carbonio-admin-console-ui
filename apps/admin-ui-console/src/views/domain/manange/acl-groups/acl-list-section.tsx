@@ -3,15 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	FC,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
 
 import {
 	Container,
@@ -28,9 +19,17 @@ import {
 	ChipItem
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AclListContext } from './acl-list-context';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -39,6 +38,8 @@ import CustomChip from '../../../components/customChip';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
+
+import { AclListContext } from './acl-list-context';
 
 const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();

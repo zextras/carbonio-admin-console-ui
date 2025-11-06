@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
 
 export const Features: FC<{
@@ -135,7 +134,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
 							onChange={changeSwitchOption}
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							label={t('label.mobile_app', 'Mobile App')}
 							iconColor="primary"
 							inheritedValue={cosDetail?.carbonioFeatureMailsAppEnabled}

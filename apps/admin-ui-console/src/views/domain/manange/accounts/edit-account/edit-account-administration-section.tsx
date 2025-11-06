@@ -1,11 +1,10 @@
-/* eslint-disable prefer-regex-literals */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-
+import { useUserSettings , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -20,8 +19,8 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
@@ -33,7 +32,6 @@ import {
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../../services/search-directory-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -30,7 +31,6 @@ import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../co
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidLdapBaseUrl } from '../../utility/utils';

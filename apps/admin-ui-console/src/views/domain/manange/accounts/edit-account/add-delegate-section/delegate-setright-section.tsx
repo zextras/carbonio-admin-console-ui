@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState } from 'react';
 
 import {
 	Container,
@@ -16,6 +15,7 @@ import {
 	RadioGroup
 } from '@zextras/carbonio-design-system';
 import { cloneDeep } from 'lodash';
+import React, { FC, useMemo, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {

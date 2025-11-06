@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */ /* eslint-disable @typescript-eslint/explicit-function-return-type */ /* eslint-disable prettier/prettier */
+     
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -7,8 +7,9 @@
 
 import React, { useRef } from 'react';
 
-import { HorizontalWizardLayout } from './horizontal-wizard-layout';
 import useWizard from '../hooks/usewizard';
+
+import { HorizontalWizardLayout } from './horizontal-wizard-layout';
 
 type Props = {
 	data: any;

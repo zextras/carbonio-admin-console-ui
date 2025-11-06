@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import {
 	Container,
@@ -18,6 +17,7 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, uniq } from 'lodash';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';

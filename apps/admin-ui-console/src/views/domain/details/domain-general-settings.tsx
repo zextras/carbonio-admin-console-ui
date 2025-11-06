@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useUserSettings, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -46,7 +46,6 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';

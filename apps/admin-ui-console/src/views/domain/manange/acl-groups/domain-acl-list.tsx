@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,10 +18,8 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
-import { Trans, useTranslation } from 'react-i18next';
 
-import CreateAclList from './create-acl-list';
-import EditAclListView from './edit-acl-detail-view';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import logo from '../../../../assets/gardian.svg';
 import {
 	ALL,
@@ -37,7 +36,8 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { Trans, useTranslation } from 'react-i18next';
+
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -45,6 +45,9 @@ import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+
+import CreateAclList from './create-acl-list';
+import EditAclListView from './edit-acl-detail-view';
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
@@ -128,7 +131,7 @@ const DomainAclList: FC = () => {
 					{ label: aclListStatusFilter[0].label, value: aclListStatusFilter[0].value },
 					{ label: aclListStatusFilter[1].label, value: aclListStatusFilter[1].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				 
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -392,7 +395,7 @@ const DomainAclList: FC = () => {
 				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
 				.then((data: any) => {
 					setIsUpdateRecord(true);
-					// eslint-disable-next-line no-shadow
+					 
 					let isError = false;
 					let errorMessage = '';
 					data.forEach((item: any) => {
@@ -491,7 +494,7 @@ const DomainAclList: FC = () => {
 			allOwnersList: any[],
 			ownerGrantEmailType: { value: string },
 			ownerGrantEmails: string[]
-			// eslint-disable-next-line sonarjs/cognitive-complexity
+			 
 		) => {
 			setIsLoading(true);
 			const attributes: any[] = [];

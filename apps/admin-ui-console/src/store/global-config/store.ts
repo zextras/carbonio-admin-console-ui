@@ -33,14 +33,14 @@ export const useGlobalConfigStore = create<GlobalConfigState>()(
 		removeGlobalConfig: (): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
+					 
 					state.globalConfig = {};
 				})
 			),
 		setGlobalConfigView: (globalConfigView): void =>
 			set(
 				produce((state) => {
-					// eslint-disable-next-line no-param-reassign
+					 
 					state.globalConfigView = globalConfigView;
 				}),
 				false,

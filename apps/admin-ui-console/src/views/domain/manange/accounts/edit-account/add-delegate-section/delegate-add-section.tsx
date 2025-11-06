@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext } from 'react';
-
 import { Container, Input, Row, Text, Divider } from '@zextras/carbonio-design-system';
+import React, { FC, useMemo, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { READ_MAILS_ONLY } from '../../../../../../constants';
@@ -43,9 +42,9 @@ const DelegateAddSection: FC = () => {
 										targetEmail: accountDetail?.zimbraMailDeliveryAddress,
 										right:
 											deligateDetail?.right?.[0]?._content === 'sendAs'
-												? // eslint-disable-next-line sonarjs/no-duplicate-string
+												?  
 												  t('account_details.as', 'as')
-												: // eslint-disable-next-line sonarjs/no-duplicate-string
+												:  
 												  t('account_details.on_behalf_of', 'on behalf of')
 									}}
 								/>

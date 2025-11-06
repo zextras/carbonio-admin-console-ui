@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, soapFetch , useIsAdvanced , useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -42,9 +42,7 @@ import {
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';

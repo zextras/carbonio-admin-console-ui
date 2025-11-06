@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useState, useContext, ChangeEvent } from 'react';
-
 import { Container, Input, Row, Text, Tooltip } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useState, useContext, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { isValidPhoneNumber } from '../../../../utility/utils';

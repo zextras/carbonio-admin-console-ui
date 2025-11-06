@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,9 +14,9 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import MTAStatsMail from './mta-stats-mail';
 import { MtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
@@ -28,6 +27,8 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
+
+import MTAStatsMail from './mta-stats-mail';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();

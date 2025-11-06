@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -20,6 +19,7 @@ import {
 	SelectItem
 } from '@zextras/carbonio-design-system';
 import { isEqual } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -850,7 +850,7 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							 
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onBlackListActionChange}
 						/>
@@ -903,7 +903,7 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							 
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onDNSBlackListActionChange}
 						/>
@@ -1101,14 +1101,14 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={ignoreEnforceDropOptions}
 								background="gray5"
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
 								selection={ignoreEnforceDropOptions.find(
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onBareNewLineActionChange}
 							/>
@@ -1122,7 +1122,7 @@ const MTAPostScreenTuning: FC = () => {
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
@@ -1182,7 +1182,7 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onNonSMTPCommandActionChange}
 							/>
@@ -1255,7 +1255,7 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onPipeLiningActionChange}
 							/>

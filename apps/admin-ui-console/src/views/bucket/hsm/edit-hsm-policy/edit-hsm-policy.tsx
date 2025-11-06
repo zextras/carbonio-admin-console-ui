@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
-
 import {
 	Container,
 	Text,
@@ -18,11 +16,13 @@ import {
 	TabBar,
 	Button
 } from '@zextras/carbonio-design-system';
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { HSMContext } from '../hsm-context/hsm-context';
 
 import EditHsmPolicyDetailSection from './edit-hsm-policy-detail-section';
 import EditHsmPolicyVolumesSection from './edit-hsm-policy-volumes-section';
-import { HSMContext } from '../hsm-context/hsm-context';
 
 interface hsmDetailObj {
 	allVolumes: Array<any>;

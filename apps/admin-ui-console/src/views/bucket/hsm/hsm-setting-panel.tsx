@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest, soapFetch , useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -32,7 +32,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';

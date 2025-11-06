@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ 
 /*
  * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
  *

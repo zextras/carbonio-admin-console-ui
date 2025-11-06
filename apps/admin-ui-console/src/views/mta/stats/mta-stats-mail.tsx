@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -17,6 +16,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -544,7 +544,7 @@ const MTAStatsMail: FC<{
 			>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto" width="100%">
 					<TabBar
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						 
 						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}

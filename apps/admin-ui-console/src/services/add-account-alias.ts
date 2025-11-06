@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ 
 export const addAccountAliasRequest = async (id: string, alias: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',

@@ -15,7 +15,7 @@ import {
 	useUserAccounts,
 	useUserSettings,
 	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
+, useServerStore } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
@@ -85,7 +85,6 @@ import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';

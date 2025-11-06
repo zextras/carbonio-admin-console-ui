@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useState } from 'react';
-
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import React, { useCallback, useState } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
 interface ContainerExtendProps extends ContainerProps {
@@ -141,7 +140,7 @@ const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function T
 		if (!Textarea._newId) {
 			Textarea._newId = 0;
 		}
-		// eslint-disable-next-line no-plusplus
+		 
 		return `textarea-${Textarea._newId++}`;
 	});
 
@@ -170,7 +169,7 @@ const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function T
 			{...rest}
 		>
 			<TextAreaEl
-				// eslint-disable-next-line jsx-a11y/no-autofocus
+				 
 				autoFocus={autoFocus || undefined}
 				autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
 				onFocus={onTextAreaFocus}

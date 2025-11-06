@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
-
 import {
 	Button,
 	Container,
@@ -17,6 +15,7 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -83,7 +82,7 @@ const GlobalActiveSync: FC = () => {
 		Promise.all(requests)
 			.then((response: any) => Promise.all(response))
 			.then((data: any) => {
-				// eslint-disable-next-line no-shadow
+				 
 				let isError = false;
 				let errorMessage = '';
 				data.forEach((item: any) => {
@@ -231,7 +230,7 @@ const GlobalActiveSync: FC = () => {
 			setIntMobileAntiDosServiceTimeWindow(TimeWindowData);
 		});
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		 
 	}, []);
 
 	return (

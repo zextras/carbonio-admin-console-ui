@@ -9,7 +9,7 @@ import {
 	useUserAccount,
 	useUserSettings,
 	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
+, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Row,
 	Container,
@@ -49,7 +49,6 @@ import { InitDomainForDelegation } from '../../../../services/init-domain-for-de
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';

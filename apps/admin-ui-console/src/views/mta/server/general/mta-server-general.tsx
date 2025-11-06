@@ -1,11 +1,10 @@
-/* eslint-disable dot-notation */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,6 +16,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -42,7 +42,6 @@ import { getServerInformationByName } from '../../../../services/get-server-info
 import { modifyServer } from '../../../../services/modify-server';
 import { useConfigStore } from '../../../../store/config/store';
 import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';

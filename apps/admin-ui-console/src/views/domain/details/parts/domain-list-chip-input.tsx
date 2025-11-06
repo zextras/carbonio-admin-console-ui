@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useMemo, useState } from 'react';
-
 import {
 	ChipInput,
 	ChipInputProps,
@@ -13,6 +11,7 @@ import {
 	Row,
 	Tooltip
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';

@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useState, useEffect } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -17,15 +16,16 @@ import {
 } from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
 import QRCode from 'qrcode.react';
+import React, { FC, useContext, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { AccountContext } from './account-context';
-import { emailContent } from './email-content';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
+
+import { AccountContext } from './account-context';
+import { emailContent } from './email-content';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;

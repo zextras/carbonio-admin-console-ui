@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useMemo, useState } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Button, Table, Text } from '@zextras/carbonio-design-system';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { Server } from '../../../types';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
@@ -96,7 +95,7 @@ const DashboardServerList: FC<{
 		} else {
 			setServerListRow([]);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		 
 	}, [mailstoresList, serverVersion, isAdvanced]);
 
 	const headers: any[] = useMemo(
@@ -178,7 +177,7 @@ const DashboardServerList: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						 
 						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>

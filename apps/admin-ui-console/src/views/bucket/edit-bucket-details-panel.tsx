@@ -1,10 +1,9 @@
-/* eslint-disable no-shadow */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -21,6 +20,7 @@ import {
 	Icon
 } from '@zextras/carbonio-design-system';
 import { find, get } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TestConnectionObjectType } from '../../../types';
@@ -196,7 +196,7 @@ const EditBucketDetailPanel: FC<{
 	const [secretKey, setSecretKey] = useState(bucketDetail?.secret);
 	const [urlData, setUrlData] = useState(bucketDetail?.url !== undefined ? bucketDetail?.url : '');
 	const [verify, setVerify] = useState('primary');
-	// eslint-disable-next-line sonarjs/no-duplicate-string
+	 
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -495,7 +495,7 @@ const EditBucketDetailPanel: FC<{
 	}, [bucketDetail?.secret, secretKey]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
+		 
 		if (bucketDetail?.url !== undefined) {
 			if (bucketDetail?.url !== urlData) {
 				setIsDirty(true);

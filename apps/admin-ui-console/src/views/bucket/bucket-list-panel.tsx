@@ -1,13 +1,12 @@
-/* eslint-disable prettier/prettier */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
-
+import { replaceHistory , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -19,7 +18,6 @@ import {
 	IS_SERVER_LIST_EXPANDED,
 	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';

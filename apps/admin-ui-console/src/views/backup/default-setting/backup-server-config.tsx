@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
-
 import {
 	Container,
 	Row,
@@ -14,6 +12,8 @@ import {
 	Input,
 	Padding
 } from '@zextras/carbonio-design-system';
+import React, { FC, useEffect, useState } from 'react';
+
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
@@ -188,7 +188,7 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'medium' }}>
 								<Input
 									label={t('backup.schedule', 'Schedule')}
-									// eslint-disable-next-line sonarjs/no-duplicate-string
+									 
 									value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerInput}

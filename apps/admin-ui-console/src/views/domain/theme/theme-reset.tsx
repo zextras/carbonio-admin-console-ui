@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import {
 	Container,
 	Row,
@@ -14,6 +12,7 @@ import {
 	Icon,
 	Modal
 } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 export const ResetTheme: FC<{

@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Container, Row, Padding, Button, Text } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 
-import { Container, Row, Padding, Button, Text } from '@zextras/carbonio-design-system';
 
 interface BackupConfigHeaderProps {
 	title: string;

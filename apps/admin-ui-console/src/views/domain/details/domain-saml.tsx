@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -19,6 +18,7 @@ import {
 	Icon,
 	Tooltip
 } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -34,7 +34,6 @@ import { generateSignedCertificate } from '../../../services/generate-signed-cer
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
@@ -476,7 +475,7 @@ const DomainSaml: FC = () => {
 												icon="CopyOutline"
 												iconPlacement="left"
 												disabled={!entityId}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												 
 												onClick={() => copyTextToClipboard(entityId)}
 											/>
 										</Tooltip>
@@ -495,7 +494,7 @@ const DomainSaml: FC = () => {
 												icon="CopyOutline"
 												iconPlacement="left"
 												disabled={!serverUrl}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												 
 												onClick={() => copyTextToClipboard(serverUrl)}
 											/>
 										</Tooltip>
@@ -506,7 +505,7 @@ const DomainSaml: FC = () => {
 											color={'text'}
 											icon="CloseOutline"
 											size="large"
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											 
 											onClick={() => setShowBannerText(false)}
 										/>
 									</Row>
@@ -538,7 +537,7 @@ const DomainSaml: FC = () => {
 										value={isAllowUnsecure}
 										label={t('label.allow_unsecure', 'Allow Unsecure')}
 										iconColor="primary"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => setIsAllowUnsecure(!isAllowUnsecure)}
 									/>
 								</Container>
@@ -571,7 +570,7 @@ const DomainSaml: FC = () => {
 										label={t('label.import', 'IMPORT')}
 										color="primary"
 										size="extralarge"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() =>
 											importSAMLConfigurations(domainName, metadataUrl, isAllowUnsecure)
 										}
@@ -592,7 +591,7 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => generateSPCertificates(domainName)}
 									/>
 								</Container>
@@ -603,7 +602,7 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => exportMetadata(domainName)}
 									/>
 								</Container>
@@ -614,7 +613,7 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => deleteSAMLConfigurations(domainName)}
 									/>
 								</Container>
@@ -673,10 +672,10 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => {
 											if (samlAttrKey) {
-												// eslint-disable-next-line max-len
+												 
 												addOrUpdateSAMLAttributes(domainName, samlAttrKey, samlAttrValue, false);
 											}
 										}}
@@ -689,7 +688,7 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => {
 											if (samlAttrKey) {
 												addOrUpdateSAMLAttributes(domainName, samlAttrKey, samlAttrValue, true);
@@ -704,7 +703,7 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="large"
 										width="fill"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										 
 										onClick={() => {
 											if (samlAttrKey) {
 												removeSAMLAttributes(domainName, samlAttrKey);
@@ -737,7 +736,7 @@ const DomainSaml: FC = () => {
 										CustomIcon={(): any =>
 											samlAttrKey && (
 												<Container
-													// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+													 
 													onClick={() => setSamlAttrKey('')}
 													style={{ cursor: 'pointer' }}
 												>
@@ -772,7 +771,7 @@ const DomainSaml: FC = () => {
 										CustomIcon={(): any =>
 											samlAttrValue && (
 												<Container
-													// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+													 
 													onClick={() => setSamlAttrValue('')}
 													style={{ cursor: 'pointer' }}
 												>

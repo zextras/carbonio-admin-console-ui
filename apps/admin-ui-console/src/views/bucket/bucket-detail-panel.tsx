@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -20,12 +19,10 @@ import {
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { filter } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import BucketDeleteModel from './delete-bucket-model';
-import EditBucketDetailPanel from './edit-bucket-details-panel';
-import NewBucket from './new-bucket';
 import { TestConnectionObjectType, objectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
@@ -35,6 +32,10 @@ import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';
 import ListRow from '../list/list-row';
+
+import BucketDeleteModel from './delete-bucket-model';
+import EditBucketDetailPanel from './edit-bucket-details-panel';
+import NewBucket from './new-bucket';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -79,7 +80,7 @@ const BucketListTable: FC<{
 							onClick={(): void => {
 								onClick(i);
 							}}
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
 							<Text size="small" weight="regular">
@@ -229,7 +230,7 @@ const BucketDetailPanel: FC = () => {
 	}, [selectedServerName]);
 
 	const deleteHandler = useCallback(() => {
-		// eslint-disable-next-line no-restricted-syntax
+		 
 		// delete  api call here
 		setOpen(false);
 		const objectToSendDeleteBucket: TestConnectionObjectType = {

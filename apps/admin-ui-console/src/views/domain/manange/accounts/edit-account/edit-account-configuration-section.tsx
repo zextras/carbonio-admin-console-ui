@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useCallback, useState, useEffect, ChangeEvent } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,11 +16,11 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
+import React, { FC, useContext, useCallback, useState, useEffect, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ACCOUNT } from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
@@ -307,7 +306,7 @@ const EditAccountConfigurationSection: FC = () => {
 								label={`${t('label.format', 'Format')} :  ${t(
 									'label.protocol_server_port',
 									'protocol:server:port'
-									// eslint-disable-next-line sonarjs/no-nested-template-literals
+									 
 								)}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
 							>
 								<Text>

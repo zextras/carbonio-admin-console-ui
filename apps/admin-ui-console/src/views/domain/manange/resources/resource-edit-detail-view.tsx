@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -19,42 +20,44 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-import moment from 'moment';
-import { Trans, useTranslation } from 'react-i18next';
 
-import { SendInviteAccounts } from './send-invite-accounts';
+import moment from 'moment';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 import { getCalenderResource } from '../../../../services/get-cal-resource-service';
 import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
-// eslint-disable-next-line no-shadow
+import { SendInviteAccounts } from './send-invite-accounts';
+
+ 
 export enum RESOURCE_TYPE {
 	LOCATION = 'Location',
 	EQUIPMENT = 'Equipment'
 }
 
-// eslint-disable-next-line no-shadow
+ 
 export enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
 }
 
-// eslint-disable-next-line no-shadow
+ 
 export enum STATUS {
 	ACTIVE = 'active',
 	CLOSED = 'closed'
 }
 
-// eslint-disable-next-line no-shadow
+ 
 export enum SCHEDULE_POLITY_TYPE {
 	AUTO_ACCEPT = 1,
 	MANUAL_ACCEPT = 2,
@@ -229,7 +232,7 @@ const ResourceEditDetailView: FC<any> = ({
 		getResourceDetail();
 	}, [getResourceDetail]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useEffect(() => {
 		if (!!resourceInformation && resourceInformation.length > 0) {
 			const obj: any = {};
@@ -725,7 +728,7 @@ const ResourceEditDetailView: FC<any> = ({
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						 
 						label: errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -733,7 +736,7 @@ const ResourceEditDetailView: FC<any> = ({
 					});
 				}
 			})
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			 
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',

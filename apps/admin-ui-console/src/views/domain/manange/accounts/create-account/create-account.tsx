@@ -4,24 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useIsAdvanced , useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Button, useSnackbar, Padding } from '@zextras/carbonio-design-system';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { createAccountRequest } from '../../../../../services/create-account';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useConfigStore } from '../../../../../store/config/store';
+import { HorizontalWizard } from '../../../../app/component/hwizard';
+import { Section } from '../../../../app/component/section-component';
+import OverlayDivision from '../../../../components/overlayDivision';
 
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
-import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
-import { createAccountRequest } from '../../../../../services/create-account';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { useConfigStore } from '../../../../../store/config/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section-component';
-import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -95,7 +94,7 @@ interface AccountDetailObj {
 	description: string;
 }
 
-// eslint-disable-next-line no-empty-pattern
+ 
 const CreateAccount: FC<{
 	setShowCreateAccountView: any;
 	getAccountList: any;

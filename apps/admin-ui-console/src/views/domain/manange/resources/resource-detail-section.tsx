@@ -3,16 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useMemo,
-	useContext,
-	useState,
-	useEffect,
-	useCallback,
-	ChangeEvent
-} from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -23,7 +14,20 @@ import {
 	Divider,
 	SelectItem
 } from '@zextras/carbonio-design-system';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+	ChangeEvent
+} from 'react';
 import { useTranslation } from 'react-i18next';
+
+import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 
 import { ResourceContext } from './resource-context';
 import {
@@ -32,10 +36,6 @@ import {
 	STATUS,
 	TRUE_FALSE
 } from './resource-edit-detail-view';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import Textarea from '../../../components/textarea';
-import ListRow from '../../../list/list-row';
-import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 
 type SelectValue = SelectItem[] | string | null;
 

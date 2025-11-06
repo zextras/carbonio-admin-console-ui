@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-
+import { getSoapFetchRequest , useServerStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -16,8 +15,8 @@ import {
 	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -25,7 +24,6 @@ import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
@@ -58,7 +56,7 @@ const ServerAdvanced: FC = () => {
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);

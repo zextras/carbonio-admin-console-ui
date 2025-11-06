@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Container } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 
-import { Container } from '@zextras/carbonio-design-system';
 
 const ImportExternalBackup: FC = () => (
 	<Container>

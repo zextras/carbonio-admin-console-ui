@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Text,
@@ -17,10 +16,11 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { cloneDeep, uniqBy } from 'lodash';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from './customChip';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+
 
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;
@@ -143,7 +143,7 @@ const ManageAliases: FC<{
 							width="40%"
 						>
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								items={domainList.map((ele) => ({
 									label: ele.name,
@@ -152,13 +152,13 @@ const ManageAliases: FC<{
 								background="gray5"
 								label={t('account_details.domain', 'Domain')}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								selection={{
 									label: selectedDomainName || domainName,
 									value: selectedDomainName || domainName
 								}}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onDomainOptionChange}
 							/>
@@ -225,7 +225,7 @@ const ManageAliases: FC<{
 														icon: 'Edit2Outline',
 														onClick: (): void => {
 															const aliaes = cloneDeep(listAliases);
-															// eslint-disable-next-line max-len
+															 
 															const selectedItemArr: Array<{ label: string }> = aliaes.splice(
 																index,
 																1

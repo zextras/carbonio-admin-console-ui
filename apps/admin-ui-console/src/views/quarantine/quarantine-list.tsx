@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 
+import { getTags } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -20,14 +20,12 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { getTags } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
 import moment from 'moment';
+import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import AttachmentsBlock from './attachments-block';
-import MailMessageRenderer from './mail-message-renderer';
 import logo from '../../assets/ninja_robo.svg';
 import { batchService } from '../../services/batch-service';
 import { bounceMsgRequest } from '../../services/bounce-message';
@@ -46,6 +44,9 @@ import ModalOverlay from '../components/ModalOverlay';
 import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
+
+import AttachmentsBlock from './attachments-block';
+import MailMessageRenderer from './mail-message-renderer';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -253,7 +254,7 @@ const MessageListTable: FC<{
 							<Text
 								size="small"
 								weight="bold"
-								// eslint-disable-next-line no-nested-ternary
+								 
 								color={v.score > 50 ? 'secondry' : v.score > 35 ? 'warning' : 'error'}
 							>
 								{v.score}
@@ -281,7 +282,7 @@ const MessageListTable: FC<{
 				<ListRow>
 					<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							 
 							// @ts-ignore // Need to fix it with custom soultion
 							headers={MessageTableHeaders(t)}
 							rows={tableRows}
@@ -479,7 +480,7 @@ const QuarantineList: FC = () => {
 			mp: Array<SoapMailMessagePart>,
 			acc: { contentType: string; content: string },
 			id: string
-			// eslint-disable-next-line sonarjs/cognitive-complexity
+			 
 		): { contentType: string; content: string } =>
 			reduce(
 				mp,
@@ -566,14 +567,14 @@ const QuarantineList: FC = () => {
 		if (item.ci && item.ci === 'text-body') {
 			return true;
 		}
-		// eslint-disable-next-line sonarjs/prefer-single-boolean-return, sonarjs/no-duplicate-string
+		 
 		if (item.ct === 'text/calendar' && !item.filename) {
 			return true;
 		}
 		return false;
 	};
 	const getAttachmentsFromParts = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
+		 
 		(mailParts: Array<AttachmentPart> | AttachmentPart): Array<AttachmentPart> => {
 			const anchoredAttachmentsList = getAttachmentsAnchoredOnHtmlBody(mailParts);
 			let results: Array<AttachmentPart> = [];
@@ -591,7 +592,7 @@ const QuarantineList: FC = () => {
 								};
 								if (
 									(item.cd && item.cd === 'attachment') ||
-									// eslint-disable-next-line sonarjs/no-duplicate-string
+									 
 									(item.ct && (item.ct === 'message/rfc822' || item.ct === 'text/calendar')) ||
 									item.filename ||
 									item.ci
@@ -628,7 +629,7 @@ const QuarantineList: FC = () => {
 						});
 					});
 				} else if (
-					// eslint-disable-next-line sonarjs/no-gratuitous-expressions
+					 
 					(mailParts && mailParts.cd && mailParts.cd === 'attachment') ||
 					(mailParts.ct &&
 						(mailParts.ct === 'message/rfc822' || mailParts.ct === 'text/calendar')) ||
@@ -679,32 +680,32 @@ const QuarantineList: FC = () => {
 					needExp: 1,
 					header: [
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							n: 'X-Envelope-From'
 						},
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							n: 'X-Envelope-To'
 						},
 						{
 							n: 'X-Envelope-To-Blocked'
 						},
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							n: 'X-Amavis-Alert'
 						},
 						{
 							n: 'X-Spam-Flag'
 						},
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							n: 'X-Spam-Score'
 						},
 						{
 							n: 'X-Spam-Level'
 						},
 						{
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							n: 'X-Spam-Status'
 						}
 					]
@@ -873,7 +874,7 @@ const QuarantineList: FC = () => {
 		[normalizeMessage]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
 		setMessageListData([]);
@@ -918,7 +919,7 @@ const QuarantineList: FC = () => {
 		getQuarantineMsgData();
 	}, [getQuarantineMsgData]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	 
 	const createAccountAPI = useCallback((): void => {
 		const deleteAccountName = quarantineAccountName;
 		createAccountRequest(
@@ -1093,7 +1094,7 @@ const QuarantineList: FC = () => {
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						 
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -1101,7 +1102,7 @@ const QuarantineList: FC = () => {
 					});
 				}
 			})
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			 
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
@@ -1247,7 +1248,7 @@ const QuarantineList: FC = () => {
 														zimbraMailMessageLifetimeType === ''
 															? ''
 															: timeItems.find(
-																// eslint-disable-next-line max-len
+																 
 																(item: any) => item.value === zimbraMailMessageLifetimeType
 															).label
 													}
@@ -1449,9 +1450,9 @@ const QuarantineList: FC = () => {
 								<Text
 									size="large"
 									weight="bold"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									 
 									// @ts-ignore
-									// eslint-disable-next-line no-nested-ternary
+									 
 									color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
 									style={{ display: 'flex', paddingLeft: '0.25rem' }}
 								>
@@ -1461,9 +1462,9 @@ const QuarantineList: FC = () => {
 									<Text style={{ paddingLeft: '0.25rem' }}>
 										<Icon
 											color={
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												 
 												// @ts-ignore
-												// eslint-disable-next-line no-nested-ternary
+												 
 												message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
 											}
 											size="large"
