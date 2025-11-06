@@ -12,7 +12,8 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings
+	useUserSettings,
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -46,7 +47,6 @@ import { getAllEffectiveRightsRequest } from './services/get-all-effective-right
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
-import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';

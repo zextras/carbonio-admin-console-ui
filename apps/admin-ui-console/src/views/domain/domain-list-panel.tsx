@@ -52,7 +52,7 @@ import {
 import { getDomainList } from '../../services/search-domain-service';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';

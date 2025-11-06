@@ -20,6 +20,7 @@ import { useAllConfig } from './src/store/config';
 import { useDomainInformation } from './src/store/domain-information';
 import { Cos, Domain } from './src/store/domains';
 import { DomainState, useDomainStore } from './src/store/domains/store';
+import { useGlobalConfigStore } from './src/store/global-config/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
@@ -65,6 +66,7 @@ export {
 	pushHistory,
 	useDomainStore,
 	useServerStore,
+	useGlobalConfigStore,
 	type DomainState,
 	type Attribute,
 	type Domain,

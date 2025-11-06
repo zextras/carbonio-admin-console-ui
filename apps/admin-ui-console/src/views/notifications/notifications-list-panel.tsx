@@ -10,7 +10,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LIST } from '../../constants';
-import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 

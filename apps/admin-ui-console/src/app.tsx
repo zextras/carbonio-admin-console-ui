@@ -80,7 +80,7 @@ import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
-import { useGlobalConfigStore } from './store/global-config/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';

@@ -18,7 +18,7 @@ import {
 	IS_SERVER_SPECIFICS_EXPANDED,
 	MTA_SERVER_GENERAL
 } from '../../constants';
-import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
