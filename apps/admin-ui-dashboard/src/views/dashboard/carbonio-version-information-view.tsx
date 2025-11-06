@@ -4,19 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
-
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Padding, Text } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 const CarbonioVersionInformation: FC<{
 	userName: string;
 	serverVersion: any;
 }> = ({ userName, serverVersion }) => {
 	const [t] = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	return (
 		<Container
 			mainAlignment="flex-start"
