@@ -19,8 +19,9 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
-
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
 import logo from '../../../../assets/gardian.svg';
 import {
 	ALL,
@@ -37,8 +38,6 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { Trans, useTranslation } from 'react-i18next';
-
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';

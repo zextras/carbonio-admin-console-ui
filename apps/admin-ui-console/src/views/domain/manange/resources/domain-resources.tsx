@@ -18,18 +18,17 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-
 import { debounce } from 'lodash';
+import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import moment from 'moment';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';

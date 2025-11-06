@@ -20,17 +20,16 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 import { getCalenderResource } from '../../../../services/get-cal-resource-service';
 import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';

@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
+
+import { useServerStore, useBackupModuleStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,12 +18,10 @@ import _ from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useBackupModuleStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
- 
 export enum SMART_SCAN_TYPE {
 	DISABLED = 1,
 	ON_STARTUP_ONLY = 2,
@@ -114,7 +113,6 @@ const BackupServersListTable: FC<{
 	);
 
 	const tableRows = useMemo(
-		 
 		() =>
 			serverList.map((s, i) => ({
 				id: i?.toString(),
@@ -307,7 +305,7 @@ const ServersList: FC = () => {
 					? TYPE[1]?.label
 					: TYPE[0]?.label;
 				const purge = `${backupServer?.attributes?.ZxBackup_DataRetentionDays?.value}/${backupServer?.attributes?.backupAccountsRetentionDays?.value}`;
-				 
+
 				const purgeTooltip = backupServer?.attributes?.backupPurgeScheduler?.value['cron-pattern'];
 				const smartScanStartup = backupServer?.attributes?.ZxBackup_DoSmartScanOnStartup?.value;
 				const backupSmartScan =
@@ -344,7 +342,6 @@ const ServersList: FC = () => {
 		[STATUS, TYPE, getSmartScanStatus]
 	);
 
-	 
 	useEffect(() => {
 		if (servers && servers?.length > 0) {
 			const sList: BackupServerType[] = [];
