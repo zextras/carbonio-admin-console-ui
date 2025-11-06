@@ -1,11 +1,15 @@
-/* eslint-disable prefer-regex-literals */
 /*
  * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import {
+	postSoapFetchRequest,
+	useUserAccount,
+	useUserSettings,
+	useDomainStore
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Row,
 	Container,
@@ -15,16 +19,11 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import {
-	postSoapFetchRequest,
-	useUserAccount,
-	useUserSettings
-} from '@zextras/admin-ui-bootstrap';
 import { debounce, filter, flatMapDeep } from 'lodash';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import DisableDelegateAdminModel from './disable-delegate-admin-model';
 import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
 import {
@@ -51,7 +50,6 @@ import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -62,6 +60,8 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import EditAccount from '../accounts/edit-account/edit-account';
+
+import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 type UserSession = {
 	name: string;
@@ -213,7 +213,7 @@ const ManageDelegates: FC = () => {
 	const getAccountSpecificDetail = useCallback((id: string): void => {
 		getAccountRequest(id, '', 0).then((res: any) => {
 			const accountObj: any = {};
-			// eslint-disable-next-line array-callback-return
+
 			res?.account?.[0]?.a?.forEach((ele: any) => {
 				if (accountObj[ele.n]) {
 					accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
@@ -253,7 +253,7 @@ const ManageDelegates: FC = () => {
 
 	const processAccountData = (data: any): void => {
 		const obj: any = {};
-		// eslint-disable-next-line array-callback-return
+
 		data?.account?.[0]?.a?.forEach((ele: any) => {
 			if (obj[ele.n]) {
 				obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
@@ -286,7 +286,6 @@ const ManageDelegates: FC = () => {
 	};
 
 	const getDeletePasswordRight = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(target: string): void => {
 			checkRightRequest(target, account.name, 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
@@ -308,7 +307,7 @@ const ManageDelegates: FC = () => {
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
@@ -316,7 +315,7 @@ const ManageDelegates: FC = () => {
 						label: error?.message
 							? error?.message
 							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -331,7 +330,7 @@ const ManageDelegates: FC = () => {
 				.then((data: any) => {
 					const directMemArr: any[] = [];
 					const inDirectMemArr: any[] = [];
-					// eslint-disable-next-line array-callback-return
+
 					data?.dl?.forEach((ele: any) => {
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -341,7 +340,7 @@ const ManageDelegates: FC = () => {
 					setDirectMemberList(directMemArr);
 					setInDirectMemberList(inDirectMemArr);
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
@@ -360,7 +359,6 @@ const ManageDelegates: FC = () => {
 	const getListOtp = useCallback(
 		(id: string): void => {
 			fetchSoap('zextras', {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
@@ -433,7 +431,6 @@ const ManageDelegates: FC = () => {
 					flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
 					[];
 				allFolder.forEach((ele: any) => {
-					// eslint-disable-next-line prefer-destructuring, no-param-reassign
 					ele.id = ele.id.split(':')[1];
 					return ele;
 				});
@@ -456,7 +453,6 @@ const ManageDelegates: FC = () => {
 							if (el?.folder?.length) {
 								el?.folder.push(ele);
 							} else {
-								// eslint-disable-next-line prefer-destructuring, no-param-reassign
 								el.folder = [ele];
 							}
 						}
@@ -565,17 +561,17 @@ const ManageDelegates: FC = () => {
 
 					const tableList = data
 						? data.map((item: objectType) => {
-							const selectedItem: any = distributionList.filter(
-								(i: objectType) => i.name === item.name
-							);
-							const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
-								._content;
-							return {
-								...item,
-								accname: accountName.split('@')[0],
-								description: des
-							};
-						})
+								const selectedItem: any = distributionList.filter(
+									(i: objectType) => i.name === item.name
+								);
+								const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
+									._content;
+								return {
+									...item,
+									accname: accountName.split('@')[0],
+									description: des
+								};
+							})
 						: [];
 					setAccountDistributionList(tableList || []);
 				})
@@ -717,9 +713,9 @@ const ManageDelegates: FC = () => {
 					label: res?.message
 						? res?.message
 						: t(
-							'label.the_last_changes_has_been_saved_successfully',
-							'Changes have been saved successfully'
-						),
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+							),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -809,11 +805,9 @@ const ManageDelegates: FC = () => {
 						if (item[ele?.n]) {
 							item[ele?.n].push(ele._content);
 						} else {
-							// eslint-disable-next-line no-param-reassign
 							item[ele?.n] = [ele._content];
 						}
 					} else {
-						// eslint-disable-next-line no-param-reassign
 						item[ele?.n] = ele._content;
 					}
 				});
@@ -1236,10 +1230,7 @@ const ManageDelegates: FC = () => {
 					)} */}
 					<AccountContext.Provider value={accountContextValue}>
 						{showEditAccountView && (
-							<ModalOverlay
-								open={showEditAccountView}
-								maxWidth="58.75rem"
-							>
+							<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
 								<EditAccount
 									setShowEditAccountView={setShowEditAccountView}
 									selectedAccount={selectedAccount}
