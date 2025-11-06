@@ -34,7 +34,6 @@ import {
 	getAllServers,
 	getMailstoresServers
 } from './services/get-all-servers-service';
-import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
@@ -63,7 +62,6 @@ const App: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
@@ -200,7 +198,6 @@ const App: FC = () => {
 				if (isAdvanced) {
 					getGlobalConfig();
 				}
-				setAllServersList(server);
 			}
 		});
 		getAllServerByService(MTA).then((data) => {
@@ -209,17 +206,16 @@ const App: FC = () => {
 				setMtaServerList(server);
 			}
 		});
-	}, [setServerList, isAdvanced, setAllServersList, getGlobalConfig, setMtaServerList]);
+	}, [setServerList, isAdvanced, getGlobalConfig, setMtaServerList]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {
 			const server = data?.server;
 			if (server && Array.isArray(server) && server.length > 0) {
-				setVolumeList(server);
 				setAllMailstoreList(server);
 			}
 		});
-	}, [setVolumeList, setAllMailstoreList]);
+	}, [setAllMailstoreList]);
 
 	const getModuleLicense = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
