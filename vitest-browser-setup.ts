@@ -27,6 +27,14 @@ try {
 }
 
 beforeAll(async () => {
+	// Ensure stores module is loaded before starting MSW
+	// This prevents race conditions in CI environments
+	let retries = 0;
+	while (!storesModule && !storesImportFailed && retries < 10) {
+		await new Promise(resolve => setTimeout(resolve, 100));
+		retries++;
+	}
+	
 	await startMockWorker();
 });
 
@@ -41,6 +49,7 @@ beforeEach(async () => {
 			useBackupModuleStore,
 			useBucketServersListStore,
 			useDomainStore,
+			useGlobalConfigStore,
 			useLastLoginTimestamp,
 			useServerStore
 		} = storesModule;
@@ -71,6 +80,12 @@ beforeEach(async () => {
 		useBucketServersListStore.setState({
 			allServersList: [],
 			volumeList: []
+		});
+		useGlobalConfigStore.setState({
+			globalConfig: {},
+			globalConfigList: [],
+			globalConfigView: '',
+			globalCarbonioSendAnalytics: false
 		});
 		useLastLoginTimestamp.setState({ lastLoginTimestamp: '' });
 	}
