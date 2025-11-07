@@ -20,6 +20,7 @@ import { normalizeRoute } from './src/store/app/utils';
 import { useBackupModuleStore } from './src/store/backup-module/store';
 import { useBucketServersListStore } from './src/store/bucket-server-list/store';
 import { useAllConfig } from './src/store/config';
+import { useContextBridge } from './src/store/context-bridge';
 import { useDomainInformation } from './src/store/domain-information';
 import { Cos, Domain } from './src/store/domains';
 import { DomainState, useDomainStore } from './src/store/domains/store';
@@ -76,6 +77,7 @@ export {
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
 	useBucketServersListStore,
+	useContextBridge,
 	type DomainState,
 	type Attribute,
 	type Domain,

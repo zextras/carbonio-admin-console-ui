@@ -24,6 +24,28 @@ vi.mock('../../network/go-to-login', () => ({
 	goToLogin: vi.fn()
 }));
 
+// Mock global fetch for components.json
+const originalFetch = globalThis.fetch;
+globalThis.fetch = vi.fn((url: string | URL | Request, init?: RequestInit) => {
+	let urlString: string;
+	if (typeof url === 'string') {
+		urlString = url;
+	} else if (url instanceof URL) {
+		urlString = url.toString();
+	} else {
+		urlString = url.url;
+	}
+	
+	if (urlString.includes('/static/iris/components.json')) {
+		return Promise.resolve({
+			json: () => Promise.resolve({ components: [] }),
+			ok: true,
+			status: 200
+		} as Response);
+	}
+	return originalFetch(url, init);
+});
+
 const mocki18n: any = {
 	_cache: {},
 	locale: '',
@@ -58,8 +80,35 @@ describe('init', () => {
 			HttpResponse.json({ minApiVersion: 1, maxApiVersion: 2, domain: 'test.com' }, { status: 200 })
 		);
 		loginConfigApi(() => HttpResponse.json({}, { status: 200 }));
-		getInfoRequestApi(() => HttpResponse.json({}, { status: 200 }));
-		getAllConfigRequestApi(() => HttpResponse.json({}, { status: 200 }));
+		getInfoRequestApi(() =>
+			HttpResponse.json(
+				{
+					Body: {
+						GetInfoResponse: {
+							name: 'admin@test.com',
+							version: '9.0.0',
+							_attrs: {},
+							prefs: { _attrs: {} }
+						}
+					},
+					Header: { context: {} }
+				},
+				{ status: 200 }
+			)
+		);
+		getAllConfigRequestApi(() =>
+			HttpResponse.json(
+				{
+					Body: {
+						GetAllConfigResponse: {
+							a: []
+						}
+					},
+					Header: { context: {} }
+				},
+				{ status: 200 }
+			)
+		);
 
 		await init(new I18nFactory());
 
