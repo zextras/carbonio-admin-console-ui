@@ -6,9 +6,9 @@
 
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useHistory } from 'react-router-dom';
 
 const getAppI18n = (): i18n => {
 	const newI18n = i18next.createInstance();
@@ -34,8 +34,54 @@ export const I18NextTestProvider = ({ children }: { children: React.ReactNode })
 	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 };
 
+/**
+ * Sets up the context bridge with the current router history
+ * This is needed for replaceHistory and pushHistory to work in tests
+ */
+const ContextBridgeSetup = (): null => {
+	const history = useHistory();
+	
+	useLayoutEffect(() => {
+		// Try to dynamically import and set up the context bridge
+		// Use a synchronous check first to see if it's already available
+		try {
+			// @ts-expect-error - Dynamic import for testing
+			const bootstrap = window['@zextras/admin-ui-bootstrap'];
+			if (bootstrap?.useContextBridge) {
+				bootstrap.useContextBridge.getState().add({
+					functions: {
+						getHistory: () => history
+					}
+				});
+				return;
+			}
+		} catch {
+			// Module not available in window, try dynamic import
+		}
+		
+		// Fall back to async import
+		import('@zextras/admin-ui-bootstrap')
+			.then((module) => {
+				if (module.useContextBridge) {
+					module.useContextBridge.getState().add({
+						functions: {
+							getHistory: () => history
+						}
+					});
+				}
+			})
+			.catch(() => {
+				// Module not available or doesn't export useContextBridge
+				console.debug('Could not set up context bridge - history functions may not work');
+			});
+	}, [history]);
+	
+	return null;
+};
+
 export const Wrapper = ({ children }: WrapperProps): JSX.Element => (
 	<BrowserRouter>
+		<ContextBridgeSetup />
 		<ThemeProvider>
 			<SnackbarManager>
 				<I18NextTestProvider>
