@@ -5,7 +5,8 @@ export {
 	soapFetch,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap
+	fetchExternalSoap,
+	useAdminConfigStore
 } from '@zextras/admin-ui-bootstrap/network/fetch';
 
 export const useDomainInformation = vi.fn();
