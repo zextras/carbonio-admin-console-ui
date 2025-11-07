@@ -31,16 +31,17 @@ beforeAll(async () => {
 	// This prevents race conditions in CI environments
 	let retries = 0;
 	while (!storesModule && !storesImportFailed && retries < 10) {
-		await new Promise(resolve => setTimeout(resolve, 100));
+		await new Promise((resolve) => setTimeout(resolve, 100));
 		retries++;
 	}
-	
+
 	await startMockWorker();
 });
 
 beforeEach(async () => {
+	vi.useFakeTimers();
 	resetMockWorker();
-	
+
 	// Reset all Zustand stores to initial state before each test
 	// This prevents state leakage between tests
 	if (!storesImportFailed && storesModule) {
@@ -100,4 +101,5 @@ afterAll(() => {
 afterEach(async () => {
 	vi.unstubAllGlobals();
 	resetMockWorker();
+	vi.useRealTimers();
 });
