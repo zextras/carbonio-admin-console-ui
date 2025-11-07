@@ -952,12 +952,6 @@ const CosGeneralInformation: FC = () => {
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							label={t('label.help', 'Help')}
-							type="outlined"
-							color="primary"
-							onClick={(): null => null}
-						/>
 						<Container orientation="horizontal" mainAlignment="flex-end" width="fit">
 							<Padding all="small">
 								<Button
