@@ -5,9 +5,20 @@ export {
 	soapFetch,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap,
-	useAdminConfigStore
+	fetchExternalSoap
 } from '@zextras/admin-ui-bootstrap/network/fetch';
+
+// Import actual store functions directly - these should not be mocked for browser tests
+export {
+	useDomainStore,
+	useServerStore,
+	useGlobalConfigStore,
+	useBackupModuleStore,
+	useAdminConfigStore,
+	useConfigurationAttribute,
+	useLastLoginTimestamp,
+	useBucketServersListStore
+};
 
 export const useDomainInformation = vi.fn();
 export const addRoute = vi.fn();
