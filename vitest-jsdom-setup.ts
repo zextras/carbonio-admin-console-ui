@@ -28,6 +28,7 @@ window.fetch = require('node-fetch');
 beforeEach(() => {
 	// cleanup local storage
 	window.localStorage.clear();
+	vi.useFakeTimers();
 });
 
 beforeAll(() => {
@@ -41,4 +42,5 @@ afterAll(() => {
 afterEach(() => {
 	server.events.removeAllListeners();
 	server.resetHandlers();
+	vi.useRealTimers();
 });
