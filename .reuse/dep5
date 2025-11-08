@@ -18,6 +18,10 @@ Files: **/tsconfig.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: build_unified.js
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: **/Dockerfile
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
@@ -111,6 +115,10 @@ Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
 Files: apps/yap.json
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
+Files: yap.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
