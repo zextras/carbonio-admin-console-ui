@@ -148,9 +148,9 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'pnpm build'
+                        sh 'node build_unified.js'
                     }
-                    stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
+                    stash includes: '/**', excludes: '/**/node_modules/**', name: 'staging'
                 }
             }
         }
