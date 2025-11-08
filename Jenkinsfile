@@ -150,7 +150,7 @@ pipeline {
                     script {
                         sh 'node build_unified.js'
                     }
-                    stash includes: '/**', excludes: '/**/node_modules/**', name: 'staging'
+                    stash includes: 'package/**', name: 'staging'
                 }
             }
         }
@@ -159,8 +159,8 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: true,
-                        buildDirs: ['apps'],
+                        skipStash: false,
+                        buildDirs: ['.'],
                         ubuntuSinglePkg: true,
                         rockySinglePkg: true,
                     ])
@@ -221,7 +221,7 @@ pipeline {
         stage('Upload artifacts') {
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json'),
+                    packages: yapHelper.getPackageNames('yap.json'),
                     ubuntuSinglePkg: true,
                     rockySinglePkg: true,
                 )
