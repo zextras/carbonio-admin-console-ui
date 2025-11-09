@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 //
 // SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
 //
@@ -155,11 +156,6 @@ package() {
   # Set commit hash for symlink creation
   commitHash="${commitHash}"
   
-  # Create empty i18n directory first
-  mkdir -p "\${pkgdir}/opt/zextras/admin/iris/i18n"
-  chown root:root "\${pkgdir}/opt/zextras/admin/iris/i18n"
-  chmod 755 "\${pkgdir}/opt/zextras/admin/iris/i18n"
-
   # Set permissions for each component - files and directories only, symlinks are left as-is
   for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
@@ -245,5 +241,4 @@ postinst() {
 	}
 }
 
-// Run the script
 main();
