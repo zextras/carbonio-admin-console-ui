@@ -29,7 +29,7 @@ function execCommand(command, options = {}) {
 			...options
 		});
 	} catch (error) {
-		log(`Error executing command: ${command}`, 'red');
+		log(`Error executing command: ${command} - ${error.message}`, 'red');
 		process.exit(1);
 	}
 }
@@ -71,7 +71,7 @@ function main() {
 	log('=== Building unified admin package ===', 'blue');
 
 	// Get commit hash
-	const commitHash = execSync('git rev-parse --short HEAD', {
+	const commitHash = execSync('git rev-parse HEAD', {
 		encoding: 'utf-8'
 	}).trim();
 	log(`Commit hash: ${commitHash}`, 'green');
@@ -151,7 +151,15 @@ package() {
   cd "\${srcdir}"
   mkdir -p "\${pkgdir}/opt/zextras/admin/iris"
   cp -a opt/zextras/admin/iris/* "\${pkgdir}/opt/zextras/admin/iris/"
+
+  # Set commit hash for symlink creation
+  commitHash="${commitHash}"
   
+  # Create empty i18n directory first
+  mkdir -p "\${pkgdir}/opt/zextras/admin/iris/i18n"
+  chown root:root "\${pkgdir}/opt/zextras/admin/iris/i18n"
+  chmod 755 "\${pkgdir}/opt/zextras/admin/iris/i18n"
+
   # Set permissions for each component - files and directories only, symlinks are left as-is
   for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
@@ -162,18 +170,24 @@ package() {
       find "\${pkgdir}/opt/zextras/admin/iris/\${component}" -type d -exec chmod 755 "{}" \\;
     fi
   done
-  
-  # Create i18n symlinks for each component AFTER permissions are set
-  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos; do
+
+  # Create i18n symlink for carbonio-admin-ui with specific commit hash
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui/${commitHash}" ]; then
+    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui/${commitHash}/i18n"
+  fi
+
+  # Create i18n symlinks for other components
+  for component in carbonio-admin-console-ui carbonio-admin-ui-cos; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
       for commit_dir in "\${pkgdir}/opt/zextras/admin/iris/\${component}"/*; do
         if [ -d "\${commit_dir}" ]; then
+          # Create symlink to the shared i18n directory (which now exists)
           ln -sf /opt/zextras/admin/iris/i18n "\${commit_dir}/i18n"
         fi
       done
     fi
   done
-}
+  }
 
 postinst() {
   # Copy index.html files to current directory for carbonio-admin-ui
@@ -187,7 +201,7 @@ postinst() {
       fi
     done
   fi
-  
+
   # Re-generate the component list for all components
   find /opt/zextras/admin/iris/ \\
     -maxdepth 3 \\
@@ -199,7 +213,7 @@ postinst() {
     | awk '{
         n = split($2, path, "/")
         component = path[6]
-        
+
         if (!seen[component]++) {
             print $2
         }
@@ -228,7 +242,7 @@ postinst() {
 				console.log('  '.repeat(depth) + path.basename(dir));
 			}
 		} catch (error) {
-			log('Could not display directory structure', 'red');
+			log('Could not display directory structure', error.message, 'red');
 		}
 	}
 }
