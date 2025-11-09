@@ -220,25 +220,6 @@ postinst() {
 	log('PKGBUILD created', 'green');
 
 	log('=== Build complete! ===', 'green');
-	log(`Package structure created at: ${packageDir}`, 'green');
-	log('Directory structure:', 'blue');
-
-	// Try to show directory tree
-	try {
-		execSync(`tree -L 4 "${installDir}"`, { stdio: 'inherit' });
-	} catch {
-		// Fallback if tree is not installed
-		try {
-			const output = execSync(`find "${installDir}" -type d`, { encoding: 'utf-8' });
-			const dirs = output.trim().split('\n');
-			for (const dir of dirs) {
-				const depth = dir.split('/').length - installDir.split('/').length;
-				console.log('  '.repeat(depth) + path.basename(dir));
-			}
-		} catch (error) {
-			log('Could not display directory structure', error.message, 'red');
-		}
-	}
 }
 
 main();
