@@ -176,17 +176,15 @@ package() {
     ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui/${commitHash}/i18n"
   fi
 
-  # Create i18n symlinks for other components
-  for component in carbonio-admin-console-ui carbonio-admin-ui-cos; do
-    if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
-      for commit_dir in "\${pkgdir}/opt/zextras/admin/iris/\${component}"/*; do
-        if [ -d "\${commit_dir}" ]; then
-          # Create symlink to the shared i18n directory (which now exists)
-          ln -sf /opt/zextras/admin/iris/i18n "\${commit_dir}/i18n"
-        fi
-      done
-    fi
-  done
+  # Create i18n symlink for carbonio-admin-console-ui with specific commit hash
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui/${commitHash}" ]; then
+    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui/${commitHash}/i18n"
+  fi
+
+  # Create i18n symlink for carbonio-admin-ui-cos with specific commit hash
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-cos/${commitHash}" ]; then
+    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-cos/${commitHash}/i18n"
+  fi
   }
 
 postinst() {
