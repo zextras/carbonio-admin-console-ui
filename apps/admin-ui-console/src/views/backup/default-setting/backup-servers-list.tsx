@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useServerStore, useBackupModuleStore } from '@zextras/admin-ui-bootstrap';
+import { useServerStore, useBackupServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -219,7 +219,7 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
-	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
+	const { data: backupServerList, isLoading, error } = useBackupServers();
 	const servers = useServerStore((state) => state.serverList);
 
 	const STATUS: any[] = useMemo(

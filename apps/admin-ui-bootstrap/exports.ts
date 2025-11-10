@@ -17,7 +17,7 @@ import { useAdminConfigStore, useConfigurationAttribute } from './src/store/shar
 import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
-import { useBackupModuleStore } from './src/store/shared/backup-module/store';
+import { useBackupModule, useBackupServers, useBackupModuleEnable, type BackupServer, type BackupModuleState } from './src/react-query';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
 import { useAllConfig } from './src/store/config';
 import { useContextBridge } from './src/store/context-bridge';
@@ -72,7 +72,9 @@ export {
 	useDomainStore,
 	useServerStore,
 	useGlobalConfigStore,
-	useBackupModuleStore,
+	useBackupModule,
+	useBackupServers,
+	useBackupModuleEnable,
 	useAdminConfigStore,
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
@@ -81,7 +83,9 @@ export {
 	type DomainState,
 	type Attribute,
 	type Domain,
-	type Cos
+	type Cos,
+	type BackupServer,
+	type BackupModuleState
 };
 
 export { ReactQueryProvider } from './src/providers/query-client-provider';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGlobalConfigStore, useServerStore, useBackupModuleStore } from '../../../exports';
+import { useGlobalConfigStore, useServerStore, useBackupModule, useBackupServers, useBackupModuleEnable } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
 import {
@@ -53,7 +53,9 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useDomainStore,
 	useServerStore,
 	useGlobalConfigStore,
-	useBackupModuleStore,
+	useBackupModule,
+	useBackupServers,
+	useBackupModuleEnable,
 	useAdminConfigStore,
 	useConfigurationAttribute,
 	useLastLoginTimestamp,

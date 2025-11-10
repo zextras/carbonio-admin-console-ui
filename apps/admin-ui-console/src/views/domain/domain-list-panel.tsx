@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useDomainStore , useIsAdvanced , useBackupModuleStore , useGlobalConfigStore , useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useDomainStore , useIsAdvanced , useBackupModuleEnable , useGlobalConfigStore , useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
@@ -160,7 +160,7 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation]);
 
-	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
+	const { data: getBackupModuleEnable } = useBackupModuleEnable();
 	const getDomainLists = useCallback(
 		(domainName: string): void => {
 			setIsLoading(true);

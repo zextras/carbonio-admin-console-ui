@@ -47,7 +47,6 @@ beforeEach(async () => {
 	if (!storesImportFailed && storesModule) {
 		const {
 			useAdminConfigStore,
-			useBackupModuleStore,
 			useBucketServersListStore,
 			useDomainStore,
 			useGlobalConfigStore,
@@ -71,11 +70,6 @@ beforeEach(async () => {
 			serverList: [],
 			serverView: '',
 			mtaServerList: []
-		});
-		useBackupModuleStore.setState({
-			backupModuleEnable: false,
-			backupServerList: [],
-			isBackupModuleLicensed: false
 		});
 		useBucketServersListStore.setState({
 			allServersList: [],
