@@ -58,6 +58,10 @@ function copyRecursive(src, dest) {
 }
 
 function main() {
+	// Parse command line arguments
+	const args = process.argv.slice(2);
+	const isDevMode = args.includes('--dev');
+
 	// Get the root directory
 	const rootDir = __dirname;
 	const appsDir = path.join(rootDir, 'apps');
@@ -106,7 +110,8 @@ function main() {
 		const componentDir = path.join(appsDir, component.name);
 		process.chdir(componentDir);
 
-		execCommand('pnpm build');
+		const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
+		execCommand(buildCommand);
 
 		const distSourceDir = path.join(componentDir, 'dist', 'source');
 
