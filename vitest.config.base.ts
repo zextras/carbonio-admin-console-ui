@@ -73,7 +73,7 @@ export default defineConfig({
 					name: 'browser',
 					browser: {
 						enabled: true,
-						provider: playwright() as any,
+						provider: playwright(),
 						instances: [{ browser: 'chromium' }],
 						viewport: { width: 834, height: 2000 },
 						headless: !!process.env.CI,
