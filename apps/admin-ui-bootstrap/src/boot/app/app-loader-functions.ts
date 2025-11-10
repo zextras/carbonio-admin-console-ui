@@ -15,15 +15,15 @@ import {
 } from '../../network/fetch';
 import { usePrimaryBarState, useNetworkState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
-import { useAdminConfigStore, useConfigurationAttribute } from '../../store/admin-config';
+import { useAdminConfigStore, useConfigurationAttribute } from '../../store/shared/admin-config';
 import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
-import { useBucketServersListStore } from '../../store/bucket-server-list';
+import { useBucketServersListStore } from '../../store/shared/bucket-server-list';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
-import { useDomainStore } from '../../store/domains/store';
+import { useDomainStore } from '../../store/shared/domains/store';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
-import { useLastLoginTimestamp } from '../../store/last-login-timestamp/store';
+import { useLastLoginTimestamp } from '../../store/shared/last-login-timestamp/store';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
