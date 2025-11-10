@@ -221,7 +221,7 @@ const fetchAccount = (
 
 export const getSoapFetchRequest =
 	(app: string) =>
-	<_, Response>(apiURL: string): Promise<Response> => {
+	<Response>(apiURL: string): Promise<Response> => {
 		const fetchFn = (): Promise<Response> =>
 			fetch(`${apiURL}`, {
 				method: 'GET',
@@ -235,7 +235,6 @@ export const getSoapFetchRequest =
 					report(app)(e);
 					throw e;
 				});
-
 		return retry(fetchFn);
 	};
 

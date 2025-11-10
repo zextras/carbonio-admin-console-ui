@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGlobalConfigStore, useServerStore, useBackupModule, useBackupServers, useBackupModuleEnable } from '../../../exports';
+import {
+	useGlobalConfigStore,
+	useServerStore,
+	useBackupModule,
+	useBackupServers,
+	useBackupModuleEnable
+} from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
 import {
@@ -13,17 +19,17 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
+import { useLastLoginTimestamp } from '../../react-query/use-last-login-timestamp';
 import { usePrimaryBarState, useNetworkState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
-import { useAdminConfigStore, useConfigurationAttribute } from '../../store/shared/admin-config';
 import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
-import { useBucketServersListStore } from '../../store/shared/bucket-server-list';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
-import { useDomainStore } from '../../store/shared/domains/store';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
-import { useLastLoginTimestamp } from '../../react-query/use-last-login-timestamp';
+import { useAdminConfigStore, useConfigurationAttribute } from '../../store/shared/admin-config';
+import { useBucketServersListStore } from '../../store/shared/bucket-server-list';
+import { useDomainStore } from '../../store/shared/domains/store';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({

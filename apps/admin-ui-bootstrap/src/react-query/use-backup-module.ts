@@ -7,28 +7,41 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
-export type BackupServer = any;
+type BackupServer = {
+	id?: string;
+	name?: string;
+	a?: Array<{
+		n: string;
+		_content?: string;
+		c?: boolean;
+	}>;
+};
 
-export type BackupModuleState = {
+type BackupModuleState = {
 	backupModuleEnable: boolean;
-	backupServerList: BackupServer[];
+	backupServerList: Array<BackupServer>;
 	isBackupModuleLicensed: boolean;
+};
+
+type GetAllServersResponse = {
+	servers?: Array<BackupServer>;
 };
 
 /**
  * Query function to fetch backup module information including server list and enablement status
  */
 async function queryFn(): Promise<BackupModuleState> {
-	const response = await getSoapFetchRequest(
+	const response = await getSoapFetchRequest<GetAllServersResponse>(
 		'/service/extension/zextras_admin/core/getAllServers?module=zxbackup'
 	);
-	const backupServers = (response as any)?.servers;
+
+	const backupServers = response?.servers;
 
 	const backupModuleState: BackupModuleState = {
-		backupModuleEnable: backupServers && Array.isArray(backupServers) && backupServers.length > 0,
+		backupModuleEnable: !!backupServers && Array.isArray(backupServers) && backupServers.length > 0,
 		backupServerList: backupServers || [],
 		isBackupModuleLicensed:
-			backupServers && Array.isArray(backupServers) && backupServers.length > 0
+			!!backupServers && Array.isArray(backupServers) && backupServers.length > 0
 	};
 
 	return backupModuleState;
