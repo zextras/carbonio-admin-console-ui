@@ -1,0 +1,11 @@
+{
+	"name": "carbonio-admin-console-ui",
+	"description": "Admin UI",
+	"buildDir": "/tmp/dist/",
+	"output": "artifacts",
+	"projects": [
+		{
+			"name": "package"
+		}
+	]
+}
