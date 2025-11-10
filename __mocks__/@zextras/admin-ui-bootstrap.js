@@ -6,7 +6,7 @@ export {
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	fetchExternalSoap
-} from '@zextras/admin-ui-bootstrap/network/fetch';
+} from '@zextras/admin-ui-bootstrap/src/network/fetch';
 
 // Import actual store functions directly - these should not be mocked for browser tests
 export {
