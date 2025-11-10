@@ -14,11 +14,16 @@ import {
 	useIsAdvanced,
 	useUserAccounts,
 	useUserSettings,
-	useDomainStore
-, useServerStore , useBackupModuleStore , useGlobalConfigStore , useAdminConfigStore , useLastLoginTimestamp , useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
+	useDomainStore,
+	useServerStore,
+	useBackupModuleStore,
+	useGlobalConfigStore,
+	useAdminConfigStore,
+	useLastLoginTimestamp,
+	useBucketServersListStore
+} from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import moment from 'moment';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -63,8 +68,8 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
-	ZIMBRA_ADMIN_URN,
-	} from './constants';
+	ZIMBRA_ADMIN_URN
+} from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';

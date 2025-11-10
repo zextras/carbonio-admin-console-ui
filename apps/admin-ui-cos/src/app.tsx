@@ -13,11 +13,12 @@ import {
 	useIsAdvanced,
 	useUserAccounts,
 	useUserSettings,
-	useGlobalConfigStore
+	useGlobalConfigStore,
+	useAdminConfigStore,
+	useLastLoginTimestamp
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import moment from 'moment';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -38,14 +39,12 @@ import {
 	PRIMARY_BAR_COS,
 	SERVICES_ROUTE_ID,
 	TRUE,
-	ZIMBRA_ADMIN_URN,
-	} from './constants';
+	ZIMBRA_ADMIN_URN
+} from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useCosStore } from './store/cos/store';
-import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { TrackerProvider } from './tracker/provider';
