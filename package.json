@@ -10,6 +10,8 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:dev": "turbo run build:dev",
+		"build:unified": "node build_unified.js",
+		"build:unified:dev": "node build_unified.js --dev",
 		"test": "turbo run test",
 		"test:ci": "turbo run test:ci",
 		"type-check": "turbo run type-check",
