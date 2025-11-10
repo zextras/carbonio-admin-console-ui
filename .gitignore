@@ -62,3 +62,5 @@ apps/*/junit.xml
 .scannerwork
 **/__screenshots__/**
 packages/stores/dist
+.mcp.json
+CLAUDE.md
