@@ -28,7 +28,7 @@ import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
-import { useLastLoginTimestamp } from './src/store/shared/last-login-timestamp/store';
+import { useLastLoginTimestamp } from './src/store/shared/last-login-timestamp';
 import { useServerStore } from './src/store/shared/servers/store';
 import { getTags } from './src/store/tags';
 import { Attribute } from './types';
@@ -83,3 +83,5 @@ export {
 	type Domain,
 	type Cos
 };
+
+export { ReactQueryProvider } from './src/providers/query-client-provider';

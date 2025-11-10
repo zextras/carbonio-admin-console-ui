@@ -39,10 +39,8 @@ import {
 	SERVICES_ROUTE_ID,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
-	ZIMBRA_LAST_LOGON_TIMESTAMP
-} from './constants';
+	} from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
@@ -87,27 +85,13 @@ const App: FC = () => {
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const createSnackbar = useSnackbar();
-	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
-	const getAccountDetails = useCallback(
-		(id: any) => {
-			getAccountRequest(id, '', 0).then((res: any) => {
-				const lastLogin = res?.account?.[0]?.a?.find(
-					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
-				);
-				setLastLoginTimestamp(
-					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
-				);
-			});
-		},
-		[setLastLoginTimestamp]
-	);
 
-	useEffect(() => {
-		if (userSetting?.attrs?.zimbraId) {
-			getAccountDetails(userSetting?.attrs?.zimbraId);
-		}
-	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
+	// TanStack Query automatically handles fetching last login timestamp
+	useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {

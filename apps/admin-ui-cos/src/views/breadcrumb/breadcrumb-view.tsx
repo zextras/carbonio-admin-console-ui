@@ -21,7 +21,7 @@ export const BreadCrumb: FC = () => {
 	const loc = useLocation();
 	const history = useHistory();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-	const { lastLoginTimestamp } = useLastLoginTimestamp();
+	const { data: lastLoginTimestamp } = useLastLoginTimestamp();
 
 	useEffect(() => {
 		if (loc?.pathname) {

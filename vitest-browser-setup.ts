@@ -51,7 +51,6 @@ beforeEach(async () => {
 			useBucketServersListStore,
 			useDomainStore,
 			useGlobalConfigStore,
-			useLastLoginTimestamp,
 			useServerStore
 		} = storesModule;
 
@@ -88,7 +87,6 @@ beforeEach(async () => {
 			globalConfigView: '',
 			globalCarbonioSendAnalytics: false
 		});
-		useLastLoginTimestamp.setState({ lastLoginTimestamp: '' });
 	}
 });
 

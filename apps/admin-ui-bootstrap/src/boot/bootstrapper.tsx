@@ -17,6 +17,7 @@ import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
 import I18nFactory from '../i18n/i18n-factory';
+import { ReactQueryProvider } from '../providers/query-client-provider';
 import { useBridge } from '../store/context-bridge';
 
 const DefaultViewsRegister: FC = () => {
@@ -55,15 +56,17 @@ const Bootstrapper: FC = () => {
 			{error ? (
 				<ErrorPage />
 			) : (
-				<SnackbarManager>
-					<ModalManager>
-						<BootstrapperContextProvider i18nFactory={i18nFactory}>
-							<TBridge i18nFactory={i18nFactory} />
-							<DefaultViewsRegister />
-							<BootstrapperRouter />
-						</BootstrapperContextProvider>
-					</ModalManager>
-				</SnackbarManager>
+				<ReactQueryProvider>
+					<SnackbarManager>
+						<ModalManager>
+							<BootstrapperContextProvider i18nFactory={i18nFactory}>
+								<TBridge i18nFactory={i18nFactory} />
+								<DefaultViewsRegister />
+								<BootstrapperRouter />
+							</BootstrapperContextProvider>
+						</ModalManager>
+					</SnackbarManager>
+				</ReactQueryProvider>
 			)}
 		</ThemeProvider>
 	);

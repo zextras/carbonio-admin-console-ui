@@ -64,12 +64,9 @@ import {
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
-	ZIMBRA_LAST_LOGON_TIMESTAMP
-} from './constants';
+	} from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { ReactQueryProvider } from './providers/query-client-provider';
-import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
 	getAllServerByService,
@@ -88,13 +85,11 @@ import { getRights } from './views/utility/utils';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<ReactQueryProvider>
-		<TrackerProvider>
-			<Suspense fallback={<Spinner />}>
-				<LazyAppView {...props} />
-			</Suspense>
-		</TrackerProvider>
-	</ReactQueryProvider>
+	<TrackerProvider>
+		<Suspense fallback={<Spinner />}>
+			<LazyAppView {...props} />
+		</Suspense>
+	</TrackerProvider>
 );
 
 const PrimaryBarIconButton = styled(Button)`
@@ -138,28 +133,14 @@ const App: FC = () => {
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar = useSnackbar();
-	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const hasAllConfigRights = useRightsStore(hasAllRights);
 	const userSetting = useUserSettings();
-	const getAccountDetails = useCallback(
-		(id: any) => {
-			getAccountRequest(id, '', 0).then((res: any) => {
-				const lastLogin = res?.account?.[0]?.a?.find(
-					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
-				);
-				setLastLoginTimestamp(
-					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
-				);
-			});
-		},
-		[setLastLoginTimestamp]
-	);
 
-	useEffect(() => {
-		if (userSetting?.attrs?.zimbraId) {
-			getAccountDetails(userSetting?.attrs?.zimbraId);
-		}
-	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
+	// TanStack Query automatically handles fetching last login timestamp
+	useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
