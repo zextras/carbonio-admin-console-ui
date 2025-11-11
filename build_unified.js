@@ -189,12 +189,12 @@ package() {
   }
 
 preinst(){
-if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
-    rm -rf "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui"
-fi
-if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui" ]; then
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
+      rm -rf "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui"
+  fi
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui" ]; then
     rm -rf "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui"
-fi
+  fi
 }
 postinst() {
   # Copy index.html files to current directory for carbonio-admin-ui
