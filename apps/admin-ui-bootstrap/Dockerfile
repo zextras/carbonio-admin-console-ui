@@ -1,12 +1,20 @@
-FROM alpine
+FROM --platform=$BUILDPLATFORM backplane/jq:latest AS builder
 
-RUN apk add --no-cache jq
+# Define path variables
+ENV IRIS_BASE_PATH="/opt/zextras/admin/iris" \
+    WEB_PATH="/opt/zextras/admin/iris/carbonio-admin-ui"
 
-COPY dist/source/ /tmp/build/
+# Set up directories
+RUN mkdir -p "${WEB_PATH}"
 
-RUN ADMIN_PATH="/opt/zextras/admin/iris/carbonio-admin-ui" \
-    && mkdir -p "${ADMIN_PATH}" \
-    && cp -r /tmp/build/* "${ADMIN_PATH}/" \
-    && rm -r /tmp/build
+# Copy application files
+COPY dist/source/ ${WEB_PATH}/
 
-ENTRYPOINT ["/bin/sh", "-c", "jq -s '{components: .}' $(find /opt/zextras/admin/iris/ -name component.json) > /opt/zextras/admin/iris/components.json"]
+# Final stage - built for all target platforms
+FROM backplane/jq:latest
+
+# Just copy the prepared files (no execution needed)
+COPY --from=builder /opt/zextras /opt/zextras
+
+# Generate components.json from all component.json files
+ENTRYPOINT ["/bin/sh", "-c", "jq -s '{components: .}' $(find ${IRIS_BASE_PATH}/ -name component.json) > ${IRIS_BASE_PATH}/components.json"]
