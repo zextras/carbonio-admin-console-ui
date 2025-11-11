@@ -188,6 +188,10 @@ package() {
   fi
   }
 
+preinst(){
+echo "clearing up installation path"
+find "\${pkgdir}/opt/zextras/admin/iris" -mindepth 1 -maxdepth 1 ! -name 'i18n' -exec rm -rf {} +
+}
 postinst() {
   # Copy index.html files to current directory for carbonio-admin-ui
   if [ -d "/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
