@@ -38,6 +38,7 @@ import {
 	useAdminConfigStore,
 	useConfigurationAttribute
 } from './src/store/shared/admin-config/store';
+import { useBackupStore } from './src/store/shared/backup';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
 import { Cos, Domain } from './src/store/shared/domains';
 import { DomainState, useDomainStore } from './src/store/shared/domains/store';
@@ -93,6 +94,7 @@ export {
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
 	useBucketServersListStore,
+	useBackupStore,
 	useStickyBarStore,
 	useContextBridge,
 	useRemoveLicense,

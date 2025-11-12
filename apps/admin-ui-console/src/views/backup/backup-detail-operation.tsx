@@ -14,7 +14,7 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import { useBackupStore } from '../../store/backup/store';
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
 
 import ImportExternalBackup from './actions/import-external-backup';
 import BackupConfiguration from './configuration/backup-configuration';

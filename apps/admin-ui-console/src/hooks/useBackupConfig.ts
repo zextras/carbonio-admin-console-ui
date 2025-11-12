@@ -17,9 +17,10 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
+
 import { CONFIG } from '../constants';
 import { modifyBackupRequest } from '../services/modify-backup';
-import { useBackupStore } from '../store/backup/store';
 import { useRightsStore, Right, Rights } from '../store/rights/store';
 
 export const useBackupConfig = (): {

@@ -9,8 +9,9 @@ import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
+
 import { dumpGlobalConfig } from '../../services/dump-global-config';
-import { useBackupStore } from '../../store/backup/store';
 
 import BackupDetailOperation from './backup-detail-operation';
 

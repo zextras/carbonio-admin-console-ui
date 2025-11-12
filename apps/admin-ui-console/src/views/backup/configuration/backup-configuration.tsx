@@ -39,9 +39,10 @@ import {
 	BACKUP_REALTIME,
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
+
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useBackupStore } from '../../../store/backup/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import OverlayDivision from '../../components/overlayDivision';

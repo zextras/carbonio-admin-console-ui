@@ -28,8 +28,9 @@ vi.mock('../../store/rights/store', () => ({
 	useRightsStore: vi.fn()
 }));
 
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
+
 import { modifyBackupRequest } from '../../services/modify-backup';
-import { useBackupStore } from '../../store/backup/store';
 import { useRightsStore } from '../../store/rights/store';
 import { useBackupConfig } from '../useBackupConfig';
 

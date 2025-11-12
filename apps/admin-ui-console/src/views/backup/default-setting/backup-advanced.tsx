@@ -7,8 +7,9 @@ import { Container, Row, Divider, Input, Switch, Select } from '@zextras/carboni
 import React, { FC, useMemo } from 'react';
 
 
+import { useBackupStore } from '@zextras/admin-ui-bootstrap';
+
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useBackupStore } from '../../../store/backup/store';
 import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
