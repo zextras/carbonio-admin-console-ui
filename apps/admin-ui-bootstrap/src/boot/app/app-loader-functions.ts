@@ -20,7 +20,8 @@ import {
 	useBackupStore,
 	useRights,
 	useHasRight,
-	useRightsByType
+	useRightsByType,
+	useMailstoreList
 } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
@@ -87,5 +88,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useBackupStore,
 	useRights,
 	useHasRight,
-	useRightsByType
+	useRightsByType,
+	useMailstoreList
 });

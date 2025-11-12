@@ -22,7 +22,8 @@ import {
 	useBackupModule,
 	useRights,
 	useHasRight,
-	useLicenseInfo
+	useLicenseInfo,
+	useMailstoreList
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -76,11 +77,9 @@ import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import {
 	getAllServerByService,
-	getAllServers,
-	getMailstoresServers
+	getAllServers
 } from './services/get-all-servers-service';
 import { useCosStore } from './store/cos/store';
-import { useMailstoreListStore } from './store/mailstore-list/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -126,7 +125,7 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
+	const { data: allMailstoreList } = useMailstoreList();
 	const { data: licenseInfo } = useLicenseInfo();
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
@@ -839,22 +838,9 @@ const App: FC = () => {
 		});
 	}, [setServerList, isAdvanced, setAllServersList, getGlobalConfig, setMtaServerList]);
 
-	const getMailstoresServersRequest = useCallback(() => {
-		getMailstoresServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setVolumeList(server);
-				setAllMailstoreList(server);
-			}
-		});
-	}, [setVolumeList, setAllMailstoreList]);
-
-	
 	useEffect(() => {
 		getAllServersRequest();
-		// another call just to get only mailstores can be improvised later
-		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+	}, [getAllServersRequest]);
 
 	return null;
 };

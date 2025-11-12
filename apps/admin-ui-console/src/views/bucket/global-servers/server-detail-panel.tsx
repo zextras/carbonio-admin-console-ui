@@ -27,7 +27,7 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import { useMailstoreList } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { headerAdvanced } from '../../utility/utils';
@@ -195,7 +195,7 @@ const ServersListTable: FC<{
 
 const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allServersList } = useMailstoreList();
 	const isAdvanced = useIsAdvanced();
 	const [serversList, setServersList] = useState<any>([]);
 	const [serverListAll, setServerListAll] = useState<any>([]);
@@ -222,10 +222,10 @@ const ServerDetailPanel: FC = () => {
 							setIsRequestInProgress(false);
 							const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
 							const responseData = JSON.parse(res?.Body?.response?.content);
-							 
+
 							if (responseData && responseData.ok) {
-								if (allServersList.length > 0) {
-									const serverList = allServersList.map((item) => {
+								if ((allServersList || []).length > 0) {
+									const serverList = (allServersList || []).map((item) => {
 										let primaries = '';
 										let secondaries = '';
 										let indexes = '';
@@ -253,11 +253,11 @@ const ServerDetailPanel: FC = () => {
 												primaries = data?.primaries.length;
 												secondaries = data?.secondaries.length;
 												indexes = data?.indexes.length;
-												const descriptionData = item?.a.filter(
+												const descriptionData = item?.a?.filter(
 													(items: any) => items?.n === DESCRIPTION
 												);
-												if (descriptionData) {
-													description = descriptionData;
+												if (descriptionData && descriptionData.length > 0) {
+													description = descriptionData[0]?._content || '';
 												}
 											}
 										}
@@ -285,12 +285,12 @@ const ServerDetailPanel: FC = () => {
 				});
 			 
 		} else if (!isAdvanced) {
-			if (allServersList.length > 0) {
-				const serverList = allServersList.map((item) => {
+			if ((allServersList || []).length > 0) {
+				const serverList = (allServersList || []).map((item) => {
 					let description = '';
-					const descriptionData = item?.a.filter((items: any) => items?.n === DESCRIPTION);
-					if (descriptionData) {
-						description = descriptionData;
+					const descriptionData = item?.a?.filter((items: any) => items?.n === DESCRIPTION);
+					if (descriptionData && descriptionData.length > 0) {
+						description = descriptionData[0]?._content || '';
 					}
 					return {
 						name: item.name,

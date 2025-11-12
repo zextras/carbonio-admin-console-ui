@@ -40,7 +40,7 @@ import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { getCosList } from '../../services/search-cos-service';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { useMailstoreList } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -89,7 +89,7 @@ const CreateDomain: FC = () => {
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
-	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allMailStoreList } = useMailstoreList();
 	const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
@@ -104,9 +104,9 @@ const CreateDomain: FC = () => {
 
 	useEffect(() => {
 		if (allMailStoreList && allMailStoreList.length > 0) {
-			const data = allMailStoreList.map((item: { [key: string]: string }) => ({
-				label: item?.name,
-				value: item?.name
+			const data = allMailStoreList.map((item) => ({
+				label: item?.name || '',
+				value: item?.name || ''
 			}));
 			if (data && data.length > 0) {
 				setZimbraPublicServiceHostnameList(data);

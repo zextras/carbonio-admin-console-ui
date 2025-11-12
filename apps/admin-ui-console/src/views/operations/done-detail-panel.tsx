@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { getAllDoneOperations } from '../../services/get-all-done-operation';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { useMailstoreList } from '@zextras/admin-ui-bootstrap';
 import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
@@ -36,7 +36,7 @@ const RelativeContainer = styled(Container)`
 const DoneDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allServersList } = useMailstoreList();
 	const { doneData, setDoneData } = useOperationStore((state) => state);
 	const operationsDoneHeader = useMemo(() => OperationsDoneHeader(t), [t]);
 	const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
@@ -58,7 +58,7 @@ const DoneDetailPanel: FC = () => {
 				if (res?.ok) {
 					const result = res?.response?.operationList;
 					const updatedData = map(result, (item1) => {
-						const matchingItem2 = find(allServersList, { id: item1.serverId });
+						const matchingItem2 = find(allServersList || [], { id: item1.serverId });
 						if (matchingItem2) {
 							return { ...item1, serverName: matchingItem2.name };
 						}

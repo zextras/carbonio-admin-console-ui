@@ -23,6 +23,7 @@ import {
 	useRights,
 	useHasRight,
 	useRightsByType,
+	useMailstoreList,
 	type Right
 } from './src/react-query';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
@@ -107,5 +108,6 @@ export {
 	useRights,
 	useHasRight,
 	useRightsByType,
+	useMailstoreList,
 	type Right
 };
