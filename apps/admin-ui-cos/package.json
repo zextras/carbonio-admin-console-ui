@@ -65,7 +65,7 @@
 	"license": "AGPL-3.0-only",
 	"carbonio": {
 		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
-		"name": "carbonio-admin-cos",
+		"name": "carbonio-admin-ui-cos",
 		"priority": 3,
 		"type": "carbonioAdmin",
 		"display": "Manage",
