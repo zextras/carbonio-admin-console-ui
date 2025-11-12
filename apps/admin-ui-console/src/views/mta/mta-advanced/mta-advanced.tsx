@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -19,7 +19,7 @@ import {
 	Radio,
 	RadioGroup
 } from '@zextras/carbonio-design-system';
-import { find, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +40,6 @@ import {
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
@@ -77,7 +76,11 @@ const MTAAdvanced: FC = () => {
 		[setInitialValue, setValue]
 	);
 
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const userAccount = useUserAccount();
+	const { data: allowSetMTA } = useHasRight({
+		rightType: CONFIG,
+		userName: userAccount?.name
+	});
 
 	const amavisLogLevelOptions = useMemo(
 		() => [
@@ -171,11 +174,7 @@ const MTAAdvanced: FC = () => {
 		[t]
 	);
 
-	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
-
+	
 	const setAdavanceLogAndThread = useCallback(() => {
 		const zimbraMtaSmtpdClientPortLogging = configInformation.filter(
 			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING

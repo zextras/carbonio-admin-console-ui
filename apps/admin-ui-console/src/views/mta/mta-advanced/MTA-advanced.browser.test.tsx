@@ -5,14 +5,18 @@
  */
 
 import { page } from '@vitest/browser/context';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore , useHasRight, useUserAccount } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useRightsStore } from '../../../store/rights/store';
 
 import MTAAdvanced from './mta-advanced';
+
+vi.mock('@zextras/admin-ui-bootstrap', () => ({
+	useHasRight: vi.fn(),
+	useUserAccount: vi.fn()
+}));
 
 vi.mock('../../../services/modify-config', () => ({
 	modifyConfig: vi.fn()
@@ -54,18 +58,8 @@ describe('MTAAdvanced', () => {
 	};
 
 	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'config',
-				all: [
-					{
-						right: [{ n: 'modifyConfig' }, { n: 'getConfig' }],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
+		(useHasRight as any).mockReturnValue({ data: true });
+		(useUserAccount as any).mockReturnValue({ name: 'test-user' });
 	};
 
 	beforeEach(() => {

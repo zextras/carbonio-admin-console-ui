@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useUserAccount, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, useUserAccount, useDomainStore , useIsAdvanced , useRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -56,7 +56,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -87,7 +86,8 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const { setUserType } = useRightsStore((state) => state);
+	const userAccount = useUserAccount();
+	const { data: rights } = useRights({ userName: userAccount?.name });
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
@@ -1022,9 +1022,9 @@ const ManageAccounts: FC = () => {
 			_jsns: 'urn:zimbraAccount'
 		}).then((res) => {
 			const data = res?.Body?.GetInfoResponse?.attrs?._attrs;
-			setUserType(data && accountUserType(data));
+			// User type is now handled by the rights hook
 		});
-	}, [accountUserType, setUserType]);
+	}, [accountUserType]);
 
 	useEffect(() => {
 		getInfoDetail();

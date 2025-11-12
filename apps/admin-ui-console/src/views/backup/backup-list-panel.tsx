@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useGlobalConfigStore, replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { useGlobalConfigStore, replaceHistory, useUserAccount, useRights } from '@zextras/admin-ui-bootstrap';
 import { useBucketServersListStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -22,7 +22,6 @@ import {
 	SERVER_CONFIG
 } from '../../constants';
 import { useModuleLicenseStore } from '../../store/module-license/store';
-import { useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -43,7 +42,10 @@ const BackupListPanel: FC = () => {
 	const [serverNames, setServerNames] = useState<any>();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
-	const rights = useRightsStore((state) => state.rights);
+	const userAccount = useUserAccount();
+	const { data: rights } = useRights({
+		userName: userAccount?.name
+	});
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const [isShowError, setIsShowError] = useState(false);
 

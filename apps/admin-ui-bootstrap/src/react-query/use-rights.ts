@@ -12,20 +12,20 @@ export type Right = {
 	all: Array<{
 		right?: {
 			n: string;
-		};
+		}[];
 		setAttrs?: {
 			all: boolean;
-		};
+		}[];
 		getAttrs?: {
 			all: boolean;
-		};
+		}[];
 	}>;
 	inDomains?: Array<{
-		rights: {
+		rights: Array<{
 			right?: {
 				n: string;
-			};
-		};
+			}[];
+		}>;
 	}>;
 };
 

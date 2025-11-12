@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore , useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings, useDomainStore , useIsAdvanced , useUserAccount, useHasRight, useRights , useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Button,
@@ -18,7 +18,7 @@ import {
 	Modal,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
+import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import React, {
 	FC,
 	ReactElement,
@@ -51,7 +51,6 @@ import {
 	CLOSED,
 	ABQ_MODE,
 	BACKUP_ENABLED,
-	ADMIN_LOGIN_AS,
 	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
@@ -68,8 +67,6 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
-import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
-import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -158,7 +155,21 @@ const EditAccount: FC<{
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
-	const { userType } = useRightsStore((state) => state);
+	const userAccount = useUserAccount();
+	const { data: rights } = useRights({ userName: userAccount?.name });
+	// Determine user type based on userSetting data
+	const userType = useMemo(() => {
+		if (!userSetting?.attrs?.zimbraIsAdminAccount || userSetting?.attrs?.zimbraIsAdminAccount === 'FALSE') {
+			return 'Normal';
+		}
+		if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
+			return 'DelegatedAdmin';
+		}
+		if (userSetting?.attrs?.zimbraIsSystemAdminAccount === 'TRUE') {
+			return 'System';
+		}
+		return 'Admin';
+	}, [userSetting]);
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -882,21 +893,7 @@ const EditAccount: FC<{
 		}
 	}, [accountUserType, selectedAccount, userType]);
 
-	const rights: Rights = useRightsStore((state) => state.rights);
-
-	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: ACCOUNT }) ?? {
-			all: [],
-			inDomains: [],
-			type: ACCOUNT
-		};
-		return (
-			!!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
-			!!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
-				(right) => right?.n === ADMIN_LOGIN_AS
-			)
-		);
-	}, [rights]);
+	const { data: allowSetPrivacy } = useHasRight({ rightType: ACCOUNT, userName: userAccount?.name });
 	const buttons = [
 		allowSetPrivacy && {
 			align: 'right',

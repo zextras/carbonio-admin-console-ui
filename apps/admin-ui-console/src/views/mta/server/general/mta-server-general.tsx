@@ -4,8 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useServerStore, useAdminConfigStore, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -16,7 +15,7 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
+import { isEqual, join, map, reduce, some, split, trim } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -41,7 +40,6 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
-import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
@@ -55,8 +53,7 @@ const MTAServerGeneral: FC = () => {
 	const { server }: { server: string } = useParams();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const [serverAttributes, setServerAttributes] = useState<{ n: string; _content: string }[]>([]);
+		const [serverAttributes, setServerAttributes] = useState<{ n: string; _content: string }[]>([]);
 	const [mtaServerGeneralInitialDetail, setMtaServerGeneralInitialDetail] =
 		useState<MtaServerGeneral>();
 	const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
@@ -199,10 +196,11 @@ const MTAServerGeneral: FC = () => {
 		[t]
 	);
 
-	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetMTA } = useHasRight({
+		rightType: CONFIG,
+		userName: userAccount?.name
+	});
 
 	const setMtaLoggingValues = useCallback(() => {
 		const zimbraAmavisLogLevel = serverAttributes.find(

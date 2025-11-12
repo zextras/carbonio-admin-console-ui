@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -16,8 +16,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -29,7 +28,6 @@ import {
 	CONFIG
 } from '../../constants';
 import { modifyConfig } from '../../services/modify-config';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
@@ -46,12 +44,11 @@ const PrivacyView: FC = () => {
 		CARBONIO_SEND_FULL_ERROR_STACK: false,
 		CARBONIO_ALLOW_FEEDBACK: false
 	});
-	const rights: Rights = useRightsStore((state) => state.rights);
-
-	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetPrivacy } = useHasRight({
+		rightType: CONFIG,
+		userName: userAccount?.name
+	});
 
 	useEffect(() => {
 		if (config && config.length > 0) {

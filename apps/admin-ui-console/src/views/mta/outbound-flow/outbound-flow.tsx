@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useServerStore } from '@zextras/admin-ui-bootstrap';
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useServerStore, useAdminConfigStore, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -20,7 +19,7 @@ import {
 	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { isEqual, find, some, map, join, split, trim } from 'lodash';
+import { isEqual, some, map, join, split, trim } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -44,7 +43,6 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
@@ -59,13 +57,13 @@ const MTAOutBoundFlow: FC = () => {
 	const updateConfig = useAdminConfigStore((state) => state.updateConfig);
 	const mtaServersList = useServerStore((state) => state.mtaServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
-	const rights: Rights = useRightsStore((state) => state.rights);
 	const [networkValue, setNetworkValue] = useState<any>([]);
 
-	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetMTA } = useHasRight({
+		rightType: CONFIG,
+		userName: userAccount?.name
+	});
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
 		useState<MtaOutboundFlow>();

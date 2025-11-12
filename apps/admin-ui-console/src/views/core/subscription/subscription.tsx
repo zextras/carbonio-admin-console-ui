@@ -9,7 +9,7 @@ import {
 	useLicenseInfo,
 	useRemoveLicense,
 	useVersion
-} from '@zextras/admin-ui-bootstrap';
+, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -21,13 +21,11 @@ import {
 	Quota,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
 import moment from 'moment';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../../constants';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { LicenseBanner } from '../../dashboard/license-banner';
 
 import { ServiceStatus } from './service-status';
@@ -110,16 +108,13 @@ export const Subscription = (): React.JSX.Element => {
 	const { data: licenseData } = useLicenseInfo();
 	const [licenseKey, setLicenseKey] = useState(licenseData?.response?.authenticationToken ?? '');
 
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const userAccount = useUserAccount();
+	const { data: allowSetSubsciption } = useHasRight({ rightType: CONFIG, userName: userAccount?.name });
 	const { t } = useTranslation();
 
 	const activateLicenseMutation = useActivateLicense();
 
 	const removeLicenseMutation = useRemoveLicense();
-	const allowSetSubsciption = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
 
 	const services = useMemo(() => {
 		if (!licenseData) return null;

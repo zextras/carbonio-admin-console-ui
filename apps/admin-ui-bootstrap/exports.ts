@@ -22,7 +22,8 @@ import {
 	useModuleLicenseInfo,
 	useRights,
 	useHasRight,
-	useRightsByType
+	useRightsByType,
+	type Right
 } from './src/react-query';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
 import {} from './src/react-query/use-subscription';
@@ -105,5 +106,6 @@ export {
 	useModuleLicenseInfo,
 	useRights,
 	useHasRight,
-	useRightsByType
+	useRightsByType,
+	type Right
 };

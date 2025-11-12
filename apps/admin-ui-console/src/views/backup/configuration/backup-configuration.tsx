@@ -6,8 +6,12 @@
 import {
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap
-, useServerStore } from '@zextras/admin-ui-bootstrap';
+	fetchExternalSoap,
+	useServerStore,
+	useBackupStore,
+	useRights,
+	useUserAccounts
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -39,12 +43,9 @@ import {
 	BACKUP_REALTIME,
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
-import { useBackupStore } from '@zextras/admin-ui-bootstrap';
-
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -110,10 +111,14 @@ const BackupConfiguration: FC = () => {
 		useState<string>('');
 	const [rootVolumePath, setRootVolumePath] = useState<string>('');
 	const selectedBackupServer = useBackupStore((state) => state.selectedServer);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const accounts = useUserAccounts();
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 
 	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
@@ -186,7 +191,7 @@ const BackupConfiguration: FC = () => {
 		},
 		[externalVolumeOptions]
 	);
-	 
+
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
@@ -243,7 +248,7 @@ const BackupConfiguration: FC = () => {
 
 							if (attributes?.backupSmartScanScheduler) {
 								const value = attributes?.backupSmartScanScheduler?.value;
-								 
+
 								if (value && value?.['cron-enabled']) {
 									setIsScheduleSmartScan(value['cron-enabled']);
 									currentBackupObject.isScheduleSmartScan = true;
@@ -251,7 +256,7 @@ const BackupConfiguration: FC = () => {
 									setIsScheduleSmartScan(false);
 									currentBackupObject.isScheduleSmartScan = false;
 								}
-								 
+
 								if (value && value['cron-pattern']) {
 									setScheduleSmartScan(value['cron-pattern']);
 									currentBackupObject.scheduleSmartScan = value['cron-pattern'];
@@ -339,7 +344,7 @@ const BackupConfiguration: FC = () => {
 							label: error?.message
 								? error?.message
 								: // eslint-disable-next-line sonarjs/no-duplicate-string
-								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+									t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
@@ -743,7 +748,6 @@ const BackupConfiguration: FC = () => {
 	}, [server, createSnackbar, t]);
 
 	const onBackupExternalVolume = useCallback(
-		 
 		(body: any) => {
 			setIsExternalVolumeRequestRunning(true);
 			fetchExternalSoap(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
@@ -986,7 +990,6 @@ const BackupConfiguration: FC = () => {
 									<Padding right="small">
 										{isDirty && (
 											<Button
-												 
 												label={t('label.cancel', 'Cancel')}
 												color="secondary"
 												onClick={onCancel}
@@ -1508,7 +1511,6 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedItemInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									 
 									// @ts-ignore // DS only support string
 									description={
 										<Trans
@@ -1549,7 +1551,6 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedAccountsInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									 
 									// @ts-ignore // DS only support string
 									description={
 										<Trans

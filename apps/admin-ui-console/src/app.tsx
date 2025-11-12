@@ -19,11 +19,12 @@ import {
 	useAdminConfigStore,
 	useLastLoginTimestamp,
 	useBucketServersListStore,
-	useBackupModule
+	useBackupModule,
+	useRights,
+	useHasRight
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -37,6 +38,7 @@ import {
 	CREATE_COS,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
+	CONFIG,
 	CREATE_TOP_DOMAIN,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
@@ -71,7 +73,6 @@ import {
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
 	getAllServerByService,
 	getAllServers,
@@ -80,11 +81,9 @@ import {
 import { useCosStore } from './store/cos/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
-import { useRightsStore, Right, Rights, hasAllRights } from './store/rights/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -131,12 +130,17 @@ const App: FC = () => {
 	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
-	const setRights = useRightsStore((state) => state.setRights);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar = useSnackbar();
-	const hasAllConfigRights = useRightsStore(hasAllRights);
+	// Check if user has all config rights using React Query
+	const { data: hasAllConfigRights } = useHasRight({
+		rightType: CONFIG,
+		userName: accounts?.[0]?.name
+	});
 	const userSetting = useUserSettings();
 
 	// TanStack Query automatically handles fetching last login timestamp
@@ -153,55 +157,25 @@ const App: FC = () => {
 		}
 	}, [accounts, setUserId]);
 
-	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
-		);
-	}, [rights]);
+	const { data: showCOS } = useHasRight({
+		rightType: COS,
+		rightName: LIST_COS,
+		userName: accounts?.[0]?.name
+	});
 
-	const createCosRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
-		);
-	}, [rights]);
+	const { data: createCosRight } = useHasRight({
+		rightType: GLOBAL,
+		rightName: CREATE_COS,
+		userName: accounts?.[0]?.name
+	});
 
-	const createDomainRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
-		);
-	}, [rights]);
+	const { data: createDomainRight } = useHasRight({
+		rightType: GLOBAL,
+		rightName: CREATE_TOP_DOMAIN,
+		userName: accounts?.[0]?.name
+	});
 
-	useEffect(() => {
-		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRigthsRequest(accounts[0]?.name)
-				.then((res) => {
-					setRights(res?.target);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t(
-							'label.error_rights_message',
-							'Error obtaining Rights. Please try again later.'
-						),
-						autoHideTimeout: 4000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		}
-	}, [accounts, createSnackbar, setRights, t]);
-
+	
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;
@@ -590,22 +564,14 @@ const App: FC = () => {
 		[history]
 	);
 
-	useEffect(() => {
-		if (rights && rights.length > 0) {
-			const right = getRights(rights, SERVER);
-			if (right.length > 0) {
-				const findServerRight = right.find(
-					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
-				);
-				if (findServerRight) {
-					sethasListServerRights(true);
-				}
-			}
-		}
-	}, [rights]);
+	const { data: hasListServerRightsData } = useHasRight({
+		rightType: SERVER,
+		rightName: LIST_SERVER,
+		userName: accounts?.[0]?.name
+	});
 
 	const setConfigRightsRoute = useCallback(() => {
-		if (hasListServerRights) {
+		if (hasListServerRightsData) {
 			addRoute({
 				route: STORAGES_ROUTE_ID,
 				position: 4,
@@ -682,7 +648,7 @@ const App: FC = () => {
 		StorageTooltipView,
 		backupPrimaryBar,
 		hasAllConfigRights,
-		hasListServerRights,
+		hasListServerRightsData,
 		isAdvanced,
 		managementSection,
 		servicesSection,
@@ -785,7 +751,7 @@ const App: FC = () => {
 		HomeTooltipView,
 		PrivacyTooltipView,
 		NotificationTooltipView,
-		hasListServerRights,
+		hasListServerRightsData,
 		MTATooltipView,
 		showCOS,
 		hasAllConfigRights,

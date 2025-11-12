@@ -4,24 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useBackupStore , useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
+import { isEqual, reduce, cloneDeep, isEmpty } from 'lodash';
 import {
 	useState,
 	useEffect,
 	useCallback,
-	useMemo,
 	ChangeEvent,
 	Dispatch,
 	SetStateAction
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useBackupStore } from '@zextras/admin-ui-bootstrap';
 
 import { CONFIG } from '../constants';
 import { modifyBackupRequest } from '../services/modify-backup';
-import { useRightsStore, Right, Rights } from '../store/rights/store';
+
 
 export const useBackupConfig = (): {
 	isDirty: boolean;
@@ -42,12 +41,11 @@ export const useBackupConfig = (): {
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
 	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
-	const rights: Rights = useRightsStore((state) => state.rights);
-
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetBackup } = useHasRight({
+		rightType: CONFIG,
+		userName: userAccount?.name
+	});
 
 	const onCancel = useCallback((): void => {
 		setBackupDetail({ ...globalConfig });

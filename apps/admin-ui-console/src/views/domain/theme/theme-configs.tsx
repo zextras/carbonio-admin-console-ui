@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -28,11 +29,9 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
-import { Right, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import InheritedInput from '../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../utility/inherited-components/inherited-select';
-import { getAllRights } from '../../utility/utils';
 
 import AdminPanelThemeConfig from './admin-panel-theme-configs';
 import EndUserThemeConfigs from './end-user-theme-configs';
@@ -97,30 +96,8 @@ export const ThemeConfigs: FC<{
 	});
 	const [change, setChange] = useState('end_user');
 
-	const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
-	const rights = useRightsStore((state) => state.rights);
-
-	useEffect(() => {
-		if (rights && rights.length > 0 && isGlobalTheme) {
-			const allRights = getAllRights(rights, CONFIG);
-			if (allRights && allRights.length > 0) {
-				const right: Right = allRights[0];
-				if (
-					right?.all &&
-					Array.isArray(right?.all) &&
-					right?.all.length > 0 &&
-					right?.all[0].setAttrs &&
-					right?.all[0].setAttrs.length > 0
-				) {
-					right?.all[0].setAttrs.forEach((item: Record<string, unknown>) => {
-						if (item?.all && item?.all === true) {
-							setHasModifyRights(true);
-						}
-					});
-				}
-			}
-		}
-	}, [rights, isGlobalTheme]);
+	const userAccount = useUserAccount();
+	const { data: hasModifyRights } = useHasRight({ rightType: CONFIG, userName: userAccount?.name });
 
 	const items: any = [
 		{

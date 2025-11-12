@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { getSoapFetchRequest , useServerStore } from '@zextras/admin-ui-bootstrap';
+import { useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,15 +16,13 @@ import {
 	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
@@ -50,11 +49,8 @@ const ServerAdvanced: FC = () => {
 	const [scheduledMetadataArchivingEnabled, setScheduledMetadataArchivingEnabled] =
 		useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const allowSetBackup = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetBackup } = useHasRight({ rightType: CONFIG, userName: userAccount?.name });
 
 	 
 	useEffect(() => {

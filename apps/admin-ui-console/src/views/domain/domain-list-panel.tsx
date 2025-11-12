@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useDomainStore , useIsAdvanced , useBackupModuleEnable , useGlobalConfigStore , useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useDomainStore , useIsAdvanced , useBackupModuleEnable , useGlobalConfigStore , useAdminConfigStore , useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
@@ -51,13 +51,11 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { useModuleLicenseStore } from '../../store/module-license/store';
-import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-import { getAllRights } from '../utility/utils';
 
 import GlobalListPanel from './global-list-panel';
 
@@ -110,8 +108,9 @@ const DomainListPanel: FC = () => {
 	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
-	const rights = useRightsStore((state) => state.rights);
+	const [isShowGlobalConfigState, setIsShowGlobalConfigState] = useState<boolean>(false);
+	const userAccount = useUserAccount();
+	const { data: isShowGlobalConfig } = useHasRight({ rightType: CONFIG, userName: userAccount?.name });
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const globalConfigInformation = useAdminConfigStore((state) => state.config);
@@ -131,28 +130,6 @@ const DomainListPanel: FC = () => {
 			)
 		}
 	];
-
-	useEffect(() => {
-		if (rights && rights.length > 0) {
-			const allRights = getAllRights(rights, CONFIG);
-			if (allRights && allRights.length > 0) {
-				const right: Right = allRights[0];
-				if (
-					right?.all &&
-					Array.isArray(right?.all) &&
-					right?.all.length > 0 &&
-					right?.all[0].getAttrs &&
-					right?.all[0].getAttrs.length > 0
-				) {
-					right?.all[0].getAttrs.forEach((item: Record<string, unknown>) => {
-						if (item?.all && item?.all === true) {
-							setIsShowGlobalConfig(true);
-						}
-					});
-				}
-			}
-		}
-	}, [rights]);
 
 	useEffect(() => {
 		if (!domainInformation?.name) {

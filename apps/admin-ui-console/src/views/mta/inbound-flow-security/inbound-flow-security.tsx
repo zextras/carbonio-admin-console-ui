@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAdminConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAdminConfigStore, useUserAccount, useHasRight } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,8 +17,8 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { isEqual, find, uniq } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import { isEqual, uniq } from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
@@ -45,7 +45,6 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 
@@ -63,12 +62,8 @@ const MTAInboundFlowSecurity: FC = () => {
 		useState<MtaInboundSecurity>();
 	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
 	const [commonBlockedExtensions, setCommonBlockedExtensions] = useState<Array<string>>([]);
-	const rights: Rights = useRightsStore((state) => state.rights);
-
-	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-	}, [rights]);
+	const userAccount = useUserAccount();
+	const { data: allowSetMTA } = useHasRight({ rightType: CONFIG, userName: userAccount?.name });
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));

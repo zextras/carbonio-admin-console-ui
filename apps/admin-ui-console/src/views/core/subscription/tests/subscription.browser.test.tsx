@@ -6,12 +6,18 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { page } from '@vitest/browser/context';
+import { useHasRight, useUserAccount } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useRightsStore } from '../../../../store/rights/store';
 import { Subscription } from '../subscription';
+
+vi.mock('@zextras/admin-ui-bootstrap', () => ({
+	useHasRight: vi.fn(),
+	useUserAccount: vi.fn(),
+	useUserSettings: vi.fn()
+}));
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -124,15 +130,13 @@ const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOpt
 
 describe('Subscription - License Banner', () => {
 	beforeEach(() => {
-		useRightsStore.getState().reset();
-	});
-
-	afterEach(() => {
-		useRightsStore.getState().reset();
+		vi.clearAllMocks();
+		(useHasRight as any).mockReturnValue({ data: true });
+		(useUserAccount as any).mockReturnValue({ name: 'test-user' });
 	});
 
 	it('should display license banner when maintenance status is expired and subType is PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		setupSubscriptionTest(<Subscription />, {
 			licenseData: mockLicenseData,
@@ -143,7 +147,7 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should display license banner when maintenance status is expiring and subType is PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		const expiringLicenseData = {
 			...mockLicenseData,
@@ -164,7 +168,7 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should not display license banner when maintenance status is active', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		const activeLicenseData = {
 			...mockLicenseData,
@@ -184,7 +188,7 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should not display license banner when subType is not PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		const regularLicenseData = {
 			...mockLicenseData,
@@ -204,7 +208,7 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should hide license banner when close button is clicked', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		setupSubscriptionTest(<Subscription />, {
 			licenseData: mockLicenseData,
@@ -221,7 +225,7 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should render subscription details section', async () => {
-		useRightsStore.getState().setRights(mockRights);
+		(useHasRight as any).mockReturnValue({ data: true });
 
 		const activeLicenseData = {
 			...mockLicenseData,
