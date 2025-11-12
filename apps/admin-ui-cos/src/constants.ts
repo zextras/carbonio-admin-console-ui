@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const APP_ID = 'carbonio-admin-cos';
+export const APP_ID = 'carbonio-admin-ui-cos';
 export const MANAGE = 'manage';
 export const GENERAL_INFORMATION = 'general_information';
 export const ADVANCED = 'advanced';

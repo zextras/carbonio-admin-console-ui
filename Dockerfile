@@ -2,12 +2,23 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM alpine
+FROM --platform=$BUILDPLATFORM backplane/jq:latest AS builder
 
-RUN apk add --no-cache jq
+# Define path variables
+ENV IRIS_BASE_PATH="/opt/zextras/admin/iris" \
+    WEB_PATH="/opt/zextras/admin/iris"
 
-# Copy all built components from the package directory
-COPY package/opt/zextras/admin/iris/ /opt/zextras/admin/iris/
+# Set up directories
+RUN mkdir -p "${WEB_PATH}"
 
-# Generate the components.json file
-ENTRYPOINT ["/bin/sh", "-c", "jq -s '{components: .}' $(find /opt/zextras/admin/iris/ -maxdepth 3 -mindepth 3 -name component.json | sort) > /opt/zextras/admin/iris/components.json"]
+# Copy application files
+COPY package/opt/zextras/admin/iris/ ${WEB_PATH}/
+
+# Final stage - built for all target platforms
+FROM backplane/jq:latest
+
+# Just copy the prepared files (no execution needed)
+COPY --from=builder /opt/zextras /opt/zextras
+
+# Generate components.json from all component.json files
+ENTRYPOINT ["/bin/sh", "-c", "jq -s '{components: .}' $(find ${IRIS_BASE_PATH}/ -name component.json) > ${IRIS_BASE_PATH}/components.json"]
