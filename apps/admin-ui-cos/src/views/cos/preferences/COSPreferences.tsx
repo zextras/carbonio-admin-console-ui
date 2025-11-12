@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useUserAccounts, useRights } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -13,7 +14,6 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
@@ -32,13 +32,17 @@ export const COSPreferences = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const accounts = useUserAccounts();
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 	const setCos = useCosStore((state) => state.setCos);
 
 	const locales = useMemo(() => localeList(t), [t]);
 	const isReadOnlyCos = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+		return !(rightsConfig as any)?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const [currentCosAttributes, setCurrentCosAttributes] = useState<Partial<CosAttributes>>();

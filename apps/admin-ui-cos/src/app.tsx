@@ -15,9 +15,10 @@ import {
 	useUserSettings,
 	useGlobalConfigStore,
 	useAdminConfigStore,
-	useLastLoginTimestamp
+	useLastLoginTimestamp,
+	useRights
 } from '@zextras/admin-ui-bootstrap';
-import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
+import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -42,11 +43,9 @@ import {
 	ZIMBRA_ADMIN_URN
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useCosStore } from './store/cos/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useRightsStore, Right, Rights } from './store/rights/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -81,9 +80,11 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
-	const setRights = useRightsStore((state) => state.setRights);
-	const rights: Rights = useRightsStore((state) => state.rights);
-	const createSnackbar = useSnackbar();
+	// TanStack Query automatically handles fetching rights
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 	const userSetting = useUserSettings();
 
 	// TanStack Query automatically handles fetching last login timestamp
@@ -101,44 +102,24 @@ const App: FC = () => {
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
 		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
+			(rightsConfig as any)?.all?.[0]?.getAttrs?.[0]?.all ??
+			(rightsConfig as any)?.all?.[0]?.setAttrs?.[0]?.all ??
+			find((rightsConfig as any)?.all?.[0]?.right, { n: LIST_COS })
 		);
 	}, [rights]);
 
 	const createCosRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
 		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
+			(rightsConfig as any)?.all?.[0]?.getAttrs?.[0]?.all ??
+			(rightsConfig as any)?.all?.[0]?.setAttrs?.[0]?.all ??
+			find((rightsConfig as any)?.all?.[0]?.right, { n: CREATE_COS })
 		);
 	}, [rights]);
 
-	useEffect(() => {
-		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRightsRequest(accounts[0]?.name)
-				.then((res) => {
-					setRights(res?.target);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t(
-							'label.error_rights_message',
-							'Error obtaining Rights. Please try again later.'
-						),
-						autoHideTimeout: 4000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		}
-	}, [accounts, createSnackbar, setRights, t]);
+	// TanStack Query automatically handles fetching rights with error handling
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]

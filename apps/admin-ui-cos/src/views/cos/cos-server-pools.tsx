@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useUserAccounts, useRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -27,7 +28,6 @@ import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -48,11 +48,15 @@ const CosServerPools: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [searchServer, setSearchServer] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const accounts = useUserAccounts();
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+		return !(rightsConfig as any)?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	useEffect(() => {
@@ -420,7 +424,6 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
-		 
 		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
@@ -480,7 +483,6 @@ const CosServerPools: FC = () => {
 											<Input
 												value={searchServer}
 												disabled={
-													 
 													(serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
 												}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}

@@ -12,7 +12,6 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCosStore } from '../../../../store/cos/store';
-import { useRightsStore } from '../../../../store/rights/store';
 import { COSPreferences } from '../COSPreferences';
 
 vi.mock('../../../../services/modify-cos-service', () => ({
@@ -99,31 +98,9 @@ describe('COSPreferences', () => {
 		});
 	};
 
-	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'cos',
-				all: [
-					{
-						right: [
-							{ n: 'assignCos' },
-							{ n: 'deleteCos' },
-							{ n: 'listCos' },
-							{ n: 'manageZimlet' },
-							{ n: 'renameCos' }
-						],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
-	};
-
 	beforeEach(() => {
 		vi.resetAllMocks();
 		setupCosStore();
-		setupRightsStore();
 	});
 
 	it('should render the component correctly', async () => {

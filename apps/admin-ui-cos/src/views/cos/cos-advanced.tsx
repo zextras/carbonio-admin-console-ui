@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useUserAccounts, useRights } from '@zextras/admin-ui-bootstrap';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, {
@@ -36,7 +36,6 @@ import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useCosStore } from '../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
@@ -107,11 +106,15 @@ const CosAdvanced: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData] = useState<AccountType>({});
 	const setCos = useCosStore((state) => state.setCos);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const accounts = useUserAccounts();
+	const { data: rights } = useRights({
+		userName: accounts?.[0]?.name,
+		enabled: Boolean(accounts?.[0]?.name)
+	});
 	const isAdvanced = useIsAdvanced();
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+		return !(rightsConfig as any)?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 	const timeItems = useMemo<TimeItems>(
 		() => [

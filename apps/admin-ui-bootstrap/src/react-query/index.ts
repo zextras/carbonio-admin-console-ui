@@ -4,12 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export { useLastLoginTimestamp } from './use-last-login-timestamp';
-export {
-	useBackupModule,
-	useBackupServers,
-	useBackupModuleEnable,
-	type BackupServer,
-	type BackupModuleState
-} from './use-backup-module';
+export * from './use-last-login-timestamp';
+export * from './use-backup-module';
+export * from './use-rights';
 export * from './use-subscription';

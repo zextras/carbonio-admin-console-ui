@@ -19,7 +19,10 @@ import {
 	useActivateLicense,
 	useLicenseInfo,
 	useVersion,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useRights,
+	useHasRight,
+	useRightsByType
 } from './src/react-query';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
 import {} from './src/react-query/use-subscription';
@@ -40,13 +43,11 @@ import {
 } from './src/store/shared/admin-config/store';
 import { useBackupStore } from './src/store/shared/backup';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
-import { Cos, Domain } from './src/store/shared/domains';
-import { DomainState, useDomainStore } from './src/store/shared/domains/store';
+import { useDomainStore } from './src/store/shared/domains/store';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useServerStore } from './src/store/shared/servers/store';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { getTags } from './src/store/tags';
-import { Attribute } from './types';
 import { AppRouteDescriptor } from './types/apps';
 
 // NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
@@ -102,8 +103,7 @@ export {
 	useLicenseInfo,
 	useVersion,
 	useModuleLicenseInfo,
-	type DomainState,
-	type Attribute,
-	type Domain,
-	type Cos
+	useRights,
+	useHasRight,
+	useRightsByType
 };
