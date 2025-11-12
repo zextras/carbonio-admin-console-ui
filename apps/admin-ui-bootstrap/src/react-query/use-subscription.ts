@@ -9,8 +9,12 @@ import { useSnackbar } from '@zextras/carbonio-design-system';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ZIMBRA_ADMIN_URN } from '../constants';
-import { fetchSoap } from '../services/subscription-service';
+import { postSoapFetchRequest } from '../../exports';
+
+export const fetchSoap = async (api: string, body: any): Promise<any> =>
+	postSoapFetchRequest(`/service/admin/soap/${api}`, body, `${api}`).then((res: any) => res.Body);
+
+const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 
 type LicenseResponse = {
 	ok: boolean;
@@ -54,7 +58,7 @@ export const queryKeys = {
 };
 
 const fetchVersion = async (): Promise<VersionResponse> => {
-	const res = await fetchSoap('zextras', {
+	const res = await fetchSoap('admin-ui-console', {
 		_jsns: ZIMBRA_ADMIN_URN,
 		module: 'ZxCore',
 		action: 'getVersion'
@@ -63,7 +67,7 @@ const fetchVersion = async (): Promise<VersionResponse> => {
 };
 
 const activateLicense = async (token: string, renewal = false): Promise<LicenseResponse> => {
-	const res = await fetchSoap('zextras', {
+	const res = await fetchSoap('admin-ui-console', {
 		_jsns: ZIMBRA_ADMIN_URN,
 		module: 'ZxCore',
 		action: 'activate-license',
@@ -74,7 +78,7 @@ const activateLicense = async (token: string, renewal = false): Promise<LicenseR
 };
 
 const removeLicense = async (): Promise<LicenseResponse> => {
-	const res = await fetchSoap('zextras', {
+	const res = await fetchSoap('admin-ui-console', {
 		_jsns: ZIMBRA_ADMIN_URN,
 		module: 'ZxCore',
 		action: 'doRemoveLicense',
@@ -84,7 +88,7 @@ const removeLicense = async (): Promise<LicenseResponse> => {
 };
 
 const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
-	const res = await fetchSoap('zextras', {
+	const res = await fetchSoap('admin-ui-console', {
 		_jsns: ZIMBRA_ADMIN_URN,
 		module: 'ZxCore',
 		action: 'getLicenseInfo'
@@ -209,10 +213,10 @@ export const useModuleLicenseInfo = () => {
 
 	const moduleLicenseInfo: ModuleLicenseInfo | null = licenseData?.response
 		? {
-			maintenanceEndDate: licenseData?.response.maintenanceEndDate,
-			maintenanceStatus: licenseData?.response.maintenanceStatus,
-			subType: licenseData?.response.subType
-		}
+				maintenanceEndDate: licenseData?.response.maintenanceEndDate,
+				maintenanceStatus: licenseData?.response.maintenanceStatus,
+				subType: licenseData?.response.subType
+			}
 		: null;
 
 	const licenseBannerShouldBeDisplayed =

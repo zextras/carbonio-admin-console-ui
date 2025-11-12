@@ -7,7 +7,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
-type BackupServer = {
+export type BackupServer = {
 	id?: string;
 	name?: string;
 	a?: Array<{
@@ -17,7 +17,7 @@ type BackupServer = {
 	}>;
 };
 
-type BackupModuleState = {
+export type BackupModuleState = {
 	backupModuleEnable: boolean;
 	backupServerList: Array<BackupServer>;
 	isBackupModuleLicensed: boolean;

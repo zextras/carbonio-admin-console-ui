@@ -5,6 +5,12 @@
  */
 
 import {
+	useActivateLicense,
+	useLicenseInfo,
+	useRemoveLicense,
+	useVersion
+} from '@zextras/admin-ui-bootstrap';
+import {
 	Button,
 	Container,
 	Divider,
@@ -21,12 +27,6 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../../constants';
-import {
-	useActivateLicense,
-	useLicenseInfo,
-	useRemoveLicense,
-	useVersion
-} from '../../../hooks/use-subscription';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { LicenseBanner } from '../../dashboard/license-banner';
 

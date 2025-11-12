@@ -5,12 +5,12 @@
  */
 
 import { page } from '@vitest/browser/context';
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { Mock } from 'vitest';
 
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
-import { useModuleLicenseInfo } from '../../../hooks/use-subscription';
 import { LicenseBanner } from '../license-banner';
 
 vi.mock('../../../hooks/use-subscription', () => ({

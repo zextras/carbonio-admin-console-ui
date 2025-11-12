@@ -345,21 +345,22 @@ const ServersList: FC = () => {
 	useEffect(() => {
 		if (servers && servers?.length > 0) {
 			const sList: BackupServerType[] = [];
-			servers.forEach((item: any) => {
+			servers.forEach((item) => {
 				const id = item?.id;
 				const name = item?.name;
 				const description = item?.a?.filter((value: any) => value.n === 'description')[0]?._content;
-				if (backupServerList && backupServerList.length > 0) {
-					const backupServerItem = backupServerList.filter((backupItem) => backupItem[item?.id])[0];
+
+				if (id && name && backupServerList && backupServerList.length > 0) {
+					const backupServerItem = backupServerList.find((backupItem: any) => backupItem[id]);
 					if (backupServerItem) {
-						const zxBackItem = backupServerItem[item?.id];
+						const zxBackItem = (backupServerItem as any)[id];
 						if (zxBackItem && zxBackItem?.ZxBackup) {
 							const backupValues = getBackupServerValue(zxBackItem?.ZxBackup);
-							sList.push({ id, name, description, ...backupValues });
+							sList.push({ id, name, description: description || '', ...backupValues });
 						}
 					}
-				} else {
-					sList.push({ id, name, description });
+				} else if (id && name) {
+					sList.push({ id, name, description: description || '' });
 				}
 			});
 			setServerList(sList);

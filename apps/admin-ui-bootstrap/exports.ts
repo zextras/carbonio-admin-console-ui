@@ -11,24 +11,37 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import {
+	useBackupModule,
+	useBackupServers,
+	useBackupModuleEnable,
+	useRemoveLicense,
+	useActivateLicense,
+	useLicenseInfo,
+	useVersion,
+	useModuleLicenseInfo
+} from './src/react-query';
+import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
+import {} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
-import { useAdminConfigStore, useConfigurationAttribute } from './src/store/shared/admin-config/store';
 import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
-import { useBackupModule, useBackupServers, useBackupModuleEnable, type BackupServer, type BackupModuleState } from './src/react-query';
-import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
 import { useAllConfig } from './src/store/config';
 import { useContextBridge } from './src/store/context-bridge';
 import { useDomainInformation } from './src/store/domain-information';
-import { Cos, Domain } from './src/store/shared/domains';
-import { DomainState, useDomainStore } from './src/store/shared/domains/store';
-import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
-import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
+import {
+	useAdminConfigStore,
+	useConfigurationAttribute
+} from './src/store/shared/admin-config/store';
+import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
+import { Cos, Domain } from './src/store/shared/domains';
+import { DomainState, useDomainStore } from './src/store/shared/domains/store';
+import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useServerStore } from './src/store/shared/servers/store';
 import { getTags } from './src/store/tags';
 import { Attribute } from './types';
@@ -80,12 +93,13 @@ export {
 	useLastLoginTimestamp,
 	useBucketServersListStore,
 	useContextBridge,
+	useRemoveLicense,
+	useActivateLicense,
+	useLicenseInfo,
+	useVersion,
+	useModuleLicenseInfo,
 	type DomainState,
 	type Attribute,
 	type Domain,
-	type Cos,
-	type BackupServer,
-	type BackupModuleState
+	type Cos
 };
-
-export { ReactQueryProvider } from './src/providers/query-client-provider';

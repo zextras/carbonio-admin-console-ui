@@ -64,3 +64,5 @@ apps/*/junit.xml
 packages/stores/dist
 .mcp.json
 CLAUDE.md
+artifacts/ubuntu-jammy
+package

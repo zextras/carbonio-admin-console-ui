@@ -9,7 +9,13 @@ import {
 	useServerStore,
 	useBackupModule,
 	useBackupServers,
-	useBackupModuleEnable
+	useBackupModuleEnable,
+	useRemoveLicense,
+	useActivateLicense,
+	useLicenseInfo,
+	useVersion,
+	useContextBridge,
+	useModuleLicenseInfo
 } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
@@ -65,5 +71,11 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useAdminConfigStore,
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
-	useBucketServersListStore
+	useBucketServersListStore,
+	useRemoveLicense,
+	useActivateLicense,
+	useLicenseInfo,
+	useVersion,
+	useModuleLicenseInfo,
+	useContextBridge
 });
