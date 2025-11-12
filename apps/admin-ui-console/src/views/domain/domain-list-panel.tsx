@@ -50,7 +50,7 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useModuleLicenseStore } from '../../store/module-license/store';
+import { useLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -105,7 +105,7 @@ const DomainListPanel: FC = () => {
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useIsAdvanced();
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { data: moduleLicenseInfo } = useLicenseInfo();
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfigState, setIsShowGlobalConfigState] = useState<boolean>(false);
@@ -435,15 +435,15 @@ const DomainListPanel: FC = () => {
 	}, [isDomainSelect, manageItems]);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
-			const backupModule = moduleLicenseInfo.features.filter(
+		if (moduleLicenseInfo?.response?.features && moduleLicenseInfo.response.features.length > 0) {
+			const backupModule = moduleLicenseInfo.response.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
-	}, [moduleLicenseInfo]);
+	}, [moduleLicenseInfo?.response?.features]);
 
 	const toggleDetailView = (): void => {
 		if (isDetailListExpanded) {

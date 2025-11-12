@@ -21,7 +21,8 @@ import {
 	useBucketServersListStore,
 	useBackupModule,
 	useRights,
-	useHasRight
+	useHasRight,
+	useLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -80,7 +81,6 @@ import {
 } from './services/get-all-servers-service';
 import { useCosStore } from './store/cos/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useModuleLicenseStore } from './store/module-license/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -127,7 +127,7 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
-	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
+	const { data: licenseInfo } = useLicenseInfo();
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useRights({
@@ -849,29 +849,12 @@ const App: FC = () => {
 		});
 	}, [setVolumeList, setAllMailstoreList]);
 
-	const getModuleLicense = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxCore',
-				action: 'getLicenseInfo'
-			}
-		})
-			.then((res: any) => res.Body)
-			.then((res: any) => {
-				const response = JSON.parse(res.response.content);
-				if (response.ok) {
-					setLicenseInfo(response.response);
-				}
-			});
-	}, [setLicenseInfo]);
-
+	
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-		getModuleLicense();
-	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
+	}, [getAllServersRequest, getMailstoresServersRequest]);
 
 	return null;
 };

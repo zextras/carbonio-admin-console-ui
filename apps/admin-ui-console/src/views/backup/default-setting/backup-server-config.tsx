@@ -17,7 +17,7 @@ import React, { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
@@ -36,27 +36,27 @@ const BackupServerConfig: FC = () => {
 		t
 	} = useBackupConfig();
 
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { data: moduleLicenseInfo } = useLicenseInfo();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
 		useState<boolean>(false);
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
-			const backupModule = moduleLicenseInfo.features.filter(
+		if (moduleLicenseInfo?.response?.features && moduleLicenseInfo.response.features.length > 0) {
+			const backupModule = moduleLicenseInfo.response.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 
-			const realTime = moduleLicenseInfo.features.filter(
+			const realTime = moduleLicenseInfo.response.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
 			);
 			if (realTime && realTime[0] && realTime[0]?.enabled) {
 				setBackupRealTimeFeatureLicensed(true);
 			}
 		}
-	}, [moduleLicenseInfo]);
+	}, [moduleLicenseInfo?.response?.features]);
 
 	return (
 		<>

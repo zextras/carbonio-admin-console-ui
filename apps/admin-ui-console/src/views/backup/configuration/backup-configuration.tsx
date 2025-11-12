@@ -45,7 +45,7 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useModuleLicenseInfo, useLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -162,20 +162,22 @@ const BackupConfiguration: FC = () => {
 	const [bucketConfiguration, setBucketConfiguration] = useState<any>([]);
 	const [bucketListOption, setBucketListOption] = useState<Array<any>>([]);
 
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
+	const { data: licenseData } = useLicenseInfo();
 	const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
 		useState<boolean>(false);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
-			const backupRealtimeModule = moduleLicenseInfo.features.filter(
+		// Use the full license data from useLicenseInfo
+		if (licenseData?.response?.features && licenseData.response.features.length > 0) {
+			const backupRealtimeModule = licenseData.response.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
 			);
 			if (backupRealtimeModule && backupRealtimeModule[0] && backupRealtimeModule[0]?.enabled) {
 				setIsBackupImportRealtimeFeatureLicensed(true);
 			}
 		}
-	}, [moduleLicenseInfo]);
+	}, [licenseData?.response?.features]);
 	const onDestinationChange = useCallback(
 		(v: any): any => {
 			const it = destinationOptions.find((item: any) => item.value === v);

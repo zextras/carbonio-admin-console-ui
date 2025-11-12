@@ -21,7 +21,7 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import { useModuleLicenseStore } from '../../store/module-license/store';
+import { useLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -41,7 +41,7 @@ const BackupListPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [serverNames, setServerNames] = useState<any>();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { data: moduleLicenseInfo } = useLicenseInfo();
 	const userAccount = useUserAccount();
 	const { data: rights } = useRights({
 		userName: userAccount?.name
@@ -50,15 +50,15 @@ const BackupListPanel: FC = () => {
 	const [isShowError, setIsShowError] = useState(false);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
-			const backupModule = moduleLicenseInfo.features.filter(
+		if (moduleLicenseInfo?.response?.features && moduleLicenseInfo.response.features.length > 0) {
+			const backupModule = moduleLicenseInfo.response.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
 			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
-	}, [moduleLicenseInfo]);
+	}, [moduleLicenseInfo?.response?.features]);
 
 	const defaultSettingsOptions = useMemo(
 		() => [
