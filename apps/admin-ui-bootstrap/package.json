@@ -14,6 +14,7 @@
 		"build:dev": "sdk build-shell --dev",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
+		"lint:fix": "eslint --ext .js,.jsx,.ts,.tsx --fix",
 		"deploy": "npm run build && sdk deploy --admin",
 		"deploy:dev": "npm run build:dev && sdk deploy --admin",
 		"start": "sdk watch --admin",
