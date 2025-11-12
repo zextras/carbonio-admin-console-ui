@@ -57,7 +57,9 @@
 	],
 	"msw": {
 		"workerDirectory": [
-			"public"
+			"./apps/admin-ui-bootstrap/public",
+			"./apps/admin-ui-console/public",
+			"./apps/admin-ui-cos/public"
 		]
 	},
 	"carbonio": {

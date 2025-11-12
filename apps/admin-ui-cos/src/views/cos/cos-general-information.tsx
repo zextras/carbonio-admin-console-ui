@@ -273,7 +273,8 @@ const CosGeneralInformation: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						:
+						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -598,7 +599,7 @@ const CosGeneralInformation: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				// height="calc(100vh - 230px)"
+			// height="calc(100vh - 230px)"
 			>
 				<Row mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -942,13 +943,7 @@ const CosGeneralInformation: FC = () => {
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							label={t('label.help', 'Help')}
-							type="outlined"
-							color="primary"
-							onClick={(): null => null}
-						/>
-						<Container orientation="horizontal" mainAlignment="flex-end">
+						<Container orientation="horizontal" mainAlignment="flex-end" width="fit">
 							<Padding all="small">
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}
@@ -995,8 +990,8 @@ const CosGeneralInformation: FC = () => {
 						</Text>
 					</Padding>
 				</Container>
-			</Modal>
-		</PageLayout>
+			</Modal >
+		</PageLayout >
 	);
 };
 

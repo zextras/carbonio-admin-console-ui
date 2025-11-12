@@ -102,5 +102,8 @@
 		"priority": -1,
 		"display": "Admin Shell",
 		"icon": "CubeOutline"
+	},
+	"msw": {
+		"workerDirectory": "./public"
 	}
 }
