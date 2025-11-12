@@ -2,7 +2,7 @@ FROM --platform=$BUILDPLATFORM backplane/jq:latest AS builder
 
 # Define path variables
 ENV IRIS_BASE_PATH="/opt/zextras/admin/iris" \
-    WEB_PATH="/opt/zextras/admin/iris/carbonio-admin-cos"
+    WEB_PATH="/opt/zextras/admin/iris/carbonio-admin-ui-cos"
 
 # Set up directories
 RUN mkdir -p "${WEB_PATH}"
