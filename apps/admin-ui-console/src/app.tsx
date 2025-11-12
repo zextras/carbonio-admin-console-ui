@@ -20,12 +20,9 @@ import {
 	useLastLoginTimestamp,
 	useBucketServersListStore,
 	useBackupModule,
-	useRights,
-	useHasRight,
-	useLicenseInfo,
-	useMailstoreList
+	useHasRight
 } from '@zextras/admin-ui-bootstrap';
-import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
+import { Icon, Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -75,10 +72,7 @@ import {
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import {
-	getAllServerByService,
-	getAllServers
-} from './services/get-all-servers-service';
+import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
 import { useCosStore } from './store/cos/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -118,23 +112,16 @@ const App: FC = () => {
 	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	// TanStack Query automatically handles backup module data
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
+	const { setAllServersList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useAdminConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { data: allMailstoreList } = useMailstoreList();
-	const { data: licenseInfo } = useLicenseInfo();
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
-	const { data: rights } = useRights({
-		userName: accounts?.[0]?.name,
-		enabled: Boolean(accounts?.[0]?.name)
-	});
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
-	const createSnackbar = useSnackbar();
 	// Check if user has all config rights using React Query
 	const { data: hasAllConfigRights } = useHasRight({
 		rightType: CONFIG,
@@ -174,7 +161,6 @@ const App: FC = () => {
 		userName: accounts?.[0]?.name
 	});
 
-	
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;
