@@ -10,7 +10,7 @@ import moment from 'moment';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useStickyBarStore } from '../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../components/displayer';
 import ListRow from '../../list/list-row';
 

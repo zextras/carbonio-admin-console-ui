@@ -24,7 +24,7 @@ import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-de
 import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
-import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
 

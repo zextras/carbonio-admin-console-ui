@@ -69,7 +69,7 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
-import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';

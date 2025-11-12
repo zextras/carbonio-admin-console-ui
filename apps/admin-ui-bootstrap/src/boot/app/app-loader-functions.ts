@@ -15,7 +15,8 @@ import {
 	useLicenseInfo,
 	useVersion,
 	useContextBridge,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useStickyBarStore
 } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
@@ -77,5 +78,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useLicenseInfo,
 	useVersion,
 	useModuleLicenseInfo,
-	useContextBridge
+	useContextBridge,
+	useStickyBarStore
 });

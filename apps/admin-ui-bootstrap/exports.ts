@@ -43,6 +43,7 @@ import { Cos, Domain } from './src/store/shared/domains';
 import { DomainState, useDomainStore } from './src/store/shared/domains/store';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useServerStore } from './src/store/shared/servers/store';
+import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { getTags } from './src/store/tags';
 import { Attribute } from './types';
 import { AppRouteDescriptor } from './types/apps';
@@ -92,6 +93,7 @@ export {
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
 	useBucketServersListStore,
+	useStickyBarStore,
 	useContextBridge,
 	useRemoveLicense,
 	useActivateLicense,
