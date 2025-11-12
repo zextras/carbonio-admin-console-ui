@@ -72,9 +72,6 @@
 		"icon": "List"
 	},
 	"msw": {
-		"workerDirectory": [
-			"./public",
-			"public"
-		]
+		"workerDirectory": "./public"
 	}
 }
