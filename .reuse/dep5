@@ -14,6 +14,10 @@ Files: **/mockServiceWorker.js
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: CHANGELOG.md
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: **/tsconfig.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
