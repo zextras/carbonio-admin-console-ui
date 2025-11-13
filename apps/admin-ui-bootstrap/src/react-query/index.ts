@@ -6,6 +6,7 @@
 
 export * from './use-last-login-timestamp';
 export * from './use-backup-module';
-export { useRights, useHasRight, useRightsByType, type Right } from './use-rights';
-export { queryKeys as subscriptionQueryKeys, useLicenseInfo, useVersion, useActivateLicense, useRemoveLicense, useModuleLicenseInfo } from './use-subscription';
-export { useMailstoreList, type MailstoreServer, type MailstoreListOptions } from './use-mailstore-list';
+export * from './use-rights';
+export * from './use-subscription';
+export * from './use-mailstore-list';
+export * from './use-cos';

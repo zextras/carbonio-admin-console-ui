@@ -22,7 +22,13 @@ import {
 	useHasRight,
 	useRightsByType,
 	useMailstoreList,
-	useBucketVolumeStore
+	useBucketVolumeStore,
+	useCosList,
+	useCosGeneralInformation,
+	useCreateCos,
+	useModifyCos,
+	useDeleteCos,
+	useCosUIStore
 } from '../../../exports';
 import { CarbonioModule } from '../../../types';
 import { replaceHistory } from '../../history/hooks';
@@ -91,5 +97,11 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useHasRight,
 	useRightsByType,
 	useMailstoreList,
-	useBucketVolumeStore
+	useBucketVolumeStore,
+	useCosList,
+	useCosGeneralInformation,
+	useCreateCos,
+	useModifyCos,
+	useDeleteCos,
+	useCosUIStore
 });

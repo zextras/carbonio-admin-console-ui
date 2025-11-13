@@ -24,6 +24,11 @@ import {
 	useHasRight,
 	useRightsByType,
 	useMailstoreList,
+	useCosList,
+	useCosGeneralInformation,
+	useCreateCos,
+	useModifyCos,
+	useDeleteCos,
 	type Right
 } from './src/react-query';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login-timestamp';
@@ -46,6 +51,7 @@ import {
 import { useBackupStore } from './src/store/shared/backup';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
 import { useBucketVolumeStore } from './src/store/shared/bucket-volume';
+import { useCosUIStore } from './src/store/shared/cos/store';
 import { useDomainStore } from './src/store/shared/domains/store';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useServerStore } from './src/store/shared/servers/store';
@@ -111,5 +117,11 @@ export {
 	useHasRight,
 	useRightsByType,
 	useMailstoreList,
+	useCosList,
+	useCosGeneralInformation,
+	useCreateCos,
+	useModifyCos,
+	useDeleteCos,
+	useCosUIStore,
 	type Right
 };

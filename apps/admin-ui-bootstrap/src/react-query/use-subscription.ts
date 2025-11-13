@@ -51,7 +51,7 @@ type VersionResponse = {
 	};
 };
 
-export const queryKeys = {
+const queryKeys = {
 	all: ['subscription'] as const,
 	license: () => [...queryKeys.all, 'license'] as const,
 	version: () => [...queryKeys.all, 'version'] as const

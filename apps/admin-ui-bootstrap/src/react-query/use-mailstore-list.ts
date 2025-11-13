@@ -5,11 +5,12 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+
 import { getSoapFetch } from '../network/fetch';
 
 const soapFetch = getSoapFetch('admin-ui-console');
 
-export type MailstoreServer = {
+type MailstoreServer = {
 	id: string;
 	name: string;
 	a?: Array<{
@@ -30,7 +31,7 @@ export type MailstoreListOptions = {
 /**
  * Query function to fetch all mailstore servers
  */
-export const queryFn = async (): Promise<MailstoreServer[]> => {
+const queryFn = async (): Promise<MailstoreServer[]> => {
 	const response = await soapFetch('GetAllServers', {
 		_jsns: 'urn:zimbraAdmin',
 		attrs: 'description,zimbraServiceHostname,zimbraId',
@@ -45,7 +46,7 @@ export const queryFn = async (): Promise<MailstoreServer[]> => {
 	return servers.map((server: any) => {
 		const serverData: MailstoreServer = {
 			id: server.id || server.zimbraId,
-			name: server.name || server.zimbraServiceHostname || server.id,
+			name: server.name || server.zimbraServiceHostname || server.id
 		};
 
 		// Add a property if attributes exist
@@ -73,7 +74,7 @@ export const queryFn = async (): Promise<MailstoreServer[]> => {
 	});
 };
 
-export const queryKeys = {
+const queryKeys = {
 	all: ['mailstore-list'] as const,
 	servers: () => [...queryKeys.all, 'servers'] as const
 };
