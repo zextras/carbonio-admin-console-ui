@@ -5,10 +5,10 @@
  */
 
 library(
-    identifier: 'jenkins-packages-build-library@1.0.5',
+    identifier: 'jenkins-lib-common@1.1.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        remote: 'git@github.com:zextras/jenkins-lib-common.git',
         credentialsId: 'jenkins-integration-with-github-account'
     ])
 )
@@ -30,12 +30,6 @@ pipeline {
         booleanParam defaultValue: true,
             description: 'Enable SonarQube Stage',
             name: 'RUN_SONARQUBE'
-        booleanParam defaultValue: false,
-            description: 'Whether to upload the packages in playground repositories',
-            name: 'PLAYGROUND'
-    }
-    tools {
-        jfrog 'jfrog-cli'
     }
     stages {
         stage('Licenses checks') {
@@ -173,9 +167,6 @@ pipeline {
                     expression {
                         isDevelBranch == true
                     }
-                    expression {
-                        params.PLAYGROUND == true
-                    }
                 }
             }
             steps {
@@ -183,47 +174,29 @@ pipeline {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         script {
                             tags = ['latest', 'devel']
-                            dir('apps/admin-ui-bootstrap/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin UI',
-                                        description: 'Carbonio Admin UI Bootstrap Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-console/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-console',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin Console',
-                                        description: 'Carbonio Admin Console Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-cos/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-cos',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin COS module',
-                                        description: 'Carbonio Admin COS module Container'
-                                    ]
-                                ])
-                            }
+                            dockerHelper.buildImage([
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
+                                imageTags: tags,
+                                ocLabels: [
+                                    title: 'Carbonio Admin Console UI',
+                                    description: 'Carbonio Admin Console UI Container'
+                                ]
+                            ])
                         }
                     }
                 }
             }
         }
         stage('Upload artifacts') {
+            when {
+                expression { return uploadStage.shouldUpload() }
+            }
+            tools {
+                jfrog 'jfrog-cli'
+            }
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames('yap.json'),
-                    ubuntuSinglePkg: true,
-                    rockySinglePkg: true,
+                    packages: yapHelper.resolvePackageNames()
                 )
             }
         }
