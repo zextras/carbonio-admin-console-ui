@@ -21,9 +21,10 @@ pipeline {
     }
     environment {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+        GITHUB_TOKEN = credentials('jenkins-integration-with-github-account')
     }
     options {
-        timeout(time: 20, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '50'))
     }
     parameters {
@@ -134,6 +135,23 @@ pipeline {
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
                         }
+                    }
+                }
+            }
+        }
+        stage('semantic-release') {
+            when {
+                not {
+                    anyOf {
+                        expression { isPullRequest == true }
+                    }
+                }
+            }
+            steps {
+                container('pnpm') {
+                    script {
+                        // Run semantic-release to determine version and update package.json
+                        sh 'pnpm run release'
                     }
                 }
             }

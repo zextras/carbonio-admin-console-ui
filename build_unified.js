@@ -67,11 +67,11 @@ function main() {
 	const appsDir = path.join(rootDir, 'apps');
 	const buildDir = path.join(rootDir, 'dist');
 
-	// Read package version
-	const consolePackageJson = JSON.parse(
-		fs.readFileSync(path.join(appsDir, 'admin-ui-console', 'package.json'), 'utf-8')
+	// Read package version from root package.json (will be updated by semantic-release)
+	const rootPackageJson = JSON.parse(
+		fs.readFileSync(path.join(rootDir, 'package.json'), 'utf-8')
 	);
-	const pkgVersion = consolePackageJson.version;
+	const pkgVersion = rootPackageJson.version;
 
 	log('=== Building unified admin package ===', 'blue');
 
