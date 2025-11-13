@@ -6,8 +6,8 @@
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
 
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { HorizontalWizard } from '../../../../../app/component/hwizard';
 import { Section } from '../../../../../app/component/section-component';
 import { volumeTypeList } from '../../../../../utility/utils';

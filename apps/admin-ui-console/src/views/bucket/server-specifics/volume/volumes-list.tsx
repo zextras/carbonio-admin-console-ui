@@ -40,9 +40,10 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';

@@ -25,7 +25,8 @@ import {
 	S3,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import ListRow from '../../../../../list/list-row';
 
 import { AdvancedVolumeContext } from './create-advanced-volume-context';

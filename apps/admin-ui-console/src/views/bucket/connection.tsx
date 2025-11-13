@@ -31,8 +31,9 @@ import {
 	V4,
 	ZIMBRA_ADMIN_URN
 } from '../../constants';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;

@@ -24,9 +24,10 @@ import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } fro
 import { useTranslation } from 'react-i18next';
 
 import { TestConnectionObjectType } from '../../../types';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import Displayer from '../components/displayer';

@@ -24,8 +24,9 @@ import {
 	USAGE_IN_EXTERNAL_BACKUP,
 	ZIMBRA_ADMIN_URN
 } from '../../../../../../constants';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import { fetchSoap } from '../../../../../../services/bucket-service';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 

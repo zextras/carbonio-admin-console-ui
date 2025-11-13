@@ -50,9 +50,12 @@ import {
 	USAGE_IN_EXTERNAL_BACKUP,
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
+import {
+	useBucketVolumeStore,
+	useStickyBarStore
+} from '@zextras/admin-ui-bootstrap';
+
 import { fetchSoap } from '../../../../../services/bucket-service';
-import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import ListRow from '../../../../list/list-row';
@@ -151,7 +154,7 @@ const ModifyVolume: FC<{
 		2: SECONDARY,
 		10: INDEX
 	};
-	const onUnusedBucketListChange = (e: any): void => {
+	const onUnusedBucketListChange = (e: unknown): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
 		)[0];

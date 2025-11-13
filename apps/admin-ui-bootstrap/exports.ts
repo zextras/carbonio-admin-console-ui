@@ -45,6 +45,7 @@ import {
 } from './src/store/shared/admin-config/store';
 import { useBackupStore } from './src/store/shared/backup';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list/store';
+import { useBucketVolumeStore } from './src/store/shared/bucket-volume';
 import { useDomainStore } from './src/store/shared/domains/store';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useServerStore } from './src/store/shared/servers/store';
@@ -98,6 +99,7 @@ export {
 	useLastLoginTimestamp,
 	useBucketServersListStore,
 	useBackupStore,
+	useBucketVolumeStore,
 	useStickyBarStore,
 	useContextBridge,
 	useRemoveLicense,

@@ -25,9 +25,10 @@ import styled from 'styled-components';
 
 import { TestConnectionObjectType, objectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
+import { useBucketVolumeStore } from '@zextras/admin-ui-bootstrap';
+
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';
