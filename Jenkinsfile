@@ -150,8 +150,11 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        // Run semantic-release to determine version and update package.json
-                        sh 'pnpm run release'
+                        withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
+                            withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                                sh 'pnpm run release'
+                            }
+                        }
                     }
                 }
             }
