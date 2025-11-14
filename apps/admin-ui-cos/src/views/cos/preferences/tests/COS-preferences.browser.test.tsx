@@ -164,7 +164,7 @@ describe('COSPreferences', () => {
 		// Wait for the Receiving Mails section to render
 		await expect.element(page.getByText('Receiving Mails')).toBeVisible();
 
-		// Find the "Read Receipt settings" select dropdown
+		// In the "Receiving Mails" section, find the "Read Receipt settings" select dropdown
 		const readReceiptSettingsLabel = page.getByText('Read Receipt settings');
 		await expect.element(readReceiptSettingsLabel).toBeVisible();
 
