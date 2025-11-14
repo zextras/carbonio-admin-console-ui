@@ -5,10 +5,10 @@
  */
 
 library(
-    identifier: 'jenkins-packages-build-library@1.0.4',
+    identifier: 'jenkins-lib-common@1.1.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        remote: 'git@github.com:zextras/jenkins-lib-common.git',
         credentialsId: 'jenkins-integration-with-github-account'
     ])
 )
@@ -21,21 +21,16 @@ pipeline {
     }
     environment {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+        GITHUB_TOKEN = credentials('jenkins-integration-with-github-account')
     }
     options {
-        timeout(time: 20, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '50'))
     }
     parameters {
         booleanParam defaultValue: true,
             description: 'Enable SonarQube Stage',
             name: 'RUN_SONARQUBE'
-        booleanParam defaultValue: false,
-            description: 'Whether to upload the packages in playground repositories',
-            name: 'PLAYGROUND'
-    }
-    tools {
-        jfrog 'jfrog-cli'
     }
     stages {
         stage('Licenses checks') {
@@ -144,13 +139,33 @@ pipeline {
                 }
             }
         }
+        stage('semantic-release') {
+            when {
+                not {
+                    anyOf {
+                        expression { isPullRequest == true }
+                    }
+                }
+            }
+            steps {
+                container('pnpm') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
+                            withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                                sh 'pnpm run release'
+                            }
+                        }
+                    }
+                }
+            }
+        }
         stage('build apps') {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'pnpm build'
+                        sh 'node build_unified.js'
                     }
-                    stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
+                    stash includes: 'package/**', name: 'staging'
                 }
             }
         }
@@ -159,8 +174,8 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: true,
-                        buildDirs: ['apps'],
+                        skipStash: false,
+                        buildDirs: ['.'],
                         ubuntuSinglePkg: true,
                         rockySinglePkg: true,
                     ])
@@ -173,9 +188,6 @@ pipeline {
                     expression {
                         isDevelBranch == true
                     }
-                    expression {
-                        params.PLAYGROUND == true
-                    }
                 }
             }
             steps {
@@ -183,47 +195,29 @@ pipeline {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         script {
                             tags = ['latest', 'devel']
-                            dir('apps/admin-ui-bootstrap/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin UI',
-                                        description: 'Carbonio Admin UI Bootstrap Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-console/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-console',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin Console',
-                                        description: 'Carbonio Admin Console Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-cos/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-cos',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin COS module',
-                                        description: 'Carbonio Admin COS module Container'
-                                    ]
-                                ])
-                            }
+                            dockerHelper.buildImage([
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
+                                imageTags: tags,
+                                ocLabels: [
+                                    title: 'Carbonio Admin Console UI',
+                                    description: 'Carbonio Admin Console UI Container'
+                                ]
+                            ])
                         }
                     }
                 }
             }
         }
         stage('Upload artifacts') {
+            when {
+                expression { return uploadStage.shouldUpload() }
+            }
+            tools {
+                jfrog 'jfrog-cli'
+            }
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json'),
-                    ubuntuSinglePkg: true,
-                    rockySinglePkg: true,
+                    packages: yapHelper.resolvePackageNames()
                 )
             }
         }

@@ -1,8 +1,11 @@
 {
 	"name": "admin-ui",
-	"version": "1.0.0",
+	"version": "0.0.0-semantically-released",
 	"private": true,
 	"packageManager": "pnpm@10.15.0",
+	"engines": {
+		"node": ">=22.14.0"
+	},
 	"workspaces": [
 		"apps/*",
 		"packages/*"
@@ -10,6 +13,10 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:dev": "turbo run build:dev",
+		"build:unified": "node build_unified.js",
+		"build:unified:dev": "node build_unified.js --dev",
+		"release": "semantic-release",
+		"release:dry": "semantic-release --dry-run",
 		"test": "turbo run test",
 		"test:ci": "turbo run test:ci",
 		"type-check": "turbo run type-check",
@@ -20,6 +27,9 @@
 		"react": "^19.1.0"
 	},
 	"devDependencies": {
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^12.0.2",
 		"@tsconfig/node12": "^12.1.4",
 		"@typescript-eslint/eslint-plugin": "^8.41.0",
 		"@vitejs/plugin-react": "^5.0.2",
@@ -27,6 +37,7 @@
 		"@vitest/browser-playwright": "^4.0.5",
 		"@vitest/coverage-istanbul": "^4.0.5",
 		"@vitest/ui": "^4.0.5",
+		"conventional-changelog-conventionalcommits": "^9.1.0",
 		"depcheck": "^1.4.7",
 		"eslint": "^9.34.0",
 		"eslint-plugin-import": "^2.32.0",
@@ -40,6 +51,7 @@
 		"eslint-plugin-unused-imports": "^4.2.0",
 		"playwright": "^1.55.0",
 		"pnpm": "^10.15.1",
+		"semantic-release": "^25.0.2",
 		"turbo": "latest",
 		"typescript": "^5.7.2",
 		"vite-plugin-svgr": "^4.5.0",
@@ -54,7 +66,9 @@
 	],
 	"msw": {
 		"workerDirectory": [
-			"public"
+			"./apps/admin-ui-bootstrap/public",
+			"./apps/admin-ui-console/public",
+			"./apps/admin-ui-cos/public"
 		]
 	},
 	"carbonio": {

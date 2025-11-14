@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ChangeEvent, FC, useState } from 'react';
-
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -16,7 +15,7 @@ import {
 	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -165,15 +164,20 @@ const CreateCos: FC = () => {
 								</Text>
 							</Row>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ all: 'small' }} crossAlignment="flex-start">
 									<Input
 										label={t('label.cos_name', 'Cos Name')}
 										backgroundColor="gray5"
 										value={cosName}
 										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-											setCosName(e.target.value);
+											setCosName(e.target.value.toLowerCase());
 										}}
 									/>
+									<Padding top="small">
+										<Text size="small" color="gray1">
+											{t('cos.creatCOS.cosNameLowerCaseInfo', 'COS name must contain only lowercase letters.')}
+										</Text>
+									</Padding>
 								</Container>
 							</ListRow>
 							<ListRow>

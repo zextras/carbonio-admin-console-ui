@@ -1,14 +1,18 @@
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 FROM --platform=$BUILDPLATFORM backplane/jq:latest AS builder
 
 # Define path variables
 ENV IRIS_BASE_PATH="/opt/zextras/admin/iris" \
-    WEB_PATH="/opt/zextras/admin/iris/carbonio-admin-ui-cos"
+    WEB_PATH="/opt/zextras/admin/iris"
 
 # Set up directories
 RUN mkdir -p "${WEB_PATH}"
 
 # Copy application files
-COPY dist/source/ ${WEB_PATH}/
+COPY package/opt/zextras/admin/iris/ ${WEB_PATH}/
 
 # Final stage - built for all target platforms
 FROM backplane/jq:latest

@@ -13,7 +13,7 @@ import svgr from 'vite-plugin-svgr';
 import { createModuleRollupOptions } from '../../vite.rollup.config';
 
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
-const packageName = 'carbonio-admin-cos';
+const packageName = 'carbonio-admin-ui-cos';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
 
 export default defineConfig(({ mode }) => {
