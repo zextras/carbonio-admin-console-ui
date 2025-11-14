@@ -67,7 +67,7 @@ export const SendingMails = ({
 								value={cosPrefAttributes?.zimbraFeatureReadReceiptsEnabled === 'TRUE'}
 								onClick={(): void => changeSwitchOption('zimbraFeatureReadReceiptsEnabled')}
 								label={t(
-									'account_details.ask_read_receipts',
+									'cos.preferences.permitUserToAskForReadReceipt',
 									`Permit the user to ask for read receipt`
 								)}
 								iconColor="primary"
