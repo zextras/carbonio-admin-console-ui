@@ -1,3 +1,9 @@
+## [0.11.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0-devel.1...v0.11.0-devel.2) (2025-11-14)
+
+### Bug Fixes
+
+* **root)(Jenkinsfile:** add credentials for npm and github in release step ([#962](https://github.com/zextras/carbonio-admin-console-ui/issues/962)) ([8845438](https://github.com/zextras/carbonio-admin-console-ui/commit/8845438fa2398c89f33db384a355e28ebd723e5f))
+
 ## [0.11.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.9...v0.11.0-devel.1) (2025-11-13)
 
 ### Features
