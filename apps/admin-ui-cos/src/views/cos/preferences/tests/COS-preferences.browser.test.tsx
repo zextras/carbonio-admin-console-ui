@@ -58,7 +58,7 @@ function expectForwardingSectionVisible() {
 function expectSendingMailsSectionVisible() {
 	expect(page.getByText('Sending Mails')).toBeVisible();
 	expect(page.getByText('Save to sent')).toBeVisible();
-	expect(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
+	expect(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
 }
 
 function expectContactOptionsSectionVisible() {
@@ -146,8 +146,8 @@ describe('COSPreferences', () => {
 		// Wait for the component to render
 		await expect.element(page.getByText('Sending Mails')).toBeVisible();
 
-		// Find the "Permit the user to ask for read receipt" label
-		const readReceiptLabel = page.getByText('Permit the user to ask for read receipt');
+		// Find the "Allow the user to ask for a read receipt" label
+		const readReceiptLabel = page.getByText('Allow the user to ask for a read receipt');
 		await expect.element(readReceiptLabel).toBeVisible();
 
 		// Click on the label which will trigger the switch
