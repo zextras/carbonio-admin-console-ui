@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
     Row,
     Container,
@@ -12,12 +12,13 @@ import {
     Button,
     Padding,
     Text,
-    Table
+    Table,
+    List,
+    ListItem,
+    Icon
 } from '@zextras/carbonio-design-system';
 import { useTranslation, Trans } from 'react-i18next';
 import { isValidVirtualHostname } from '../../../utility/utils';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import logo from '../../../../assets/helmet_logo.svg';
 
 interface VirtualHostsRowProps {
@@ -27,38 +28,23 @@ interface VirtualHostsRowProps {
 
 const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) => {
     const [t] = useTranslation();
-    const [virtualHostValue, setVirutalHostValue] = useState('');
+    const [virtualHostValue, setVirtualHostValue] = useState('');
     const [addButtonDisabled, setAddButtonDisabled] = useState(true);
     const [errVirtualHostName, setErrVirtualHostName] = useState(true);
     const [removeVirtualBtnDisabled, setRemoveVirtualBtnDisabled] = useState(true);
     const [selectedRows, setSelectedRows] = useState<any[]>([]);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
-    const headers = useMemo(
-        () => [
-            {
-                id: 'hosts',
-                label: t('label.virtual_host_name', 'Virtual Host Name'),
-                width: '100%',
-                bold: true
-            }
-        ],
-        [t]
-    );
-
-    const addVirtualHost = () => {
-        if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
-            const lastId = items.length > 0 ? items[items.length - 1]?.id : '0';
-            const newId = parseInt(lastId, 10) + 1;
-            const item = {
-                id: newId?.toString(),
-                columns: [virtualHostValue],
-                clickable: true
-            };
-            setItems([...items, item]);
-            setAddButtonDisabled(true);
-            setVirutalHostValue('');
-        }
+    // Gestisce la selezione/deselezione di una riga
+    const handleRowSelect = (id: string) => {
+        setSelectedRows((prevSelected) =>
+            prevSelected.includes(id)
+                ? prevSelected.filter((rowId) => rowId !== id)
+                : [...prevSelected, id]
+        );
+        setRemoveVirtualBtnDisabled(false);
     };
+
 
     const removeVirtualHost = () => {
         if (selectedRows && selectedRows.length > 0 && items.length > 0) {
@@ -69,9 +55,25 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
         }
     };
 
+    const addVirtualHost = useCallback(() => {
+        if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
+            const lastId = items.length > 0 ? items.at(-1)?.id : '0';
+            const newId = Number.parseInt(lastId, 10) + 1;
+            const item = {
+                id: newId?.toString(),
+                columns: [virtualHostValue],
+                clickable: true
+            };
+            setItems([...items, item]);
+            setAddButtonDisabled(true);
+            setVirtualHostValue('');
+        }
+    }, [virtualHostValue, items, removeVirtualBtnDisabled, removeVirtualHost]);
+
+
     return (
-        <Padding vertical="large" width="100%">
-            <Row mainAlignment="flex-start" width="100%" wrap="nowrap">
+        <Container width="100%">
+            <Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ vertical: '1rem' }}>
                 <Container width="80%">
                     <Input
                         label={t(
@@ -81,7 +83,7 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                         backgroundColor="gray5"
                         value={virtualHostValue}
                         onChange={(e: any): any => {
-                            setVirutalHostValue(e.target.value);
+                            setVirtualHostValue(e.target.value);
                             if (e.target.value && isValidVirtualHostname(e.target.value)) {
                                 setAddButtonDisabled(false);
                                 setErrVirtualHostName(true);
@@ -124,21 +126,54 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                     />
                 </Container>
             </Row>
-            <Table
-                rows={items}
-                headers={headers}
-                selectedRows={selectedRows}
-                onSelectionChange={(selected: any): any => {
-                    setSelectedRows(selected);
-                    if (selected && selected.length > 0) {
-                        setRemoveVirtualBtnDisabled(false);
-                    } else {
-                        setRemoveVirtualBtnDisabled(true);
-                    }
-                }}
-                HeaderFactory={CustomHeaderFactory}
-                RowFactory={CustomRowFactory}
-            />
+            <List>
+                {items.map((item, id) => (
+                    <ListItem
+                        key={item.id}
+                        selected={selectedRows.includes(item.id)}
+                    >
+                        {(visible: boolean) =>
+                            visible ? (
+                                <Container
+                                    orientation="horizontal"
+                                    mainAlignment="space-between"
+                                    width="100%"
+                                    maxHeight="2.188rem"
+                                    style={{ cursor: 'pointer' }}
+                                    padding={{ horizontal: '1rem', vertical: '0.5rem' }}
+                                    onClick={() => handleRowSelect(item.id)}
+                                    onMouseEnter={() => setHoveredRow(item.id)}
+                                    onMouseLeave={() => setHoveredRow(null)}
+                                >
+                                    <Container mainAlignment='flex-start' crossAlignment='flex-start'>
+                                        {(hoveredRow === item.id || selectedRows.includes(item.id)) ? (
+                                            <Icon
+                                                icon={selectedRows.includes(item.id) ? "CheckmarkSquareOutline" : "SquareOutline"}
+                                            />
+                                        ) : (
+                                            <Text>{id + 1}</Text>
+                                        )}
+                                    </Container>
+                                    <Container crossAlignment='flex-start' mainAlignment='flex-start'>
+                                        <Text>{item.columns[0]}</Text>
+                                    </Container>
+                                    {!removeVirtualBtnDisabled && (hoveredRow === item.id || selectedRows.includes(item.id)) && (
+                                        <Button
+                                            type='ghost'
+                                            color="error"
+                                            label="Remove"
+                                            size='small'
+                                            onClick={removeVirtualHost}
+                                        />
+                                    )}
+                                </Container>
+                            ) : (
+                                <div style={{ height: '4rem' }} />
+                            )
+                        }
+                    </ListItem>
+                ))}
+            </List>
             {items.length === 0 && (
                 <Container
                     background="gray6"
@@ -169,7 +204,7 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                     </Padding>
                 </Container>
             )}
-        </Padding>
+        </Container>
     );
 };
 

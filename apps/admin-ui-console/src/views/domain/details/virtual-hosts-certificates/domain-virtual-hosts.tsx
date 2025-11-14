@@ -450,7 +450,7 @@ const DomainVirtualHosts: FC = () => {
 					width="100%"
 					height="calc(100vh - 150px)"
 				>
-					<Padding value="large">
+					<Padding value="large" width='100%'>
 						{/*
 						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
 						<Padding vertical="small">
