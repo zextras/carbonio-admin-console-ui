@@ -95,7 +95,8 @@ describe('COSPreferences', () => {
 				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 				{ n: 'zimbraPrefLocale', _content: 'en' },
 				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
-				{ n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' }
+				{ n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
+				{ n: 'zimbraPrefMailSendReadReceipts', _content: 'never' }
 			]
 		});
 	};
@@ -153,6 +154,28 @@ describe('COSPreferences', () => {
 		await readReceiptLabel.click();
 
 		// Verify the Save button appears after the change (indicating unsaved changes)
+		const saveButton = page.getByRole('button', { name: 'Save' });
+		await expect.element(saveButton).toBeVisible();
+	});
+
+	it('should change zimbraPrefMailSendReadReceipts when selecting a different option', async () => {
+		setupBrowserTest(<COSPreferences />);
+
+		// Wait for the Receiving Mails section to render
+		await expect.element(page.getByText('Receiving Mails')).toBeVisible();
+
+		// Find the "Read Receipt settings" select dropdown
+		const readReceiptSettingsLabel = page.getByText('Read Receipt settings');
+		await expect.element(readReceiptSettingsLabel).toBeVisible();
+
+		// Click on the select to open the dropdown
+		await readReceiptSettingsLabel.click();
+
+		// Select "Always send a read receipt" option
+		const alwaysSendOption = page.getByText('Always send a read receipt');
+		await alwaysSendOption.click();
+
+		// Verify the Save button appears after the change
 		const saveButton = page.getByRole('button', { name: 'Save' });
 		await expect.element(saveButton).toBeVisible();
 	});
