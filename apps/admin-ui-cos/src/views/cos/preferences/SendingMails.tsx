@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Select, SelectItem, Switch, Text } from '@zextras/carbonio-design-system';
-import React, { useMemo } from 'react';
+import { Container, Row, Switch, Text } from '@zextras/carbonio-design-system';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
 import ListRow from '../../list/list-row';
 import { AttributeValue } from '../constants/types';
-import { findSelectItemWithFallback } from '../utils';
 
 interface SendingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
@@ -22,19 +21,10 @@ interface SendingMailsProps {
 export const SendingMails = ({
 	cosPrefAttributes,
 	isReadOnlyCosEntry,
-	onCosAttributeChanged,
 	changeSwitchOption
 }: SendingMailsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
-	const SEND_READ_RECEIPTS: SelectItem[] = useMemo(
-		() => [
-			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
-			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
-			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
-		],
-		[t]
-	);
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -70,22 +60,17 @@ export const SendingMails = ({
 					height="fit"
 					crossAlignment="flex-start"
 					background="gray6"
-					padding={{ bottom: 'large' }}
 				>
 					<ListRow>
-						<Container>
-							<Select
-								items={SEND_READ_RECEIPTS}
-								background="gray5"
-								label={t('cos.read_receipt_settings', 'Read Receipt settings')}
-								showCheckbox={false}
-								selection={findSelectItemWithFallback(
-									SEND_READ_RECEIPTS,
-									cosPrefAttributes?.zimbraPrefMailSendReadReceipts
+						<Container crossAlignment="flex-start">
+							<Switch
+								value={cosPrefAttributes?.zimbraFeatureReadReceiptsEnabled === 'TRUE'}
+								onClick={(): void => changeSwitchOption('zimbraFeatureReadReceiptsEnabled')}
+								label={t(
+									'account_details.ask_read_receipts',
+									`Permit the user to ask for read receipt`
 								)}
-								onChange={(value: AttributeValue): void =>
-									onCosAttributeChanged('zimbraPrefMailSendReadReceipts', value)
-								}
+								iconColor="primary"
 								disabled={isReadOnlyCosEntry}
 							/>
 						</Container>

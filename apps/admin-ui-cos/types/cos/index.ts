@@ -23,6 +23,7 @@ export type CosPrefAttributes = {
 	zimbraPrefMailPollingInterval: string;
 	zimbraMailMinPollingInterval: string;
 	zimbraPrefMailSendReadReceipts: string;
+	zimbraFeatureReadReceiptsEnabled: string;
 	zimbraPrefSaveToSent: string;
 	zimbraFeatureMailForwardingEnabled: string;
 	zimbraFeatureMailForwardingInFiltersEnabled: string;

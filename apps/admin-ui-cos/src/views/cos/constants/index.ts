@@ -16,6 +16,7 @@ export const DEFAULT_COS_PREF_ATTRIBUTES: CosPrefAttributes = {
 	zimbraPrefMailPollingInterval: '',
 	zimbraMailMinPollingInterval: '',
 	zimbraPrefMailSendReadReceipts: '',
+	zimbraFeatureReadReceiptsEnabled: 'FALSE',
 	zimbraPrefSaveToSent: 'FALSE',
 	zimbraFeatureMailForwardingEnabled: 'FALSE',
 	zimbraFeatureMailForwardingInFiltersEnabled: 'FALSE',
