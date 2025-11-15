@@ -175,6 +175,7 @@ pipeline {
                     echo 'Building deb/rpm packages'
                     buildStage([
                         skipStash: false,
+                        stashName: 'staging',
                         buildDirs: ['.'],
                         ubuntuSinglePkg: true,
                         rockySinglePkg: true,
