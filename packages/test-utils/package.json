@@ -1,0 +1,35 @@
+{
+	"name": "admin-ui-test-utils",
+	"description": "admin-ui-test-utils",
+	"exports": {
+		".": {
+			"browser": "./src/index.browser.ts",
+			"jsdom": "./src/index.node.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"engines": {
+		"node": ">=20.0.0 <21.0.0",
+		"pnpm": ">=10.15.0"
+	},
+	"scripts": {
+		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet"
+	},
+	"msw": {
+		"workerDirectory": "./public"
+	},
+	"packageManager": "pnpm@10.15.0",
+	"author": "zextras",
+	"license": "AGPL-3.0-only",
+	"files": [
+		"utils"
+	],
+	"devDependencies": {
+		"@testing-library/user-event": "^14.6.1",
+		"@vitest/browser": "^4.0.5",
+		"eslint": "^9.34.0",
+		"msw": "^2.11.3",
+		"vitest": "^4.0.5",
+		"vitest-browser-react": "^2.0.2"
+	}
+}

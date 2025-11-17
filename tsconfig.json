@@ -1,12 +1,6 @@
 {
-	"extends": "@zextras/carbonio-ui-configs/rules/typescript.json",
-	"compilerOptions": {
-		"skipLibCheck": true,
-		"resolveJsonModule": true
-	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/custom.d.ts", "types/i18next.d.ts"],
-	"exclude": ["node_modules"],
-	"ts-node": {
-		"transpileOnly": true
-	}
+	"extends": "./tsconfig.base.json",
+
+	"include": ["*.*"],
+	"exclude": ["node_modules", "dist", "build"]
 }

@@ -1,49 +1,141 @@
-<!--
-SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+# Carbonio Admin UI Monorepo
 
-SPDX-License-Identifier: AGPL-3.0-only
--->
-<div align="center">
-  <h1>Carbonio Admin Console UI</h1>
-</div>
+A monorepo containing the Carbonio Admin Console UI and related packages, managed with pnpm workspaces and Turborepo.
 
-Admin module for Zextras Carbonio
+## Overview
 
-<p align="center">
-  <a href="https://github.com/zextras/carbonio-mails-ui/graphs/contributors" alt="Contributors">
-  <img src="https://img.shields.io/github/contributors/zextras/carbonio-mails-ui" /></a>
-  <a href="https://github.com/zextras/carbonio-mails-ui/pulse" alt="Activity">
-  <img src="https://img.shields.io/github/commit-activity/m/zextras/carbonio-mails-ui" /></a>
-  <img src="https://img.shields.io/badge/license-AGPL%203-green" alt="License AGPL 3">
-  <img src="https://img.shields.io/badge/project-carbonio-informational" alt="Project Carbonio">
-  <a href="https://twitter.com/intent/follow?screen_name=zextras">
-  <img src="https://img.shields.io/twitter/follow/zextras?style=social&logo=twitter" alt="Follow on Twitter"></a>
-</p>
-<h3>How to build</h3>
+This monorepo houses the administrative interface for Zextras Carbonio, organized into applications and shared packages.
 
-<h4>Setup</h4>
+## Prerequisites
 
-- clone this repo
+- **Node.js** - Version compatible with browserslist requirements
+- **pnpm** - Version 10.15.0 (enforced by packageManager field)
 
-- install the dependencies:
-```
-npm install
+## Getting Started
+
+### Initial Setup
+
+Clone the repository and install all dependencies:
+
+```bash
+# Install dependencies across all workspaces
+pnpm install
 ```
 
-<h4>Watch Mode</h4>
+### Full Reset
 
-```
-npm run start -- -h <proxy host>:<admin port>
-```
+If you encounter dependency issues or need a clean slate:
 
-The host parameter is required to proxy requests and content from an existing Carbonio installation.
-
-<h4>Build</h4>
-
-```
-npm run build
+```bash
+pnpm reset
 ```
 
-<h2>License</h2>
+This command will:
 
-Released under the AGPL-3.0-only license as specified here: LICENSES/AGPL-3.0-only.txt.
+- Remove all `node_modules` directories
+- Delete `pnpm-lock.yaml`
+- Clear Turbo cache
+- Prune the pnpm store
+- Reinstall all dependencies
+
+## Available Scripts
+
+All scripts use Turborepo for efficient task orchestration across workspaces.
+
+### Building
+
+#### `pnpm build`
+
+Builds all applications and packages in the correct order, respecting dependencies.
+
+```bash
+pnpm build
+```
+
+### Testing
+
+#### `pnpm test`
+
+Runs the test suite across all packages once.
+
+```bash
+pnpm test
+```
+
+#### `pnpm test:ci`
+
+Runs tests with coverage reporting, optimized for CI/CD pipelines.
+
+```bash
+pnpm test:ci
+```
+
+### Code Quality
+
+#### `pnpm type-check`
+
+Runs TypeScript type checking across all packages without emitting files.
+
+```bash
+pnpm type-check
+```
+
+#### `pnpm lint`
+
+Runs ESLint across all packages to enforce code quality standards.
+
+```bash
+pnpm lint
+```
+
+### Working Across Multiple Packages
+
+When making changes that affect multiple packages:
+
+```bash
+# Build all packages (from root)
+pnpm build
+
+# Type-check everything
+pnpm type-check
+
+# Run all tests
+pnpm test
+```
+
+## Workspace Management
+
+### Understanding Workspaces
+
+This monorepo uses pnpm workspaces to manage multiple packages:
+
+- **`apps/*`** - Standalone applications (e.g., admin-ui-console)
+- **`packages/*`** - Shared packages used across apps
+
+### Workspace Dependencies
+
+Packages reference each other using the `workspace:*` protocol:
+
+```json
+{
+	"dependencies": {
+		"@zextras/admin-ui-bootstrap": "workspace:*",
+		"admin-ui-sdk": "workspace:*"
+	}
+}
+```
+
+This ensures you're always using the local version during development.
+
+### Adding Dependencies
+
+```bash
+# Add a dependency to a specific workspace
+pnpm add <package> --filter <appname>
+
+# Add a dev dependency to the root
+pnpm add -D <package> -w
+
+# Add a dependency to all workspaces
+pnpm add <package> -r
+```

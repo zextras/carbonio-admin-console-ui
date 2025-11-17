@@ -1,0 +1,11 @@
+{
+  "name": "iris-component",
+  "description": "zextras iris component",
+  "buildDir": "/tmp/",
+  "output": "artifacts",
+  "projects": [
+    {
+      "name": "package"
+    }
+  ]
+}
