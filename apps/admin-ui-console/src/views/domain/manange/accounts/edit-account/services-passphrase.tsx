@@ -20,7 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 

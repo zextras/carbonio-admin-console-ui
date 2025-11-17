@@ -41,7 +41,7 @@ import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { getCosList } from '../../services/search-cos-service';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';

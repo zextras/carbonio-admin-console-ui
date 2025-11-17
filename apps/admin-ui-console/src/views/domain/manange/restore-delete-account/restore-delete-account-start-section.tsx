@@ -10,7 +10,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../../list/list-row';
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {

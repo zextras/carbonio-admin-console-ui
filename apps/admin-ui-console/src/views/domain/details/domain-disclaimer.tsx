@@ -34,7 +34,7 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 
 const EditorWrapper = styled.div`

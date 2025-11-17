@@ -50,7 +50,7 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';

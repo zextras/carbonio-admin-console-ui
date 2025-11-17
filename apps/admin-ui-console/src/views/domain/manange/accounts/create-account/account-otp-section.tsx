@@ -23,7 +23,7 @@ import styled from 'styled-components';
 import { AccountContext } from './account-context';
 import { emailContent } from './email-content';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 

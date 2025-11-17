@@ -21,7 +21,7 @@ import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Paging from '../../../components/paging';

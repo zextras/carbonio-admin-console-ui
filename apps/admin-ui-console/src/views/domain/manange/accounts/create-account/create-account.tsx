@@ -18,7 +18,7 @@ import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../../../store/config/store';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';

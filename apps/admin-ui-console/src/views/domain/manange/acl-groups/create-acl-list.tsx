@@ -15,7 +15,7 @@ import AclListCreateSection from './acl-list-create-section';
 import AclListMembersSection from './acl-list-members-section';
 import AclListSection from './acl-list-section';
 import { PUB } from '../../../../constants';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section-component';
 import OverlayDivision from '../../../components/overlayDivision';
