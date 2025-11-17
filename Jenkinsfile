@@ -297,7 +297,9 @@ pipeline {
             }
             steps {
                 uploadStage(
-                    packages: yapHelper.resolvePackageNames()
+                    packages: yapHelper.resolvePackageNames(),
+                    ubuntuSinglePkg: true,
+                    rockySinglePkg: true,
                 )
             }
         }
