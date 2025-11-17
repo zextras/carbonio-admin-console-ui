@@ -10,7 +10,7 @@ import { Container, Text, Row, Divider, Input, Button } from '@zextras/carbonio-
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { useStickyBarStore } from '../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import Displayer from '../../components/displayer';
 import ListRow from '../../list/list-row';
 
