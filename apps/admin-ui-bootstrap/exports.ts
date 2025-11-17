@@ -21,6 +21,7 @@ import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { useDomainStore } from './src/store/shared/domains';
+import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
@@ -59,5 +60,6 @@ export {
 	useIsAdvanced,
 	useIntegratedComponent,
 	pushHistory,
-	useDomainStore
+	useDomainStore,
+	useStickyBarStore
 };

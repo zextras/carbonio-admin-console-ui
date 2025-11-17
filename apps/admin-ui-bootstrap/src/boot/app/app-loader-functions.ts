@@ -20,6 +20,7 @@ import { useDomainInformation } from '../../store/domain-information';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useDomainStore } from '../../store/shared/domains';
+import { useStickyBarStore } from '../../store/shared/sticky-bar';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
@@ -45,5 +46,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useIsAdvanced,
 	getIsAdvanced,
 	useDomainInformation,
-	useDomainStore
+	useDomainStore,
+	useStickyBarStore
 });
