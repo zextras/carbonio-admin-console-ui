@@ -12,8 +12,38 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCosStore } from '../../../../store/cos/store';
-import { useRightsStore } from '../../../../store/rights/store';
 import { COSPreferences } from '../COSPreferences';
+
+// Mock the useRights hook from React Query
+vi.mock('@zextras/admin-ui-bootstrap', async () => {
+	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
+	return {
+		...actual,
+		useRights: vi.fn(() => ({
+			data: [
+				{
+					type: 'cos',
+					all: [
+						{
+							right: [
+								{ n: 'assignCos' },
+								{ n: 'deleteCos' },
+								{ n: 'listCos' },
+								{ n: 'manageZimlet' },
+								{ n: 'renameCos' }
+							],
+							setAttrs: [{ all: true }],
+							getAttrs: [{ all: true }]
+						}
+					]
+				}
+			],
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		}))
+	};
+});
 
 vi.mock('../../../../services/modify-cos-service', () => ({
 	modifyCos: vi.fn()
@@ -101,31 +131,10 @@ describe('COSPreferences', () => {
 		});
 	};
 
-	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'cos',
-				all: [
-					{
-						right: [
-							{ n: 'assignCos' },
-							{ n: 'deleteCos' },
-							{ n: 'listCos' },
-							{ n: 'manageZimlet' },
-							{ n: 'renameCos' }
-						],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
-	};
-
+	
 	beforeEach(() => {
 		vi.resetAllMocks();
 		setupCosStore();
-		setupRightsStore();
 	});
 
 	it('should render the component correctly', async () => {
