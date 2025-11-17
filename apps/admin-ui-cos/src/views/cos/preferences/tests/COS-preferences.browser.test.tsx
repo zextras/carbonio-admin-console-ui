@@ -58,7 +58,7 @@ function expectForwardingSectionVisible() {
 function expectSendingMailsSectionVisible() {
 	expect(page.getByText('Sending Mails')).toBeVisible();
 	expect(page.getByText('Save to sent')).toBeVisible();
-	expect(page.getByText('Read Receipt settings')).toBeVisible();
+	expect(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
 }
 
 function expectContactOptionsSectionVisible() {
@@ -94,7 +94,9 @@ describe('COSPreferences', () => {
 			a: [
 				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 				{ n: 'zimbraPrefLocale', _content: 'en' },
-				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' }
+				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
+				{ n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
+				{ n: 'zimbraPrefMailSendReadReceipts', _content: 'never' }
 			]
 		});
 	};
@@ -136,5 +138,45 @@ describe('COSPreferences', () => {
 		expectSendingMailsSectionVisible();
 		expectContactOptionsSectionVisible();
 		expectCalendarOptionsVisible();
+	});
+
+	it('should toggle zimbraFeatureReadReceiptsEnabled when clicking the read receipt switch', async () => {
+		setupBrowserTest(<COSPreferences />);
+
+		// Wait for the component to render
+		await expect.element(page.getByText('Sending Mails')).toBeVisible();
+
+		// Find the "Allow the user to ask for a read receipt" label
+		const readReceiptLabel = page.getByText('Allow the user to ask for a read receipt');
+		await expect.element(readReceiptLabel).toBeVisible();
+
+		// Click on the label which will trigger the switch
+		await readReceiptLabel.click();
+
+		// Verify the Save button appears after the change (indicating unsaved changes)
+		const saveButton = page.getByRole('button', { name: 'Save' });
+		await expect.element(saveButton).toBeVisible();
+	});
+
+	it('should change zimbraPrefMailSendReadReceipts when selecting a different option', async () => {
+		setupBrowserTest(<COSPreferences />);
+
+		// Wait for the Receiving Mails section to render
+		await expect.element(page.getByText('Receiving Mails')).toBeVisible();
+
+		// In the "Receiving Mails" section, find the "Read Receipt settings" select dropdown
+		const readReceiptSettingsLabel = page.getByText('Read Receipt settings');
+		await expect.element(readReceiptSettingsLabel).toBeVisible();
+
+		// Click on the select to open the dropdown
+		await readReceiptSettingsLabel.click();
+
+		// Select "Always send a read receipt" option
+		const alwaysSendOption = page.getByText('Always send a read receipt');
+		await alwaysSendOption.click();
+
+		// Verify the Save button appears after the change
+		const saveButton = page.getByRole('button', { name: 'Save' });
+		await expect.element(saveButton).toBeVisible();
 	});
 });

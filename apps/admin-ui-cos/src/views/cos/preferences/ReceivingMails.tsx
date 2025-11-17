@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { CosPrefAttributes } from '../../../../types/cos';
 import ListRow from '../../list/list-row';
 import { AttributeValue } from '../constants/types';
+import { findSelectItemWithFallback } from '../utils';
 
 interface ReceivingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
@@ -94,6 +95,15 @@ export const ReceivingMails = ({
 		setPrefMailPollingIntervalType(cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(-1));
 	}, [cosPrefAttributes?.zimbraMailMinPollingInterval]);
 
+	const SEND_READ_RECEIPTS: SelectItem[] = useMemo(
+		() => [
+			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
+		],
+		[t]
+	);
+
 	return (
 		<Row
 			mainAlignment="flex-start"
@@ -167,6 +177,33 @@ export const ReceivingMails = ({
 								}
 								onChange={(value: AttributeValue): void =>
 									onCosAttributeChanged('zimbraPrefMailPollingInterval', value)
+								}
+								disabled={isReadOnlyCosEntry}
+							/>
+						</Container>
+					</ListRow>
+				</Container>
+			</Row>
+			<Row mainAlignment="flex-start" width="100%">
+				<Container
+					height="fit"
+					crossAlignment="flex-start"
+					background="gray6"
+					padding={{ bottom: 'large' }}
+				>
+					<ListRow>
+						<Container>
+							<Select
+								items={SEND_READ_RECEIPTS}
+								background="gray5"
+								label={t('cos.read_receipt_settings', 'Read Receipt settings')}
+								showCheckbox={false}
+								selection={findSelectItemWithFallback(
+									SEND_READ_RECEIPTS,
+									cosPrefAttributes?.zimbraPrefMailSendReadReceipts
+								)}
+								onChange={(value: AttributeValue): void =>
+									onCosAttributeChanged('zimbraPrefMailSendReadReceipts', value)
 								}
 								disabled={isReadOnlyCosEntry}
 							/>
