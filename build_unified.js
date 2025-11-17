@@ -67,11 +67,14 @@ function main() {
 	const appsDir = path.join(rootDir, 'apps');
 	const buildDir = path.join(rootDir, 'dist');
 
-	// Read package version from root package.json (will be updated by semantic-release)
-	const rootPackageJson = JSON.parse(
-		fs.readFileSync(path.join(rootDir, 'package.json'), 'utf-8')
-	);
-	const pkgVersion = rootPackageJson.version;
+	function getLastTag() {
+		return execSync('git describe --tags --abbrev=0', {
+			encoding: 'utf-8',
+			stdio: 'pipe'
+		}).trim();
+	}
+
+	const pkgVersion = getLastTag().replace(/^v/, '');
 
 	log('=== Building unified admin package ===', 'blue');
 
@@ -142,6 +145,8 @@ arch=("x86_64")
 license=("AGPL-3.0-only")
 copyright=("2025, Zextras &lt;https://www.zextras.com&gt;")
 section="admin"
+conflicts=('carbonio-admin-ui')
+provides=('carbonio-admin-ui')
 priority="optional"
 url="https://github.com/zextras"
 depends=(
