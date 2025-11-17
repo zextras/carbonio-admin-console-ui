@@ -31,6 +31,9 @@ pipeline {
         booleanParam defaultValue: true,
             description: 'Enable SonarQube Stage',
             name: 'RUN_SONARQUBE'
+        booleanParam defaultValue: false,
+            description: 'Bump Version',
+            name: 'BUMP'
     }
     stages {
         stage('Licenses checks') {
@@ -60,6 +63,13 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     echo "NodeJS Major Version: $nodeVersion"
+                    isMergeCommit = sh(
+                        script: 'git rev-parse --verify --quiet HEAD^2',
+                        returnStatus: true
+                    ) == 0
+                    isBumpBuild = isReleaseBranch && (isMergeCommit || params.BUMP)
+                    echo "Is Merge Commit: $isMergeCommit"
+                    echo "Bump Build: $isBumpBuild"
                 }
                 withCredentials([
                     usernamePassword(
@@ -134,6 +144,75 @@ pipeline {
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
+                        }
+                    }
+                }
+            }
+        }
+        stage('Release automation') {
+            when {
+                expression { isBumpBuild == true }
+            }
+            steps {
+                container('pnpm') {
+                    script {
+                        sh 'apt-get update && apt-get install -y jq openssh-client'
+
+                        sh """
+                            git config user.email "bot@zextras.com"
+                            git config user.name "Tarsier Bot"
+                        """
+
+                        withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
+                            withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                                sh 'pnpm run release'
+                            }
+                        }
+
+                        def latestTag = sh(
+                            script: 'git describe --tags --abbrev=0',
+                            returnStdout: true
+                        ).trim()
+
+                        echo("Latest tag created: ${latestTag}")
+
+                        def versionBranch = "version-bumper/${latestTag}"
+
+                        sh """
+                            git checkout -b ${versionBranch}
+                            git push origin ${versionBranch}
+                        """
+                    }
+                }
+            }
+            post {
+                success {
+                    container('pnpm') {
+                        withCredentials([
+                            usernamePassword(
+                                credentialsId: 'jenkins-integration-with-github-account',
+                                passwordVariable: 'GH_TOKEN',
+                                usernameVariable: 'GH_USERNAME'
+                            )
+                        ]) {
+                            script {
+                                catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                                    def latestTag = sh(
+                                        script: 'git describe --tags --abbrev=0',
+                                        returnStdout: true
+                                    ).trim()
+
+                                    def versionBranch = "version-bumper/${latestTag}"
+
+                                    sh """
+                                        gh pr create \
+                                            --title "Release ${latestTag}" \
+                                            --head "${versionBranch}" \
+                                            --base "devel" \
+                                            --body "Automated release PR for version ${latestTag}"
+                                    """
+                                }
+                            }
                         }
                     }
                 }
