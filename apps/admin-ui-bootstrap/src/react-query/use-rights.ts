@@ -36,9 +36,7 @@ type RightsOptions = {
 	userName?: string;
 };
 
-/**
- * Query function to fetch effective rights for a user
- */
+// Query function to fetch effective rights for a user
 const queryFn = async (userName: string): Promise<Array<Right>> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
@@ -99,4 +97,21 @@ export const useRightsByType = (options: RightsOptions & { rightType?: string } 
 		...result,
 		data: rightType ? result.data?.filter((right) => right.type === rightType) : result.data
 	};
+};
+
+// Utility function to extract rights of a specific type from the rights array
+export const getRights = (rights: Right[], type: string): Array<{ n?: string }> => {
+	let right: Array<{ n?: string }> = [];
+	const filteredType = rights.filter((item) => item?.type === type);
+
+	if (filteredType && filteredType.length > 0) {
+		if (
+			filteredType[0]?.all &&
+			Array.isArray(filteredType[0]?.all) &&
+			filteredType[0]?.all.length > 0
+		) {
+			right = filteredType[0]?.all[0].right || [];
+		}
+	}
+	return right;
 };
