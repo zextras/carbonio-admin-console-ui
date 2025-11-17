@@ -27,13 +27,12 @@ import {
 } from './constants';
 import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
-import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useRightsStore } from './store/rights/store';
+import { useRights } from '@zextras/admin-ui-bootstrap';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -61,7 +60,7 @@ const App: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
-	const setRights = useRightsStore((state) => state.setRights);
+	const { data: rights = [] } = useRights({ userName: accounts[0]?.name });
 	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
@@ -93,28 +92,7 @@ const App: FC = () => {
 		}
 	}, [accounts, setUserId]);
 
-	useEffect(() => {
-		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRigthsRequest(accounts[0]?.name)
-				.then((res) => {
-					setRights(res?.target);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t(
-							'label.error_rights_message',
-							'Error obtaining Rights. Please try again later.'
-						),
-						autoHideTimeout: 4000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		}
-	}, [accounts, createSnackbar, setRights, t]);
-
+	
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;

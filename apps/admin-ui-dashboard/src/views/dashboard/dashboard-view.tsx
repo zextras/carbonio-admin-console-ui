@@ -23,9 +23,8 @@ import {
 	STORAGES_ROUTE_ID
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
-import { hasAllRights, useRightsStore } from '../../store/rights/store';
+import { useRights, useHasRight, getRights } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../list/list-row';
-import { getRights } from '../utility/utils';
 
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
@@ -42,9 +41,9 @@ const Dashboard: FC = () => {
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useIsAdvanced();
 
-	const adminHasAllRights = useRightsStore(hasAllRights);
 	const domainInformation = useDomainInformation();
-	const rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useRights({ userName: accounts[0]?.name });
+	const adminHasAllRights = useHasRight({ rightType: 'config', rightName: 'getAttrs' }).data;
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	const openOperationView = useCallback(
