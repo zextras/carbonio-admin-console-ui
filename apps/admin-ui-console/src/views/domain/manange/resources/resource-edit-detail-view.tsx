@@ -30,7 +30,7 @@ import { modifyCalendarResource } from '../../../../services/modify-cal-resource
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap'
 import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';

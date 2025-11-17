@@ -42,7 +42,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap'
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Displayer from '../../../components/displayer';

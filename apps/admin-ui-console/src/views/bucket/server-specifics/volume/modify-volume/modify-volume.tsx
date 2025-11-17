@@ -53,7 +53,7 @@ import {
 import { fetchSoap } from '../../../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap'
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import ListRow from '../../../../list/list-row';
