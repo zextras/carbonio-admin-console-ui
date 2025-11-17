@@ -21,7 +21,7 @@ import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useDomainStore } from '../../store/shared/domains';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
-import { useRights, useHasRight, useRightsByType, getRights } from '../../react-query/use-rights';
+import { useRights, useHasRight, useRightsByType, getRights, getAllRights } from '../../react-query/use-rights';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
@@ -52,5 +52,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useRights,
 	useHasRight,
 	useRightsByType,
-	getRights
+	getRights,
+	getAllRights
 });

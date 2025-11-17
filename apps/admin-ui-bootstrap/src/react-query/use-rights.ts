@@ -115,3 +115,7 @@ export const getRights = (rights: Right[], type: string): Array<{ n?: string }> 
 	}
 	return right;
 };
+
+// Utility function to get all rights of a specific type
+export const getAllRights = (rights: Right[], type: string): Right[] =>
+	rights.filter((item) => item?.type === type);
