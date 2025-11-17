@@ -470,8 +470,8 @@ const EditAccountUserPrefrencesSection: FC<{
 						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
 						onChange={changeSwitchOption}
 						label={t(
-							'account_details.ask_read_receipts',
-							`Permit the user to ask for read receipt`
+							'domain.accounts.editAccount.allowTheUserToAskForAReadReceipt',
+							`Allow the user to ask for a read receipt`
 						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}

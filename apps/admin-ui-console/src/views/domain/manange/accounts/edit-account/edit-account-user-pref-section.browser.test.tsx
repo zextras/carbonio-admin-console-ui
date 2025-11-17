@@ -326,7 +326,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Save to sent')).toBeVisible();
-		await expect.element(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
+		await expect.element(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
 		const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled');
 		await expect.element(resetButton).toBeVisible();
 	});
@@ -612,7 +612,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 				/>
 			</AccountContext.Provider>
 		);
-		await expect.element(page.getByText('Permit the user to ask for read receipt')).toBeVisible();
+		await expect.element(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
 	});
 
 	it('should render with enabled auto add contacts', async () => {
