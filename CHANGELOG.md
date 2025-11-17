@@ -1,3 +1,10 @@
+## [0.11.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0-devel.2...v0.11.0-devel.3) (2025-11-17)
+
+### Bug Fixes
+
+* Read Receipt settings and Permit the user to ask for read receip… ([#963](https://github.com/zextras/carbonio-admin-console-ui/issues/963)) ([bc58a9d](https://github.com/zextras/carbonio-admin-console-ui/commit/bc58a9d254ccc887b362fd8b20f3ab520b7c74c7))
+* **root:** update pkgbuild conflicts and provides (build_unified) ([#964](https://github.com/zextras/carbonio-admin-console-ui/issues/964)) ([e72b5c4](https://github.com/zextras/carbonio-admin-console-ui/commit/e72b5c43e22abdb22593cfe6f3633fb44450d736))
+
 ## [0.11.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0-devel.1...v0.11.0-devel.2) (2025-11-14)
 
 ### Bug Fixes
