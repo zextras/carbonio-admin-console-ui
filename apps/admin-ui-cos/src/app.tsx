@@ -42,14 +42,13 @@ import {
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAccountRequest } from './services/get-account';
-import { getAllEffectiveRightsRequest } from './services/get-all-effective-rights';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useRightsStore, Right, Rights } from './store/rights/store';
+import { useRights } from '@zextras/admin-ui-bootstrap';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -84,8 +83,7 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
-	const setRights = useRightsStore((state) => state.setRights);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useRights({ userName: accounts[0]?.name });
 	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
@@ -118,7 +116,7 @@ const App: FC = () => {
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
@@ -127,7 +125,7 @@ const App: FC = () => {
 	}, [rights]);
 
 	const createCosRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
@@ -135,28 +133,7 @@ const App: FC = () => {
 		);
 	}, [rights]);
 
-	useEffect(() => {
-		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRightsRequest(accounts[0]?.name)
-				.then((res) => {
-					setRights(res?.target);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t(
-							'label.error_rights_message',
-							'Error obtaining Rights. Please try again later.'
-						),
-						autoHideTimeout: 4000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		}
-	}, [accounts, createSnackbar, setRights, t]);
-
+	
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;

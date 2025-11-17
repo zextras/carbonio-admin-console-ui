@@ -36,7 +36,7 @@ import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useCosStore } from '../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
+import { useRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
@@ -107,10 +107,10 @@ const CosAdvanced: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData] = useState<AccountType>({});
 	const setCos = useCosStore((state) => state.setCos);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useRights({});
 	const isAdvanced = useIsAdvanced();
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 	const timeItems = useMemo<TimeItems>(
