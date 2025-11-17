@@ -20,6 +20,7 @@ import { useDomainInformation } from './src/store/domain-information';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
+import { useDomainStore } from './src/store/shared/domains';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
@@ -57,5 +58,6 @@ export {
 	useDomainInformation,
 	useIsAdvanced,
 	useIntegratedComponent,
-	pushHistory
+	pushHistory,
+	useDomainStore
 };
