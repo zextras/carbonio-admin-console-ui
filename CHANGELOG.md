@@ -1,3 +1,9 @@
+## [0.11.0-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0-devel.3...v0.11.0-devel.4) (2025-11-17)
+
+### Bug Fixes
+
+* **ci:** avoid issues with packages upload ([877ca99](https://github.com/zextras/carbonio-admin-console-ui/commit/877ca99c4e3f6517fbd9d393d099c1dc4335eebf))
+
 ## [0.11.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0-devel.2...v0.11.0-devel.3) (2025-11-17)
 
 ### Bug Fixes
