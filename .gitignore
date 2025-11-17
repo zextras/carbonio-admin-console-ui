@@ -65,3 +65,4 @@ package
 artifacts/ubuntu-jammy
 CLAUDE.md
 .mcp.json
+tmp
