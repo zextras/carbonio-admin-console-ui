@@ -159,8 +159,8 @@ pipeline {
                         sh 'apt-get update && apt-get install -y jq openssh-client'
 
                         sh """
-                            git config user.name "jenkins-integration-with-github-account"
-                            git config user.email "devops@zextras.com"
+                            git config user.email "bot@zextras.com"
+                            git config user.name "Tarsier Bot"
                         """
 
                         withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
