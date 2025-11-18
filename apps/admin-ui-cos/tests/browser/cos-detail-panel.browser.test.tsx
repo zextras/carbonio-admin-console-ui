@@ -6,7 +6,7 @@
 
 // Pre-import bootstrap to ensure the mock is loaded before any component imports it
 import '@zextras/admin-ui-bootstrap';
-import { page } from '@vitest/browser/context';
+import { page } from 'vitest/browser';
 import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { Route } from 'react-router-dom';

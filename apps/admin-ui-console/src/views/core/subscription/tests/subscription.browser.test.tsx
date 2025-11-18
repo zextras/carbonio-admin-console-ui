@@ -5,11 +5,11 @@
  */
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { page } from '@vitest/browser/context';
 import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { Subscription } from '../subscription';
 
@@ -23,15 +23,6 @@ const mockRights = [
 		]
 	}
 ];
-
-// Mock the useCurrentUserRights hook
-vi.mock('@zextras/admin-ui-bootstrap', async () => {
-	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
-	return {
-		...actual,
-		useCurrentUserRights: vi.fn()
-	};
-});
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page } from '@vitest/browser/context';
+import { page } from 'vitest/browser';
 import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
@@ -31,14 +31,6 @@ vi.mock('../../../services/modify-config', () => ({
 	modifyConfig: vi.fn()
 }));
 
-// Mock the useCurrentUserRights hook
-vi.mock('@zextras/admin-ui-bootstrap', async () => {
-	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
-	return {
-		...actual,
-		useCurrentUserRights: vi.fn()
-	};
-});
 
 function expectLoggingSectionVisible() {
 	expect(page.getByText('Logging', { exact: true })).toBeVisible();

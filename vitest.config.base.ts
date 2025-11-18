@@ -57,9 +57,7 @@ export default defineConfig({
 				],
 				optimizeDeps: {
 					include: optimizeDepsInclude,
-					exclude: ['@zextras/admin-ui-bootstrap'],
-					// Force optimization on first run to prevent mid-test reloads
-					disabled: false
+					exclude: ['@zextras/admin-ui-bootstrap']
 				},
 				test: {
 					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
@@ -83,8 +81,8 @@ export default defineConfig({
 					globals: true,
 					css: true,
 					clearMocks: true,
-					testTimeout: 5_000,
-					hookTimeout: 10_000
+					testTimeout: 10_000,
+					hookTimeout: 15_000
 				}
 			}
 		],
