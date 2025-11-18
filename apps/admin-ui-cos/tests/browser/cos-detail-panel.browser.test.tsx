@@ -4,18 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Pre-import bootstrap to ensure the mock is loaded before any component imports it
-import '@zextras/admin-ui-bootstrap';
-import { page } from 'vitest/browser';
+import { useCurrentUserRights, useRights, useUserAccounts } from '@zextras/admin-ui-bootstrap';
 import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { it, expect, describe, beforeEach, afterEach } from 'vitest';
+import { it, expect, describe, beforeEach, afterEach, vi, Mock } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
 
-//do a mock that returns more than two COS items
+vi.mock('@zextras/admin-ui-bootstrap');
+
 const mockApiResponse = {
 	cos: [
 		{
@@ -32,17 +32,63 @@ const mockApiResponse = {
 	searchTotal: 2,
 	more: false
 };
+
+const mockRightsData = [
+	{
+		type: 'cos',
+		all: [
+			{
+				right: [
+					{ n: 'assignCos' },
+					{ n: 'deleteCos' },
+					{ n: 'listCos' },
+					{ n: 'manageZimlet' },
+					{ n: 'renameCos' }
+				],
+				setAttrs: [{ all: true }],
+				getAttrs: [{ all: true }]
+			}
+		]
+	}
+];
+
+const mockRights = [
+	{
+		type: 'config',
+		all: [
+			{
+				setAttrs: [{ all: true }]
+			}
+		]
+	}
+];
+
 describe('', () => {
 	beforeEach(() => {
+		vi.resetAllMocks();
 		useCosStore.getState().reset();
+
+		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
+		(useCurrentUserRights as Mock).mockReturnValue({
+			data: mockRightsData,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		});
+		(useRights as Mock).mockReturnValue({
+			data: mockRights,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		});
 	});
 
-	// Also reset after each test for extra safety
 	afterEach(() => {
 		resetMockWorker();
 		useCosStore.getState().reset();
 	});
-	it('should render all parts of the component', async () => {
+
+	it('should render the COS detail panel with basic structure', async () => {
 		createSoapAPIInterceptor('SearchDirectory', {});
 		setupBrowserTest(
 			<Route path="/cos">
@@ -83,9 +129,9 @@ describe('', () => {
 		const listOfElements = page.getByText('10').elements();
 		expect(listOfElements[1]).toHaveStyle({ fontWeight: 'bold' });
 
-		await page.getByText('15').click()
+		await page.getByText('15').click();
 		expect(page.getByText('10').elements()).toHaveLength(0);
 		// here we check that 15 is now selected and the dropdown is closed
 		expect(page.getByText('15').elements()).toHaveLength(1);
-	})
+	});
 });
