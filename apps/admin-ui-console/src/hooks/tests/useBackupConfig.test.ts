@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useUserAccounts, useRights } from '@zextras/admin-ui-bootstrap';
+import { useUserAccounts, useRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
@@ -25,10 +25,6 @@ vi.mock('../../store/backup/store', () => ({
 	useBackupStore: vi.fn()
 }));
 
-vi.mock('@zextras/admin-ui-bootstrap', () => ({
-	useUserAccounts: vi.fn(),
-	useRights: vi.fn()
-}));
 
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useBackupStore } from '../../store/backup/store';
@@ -78,7 +74,8 @@ describe('useBackupConfig', () => {
 		});
 
 		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
-		(useRights as Mock).mockReturnValue({ data: mockRights });
+		(useCurrentUserRights as Mock).mockReturnValue({ data: mockRights, isLoading: false, isSuccess: true, isError: false });
+		(useRights as Mock).mockReturnValue({ data: mockRights, isLoading: false, isSuccess: true, isError: false });
 
 		(modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
 	});
@@ -98,15 +95,18 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle missing rights configuration', () => {
-			(useRights as Mock).mockReturnValue({ data: [] });
+			(useCurrentUserRights as Mock).mockReturnValue({ data: [], isLoading: false, isSuccess: true, isError: false });
 
 			const { result } = renderHook(() => useBackupConfig());
 			expect(result.current.allowSetBackup).toBe(false);
 		});
 
 		it('should handle rights without setAttrs', () => {
-			(useRights as unknown as Mock).mockReturnValue({
-				data: [{ type: 'config', all: [] }]
+			(useCurrentUserRights as unknown as Mock).mockReturnValue({
+				data: [{ type: 'config', all: [] }],
+				isLoading: false,
+				isSuccess: true,
+				isError: false
 			});
 
 			const { result } = renderHook(() => useBackupConfig());
