@@ -8,7 +8,8 @@ import {
 	useUserSettings,
 	useDomainStore,
 	useCurrentUserRights,
-	useStickyBarStore
+	useStickyBarStore,
+	useIsAdvanced
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
@@ -73,7 +74,6 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -103,14 +103,6 @@ const ovelayStyle = styled(Container)`
 	z-index: 11;
 	padding-top: 2rem;
 `;
-
-type UserSession = {
-	name: string;
-	sid: string;
-	zid: string;
-	ip: string;
-	service: string;
-};
 
 const EditAccount: FC<{
 	setShowEditAccountView: any;
@@ -145,7 +137,6 @@ const EditAccount: FC<{
 	const createSnackbar = useSnackbar();
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState(defaultTab);
-	const [click, setClick] = useState<any>('');
 	const [isLoading, setIsLoading] = useState(false);
 	const context = useContext(AccountContext);
 	const {
@@ -158,7 +149,7 @@ const EditAccount: FC<{
 		cosDetail
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
@@ -1084,7 +1075,6 @@ const EditAccount: FC<{
 						onChange={(ev: unknown, selectedId: string): void => {
 							setChange(selectedId);
 						}}
-						onClick={setClick}
 						width="100%"
 						background="gray6"
 					/>
