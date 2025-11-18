@@ -3,11 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useUserAccounts, useRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
+
+vi.mock('@zextras/admin-ui-bootstrap');
 
 vi.mock('@zextras/carbonio-design-system', () => ({
 	useSnackbar: vi.fn()
@@ -24,7 +27,6 @@ vi.mock('../../services/modify-backup', () => ({
 vi.mock('../../store/backup/store', () => ({
 	useBackupStore: vi.fn()
 }));
-
 
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useBackupStore } from '../../store/backup/store';
@@ -74,8 +76,18 @@ describe('useBackupConfig', () => {
 		});
 
 		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
-		(useCurrentUserRights as Mock).mockReturnValue({ data: mockRights, isLoading: false, isSuccess: true, isError: false });
-		(useRights as Mock).mockReturnValue({ data: mockRights, isLoading: false, isSuccess: true, isError: false });
+		(useCurrentUserRights as Mock).mockReturnValue({
+			data: mockRights,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		});
+		(useRights as Mock).mockReturnValue({
+			data: mockRights,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		});
 
 		(modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
 	});
@@ -95,7 +107,12 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle missing rights configuration', () => {
-			(useCurrentUserRights as Mock).mockReturnValue({ data: [], isLoading: false, isSuccess: true, isError: false });
+			(useCurrentUserRights as Mock).mockReturnValue({
+				data: [],
+				isLoading: false,
+				isSuccess: true,
+				isError: false
+			});
 
 			const { result } = renderHook(() => useBackupConfig());
 			expect(result.current.allowSetBackup).toBe(false);
