@@ -3,8 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 
+import {
+	postSoapFetchRequest,
+	useUserAccount,
+	useDomainStore,
+	useIsAdvanced
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -18,15 +23,11 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, useUserAccount } from '@zextras/admin-ui-bootstrap';
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { AccountContext } from './account-context';
-import { AccountType } from './account-types/account-types';
-import CreateAccount from './create-account/create-account';
-import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
 import {
 	ABQ_MODE,
@@ -60,9 +61,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -70,6 +68,11 @@ import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+
+import { AccountContext } from './account-context';
+import { AccountType } from './account-types/account-types';
+import CreateAccount from './create-account/create-account';
+import EditAccount from './edit-account/edit-account';
 
 type UserSession = {
 	name: string;
@@ -88,7 +91,6 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
@@ -106,7 +108,7 @@ const ManageAccounts: FC = () => {
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const tableRef = useRef<HTMLTableElement>(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
@@ -220,7 +222,7 @@ const ManageAccounts: FC = () => {
 					{ label: accountTypeFilter[3].label, value: accountTypeFilter[3].value },
 					{ label: accountTypeFilter[4].label, value: accountTypeFilter[4].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let typeQuery = '';
@@ -250,7 +252,7 @@ const ManageAccounts: FC = () => {
 					{ label: accountStatusFilter[4].label, value: accountStatusFilter[4].value },
 					{ label: accountStatusFilter[5].label, value: accountStatusFilter[5].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -351,27 +353,24 @@ const ManageAccounts: FC = () => {
 		return 'Normal';
 	}, []);
 	const getAccountSpecificDetail = useCallback((id: string): void => {
-		getAccountRequest(id, '', 0)
-			.then((res: any) => {
-				const accountObj: any = {};
-				// eslint-disable-next-line array-callback-return
-				res?.account?.[0]?.a?.forEach((ele: any) => {
-					if (accountObj[ele.n]) {
-						accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
-					} else {
-						accountObj[ele.n] = ele._content;
-					}
-				});
-				if (accountObj.zimbraIsAdminAccount === undefined) {
-					accountObj.zimbraIsAdminAccount = 'FALSE';
+		getAccountRequest(id, '', 0).then((res: any) => {
+			const accountObj: any = {};
+
+			res?.account?.[0]?.a?.forEach((ele: any) => {
+				if (accountObj[ele.n]) {
+					accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
+				} else {
+					accountObj[ele.n] = ele._content;
 				}
-				if (accountObj.zimbraIsDelegatedAdminAccount === undefined) {
-					accountObj.zimbraIsDelegatedAdminAccount = 'FALSE';
-				}
-				setAccSpecificDetail({ ...accountObj });
-			})
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			.catch((error) => { });
+			});
+			if (accountObj.zimbraIsAdminAccount === undefined) {
+				accountObj.zimbraIsAdminAccount = 'FALSE';
+			}
+			if (accountObj.zimbraIsDelegatedAdminAccount === undefined) {
+				accountObj.zimbraIsDelegatedAdminAccount = 'FALSE';
+			}
+			setAccSpecificDetail({ ...accountObj });
+		});
 	}, []);
 	const getCosDetail = useCallback((id: string): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
@@ -396,7 +395,6 @@ const ManageAccounts: FC = () => {
 	const getListOtp = useCallback(
 		(id: string): void => {
 			fetchSoap('zextras', {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxAuth',
 				action: 'list_totp_command',
@@ -533,7 +531,6 @@ const ManageAccounts: FC = () => {
 		[setAccDetailValue]
 	);
 	const getDeletePasswordRight = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(target: string): void => {
 			checkRightRequest(target, account.name, 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
@@ -545,12 +542,11 @@ const ManageAccounts: FC = () => {
 	);
 
 	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
+
 					data?.account?.[0]?.a?.forEach((ele: any) => {
 						if (obj[ele.n]) {
 							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
@@ -600,7 +596,7 @@ const ManageAccounts: FC = () => {
 						}, 2000);
 					}
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				.catch((error) => {
 					setShowEditAccountView(false);
 					createSnackbar({
@@ -608,8 +604,7 @@ const ManageAccounts: FC = () => {
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -636,7 +631,7 @@ const ManageAccounts: FC = () => {
 				.then((data: any) => {
 					const directMemArr: any[] = [];
 					const inDirectMemArr: any[] = [];
-					// eslint-disable-next-line array-callback-return
+
 					data?.dl?.forEach((ele: any) => {
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -646,7 +641,7 @@ const ManageAccounts: FC = () => {
 					setDirectMemberList(directMemArr);
 					setInDirectMemberList(inDirectMemArr);
 				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
@@ -678,7 +673,6 @@ const ManageAccounts: FC = () => {
 					flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
 					[];
 				allFolder.forEach((ele: any) => {
-					// eslint-disable-next-line prefer-destructuring, no-param-reassign
 					ele.id = ele.id.split(':')[1];
 					return ele;
 				});
@@ -702,7 +696,6 @@ const ManageAccounts: FC = () => {
 							if (el?.folder?.length) {
 								el?.folder.push(ele);
 							} else {
-								// eslint-disable-next-line prefer-destructuring, no-param-reassign
 								el.folder = [ele];
 							}
 						}
@@ -800,7 +793,6 @@ const ManageAccounts: FC = () => {
 		openDetailView(item);
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';
@@ -829,11 +821,9 @@ const ManageAccounts: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									// eslint-disable-next-line no-param-reassign
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								// eslint-disable-next-line no-param-reassign
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -863,44 +853,38 @@ const ManageAccounts: FC = () => {
 									{item?.displayName || <>&nbsp;</>}
 								</Text>,
 								<>
-									{
-										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-										item?.mail?.length - 1 || 0 ? (
-											<Tooltip
-												key={item?.id}
-												placement="bottom"
-												label={item?.mail.slice(1).join(', ')}
-												maxWidth="auto"
-											>
-												<Text
-													size="small"
-													weight="light"
-													key={item?.id}
-													color="#828282"
-													onClick={(): void => {
-														handleClickTableRow(item);
-													}}
-												>
-													{
-														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-														item?.mail?.length - 1 || 0
-													}
-												</Text>
-											</Tooltip>
-										) : (
+									{item?.mail?.length - 1 || 0 ? (
+										<Tooltip
+											key={item?.id}
+											placement="bottom"
+											label={item?.mail.slice(1).join(', ')}
+											maxWidth="auto"
+										>
 											<Text
 												size="small"
+												weight="light"
 												key={item?.id}
 												color="#828282"
-												weight="light"
 												onClick={(): void => {
 													handleClickTableRow(item);
 												}}
 											>
-												0
+												{item?.mail?.length - 1 || 0}
 											</Text>
-										)
-									}
+										</Tooltip>
+									) : (
+										<Text
+											size="small"
+											key={item?.id}
+											color="#828282"
+											weight="light"
+											onClick={(): void => {
+												handleClickTableRow(item);
+											}}
+										>
+											0
+										</Text>
+									)}
 								</>,
 								<Text
 									size="small"
@@ -1038,9 +1022,9 @@ const ManageAccounts: FC = () => {
 			_jsns: 'urn:zimbraAccount'
 		}).then((res) => {
 			const data = res?.Body?.GetInfoResponse?.attrs?._attrs;
-			setUserType(data && accountUserType(data));
+			// User type is now handled by the rights hook
 		});
-	}, [accountUserType, setUserType]);
+	}, [accountUserType]);
 
 	useEffect(() => {
 		getInfoDetail();
@@ -1313,10 +1297,7 @@ const ManageAccounts: FC = () => {
 							)}
 							<AccountContext.Provider value={accountContextValue}>
 								{showEditAccountView && (
-									<ModalOverlay
-										open={showEditAccountView}
-										maxWidth="58.75rem"
-									>
+									<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
 											selectedAccount={selectedAccount}
