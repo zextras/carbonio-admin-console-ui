@@ -5,15 +5,15 @@
  */
 
 import { useRights } from '@zextras/admin-ui-bootstrap';
-import { page } from 'vitest/browser';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../../../store/cos/store';
 import { COSPreferences } from '../COSPreferences';
 
-// Mock rights data
+vi.mock('@zextras/admin-ui-bootstrap');
 const mockRightsData = [
 	{
 		type: 'cos',
@@ -119,7 +119,6 @@ describe('COSPreferences', () => {
 		});
 	};
 
-	
 	beforeEach(() => {
 		vi.resetAllMocks();
 		setupCosStore();
