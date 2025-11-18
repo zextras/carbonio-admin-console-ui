@@ -12,9 +12,10 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings
+	useUserSettings,
+	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
-import { Icon, useSnackbar } from '@zextras/carbonio-design-system';
+import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -48,7 +49,6 @@ import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
-import { useRights } from '@zextras/admin-ui-bootstrap';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -83,8 +83,7 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
-	const { data: rights = [] } = useRights({ userName: accounts[0]?.name });
-	const createSnackbar = useSnackbar();
+	const { data: rights } = useCurrentUserRights();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
 	const getAccountDetails = useCallback(
@@ -133,7 +132,6 @@ const App: FC = () => {
 		);
 	}, [rights]);
 
-	
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;
