@@ -5,24 +5,12 @@
  */
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { Subscription } from '../subscription';
-
-const mockRights = [
-	{
-		type: 'config',
-		all: [
-			{
-				setAttrs: [{ all: true }]
-			}
-		]
-	}
-];
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -47,36 +35,7 @@ afterAll(() => {
 });
 
 beforeEach(() => {
-	// Mock fetch API to handle any SOAP/API requests
-	vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-		new Response(JSON.stringify({ Body: {} }), {
-			status: 200,
-			headers: { 'Content-Type': 'application/json' }
-		})
-	);
-
-	// Mock useCurrentUserRights hook to return mock rights (React Query result format)
-	vi.mocked(useCurrentUserRights).mockReturnValue({
-		data: mockRights,
-		isPending: false,
-		isLoading: false,
-		isError: false,
-		error: null,
-		isSuccess: true,
-		isPlaceholderData: false,
-		status: 'success',
-		fetchStatus: 'idle',
-		isRefetching: false,
-		isFetching: false,
-		isRefetchError: false,
-		isLoadingError: false,
-		promise: Promise.resolve({ data: mockRights }),
-		refetch: vi.fn(),
-		hasNextPage: false,
-		fetchNextPage: vi.fn(),
-		hasPreviousPage: false,
-		fetchPreviousPage: vi.fn()
-	} as any);
+	// No mock setup - rely on global mock defaults
 });
 
 // Mock data that matches what the React Query hooks expect (after parsing)
