@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Pre-import bootstrap to ensure the mock is loaded before any component imports it
-import '@zextras/admin-ui-bootstrap';
+import { useRights } from '@zextras/admin-ui-bootstrap';
 import { page } from 'vitest/browser';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
@@ -14,36 +13,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCosStore } from '../../../../store/cos/store';
 import { COSPreferences } from '../COSPreferences';
 
-// Mock the useRights hook from React Query
-vi.mock('@zextras/admin-ui-bootstrap', async () => {
-	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
-	return {
-		...actual,
-		useRights: vi.fn(() => ({
-			data: [
-				{
-					type: 'cos',
-					all: [
-						{
-							right: [
-								{ n: 'assignCos' },
-								{ n: 'deleteCos' },
-								{ n: 'listCos' },
-								{ n: 'manageZimlet' },
-								{ n: 'renameCos' }
-							],
-							setAttrs: [{ all: true }],
-							getAttrs: [{ all: true }]
-						}
-					]
-				}
-			],
-			isLoading: false,
-			isSuccess: true,
-			isError: false
-		}))
-	};
-});
+// Mock rights data
+const mockRightsData = [
+	{
+		type: 'cos',
+		all: [
+			{
+				right: [
+					{ n: 'assignCos' },
+					{ n: 'deleteCos' },
+					{ n: 'listCos' },
+					{ n: 'manageZimlet' },
+					{ n: 'renameCos' }
+				],
+				setAttrs: [{ all: true }],
+				getAttrs: [{ all: true }]
+			}
+		]
+	}
+];
 
 vi.mock('../../../../services/modify-cos-service', () => ({
 	modifyCos: vi.fn()
@@ -135,6 +123,14 @@ describe('COSPreferences', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
 		setupCosStore();
+
+		// Mock the useRights hook to return test data
+		vi.mocked(useRights).mockReturnValue({
+			data: mockRightsData,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
+		});
 	});
 
 	it('should render the component correctly', async () => {
