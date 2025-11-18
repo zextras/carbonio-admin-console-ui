@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserAccounts, useDomainInformation, useIsAdvanced , useDomainStore } from '@zextras/admin-ui-bootstrap';
+import {
+	useUserAccounts,
+	useDomainInformation,
+	useIsAdvanced,
+	useDomainStore,
+	useHasRight,
+	getRights,
+	useCurrentUserRights
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -23,7 +31,6 @@ import {
 	STORAGES_ROUTE_ID
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
-import { useRights, useHasRight, getRights } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../list/list-row';
 
 import CarbonioVersionInformation from './carbonio-version-information-view';
@@ -42,7 +49,7 @@ const Dashboard: FC = () => {
 	const isAdvanced = useIsAdvanced();
 
 	const domainInformation = useDomainInformation();
-	const { data: rights = [] } = useRights({ userName: accounts[0]?.name });
+	const { data: rights } = useCurrentUserRights();
 	const adminHasAllRights = useHasRight({ rightType: 'config', rightName: 'getAttrs' }).data;
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
