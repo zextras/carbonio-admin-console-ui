@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useUserAccounts } from '@zextras/admin-ui-bootstrap';
 
 export type Right = {
 	type: string;
@@ -119,3 +119,18 @@ export const getRights = (rights: Right[], type: string): Array<{ n?: string }> 
 // Utility function to get all rights of a specific type
 export const getAllRights = (rights: Right[], type: string): Right[] =>
 	rights.filter((item) => item?.type === type);
+
+export const useCurrentUserRights = () => {
+	const accounts = useUserAccounts();
+	const userName = accounts?.[0]?.name || '';
+
+	const result = useRights({
+		userName,
+		enabled: Boolean(userName)
+	});
+
+	return {
+		...result,
+		data: result.data || []
+	};
+};

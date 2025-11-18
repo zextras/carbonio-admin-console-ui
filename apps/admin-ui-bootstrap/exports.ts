@@ -22,7 +22,7 @@ import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { useDomainStore } from './src/store/shared/domains';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
-import { useRights, useHasRight, useRightsByType, getRights, getAllRights } from './src/react-query/use-rights';
+import { useRights, useHasRight, useRightsByType, getRights, getAllRights, useCurrentUserRights } from './src/react-query/use-rights';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
@@ -67,6 +67,7 @@ export {
 	useHasRight,
 	useRightsByType,
 	getRights,
-	getAllRights
+	getAllRights,
+	useCurrentUserRights
 };
 
