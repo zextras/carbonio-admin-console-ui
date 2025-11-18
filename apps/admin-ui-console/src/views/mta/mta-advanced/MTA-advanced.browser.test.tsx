@@ -5,18 +5,40 @@
  */
 
 import { page } from '@vitest/browser/context';
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useConfigStore } from '../../../store/config/store';
-import { useRightsStore } from '../../../store/rights/store';
 
 import MTAAdvanced from './mta-advanced';
+
+const mockRights = [
+	{
+		type: 'config',
+		all: [
+			{
+				right: [{ n: 'modifyConfig' }, { n: 'getConfig' }],
+				setAttrs: [{ all: true }],
+				getAttrs: [{ all: true }]
+			}
+		]
+	}
+];
 
 vi.mock('../../../services/modify-config', () => ({
 	modifyConfig: vi.fn()
 }));
+
+// Mock the useCurrentUserRights hook
+vi.mock('@zextras/admin-ui-bootstrap', async () => {
+	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
+	return {
+		...actual,
+		useCurrentUserRights: vi.fn()
+	};
+});
 
 function expectLoggingSectionVisible() {
 	expect(page.getByText('Logging', { exact: true })).toBeVisible();
@@ -53,25 +75,32 @@ describe('MTAAdvanced', () => {
 		]);
 	};
 
-	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'config',
-				all: [
-					{
-						right: [{ n: 'modifyConfig' }, { n: 'getConfig' }],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
-	};
-
 	beforeEach(() => {
 		vi.resetAllMocks();
 		setupConfigStore();
-		setupRightsStore();
+
+		// Mock useCurrentUserRights hook to return mock rights (React Query result format)
+		vi.mocked(useCurrentUserRights).mockReturnValue({
+			data: mockRights,
+			isPending: false,
+			isLoading: false,
+			isError: false,
+			error: null,
+			isSuccess: true,
+			isPlaceholderData: false,
+			status: 'success',
+			fetchStatus: 'idle',
+			isRefetching: false,
+			isFetching: false,
+			isRefetchError: false,
+			isLoadingError: false,
+			promise: Promise.resolve({ data: mockRights }),
+			refetch: vi.fn(),
+			hasNextPage: false,
+			fetchNextPage: vi.fn(),
+			hasPreviousPage: false,
+			fetchPreviousPage: vi.fn()
+		} as any);
 	});
 
 	it('should render the component correctly', async () => {

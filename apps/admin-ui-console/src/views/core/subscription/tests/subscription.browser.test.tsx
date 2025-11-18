@@ -6,12 +6,32 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { page } from '@vitest/browser/context';
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useRightsStore } from '../../../../store/rights/store';
 import { Subscription } from '../subscription';
+
+const mockRights = [
+	{
+		type: 'config',
+		all: [
+			{
+				setAttrs: [{ all: true }]
+			}
+		]
+	}
+];
+
+// Mock the useCurrentUserRights hook
+vi.mock('@zextras/admin-ui-bootstrap', async () => {
+	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
+	return {
+		...actual,
+		useCurrentUserRights: vi.fn()
+	};
+});
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -43,6 +63,29 @@ beforeEach(() => {
 			headers: { 'Content-Type': 'application/json' }
 		})
 	);
+
+	// Mock useCurrentUserRights hook to return mock rights (React Query result format)
+	vi.mocked(useCurrentUserRights).mockReturnValue({
+		data: mockRights,
+		isPending: false,
+		isLoading: false,
+		isError: false,
+		error: null,
+		isSuccess: true,
+		isPlaceholderData: false,
+		status: 'success',
+		fetchStatus: 'idle',
+		isRefetching: false,
+		isFetching: false,
+		isRefetchError: false,
+		isLoadingError: false,
+		promise: Promise.resolve({ data: mockRights }),
+		refetch: vi.fn(),
+		hasNextPage: false,
+		fetchNextPage: vi.fn(),
+		hasPreviousPage: false,
+		fetchPreviousPage: vi.fn()
+	} as any);
 });
 
 // Mock data that matches what the React Query hooks expect (after parsing)
@@ -80,17 +123,6 @@ const mockVersionData = {
 	ok: true
 };
 
-const mockRights = [
-	{
-		type: 'config',
-		all: [
-			{
-				setAttrs: [{ all: true }]
-			}
-		]
-	}
-];
-
 type SetupOptions = {
 	licenseData?: any;
 	versionData?: any;
@@ -123,30 +155,16 @@ const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOpt
 };
 
 describe('Subscription - License Banner', () => {
-	beforeEach(() => {
-		useRightsStore.getState().reset();
-	});
-
-	afterEach(() => {
-		useRightsStore.getState().reset();
-	});
-
 	it('should display license banner when maintenance status is expired and subType is PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		setupSubscriptionTest(<Subscription />, {
 			licenseData: mockLicenseData,
 			versionData: mockVersionData
 		});
 
-		await expect
-			.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i))
-			.toBeVisible();
+		await expect.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i)).toBeVisible();
 	});
 
 	it('should display license banner when maintenance status is expiring and subType is PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		const expiringLicenseData = {
 			...mockLicenseData,
 			response: {
@@ -166,8 +184,6 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should not display license banner when maintenance status is active', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		const activeLicenseData = {
 			...mockLicenseData,
 			response: {
@@ -186,8 +202,6 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should not display license banner when subType is not PERPETUAL', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		const regularLicenseData = {
 			...mockLicenseData,
 			response: {
@@ -206,16 +220,12 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should hide license banner when close button is clicked', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		setupSubscriptionTest(<Subscription />, {
 			licenseData: mockLicenseData,
 			versionData: mockVersionData
 		});
 
-		await expect
-			.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i))
-			.toBeVisible();
+		await expect.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i)).toBeVisible();
 
 		const closeButton = page.getByTestId('license-banner-close-button');
 		await closeButton.click();
@@ -225,8 +235,6 @@ describe('Subscription - License Banner', () => {
 	});
 
 	it('should render subscription details section', async () => {
-		useRightsStore.getState().setRights(mockRights);
-
 		const activeLicenseData = {
 			...mockLicenseData,
 			response: {
