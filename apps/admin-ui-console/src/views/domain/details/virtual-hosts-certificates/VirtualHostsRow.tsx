@@ -89,7 +89,7 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
     }, [virtualHostValue, items, setItems]);
     return (
         <Container width="100%">
-            <Container orientation='horizontal' mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ vertical: '1rem' }}>
+            <Container orientation='horizontal' mainAlignment="flex-start" height="fit" width="100%" wrap="nowrap" padding={{ vertical: '1rem' }}>
                 <Row takeAvailableSpace>
                     <Input
                         label={t(
@@ -169,61 +169,66 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                     </Row>
                 )}
             </Container>
-            <List>
-                {items.map((item, id) => (
-                    <ListItem
-                        key={item.id}
-                        selected={selectedRows.includes(item.id)}
-                    >
-                        {(visible: boolean) =>
-                            visible ? (
-                                <Container
-                                    orientation="horizontal"
-                                    mainAlignment="flex-start"
-                                    width="100%"
-                                    maxHeight="2.188rem"
-                                    background={id % 2 === 0 ? 'gray6' : 'gray5'}
-                                    style={{ cursor: 'pointer' }}
-                                    padding={{ horizontal: '1rem', vertical: '0.5rem' }}
-                                    onClick={() => handleRowSelect(item.id)}
-                                    onMouseEnter={() => setHoveredRow(item.id)}
-                                    onMouseLeave={() => setHoveredRow(null)}
-                                >
-                                    <Row mainAlignment='flex-start' crossAlignment='flex-start' width="fit">
-                                        <Container width="1rem" height="1rem" mainAlignment="center" crossAlignment="center">
-                                            {(hoveredRow === item.id || selectedRows.includes(item.id)) ? (
-                                                <Icon
-                                                    icon={selectedRows.includes(item.id) ? "CheckmarkSquareOutline" : "SquareOutline"}
-                                                />
-                                            ) : (
-                                                <Text>{id + 1}</Text>
-                                            )}
-                                        </Container>
-                                    </Row>
-                                    <Row mainAlignment='flex-start'>
-                                        <Padding left="small">
-                                            <Text>{item.columns[0]}</Text>
-                                        </Padding>
-                                    </Row>
-                                    {!removeVirtualBtnDisabled && (hoveredRow === item.id || selectedRows.includes(item.id)) && (
-                                        <Row takeAvailableSpace mainAlignment='flex-end' padding={{ right: '1rem' }}>
-                                            <Button
-                                                type='ghost'
-                                                color="error"
-                                                label="Remove"
-                                                size='small'
-                                                onClick={() => removeSingleItem(item.id)}
-                                            />
+            <Container
+                maxHeight="10.94rem"
+                style={{ overflowY: 'auto' }}
+            >
+                <List>
+                    {items.map((item, id) => (
+                        <ListItem
+                            key={item.id}
+                            selected={selectedRows.includes(item.id)}
+                        >
+                            {(visible: boolean) =>
+                                visible ? (
+                                    <Container
+                                        orientation="horizontal"
+                                        mainAlignment="flex-start"
+                                        width="100%"
+                                        maxHeight="2.188rem"
+                                        background={id % 2 === 0 ? 'gray6' : 'gray5'}
+                                        style={{ cursor: 'pointer' }}
+                                        padding={{ horizontal: '1rem', vertical: '0.5rem' }}
+                                        onClick={() => handleRowSelect(item.id)}
+                                        onMouseEnter={() => setHoveredRow(item.id)}
+                                        onMouseLeave={() => setHoveredRow(null)}
+                                    >
+                                        <Row mainAlignment='flex-start' crossAlignment='flex-start' width="fit">
+                                            <Container width="1rem" height="1rem" mainAlignment="center" crossAlignment="center">
+                                                {(hoveredRow === item.id || selectedRows.includes(item.id)) ? (
+                                                    <Icon
+                                                        icon={selectedRows.includes(item.id) ? "CheckmarkSquareOutline" : "SquareOutline"}
+                                                    />
+                                                ) : (
+                                                    <Text>{id + 1}</Text>
+                                                )}
+                                            </Container>
                                         </Row>
-                                    )}
-                                </Container>
-                            ) : (
-                                <div style={{ height: '4rem' }} />
-                            )
-                        }
-                    </ListItem>
-                ))}
-            </List>
+                                        <Row mainAlignment='flex-start'>
+                                            <Padding left="small">
+                                                <Text>{item.columns[0]}</Text>
+                                            </Padding>
+                                        </Row>
+                                        {!removeVirtualBtnDisabled && (hoveredRow === item.id || selectedRows.includes(item.id)) && (
+                                            <Row takeAvailableSpace mainAlignment='flex-end' padding={{ right: '1rem' }}>
+                                                <Button
+                                                    type='ghost'
+                                                    color="error"
+                                                    label="Remove"
+                                                    size='small'
+                                                    onClick={() => removeSingleItem(item.id)}
+                                                />
+                                            </Row>
+                                        )}
+                                    </Container>
+                                ) : (
+                                    <div style={{ height: '4rem' }} />
+                                )
+                            }
+                        </ListItem>
+                    ))}
+                </List>
+            </Container>
             {items.length === 0 && (
                 <Container
                     background="gray6"

@@ -449,8 +449,9 @@ const DomainVirtualHosts: FC = () => {
 					style={{ overflow: 'auto' }}
 					width="100%"
 					height="calc(100vh - 150px)"
+					padding="extrasmall"
 				>
-					<Padding value="large" width='100%'>
+					<Container width='100%'>
 						{/*
 						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
 						<Padding vertical="small">
@@ -468,7 +469,7 @@ const DomainVirtualHosts: FC = () => {
 							items={items}
 							setItems={setItems}
 						/>
-					</Padding>
+					</Container>
 					{alertToggle && (
 						<Container
 							height="fit-content"
