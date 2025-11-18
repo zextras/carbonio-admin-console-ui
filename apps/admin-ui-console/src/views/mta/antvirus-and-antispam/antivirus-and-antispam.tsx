@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -21,6 +20,7 @@ import {
 	SelectItem
 } from '@zextras/carbonio-design-system';
 import { isEqual, find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
@@ -47,7 +47,6 @@ import {
 import { modifyConfig } from '../../../services/modify-config';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../store/config/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
@@ -74,11 +73,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<string>('');
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

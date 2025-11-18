@@ -1,11 +1,9 @@
-/* eslint-disable dot-notation */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,6 +15,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -41,7 +40,6 @@ import {
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
 import { useConfigStore } from '../../../../store/config/store';
-import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
@@ -56,7 +54,7 @@ const MTAServerGeneral: FC = () => {
 	const { server }: { server: string } = useParams();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 	const [serverAttributes, setServerAttributes] = useState<{ n: string; _content: string }[]>([]);
 	const [mtaServerGeneralInitialDetail, setMtaServerGeneralInitialDetail] =
 		useState<MtaServerGeneral>();
@@ -201,7 +199,7 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
@@ -303,7 +301,7 @@ const MTAServerGeneral: FC = () => {
 			const value = zimbraMtaMyNetworks?._content?.trim()
 				? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 						label: trim(ip)
-				  }))
+					}))
 				: [];
 
 			setNetworkValue(value);
@@ -315,7 +313,7 @@ const MTAServerGeneral: FC = () => {
 			const myNetworkValueGlobal = zimbraMtaMyNetworksGlobal?._content?.trim()
 				? map(split(zimbraMtaMyNetworksGlobal?._content, ' '), (ip) => ({
 						label: trim(ip)
-				  }))
+					}))
 				: [];
 
 			setNetworkValueGlobal(myNetworkValueGlobal);
@@ -424,7 +422,7 @@ const MTAServerGeneral: FC = () => {
 		const myNetworkValueGlobal = myNetworkServerSpecific?._content?.trim()
 			? map(split(myNetworkServerSpecific?._content, ' '), (ip) => ({
 					label: trim(ip)
-			  }))
+				}))
 			: [];
 
 		const serverSpecificValue = myNetworkServerSpecific?._content
@@ -537,7 +535,7 @@ const MTAServerGeneral: FC = () => {
 		const value = zimbraMtaMyNetworks?._content?.trim()
 			? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 					label: trim(ip)
-			  }))
+				}))
 			: [];
 		setNetworkValue(value);
 		setTimeout(() => {

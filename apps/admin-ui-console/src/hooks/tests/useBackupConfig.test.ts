@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { useUserAccounts, useRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
@@ -24,13 +25,13 @@ vi.mock('../../store/backup/store', () => ({
 	useBackupStore: vi.fn()
 }));
 
-vi.mock('../../store/rights/store', () => ({
-	useRightsStore: vi.fn()
+vi.mock('@zextras/admin-ui-bootstrap', () => ({
+	useUserAccounts: vi.fn(),
+	useRights: vi.fn()
 }));
 
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useBackupStore } from '../../store/backup/store';
-import { useRightsStore } from '../../store/rights/store';
 import { useBackupConfig } from '../useBackupConfig';
 
 describe('useBackupConfig', () => {
@@ -76,12 +77,8 @@ describe('useBackupConfig', () => {
 			return selector(state);
 		});
 
-		(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-			const state = {
-				rights: mockRights
-			};
-			return selector(state);
-		});
+		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
+		(useRights as Mock).mockReturnValue({ data: mockRights });
 
 		(modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
 	});
@@ -101,21 +98,15 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle missing rights configuration', () => {
-			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-				const state = { rights: [] };
-				return selector(state);
-			});
+			(useRights as Mock).mockReturnValue({ data: [] });
 
 			const { result } = renderHook(() => useBackupConfig());
 			expect(result.current.allowSetBackup).toBe(false);
 		});
 
 		it('should handle rights without setAttrs', () => {
-			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-				const state = {
-					rights: [{ type: 'config', all: [] }]
-				};
-				return selector(state);
+			(useRights as unknown as Mock).mockReturnValue({
+				data: [{ type: 'config', all: [] }]
 			});
 
 			const { result } = renderHook(() => useBackupConfig());

@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -21,6 +20,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, some, map, join, split, trim } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
@@ -44,7 +44,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -60,11 +59,12 @@ const MTAOutBoundFlow: FC = () => {
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const mtaServersList = useServerStore((state) => state.mtaServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
-	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const { data: rights } = useCurrentUserRights();
 	const [networkValue, setNetworkValue] = useState<any>([]);
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
@@ -206,7 +206,6 @@ const MTAOutBoundFlow: FC = () => {
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			setMtaInitialValues();
@@ -245,7 +244,7 @@ const MTAOutBoundFlow: FC = () => {
 			const value = zimbraMtaMyNetworks?._content?.trim()
 				? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 						label: trim(ip)
-				  }))
+					}))
 				: [];
 
 			setNetworkValue(value);
@@ -391,7 +390,7 @@ const MTAOutBoundFlow: FC = () => {
 		const value = zimbraMtaMyNetworks?._content?.trim()
 			? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 					label: trim(ip)
-			  }))
+				}))
 			: [];
 		setNetworkValue(value);
 		setTimeout(() => {
@@ -626,7 +625,6 @@ const MTAOutBoundFlow: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onTlsSecurityOptions}
 							disabled={!allowSetMTA}
@@ -653,7 +651,7 @@ const MTAOutBoundFlow: FC = () => {
 								? t(
 										'error.invalid_ip_address_error_text',
 										'Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask'
-								  )
+									)
 								: ''
 						}
 						maxChips={null}

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -40,7 +41,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
@@ -76,8 +76,7 @@ const MTAAdvanced: FC = () => {
 		},
 		[setInitialValue, setValue]
 	);
-
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 
 	const amavisLogLevelOptions = useMemo(
 		() => [
@@ -172,7 +171,7 @@ const MTAAdvanced: FC = () => {
 	);
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

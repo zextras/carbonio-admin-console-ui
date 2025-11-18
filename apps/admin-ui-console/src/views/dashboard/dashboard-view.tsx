@@ -4,7 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserAccounts, useDomainInformation , useDomainStore } from '@zextras/admin-ui-bootstrap';
+import {
+	useUserAccounts,
+	useDomainInformation,
+	useDomainStore,
+	useHasRight,
+	useRights,
+	getRights
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -20,13 +27,12 @@ import {
 	NOTIFICATION_ROUTE_ID,
 	SERVER,
 	SERVERS_LIST,
-	STORAGES_ROUTE_ID
+	STORAGES_ROUTE_ID,
+	CONFIG
 } from '../../constants';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { hasAllRights, useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
-import { getRights } from '../utility/utils';
 
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
@@ -43,10 +49,14 @@ const Dashboard: FC = () => {
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
-	const adminHasAllRights = useRightsStore(hasAllRights);
 	const domainInformation = useDomainInformation();
-	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+	const { data: rights = [] } = useRights({ userName, enabled: Boolean(userName) });
+	const { data: adminHasAllRights = false } = useHasRight({
+		userName,
+		rightType: CONFIG,
+		enabled: Boolean(userName)
+	});
 
 	const openOperationView = useCallback(
 		(operation: string) => {

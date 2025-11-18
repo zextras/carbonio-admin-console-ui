@@ -1,11 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,6 +15,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -29,7 +28,6 @@ import {
 } from '../../constants';
 import { modifyConfig } from '../../services/modify-config';
 import { useConfigStore } from '../../store/config/store';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
@@ -46,10 +44,9 @@ const PrivacyView: FC = () => {
 		CARBONIO_SEND_FULL_ERROR_STACK: false,
 		CARBONIO_ALLOW_FEEDBACK: false
 	});
-	const rights: Rights = useRightsStore((state) => state.rights);
-
+	const { data: rights } = useCurrentUserRights();
 	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

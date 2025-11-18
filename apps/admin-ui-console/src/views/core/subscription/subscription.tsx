@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -27,7 +28,6 @@ import {
 	useRemoveLicense,
 	useVersion
 } from '../../../hooks/use-subscription';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { LicenseBanner } from '../../dashboard/license-banner';
 
 import { ServiceStatus } from './service-status';
@@ -109,15 +109,14 @@ export const Subscription = (): React.JSX.Element => {
 	const { data: version } = useVersion();
 	const { data: licenseData } = useLicenseInfo();
 	const [licenseKey, setLicenseKey] = useState(licenseData?.response?.authenticationToken ?? '');
-
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 	const { t } = useTranslation();
 
 	const activateLicenseMutation = useActivateLicense();
 
 	const removeLicenseMutation = useRemoveLicense();
 	const allowSetSubsciption = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
