@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useContextBridge } from '@zextras/admin-ui-bootstrap/src/store/context-bridge';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
@@ -29,6 +30,21 @@ const getAppI18n = (): i18n => {
 
 export type WrapperProps = {
 	children?: React.ReactNode;
+};
+
+const getQueryClient = (): QueryClient => {
+	return new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: false,
+				gcTime: 0,
+				staleTime: Infinity,
+				refetchOnMount: false,
+				refetchOnWindowFocus: false,
+				refetchOnReconnect: false
+			}
+		}
+	});
 };
 
 export const I18NextTestProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
@@ -59,16 +75,21 @@ export const BootstrapBridgeProvider = ({
 	return <>{children}</>;
 };
 
-export const Wrapper = ({ children }: WrapperProps): JSX.Element => (
-	<BrowserRouter>
-		<ThemeProvider>
-			<SnackbarManager>
-				<I18NextTestProvider>
-					<ModalManager>
-						<BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
-					</ModalManager>
-				</I18NextTestProvider>
-			</SnackbarManager>
-		</ThemeProvider>
-	</BrowserRouter>
-);
+export const Wrapper = ({ children }: WrapperProps): JSX.Element => {
+	const queryClient = useMemo(() => getQueryClient(), []);
+	return (
+		<BrowserRouter>
+			<QueryClientProvider client={queryClient}>
+				<ThemeProvider>
+					<SnackbarManager>
+						<I18NextTestProvider>
+							<ModalManager>
+								<BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+							</ModalManager>
+						</I18NextTestProvider>
+					</SnackbarManager>
+				</ThemeProvider>
+			</QueryClientProvider>
+		</BrowserRouter>
+	);
+};
