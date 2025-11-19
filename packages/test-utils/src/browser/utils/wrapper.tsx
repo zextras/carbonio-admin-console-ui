@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useContextBridge } from '@zextras/admin-ui-bootstrap/src/store/context-bridge';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { useHistory, BrowserRouter } from 'react-router-dom';
-import { useBridge } from '@zextras/admin-ui-bootstrap/src/store/context-bridge';
 
 const getAppI18n = (): i18n => {
 	const newI18n = i18next.createInstance();
@@ -20,7 +20,9 @@ const getAppI18n = (): i18n => {
 		interpolation: {
 			escapeValue: false
 		},
-		resources: { en: { translation: {} } }
+		resources: {
+			en: {}
+		}
 	});
 	return newI18n;
 };
@@ -35,12 +37,18 @@ export const I18NextTestProvider = ({ children }: { children: React.ReactNode })
 	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 };
 
-export const BootstrapBridgeProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const BootstrapBridgeProvider = ({
+	children
+}: {
+	children: React.ReactNode;
+}): JSX.Element => {
 	const history = useHistory();
 	const createSnackbar = () => ({});
 	const createModal = () => ({});
 
-	useBridge({
+	// Initialize the context bridge immediately and synchronously
+	const { add } = useContextBridge.getState();
+	add({
 		functions: {
 			getHistory: () => history,
 			createSnackbar,
