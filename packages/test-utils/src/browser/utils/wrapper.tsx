@@ -8,7 +8,8 @@ import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter } from 'react-router-dom';
+import { useHistory, BrowserRouter } from 'react-router-dom';
+import { useBridge } from '@zextras/admin-ui-bootstrap/src/store/context-bridge';
 
 const getAppI18n = (): i18n => {
 	const newI18n = i18next.createInstance();
@@ -34,12 +35,30 @@ export const I18NextTestProvider = ({ children }: { children: React.ReactNode })
 	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 };
 
+export const BootstrapBridgeProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+	const history = useHistory();
+	const createSnackbar = () => ({});
+	const createModal = () => ({});
+
+	useBridge({
+		functions: {
+			getHistory: () => history,
+			createSnackbar,
+			createModal
+		}
+	});
+
+	return <>{children}</>;
+};
+
 export const Wrapper = ({ children }: WrapperProps): JSX.Element => (
 	<BrowserRouter>
 		<ThemeProvider>
 			<SnackbarManager>
 				<I18NextTestProvider>
-					<ModalManager>{children}</ModalManager>
+					<ModalManager>
+						<BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+					</ModalManager>
 				</I18NextTestProvider>
 			</SnackbarManager>
 		</ThemeProvider>
