@@ -123,13 +123,12 @@ describe('COSPreferences', () => {
 		vi.resetAllMocks();
 		setupCosStore();
 
-		// Mock the useRights hook to return test data
 		vi.mocked(useRights).mockReturnValue({
 			data: mockRightsData,
 			isLoading: false,
 			isSuccess: true,
 			isError: false
-		});
+		} as any);
 	});
 
 	it('should render the component correctly', async () => {
