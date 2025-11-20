@@ -10,7 +10,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
-import { useLastLoginTimestamp } from '../../store/last-login-time-stamp/store';
+import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
@@ -21,7 +22,11 @@ export const BreadCrumb: FC = () => {
 	const loc = useLocation();
 	const history = useHistory();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-	const { lastLoginTimestamp } = useLastLoginTimestamp();
+	const userSetting = useUserSettings();
+	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
 	useEffect(() => {
 		if (loc?.pathname) {
