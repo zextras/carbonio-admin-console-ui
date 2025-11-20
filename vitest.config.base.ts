@@ -56,8 +56,7 @@ export default defineConfig({
 					})
 				],
 				optimizeDeps: {
-					include: optimizeDepsInclude,
-					exclude: ['@zextras/admin-ui-bootstrap']
+					include: optimizeDepsInclude
 				},
 				test: {
 					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],

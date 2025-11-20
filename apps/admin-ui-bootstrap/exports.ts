@@ -10,6 +10,13 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import {
+	useHasRight,
+	useRightsByType,
+	getRights,
+	getAllRights,
+	useCurrentUserRights
+} from './src/react-query/use-rights';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
 import { useIsAdvanced } from './src/store/advance';
@@ -22,7 +29,6 @@ import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { useDomainStore } from './src/store/shared/domains';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
-import { useRights, useHasRight, useRightsByType, getRights, getAllRights, useCurrentUserRights } from './src/react-query/use-rights';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
@@ -63,11 +69,9 @@ export {
 	pushHistory,
 	useDomainStore,
 	useStickyBarStore,
-	useRights,
 	useHasRight,
 	useRightsByType,
 	getRights,
 	getAllRights,
 	useCurrentUserRights
 };
-

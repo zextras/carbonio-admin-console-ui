@@ -5,6 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+
 import { SHELL_APP_ID } from '../constants';
 import { getSoapFetch } from '../network/fetch';
 import { useUserAccounts } from '../store/account/hooks';
@@ -57,7 +58,7 @@ const queryFn = async (userName: string): Promise<Array<Right>> => {
 	return (response as any)?.target || [];
 };
 
-export const useRights = (options: RightsOptions = {}) => {
+const useRights = (options: RightsOptions = {}) => {
 	const { enabled = true, userName } = options;
 
 	return useQuery({

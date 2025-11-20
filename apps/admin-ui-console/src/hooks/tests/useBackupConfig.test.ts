@@ -5,7 +5,7 @@
  */
 
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useUserAccounts, useRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useUserAccounts, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
@@ -77,12 +77,6 @@ describe('useBackupConfig', () => {
 
 		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
 		(useCurrentUserRights as Mock).mockReturnValue({
-			data: mockRights,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
-		});
-		(useRights as Mock).mockReturnValue({
 			data: mockRights,
 			isLoading: false,
 			isSuccess: true,

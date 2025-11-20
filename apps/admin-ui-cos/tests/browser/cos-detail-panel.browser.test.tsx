@@ -4,29 +4,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useRights, useUserAccounts } from '@zextras/admin-ui-bootstrap';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
 import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { it, expect, describe, beforeEach, afterEach, vi, Mock } from 'vitest';
+import { Route, Switch } from 'react-router-dom';
+import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
+import { useGlobalConfigStore } from '../../src/store/global-config/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
-
-vi.mock('@zextras/admin-ui-bootstrap');
 
 const mockApiResponse = {
 	cos: [
 		{
 			name: 'firstCOS',
 			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-			isDefaultCos: true
+			isDefaultCos: true,
+			a: [
+				{ n: 'cn', _content: 'firstCOS' },
+				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+				{ n: 'objectClass', _content: 'zimbraCos' }
+			]
 		},
 		{
 			name: 'secondCOS',
 			id: 'f27456a8-0c00-11d9-280a-286d93afea2g',
-			isDefaultCos: true
+			isDefaultCos: true,
+			a: [
+				{ n: 'cn', _content: 'secondCOS' },
+				{ n: 'zimbraId', _content: 'f27456a8-0c00-11d9-280a-286d93afea2g' },
+				{ n: 'objectClass', _content: 'zimbraCos' }
+			]
 		}
 	],
 	searchTotal: 2,
@@ -52,34 +61,44 @@ const mockRightsData = [
 	}
 ];
 
-const mockRights = [
-	{
-		type: 'config',
-		all: [
-			{
-				setAttrs: [{ all: true }]
-			}
-		]
-	}
-];
-
-describe('', () => {
-	beforeEach(() => {
+describe('CosDetailPanel', () => {
+	beforeEach(async () => {
 		vi.resetAllMocks();
-		useCosStore.getState().reset();
 
-		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
-		(useCurrentUserRights as Mock).mockReturnValue({
-			data: mockRightsData,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
+		useAccountStore.setState({
+			account: {
+				id: 'test-user-id',
+				name: 'test@example.com',
+				displayName: '',
+				signatures: {
+					signature: []
+				},
+				identities: undefined,
+				rights: { targets: [] }
+			},
+			settings: {
+				prefs: {},
+				attrs: {},
+				props: []
+			},
+			usedQuota: 0
 		});
-		(useRights as Mock).mockReturnValue({
-			data: mockRights,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
+
+		useGlobalConfigStore.setState({
+			globalConfig: {},
+			globalConfigList: [],
+			globalConfigView: 'general',
+			globalCarbonioSendAnalytics: false
+		});
+
+		const localStorageMock = {
+			getItem: vi.fn(),
+			setItem: vi.fn(),
+			removeItem: vi.fn(),
+			clear: vi.fn()
+		};
+		Object.defineProperty(window, 'localStorage', {
+			value: localStorageMock
 		});
 	});
 
@@ -89,33 +108,52 @@ describe('', () => {
 	});
 
 	it('should render the COS detail panel with basic structure', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', {});
+
 		setupBrowserTest(
-			<Route path="/cos">
-				<CosDetailPanel />
-			</Route>,
+			<Switch>
+				<Route path="/cos">
+					<CosDetailPanel />
+				</Route>
+			</Switch>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
 
 		await expect.element(page.getByText('COS List')).toBeVisible();
 	});
 	it('should show the list of COS elements', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+
 		setupBrowserTest(
-			<Route path="/cos">
-				<CosDetailPanel />
-			</Route>,
+			<Switch>
+				<Route path="/cos">
+					<CosDetailPanel />
+				</Route>
+			</Switch>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
+
 		await expect.element(page.getByText('firstCOS')).toBeVisible();
 		await expect.element(page.getByText('secondCOS')).toBeVisible();
 	});
 	it('should change the number of visible COS', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+
 		setupBrowserTest(
-			<Route path="/cos">
-				<CosDetailPanel />
-			</Route>,
+			<Switch>
+				<Route path="/cos">
+					<CosDetailPanel />
+				</Route>
+			</Switch>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
 		await expect.element(page.getByText('Showing')).toBeVisible();
@@ -131,7 +169,6 @@ describe('', () => {
 
 		await page.getByText('15').click();
 		expect(page.getByText('10').elements()).toHaveLength(0);
-		// here we check that 15 is now selected and the dropdown is closed
 		expect(page.getByText('15').elements()).toHaveLength(1);
 	});
 });

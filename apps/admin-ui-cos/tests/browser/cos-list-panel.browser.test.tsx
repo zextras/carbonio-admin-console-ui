@@ -4,23 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	replaceHistory,
-	useRights,
-	useIsAdvanced,
-	useUserAccounts,
-	useCurrentUserRights
-} from '@zextras/admin-ui-bootstrap';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
+import { useAdvanceStore } from '@zextras/admin-ui-bootstrap/src/store/advance/store';
 import { resetMockWorker, setupBrowserTest, createSoapAPIInterceptor } from 'admin-ui-test-utils';
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { it, expect, describe, beforeEach, afterEach, vi, Mock } from 'vitest';
+import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
+import { useGlobalConfigStore } from '../../src/store/global-config/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
-
-vi.mock('@zextras/admin-ui-bootstrap');
 
 const mockApiResponse = {
 	cos: [
@@ -74,6 +67,40 @@ describe('CosListPanel', () => {
 		vi.resetAllMocks();
 		useCosStore.getState().reset();
 
+		// Initialize bootstrap stores
+		useAccountStore.setState({});
+		useAdvanceStore.setState(undefined);
+
+		// Set up a mock user account for rights to work
+		useAccountStore.setState({
+			account: {
+				id: 'test-user-id',
+				name: 'test@example.com',
+				displayName: '',
+				signatures: {
+					signature: []
+				},
+				identities: undefined,
+				rights: {
+					targets: []
+				}
+			},
+			settings: {
+				prefs: {},
+				attrs: {},
+				props: []
+			},
+			usedQuota: 0
+		});
+
+		// Initialize global config store
+		useGlobalConfigStore.setState({
+			globalConfig: {},
+			globalConfigList: [],
+			globalConfigView: 'general',
+			globalCarbonioSendAnalytics: false
+		});
+
 		const localStorageMock = {
 			getItem: vi.fn(),
 			setItem: vi.fn(),
@@ -83,22 +110,6 @@ describe('CosListPanel', () => {
 		Object.defineProperty(window, 'localStorage', {
 			value: localStorageMock
 		});
-
-		(replaceHistory as Mock).mockImplementation(() => {});
-		(useRights as Mock).mockReturnValue({
-			data: mockRights,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
-		});
-		(useIsAdvanced as Mock).mockReturnValue(true);
-		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
-		(useCurrentUserRights as Mock).mockReturnValue({
-			data: mockRightsData,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
-		});
 	});
 
 	afterEach(() => {
@@ -107,13 +118,13 @@ describe('CosListPanel', () => {
 	});
 
 	it('should render all parts of the component', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', {});
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+
 		await expect.element(page.getByText('General')).toBeVisible();
 		await expect.element(page.getByText('COS List')).toBeVisible();
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
@@ -127,13 +138,13 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show details grayed out when no COS is selected', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', {});
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+
 		await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
 		await expect.element(page.getByText('Features')).toHaveStyle({ opacity: '0.5' });
 		await expect.element(page.getByText('Chat')).toHaveStyle({ opacity: '0.5' });
@@ -143,13 +154,12 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show clickable details when COS is selected', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
 		await page.getByText('Select a Class of Service').click();
@@ -159,13 +169,12 @@ describe('CosListPanel', () => {
 	});
 
 	it('should hide details when the details button is pressed', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
 		await page.getByText('Select a Class of Service').click();
@@ -176,13 +185,12 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show detail options in bold when selected after selecting a COS', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
@@ -193,13 +201,12 @@ describe('CosListPanel', () => {
 	});
 
 	it('should change chevron icon when details dropdown is toggled', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
@@ -214,13 +221,12 @@ describe('CosListPanel', () => {
 	});
 
 	it('should change General icon when its section is toggled', async () => {
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		createSoapAPIInterceptor('SearchDirectory', {});
-		setupBrowserTest(
-			<Route path="/cos">
-				<CosListPanel />
-			</Route>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
 		await expect.element(page.getByText('General')).toBeVisible();
 		const buttonBeforeClick = page.getByRole('button').first().element();

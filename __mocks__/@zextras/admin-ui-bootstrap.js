@@ -21,7 +21,6 @@ export const useAllConfig = vi.fn();
 export const useIsAdvanced = vi.fn();
 export const useIntegratedComponent = vi.fn();
 export const useCurrentUserRights = vi.fn();
-export const useRights = vi.fn();
 export const replaceHistory = vi.fn();
 export const pushHistory = vi.fn();
 export const getRoutes = vi.fn(() => []);
