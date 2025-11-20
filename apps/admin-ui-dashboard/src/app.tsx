@@ -25,11 +25,10 @@ import {
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
 import { getAccountRequest } from './services/get-account';
-import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
+import { getAllServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
-import { useMailstoreListStore } from './store/mailstore-list/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -53,7 +52,6 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
@@ -161,20 +159,10 @@ const App: FC = () => {
 		});
 	}, [isAdvanced, getGlobalConfig]);
 
-	const getMailstoresServersRequest = useCallback(() => {
-		getMailstoresServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setAllMailstoreList(server);
-			}
-		});
-	}, [setAllMailstoreList]);
-
+	
 	useEffect(() => {
 		getAllServersRequest();
-		// another call just to get only mailstores can be improvised later
-		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+	}, [getAllServersRequest]);
 
 	return null;
 };

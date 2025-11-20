@@ -10,8 +10,8 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { useMailstoreServers } from '../../react-query';
 import { Server } from '../../../types';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -30,7 +30,7 @@ const DashboardServerList: FC<{
 	serverVersion: any;
 }> = ({ goToMailStoreServerList, serverVersion }) => {
 	const [t] = useTranslation();
-	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
+	const { data: mailstoresList = [] } = useMailstoreServers();
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
 	const isAdvanced = useIsAdvanced();
 
