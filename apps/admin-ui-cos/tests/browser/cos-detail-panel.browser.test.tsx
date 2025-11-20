@@ -5,7 +5,6 @@
  */
 
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
-import { useAdvanceStore } from '@zextras/admin-ui-bootstrap/src/store/advance/store';
 import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
@@ -65,10 +64,6 @@ const mockRightsData = [
 describe('CosDetailPanel', () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
-		useCosStore.getState().reset();
-
-		useAccountStore.setState({});
-		useAdvanceStore.setState(undefined);
 
 		useAccountStore.setState({
 			account: {
