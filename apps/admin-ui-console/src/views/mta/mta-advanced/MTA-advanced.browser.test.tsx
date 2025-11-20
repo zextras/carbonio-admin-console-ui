@@ -21,7 +21,6 @@ vi.mock('../../../services/modify-config', () => ({
 
 vi.mock('@zextras/admin-ui-bootstrap', () => ({
 	useUserAccounts: vi.fn(),
-	useRights: vi.fn(),
 	useCurrentUserRights: vi.fn()
 }));
 
