@@ -4,16 +4,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
+import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../../../store/cos/store';
 import { COSPreferences } from '../COSPreferences';
 
-vi.mock('@zextras/admin-ui-bootstrap');
+const mockApiResponse = {
+	cos: [
+		{
+			name: 'firstCOS',
+			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+			isDefaultCos: true,
+			a: [
+				{ n: 'cn', _content: 'firstCOS' },
+				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+				{ n: 'objectClass', _content: 'zimbraCos' }
+			]
+		},
+		{
+			name: 'secondCOS',
+			id: 'f27456a8-0c00-11d9-280a-286d93afea2g',
+			isDefaultCos: true,
+			a: [
+				{ n: 'cn', _content: 'secondCOS' },
+				{ n: 'zimbraId', _content: 'f27456a8-0c00-11d9-280a-286d93afea2g' },
+				{ n: 'objectClass', _content: 'zimbraCos' }
+			]
+		}
+	],
+	searchTotal: 2,
+	more: false
+};
 const mockRightsData = [
 	{
 		type: 'cos',
@@ -32,14 +57,6 @@ const mockRightsData = [
 		]
 	}
 ];
-
-vi.mock('../../../../services/modify-cos-service', () => ({
-	modifyCos: vi.fn()
-}));
-
-vi.mock('../../../../services/flush-cache-service', () => ({
-	flushCache: vi.fn()
-}));
 
 function expectGeneralOptionsSectionVisible() {
 	expect(page.getByText('General Options')).toBeVisible();
@@ -112,23 +129,47 @@ describe('COSPreferences', () => {
 			a: [
 				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 				{ n: 'zimbraPrefLocale', _content: 'en' },
-				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
 				{ n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
 				{ n: 'zimbraPrefMailSendReadReceipts', _content: 'never' }
 			]
 		});
 	};
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		vi.resetAllMocks();
 		setupCosStore();
 
-		vi.mocked(useCurrentUserRights).mockReturnValue({
-			data: mockRightsData,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
-		} as any);
+		// Set up user account store for useCurrentUserRights hook
+		useAccountStore.setState({
+			account: {
+				id: 'test-user-id',
+				name: 'test@example.com',
+				displayName: '',
+				signatures: {
+					signature: []
+				},
+				identities: undefined,
+				rights: { targets: [] }
+			},
+			settings: {
+				prefs: {},
+				attrs: {},
+				props: []
+			},
+			usedQuota: 0
+		});
+		createSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
+		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+
+		// Mock FlushCache API call
+		createSoapAPIInterceptor('FlushCache', {});
+	});
+
+	afterEach(() => {
+		resetMockWorker();
+		useCosStore.getState().reset();
 	});
 
 	it('should render the component correctly', async () => {
