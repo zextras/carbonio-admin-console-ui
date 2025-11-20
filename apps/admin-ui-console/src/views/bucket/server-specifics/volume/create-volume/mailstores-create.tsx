@@ -3,16 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	ChangeEvent,
-	FC,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
 
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -23,9 +15,17 @@ import {
 	Select,
 	Radio
 } from '@zextras/carbonio-design-system';
+import React, {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { VolumeContext } from './volume-context';
 import { objectType } from '../../../../../../types';
 import {
 	COMPRESSION_THRESHOLD_UNIT,
@@ -34,8 +34,9 @@ import {
 	PRIMARY_TYPE_VALUE,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+
+import { VolumeContext } from './volume-context';
 
 const MailstoresCreate: FC<{
 	onSelection: any;
@@ -44,7 +45,8 @@ const MailstoresCreate: FC<{
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;
@@ -136,7 +138,6 @@ const MailstoresCreate: FC<{
 		[setVolumeDetail]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (volumeDetail?.volumeName && volumeDetail?.path) {
 			if (!volumeDetail?.isCompression) {

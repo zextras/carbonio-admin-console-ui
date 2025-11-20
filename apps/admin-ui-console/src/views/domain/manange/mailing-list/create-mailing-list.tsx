@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Button } from '@zextras/carbonio-design-system';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import { LDAP, PUB } from '../../../../constants';
+import { HorizontalWizard } from '../../../app/component/hwizard';
+import { Section } from '../../../app/component/section-component';
+import OverlayDivision from '../../../components/overlayDivision';
 
 import MailingListMembersSection from './mailing-list-members-section';
 import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
 import { MailingListContext } from './mailinglist-context';
 import MailingListCreateSection from './mailinglist-create-section';
-import { LDAP, PUB } from '../../../../constants';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section-component';
-import OverlayDivision from '../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -75,14 +75,12 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-// eslint-disable-next-line no-empty-pattern
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
 	createMailingListReq: any;
 	isLoading: boolean;
 }> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
 	const { t } = useTranslation();
-	const [wizardData, setWizardData] = useState();
 	const domainInformation = useDomainStore((state) => state.domain);
 
 	const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
@@ -141,7 +139,6 @@ const CreateMailingList: FC<{
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
-						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.cancel', 'Cancel')}
 						color="secondary"
 						icon="CloseOutline"
@@ -155,7 +152,6 @@ const CreateMailingList: FC<{
 				NextButton: (props: any) => (
 					<Button
 						{...props}
-						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.next', 'NEXT')}
 						icon="ChevronRightOutline"
 						iconPlacement="right"
@@ -184,7 +180,6 @@ const CreateMailingList: FC<{
 				PrevButton: (props: any) => (
 					<Button
 						{...props}
-						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.back', 'BACK')}
 						icon="ChevronLeftOutline"
 						color="secondary"
@@ -239,7 +234,7 @@ const CreateMailingList: FC<{
 			},
 			{
 				name: 'create',
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+
 				label: t('label.create', 'Create'),
 				icon: 'PowerOutline',
 				view: MailingListCreateSection,
@@ -401,7 +396,6 @@ const CreateMailingList: FC<{
 								: standardMailingListSizardSteps
 						}
 						Wrapper={WizardInSection}
-						onChange={setWizardData}
 						onComplete={onComplete}
 						setToggleWizardSection={setShowCreateMailingListView}
 					/>

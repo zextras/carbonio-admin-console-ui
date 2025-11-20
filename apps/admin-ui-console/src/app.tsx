@@ -70,7 +70,6 @@ import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
-import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
@@ -117,7 +116,6 @@ const App: FC = () => {
 	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useConfigStore((state) => state);
@@ -187,12 +185,6 @@ const App: FC = () => {
 			setConfig(allConfig);
 		}
 	}, [allConfig, setConfig]);
-
-	useEffect(() => {
-		if (isAdvanced) {
-			setIsAdvanced(isAdvanced);
-		}
-	}, [isAdvanced, setIsAdvanced]);
 
 	useEffect(() => {
 		if (mailstoreServers && mailstoreServers.length > 0) {

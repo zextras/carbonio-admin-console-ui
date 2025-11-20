@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
+import { useIsAdvanced, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -22,8 +21,8 @@ import {
 	Tooltip as TooltipDefault,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
+import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../types';
@@ -31,8 +30,6 @@ import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../co
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidLdapBaseUrl } from '../../utility/utils';
@@ -116,7 +113,7 @@ const DomainAuthentication: FC = () => {
 		}
 	}, [userSetting?.attrs]);
 
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const localLdapTrans = t(
 		'label.method_allows_local_ldap_only',
 		'This method allows usage of Local LDAP'
@@ -170,7 +167,6 @@ const DomainAuthentication: FC = () => {
 		() => [
 			{
 				label: `%n = ${t('label.username_with', 'username with')} @ (${t(
-					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.example',
 					'example'
 				)} username@domain.tld)`
@@ -236,9 +232,9 @@ const DomainAuthentication: FC = () => {
 
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
-					? DOMAIN_AUTH_LIST.find(
+					? (DOMAIN_AUTH_LIST.find(
 							(item: { value?: string }) => item.value === obj.zimbraAuthMech
-					  ) ?? DOMAIN_AUTH_LIST[0]
+						) ?? DOMAIN_AUTH_LIST[0])
 					: DOMAIN_AUTH_LIST[0]
 			);
 
@@ -269,7 +265,6 @@ const DomainAuthentication: FC = () => {
 	}, [domainInformation, DOMAIN_AUTH_LIST]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (
 			!_.isEmpty(domainAuthData) &&
 			domainAuthData.zimbraAuthMech !== undefined &&
@@ -282,7 +277,6 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthMech]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
 				setIsDirty(true);
@@ -300,7 +294,6 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthFallbackToLocal]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
 				setIsDirty(true);
@@ -309,7 +302,6 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapURL]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
 				setIsDirty(true);
@@ -318,7 +310,6 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapSearchBase]);
 
 	useEffect(() => {
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
 				setIsDirty(true);
@@ -474,8 +465,7 @@ const DomainAuthentication: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -731,8 +721,7 @@ const DomainAuthentication: FC = () => {
 													<Text size="extrasmall" weight="regular" color="error">
 														{zimbraAuthLdapURL
 															? t('label.ldap_url_is_not_valid', 'Ldap url is not valid')
-															: // eslint-disable-next-line sonarjs/no-duplicate-string
-															  t('label.required', 'Required')}
+															: t('label.required', 'Required')}
 													</Text>
 												</Padding>
 											</Container>
@@ -905,19 +894,15 @@ const DomainAuthentication: FC = () => {
 												? t(
 														'label.enable_global_enforce_external_auth_ldap',
 														'You must enable the Global Enforce External Auth (LDAP/AD) first'
-												  )
+													)
 												: t(
 														'label.please_add_ldap_url_endpoint_first',
 														'To enable this, please add a ldap URL endpoint first'
-												  )
+													)
 										}
 										disabled={
 											!(
-												// eslint-disable-next-line max-len
-												(
-													zimbraAuthFallbackToLocal === null ||
-													!isValidLdapBaseUrl(zimbraAuthLdapURL)
-												)
+												zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
 											)
 										}
 									>
@@ -927,7 +912,6 @@ const DomainAuthentication: FC = () => {
 											onClick={authFallbackToLocal}
 											iconColor="primary"
 											disabled={
-												// eslint-disable-next-line max-len
 												zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
 											}
 										/>

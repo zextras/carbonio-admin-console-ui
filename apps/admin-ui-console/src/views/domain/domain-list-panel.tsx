@@ -9,7 +9,8 @@ import {
 	useDomainStore,
 	getAllRights,
 	useCurrentUserRights,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useIsAdvanced
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
@@ -56,7 +57,6 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -113,7 +113,8 @@ const DomainListPanel: FC = () => {
 	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);

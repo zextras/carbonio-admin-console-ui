@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -45,7 +45,6 @@ import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../store/config/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -71,7 +70,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
 		useState<string>('');
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
 	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
