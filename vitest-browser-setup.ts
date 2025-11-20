@@ -12,7 +12,7 @@ vi.stubGlobal('__CARBONIO_DEV__', false);
 vi.stubGlobal('BASE_PATH', '');
 
 beforeAll(async () => {
-	vi.useFakeTimers();
+	// vi.useFakeTimers();
 	await startMockWorker();
 });
 
@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-	vi.useRealTimers();
+	// vi.useRealTimers();
 	stopMockWorker();
 	vi.clearAllMocks();
 	resetMockWorker();
