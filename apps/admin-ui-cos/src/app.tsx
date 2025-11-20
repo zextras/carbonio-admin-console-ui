@@ -15,6 +15,7 @@ import {
 	useUserSettings,
 	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
@@ -43,12 +44,11 @@ import {
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAccountRequest } from './services/get-account';
-import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
+import { getAllServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp/store';
-import { useMailstoreListStore } from './store/mailstore-list/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -80,12 +80,12 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
+	const { data: mailstoreServers } = useMailstoreServers();
 	const getAccountDetails = useCallback(
 		(id: any) => {
 			getAccountRequest(id, '', 0).then((res: any) => {
@@ -259,20 +259,10 @@ const App: FC = () => {
 		});
 	}, [isAdvanced, getGlobalConfig]);
 
-	const getMailstoresServersRequest = useCallback(() => {
-		getMailstoresServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setAllMailstoreList(server);
-			}
-		});
-	}, [setAllMailstoreList]);
-
+	
 	useEffect(() => {
 		getAllServersRequest();
-		// another call just to get only mailstores can be improvised later
-		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+	}, [getAllServersRequest]);
 
 	return null;
 };

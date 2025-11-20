@@ -59,7 +59,7 @@ import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
@@ -152,7 +152,7 @@ const DomainGalSettings: FC = () => {
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
 	const createSnackbar = useSnackbar();
 	const domain: { name?: string } = useDomainStore((state) => state.domain);
-	const { allMailstoreList } = useMailstoreListStore((state) => state);
+	const { data: allMailstoreList = [] } = useMailstoreServers();
 	const { domainId }: { domainId: string } = useParams();
 
 	const [open, setOpen] = useState<boolean>(false);

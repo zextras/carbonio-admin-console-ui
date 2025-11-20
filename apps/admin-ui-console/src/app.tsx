@@ -19,6 +19,7 @@ import {
 	getRights,
 	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Icon, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import moment from 'moment';
@@ -74,8 +75,7 @@ import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import {
 	getAllServerByService,
-	getAllServers,
-	getMailstoresServers
+	getAllServers
 } from './services/get-all-servers-service';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
@@ -84,7 +84,6 @@ import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
-import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
@@ -136,7 +135,6 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
@@ -151,6 +149,7 @@ const App: FC = () => {
 		enabled: Boolean(userName)
 	});
 	const userSetting = useUserSettings();
+	const { data: mailstoreServers } = useMailstoreServers();
 	const getAccountDetails = useCallback(
 		(id: any) => {
 			getAccountRequest(id, '', 0).then((res: any) => {
@@ -225,6 +224,12 @@ const App: FC = () => {
 			setIsAdvanced(isAdvanced);
 		}
 	}, [isAdvanced, setIsAdvanced]);
+
+	useEffect(() => {
+		if (mailstoreServers && mailstoreServers.length > 0) {
+			setVolumeList(mailstoreServers);
+		}
+	}, [mailstoreServers, setVolumeList]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -887,16 +892,7 @@ const App: FC = () => {
 		setMtaServerList
 	]);
 
-	const getMailstoresServersRequest = useCallback(() => {
-		getMailstoresServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setVolumeList(server);
-				setAllMailstoreList(server);
-			}
-		});
-	}, [setVolumeList, setAllMailstoreList]);
-
+	
 	const getModuleLicense = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
@@ -916,10 +912,8 @@ const App: FC = () => {
 
 	useEffect(() => {
 		getAllServersRequest();
-		// another call just to get only mailstores can be improvised later
-		getMailstoresServersRequest();
 		getModuleLicense();
-	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
+	}, [getAllServersRequest, getModuleLicense]);
 
 	return null;
 };

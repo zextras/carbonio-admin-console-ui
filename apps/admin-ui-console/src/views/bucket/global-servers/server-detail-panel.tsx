@@ -29,7 +29,7 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { headerAdvanced } from '../../utility/utils';
@@ -197,7 +197,7 @@ const ServersListTable: FC<{
 
 const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allServersList = [] } = useMailstoreServers();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [serversList, setServersList] = useState<any>([]);
 	const [serverListAll, setServerListAll] = useState<any>([]);
@@ -248,6 +248,7 @@ const ServerDetailPanel: FC = () => {
 											// eslint-disable-next-line sonarjs/no-gratuitous-expressions
 											responseData &&
 											responseData?.response &&
+											item.name &&
 											responseData?.response[item.name]
 										) {
 											const data = responseData?.response[item.name]?.response;
@@ -255,11 +256,11 @@ const ServerDetailPanel: FC = () => {
 												primaries = data?.primaries.length;
 												secondaries = data?.secondaries.length;
 												indexes = data?.indexes.length;
-												const descriptionData = item?.a.filter(
+												const descriptionData = item?.a?.filter(
 													(items: any) => items?.n === DESCRIPTION
 												);
-												if (descriptionData) {
-													description = descriptionData;
+												if (descriptionData && descriptionData.length > 0) {
+													description = descriptionData[0]?._content || '';
 												}
 											}
 										}
@@ -290,9 +291,9 @@ const ServerDetailPanel: FC = () => {
 			if (allServersList.length > 0) {
 				const serverList = allServersList.map((item) => {
 					let description = '';
-					const descriptionData = item?.a.filter((items: any) => items?.n === DESCRIPTION);
-					if (descriptionData) {
-						description = descriptionData;
+					const descriptionData = item?.a?.filter((items: any) => items?.n === DESCRIPTION);
+					if (descriptionData && descriptionData.length > 0) {
+						description = descriptionData[0]?._content || '';
 					}
 					return {
 						name: item.name,

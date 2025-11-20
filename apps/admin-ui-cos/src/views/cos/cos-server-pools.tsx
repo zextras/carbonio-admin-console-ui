@@ -26,7 +26,7 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
@@ -47,7 +47,7 @@ const CosServerPools: FC = () => {
 	const createSnackbar = useSnackbar();
 	const setCos = useCosStore((state) => state.setCos);
 	const [searchServer, setSearchServer] = useState<string>('');
-	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allMailStoreList = [] } = useMailstoreServers();
 	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
