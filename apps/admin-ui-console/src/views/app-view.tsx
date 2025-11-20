@@ -11,7 +11,6 @@ import styled from 'styled-components';
 
 import {
 	BACKUP_ROUTE_ID,
-	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
@@ -33,7 +32,6 @@ import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import { Subscription } from './core/subscription/subscription';
-import Dashboard from './dashboard/dashboard-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
@@ -50,7 +48,7 @@ interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
 }
 
-const DetailViewContainer = styled(Container) <ContainerExtendProps>`
+const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;
@@ -61,18 +59,6 @@ const AppView: FC = () => {
 		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
-				<Route path={`/${DASHBOARD}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						background="gray5"
-						height="auto"
-					>
-						<Suspense fallback={<Spinner />}>
-							<Dashboard />
-						</Suspense>
-					</Container>
-				</Route>
 				<Route path={`/${MONITORING}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Suspense fallback={<Spinner />}>
