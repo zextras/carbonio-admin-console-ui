@@ -16,7 +16,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../constants';
 import { flushCache } from '../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../services/modify-cos-service';
 import { useCosStore } from '../store/cos/store';
-import { useRights } from '@zextras/admin-ui-bootstrap'
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../views/page-layout';
 
 import { WscSettings } from './wsc-settings';
@@ -32,7 +32,7 @@ const WscCosSettings: FC = () => {
 
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const setCos = useCosStore((state) => state.setCos);
-	const { data: rights = [] } = useRights({});
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };

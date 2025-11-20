@@ -20,7 +20,7 @@ import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosStore } from '../../store/cos/store';
-import { useRights } from '@zextras/admin-ui-bootstrap'
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../page-layout';
 
 import { Features } from './features';
@@ -36,7 +36,7 @@ const CosFeatures: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({});
 	const isAdvanced = useIsAdvanced();
-	const { data: rights = [] } = useRights({});
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };

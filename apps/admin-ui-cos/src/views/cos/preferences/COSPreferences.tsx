@@ -13,7 +13,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
-import { useRights } from '@zextras/admin-ui-bootstrap'
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
@@ -32,7 +32,7 @@ export const COSPreferences = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const { data: rights = [] } = useRights({});
+	const { data: rights = [] } = useCurrentUserRights();
 	const setCos = useCosStore((state) => state.setCos);
 
 	const locales = useMemo(() => localeList(t), [t]);

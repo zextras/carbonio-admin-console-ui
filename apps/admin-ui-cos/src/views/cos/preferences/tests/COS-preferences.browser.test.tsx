@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useRights } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -123,7 +123,7 @@ describe('COSPreferences', () => {
 		vi.resetAllMocks();
 		setupCosStore();
 
-		vi.mocked(useRights).mockReturnValue({
+		vi.mocked(useCurrentUserRights).mockReturnValue({
 			data: mockRightsData,
 			isLoading: false,
 			isSuccess: true,

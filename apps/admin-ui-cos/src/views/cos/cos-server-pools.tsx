@@ -27,7 +27,7 @@ import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { useRights } from '@zextras/admin-ui-bootstrap'
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -48,7 +48,7 @@ const CosServerPools: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [searchServer, setSearchServer] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
-	const { data: rights = [] } = useRights({});
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
