@@ -11,7 +11,8 @@ import {
 	useDomainStore,
 	useHasRight,
 	getRights,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useVersion
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
@@ -30,7 +31,6 @@ import {
 	SERVERS_LIST,
 	STORAGES_ROUTE_ID
 } from '../../constants';
-import { getVersionInfo } from '../../services/get-version-info';
 import ListRow from '../list/list-row';
 
 import CarbonioVersionInformation from './carbonio-version-information-view';
@@ -43,7 +43,7 @@ const Dashboard: FC = () => {
 	const history = useHistory();
 	const accounts = useUserAccounts();
 	const [userName, setUserName] = useState<string>('');
-	const [serverVersion, setServerVersion] = useState<any>({});
+	const { data: serverVersion } = useVersion();
 
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useIsAdvanced();
@@ -108,17 +108,7 @@ const Dashboard: FC = () => {
 		}
 	}, [rights]);
 
-	const getVersionInformation = useCallback(() => {
-		getVersionInfo().then((res) => {
-			if (res?.info && Array.isArray(res?.info)) {
-				setServerVersion(res?.info[0]);
-			}
-		});
-	}, []);
-	useEffect(() => {
-		getVersionInformation();
-	}, [getVersionInformation]);
-
+	
 	return (
 		<Container>
 			<Divider color="gray6" />
