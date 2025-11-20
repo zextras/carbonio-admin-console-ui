@@ -5,7 +5,7 @@
  */
 import { Container } from '@zextras/carbonio-design-system';
 import React, { FC, Suspense } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import { DASHBOARD } from '../constants';
 
@@ -17,20 +17,18 @@ const AppView: FC = () => {
 	return (
 		<Container height={'fit'}>
 			<BreadCrumb />
-			<Switch>
-				<Route path={`/${DASHBOARD}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						background="gray5"
-						height="auto"
-					>
-						<Suspense fallback={<Spinner />}>
-							<Dashboard />
-						</Suspense>
-					</Container>
-				</Route>
-			</Switch>
+			<Route path={`/${DASHBOARD}`}>
+				<Container
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					background="gray5"
+					height="auto"
+				>
+					<Suspense fallback={<Spinner />}>
+						<Dashboard />
+					</Suspense>
+				</Container>
+			</Route>
 		</Container>
 	);
 };
