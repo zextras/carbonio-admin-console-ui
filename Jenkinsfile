@@ -270,7 +270,7 @@ pipeline {
                     imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
                     ocLabels: [
                         title: 'Carbonio Admin Console UI',
-                        descriptionFile: 'docker/description.md',
+                                    description: 'Carbonio Admin Console UI Container'
                     ]
                 ])
             }
