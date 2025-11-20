@@ -3,15 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container, Text, Row, Padding, Icon } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
-import { useLastLoginTimestamp } from '../../store/last-login-time-stamp';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
@@ -22,7 +21,11 @@ const BreadCrumb: FC = () => {
 	const loc = useLocation();
 	const history = useHistory();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-	const { lastLoginTimestamp } = useLastLoginTimestamp();
+	const userSetting = useUserSettings();
+	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
 	useEffect(() => {
 		if (loc?.pathname) {

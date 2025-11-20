@@ -13,17 +13,14 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings,
 	useDomainStore,
 	useHasRight,
 	getRights,
 	useCurrentUserRights,
-	useModuleLicenseInfo
+	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Icon, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import moment from 'moment';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -67,24 +64,18 @@ import {
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
 	ZIMBRA_ADMIN_URN,
-	ZIMBRA_LAST_LOGON_TIMESTAMP,
 	CONFIG
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { ReactQueryProvider } from './providers/query-client-provider';
-import { getAccountRequest } from './services/get-account';
-import {
-	getAllServerByService,
-	getAllServers
-} from './services/get-all-servers-service';
+import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
-import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -135,40 +126,18 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
 	const userName = accounts?.[0]?.name || '';
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
-	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const { data: hasAllConfigRights = false } = useHasRight({
 		userName,
 		rightType: CONFIG,
 		enabled: Boolean(userName)
 	});
-	const userSetting = useUserSettings();
 	const { data: mailstoreServers } = useMailstoreServers();
-	const getAccountDetails = useCallback(
-		(id: any) => {
-			getAccountRequest(id, '', 0).then((res: any) => {
-				const lastLogin = res?.account?.[0]?.a?.find(
-					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
-				);
-				setLastLoginTimestamp(
-					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
-				);
-			});
-		},
-		[setLastLoginTimestamp]
-	);
-
-	useEffect(() => {
-		if (userSetting?.attrs?.zimbraId) {
-			getAccountDetails(userSetting?.attrs?.zimbraId);
-		}
-	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
@@ -892,8 +861,6 @@ const App: FC = () => {
 		setMtaServerList
 	]);
 
-	
-	
 	useEffect(() => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
