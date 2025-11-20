@@ -10,6 +10,7 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import { useMailstoreServers } from './src/react-query';
 import {
 	useHasRight,
 	useRightsByType,
@@ -73,5 +74,6 @@ export {
 	useRightsByType,
 	getRights,
 	getAllRights,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useMailstoreServers
 };

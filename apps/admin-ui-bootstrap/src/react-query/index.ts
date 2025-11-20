@@ -5,3 +5,4 @@
  */
 
 export * from './use-mailstore-servers';
+export * from './use-rights';

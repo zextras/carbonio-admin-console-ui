@@ -5,22 +5,26 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
-import { Server } from '../../types/server';
+import { Attribute } from '../../types';
 
 type MailstoreServersOptions = {
 	enabled?: boolean;
 };
 
+type Server = {
+	id?: string;
+	name?: string;
+	a?: Array<Attribute>;
+};
 // Query function to fetch mailstore servers
 const queryFn = async (): Promise<Array<Server>> => {
-	const response = await soapFetch(`GetAllServers`, {
+	const response = (await soapFetch(`GetAllServers`, {
 		_jsns: 'urn:zimbraAdmin',
 		attrs: 'description,zimbraServiceHostname,zimbraId',
 		service: 'mailbox'
-	}) as any;
+	})) as any;
 
 	const server = response?.server;
 	return (server && Array.isArray(server) ? server : []) as Array<Server>;

@@ -12,6 +12,7 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
+import { useMailstoreServers } from '../../react-query';
 import {
 	useHasRight,
 	useRightsByType,
@@ -62,6 +63,7 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	getRights,
 	getAllRights,
 	useCurrentUserRights,
+	useMailstoreServers,
 	// APP ROUTERS
 	addRoute: (route: Partial<AppRouteDescriptor>) =>
 		useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),

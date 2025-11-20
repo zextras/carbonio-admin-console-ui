@@ -4,14 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Button, Table, Text } from '@zextras/carbonio-design-system';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { useMailstoreServers } from '../../react-query';
-import { Server } from '../../../types';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -36,7 +34,7 @@ const DashboardServerList: FC<{
 
 	useEffect(() => {
 		if (mailstoresList.length > 0) {
-			const allRows = mailstoresList.map((item: Server) => ({
+			const allRows = mailstoresList.map((item) => ({
 				id: item?.id,
 				columns: [
 					<Text
