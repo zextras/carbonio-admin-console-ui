@@ -24,7 +24,6 @@ import {
 	ZIMBRA_ADMIN_URN,
 	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
-import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAccountRequest } from './services/get-account';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
@@ -38,13 +37,11 @@ import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<ReactQueryProvider>
-		<TrackerProvider>
-			<Suspense fallback={<Spinner />}>
-				<LazyAppView {...props} />
-			</Suspense>
-		</TrackerProvider>
-	</ReactQueryProvider>
+	<TrackerProvider>
+		<Suspense fallback={<Spinner />}>
+			<LazyAppView {...props} />
+		</Suspense>
+	</TrackerProvider>
 );
 
 const App: FC = () => {
