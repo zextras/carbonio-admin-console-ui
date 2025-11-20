@@ -11,6 +11,7 @@ import {
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
 import { useMailstoreServers } from './src/react-query';
+import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import {
 	useHasRight,
 	useRightsByType,
@@ -83,6 +84,7 @@ export {
 	getAllRights,
 	useCurrentUserRights,
 	useMailstoreServers,
+	useLastLoginTimestamp,
 	useLicenseInfo,
 	useVersion,
 	useActivateLicense,
