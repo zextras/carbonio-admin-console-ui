@@ -13,7 +13,6 @@ import {
 	fetchExternalSoap
 } from '../../network/fetch';
 import {
-	useRights,
 	useHasRight,
 	useRightsByType,
 	getRights,
@@ -58,7 +57,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useDomainInformation,
 	useDomainStore,
 	useStickyBarStore,
-	useRights,
 	useHasRight,
 	useRightsByType,
 	getRights,
