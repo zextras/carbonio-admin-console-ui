@@ -10,9 +10,9 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings
+	useUserSettings,
+	useLastLoginTimestamp
 } from '@zextras/admin-ui-bootstrap';
-import moment from 'moment';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -21,14 +21,11 @@ import {
 	DASHBOARD,
 	PRIMARY_BAR_DASHBOARD,
 	TRUE,
-	ZIMBRA_ADMIN_URN,
-	ZIMBRA_LAST_LOGON_TIMESTAMP
+	ZIMBRA_ADMIN_URN
 } from './constants';
-import { getAccountRequest } from './services/get-account';
 import { getAllServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { useGlobalConfigStore } from './store/global-config/store';
-import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -53,27 +50,11 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
-	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const userSetting = useUserSettings();
-	const getAccountDetails = useCallback(
-		(id: any) => {
-			getAccountRequest(id, '', 0).then((res: any) => {
-				const lastLogin = res?.account?.[0]?.a?.find(
-					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
-				);
-				setLastLoginTimestamp(
-					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
-				);
-			});
-		},
-		[setLastLoginTimestamp]
-	);
-
-	useEffect(() => {
-		if (userSetting?.attrs?.zimbraId) {
-			getAccountDetails(userSetting?.attrs?.zimbraId);
-		}
-	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
+	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
