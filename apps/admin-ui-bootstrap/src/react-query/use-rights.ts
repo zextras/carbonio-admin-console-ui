@@ -5,7 +5,11 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { soapFetch, useUserAccounts } from '@zextras/admin-ui-bootstrap';
+import { SHELL_APP_ID } from '../constants';
+import { getSoapFetch } from '../network/fetch';
+import { useUserAccounts } from '../store/account/hooks';
+
+const soapFetch = getSoapFetch(SHELL_APP_ID);
 
 export type Right = {
 	type: string;
