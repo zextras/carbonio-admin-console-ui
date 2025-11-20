@@ -9,9 +9,7 @@ import {
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
-	useUserSettings,
-	useLastLoginTimestamp
+	useUserAccounts
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -50,11 +48,6 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
-	const userSetting = useUserSettings();
-	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
-		accountId: userSetting?.attrs?.zimbraId?.toString(),
-		enabled: Boolean(userSetting?.attrs?.zimbraId)
-	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
@@ -140,7 +133,6 @@ const App: FC = () => {
 		});
 	}, [isAdvanced, getGlobalConfig]);
 
-	
 	useEffect(() => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);

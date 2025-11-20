@@ -12,11 +12,8 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useUserSettings,
-	useCurrentUserRights,
-	useLastLoginTimestamp
+	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -80,12 +77,6 @@ const App: FC = () => {
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
-	const userSetting = useUserSettings();
-	const { data: mailstoreServers } = useMailstoreServers();
-	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
-		accountId: userSetting?.attrs?.zimbraId?.toString(),
-		enabled: Boolean(userSetting?.attrs?.zimbraId)
-	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
@@ -240,7 +231,6 @@ const App: FC = () => {
 		});
 	}, [isAdvanced, getGlobalConfig]);
 
-	
 	useEffect(() => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
