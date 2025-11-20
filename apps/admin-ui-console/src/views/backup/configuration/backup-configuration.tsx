@@ -8,7 +8,8 @@ import {
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	fetchExternalSoap,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
@@ -44,7 +45,6 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useServerStore } from '../../../store/server/store';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
@@ -157,12 +157,12 @@ const BackupConfiguration: FC = () => {
 	const [bucketConfiguration, setBucketConfiguration] = useState<any>([]);
 	const [bucketListOption, setBucketListOption] = useState<Array<any>>([]);
 
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
 		useState<boolean>(false);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
 			const backupRealtimeModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
 			);

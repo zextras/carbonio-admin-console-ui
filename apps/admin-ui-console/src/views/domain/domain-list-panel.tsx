@@ -8,7 +8,8 @@ import {
 	replaceHistory,
 	useDomainStore,
 	getAllRights,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
@@ -59,7 +60,6 @@ import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
-import { useModuleLicenseStore } from '../../store/module-license/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -114,7 +114,7 @@ const DomainListPanel: FC = () => {
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
@@ -465,7 +465,7 @@ const DomainListPanel: FC = () => {
 	}, [isDomainSelect, manageItems]);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
 			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);

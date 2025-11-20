@@ -201,6 +201,11 @@ type ModuleLicenseInfo = {
 	maintenanceEndDate?: number;
 	maintenanceStatus?: 'active' | 'expired' | 'expiring';
 	subType?: string;
+	features?: Array<{
+		name: string;
+		quantity: string;
+		enabled: boolean;
+	}>;
 };
 
 export const useModuleLicenseInfo = () => {
@@ -211,7 +216,8 @@ export const useModuleLicenseInfo = () => {
 		? {
 			maintenanceEndDate: licenseData?.response.maintenanceEndDate,
 			maintenanceStatus: licenseData?.response.maintenanceStatus,
-			subType: licenseData?.response.subType
+			subType: licenseData?.response.subType,
+			features: licenseData?.response.features
 		}
 		: null;
 

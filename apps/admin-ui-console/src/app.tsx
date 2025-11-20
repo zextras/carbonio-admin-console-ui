@@ -17,7 +17,8 @@ import {
 	useDomainStore,
 	useHasRight,
 	getRights,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { Icon, Button } from '@zextras/carbonio-design-system';
@@ -84,7 +85,6 @@ import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useLastLoginTimestamp } from './store/last-login-time-stamp';
-import { useModuleLicenseStore } from './store/module-license/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -135,7 +135,7 @@ const App: FC = () => {
 	);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const setLicenseInfo = useModuleLicenseStore((state) => state.setLicenseInfo);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
@@ -893,27 +893,10 @@ const App: FC = () => {
 	]);
 
 	
-	const getModuleLicense = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxCore',
-				action: 'getLicenseInfo'
-			}
-		})
-			.then((res: any) => res.Body)
-			.then((res: any) => {
-				const response = JSON.parse(res.response.content);
-				if (response.ok) {
-					setLicenseInfo(response.response);
-				}
-			});
-	}, [setLicenseInfo]);
-
+	
 	useEffect(() => {
 		getAllServersRequest();
-		getModuleLicense();
-	}, [getAllServersRequest, getModuleLicense]);
+	}, [getAllServersRequest]);
 
 	return null;
 };
