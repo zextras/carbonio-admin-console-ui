@@ -57,6 +57,7 @@
 		"react-dom": "^19.1.0",
 		"typescript": "^5.7.2",
 		"vitest": "^4.0.5",
+		"msw": "^2.11.3",
 		"vitest-browser-react": "^2.0.2"
 	},
 	"keywords": [],
