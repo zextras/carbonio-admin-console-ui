@@ -37,7 +37,6 @@ import {
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	CREATE_TOP_DOMAIN,
-	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	GLOBAL,
 	LEGAL_HOLD_ROUTE_ID,
@@ -51,7 +50,6 @@ import {
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_BACKUP,
-	PRIMARY_BAR_DASHBOARD,
 	PRIMARY_BAR_DOMAINS,
 	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_MTA,
@@ -703,17 +701,6 @@ const App: FC = () => {
 
 	useEffect(() => {
 		addRoute({
-			route: DASHBOARD,
-			position: 1,
-			visible: true,
-			label: t('label.dashboard', 'Dashboard') || '',
-			primaryBar: 'HomeOutline',
-			appView: AppView,
-			tooltip: HomeTooltipView,
-			trackerLabel: PRIMARY_BAR_DASHBOARD
-		});
-
-		addRoute({
 			route: DOMAINS_ROUTE_ID,
 			position: 1,
 			visible: true,
@@ -842,7 +829,6 @@ const App: FC = () => {
 			id: 'new-cos',
 			type: 'new'
 		});
-		history.push(`/${DASHBOARD}`);
 	}, [t, history, setDomainView, setDomain, setCosView, createDomainRight, createCosRight]);
 
 	const checkIsBackupModuleEnable = useCallback(() => {

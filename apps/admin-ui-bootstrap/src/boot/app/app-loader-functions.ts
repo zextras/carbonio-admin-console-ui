@@ -4,24 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CarbonioModule } from '../../../types';
-import { replaceHistory } from '../../history/hooks';
+import { CarbonioModule, AppRouteDescriptor } from '../../../types';
+import { replaceHistory, pushHistory } from '../../history/hooks';
 import {
 	getSoapFetch,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
-import { usePrimaryBarState, useNetworkState } from '../../shell/hooks';
+import {
+	useRights,
+	useHasRight,
+	useRightsByType,
+	getRights,
+	getAllRights,
+	useCurrentUserRights
+} from '../../react-query/use-rights';
+import { usePrimaryBarState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
-import { getIsAdvanced, useIsAdvanced } from '../../store/advance';
+import { useIsAdvanced } from '../../store/advance';
+import { useAppStore } from '../../store/app';
+import { normalizeRoute } from '../../store/app/utils';
 import { useAllConfig } from '../../store/config';
 import { useDomainInformation } from '../../store/domain-information';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
+import { useIntegrationsStore } from '../../store/integrations/store';
 import { useDomainStore } from '../../store/shared/domains';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
-import { useRights, useHasRight, useRightsByType, getRights, getAllRights } from '../../react-query/use-rights';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
@@ -40,12 +50,11 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	getTags,
 	// HISTORY
 	replaceHistory,
+	pushHistory,
 	// STUFF
 	usePrimaryBarState,
-	useNetworkState,
 	useAllConfig,
 	useIsAdvanced,
-	getIsAdvanced,
 	useDomainInformation,
 	useDomainStore,
 	useStickyBarStore,
@@ -53,5 +62,11 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useHasRight,
 	useRightsByType,
 	getRights,
-	getAllRights
+	getAllRights,
+	useCurrentUserRights,
+	// APP ROUTERS
+	addRoute: (route: Partial<AppRouteDescriptor>) =>
+		useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),
+	removeRoute: (routeId: string) => useAppStore.getState().setters.removeRoute(routeId),
+	registerActions: useIntegrationsStore.getState().registerActions
 });
