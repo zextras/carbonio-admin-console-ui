@@ -18,6 +18,13 @@ import {
 	getAllRights,
 	useCurrentUserRights
 } from './src/react-query/use-rights';
+import {
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
+} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
 import { useIsAdvanced } from './src/store/advance';
@@ -75,5 +82,10 @@ export {
 	getRights,
 	getAllRights,
 	useCurrentUserRights,
-	useMailstoreServers
+	useMailstoreServers,
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
 };

@@ -10,12 +10,16 @@ import React from 'react';
 import { Mock } from 'vitest';
 
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
-import { useModuleLicenseInfo } from '../../../hooks/use-subscription';
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { LicenseBanner } from '../license-banner';
 
-vi.mock('../../../hooks/use-subscription', () => ({
-	useModuleLicenseInfo: vi.fn()
-}));
+vi.mock('@zextras/admin-ui-bootstrap', async () => {
+	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
+	return {
+		...actual as any,
+		useModuleLicenseInfo: vi.fn()
+	};
+});
 
 describe('LicenseBanner', () => {
 	const maintenanceEndDate = 1750272000000;

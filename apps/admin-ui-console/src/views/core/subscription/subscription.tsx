@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import {
+	useCurrentUserRights,
+	useActivateLicense,
+	useLicenseInfo,
+	useRemoveLicense,
+	useVersion
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -22,12 +28,6 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../../constants';
-import {
-	useActivateLicense,
-	useLicenseInfo,
-	useRemoveLicense,
-	useVersion
-} from '../../../hooks/use-subscription';
 import { LicenseBanner } from '../../dashboard/license-banner';
 
 import { ServiceStatus } from './service-status';
