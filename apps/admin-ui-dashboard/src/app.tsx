@@ -10,8 +10,8 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useConfigStore,
-	useGlobalConfigStore
+	useGlobalConfigStore,
+	useAppConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -41,7 +41,7 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { config, setConfig, setUserId } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);

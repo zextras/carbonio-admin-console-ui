@@ -5,9 +5,12 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 import { Attribute } from '../../types';
+import { SHELL_APP_ID } from '../constants';
+import { getSoapFetch } from '../network/fetch';
+
+const soapFetch = getSoapFetch(SHELL_APP_ID);
 
 type MailstoreServersOptions = {
 	enabled?: boolean;

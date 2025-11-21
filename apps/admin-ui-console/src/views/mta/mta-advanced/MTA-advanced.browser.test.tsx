@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
@@ -48,7 +48,7 @@ function expectMailMessagesSizeSectionVisible() {
 
 describe('MTAAdvanced', () => {
 	const setupConfigStore = (): void => {
-		useConfigStore.getState().setConfig([
+		useAppConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },
@@ -267,7 +267,7 @@ describe('MTAAdvanced', () => {
 
 	it('should handle component initialization with no message size limit', async () => {
 		// Setup config without message size to test the no-limit initial state
-		useConfigStore.getState().setConfig([
+		useAppConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },
@@ -324,7 +324,7 @@ describe('MTAAdvanced', () => {
 
 	it('should trigger setLimitMaxMessageSize(true) when clicking custom size radio', async () => {
 		// Setup config without message size to start with "No size limit" selected
-		useConfigStore.getState().setConfig([
+		useAppConfigStore.getState().setConfig([
 			{ n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
 			{ n: 'zimbraAmavisLogLevel', _content: '2' },
 			{ n: 'zimbraAmavisSALogLevel', _content: '0' },

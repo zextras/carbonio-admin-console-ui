@@ -12,20 +12,22 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
+import { useLastLoginTimestamp } from '../../react-query/use-last-login';
+import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
 import {
-	useLastLoginTimestamp,
-	useMailstoreServers,
 	useHasRight,
 	useRightsByType,
 	getRights,
 	getAllRights,
-	useCurrentUserRights,
+	useCurrentUserRights
+} from '../../react-query/use-rights';
+import {
 	useLicenseInfo,
 	useVersion,
 	useActivateLicense,
 	useRemoveLicense,
 	useModuleLicenseInfo
-} from '../../react-query';
+} from '../../react-query/use-subscription';
 import { usePrimaryBarState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useIsAdvanced } from '../../store/advance';

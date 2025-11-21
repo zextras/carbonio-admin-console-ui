@@ -18,8 +18,8 @@ import {
 	getRights,
 	useCurrentUserRights,
 	useMailstoreServers,
-	useConfigStore,
-	useGlobalConfigStore
+	useGlobalConfigStore,
+	useAppConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -118,7 +118,7 @@ const App: FC = () => {
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig, setUserId } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);

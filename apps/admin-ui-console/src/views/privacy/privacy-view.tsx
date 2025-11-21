@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -31,11 +31,11 @@ import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const { config } = useConfigStore((state) => state);
+	const { config } = useAppConfigStore((state) => state);
 	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
 	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const [lastState, setLastState]: any = useState({

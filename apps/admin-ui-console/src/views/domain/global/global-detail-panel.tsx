@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -53,7 +53,7 @@ const GlobalDetailPanel: FC = () => {
 	const [globalConfigData, setGlobalConfigData] = useState<Array<any>>([]);
 	const [globalDisclaimerInitialDetail, setGlobalDisclaimerInitialDetail] =
 		useState<GlobalDisclaimerType>();
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
 	const setGlobalInitialValue = useCallback((key: string, value: unknown): void => {
 		setGlobalDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);

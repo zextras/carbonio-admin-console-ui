@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getTags, useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { getTags, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -341,7 +341,7 @@ const QuarantineList: FC = () => {
 	const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
 	const [openDeliverDialog, setOpenDeliverDialog] = useState<boolean>(false);
 	const [messageListData, setMessageListData] = useState([]);
-	const { config, setConfig } = useConfigStore((state) => state);
+	const { config, setConfig } = useAppConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
 	const [showTextMsgView, setShowTextMsgView] = useState<boolean>(false);

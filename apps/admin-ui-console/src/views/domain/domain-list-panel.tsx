@@ -11,7 +11,7 @@ import {
 	useCurrentUserRights,
 	useModuleLicenseInfo,
 	useIsAdvanced,
-	useConfigStore,
+	useAppConfigStore,
 	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
@@ -122,7 +122,7 @@ const DomainListPanel: FC = () => {
 	const { data: rights } = useCurrentUserRights();
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const globalConfigInformation = useConfigStore((state) => state.config);
+	const globalConfigInformation = useAppConfigStore((state) => state.config);
 	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
 	useEffect(() => {

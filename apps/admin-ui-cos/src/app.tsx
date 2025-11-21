@@ -13,8 +13,8 @@ import {
 	useIsAdvanced,
 	useUserAccounts,
 	useCurrentUserRights,
-	useConfigStore,
-	useGlobalConfigStore
+	useGlobalConfigStore,
+	useAppConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -68,7 +68,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { config, setConfig, setUserId } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);

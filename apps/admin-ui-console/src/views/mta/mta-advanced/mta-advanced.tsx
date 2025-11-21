@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -47,8 +47,8 @@ const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
 
 	const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -46,8 +46,8 @@ const GlobalTheme: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-	const configInformation = useConfigStore((state) => state.config);
-	const updateAllConfig = useConfigStore((state) => state.updateAllConfig);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);

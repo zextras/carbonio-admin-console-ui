@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -54,8 +54,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
 	const [mtaAntiVirusAndAntispamInitialDetail, setMtaAntiVirusAndAntispamInitialDetail] =
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
@@ -72,7 +72,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
-	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };

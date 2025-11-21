@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -51,10 +51,10 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const addConfig = useConfigStore((state) => state.addConfig);
-	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const addConfig = useAppConfigStore((state) => state.addConfig);
+	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
 	const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
 	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
