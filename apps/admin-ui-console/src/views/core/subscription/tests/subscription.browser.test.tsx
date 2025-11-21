@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -79,18 +78,7 @@ type SetupOptions = {
 };
 
 const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOptions) => {
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				retry: false,
-				gcTime: 0,
-				staleTime: Infinity,
-				refetchOnMount: false,
-				refetchOnWindowFocus: false,
-				refetchOnReconnect: false
-			}
-		}
-	});
+	const queryClient = getQueryClient();
 
 	if (options?.licenseData) {
 		queryClient.setQueryData(['subscription', 'license'], options.licenseData);
@@ -99,9 +87,7 @@ const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOpt
 		queryClient.setQueryData(['subscription', 'version'], options.versionData);
 	}
 
-	return setupBrowserTest(
-		<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>
-	);
+	return setupBrowserTest(component, { queryClient });
 };
 
 describe('Subscription - License Banner', () => {

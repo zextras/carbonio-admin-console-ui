@@ -6,7 +6,11 @@
 
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
 import { useAdvanceStore } from '@zextras/admin-ui-bootstrap/src/store/advance/store';
-import { resetMockWorker, setupBrowserTest, createSoapAPIInterceptor } from 'admin-ui-test-utils';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
 import React from 'react';
 import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { page } from 'vitest/browser';
@@ -118,10 +122,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should render all parts of the component', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', {});
+		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -138,10 +142,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show details grayed out when no COS is selected', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', {});
+		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -154,10 +158,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show clickable details when COS is selected', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -169,10 +173,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should hide details when the details button is pressed', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -185,10 +189,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should show detail options in bold when selected after selecting a COS', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -201,10 +205,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should change chevron icon when details dropdown is toggled', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 
@@ -221,10 +225,10 @@ describe('CosListPanel', () => {
 	});
 
 	it('should change General icon when its section is toggled', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', {});
+		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
 

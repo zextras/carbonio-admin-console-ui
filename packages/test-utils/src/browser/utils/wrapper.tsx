@@ -30,9 +30,10 @@ const getAppI18n = (): i18n => {
 
 export type WrapperProps = {
 	children?: React.ReactNode;
+	queryClient?: QueryClient;
 };
 
-const getQueryClient = (): QueryClient => {
+export const getQueryClient = (): QueryClient => {
 	return new QueryClient({
 		defaultOptions: {
 			queries: {
@@ -79,8 +80,10 @@ export const BootstrapBridgeProvider = ({
 	return <>{children}</>;
 };
 
-export const Wrapper = ({ children }: WrapperProps): React.JSX.Element => {
-	const queryClient = useMemo(() => getQueryClient(), []);
+export const Wrapper = ({ children, queryClient: providedQueryClient }: WrapperProps): React.JSX.Element => {
+	const defaultQueryClient = useMemo(() => getQueryClient(), []);
+	const queryClient = providedQueryClient ?? defaultQueryClient;
+	
 	return (
 		<BrowserRouter>
 			<QueryClientProvider client={queryClient}>

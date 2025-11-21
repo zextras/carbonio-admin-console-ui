@@ -4,12 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	createBrowserAPIInterceptor,
-	createBrowserSoapAPIInterceptor,
-	setupBrowserTest
-} from 'admin-ui-test-utils';
-import { HttpResponse } from 'msw';
+import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { page } from 'vitest/browser';
 
@@ -19,61 +14,57 @@ import { LicenseBanner } from '../license-banner';
 describe('LicenseBanner', () => {
 	const maintenanceEndDate = 1750272000000;
 
-	function createLicenseResponse(maintenanceStatus: 'expiring' | 'expired') {
-		return () =>
-			HttpResponse.json({
-				// response: {
-				// 	content: JSON.stringify({
-				// 		ok: true,
-				// 		response: {
-				// 			type: 'REGULAR',
-				// 			subType: 'PERPETUAL',
-				// 			maintenanceEndDate,
-				// 			maintenanceStatus,
-				// 			features: ''
-				// 		}
-				// 	})
-				// }
-			});
+	function createLicenseData(maintenanceStatus: 'expiring' | 'expired') {
+		return {
+			response: {
+				type: 'REGULAR',
+				subType: 'PERPETUAL',
+				maintenanceEndDate,
+				maintenanceStatus,
+				features: []
+			},
+			ok: true
+		};
+	}
+
+	function setupLicenseBannerTest(
+		component: React.ReactElement,
+		maintenanceStatus: 'expiring' | 'expired'
+	) {
+		const queryClient = getQueryClient();
+		queryClient.setQueryData(['subscription', 'license'], createLicenseData(maintenanceStatus));
+
+		return setupBrowserTest(component, { queryClient });
 	}
 
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	it.only('renders expiring message', async () => {
-		const interceptor = createBrowserAPIInterceptor(
-			'post',
-			'/service/admin/soap/zextras',
-			createLicenseResponse('expiring')
-		);
-		setupBrowserTest(<LicenseBanner />);
-		expect(await interceptor).toHaveBeenCalledOnce();
-		console.log('11111');
-		// await expect.element(page.getByText(/will expire on 18 Jun 2025/i)).toBeVisible();
+	it('renders expiring message', async () => {
+		setupLicenseBannerTest(<LicenseBanner />, 'expiring');
+
+		// Check if any text appears first
+		await expect.element(page.getByText(/expire/i)).toBeVisible();
 	});
 
 	it('renders expired message', async () => {
-		createBrowserSoapAPIInterceptor('zextras', createLicenseResponse('expired'));
-		setupBrowserTest(<LicenseBanner />);
+		setupLicenseBannerTest(<LicenseBanner />, 'expired');
 		await expect.element(page.getByText(/expired on 18 Jun 2025/i)).toBeVisible();
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {
-		createBrowserSoapAPIInterceptor('zextras', createLicenseResponse('expired'));
-		setupBrowserTest(<LicenseBanner redirectButtonHasToAppear />);
+		setupLicenseBannerTest(<LicenseBanner redirectButtonHasToAppear />, 'expired');
 		await expect.element(page.getByText(/View Subscription Details/i)).toBeVisible();
 	});
 
 	it('does not show redirect button when redirectButtonHasToAppear is false', async () => {
-		createBrowserSoapAPIInterceptor('zextras', createLicenseResponse('expired'));
-		setupBrowserTest(<LicenseBanner />);
+		setupLicenseBannerTest(<LicenseBanner />, 'expired');
 		expect(page.getByText('View Subscription Details').elements()).toHaveLength(0);
 	});
 
 	it('closes the banner when close button is clicked', async () => {
-		createBrowserSoapAPIInterceptor('zextras', createLicenseResponse('expired'));
-		setupBrowserTest(<LicenseBanner />);
+		setupLicenseBannerTest(<LicenseBanner />, 'expired');
 
 		await expect.element(page.getByTestId('license-banner-close-button')).toBeVisible();
 		await page.getByTestId('license-banner-close-button').click();
@@ -83,8 +74,7 @@ describe('LicenseBanner', () => {
 	});
 
 	it('should redirect when View Subscription Details button is clicked', async () => {
-		createBrowserSoapAPIInterceptor('zextras', createLicenseResponse('expired'));
-		setupBrowserTest(<LicenseBanner redirectButtonHasToAppear />);
+		setupLicenseBannerTest(<LicenseBanner redirectButtonHasToAppear />, 'expired');
 		const button = page.getByRole('button', { name: 'View Subscription Details' });
 		await button.click();
 		expect(globalThis.location.pathname).toBe(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`);

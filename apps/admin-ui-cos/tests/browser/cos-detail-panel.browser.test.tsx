@@ -5,7 +5,11 @@
  */
 
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
-import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
@@ -108,10 +112,10 @@ describe('CosDetailPanel', () => {
 	});
 
 	it('should render the COS detail panel with basic structure', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', {});
+		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(
 			<Switch>
@@ -125,10 +129,10 @@ describe('CosDetailPanel', () => {
 		await expect.element(page.getByText('COS List')).toBeVisible();
 	});
 	it('should show the list of COS elements', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(
 			<Switch>
@@ -143,10 +147,10 @@ describe('CosDetailPanel', () => {
 		await expect.element(page.getByText('secondCOS')).toBeVisible();
 	});
 	it('should change the number of visible COS', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
-		createSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(
 			<Switch>
