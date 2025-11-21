@@ -53,7 +53,6 @@ export const PRIMARY_BAR_DASHBOARD = 'pb_dashboard';
 
 // API Config
 export const LIST_SERVER = 'listServer';
-export const CLOBAL_CONFIG_DETAIL_VIEW = 'global-config-detail';
 
 // User Attributes
 export const DISPLAYNAME = 'displayName';

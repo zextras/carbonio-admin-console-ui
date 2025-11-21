@@ -9,7 +9,9 @@ import {
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts
+	useUserAccounts,
+	useConfigStore,
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,8 +24,6 @@ import {
 	ZIMBRA_ADMIN_URN
 } from './constants';
 import { getAllServers } from './services/get-all-servers-service';
-import { useConfigStore } from './store/config/store';
-import { useGlobalConfigStore } from './store/global-config/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
