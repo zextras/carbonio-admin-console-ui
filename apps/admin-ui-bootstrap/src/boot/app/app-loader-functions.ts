@@ -12,14 +12,20 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
-import { useMailstoreServers } from '../../react-query';
 import {
+	useLastLoginTimestamp,
+	useMailstoreServers,
 	useHasRight,
 	useRightsByType,
 	getRights,
 	getAllRights,
-	useCurrentUserRights
-} from '../../react-query/use-rights';
+	useCurrentUserRights,
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
+} from '../../react-query';
 import { usePrimaryBarState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useIsAdvanced } from '../../store/advance';
@@ -30,7 +36,9 @@ import { useDomainInformation } from '../../store/domain-information';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';
+import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/config/store';
 import { useDomainStore } from '../../store/shared/domains';
+import { useGlobalConfigStore } from '../../store/shared/global-config/store';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
 import { getTags } from '../../store/tags';
 
@@ -68,5 +76,14 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	addRoute: (route: Partial<AppRouteDescriptor>) =>
 		useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),
 	removeRoute: (routeId: string) => useAppStore.getState().setters.removeRoute(routeId),
-	registerActions: useIntegrationsStore.getState().registerActions
+	registerActions: useIntegrationsStore.getState().registerActions,
+	useGlobalConfigStore,
+	useAppConfigStore,
+	useConfigurationAttribute,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
 });
