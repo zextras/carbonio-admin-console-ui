@@ -45,8 +45,8 @@ const Wizard: React.FC<Props> = ({
 	externalData,
 	activeStep
 }) => {
-	const sectionRef = useRef();
-	const activeRef = useRef();
+	const sectionRef = useRef<HTMLDivElement>(null);
+	const activeRef = useRef<HTMLDivElement>(null);
 	const useWizardAnswer = useWizard({
 		data,
 		defaultData,

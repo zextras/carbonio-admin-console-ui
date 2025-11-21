@@ -94,13 +94,13 @@ const DomainAuthentication: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 
 	const [open, setOpen] = useState(false);
-	const iconRef: RefObject<HTMLDivElement> = useRef(null);
+	const iconRef = useRef<HTMLDivElement>(null);
 	const [isValidLdapDN, setIsValidLdapDn] = useState<boolean>(true);
 	const [isValidLdapUrl, setIsValidLdapUrl] = useState<boolean>(true);
 	const [ldapUrlOpen, setLdapUrlOpen] = useState(false);
 	const [filterOpen, setFilterOpen] = useState(false);
-	const ldapUrlIconRef: RefObject<HTMLDivElement> = useRef(null);
-	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
+	const ldapUrlIconRef = useRef<HTMLDivElement>(null);
+	const filterIconRef = useRef<HTMLDivElement>(null);
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
 
@@ -670,7 +670,7 @@ const DomainAuthentication: FC = () => {
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Popper
 										open={open}
-										anchorEl={iconRef}
+										anchorEl={iconRef as RefObject<HTMLElement>}
 										placement="top-end"
 										onClose={(): void => setOpen(false)}
 										disableRestoreFocus
@@ -729,7 +729,7 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={ldapUrlOpen}
-										anchorEl={ldapUrlIconRef}
+										anchorEl={ldapUrlIconRef as RefObject<HTMLElement>}
 										placement="top-end"
 										onClose={(): void => setLdapUrlOpen(false)}
 										disableRestoreFocus
@@ -759,7 +759,7 @@ const DomainAuthentication: FC = () => {
 									/>
 									<Popper
 										open={filterOpen}
-										anchorEl={filterIconRef}
+										anchorEl={filterIconRef as RefObject<HTMLElement>}
 										placement="top-end"
 										onClose={(): void => setFilterOpen(false)}
 										disableRestoreFocus

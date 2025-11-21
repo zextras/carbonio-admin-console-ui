@@ -63,7 +63,7 @@ const DomainAclList: FC = () => {
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
-	const timer = useRef<any>();
+	const timer = useRef<number>(0);
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);

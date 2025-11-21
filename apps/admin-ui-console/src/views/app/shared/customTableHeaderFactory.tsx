@@ -3,14 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
+import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
 
-export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
+export type IconComponent = (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -37,23 +37,6 @@ type THeader = {
 	onSortChange: (id: string, order: typeof ASC | typeof DESC) => void;
 	sortable?: boolean;
 };
-interface THeaderProps {
-	headers: THeader[];
-	onChange: () => void;
-	allSelected: boolean;
-	selectionMode: boolean;
-	multiSelect: boolean;
-	showCheckbox: boolean;
-}
-
-type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
-	headers: Array<
-		THeaderProps['headers'][number] & {
-			onClick?: IconButtonProps['onClick'];
-			icon?: keyof DefaultTheme['icons'];
-		}
-	>;
-};
 
 const CustomHeaderFactory: FC<any> = ({
 	headers,
@@ -62,7 +45,7 @@ const CustomHeaderFactory: FC<any> = ({
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}): JSX.Element => {
+}): React.JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('');
@@ -177,7 +160,6 @@ const CustomHeaderFactory: FC<any> = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
 									multiple
 									items={column.items}
@@ -185,7 +167,7 @@ const CustomHeaderFactory: FC<any> = ({
 									dropdownWidth="auto"
 									onChange={column.onChange}
 									display={column.align ? 'inline-block' : 'block'}
-									LabelFactory={(props: any): JSX.Element =>
+									LabelFactory={(props: any): React.JSX.Element =>
 										LabelFactory({ ...props, bold: column.bold, size: 'small' })
 									}
 								/>

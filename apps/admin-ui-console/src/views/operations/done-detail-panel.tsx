@@ -158,7 +158,7 @@ const DoneDetailPanel: FC = () => {
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setSearchOperation(e.target.value);
 								}}
-								CustomIcon={(): JSX.Element => (
+								CustomIcon={(): React.ReactElement => (
 									<Icon icon="FunnelOutline" size="large" color="primary" />
 								)}
 							/>

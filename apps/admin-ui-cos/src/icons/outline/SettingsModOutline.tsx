@@ -6,7 +6,9 @@
 
 import React from 'react';
 
-const SettingsModOutline = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
+const SettingsModOutline = (
+	props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) => (
 	<svg
 		width="24"
 		height="24"

@@ -60,7 +60,7 @@ export const CosListPanel: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos);
 	const cosName: any = useCosStore((state) => state.cos?.name);
 	const [isShowError, setIsShowError] = useState(false);
-	const prevCosRef = useRef();
+	const prevCosRef = useRef(null);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
 	const getCosLists = useCallback(

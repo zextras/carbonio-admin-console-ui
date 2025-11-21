@@ -112,7 +112,7 @@ const NotificationView: FC<{
 		all: 0
 	});
 	const [selectedRow, setSelectedRow] = useState<any>([]);
-	const timer = useRef<any>();
+	const timer = useRef<any>(null);
 
 	const items = useMemo(
 		() => [

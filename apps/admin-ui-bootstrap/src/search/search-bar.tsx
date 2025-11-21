@@ -4,10 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-import React, { useContext, useState, useCallback, useEffect, useMemo, FC, useRef } from 'react';
-
 import {
 	ChipInput,
 	Container,
@@ -21,15 +17,17 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { filter, find, map, reduce } from 'lodash';
+import React, { useContext, useState, useCallback, useEffect, useMemo, FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useSearchStore } from './search-store';
 import { QueryChip, SearchBarProps, SelectLabelFactoryProps } from '../../types';
 import { SEARCH_APP_ID } from '../constants';
 import { useLocalStorage } from '../shell/hooks';
 import { useAppStore } from '../store/app';
+
+import { useSearchStore } from './search-store';
 
 const OutlinedButton = styled(Button)`
 	border: 1px solid
@@ -61,7 +59,6 @@ const SelectLabelFactory: FC<SelectLabelFactoryProps> = ({ selected, open, focus
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const theme: any = useContext(ThemeContext);
 	const color = useMemo(
-		// eslint-disable-next-line no-nested-ternary
 		() => (disabled ? '#CCCCCC' : open || focus ? 'primary' : 'text'),
 		[disabled, open, focus]
 	);
@@ -103,7 +100,7 @@ export const SearchBar: FC<SearchBarProps> = ({
 	const searchViews = useAppStore((s) => s.views.search);
 
 	const [searchIsEnabled, setSearchIsEnabled] = useState(false);
-	const inputRef = useRef<HTMLInputElement>();
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [t] = useTranslation();
 	const [storedValue, setStoredValue] = useLocalStorage('search_suggestions', []);
 	const [inputTyped, setInputTyped] = useState('');
@@ -115,10 +112,9 @@ export const SearchBar: FC<SearchBarProps> = ({
 		label: string;
 	}>();
 	const [isTyping, setIsTyping] = useState(false);
-	// const [changedBySearchBar, setChangedBySearchBar] = useState(false);
 
 	const moduleSelectorItems = useMemo<
-		Array<{ label: string; value: string; customComponent: JSX.Element }>
+		Array<{ label: string; value: string; customComponent: React.JSX.Element }>
 	>(
 		() =>
 			map(searchViews, (view) => ({
@@ -143,8 +139,8 @@ export const SearchBar: FC<SearchBarProps> = ({
 		if (activeRoute) {
 			setModuleSelection((selection) =>
 				activeRoute.route !== selection?.value
-					? find(moduleSelectorItems, (i) => i.value === activeRoute.route) ??
-					  moduleSelectorItems?.[0]
+					? (find(moduleSelectorItems, (i) => i.value === activeRoute.route) ??
+						moduleSelectorItems?.[0])
 					: moduleSelectorItems?.[0]
 			);
 		} else {
@@ -331,7 +327,7 @@ export const SearchBar: FC<SearchBarProps> = ({
 		[activeRoute?.app, history, moduleSelectorItems]
 	);
 	const [triggerSearch, setTriggerSearch] = useState(false);
-	const containerRef = useRef<HTMLDivElement>();
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	// useEffect(() => {
 	// 	const handler = (event: KeyboardEvent): unknown =>
@@ -389,7 +385,7 @@ export const SearchBar: FC<SearchBarProps> = ({
 				? t('search.active_input_label', 'Separate your keywords by a comma or pressing TAB')
 				: t('search.idle_input_label', 'Search in {{module}}', {
 						module: moduleSelection?.label
-				  }),
+					}),
 		[t, moduleSelection, inputHasFocus]
 	);
 

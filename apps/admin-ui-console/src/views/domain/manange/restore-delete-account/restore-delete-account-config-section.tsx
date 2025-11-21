@@ -200,7 +200,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										}}
 										value={searchDomainNameInput}
 										backgroundColor="gray5"
-										CustomIcon={(): JSX.Element => (
+										CustomIcon={(): React.ReactElement => (
 											<Icon
 												style={{ cursor: 'pointer' }}
 												icon="ArrowIosDownward"

@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import { Text, Checkbox } from '@zextras/carbonio-design-system';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 const TableRow = styled.tr<{
@@ -72,7 +71,7 @@ const CustomRowFactory = ({
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}: TRowProps): JSX.Element => {
+}: TRowProps): React.JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const ckbRef = useRef<HTMLDivElement>(null);
 	const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);

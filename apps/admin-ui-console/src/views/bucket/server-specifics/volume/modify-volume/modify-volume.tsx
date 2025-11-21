@@ -113,7 +113,7 @@ const ModifyVolume: FC<{
 	const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
 	const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
 	const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
-	const isCurrentRef: RefObject<HTMLDivElement> = useRef(null);
+	const isCurrentRef = useRef<HTMLDivElement>(null);
 	const [compressionThreshold, setCompressionThreshold] = useState<string>(
 		volumeDetail?.compressionThreshold
 	);

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Row, Text } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import React, { FC, useMemo } from 'react';
@@ -11,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { SUBSCRIPTIONS_ROUTE_ID, MANAGE_APP_ID } from '../../constants';
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../list/list-row';
 
 type licenseBannerProps = {
