@@ -4,23 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useCurrentUserRights, useConfigStore } from '@zextras/admin-ui-bootstrap';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { useConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
 import React from 'react';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import MTAAdvanced from './mta-advanced';
-
-vi.mock('../../../services/modify-config', () => ({
-	modifyConfig: vi.fn()
-}));
-
-vi.mock('@zextras/admin-ui-bootstrap', () => ({
-	useUserAccounts: vi.fn(),
-	useCurrentUserRights: vi.fn()
-}));
 
 const mockRights = [
 	{
@@ -51,25 +46,6 @@ function expectMailMessagesSizeSectionVisible() {
 	expect(page.getByText('Custom max size mail messages (MB)')).toBeVisible();
 }
 
-const setupMTATest = (component: React.ReactElement) => {
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				retry: false,
-				gcTime: 0,
-				staleTime: Infinity,
-				refetchOnMount: false,
-				refetchOnWindowFocus: false,
-				refetchOnReconnect: false
-			}
-		}
-	});
-
-	return setupBrowserTest(
-		<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>
-	);
-};
-
 describe('MTAAdvanced', () => {
 	const setupConfigStore = (): void => {
 		useConfigStore.getState().setConfig([
@@ -90,16 +66,38 @@ describe('MTAAdvanced', () => {
 
 	beforeEach(() => {
 		setupConfigStore();
-		(useCurrentUserRights as Mock).mockReturnValue({
-			data: mockRights,
-			isLoading: false,
-			isSuccess: true,
-			isError: false
+
+		// Set up user account store for useCurrentUserRights hook
+		useAccountStore.setState({
+			account: {
+				id: 'test-user-id',
+				name: 'test@example.com',
+				displayName: '',
+				signatures: {
+					signature: []
+				},
+				identities: undefined,
+				rights: { targets: [] }
+			},
+			settings: {
+				prefs: {},
+				attrs: {},
+				props: []
+			},
+			usedQuota: 0
 		});
 	});
 
+	afterEach(() => {
+		resetMockWorker();
+		useAccountStore.setState({});
+	});
+
 	it('should render the component correctly', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 		expect(page.getByText('Advanced', { exact: true })).toBeVisible();
 		expectLoggingSectionVisible();
 		expectTuningSectionVisible();
@@ -107,7 +105,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle mail message size radio button interactions', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -127,7 +128,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should show error message for invalid message size input', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
 		await customSizeRadio.click();
@@ -146,7 +150,10 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle switch interactions', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		const loggingSwitchLabel = page.getByText('Enable logging of the remote SMTP client port');
 		expect(loggingSwitchLabel).toBeVisible();
@@ -158,7 +165,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle input field interactions', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
 		expect(antivirusInput).toBeVisible();
@@ -189,7 +199,10 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle radio button state changes for message size limit', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Start with custom size selected (based on mock data)
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -212,7 +225,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle message size input changes', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Ensure custom size is selected
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -266,7 +282,10 @@ describe('MTAAdvanced', () => {
 			// Note: No zimbraMtaMaxMessageSize in this config
 		]);
 
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Should default to "No size limit"
 		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
@@ -281,7 +300,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should trigger setLimitMaxMessageSize(false) when clicking no limit radio', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Start with custom size selected (has message size in config)
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -316,7 +338,10 @@ describe('MTAAdvanced', () => {
 			{ n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' }
 		]);
 
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Should start with "No size limit" selected
 		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
@@ -335,7 +360,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should trigger setValue and setZimbraMtaMaxMessageSizeState on input change', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Ensure custom size is selected
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -378,7 +406,10 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle select dropdown changes for log levels', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Test that select elements are visible - this ensures the change handlers are attached
 		// Note: Select interactions are complex in browser tests, but visibility indicates proper setup
@@ -389,7 +420,10 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle save and cancel functionality', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Make a change to trigger dirty state
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -411,7 +445,11 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle save functionality with form submission', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		createBrowserSoapAPIInterceptor('ModifyConfig', {});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Make multiple changes to trigger different parts of the save logic
 		const loggingSwitch = page.getByText('Enable logging of the remote SMTP client port');
@@ -444,7 +482,10 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle invalid SMTPD sender login maps', async () => {
-		setupMTATest(<MTAAdvanced />);
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRights
+		});
+		setupBrowserTest(<MTAAdvanced />);
 
 		// Enter an invalid SMTPD sender login maps value to trigger error handling
 		const smtpdInput = page.getByLabelText('Smtpd sender login maps');
