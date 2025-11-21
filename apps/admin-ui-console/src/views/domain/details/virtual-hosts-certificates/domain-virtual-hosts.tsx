@@ -12,10 +12,8 @@ import {
 	Padding,
 	Divider,
 	Text,
-	Input,
 	Button,
 	Table,
-	Icon,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
@@ -23,6 +21,8 @@ import _ from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
+import AlertBanner from './alert-banner';
+import CertificateView from './certificate-view';
 import DeleteCertificateModel from './delete-certificate-model';
 import VirtualHostsRow from './VirtualHostsRow';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
@@ -40,10 +40,7 @@ import {
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
-import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { isValidVirtualHostname } from '../../../utility/utils';
 
@@ -358,26 +355,6 @@ const DomainVirtualHosts: FC = () => {
 			});
 	};
 
-	const downloadTxtHandler = (): void => {
-		const elementCerti = document.createElement('a');
-		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
-			type: 'application/x-pem-file'
-		});
-		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.pem`;
-		document.body.appendChild(elementCerti);
-		elementCerti.click();
-
-		const elementPrivateKey = document.createElement('a');
-		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
-			type: 'application/x-pem-file'
-		});
-		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.pem`;
-		document.body.appendChild(elementPrivateKey);
-		elementPrivateKey.click();
-	};
-
 	useEffect(() => {
 		getAllCertiDetailsAPICall();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -470,141 +447,18 @@ const DomainVirtualHosts: FC = () => {
 							setItems={setItems}
 						/>
 					</Container>
-					{alertToggle && (
-						<Container
-							height="fit-content"
-							mainAlignment="space-between"
-							crossAlignment="center"
-							padding={{ horizontal: 'large' }}
-						>
-							<Row
-								padding={{ all: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-								style={{
-									borderRadius: '2px 2px 0px 0px',
-									backgroundColor: '#BDE7FE'
-								}}
-							>
-								<Row>
-									<Icon icon="AlertTriangleOutline" size="large" color="info" />
-									<Padding left="large">
-										<Text>
-											{t(
-												'label.certificate_alert_helperText',
-												'The certificate will be available once the proxy is restarted'
-											)}
-										</Text>
-									</Padding>
-								</Row>
-								<Icon
-									icon="CloseOutline"
-									size="large"
-									style={{ cursor: 'pointer' }}
-									onClick={(): any => setAlertToggle(false)}
-								/>
-							</Row>
-						</Container>
-					)}
+					{alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
 					<Row width="100%" padding={{ horizontal: 'large' }}>
 						<Divider color="gray2" />
 					</Row>
-					<Container
-						padding={{ all: 'large' }}
-						height="fit"
-						crossAlignment="flex-start"
-						background="gray6"
-					>
-						<Row
-							padding={{ top: 'large' }}
-							width="100%"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-						>
-							<Row>
-								<Text size="medium" color="gray0" weight="bold">
-									{t('label.certificate', 'Certificate')}
-								</Text>
-							</Row>
-							<Row>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.verify_certificate', 'VERIFY CERTIFICATE')}
-										color="primary"
-										onClick={handleLoadAndVerifyCert}
-									/>
-								</Padding>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.download_uppercase', 'DOWNLOAD')}
-										color="primary"
-										disabled={toggleCertiBtn}
-										onClick={downloadTxtHandler}
-									/>
-								</Padding>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.remove', 'Remove')}
-										color="error"
-										disabled={toggleCertiBtn}
-										onClick={(): void => {
-											setOpen(true);
-										}}
-									/>
-								</Padding>
-							</Row>
-						</Row>
-						<ListRow padding={{ top: 'extralarge' }}>
-							<Container padding={{ horizontal: 'small', top: 'small' }}>
-								<Input
-									label={t(
-										'label.subject_name_cname',
-										'Subject Name (Canonical Name record - CNAME)'
-									)}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.subject || ''}
-								/>
-							</Container>
-							<Container padding={{ horizontal: 'small', top: 'small' }}>
-								<Input
-									label={t(
-										'label.subject_name_fqdn',
-										'Subject Alt Name (Fully Qualified Domain Name - FQDN)'
-									)}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.SubjectAltName || ''}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow padding={{ top: 'large' }}>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									backgroundColor="gray6"
-									label={t('label.issuer', 'Issuer')}
-									value={domainCertiDetails?.issuer || ''}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow padding={{ top: 'large' }}>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									label={t('label.valid_not_before', 'Valid from (not before)')}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.notBefore || ''}
-								/>
-							</Container>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									label={t('label.valid_not_after', 'Valid until (not after)')}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.notAfter || ''}
-								/>
-							</Container>
-						</ListRow>
-					</Container>
+					<CertificateView
+						domainCertiDetails={domainCertiDetails}
+						toggleCertiBtn={toggleCertiBtn}
+						domainCertificate={domainCertificate}
+						domainName={domainName}
+						onVerifyCertificate={handleLoadAndVerifyCert}
+						onRemove={() => setOpen(true)}
+					/>
 				</Container>
 			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
