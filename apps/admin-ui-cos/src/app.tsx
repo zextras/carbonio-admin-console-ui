@@ -12,7 +12,9 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useConfigStore,
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -40,9 +42,7 @@ import {
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { getAllServers } from './services/get-all-servers-service';
-import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
-import { useGlobalConfigStore } from './store/global-config/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';

@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useConfigurationAttribute } from '@zextras/admin-ui-bootstrap';
 import type { PostHogConfig } from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import React, { useMemo } from 'react';
 
 import { PH_API_HOST, PH_PROJECT_API_KEY, TRUE } from '../constants';
-import { useConfigurationAttribute } from '../store/config/store';
 
 import { TrackerPageView } from './page-view';
 
