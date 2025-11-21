@@ -25,17 +25,21 @@ const getAppI18n = (): i18n => {
 };
 
 export type WrapperProps = {
-	children?: React.ReactNode | undefined;
+	children?: React.ReactNode;
 	initialRouterEntries?: string[];
 };
 
-export const I18NextTestProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const I18NextTestProvider = ({
+	children
+}: {
+	children: React.ReactNode;
+}): React.JSX.Element => {
 	const i18nInstance = useMemo(() => getAppI18n(), []);
 
 	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 };
 
-export const Wrapper = ({ initialRouterEntries, children }: WrapperProps): JSX.Element => (
+export const Wrapper = ({ initialRouterEntries, children }: WrapperProps): React.JSX.Element => (
 	<MemoryRouter
 		initialEntries={initialRouterEntries}
 		initialIndex={(initialRouterEntries?.length || 1) - 1}

@@ -5,7 +5,11 @@
  */
 
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
-import { createSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { page } from 'vitest/browser';
@@ -140,7 +144,7 @@ describe('COSPreferences', () => {
 	});
 
 	it('should render the component correctly', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
 		setupBrowserTest(<COSPreferences />);
@@ -155,7 +159,7 @@ describe('COSPreferences', () => {
 	});
 
 	it('should toggle zimbraFeatureReadReceiptsEnabled when clicking the read receipt switch', async () => {
-		const getrightsinterceptor = createSoapAPIInterceptor('GetAllEffectiveRights', {
+		const getrightsinterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
 		setupBrowserTest(<COSPreferences />);
@@ -178,7 +182,7 @@ describe('COSPreferences', () => {
 	});
 
 	it('should change zimbraPrefMailSendReadReceipts when selecting a different option', async () => {
-		createSoapAPIInterceptor('GetAllEffectiveRights', {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
 			target: mockRightsData
 		});
 		setupBrowserTest(<COSPreferences />);

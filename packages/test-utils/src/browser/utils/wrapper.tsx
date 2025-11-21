@@ -47,7 +47,11 @@ const getQueryClient = (): QueryClient => {
 	});
 };
 
-export const I18NextTestProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const I18NextTestProvider = ({
+	children
+}: {
+	children: React.ReactNode;
+}): React.JSX.Element => {
 	const i18nInstance = useMemo(() => getAppI18n(), []);
 
 	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
@@ -57,7 +61,7 @@ export const BootstrapBridgeProvider = ({
 	children
 }: {
 	children: React.ReactNode;
-}): JSX.Element => {
+}): React.JSX.Element => {
 	const history = useHistory();
 	const createSnackbar = () => ({});
 	const createModal = () => ({});
@@ -75,7 +79,7 @@ export const BootstrapBridgeProvider = ({
 	return <>{children}</>;
 };
 
-export const Wrapper = ({ children }: WrapperProps): JSX.Element => {
+export const Wrapper = ({ children }: WrapperProps): React.JSX.Element => {
 	const queryClient = useMemo(() => getQueryClient(), []);
 	return (
 		<BrowserRouter>
