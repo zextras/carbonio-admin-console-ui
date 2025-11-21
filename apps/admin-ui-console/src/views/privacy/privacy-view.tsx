@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -27,7 +27,6 @@ import {
 	CONFIG
 } from '../../constants';
 import { modifyConfig } from '../../services/modify-config';
-import { useConfigStore } from '../../store/config/store';
 import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {

@@ -17,7 +17,9 @@ import {
 	useHasRight,
 	getRights,
 	useCurrentUserRights,
-	useMailstoreServers
+	useMailstoreServers,
+	useConfigStore,
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon, Button } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -72,9 +74,7 @@ import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
-import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
-import { useGlobalConfigStore } from './store/global-config/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';

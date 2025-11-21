@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { useConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -19,6 +18,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { filter, isEqual, map } from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -32,7 +32,6 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 
@@ -284,7 +283,6 @@ const GlobalDetailPanel: FC = () => {
 				_content: carbonioNotificationData.carbonioNotificationFrom
 			});
 			carbonioNotificationData.carbonioNotificationRecipients.forEach(
-				// eslint-disable-next-line array-callback-return
 				(item: { label: string }): void => {
 					attributes.push({
 						n: 'carbonioNotificationRecipients',

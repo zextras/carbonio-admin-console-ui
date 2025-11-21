@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -39,7 +39,6 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
-import { useConfigStore } from '../../../../store/config/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';

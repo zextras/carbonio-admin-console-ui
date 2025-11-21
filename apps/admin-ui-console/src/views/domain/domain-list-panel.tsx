@@ -10,7 +10,9 @@ import {
 	getAllRights,
 	useCurrentUserRights,
 	useModuleLicenseInfo,
-	useIsAdvanced
+	useIsAdvanced,
+	useConfigStore,
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
@@ -58,8 +60,6 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { useBackupModuleStore } from '../../store/backup-module/store';
-import { useConfigStore } from '../../store/config/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';

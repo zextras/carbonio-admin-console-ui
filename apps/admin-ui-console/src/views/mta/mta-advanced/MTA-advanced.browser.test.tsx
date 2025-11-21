@@ -5,13 +5,11 @@
  */
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useConfigStore } from '@zextras/admin-ui-bootstrap';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { page } from 'vitest/browser';
-
-import { useConfigStore } from '../../../store/config/store';
 
 import MTAAdvanced from './mta-advanced';
 
