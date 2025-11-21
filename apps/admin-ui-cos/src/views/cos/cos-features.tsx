@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import _, { find, isEqual, reduce } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,6 @@ import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosStore } from '../../store/cos/store';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../page-layout';
 
 import { Features } from './features';

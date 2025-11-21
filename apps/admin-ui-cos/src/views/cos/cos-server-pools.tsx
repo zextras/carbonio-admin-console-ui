@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -26,8 +27,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -420,7 +419,6 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
-		 
 		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
@@ -480,7 +478,6 @@ const CosServerPools: FC = () => {
 											<Input
 												value={searchServer}
 												disabled={
-													 
 													(serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
 												}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}

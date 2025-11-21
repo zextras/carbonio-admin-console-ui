@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, {
@@ -36,7 +36,6 @@ import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useCosStore } from '../../store/cos/store';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
