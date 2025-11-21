@@ -22,7 +22,7 @@ import {
 	Link
 } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
-import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
