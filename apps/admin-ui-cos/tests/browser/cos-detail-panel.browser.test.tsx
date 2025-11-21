@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
 	resetMockWorker,
@@ -16,7 +16,6 @@ import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
-import { useGlobalConfigStore } from '../../src/store/global-config/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
 
 const mockApiResponse = {
@@ -68,25 +67,6 @@ const mockRightsData = [
 describe('CosDetailPanel', () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
-
-		useAccountStore.setState({
-			account: {
-				id: 'test-user-id',
-				name: 'test@example.com',
-				displayName: '',
-				signatures: {
-					signature: []
-				},
-				identities: undefined,
-				rights: { targets: [] }
-			},
-			settings: {
-				prefs: {},
-				attrs: {},
-				props: []
-			},
-			usedQuota: 0
-		});
 
 		useGlobalConfigStore.setState({
 			globalConfig: {},

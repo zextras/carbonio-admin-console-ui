@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
 	resetMockWorker,

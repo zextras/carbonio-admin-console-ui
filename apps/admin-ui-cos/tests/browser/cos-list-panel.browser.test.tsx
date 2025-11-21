@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/src/store/account/store';
-import { useAdvanceStore } from '@zextras/admin-ui-bootstrap/src/store/advance/store';
+import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
 	resetMockWorker,
@@ -16,7 +15,6 @@ import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
-import { useGlobalConfigStore } from '../../src/store/global-config/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
 
 const mockApiResponse = {
@@ -55,47 +53,10 @@ const mockRightsData = [
 	}
 ];
 
-const mockRights = [
-	{
-		type: 'config',
-		all: [
-			{
-				setAttrs: [{ all: true }]
-			}
-		]
-	}
-];
-
 describe('CosListPanel', () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
 		useCosStore.getState().reset();
-
-		// Initialize bootstrap stores
-		useAccountStore.setState({});
-		useAdvanceStore.setState(undefined);
-
-		// Set up a mock user account for rights to work
-		useAccountStore.setState({
-			account: {
-				id: 'test-user-id',
-				name: 'test@example.com',
-				displayName: '',
-				signatures: {
-					signature: []
-				},
-				identities: undefined,
-				rights: {
-					targets: []
-				}
-			},
-			settings: {
-				prefs: {},
-				attrs: {},
-				props: []
-			},
-			usedQuota: 0
-		});
 
 		// Initialize global config store
 		useGlobalConfigStore.setState({

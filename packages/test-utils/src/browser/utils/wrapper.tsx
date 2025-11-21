@@ -5,7 +5,7 @@
  */
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useContextBridge } from '@zextras/admin-ui-bootstrap/src/store/context-bridge';
+import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
@@ -80,10 +80,13 @@ export const BootstrapBridgeProvider = ({
 	return <>{children}</>;
 };
 
-export const Wrapper = ({ children, queryClient: providedQueryClient }: WrapperProps): React.JSX.Element => {
+export const Wrapper = ({
+	children,
+	queryClient: providedQueryClient
+}: WrapperProps): React.JSX.Element => {
 	const defaultQueryClient = useMemo(() => getQueryClient(), []);
 	const queryClient = providedQueryClient ?? defaultQueryClient;
-	
+
 	return (
 		<BrowserRouter>
 			<QueryClientProvider client={queryClient}>

@@ -4,6 +4,10 @@
 	"description": "The Zextras Carbonio web admin",
 	"private": true,
 	"main": "./exports.ts",
+	"exports": {
+		".": "./exports.ts",
+		"./testing": "./testing.ts"
+	},
 	"types": "./exports.ts",
 	"engines": {
 		"node": "v22",
