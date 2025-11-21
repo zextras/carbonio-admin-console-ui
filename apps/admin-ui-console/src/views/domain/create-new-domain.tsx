@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -20,8 +19,8 @@ import {
 	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import { map, some } from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -41,8 +40,6 @@ import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { getCosList } from '../../services/search-cos-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -64,7 +61,6 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
-// eslint-disable-next-line no-shadow
 export enum GAL_MODE {
 	INTERNAL = 'zimbra',
 	EXTERNAL = 'external',
@@ -225,7 +221,7 @@ const CreateDomain: FC = () => {
 						: t(
 								'label.the_last_changes_has_been_saved_successfully',
 								'Changes have been saved successfully'
-						  ),
+							),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -245,7 +241,6 @@ const CreateDomain: FC = () => {
 			});
 	}, [createSnackbar, domainName, t]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onCreate = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setHasCarbonioNotificationFromError(false);
@@ -303,7 +298,7 @@ const CreateDomain: FC = () => {
 					_content: zimbraDomainDefaultCOSId
 				});
 			}
-			// eslint-disable-next-line array-callback-return
+
 			carbonioNotificationRecipients.forEach((item: { label: string }): void => {
 				attributes.push({
 					n: 'carbonioNotificationRecipients',

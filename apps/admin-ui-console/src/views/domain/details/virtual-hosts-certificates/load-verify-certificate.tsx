@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	FileLoader,
@@ -16,7 +15,7 @@ import {
 	Container,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';
@@ -34,7 +33,6 @@ import {
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { CertificateTypes } from '../../../utility/utils';
@@ -140,13 +138,11 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		setUploadBtnTgl(false);
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const verifyCertificateHandler = useCallback((): void => {
 		if (objDomainCertificate.content === '') {
 			setDomainCertiErr(false);
 		}
 
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!isCertificateAvailbale) {
 			if (objDomainCertificateCaChain.content === '') {
 				setDomainCertiCaChainErr(false);
@@ -414,7 +410,6 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					<ListRow>
 						<Padding vertical="small" horizontal="small" width="100%">
 							<Textarea
-								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('label.load_copy_certi', 'Load or copy your certificate')}
 								backgroundColor="gray5"
 								value={objDomainCertificate.content || ''}
@@ -434,9 +429,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								<Padding top="extrasmall">
 									<Text color="error" overflow="break-word" size="extrasmall">
 										{t(
-											// eslint-disable-next-line sonarjs/no-duplicate-string
 											'label.certificate_invalid',
-											// eslint-disable-next-line sonarjs/no-duplicate-string
+
 											'The certificate is invalid'
 										)}
 									</Text>
