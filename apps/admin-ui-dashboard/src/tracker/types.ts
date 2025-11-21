@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Attribute } from '../../types';
+export type Attribute = {
+	n: string;
+	_content: string;
+	c?: boolean;
+};
 
 export type ConfigAttributesState = {
 	globalAttributes: Array<Attribute>;
