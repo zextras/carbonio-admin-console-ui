@@ -36,7 +36,7 @@ import { useDomainInformation } from './src/store/domain-information';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
-import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/config/store';
+import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
 import { useDomainStore } from './src/store/shared/domains';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
