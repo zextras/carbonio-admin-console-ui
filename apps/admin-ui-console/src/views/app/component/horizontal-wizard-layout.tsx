@@ -5,10 +5,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo } from 'react';
 
 import { Button, Icon, Padding, Row, RowProps, Text } from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -19,7 +19,7 @@ interface RowExtendProps extends RowProps {
 	isActive: boolean;
 }
 
-export const RowContainer = styled(Row)<RowExtendProps>`
+const RowContainer = styled(Row)<RowExtendProps>`
 	border-bottom: ${({ isActive, theme }): string =>
 		isActive ? `2px solid ${theme.palette.primary.regular}` : ''};
 	cursor: pointer;
@@ -89,7 +89,7 @@ const StepNavigator: FC<{
 		</RowContainer>
 	);
 };
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 const DefaultWrapper: FC<{ wizard: any; wizardFooter: any }> = ({ wizard, wizardFooter }) => (
 	<>
 		{wizard}

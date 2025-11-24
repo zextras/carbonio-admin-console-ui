@@ -5,7 +5,6 @@
  */
 
 export const APP_ID = 'carbonio-admin-console-ui';
-export const SECONDARY_ROUTE = 'something';
 export const MANAGE = 'manage';
 export const MAX_DOMAIN_DISPLAY = 20;
 export const GENERAL_INFORMATION = 'general_information';
@@ -40,8 +39,6 @@ export const ZIMBRA_DOMAIN_NAME = 'zimbraDomainName';
 export const ZIMBRA_ID = 'zimbraId';
 export const ZIMBRA_VIRTUAL_HOSTNAME = 'zimbraVirtualHostname';
 export const FIRST_PAGE = 1;
-export const DOMAIN_DETAIL_VIEW = 'detail';
-export const DOMAIN_MANAGE_VIEW = 'manage';
 export const ACCOUNTS = 'accounts';
 export const DISTRIBUTION_LIST = 'distribution_list';
 export const RESOURCES = 'resources';
@@ -335,7 +332,7 @@ export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
 export const ABQ_DISABLED = 'Disabled';
-export const paginationItems: Array<{label: string, value: number}> = [
+export const paginationItems: Array<{ label: string; value: number }> = [
 	{
 		label: '5',
 		value: 5
@@ -368,7 +365,6 @@ export const PRIMARY = 'primary';
 export const SECONDARY = 'secondary';
 export const INDEX = 'index';
 export const MOBILE = 'mobile';
-export const PRIMARY_BAR_DASHBOARD = 'pb_dashboard';
 export const PRIMARY_BAR_DOMAINS = 'pb_domains';
 export const PRIMARY_BAR_STORAGE = 'pb_storage';
 export const PRIMARY_BAR_SUBSCRIPTIONS = 'pb_subscriptions';
