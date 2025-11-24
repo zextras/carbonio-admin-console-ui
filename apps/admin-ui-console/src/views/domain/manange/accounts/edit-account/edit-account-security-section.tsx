@@ -99,7 +99,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
 	const [secrateCode, setSecrateCode] = useState('');
-	const [sendEmailTo, setSendEmailTo] = useState<any>('');
+	const [sendEmailTo, setSendEmailTo] = useState<any>([]);
 	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
@@ -229,7 +229,11 @@ const EditAccountSecuritySection: FC = () => {
 										onChange={(contacts: any): void => {
 											const data: any = [];
 											map(contacts, (contact) => {
-												if (isValidEmail(contact.label ?? '')) data.push(contact);
+												const isValid = isValidEmail(contact.label ?? '');
+												data.push({
+													...contact,
+													error: !isValid
+												});
 											});
 											setSendEmailTo(data);
 										}}
@@ -238,7 +242,11 @@ const EditAccountSecuritySection: FC = () => {
 										background="gray5"
 										ChipComponent={CustomChip}
 										maxChips={null}
+										hasError={sendEmailTo?.some((contact: any) => contact.error)}
 									/>
+									<Text color="error" size="small">
+										{sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
+									</Text>
 								</Row>
 								<Row width="20%" mainAlignment="space-between">
 									<Button
@@ -246,7 +254,7 @@ const EditAccountSecuritySection: FC = () => {
 										icon="PaperPlaneOutline"
 										size="large"
 										iconPlacement="right"
-										disabled={sendEmailTo.length === 0}
+										disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
 										onClick={(): void => {
 											sendMail('SendMsgRequest', {
 												_jsns: 'urn:zimbraMail',
@@ -272,7 +280,7 @@ const EditAccountSecuritySection: FC = () => {
 													]
 												}
 											}).then(() => {
-												setSendEmailTo('')
+												setSendEmailTo([])
 												createSnackbar({
 													key: 'success',
 													severity: 'success',
@@ -285,7 +293,7 @@ const EditAccountSecuritySection: FC = () => {
 												createSnackbar({
 													key: 'error',
 													severity: 'error',
-													label: t('domain.editAccount.otpSentError', 'Error in sending OTP. Please try again later.'),
+													label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 													autoHideTimeout: 3000,
 													hideButton: true,
 													replace: true
@@ -312,7 +320,7 @@ const EditAccountSecuritySection: FC = () => {
 				)
 			}
 		],
-		[accountDetail?.name, domainName, pinCodes, qrData, secrateCode, sendEmailTo, t]
+		[accountDetail?.name, domainName, pinCodes, qrData, secrateCode, sendEmailTo, createSnackbar, t]
 	);
 	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
 		accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1)
