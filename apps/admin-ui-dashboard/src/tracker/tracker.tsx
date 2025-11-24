@@ -9,7 +9,7 @@ import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
 import { useCallback, useEffect } from 'react';
 
-export interface Tracker {
+interface Tracker {
 	capture: (
 		event_name: string,
 		properties?: Properties | null | undefined,
