@@ -64,7 +64,7 @@ import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
-export enum RANGE {
+enum RANGE {
 	DAYS = 'd',
 	HOURS = 'h',
 	MINUTES = 'm',
@@ -216,8 +216,6 @@ const DomainGalSettings: FC = () => {
 		current: false
 	});
 	const [zimbraGalLdapAuthMech, setZimbraGalLdapAuthMech] = useState<boolean>(false);
-	const [zimbraGalAccountName, setZimbraGalAccountName] = useState<string>('');
-	const [mailServerName, setMailServerName] = useState<string>('');
 	const [zimbraDataSourcePollingInterval, setZimbraDataSourcePollingInterval] =
 		useState<string>('');
 	const [pollingIntervalValue, setPollingIntervalValue] = useState<string>('');
@@ -225,7 +223,6 @@ const DomainGalSettings: FC = () => {
 		rangeItems[0]
 	);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const [dataSourceName, setDataSourceName] = useState<string>('');
 	const [measureUnitSelection, setMeasureUnitSelection] = useState<any>('');
 
 	const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
@@ -234,7 +231,7 @@ const DomainGalSettings: FC = () => {
 			_content: string;
 		}[]
 	>([]);
-	const [zimbraAccountDataSourceId, setZimbraAccountDataSourceId] = useState<object[]>([]);
+	const [zimbraAccountDataSourceId] = useState<object[]>([]);
 	const [freqValue, setFreqValue] = useState<{
 		digits: string;
 		time: string;
@@ -323,17 +320,11 @@ const DomainGalSettings: FC = () => {
 				name: string;
 			} = data?.account[0];
 			if (galAccount) {
-				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
 					const obj: objectType = {};
 					galAccount?.a.forEach((item: Attribute) => {
 						obj[item?.n] = item._content;
 					});
-					if (obj?.zimbraMailHost) {
-						setMailServerName(obj?.zimbraMailHost);
-					} else {
-						setMailServerName('');
-					}
 					if (obj?.zimbraDataSourceGalPollingInterval) {
 						updateFreqValues(obj);
 					}
@@ -362,12 +353,8 @@ const DomainGalSettings: FC = () => {
 				if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
 					setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
 				}
-				if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourceName) {
-					setDataSourceName(dataSource?._attrs?.zimbraDataSourceName);
-				}
 			} else {
 				setZimbraDataSourcePollingInterval('');
-				setDataSourceName('');
 			}
 		});
 	};
@@ -376,9 +363,7 @@ const DomainGalSettings: FC = () => {
 		(data: Array<Attribute> | undefined) => {
 			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
-				setZimbraGalAccountName('');
 				setZimbraDataSourcePollingInterval('');
-				setDataSourceName('');
 				const obj: {
 					[key: string]: string;
 				} = {};
@@ -450,11 +435,7 @@ const DomainGalSettings: FC = () => {
 			zimbraGalAccountIdArray.forEach((items) => {
 				getDomainDataSource(items?._content);
 			});
-		} else {
-			setZimbraGalAccountName('');
-			setMailServerName('');
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		} // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [zimbraGalAccountId]);
 
 	useMemo(() => {

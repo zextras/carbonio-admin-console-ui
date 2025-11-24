@@ -25,12 +25,7 @@ import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
 
-import {
-	MailMessage,
-	EditorAttachmentFiles,
-	Conversation,
-	AttachmentPart
-} from './mail-message-renderer';
+import { MailMessage, EditorAttachmentFiles, AttachmentPart } from './mail-message-renderer';
 
 type OpenEmlPreviewType = (
 	parentMessageId: string,
@@ -42,17 +37,12 @@ type GetQuarantineMsgData = () => void;
 type SetShowMessageView = (v: boolean) => void;
 type SetMessageViewLoading = (v: boolean) => void;
 
-export type MailEditHeaderType = {
-	folderId: string | number;
-	header: string | undefined;
-};
-
-export type IconColors = Array<{
+type IconColors = Array<{
 	color: string;
 	extension: string;
 }>;
 
-export type AttachmentType = {
+type AttachmentType = {
 	filename?: string;
 	size: number;
 	link: string;
@@ -68,18 +58,11 @@ export type AttachmentType = {
 	setMessageViewLoading: SetMessageViewLoading;
 };
 
-export type PreviewPanelActionsType = {
-	item: Conversation;
-	folderId: string;
-	isMessageView: boolean;
-	conversation: Conversation;
-};
-
-export type CopyToFileResponse = {
+type CopyToFileResponse = {
 	status?: string;
 	value?: Record<string, unknown>;
 };
-export type GetAttachmentsDownloadLinkProps = {
+type GetAttachmentsDownloadLinkProps = {
 	messageId: string;
 	messageSubject: string;
 	attachments: Array<string | undefined>;

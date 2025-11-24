@@ -8,7 +8,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-export interface InheritedInputProps {
+interface InheritedInputProps {
 	label: any;
 	subValue: any;
 	inheritedValue: any;

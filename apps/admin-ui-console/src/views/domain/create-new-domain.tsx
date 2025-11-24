@@ -61,7 +61,7 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
-export enum GAL_MODE {
+enum GAL_MODE {
 	INTERNAL = 'zimbra',
 	EXTERNAL = 'external',
 	BOTH = 'both'

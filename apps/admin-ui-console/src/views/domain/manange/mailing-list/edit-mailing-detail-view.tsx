@@ -54,13 +54,7 @@ import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
 
-export enum SUBSCRIBE_UNSUBSCRIBE {
-	ACCEPT = 'ACCEPT',
-	APPROVAL = 'APPROVAL',
-	REJECT = 'REJECT'
-}
-
-export enum TRUE_FALSE {
+enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
 }
@@ -91,8 +85,6 @@ const EditMailingListView: FC<any> = ({
 		'Search for a user and click on the ADD button.'
 	);
 	const createSnackbar = useSnackbar();
-	const [memberOffset, setMemberOffset] = useState<number>(0);
-	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
 	const [distributionName, setDistributionName] = useState<string>('');
 	const [
@@ -114,10 +106,9 @@ const EditMailingListView: FC<any> = ({
 	const [ownerTableRows, setOwnerTableRows] = useState<any[]>([]);
 	const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<any[]>([]);
 	const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
-	const [searchMemberList, setSearchMemberList] = useState<any[]>([]);
 	const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
 	const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-	const [isRequstInProgress, setIsRequstInProgress] = useState<boolean>(false);
+	const [isRequstInProgress] = useState<boolean>(false);
 	const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
 	const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
 	const [isShowError, setIsShowError] = useState<boolean>(false);
@@ -126,7 +117,6 @@ const EditMailingListView: FC<any> = ({
 	const [searchOwner, setSearchOwner] = useState<string>('');
 	const [memberURL, setMemberURL] = useState<string>();
 	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
-	const [searchOwnerMemberOfList, setSearchOwnerMemberOfList] = useState<any[]>([]);
 	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
@@ -135,7 +125,6 @@ const EditMailingListView: FC<any> = ({
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
-	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
@@ -194,24 +183,6 @@ const EditMailingListView: FC<any> = ({
 				label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
 				width: '100%',
 				bold: true
-			}
-		],
-		[t]
-	);
-
-	const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
-		() => [
-			{
-				label: t('label.automatically_accept', 'Automatically accept'),
-				value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT
-			},
-			{
-				label: t('label.require_list_owner_approval', 'Require list owner approval'),
-				value: SUBSCRIBE_UNSUBSCRIBE.APPROVAL
-			},
-			{
-				label: t('label.automatically_reject', 'Automatically reject'),
-				value: SUBSCRIBE_UNSUBSCRIBE.REJECT
 			}
 		],
 		[t]
@@ -2307,7 +2278,7 @@ const EditMailingListView: FC<any> = ({
 								mainAlignment="flex-end"
 								crossAlignment="flex-end"
 							>
-								<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
+								<Paging totalItem={1} pageSize={10} />
 							</Container>
 						)}
 					</ListRow>
@@ -2452,7 +2423,7 @@ const EditMailingListView: FC<any> = ({
 							mainAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
 							crossAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
 						>
-							<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
+							<Paging totalItem={1} pageSize={10} />
 						</Container>
 					</ListRow>
 

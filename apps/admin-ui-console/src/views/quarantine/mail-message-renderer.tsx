@@ -50,7 +50,7 @@ export type Participant = {
 	fullName?: string;
 };
 
-export type IncompleteMessage = {
+type IncompleteMessage = {
 	id: string;
 	did?: string;
 	parent: string;
