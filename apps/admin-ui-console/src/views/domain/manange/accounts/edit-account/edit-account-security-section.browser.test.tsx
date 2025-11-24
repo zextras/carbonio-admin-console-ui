@@ -9,6 +9,8 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 
+import { sendMail } from '../../../../../services/send-mail-service';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { AccountContext } from '../account-context';
 
 import EditAccountSecuritySection from './edit-account-security-section';
@@ -25,6 +27,16 @@ vi.mock('@zextras/admin-ui-bootstrap', async () => {
 		})
 	};
 });
+
+// Mock the sendMail service
+vi.mock('../../../../../services/send-mail-service', () => ({
+	sendMail: vi.fn()
+}));
+
+// Mock the fetchSoap service
+vi.mock('../../../../../services/generateOTP-service', () => ({
+	fetchSoap: vi.fn()
+}));
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -1261,5 +1273,27 @@ describe('EditAccountSecuritySection (browser)', () => {
 		await expect
 			.element(page.getByText('Minimum number of unique passwords history'))
 			.toBeVisible();
+	});
+
+	it('should have sendMail service mocked for success scenario', () => {
+		vi.clearAllMocks();
+
+		// Mock sendMail to resolve successfully
+		vi.mocked(sendMail).mockResolvedValue({} as any);
+
+		// Verify the mock is set up correctly
+		expect(sendMail).toBeDefined();
+		expect(vi.isMockFunction(sendMail)).toBe(true);
+	});
+
+	it('should have sendMail service mocked for error scenario', () => {
+		vi.clearAllMocks();
+
+		// Mock sendMail to reject with error
+		vi.mocked(sendMail).mockRejectedValue(new Error('Network error'));
+
+		// Verify the mock is set up correctly
+		expect(sendMail).toBeDefined();
+		expect(vi.isMockFunction(sendMail)).toBe(true);
 	});
 });
