@@ -1,3 +1,9 @@
+## [0.11.1-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0...v0.11.1-devel.1) (2025-11-24)
+
+### Bug Fixes
+
+* **ci:** correct image name for admin console UI ([#971](https://github.com/zextras/carbonio-admin-console-ui/issues/971)) ([0dcecfa](https://github.com/zextras/carbonio-admin-console-ui/commit/0dcecfa0e0cce1948f2ec17f5af2ecc303cd9869))
+
 ## [0.11.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.9...v0.11.0) (2025-11-17)
 
 ### Features
