@@ -267,10 +267,10 @@ pipeline {
             steps {
                 dockerStage([
                     dockerfile: 'Dockerfile',
-                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
+                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-console-ui',
                     ocLabels: [
                         title: 'Carbonio Admin Console UI',
-                                    description: 'Carbonio Admin Console UI Container'
+                        description: 'Carbonio Admin Console UI Container'
                     ]
                 ])
             }
