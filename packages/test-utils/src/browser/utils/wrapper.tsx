@@ -21,9 +21,7 @@ const getAppI18n = (): i18n => {
 		interpolation: {
 			escapeValue: false
 		},
-		resources: {
-			en: {}
-		}
+		resources: { en: { translation: {} } }
 	});
 	return newI18n;
 };
