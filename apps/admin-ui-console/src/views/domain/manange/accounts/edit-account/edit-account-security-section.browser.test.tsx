@@ -13,10 +13,18 @@ import { AccountContext } from '../account-context';
 
 import EditAccountSecuritySection from './edit-account-security-section';
 
-// Mock the useAuthIsAdvanced hook
-vi.mock('../../../../../store/auth-advanced/store', () => ({
-	useAuthIsAdvanced: vi.fn(() => true)
-}));
+// Mock the useIsAdvanced and useDomainStore hooks
+vi.mock('@zextras/admin-ui-bootstrap', async () => {
+	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
+	return {
+		...actual,
+		useIsAdvanced: vi.fn(() => true),
+		useDomainStore: vi.fn((selector) => {
+			const state = { domain: { name: 'test-domain.com' } };
+			return selector ? selector(state) : state;
+		})
+	};
+});
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -119,38 +127,38 @@ const mockContextValue = {
 	},
 	directMemberList: [],
 	inDirectMemberList: [],
-	setSignatureItems: () => {},
-	setSignatureList: () => {},
-	setAccountDetail: () => {},
-	setAccSpecificDetail: () => {},
-	setDirectMemberList: () => {},
-	setInDirectMemberList: () => {},
-	setInitAccountDetail: () => {},
+	setSignatureItems: () => { },
+	setSignatureList: () => { },
+	setAccountDetail: () => { },
+	setAccSpecificDetail: () => { },
+	setDirectMemberList: () => { },
+	setInDirectMemberList: () => { },
+	setInitAccountDetail: () => { },
 	initAccountDetail: {},
 	otpList: [],
 	identitiesList: [],
 	folderList: [],
-	setFolderList: () => {},
-	getListOtp: () => {},
-	getIdentitiesList: () => {},
+	setFolderList: () => { },
+	getListOtp: () => { },
+	getIdentitiesList: () => { },
 	deligateDetail: {},
-	setDeligateDetail: () => {},
+	setDeligateDetail: () => { },
 	credentialList: [],
-	getCredentialList: () => {},
+	getCredentialList: () => { },
 	initialGlobalRights: {},
-	setinitialGlobalRights: () => {},
+	setinitialGlobalRights: () => { },
 	globalRights: {},
-	setGlobalRights: () => {},
+	setGlobalRights: () => { },
 	deleteAdministrationRights: [],
-	setDeleteAdministrationRights: () => {},
+	setDeleteAdministrationRights: () => { },
 	userSessionList: [],
-	setAllUserSessionList: () => {},
+	setAllUserSessionList: () => { },
 	allUserSessionList: [],
-	setUserSessionList: () => {},
+	setUserSessionList: () => { },
 	defaultCOS: {},
-	setDefaultCOS: () => {},
+	setDefaultCOS: () => { },
 	allowedDeletePassword: false,
-	setAllowedDeletePassword: () => {}
+	setAllowedDeletePassword: () => { }
 };
 
 describe('EditAccountSecuritySection (browser)', () => {
@@ -526,14 +534,14 @@ describe('EditAccountSecuritySection (browser)', () => {
 			.toBeVisible();
 	});
 
-	it.skip('should render with empty accountDetail', async () => {
+	it('should render with empty accountDetail', async () => {
 		const emptyContext = { ...mockContextValue, accountDetail: {} };
 		setupBrowserTest(
 			<AccountContext.Provider value={emptyContext}>
 				<EditAccountSecuritySection />
 			</AccountContext.Provider>
 		);
-		await expect.element(page.getByText('Password')).toBeVisible();
+		await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
 	});
 
 	it('should render with all password policies enabled', async () => {
@@ -848,7 +856,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
 	});
 
-	it.skip('should render OTP list when available', async () => {
+	it('should render OTP list when available', async () => {
 		const contextWithOTPList = {
 			...mockContextValue,
 			otpList: [
@@ -857,7 +865,8 @@ describe('EditAccountSecuritySection (browser)', () => {
 					description: 'Test OTP',
 					status: 'Active',
 					failed: '0',
-					'creation-date': '2024-01-01'
+					'creation-date': '2024-01-01',
+					columns: ['Test OTP', 'Active', '0', '2024-01-01']
 				}
 			]
 		};
@@ -869,13 +878,13 @@ describe('EditAccountSecuritySection (browser)', () => {
 		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
 	});
 
-	it.skip('should render NEW OTP button', async () => {
+	it('should render NEW OTP button', async () => {
 		setupBrowserTest(
 			<AccountContext.Provider value={mockContextValue}>
 				<EditAccountSecuritySection />
 			</AccountContext.Provider>
 		);
-		await expect.element(page.getByText('NEW OTP')).toBeVisible();
+		await expect.element(page.getByRole('button', { name: /NEW OTP/i })).toBeVisible();
 	});
 
 	it('should render DELETE button', async () => {
@@ -1023,7 +1032,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			.toBeVisible();
 	});
 
-	it.skip('should render OTP wizard when creating new OTP', async () => {
+	it('should render OTP wizard when creating new OTP', async () => {
 		const contextForOTP = {
 			...mockContextValue,
 			accountDetail: {
@@ -1038,10 +1047,10 @@ describe('EditAccountSecuritySection (browser)', () => {
 			</AccountContext.Provider>
 		);
 		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
-		await expect.element(page.getByText('NEW OTP')).toBeVisible();
+		await expect.element(page.getByRole('button', { name: /NEW OTP/i })).toBeVisible();
 	});
 
-	it.skip('should render table headers for OTP list', async () => {
+	it('should render table headers for OTP list', async () => {
 		const contextWithOTPTable = {
 			...mockContextValue,
 			otpList: [
@@ -1050,7 +1059,8 @@ describe('EditAccountSecuritySection (browser)', () => {
 					description: 'Mobile Device',
 					status: 'Active',
 					failed: '0',
-					'creation-date': '2025-11-01'
+					'creation-date': '2025-11-01',
+					columns: ['Mobile Device', 'Active', '0', '2025-11-01']
 				}
 			]
 		};
