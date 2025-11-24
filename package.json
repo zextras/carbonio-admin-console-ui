@@ -21,6 +21,7 @@
 		"test:ci": "turbo run test:ci",
 		"type-check": "turbo run type-check",
 		"lint": "turbo run lint",
+		"type-lint": "turbo run type-check && turbo run lint",
 		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
 	},
 	"dependencies": {
@@ -66,8 +67,10 @@
 	],
 	"msw": {
 		"workerDirectory": [
+			"./packages/test-utils/public",
 			"./apps/admin-ui-bootstrap/public",
 			"./apps/admin-ui-console/public",
+			"./apps/admin-ui-dashboard/public",
 			"./apps/admin-ui-cos/public"
 		]
 	},

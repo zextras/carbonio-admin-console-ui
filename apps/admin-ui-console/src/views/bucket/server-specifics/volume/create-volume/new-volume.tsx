@@ -3,18 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useState } from 'react';
 
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Button, Container } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import MailstoresCreate from './mailstores-create';
-import { VolumeContext } from './volume-context';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
+
+import MailstoresCreate from './mailstores-create';
+import { VolumeContext } from './volume-context';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -74,9 +75,9 @@ const NewVolume: FC<{
 	isLoading
 }) => {
 	const { t } = useTranslation();
-	const [wizardData, setWizardData] = useState();
 	const context = useContext(VolumeContext);
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const { volumeDetail } = context;
 
 	const wizardSteps = [
@@ -153,7 +154,6 @@ const NewVolume: FC<{
 			<HorizontalWizard
 				steps={wizardSteps}
 				Wrapper={WizardInSection}
-				onChange={setWizardData}
 				onComplete={onComplete}
 				setToggleWizardSection={setToggleWizardLocal}
 				externalData={volName}

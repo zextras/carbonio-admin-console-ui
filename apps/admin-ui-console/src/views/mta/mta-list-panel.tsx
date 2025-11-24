@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { replaceHistory, useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -19,7 +18,6 @@ import {
 	IS_SERVER_SPECIFICS_EXPANDED,
 	MTA_SERVER_GENERAL
 } from '../../constants';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useServerStore } from '../../store/server/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';

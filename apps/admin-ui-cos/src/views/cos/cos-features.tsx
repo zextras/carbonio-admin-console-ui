@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import _, { find, isEqual, reduce } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,6 @@ import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosStore } from '../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import { PageLayout } from '../page-layout';
 
 import { Features } from './features';
@@ -36,10 +35,10 @@ const CosFeatures: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({});
 	const isAdvanced = useIsAdvanced();
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

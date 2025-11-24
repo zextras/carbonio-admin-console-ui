@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,12 +14,12 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
@@ -47,8 +46,8 @@ const GlobalTheme: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
 	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-	const configInformation = useConfigStore((state) => state.config);
-	const updateAllConfig = useConfigStore((state) => state.updateAllConfig);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);

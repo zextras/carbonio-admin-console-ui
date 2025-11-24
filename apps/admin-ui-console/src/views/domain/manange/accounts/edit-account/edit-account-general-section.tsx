@@ -3,16 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useEffect,
-	useCallback,
-	useMemo,
-	useContext,
-	useState,
-	ChangeEvent
-} from 'react';
-
+import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -33,6 +24,15 @@ import {
 } from '@zextras/carbonio-design-system';
 import { debounce, map } from 'lodash';
 import moment from 'moment';
+import React, {
+	FC,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	ChangeEvent
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -42,8 +42,6 @@ import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { useDomainStore } from '../../../../../store/domain/store';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
@@ -131,7 +129,7 @@ const EditAccountGeneralSection: FC<{
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [fileQuotaGBValue, setFileQuotaGBValue] = useState('');
 	const [focusableFileQuota, setFocusableFileQuota] = useState(false);
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
@@ -380,8 +378,8 @@ const EditAccountGeneralSection: FC<{
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						:  
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -671,11 +669,11 @@ const EditAccountGeneralSection: FC<{
 				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
+					)}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
 				: `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
-				  )}`,
+					)}`,
 		[initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed, t]
 	);
 
@@ -685,11 +683,11 @@ const EditAccountGeneralSection: FC<{
 				? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
+					)}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
 				: `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
-				  )}`,
+					)}`,
 		[initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t]
 	);
 
@@ -1046,7 +1044,7 @@ const EditAccountGeneralSection: FC<{
 								accountDetail?.zimbraCreateTimestamp
 									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
 											'DD MMM YYYY | hh:MM:SS A'
-									  )
+										)
 									: t('label.not_available', 'Not Available')
 							}
 						/>
@@ -1059,7 +1057,7 @@ const EditAccountGeneralSection: FC<{
 								accountDetail?.zimbraLastLogonTimestamp
 									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(
 											'DD MMM YYYY | hh:MM:SS A'
-									  )
+										)
 									: t('label.never_logged_in', 'Never logged in')
 							}
 							defaultValue={t('label.never_logged_in', 'Never logged in')}
@@ -1097,9 +1095,9 @@ const EditAccountGeneralSection: FC<{
 								<Tooltip
 									placement="top"
 									label={t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										 
 										'label.try_local_password_management_ldap',
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										 
 										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>

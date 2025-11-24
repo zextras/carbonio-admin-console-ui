@@ -23,7 +23,7 @@ import styled from 'styled-components';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 
@@ -200,7 +200,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										}}
 										value={searchDomainNameInput}
 										backgroundColor="gray5"
-										CustomIcon={(): JSX.Element => (
+										CustomIcon={(): React.ReactElement => (
 											<Icon
 												style={{ cursor: 'pointer' }}
 												icon="ArrowIosDownward"

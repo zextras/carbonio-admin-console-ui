@@ -32,7 +32,7 @@ import {
 	STATUS,
 	TRUE_FALSE
 } from './resource-edit-detail-view';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';

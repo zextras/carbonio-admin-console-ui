@@ -38,7 +38,7 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useDomainStore } from '../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -64,7 +64,7 @@ const DomainMailingList: FC = () => {
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
-	const timer = useRef<any>();
+	const timer = useRef<number>(0);
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);

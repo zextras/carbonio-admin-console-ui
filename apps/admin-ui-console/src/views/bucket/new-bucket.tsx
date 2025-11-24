@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useState } from 'react';
-
 import { Button } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Connection from './connection';
 import { HorizontalWizard } from '../app/component/hwizard';
 import { Section } from '../app/component/section-component';
+
+import Connection from './connection';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -38,7 +38,6 @@ const NewBucket: FC<{
 	setConnectionData: any;
 }> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
 	const { t } = useTranslation();
-	const [wizardData, setWizardData] = useState();
 
 	const wizardSteps = [
 		{
@@ -104,7 +103,6 @@ const NewBucket: FC<{
 		<HorizontalWizard
 			steps={wizardSteps}
 			Wrapper={WizardInSection}
-			onChange={setWizardData}
 			onComplete={onComplete}
 			setToggleWizardSection={setToggleWizardSection}
 			externalData={bucketType}

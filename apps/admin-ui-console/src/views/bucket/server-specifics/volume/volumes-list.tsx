@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, soapFetch, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -42,7 +42,6 @@ import {
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -182,7 +181,7 @@ const VolumesDetailPanel: FC = () => {
 	const context = useContext(VolumeContext);
 	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
@@ -226,7 +225,6 @@ const VolumesDetailPanel: FC = () => {
 	const getAllVolumesRequest = useCallback((): void => {
 		if (isAdvanced) {
 			fetchSoap('zextras', {
-
 				_jsns: ZIMBRA_ADMIN_URN,
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
@@ -409,7 +407,6 @@ const VolumesDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-
 	const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
 		const bucketDetails = isVolumeAllDetail?.filter(
 			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
@@ -527,14 +524,13 @@ const VolumesDetailPanel: FC = () => {
 					label: error?.message
 						? error?.message
 						: t('label.volume_detail_error', '{{message}}', {
-							message: 'Something went wrong, please try again'
-						}),
+								message: 'Something went wrong, please try again'
+							}),
 					autoHideTimeout: 5000
 				});
 				return error;
 			});
 	};
-
 
 	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
 		setIsLoading(true);
@@ -668,8 +664,8 @@ const VolumesDetailPanel: FC = () => {
 						label: error?.message
 							? error?.message
 							: t('label.volume_detail_error', '{{message}}', {
-								message: 'Something went wrong, please try again'
-							}),
+									message: 'Something went wrong, please try again'
+								}),
 						autoHideTimeout: 5000
 					});
 					setIsLoading(false);

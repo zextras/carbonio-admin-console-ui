@@ -16,7 +16,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 
 const CreateGalsyncAccountModel: FC<{

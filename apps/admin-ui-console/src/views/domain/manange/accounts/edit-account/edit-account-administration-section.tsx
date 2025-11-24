@@ -1,11 +1,10 @@
-/* eslint-disable prefer-regex-literals */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -20,8 +19,8 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
@@ -33,7 +32,6 @@ import {
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../../services/search-directory-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -53,7 +51,8 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [domainId, setDomainId] = useState('');
 	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const userSetting = useUserSettings();
 	const [t] = useTranslation();
 
@@ -87,7 +86,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 						group?.a?.find((item: Record<string, string>) => item?.n === DISPLAYNAME)?._content ||
 						group.name,
 					value: group.id
-			  }))
+				}))
 			: [];
 
 	const onOptionChange = (v: any): any => {

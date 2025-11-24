@@ -3,10 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { useUserAccounts, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
+
+vi.mock('@zextras/admin-ui-bootstrap');
 
 vi.mock('@zextras/carbonio-design-system', () => ({
 	useSnackbar: vi.fn()
@@ -24,13 +28,8 @@ vi.mock('../../store/backup/store', () => ({
 	useBackupStore: vi.fn()
 }));
 
-vi.mock('../../store/rights/store', () => ({
-	useRightsStore: vi.fn()
-}));
-
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useBackupStore } from '../../store/backup/store';
-import { useRightsStore } from '../../store/rights/store';
 import { useBackupConfig } from '../useBackupConfig';
 
 describe('useBackupConfig', () => {
@@ -76,11 +75,12 @@ describe('useBackupConfig', () => {
 			return selector(state);
 		});
 
-		(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-			const state = {
-				rights: mockRights
-			};
-			return selector(state);
+		(useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
+		(useCurrentUserRights as Mock).mockReturnValue({
+			data: mockRights,
+			isLoading: false,
+			isSuccess: true,
+			isError: false
 		});
 
 		(modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
@@ -101,9 +101,11 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle missing rights configuration', () => {
-			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-				const state = { rights: [] };
-				return selector(state);
+			(useCurrentUserRights as Mock).mockReturnValue({
+				data: [],
+				isLoading: false,
+				isSuccess: true,
+				isError: false
 			});
 
 			const { result } = renderHook(() => useBackupConfig());
@@ -111,11 +113,11 @@ describe('useBackupConfig', () => {
 		});
 
 		it('should handle rights without setAttrs', () => {
-			(useRightsStore as unknown as Mock).mockImplementation((selector) => {
-				const state = {
-					rights: [{ type: 'config', all: [] }]
-				};
-				return selector(state);
+			(useCurrentUserRights as unknown as Mock).mockReturnValue({
+				data: [{ type: 'config', all: [] }],
+				isLoading: false,
+				isSuccess: true,
+				isError: false
 			});
 
 			const { result } = renderHook(() => useBackupConfig());

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -36,8 +37,6 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
@@ -104,7 +103,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 
 	const wizardSteps = useMemo(
 		() => [
@@ -130,7 +129,6 @@ const EditAccountSecuritySection: FC = () => {
 												<StaticCodesContainer background="gray5">
 													<StaticCodesWrapper>
 														{map(pinCodes, (singleCode: any) => (
-															 
 															<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
 														))}
 													</StaticCodesWrapper>
@@ -1058,7 +1056,6 @@ const EditAccountSecuritySection: FC = () => {
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
 												(item: any) =>
-													 
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
 										/>
@@ -1178,8 +1175,7 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.time_window_failed_logins_must_occur_to_lock_account',
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
-											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											 
+											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)} 
 											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
 											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"

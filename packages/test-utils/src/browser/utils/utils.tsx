@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient } from '@tanstack/react-query';
 import React, { type ReactElement } from 'react';
 import { render, type RenderResult } from 'vitest-browser-react';
 
@@ -11,13 +12,15 @@ import { WrapperProps, Wrapper } from './wrapper';
 
 export const setupBrowserTest = (
 	ui: ReactElement,
-	options?: { initialRouterEntry: string }
+	options?: { initialRouterEntry?: string; queryClient?: QueryClient }
 ): Promise<RenderResult> => {
 	if (options?.initialRouterEntry) {
 		window.history.replaceState({}, '', options.initialRouterEntry);
 	}
 
 	return render(ui, {
-		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => <Wrapper>{children}</Wrapper>
+		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
+			<Wrapper queryClient={options?.queryClient}>{children}</Wrapper>
+		)
 	});
 };

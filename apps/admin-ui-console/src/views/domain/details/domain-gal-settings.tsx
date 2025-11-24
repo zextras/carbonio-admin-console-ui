@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useUserSettings, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -23,12 +22,10 @@ import {
 	useSnackbar,
 	DropdownItem
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import CreateGalsyncAccountModel from './create-galsync-account-model';
-import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 import {
 	AccountDataType,
 	Attribute,
@@ -58,15 +55,15 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import { useDomainStore } from '../../../store/domain/store';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 
-// eslint-disable-next-line no-shadow
+import CreateGalsyncAccountModel from './create-galsync-account-model';
+import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
+
 export enum RANGE {
 	DAYS = 'd',
 	HOURS = 'h',
@@ -152,7 +149,7 @@ const DomainGalSettings: FC = () => {
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
 	const createSnackbar = useSnackbar();
 	const domain: { name?: string } = useDomainStore((state) => state.domain);
-	const { allMailstoreList } = useMailstoreListStore((state) => state);
+	const { data: allMailstoreList = [] } = useMailstoreServers();
 	const { domainId }: { domainId: string } = useParams();
 
 	const [open, setOpen] = useState<boolean>(false);
@@ -345,7 +342,6 @@ const DomainGalSettings: FC = () => {
 		});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getDomainDataSource = (accountId: string): void => {
 		getDatasource(accountId).then((data) => {
 			const dataSource: {
@@ -355,7 +351,6 @@ const DomainGalSettings: FC = () => {
 				_attrs: objectType;
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
-				// eslint-disable-next-line array-callback-return, consistent-return
 				zimbraGalAccountIdArray.forEach((item) => {
 					if (item._content === accountId) {
 						zimbraAccountDataSourceId.push({
@@ -378,7 +373,6 @@ const DomainGalSettings: FC = () => {
 	};
 
 	const updateDomainInformation = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(data: Array<Attribute> | undefined) => {
 			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
@@ -407,7 +401,6 @@ const DomainGalSettings: FC = () => {
 				}
 
 				if (obj.zimbraGalAccountId) {
-					// eslint-disable-next-line consistent-return, array-callback-return
 					const result = domainInformation.filter((item) => item.n === 'zimbraGalAccountId');
 					setZimbraGalAccountIdArray(result);
 					setZimbraGalAccountId(obj.zimbraGalAccountId);
@@ -446,14 +439,14 @@ const DomainGalSettings: FC = () => {
 				setIsDirty(false);
 			}
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
 		[domainInformation]
 	);
 
 	useEffect(() => {
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
-			// eslint-disable-next-line array-callback-return
+
 			zimbraGalAccountIdArray.forEach((items) => {
 				getDomainDataSource(items?._content);
 			});
@@ -482,7 +475,6 @@ const DomainGalSettings: FC = () => {
 			setPollingIntervalType(rangeItems[0]);
 			setPollingIntervalValue('');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [zimbraDataSourcePollingInterval, rangeItems]);
 
 	const onCancel = (): void => {
@@ -507,9 +499,8 @@ const DomainGalSettings: FC = () => {
 				zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1)
 			);
 		}
-		// eslint-disable-next-line array-callback-return
+
 		domainInformation?.map((item) => {
-			// eslint-disable-next-line sonarjs/no-collapsible-if
 			if (item.n === 'zimbraGalLdapURL') {
 				if (domainData?.zimbraGalLdapURL === item?._content) {
 					setIsDirty(false);
@@ -520,9 +511,7 @@ const DomainGalSettings: FC = () => {
 
 	useEffect(() => {
 		if (!isDirty) {
-			// eslint-disable-next-line array-callback-return
 			domainInformation?.map((item) => {
-				// eslint-disable-next-line sonarjs/no-collapsible-if
 				if (
 					item.n === 'zimbraGalLdapURL' ||
 					item.n === 'zimbraGalLdapFilter' ||
@@ -620,10 +609,9 @@ const DomainGalSettings: FC = () => {
 		});
 		body.a = attributes;
 		requests.push(modifyDomain(body));
-		// eslint-disable-next-line sonarjs/no-collapsible-if
+
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
-				// eslint-disable-next-line array-callback-return
 				zimbraGalAccountIdArray.forEach((items) => {
 					interface DataSourceId {
 						dataSourceId?: string;
@@ -684,7 +672,6 @@ const DomainGalSettings: FC = () => {
 				}
 			});
 		if (zimbraGalAccountIdArray?.length !== 0) {
-			// eslint-disable-next-line array-callback-return
 			zimbraGalAccountIdArray.forEach((items) => {
 				modifyAccountRequest(items?._content, {
 					zimbraDataSourceGalPollingInterval
@@ -694,8 +681,7 @@ const DomainGalSettings: FC = () => {
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 5000,
 						hideButton: true,
 						replace: true
@@ -742,7 +728,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalLdapStartTlsEnabled?.current !== zimbraGalLdapStartTlsEnabled?.init) {
 			setIsDirty(true);
 		}
-		// eslint-disable-next-line sonarjs/no-collapsible-if
+
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
 			if (
 				zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
@@ -878,7 +864,6 @@ const DomainGalSettings: FC = () => {
 
 	const getAllTableList = useCallback(
 		(data: any[]) => {
-			// eslint-disable-next-line array-callback-return
 			const result = allMailstoreList.map((listItems: Server) => {
 				const obj: AccountDataType = {};
 				const matchingData = data.find(
@@ -892,7 +877,7 @@ const DomainGalSettings: FC = () => {
 							server: matchingData?.accountData[0]?._content,
 							name: matchingData?.name,
 							id: matchingData?.id
-					  }
+						}
 					: null;
 				return obj;
 			});
@@ -905,7 +890,7 @@ const DomainGalSettings: FC = () => {
 	const getDomainWithGAlSyncList = useCallback(
 		(domainList: any) => {
 			const allDomains = domainList?.filter((item: Attribute) => item.n === 'zimbraGalAccountId');
-			// eslint-disable-next-line array-callback-return
+
 			const result: readonly unknown[] | [] = allDomains?.map((item: Attribute) =>
 				getAccount(item?._content)
 					.then((data) => {
@@ -924,7 +909,7 @@ const DomainGalSettings: FC = () => {
 							id: galAccount?.id
 						};
 					})
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 					.catch(() => {})
 			);
 			Promise.all(result).then((results) => {

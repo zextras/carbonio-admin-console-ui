@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { SUBSCRIPTIONS_ROUTE_ID, MANAGE_APP_ID } from '../../constants';
-import { useModuleLicenseInfo } from '../../hooks/use-subscription';
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../list/list-row';
 
 type licenseBannerProps = {

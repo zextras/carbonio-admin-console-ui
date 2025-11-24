@@ -73,6 +73,7 @@ export const CARBONIO_CE_ADMIN_DOCUMENTATION_URL =
 	'https://docs.zextras.com/carbonio-ce/html/index.html';
 export const CONTENT = '_content';
 export const TRUE = 'TRUE';
+export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 
 export type LocaleDescriptor = {
 	name: string;

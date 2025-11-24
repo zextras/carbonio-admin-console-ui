@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { createContext, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-
 import {
 	generateColorSet,
 	ThemeProvider as UIThemeProvider,
@@ -13,12 +11,14 @@ import {
 } from '@zextras/carbonio-design-system';
 import { auto, disable, enable, setFetchMethod } from 'darkreader';
 import { reduce } from 'lodash';
+import React, { createContext, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-import { useGetPrimaryColor } from './use-get-primary-color';
 import { DarkReaderPropValues, ThemeExtension } from '../../types';
 import { darkReaderDynamicThemeFixes } from '../constants';
 import { useAccountStore } from '../store/account/store';
+
+import { useGetPrimaryColor } from './use-get-primary-color';
 
 setFetchMethod(window.fetch);
 
@@ -90,7 +90,6 @@ const themeSizes = (
 	switch (size) {
 		case 'small': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '10px',
 					small: '12px',
@@ -102,7 +101,6 @@ const themeSizes = (
 		}
 		case 'large': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '14px',
 					small: '16px',
@@ -114,7 +112,6 @@ const themeSizes = (
 		}
 		case 'larger': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '16px',
 					small: '18px',
@@ -128,7 +125,6 @@ const themeSizes = (
 		case 'normal':
 		default: {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '12px',
 					small: '14px',
@@ -143,12 +139,11 @@ const themeSizes = (
 interface ThemeProviderProps {
 	children?: React.ReactNode | React.ReactNode[];
 }
-export const ThemeProvider = ({ children }: ThemeProviderProps): JSX.Element => {
+export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
 	const zimbraPrefFontSize = useAccountStore((s) => s.settings.prefs?.zimbraPrefFontSize as string);
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {
-				// eslint-disable-next-line no-param-reassign
 				theme.sizes.font = {
 					extrasmall: '0.75rem',
 					small: '0.875rem',

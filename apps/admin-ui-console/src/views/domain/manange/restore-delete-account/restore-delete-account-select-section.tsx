@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { getSoapFetchRequest, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Text,
@@ -16,17 +16,17 @@ import {
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Paging from '../../../components/paging';
 import ListRow from '../../../list/list-row';
 import { getFormatedShortDate } from '../../../utility/utils';
+
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -81,7 +81,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	);
 
 	const getBackupAccounts = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity,default-param-last
 		(searchText = '', offset = 0) => {
 			setIsRequestInProgress(true);
 			setAccounts([]);

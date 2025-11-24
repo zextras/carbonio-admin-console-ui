@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -22,7 +22,7 @@ import {
 	Link
 } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
-import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -51,9 +51,7 @@ import {
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import ListRow from '../../../../list/list-row';
@@ -94,7 +92,8 @@ const ModifyVolume: FC<{
 	setOpen
 }) => {
 	const { t } = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
@@ -114,7 +113,7 @@ const ModifyVolume: FC<{
 	const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
 	const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
 	const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
-	const isCurrentRef: RefObject<HTMLDivElement> = useRef(null);
+	const isCurrentRef = useRef<HTMLDivElement>(null);
 	const [compressionThreshold, setCompressionThreshold] = useState<string>(
 		volumeDetail?.compressionThreshold
 	);
@@ -188,7 +187,7 @@ const ModifyVolume: FC<{
 				type.label = labelMap[type?.value];
 			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
-			 
+
 			obj._jsns = ZIMBRA_ADMIN_URN;
 			obj.module = 'ZxPowerstore';
 			obj.action = 'doUpdateVolume';
@@ -614,7 +613,6 @@ const ModifyVolume: FC<{
 		}
 	}, [externalVolDetail?.storeType]);
 
-	 
 	useEffect(() => {
 		if (isAdvanced) {
 			if (volumeDetail?.type === 1) {
@@ -812,7 +810,7 @@ const ModifyVolume: FC<{
 							<Text color="secondary" overflow="break-word" size="extrasmall">
 								{t(
 									'the_change_will_not_move_the_data',
-									 
+
 									'The change will not move the data'
 								)}
 							</Text>
