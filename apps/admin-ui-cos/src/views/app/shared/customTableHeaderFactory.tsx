@@ -6,19 +6,12 @@
 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
-import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
 
-export type IconComponent = (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
-
 const ASC = 'asc';
 const DESC = 'desc';
-export interface ThemeObj {
-	icons: Record<string, IconComponent>;
-}
-
-export type DefaultTheme = ThemeObj;
 
 type THeader = {
 	id: string;
