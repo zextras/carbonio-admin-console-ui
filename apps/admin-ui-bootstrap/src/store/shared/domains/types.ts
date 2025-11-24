@@ -7,7 +7,7 @@
 /**
  * Attribute type for domain and COS objects
  */
-export interface Attribute {
+interface Attribute {
 	n: string;
 	_content: string;
 }

@@ -50,6 +50,7 @@
 		"eslint-plugin-sonarjs": "^3.0.5",
 		"eslint-plugin-testing-library": "^7.6.6",
 		"eslint-plugin-unused-imports": "^4.2.0",
+		"knip": "^5.70.1",
 		"playwright": "^1.55.0",
 		"pnpm": "^10.15.1",
 		"semantic-release": "^25.0.2",

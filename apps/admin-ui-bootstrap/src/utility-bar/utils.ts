@@ -11,7 +11,7 @@ import { AppRoute, PrimaryAccessoryView, SecondaryAccessoryView, UtilityView } f
 import { useCurrentRoute } from '../history/hooks';
 import { useAppStore } from '../store/app';
 
-export const checkList = (l1: Array<string>, l2?: Array<string>): boolean =>
+const checkList = (l1: Array<string>, l2?: Array<string>): boolean =>
 	intersection(l1, l2).length > 0;
 
 export const checkRoute = (

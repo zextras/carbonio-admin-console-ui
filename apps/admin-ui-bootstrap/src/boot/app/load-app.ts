@@ -16,7 +16,7 @@ import { AppLink } from '../../ui-extras/app-link';
 import { getAppFunctions } from './app-loader-functions';
 import { getAppSetters } from './app-loader-setters';
 
-export const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
+const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
 let _scriptId = 0;
 
 function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
@@ -36,9 +36,9 @@ function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 		};
 		try {
 			// DO NOT RENAME THIS
-			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__[
-				'@zextras/admin-ui-bootstrap'
-			][appPkg.name] = {
+			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'][
+				appPkg.name
+			] = {
 				report: report(appPkg.name),
 				AppLink,
 				...getAppSetters(appPkg),

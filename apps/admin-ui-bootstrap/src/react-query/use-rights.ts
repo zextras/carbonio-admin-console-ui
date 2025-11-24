@@ -12,7 +12,7 @@ import { useUserAccounts } from '../store/account/hooks';
 
 const soapFetch = getSoapFetch(SHELL_APP_ID);
 
-export type Right = {
+type Right = {
 	type: string;
 	all: Array<{
 		right?: {
@@ -33,8 +33,6 @@ export type Right = {
 		}>;
 	}>;
 };
-
-export type Rights = Right[];
 
 type RightsOptions = {
 	enabled?: boolean;

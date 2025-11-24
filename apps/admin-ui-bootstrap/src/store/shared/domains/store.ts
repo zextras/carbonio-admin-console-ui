@@ -12,7 +12,7 @@ import { Cos, Domain } from './types';
 /**
  * Domain store state interface
  */
-export interface DomainState {
+interface DomainState {
 	/** The currently selected domain with full configuration */
 	domain: Domain;
 	/** The currently selected domain without configuration */
