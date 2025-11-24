@@ -15,11 +15,11 @@ interface ContainerExtendProps extends ContainerProps {
 	bgColor: string;
 }
 
-export const ActionContainer = styled(Container)<ContainerExtendProps>`
+const ActionContainer = styled(Container)<ContainerExtendProps>`
 	background: ${({ theme, bgColor }): string => theme.avatarColors[bgColor]};
 `;
 
-export const OperationContainer = styled(Container)`
+const OperationContainer = styled(Container)`
 	cursor: pointer;
 `;
 
