@@ -105,6 +105,56 @@ const EditAccountSecuritySection: FC = () => {
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useIsAdvanced();
 
+	const handleSendOTPEmail = useCallback((): void => {
+		const emailRecipients = [
+			{
+				t: 'f',
+				a: `${accountDetail?.name}@${domainName}`,
+				d: accountDetail?.name
+			},
+			...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' }))
+		];
+
+		sendMail('SendMsgRequest', {
+			_jsns: 'urn:zimbraMail',
+			m: {
+				attach: { mp: [] },
+				su: { _content: 'Account 2FA code' },
+				e: emailRecipients,
+				mp: [
+					{
+						ct: 'text/html',
+						body: true,
+						content: {
+							_content: emailContent(pinCodes, secrateCode)
+						}
+					}
+				]
+			}
+		})
+			.then(() => {
+				setSendEmailTo([]);
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t('domain.editAccount.otpSentSuccessfully', 'OTP has been sent successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			})
+			.catch(() => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [accountDetail?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
+
 	const wizardSteps = useMemo(
 		() => [
 			{
@@ -112,197 +162,151 @@ const EditAccountSecuritySection: FC = () => {
 				label: t('label.create_otp', 'CREATE OTP'),
 				icon: 'KeyOutline',
 				view: (): ReactElement => (
-					<>
-						<Container mainAlignment="flex-start">
-							<Row
-								padding={{ top: 'large', left: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-							>
-								<Row width="40%" mainAlignment="flex-start">
-									<QRCode data-testid="qrcode-password" size={179} value={qrData} />
-								</Row>
-								<Row width="60%" mainAlignment="flex-start">
-									<Container>
-										<Padding top="large">
-											<Row mainAlignment="center">
-												<StaticCodesContainer background="gray5">
-													<StaticCodesWrapper>
-														{map(pinCodes, (singleCode: any) => (
-															<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
-														))}
-													</StaticCodesWrapper>
-												</StaticCodesContainer>
-											</Row>
-										</Padding>
-									</Container>
-									<Container
-										orientation="horizontal"
-										width="99%"
-										crossAlignment="center"
-										mainAlignment="space-between"
-									>
-										<Row
-											mainAlignment="center"
-											width="100%"
-											padding={{
-												top: 'small',
-												bottom: 'small'
-											}}
-										>
-											<Text>{t('account_details.secret_code', 'Secret Code')}</Text>
-										</Row>
-									</Container>
-									<Container
-										orientation="horizontal"
-										width="99%"
-										crossAlignment="center"
-										mainAlignment="space-between"
-									>
-										<Row
-											mainAlignment="center"
-											width="100%"
-											padding={{
-												top: 'small',
-												bottom: 'small'
-											}}
-										>
-											<Text>{secrateCode}</Text>
-										</Row>
-									</Container>
-								</Row>
+					<Container mainAlignment="flex-start">
+						<Row
+							padding={{ top: 'large', left: 'large' }}
+							width="100%"
+							mainAlignment="space-between"
+						>
+							<Row width="40%" mainAlignment="flex-start">
+								<QRCode data-testid="qrcode-password" size={179} value={qrData} />
 							</Row>
-							<Container
-								orientation="horizontal"
-								width="99%"
-								crossAlignment="center"
-								mainAlignment="space-between"
-							>
-								<Row
-									mainAlignment="center"
-									width="100%"
-									padding={{
-										top: 'small',
-										bottom: 'small'
-									}}
+							<Row width="60%" mainAlignment="flex-start">
+								<Container>
+									<Padding top="large">
+										<Row mainAlignment="center">
+											<StaticCodesContainer background="gray5">
+												<StaticCodesWrapper>
+													{map(pinCodes, (singleCode: any) => (
+														<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
+													))}
+												</StaticCodesWrapper>
+											</StaticCodesContainer>
+										</Row>
+									</Padding>
+								</Container>
+								<Container
+									orientation="horizontal"
+									width="99%"
+									crossAlignment="center"
+									mainAlignment="space-between"
 								>
-									<Text>
-										{t(
-											'account_details.please_note_code',
-											`Please note: you'll be able to see these codes just once.`
-										)}
-									</Text>
-								</Row>
-							</Container>
-							<Container
-								orientation="horizontal"
-								width="99%"
-								crossAlignment="center"
-								mainAlignment="space-between"
-							>
-								<Row
-									mainAlignment="center"
-									width="100%"
-									padding={{
-										top: 'small',
-										bottom: 'small'
-									}}
+									<Row
+										mainAlignment="center"
+										width="100%"
+										padding={{
+											top: 'small',
+											bottom: 'small'
+										}}
+									>
+										<Text>{t('account_details.secret_code', 'Secret Code')}</Text>
+									</Row>
+								</Container>
+								<Container
+									orientation="horizontal"
+									width="99%"
+									crossAlignment="center"
+									mainAlignment="space-between"
 								>
-									<Text>
-										{t(
-											'account_details.select_email_otp',
-											`Select an email address to send the OTP to or copy the code above`
-										)}
-									</Text>
-								</Row>
-							</Container>
+									<Row
+										mainAlignment="center"
+										width="100%"
+										padding={{
+											top: 'small',
+											bottom: 'small'
+										}}
+									>
+										<Text>{secrateCode}</Text>
+									</Row>
+								</Container>
+							</Row>
+						</Row>
+						<Container
+							orientation="horizontal"
+							width="99%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+						>
 							<Row
-								padding={{ top: 'large', left: 'large' }}
+								mainAlignment="center"
 								width="100%"
-								mainAlignment="space-between"
+								padding={{
+									top: 'small',
+									bottom: 'small'
+								}}
 							>
-								<Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
-									<ChipInput
-										placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
-										onChange={(contacts: any): void => {
-											const data: any = [];
-											map(contacts, (contact) => {
-												const isValid = isValidEmail(contact.label ?? '');
-												data.push({
-													...contact,
-													error: !isValid
-												});
-											});
-											setSendEmailTo(data);
-										}}
-										defaultValue={sendEmailTo}
-										value={sendEmailTo}
-										background="gray5"
-										ChipComponent={CustomChip}
-										maxChips={null}
-										hasError={sendEmailTo?.some((contact: any) => contact.error)}
-									/>
-									<Text color="error" size="small">
-										{sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
-									</Text>
-								</Row>
-								<Row width="20%" mainAlignment="space-between">
-									<Button
-										label={t('account_details.send', 'SEND')}
-										icon="PaperPlaneOutline"
-										size="large"
-										iconPlacement="right"
-										disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
-										onClick={(): void => {
-											sendMail('SendMsgRequest', {
-												_jsns: 'urn:zimbraMail',
-												m: {
-													attach: { mp: [] },
-													su: { _content: 'Account 2FA code' },
-													e: [
-														{
-															t: 'f',
-															a: `${accountDetail?.name}@${domainName}`,
-															d: accountDetail?.name
-														},
-														...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' }))
-													],
-													mp: [
-														{
-															ct: 'text/html',
-															body: true,
-															content: {
-																_content: emailContent(pinCodes, secrateCode)
-															}
-														}
-													]
-												}
-											}).then(() => {
-												setSendEmailTo([])
-												createSnackbar({
-													key: 'success',
-													severity: 'success',
-													label: t('domain.editAccount.otpSentSuccessfully', 'OTP has been sent successfully'),
-													autoHideTimeout: 3000,
-													hideButton: true,
-													replace: true
-												});
-											}).catch(() => {
-												createSnackbar({
-													key: 'error',
-													severity: 'error',
-													label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-													autoHideTimeout: 3000,
-													hideButton: true,
-													replace: true
-												});
-											});
-										}}
-									></Button>
-								</Row>
+								<Text>
+									{t(
+										'account_details.please_note_code',
+										`Please note: you'll be able to see these codes just once.`
+									)}
+								</Text>
 							</Row>
 						</Container>
-					</>
+						<Container
+							orientation="horizontal"
+							width="99%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+						>
+							<Row
+								mainAlignment="center"
+								width="100%"
+								padding={{
+									top: 'small',
+									bottom: 'small'
+								}}
+							>
+								<Text>
+									{t(
+										'account_details.select_email_otp',
+										`Select an email address to send the OTP to or copy the code above`
+									)}
+								</Text>
+							</Row>
+						</Container>
+						<Row
+							padding={{ top: 'large', left: 'large' }}
+							width="100%"
+							mainAlignment="space-between"
+						>
+							<Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
+								<ChipInput
+									placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
+									onChange={(contacts: any): void => {
+										const data: any = [];
+										map(contacts, (contact) => {
+											const isValid = isValidEmail(contact.label ?? '');
+											data.push({
+												...contact,
+												error: !isValid
+											});
+										});
+										setSendEmailTo(data);
+									}}
+									defaultValue={sendEmailTo}
+									value={sendEmailTo}
+									background="gray5"
+									ChipComponent={CustomChip}
+									maxChips={null}
+									hasError={sendEmailTo?.some((contact: any) => contact.error)}
+								/>
+								<Text color="error" size="small">
+									{sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
+								</Text>
+							</Row>
+							<Row width="20%" mainAlignment="space-between">
+								<Button
+									label={t('account_details.send', 'SEND')}
+									icon="PaperPlaneOutline"
+									size="large"
+									iconPlacement="right"
+									disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
+									onClick={handleSendOTPEmail}
+								/>
+							</Row>
+						</Row>
+					</Container>
 				),
 				clickDisabled: true,
 				CancelButton: () => <></>,
@@ -407,10 +411,8 @@ const EditAccountSecuritySection: FC = () => {
 		}).then((res: any) => {
 			if (res.ok) {
 				setQrData(
-					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
-						res.response.secret
-					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
-						res.response.digits_length
+					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${res.response.secret
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${res.response.digits_length
 					}&period=${res.response.period}`
 				);
 				setSecrateCode(res.response.secret);
@@ -1175,7 +1177,7 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.time_window_failed_logins_must_occur_to_lock_account',
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
-											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)} 
+											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
 											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
 											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"

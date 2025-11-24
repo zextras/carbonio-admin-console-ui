@@ -14,6 +14,6 @@ type SoapResponse = {
 };
 
 export const sendMail = async (api: string, body: unknown): Promise<unknown> => {
-	const res = await postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`) as SoapResponse;
+	const res: SoapResponse = await postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`);
 	return res.Body?.response?.content ? JSON.parse(res.Body.response.content) : res.Body;
 };
