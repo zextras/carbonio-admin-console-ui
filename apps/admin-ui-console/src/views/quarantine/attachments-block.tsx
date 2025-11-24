@@ -348,7 +348,7 @@ const AttachmentExtension = styled(Text)<{
 	text-transform: uppercase;
 	margin-right: ${({ theme }): string => theme.sizes.padding.small};
 `;
-export const humanFileSize = (inputSize: number): string => {
+const humanFileSize = (inputSize: number): string => {
 	if (inputSize === 0) {
 		return '0 B';
 	}
