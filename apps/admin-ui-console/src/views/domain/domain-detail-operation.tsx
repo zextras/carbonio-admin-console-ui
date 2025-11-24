@@ -45,7 +45,7 @@ import DomainResources from './manange/resources/domain-resources';
 import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 const DomainOperations: FC = (): React.JSX.Element => {

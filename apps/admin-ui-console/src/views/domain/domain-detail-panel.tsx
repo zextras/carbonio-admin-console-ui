@@ -3,22 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
-
+import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import { cloneDeep, find } from 'lodash';
+import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
+
+import logo from '../../assets/ninja_robo.svg';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
+import { useLocalStorage } from '../utility/utils';
 
 import CreateDomain from './create-new-domain';
 import DomainOperations from './domain-detail-operation';
 import GlobalDetailPanel from './global/global-detail-panel';
 import GlobalOperations from './global-operation';
-import logo from '../../assets/ninja_robo.svg';
-import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
-import { useDomainStore } from '../../store/domain/store';
-import { useLocalStorage } from '../utility/utils';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();

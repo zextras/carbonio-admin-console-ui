@@ -22,7 +22,7 @@ import styled from 'styled-components';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { getAllDoneOperations } from '../../services/get-all-done-operation';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
@@ -35,7 +35,7 @@ const RelativeContainer = styled(Container)`
 const DoneDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
+	const { data: allServersList = [] } = useMailstoreServers();
 	const { doneData, setDoneData } = useOperationStore((state) => state);
 	const operationsDoneHeader = useMemo(() => OperationsDoneHeader(t), [t]);
 	const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
@@ -158,7 +158,7 @@ const DoneDetailPanel: FC = () => {
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setSearchOperation(e.target.value);
 								}}
-								CustomIcon={(): JSX.Element => (
+								CustomIcon={(): React.ReactElement => (
 									<Icon icon="FunnelOutline" size="large" color="primary" />
 								)}
 							/>

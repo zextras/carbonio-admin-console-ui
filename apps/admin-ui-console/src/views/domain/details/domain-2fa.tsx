@@ -21,7 +21,7 @@ import { TwoFactorAuthPolicyValues } from '../../../../types';
 import { OK } from '../../../constants';
 import { list2faPolicies } from '../../../services/list-2fa-policies';
 import { set2faPolicies } from '../../../services/set-2fa-policies';
-import { useDomainStore } from '../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { TwoFactorPolicyArray, isValidIpRange } from '../../utility/utils';
 import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';

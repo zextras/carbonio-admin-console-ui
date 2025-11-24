@@ -4,24 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Pre-import bootstrap to ensure the mock is loaded before any component imports it
-import '@zextras/admin-ui-bootstrap';
-import { page } from '@vitest/browser/context';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
 import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../../../store/cos/store';
-import { useRightsStore } from '../../../../store/rights/store';
 import { COSPreferences } from '../COSPreferences';
 
-vi.mock('../../../../services/modify-cos-service', () => ({
-	modifyCos: vi.fn()
-}));
-
-vi.mock('../../../../services/flush-cache-service', () => ({
-	flushCache: vi.fn()
-}));
+const mockRightsData = [
+	{
+		type: 'cos',
+		all: [
+			{
+				right: [
+					{ n: 'assignCos' },
+					{ n: 'deleteCos' },
+					{ n: 'listCos' },
+					{ n: 'manageZimlet' },
+					{ n: 'renameCos' }
+				],
+				setAttrs: [{ all: true }],
+				getAttrs: [{ all: true }]
+			}
+		]
+	}
+];
 
 function expectGeneralOptionsSectionVisible() {
 	expect(page.getByText('General Options')).toBeVisible();
@@ -94,41 +107,46 @@ describe('COSPreferences', () => {
 			a: [
 				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
 				{ n: 'zimbraPrefLocale', _content: 'en' },
-				{ n: 'zimbraPrefMessageViewHtmlPreferred', _content: 'TRUE' },
 				{ n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
 				{ n: 'zimbraPrefMailSendReadReceipts', _content: 'never' }
 			]
 		});
 	};
 
-	const setupRightsStore = (): void => {
-		useRightsStore.getState().setRights([
-			{
-				type: 'cos',
-				all: [
-					{
-						right: [
-							{ n: 'assignCos' },
-							{ n: 'deleteCos' },
-							{ n: 'listCos' },
-							{ n: 'manageZimlet' },
-							{ n: 'renameCos' }
-						],
-						setAttrs: [{ all: true }],
-						getAttrs: [{ all: true }]
-					}
-				]
-			}
-		]);
-	};
-
-	beforeEach(() => {
+	beforeEach(async () => {
 		vi.resetAllMocks();
 		setupCosStore();
-		setupRightsStore();
+
+		// Set up user account store for useCurrentUserRights hook
+		useAccountStore.setState({
+			account: {
+				id: 'test-user-id',
+				name: 'test@example.com',
+				displayName: '',
+				signatures: {
+					signature: []
+				},
+				identities: undefined,
+				rights: { targets: [] }
+			},
+			settings: {
+				prefs: {},
+				attrs: {},
+				props: []
+			},
+			usedQuota: 0
+		});
+	});
+
+	afterEach(() => {
+		resetMockWorker();
+		useCosStore.getState().reset();
 	});
 
 	it('should render the component correctly', async () => {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		setupBrowserTest(<COSPreferences />);
 		expect(page.getByText('Preferences')).toBeVisible();
 		expectGeneralOptionsSectionVisible();
@@ -141,10 +159,15 @@ describe('COSPreferences', () => {
 	});
 
 	it('should toggle zimbraFeatureReadReceiptsEnabled when clicking the read receipt switch', async () => {
+		const getrightsinterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		setupBrowserTest(<COSPreferences />);
 
 		// Wait for the component to render
 		await expect.element(page.getByText('Sending Mails')).toBeVisible();
+
+		await getrightsinterceptor;
 
 		// Find the "Allow the user to ask for a read receipt" label
 		const readReceiptLabel = page.getByText('Allow the user to ask for a read receipt');
@@ -159,6 +182,9 @@ describe('COSPreferences', () => {
 	});
 
 	it('should change zimbraPrefMailSendReadReceipts when selecting a different option', async () => {
+		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+			target: mockRightsData
+		});
 		setupBrowserTest(<COSPreferences />);
 
 		// Wait for the Receiving Mails section to render

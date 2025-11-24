@@ -3,17 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useMemo,
-	useContext,
-	useState,
-	ReactElement,
-	useEffect,
-	useCallback,
-	useRef
-} from 'react';
 
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -28,11 +19,18 @@ import {
 	ChipInputProps
 } from '@zextras/carbonio-design-system';
 import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
+import React, {
+	FC,
+	useMemo,
+	useContext,
+	useState,
+	ReactElement,
+	useEffect,
+	useCallback,
+	useRef
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import DelegateAddSection from './add-delegate-section/delegate-add-section';
-import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
-import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
 import logo from '../../../../../assets/gardian.svg';
 import {
 	SEND_MAILS_ONLY,
@@ -44,7 +42,6 @@ import {
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
@@ -54,6 +51,10 @@ import { generateSnackbarFromError } from '../../../../error/generate-snackbar-e
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
+
+import DelegateAddSection from './add-delegate-section/delegate-add-section';
+import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
+import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -94,7 +95,8 @@ const EditAccountDelegatesSection: FC = () => {
 	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const isAdvanced = useIsAdvanced();
 	const [simpleSelectedList, setSimpleSelectedList] = useState<any>([]);
 	const [identityListItem, setIdentityListItem] = useState<any>([]);
 	const [isSimplified, setIsSimplified] = useState<boolean>(true);
@@ -107,7 +109,6 @@ const EditAccountDelegatesSection: FC = () => {
 		[context?.accSpecificDetail?.mail, t]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		const identitiesArr: any = [];
 		identitiesList.forEach((item: any): any => {
@@ -227,7 +228,6 @@ const EditAccountDelegatesSection: FC = () => {
 			if (selectedDelegate?.folder?.length) {
 				selectedDelegate.folder.forEach((ele: any) => {
 					folderUsrRights.push({
-						// eslint-disable-next-line sonarjs/no-duplicate-string
 						_jsns: 'urn:zimbraMail',
 						action: {
 							op: '!grant',
@@ -239,7 +239,6 @@ const EditAccountDelegatesSection: FC = () => {
 			}
 			if (selectedDelegate?.right?.[0]?._content) {
 				revokeUsrRigths.push({
-					// eslint-disable-next-line sonarjs/no-duplicate-string
 					_jsns: ZIMBRA_ADMIN_URN,
 					target: {
 						_content: accountDetail?.zimbraMailDeliveryAddress,
@@ -262,7 +261,7 @@ const EditAccountDelegatesSection: FC = () => {
 					{
 						RevokeRightRequest: revokeUsrRigths,
 						FolderActionRequest: folderUsrRights,
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+
 						_jsns: 'urn:zimbra'
 					},
 					accountDetail?.zimbraMailDeliveryAddress
@@ -300,7 +299,7 @@ const EditAccountDelegatesSection: FC = () => {
 		selectedRows,
 		t
 	]);
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+
 	const handleCreateDelegateAPI = useCallback((): void => {
 		if (editMode) {
 			handleDeleteeDelegate();
@@ -316,7 +315,6 @@ const EditAccountDelegatesSection: FC = () => {
 				deligateDetail?.delegeteRights === 'send_read_manage_mails')
 		) {
 			grantUsrRigths.push({
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: ZIMBRA_ADMIN_URN,
 				target: {
 					_content: accountDetail?.zimbraMailDeliveryAddress,
@@ -346,7 +344,6 @@ const EditAccountDelegatesSection: FC = () => {
 			});
 
 			folderUsrRights.push({
-				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbraMail',
 				action: {
 					op: 'grant',
@@ -424,7 +421,6 @@ const EditAccountDelegatesSection: FC = () => {
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
-						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.volume_cancel_button', 'CANCEL')}
 						icon={'CloseOutline'}
 						iconPlacement="right"
@@ -547,7 +543,7 @@ const EditAccountDelegatesSection: FC = () => {
 		},
 		[searchAccountList]
 	);
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+
 	const addAccountGroupRights = useCallback((): void => {
 		const revokeUsrRigths: any[] = [];
 		const grantUsrRigths: any[] = [];
@@ -636,7 +632,6 @@ const EditAccountDelegatesSection: FC = () => {
 		getIdentitiesList
 	]);
 	const handleSimpleDeleteDelegate = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(single: boolean, rightsType: string): void => {
 			const selectedDelegateArr = [];
 			if (rightsType === 'readWrite') {
@@ -1086,7 +1081,6 @@ const EditAccountDelegatesSection: FC = () => {
 									<Row width="40%" mainAlignment="space-between">
 										<Button
 											type="ghost"
-											// eslint-disable-next-line sonarjs/no-duplicate-string
 											label={t('account_details.remove', 'REMOVE')}
 											color="error"
 											disabled={!readWriteSelectedRows?.length}
@@ -1096,7 +1090,6 @@ const EditAccountDelegatesSection: FC = () => {
 									<Row width="60%" mainAlignment="space-between">
 										<Button
 											type="outlined"
-											// eslint-disable-next-line sonarjs/no-duplicate-string
 											label={t('account_details.remove_all', 'REMOVE ALL')}
 											color="error"
 											disabled={

@@ -30,7 +30,7 @@ import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 
@@ -62,7 +62,7 @@ const GlobalActiveSync: FC = () => {
 	const [mobileAntiDosServiceMaxRequests, setMobileAntiDosServiceMaxRequests] = useState('');
 	const [mobileAntiDosServiceTimeWindow, setMobileAntiDosServiceTimeWindow] = useState('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
+	const { data: mailstoresList = [] } = useMailstoreServers();
 	const createSnackbar = useSnackbar();
 
 	const successSnackbar = (): void => {
@@ -132,9 +132,11 @@ const GlobalActiveSync: FC = () => {
 		if (mailstoresList.length > 0) {
 			const request: any[] = [];
 			setIsLoading(true);
-			mailstoresList.forEach((mailbox) =>
-				request.push(doStratStopJail('doStartService', mailbox?.name))
-			);
+			mailstoresList.forEach((mailbox) => {
+				if (mailbox?.name) {
+					request.push(doStratStopJail('doStartService', mailbox.name));
+				}
+			});
 			if (request?.length > 0) {
 				callAllRequest(request);
 			}

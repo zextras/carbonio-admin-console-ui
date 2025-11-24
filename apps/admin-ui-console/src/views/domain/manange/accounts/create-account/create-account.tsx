@@ -4,24 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, Button, useSnackbar, Padding } from '@zextras/carbonio-design-system';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { createAccountRequest } from '../../../../../services/create-account';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { HorizontalWizard } from '../../../../app/component/hwizard';
+import { Section } from '../../../../app/component/section-component';
+import OverlayDivision from '../../../../components/overlayDivision';
 
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
-import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
-import { createAccountRequest } from '../../../../../services/create-account';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { useConfigStore } from '../../../../../store/config/store';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section-component';
-import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -95,7 +93,6 @@ interface AccountDetailObj {
 	description: string;
 }
 
-// eslint-disable-next-line no-empty-pattern
 const CreateAccount: FC<{
 	setShowCreateAccountView: any;
 	getAccountList: any;
@@ -113,7 +110,6 @@ const CreateAccount: FC<{
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
-	const { userId } = useConfigStore((state) => state);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<AccountDetailObj>({
 		name: '',
@@ -141,11 +137,10 @@ const CreateAccount: FC<{
 		showOtpOptionSection: true,
 		description: ''
 	});
-	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
 	const [accountCreate, setAccountCreate] = useState('');
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const [showNext, setShowNext] = useState(false);
+
+	const isAdvanced = useIsAdvanced();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const createAccountAPI = useCallback((): void => {
@@ -365,8 +360,8 @@ const CreateAccount: FC<{
 						}}
 					/>
 				),
-				PrevButton: (props: any): ReactElement => <></>,
-				NextButton: (props: any) => (
+				PrevButton: (): ReactElement => <></>,
+				NextButton: () => (
 					<Button
 						label={t('commons.create_with_there_data', 'CREATE WITH THESE DATA')}
 						icon="PersonOutline"
@@ -430,7 +425,6 @@ const CreateAccount: FC<{
 					<HorizontalWizard
 						steps={wizardStepItems}
 						Wrapper={WizardInSection}
-						onChange={setWizardData}
 						onComplete={onComplete}
 						activeStep={activeStep}
 						setToggleWizardSection={setShowCreateAccountView}

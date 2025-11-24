@@ -10,6 +10,22 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import { useLastLoginTimestamp } from './src/react-query/use-last-login';
+import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
+import {
+	useHasRight,
+	useRightsByType,
+	getRights,
+	getAllRights,
+	useCurrentUserRights
+} from './src/react-query/use-rights';
+import {
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
+} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
 import { useIsAdvanced } from './src/store/advance';
@@ -20,6 +36,10 @@ import { useDomainInformation } from './src/store/domain-information';
 import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
+import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
+import { useDomainStore } from './src/store/shared/domains';
+import { useGlobalConfigStore } from './src/store/shared/global-config/store';
+import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
@@ -57,5 +77,22 @@ export {
 	useDomainInformation,
 	useIsAdvanced,
 	useIntegratedComponent,
-	pushHistory
+	pushHistory,
+	useDomainStore,
+	useStickyBarStore,
+	useGlobalConfigStore,
+	useAppConfigStore,
+	useConfigurationAttribute,
+	useHasRight,
+	useRightsByType,
+	getRights,
+	getAllRights,
+	useCurrentUserRights,
+	useMailstoreServers,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo
 };

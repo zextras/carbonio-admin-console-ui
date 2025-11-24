@@ -9,7 +9,7 @@ import React, { FC, useCallback } from 'react';
 import { Container, Button } from '@zextras/carbonio-design-system';
 
 import { DOMAIN_DETAIL_VIEW, DOMAIN_MANAGE_VIEW } from '../../constants';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 
 const DomainHeader: FC = () => {
 	const setDomainView = useDomainStore((state) => state.setDomainView);

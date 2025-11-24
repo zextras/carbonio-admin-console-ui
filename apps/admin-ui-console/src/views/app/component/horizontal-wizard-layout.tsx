@@ -151,7 +151,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 			setToggleNextBtn
 		}: Props,
 		{ sectionRef, activeRef }: any
-	): JSX.Element => {
+	): React.ReactElement => {
 		const { t } = useTranslation();
 		const stepsToRender = useMemo(
 			() =>

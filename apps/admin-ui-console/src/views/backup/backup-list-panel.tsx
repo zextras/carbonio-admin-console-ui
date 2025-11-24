@@ -3,10 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import {
+	getRights,
+	replaceHistory,
+	useCurrentUserRights,
+	useGlobalConfigStore,
+	useModuleLicenseInfo
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -22,13 +27,9 @@ import {
 	SERVER_CONFIG
 } from '../../constants';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import { useModuleLicenseStore } from '../../store/module-license/store';
-import { useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-import { getRights } from '../utility/utils';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -44,13 +45,13 @@ const BackupListPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [serverNames, setServerNames] = useState<any>();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
-	const rights = useRightsStore((state) => state.rights);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
+	const { data: rights } = useCurrentUserRights();
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const [isShowError, setIsShowError] = useState(false);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
 			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);

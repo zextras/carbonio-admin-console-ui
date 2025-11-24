@@ -85,7 +85,7 @@ const HoverContentRowFactory = ({
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}: TRowProps): JSX.Element => {
+}: TRowProps): React.ReactElement => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const ckbRef = useRef<HTMLDivElement>(null);
 	const [isHovered, setIsHovered] = useState<boolean>(false);

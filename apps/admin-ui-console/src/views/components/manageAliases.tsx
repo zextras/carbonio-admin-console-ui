@@ -20,7 +20,7 @@ import { cloneDeep, uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from './customChip';
-import { useDomainStore } from '../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;

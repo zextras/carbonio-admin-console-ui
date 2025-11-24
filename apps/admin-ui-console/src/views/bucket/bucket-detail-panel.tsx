@@ -388,7 +388,7 @@ const BucketDetailPanel: FC = () => {
 						disabled={bucketList.length === 0 && searchBucket.length === 0}
 						backgroundColor="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-						CustomIcon={(): JSX.Element => (
+						CustomIcon={(): React.ReactElement => (
 							<Icon icon="FunnelOutline" size="large" color="primary" />
 						)}
 						onChange={filterBucketList}

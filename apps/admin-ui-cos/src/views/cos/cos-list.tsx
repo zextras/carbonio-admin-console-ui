@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
 
 import {
 	Container,
@@ -17,6 +16,7 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
@@ -317,7 +317,7 @@ const CosList: FC = () => {
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setSearchString(e.target.value);
 									}}
-									CustomIcon={(): JSX.Element => (
+									CustomIcon={(): React.JSX.Element => (
 										<Icon icon="FunnelOutline" size="large" color="primary" />
 									)}
 								/>

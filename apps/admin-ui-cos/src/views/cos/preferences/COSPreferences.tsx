@@ -13,7 +13,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
@@ -32,12 +32,12 @@ export const COSPreferences = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const cosInformation = useCosStore((state) => state.cos?.a);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useCurrentUserRights();
 	const setCos = useCosStore((state) => state.setCos);
 
 	const locales = useMemo(() => localeList(t), [t]);
 	const isReadOnlyCos = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

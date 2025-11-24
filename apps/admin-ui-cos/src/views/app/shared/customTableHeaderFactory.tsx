@@ -10,7 +10,7 @@ import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState 
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
 
-export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
+export type IconComponent = (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -40,7 +40,7 @@ const CustomHeaderFactory: FC<any> = ({
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}): JSX.Element => {
+}): React.JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('');
@@ -162,7 +162,7 @@ const CustomHeaderFactory: FC<any> = ({
 									dropdownWidth="auto"
 									onChange={column.onChange}
 									display={column.align ? 'inline-block' : 'block'}
-									LabelFactory={(props: any): JSX.Element =>
+									LabelFactory={(props: any): React.JSX.Element =>
 										LabelFactory({ ...props, bold: column.bold, size: 'small' })
 									}
 								/>

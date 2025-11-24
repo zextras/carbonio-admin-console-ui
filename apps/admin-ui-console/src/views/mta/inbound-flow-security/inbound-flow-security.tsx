@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-
+import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -18,6 +17,7 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, uniq } from 'lodash';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
@@ -44,8 +44,6 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 
@@ -53,20 +51,20 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const addConfig = useConfigStore((state) => state.addConfig);
-	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const addConfig = useAppConfigStore((state) => state.addConfig);
+	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
 	const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
 	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
 		useState<MtaInboundSecurity>();
 	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
 	const [commonBlockedExtensions, setCommonBlockedExtensions] = useState<Array<string>>([]);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

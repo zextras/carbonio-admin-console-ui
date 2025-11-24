@@ -71,7 +71,7 @@ const CustomRowFactory = ({
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}: TRowProps): JSX.Element => {
+}: TRowProps): React.JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const ckbRef = useRef<HTMLDivElement>(null);
 	const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);

@@ -3,16 +3,24 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
+import {
+	replaceHistory,
+	useDomainStore,
+	getAllRights,
+	useCurrentUserRights,
+	useModuleLicenseInfo,
+	useIsAdvanced,
+	useAppConfigStore,
+	useGlobalConfigStore
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
+import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import GlobalListPanel from './global-list-panel';
 import { DomainResponse } from '../../../types';
 import {
 	ACCOUNTS,
@@ -51,19 +59,14 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
-import { useConfigStore } from '../../store/config/store';
-import { useDomainStore } from '../../store/domain/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import { useModuleLicenseStore } from '../../store/module-license/store';
-import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-import { getAllRights } from '../utility/utils';
+
+import GlobalListPanel from './global-list-panel';
 
 const SelectItem = styled(Row)``;
 
@@ -110,15 +113,16 @@ const DomainListPanel: FC = () => {
 	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+
+	const isAdvanced = useIsAdvanced();
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
-	const rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const globalConfigInformation = useConfigStore((state) => state.config);
+	const globalConfigInformation = useAppConfigStore((state) => state.config);
 	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
 	useEffect(() => {
@@ -140,7 +144,7 @@ const DomainListPanel: FC = () => {
 		if (rights && rights.length > 0) {
 			const allRights = getAllRights(rights, CONFIG);
 			if (allRights && allRights.length > 0) {
-				const right: Right = allRights[0];
+				const right = allRights[0];
 				if (
 					right?.all &&
 					Array.isArray(right?.all) &&
@@ -254,7 +258,6 @@ const DomainListPanel: FC = () => {
 		return value[0] === GLOBAL_ROUTE;
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (getTrakingDetials(domainView)) {
 			replaceHistory(`/${domainView}`);
@@ -267,7 +270,6 @@ const DomainListPanel: FC = () => {
 		} else {
 			replaceHistory(`/${domainView}`);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, globalCarbonioSendAnalytics]);
 
 	const isDisclaimerEnable = useMemo(
@@ -410,12 +412,12 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-					(item: ManageOptions) =>
-						item?.id !== RESTORE_ACCOUNT &&
-						item?.id !== ACTIVE_SYNC &&
-						item?.id !== DELEGATES_DOMAIN_ADMINS &&
-						item?.id !== SECURITY_GROUP
-				)
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT &&
+							item?.id !== ACTIVE_SYNC &&
+							item?.id !== DELEGATES_DOMAIN_ADMINS &&
+							item?.id !== SECURITY_GROUP
+					)
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
 	);
@@ -424,11 +426,11 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? detailOptions.filter(
-					(item: ManageOptions) =>
-						item?.id !== WHITELABEL_SETTINGS &&
-						item?.id !== SAML &&
-						item?.id !== TWO_FACTOR_AUTHENTICATION
-				)
+						(item: ManageOptions) =>
+							item?.id !== WHITELABEL_SETTINGS &&
+							item?.id !== SAML &&
+							item?.id !== TWO_FACTOR_AUTHENTICATION
+					)
 				: detailOptions,
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[detailOptions, isAdvanced, is2FAAvailable]
@@ -438,11 +440,11 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? globalOptionItems.filter(
-					(item: ManageOptions) =>
-						item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
-						item?.id !== GLOBAL_2FA_ROUTE &&
-						item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
-				)
+						(item: ManageOptions) =>
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+							item?.id !== GLOBAL_2FA_ROUTE &&
+							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
+					)
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
 	);
@@ -457,7 +459,6 @@ const DomainListPanel: FC = () => {
 	useMemo(() => {
 		setManageOptions(
 			manageItems.map((item: ManageOptions) => {
-				// eslint-disable-next-line no-param-reassign
 				item.isSelected = isDomainSelect;
 				return item;
 			})
@@ -465,7 +466,7 @@ const DomainListPanel: FC = () => {
 	}, [isDomainSelect, manageItems]);
 
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
 			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
@@ -516,55 +517,55 @@ const DomainListPanel: FC = () => {
 	const items =
 		domainList.length > MAX_DOMAIN_DISPLAY
 			? [
-				{
-					customComponent: (
-						<>
-							<Row mainAlignment="flex-start">
-								<Padding horizontal="small">
-									<CustomIcon icon="InfoOutline"></CustomIcon>
-								</Padding>
-							</Row>
-							<Row
-								mainAlignment="flex-start"
-								width="100%"
-								padding={{
-									all: 'small'
+					{
+						customComponent: (
+							<>
+								<Row mainAlignment="flex-start">
+									<Padding horizontal="small">
+										<CustomIcon icon="InfoOutline"></CustomIcon>
+									</Padding>
+								</Row>
+								<Row
+									mainAlignment="flex-start"
+									width="100%"
+									padding={{
+										all: 'small'
+									}}
+								>
+									<Text overflow="break-word">
+										{t(
+											'many_domain_info_msg',
+											'So many domains! Which one would you like to see? Start typing to filter.'
+										)}
+									</Text>
+								</Row>
+							</>
+						)
+					}
+				]
+			: domainList.map(
+					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+						id: domain.id,
+						label: domain.name,
+						customComponent: (
+							<SelectItem
+								style={{
+									display: 'block',
+									textAlign: 'left',
+									height: 'inherit',
+									padding: '0.188rem',
+									width: 'inherit'
+								}}
+								onClick={(): void => {
+									setIsShowError(false);
+									selectedDomain(domain);
 								}}
 							>
-								<Text overflow="break-word">
-									{t(
-										'many_domain_info_msg',
-										'So many domains! Which one would you like to see? Start typing to filter.'
-									)}
-								</Text>
-							</Row>
-						</>
-					)
-				}
-			]
-			: domainList.map(
-				(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
-					id: domain.id,
-					label: domain.name,
-					customComponent: (
-						<SelectItem
-							style={{
-								display: 'block',
-								textAlign: 'left',
-								height: 'inherit',
-								padding: '0.188rem',
-								width: 'inherit'
-							}}
-							onClick={(): void => {
-								setIsShowError(false);
-								selectedDomain(domain);
-							}}
-						>
-							{domain?.name}
-						</SelectItem>
-					)
-				})
-			);
+								{domain?.name}
+							</SelectItem>
+						)
+					})
+				);
 
 	useEffect(() => {
 		const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);

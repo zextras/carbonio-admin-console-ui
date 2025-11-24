@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useCurrentUserRights, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -39,8 +40,6 @@ import {
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useConfigStore } from '../../../store/config/store';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
@@ -48,8 +47,8 @@ const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const configInformation = useAppConfigStore((state) => state.config);
+	const updateConfig = useAppConfigStore((state) => state.updateConfig);
 
 	const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
@@ -76,8 +75,7 @@ const MTAAdvanced: FC = () => {
 		},
 		[setInitialValue, setValue]
 	);
-
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights } = useCurrentUserRights();
 
 	const amavisLogLevelOptions = useMemo(
 		() => [
@@ -172,7 +170,7 @@ const MTAAdvanced: FC = () => {
 	);
 
 	const allowSetMTA = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

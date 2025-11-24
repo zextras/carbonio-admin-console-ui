@@ -27,7 +27,7 @@ import { find, head } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { AccountContext } from './account-context';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import Textarea from '../../../../components/textarea';
 import {
 	AccountStatus,

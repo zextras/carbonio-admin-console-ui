@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIntegratedComponent, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import {
+	useIntegratedComponent,
+	useUserSettings,
+	useDomainStore
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Button,
@@ -34,7 +38,6 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/domain/store';
 import ListRow from '../../list/list-row';
 
 const EditorWrapper = styled.div`
