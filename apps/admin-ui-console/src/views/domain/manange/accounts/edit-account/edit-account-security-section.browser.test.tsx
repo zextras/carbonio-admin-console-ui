@@ -32,6 +32,11 @@ vi.mock('../../../../../services/send-mail-service', () => ({
 	sendMail: vi.fn()
 }));
 
+// Mock the fetchSoap service
+vi.mock('../../../../../services/generateOTP-service', () => ({
+	fetchSoap: vi.fn()
+}));
+
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
 
@@ -1291,5 +1296,20 @@ describe('EditAccountSecuritySection (browser)', () => {
 		expect(vi.isMockFunction(sendMail)).toBe(true);
 	});
 
-
+	/*
+	 * NOTE: The following lines in edit-account-security-section.tsx cannot be tested in browser tests
+	 * due to a bug in the useWizard hook (line 132 in usewizard.tsx):
+	 * 
+	 * Line 292: hasError={sendEmailTo?.some((contact: any) => contact.error)}
+	 * Line 295: {sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', ...)}
+	 * Line 304: disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
+	 * 
+	 * The wizard's useEffect tries to call `sectionRef.current.scrollTo()` when `sectionRef.current` is null,
+	 * causing "Cannot read properties of null (reading 'scrollTo')" errors in the test environment.
+	 * 
+	 * The validation logic for these lines is thoroughly tested in:
+	 * - tests/email-validation.test.ts (unit tests for the validation logic)
+	 * 
+	 * To properly test these lines, the useWizard hook would need to be fixed to handle null refs gracefully.
+	 */
 });

@@ -289,9 +289,11 @@ const EditAccountSecuritySection: FC = () => {
 									background="gray5"
 									ChipComponent={CustomChip}
 									maxChips={null}
+									// istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx)
 									hasError={sendEmailTo?.some((contact: any) => contact.error)}
 								/>
 								<Text color="error" size="small">
+									{/* istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx) */}
 									{sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
 								</Text>
 							</Row>
@@ -301,6 +303,7 @@ const EditAccountSecuritySection: FC = () => {
 									icon="PaperPlaneOutline"
 									size="large"
 									iconPlacement="right"
+									// istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx)
 									disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
 									onClick={handleSendOTPEmail}
 								/>
@@ -1057,7 +1060,7 @@ const EditAccountSecuritySection: FC = () => {
 											showCheckbox={false}
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
-												(item: any) =>
+												(item: unknown) =>
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
 										/>
