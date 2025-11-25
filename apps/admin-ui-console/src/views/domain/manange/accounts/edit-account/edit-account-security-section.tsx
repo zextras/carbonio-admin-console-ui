@@ -539,12 +539,14 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeType, setAccountDetail]
 	);
 
-	const onRecoveryStatusChange = (v: any): any => {
+	const onRecoveryStatusChange = (v: unknown): void => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
 	};
 
 	const changeRecoverOption = useCallback(
 		(key: string): void => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED
@@ -1060,7 +1062,8 @@ const EditAccountSecuritySection: FC = () => {
 											showCheckbox={false}
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
-												(item: unknown) =>
+												// eslint-disable-next-line @typescript-eslint/no-explicit-any
+												(item: any) =>
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
 										/>
