@@ -18,7 +18,8 @@ import {
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAppConfigStore,
-	useAllServers
+	useAllServers,
+	useBucketServersListStore
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -54,8 +55,7 @@ import {
 	CONFIG
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
-import { useBackupModuleStore } from './store/backup-module/store';
-import { useBucketServersListStore } from './store/bucket-server-list/store';
+import { useBackupModuleStore } from './store/backup-module';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -84,8 +84,7 @@ const App: FC = () => {
 	const history = useHistory();
 	const { data: serverList = [] } = useAllServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
+	const { setBackupServerList, setBackupModuleEnable } = useBackupModuleStore((state) => state);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
