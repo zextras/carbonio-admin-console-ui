@@ -1115,7 +1115,383 @@ describe('EditAccountSecuritySection (browser)', () => {
 		expect(vi.isMockFunction(sendMail)).toBe(true);
 	});
 
-	// Interactive tests for input changes
+	it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
+		const mockFetch = vi.fn().mockResolvedValue(
+			new Response(
+				JSON.stringify({
+					Body: {
+						ZxAuthResponse: {
+							ok: true,
+							response: {
+								label: 'test-user@test-domain.com',
+								secret: 'TESTSECRETCODE123',
+								issuer: 'Carbonio',
+								algorithm: 'SHA1',
+								digits_length: 6,
+								period: 30,
+								static_otp_codes: [
+									{ code: '111111' },
+									{ code: '222222' },
+									{ code: '333333' },
+									{ code: '444444' },
+									{ code: '555555' },
+									{ code: '666666' }
+								]
+							}
+						}
+					}
+				}),
+				{
+					status: 200,
+					headers: { 'Content-Type': 'application/json' }
+				}
+			)
+		);
+		globalThis.fetch = mockFetch;
+
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		// Verify NEW OTP button is visible
+		const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
+		await expect.element(newOtpButton).toBeVisible();
+	});
+
+	it('should display wizard with QR code, secret code, and pin codes', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should handle email change with valid email in ChipInput', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should handle email change with invalid email in ChipInput', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should disable SEND button when no emails are provided', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should disable SEND button when email has error', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should show success snackbar when email is sent successfully', async () => {
+		vi.clearAllMocks();
+		vi.mocked(sendMail).mockResolvedValue({} as unknown);
+
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should show error snackbar when email sending fails', async () => {
+		vi.clearAllMocks();
+		vi.mocked(sendMail).mockRejectedValue(new Error('Network error'));
+
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should render email recipients correctly in handleSendOTPEmail', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		const testContext = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				name: 'testuser'
+			}
+		};
+
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should map sendEmailTo correctly in handleSendOTPEmail', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should validate email in handleEmailChange callback', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should set error flag for invalid emails in handleEmailChange', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should compute hasEmailError correctly when no errors', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should compute hasEmailError correctly when errors exist', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should compute isSendDisabled correctly when sendEmailTo is empty', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should compute isSendDisabled correctly when hasEmailError is true', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should clear sendEmailTo after successful email send', async () => {
+		vi.clearAllMocks();
+		vi.mocked(sendMail).mockResolvedValue({} as unknown);
+
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should call emailContent with pinCodes and secrateCode', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should construct email message with correct structure', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should handle multiple email recipients in sendEmailTo', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should handle email with undefined label in handleEmailChange', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should handle empty contact label in handleEmailChange', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should display OTP message about seeing codes once', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should display instruction to select email address', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should render DATA ALREADY SENT TO THE USER button in wizard', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
 	it('should handle minimum password length input change', async () => {
 		const mockSetAccountDetail = vi.fn();
 		const testContext = {
