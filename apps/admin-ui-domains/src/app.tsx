@@ -16,7 +16,9 @@ import {
 	useCurrentUserRights,
 	useMailstoreServers,
 	useGlobalConfigStore,
-	useAppConfigStore
+	useAppConfigStore,
+	useAllServers,
+	useMtaServers
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -32,16 +34,13 @@ import {
 	GLOBAL,
 	MANAGE,
 	MANAGE_APP_ID,
-	MTA,
 	PRIMARY_BAR_DOMAINS,
 	TRUE,
 	ZIMBRA_ADMIN_URN
 } from './constants';
 import { ReactQueryProvider } from './providers/query-client-provider';
-import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
-import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -61,8 +60,8 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const setServerList = useServerStore((state) => state.setServerList);
-	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
+	const { data: serverList = [] } = useAllServers();
+	const { data: _mtaServerList = [] } = useMtaServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
@@ -220,36 +219,16 @@ const App: FC = () => {
 		});
 	}, [setGlobalConfig]);
 
-	const getAllServersRequest = useCallback(() => {
-		getAllServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setServerList(server);
-				if (isAdvanced) {
-					checkIsBackupModuleEnable();
-					getGlobalConfig();
-				}
-				setAllServersList(server);
-			}
-		});
-		getAllServerByService(MTA).then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setMtaServerList(server);
-			}
-		});
-	}, [
-		setServerList,
-		isAdvanced,
-		setAllServersList,
-		checkIsBackupModuleEnable,
-		getGlobalConfig,
-		setMtaServerList
-	]);
-
+	// Handle server list changes
 	useEffect(() => {
-		getAllServersRequest();
-	}, [getAllServersRequest]);
+		if (serverList && serverList.length > 0) {
+			if (isAdvanced) {
+				checkIsBackupModuleEnable();
+				getGlobalConfig();
+			}
+			setAllServersList(serverList);
+		}
+	}, [serverList, isAdvanced, checkIsBackupModuleEnable, getGlobalConfig, setAllServersList]);
 
 	return null;
 };

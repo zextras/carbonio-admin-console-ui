@@ -19,6 +19,7 @@ import {
 	getAllRights,
 	useCurrentUserRights
 } from './src/react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
 import {
 	useLicenseInfo,
 	useVersion,
@@ -94,5 +95,8 @@ export {
 	useVersion,
 	useActivateLicense,
 	useRemoveLicense,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useAllServers,
+	useMtaServers,
+	useServersByService
 };
