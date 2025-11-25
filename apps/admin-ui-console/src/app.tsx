@@ -7,7 +7,6 @@
 import {
 	addRoute,
 	removeRoute,
-	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
@@ -18,7 +17,8 @@ import {
 	useGlobalConfigStore,
 	useAppConfigStore,
 	useAllServers,
-	useBucketServersListStore
+	useBucketServersListStore,
+	useGlobalSettings
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -50,7 +50,6 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
-	ZIMBRA_ADMIN_URN,
 	CONFIG
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
@@ -84,6 +83,9 @@ const App: FC = () => {
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
+	const { data: globalSettings } = useGlobalSettings({
+		enabled: isAdvanced
+	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
@@ -577,31 +579,18 @@ const App: FC = () => {
 		t
 	]);
 
-	const getGlobalConfig = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxConfig',
-				action: 'dump_global_config'
-			}
-		}).then((data: any) => {
-			const responseData = JSON.parse(data?.Body?.response?.content);
-			const globalConfig = responseData?.response;
-			if (globalConfig) {
-				setGlobalConfig(globalConfig);
-			}
-		});
-	}, [setGlobalConfig]);
-
 	// Handle server list changes
 	useEffect(() => {
 		if (serverList && serverList.length > 0) {
-			if (isAdvanced) {
-				getGlobalConfig();
-			}
 			setAllServersList(serverList);
 		}
-	}, [serverList, isAdvanced, getGlobalConfig, setAllServersList]);
+	}, [serverList, setAllServersList]);
+
+	useEffect(() => {
+		if (globalSettings) {
+			setGlobalConfig(globalSettings);
+		}
+	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };

@@ -13,6 +13,7 @@ import {
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
+import { useGlobalSettings } from './src/react-query/use-global-settings';
 import {
 	useHasRight,
 	useRightsByType,
@@ -94,6 +95,7 @@ export {
 	useCurrentUserRights,
 	useMailstoreServers,
 	useLastLoginTimestamp,
+	useGlobalSettings,
 	useLicenseInfo,
 	useVersion,
 	useActivateLicense,
