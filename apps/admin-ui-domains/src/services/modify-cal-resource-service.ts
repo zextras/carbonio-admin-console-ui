@@ -1,0 +1,20 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { soapFetch } from '@zextras/admin-ui-bootstrap';
+
+export const modifyCalendarResource = async (resourceId: string, a?: any[]): Promise<any> => {
+	const request: any = {
+		_jsns: 'urn:zimbraAdmin',
+		id: resourceId
+	};
+	if (a) {
+		request.a = a;
+	}
+	return soapFetch(`ModifyCalendarResource`, {
+		...request
+	});
+};
