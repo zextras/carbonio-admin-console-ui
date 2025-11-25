@@ -98,7 +98,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
 	const [secrateCode, setSecrateCode] = useState('');
-	const [sendEmailTo, setSendEmailTo] = useState<any>([]);
+	const [sendEmailTo, setSendEmailTo] = useState<any[]>([]);
 	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
@@ -154,6 +154,27 @@ const EditAccountSecuritySection: FC = () => {
 				});
 			});
 	}, [accountDetail?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
+
+	const handleEmailChange = useCallback((contacts: any): void => {
+		const data = map(contacts, (contact) => {
+			const isValid = isValidEmail(contact.label ?? '');
+			return {
+				...contact,
+				error: !isValid
+			};
+		});
+		setSendEmailTo(data);
+	}, []);
+
+	const hasEmailError = useMemo(
+		() => sendEmailTo?.some((contact: any) => contact.error),
+		[sendEmailTo]
+	);
+
+	const isSendDisabled = useMemo(
+		() => sendEmailTo.length === 0 || hasEmailError,
+		[sendEmailTo, hasEmailError]
+	);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -273,28 +294,17 @@ const EditAccountSecuritySection: FC = () => {
 							<Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
 								<ChipInput
 									placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
-									onChange={(contacts: any): void => {
-										const data: any = [];
-										map(contacts, (contact) => {
-											const isValid = isValidEmail(contact.label ?? '');
-											data.push({
-												...contact,
-												error: !isValid
-											});
-										});
-										setSendEmailTo(data);
-									}}
+									onChange={handleEmailChange}
 									defaultValue={sendEmailTo}
 									value={sendEmailTo}
 									background="gray5"
 									ChipComponent={CustomChip}
 									maxChips={null}
-									// istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx)
-									hasError={sendEmailTo?.some((contact: any) => contact.error)}
+									hasError={hasEmailError}
 								/>
 								<Text color="error" size="small">
-									{/* istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx) */}
-									{sendEmailTo?.some((contact: any) => contact.error) && t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
+									{hasEmailError &&
+										t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
 								</Text>
 							</Row>
 							<Row width="20%" mainAlignment="space-between">
@@ -303,8 +313,7 @@ const EditAccountSecuritySection: FC = () => {
 									icon="PaperPlaneOutline"
 									size="large"
 									iconPlacement="right"
-									// istanbul ignore next - Cannot test in browser due to wizard scrollTo bug (see edit-account-security-section.browser.test.tsx)
-									disabled={sendEmailTo.length === 0 || sendEmailTo?.some((contact: any) => contact.error)}
+									disabled={isSendDisabled}
 									onClick={handleSendOTPEmail}
 								/>
 							</Row>
@@ -325,7 +334,19 @@ const EditAccountSecuritySection: FC = () => {
 				)
 			}
 		],
-		[accountDetail?.name, domainName, pinCodes, qrData, secrateCode, sendEmailTo, createSnackbar, t]
+		[
+			accountDetail?.name,
+			domainName,
+			pinCodes,
+			qrData,
+			secrateCode,
+			sendEmailTo,
+			createSnackbar,
+			t,
+			handleEmailChange,
+			hasEmailError,
+			isSendDisabled
+		]
 	);
 	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
 		accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1)
