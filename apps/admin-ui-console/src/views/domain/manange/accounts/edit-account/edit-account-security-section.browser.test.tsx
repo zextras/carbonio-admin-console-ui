@@ -39,9 +39,11 @@ vi.mock('../../../../../services/generateOTP-service', () => ({
 }));
 
 vi.mock('../../../../app/component/hwizard', () => ({
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	HorizontalWizard: ({ steps }: any) => (
 		<div data-testid="mock-wizard">
-			{steps.map((step: unknown, index: number) => (
+			{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+			{steps.map((step: any, index: number) => (
 				<div key={index}>
 					{step.view ? step.view() : step.content}
 				</div>
@@ -55,7 +57,7 @@ vi.mock('@zextras/carbonio-design-system', async () => {
 	const actual = await vi.importActual('@zextras/carbonio-design-system');
 	return {
 		...actual,
-		// eslint-disable-next-line react/display-name, @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		ChipInput: ({ onChange, value, placeholder, hasError }: any) => (
 			<div data-testid="mock-chip-input">
 				<input
