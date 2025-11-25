@@ -18,7 +18,8 @@ import {
 	useGlobalConfigStore,
 	useAppConfigStore,
 	useAllServers,
-	useMtaServers
+	useMtaServers,
+	useBucketServersListStore
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -39,7 +40,6 @@ import {
 	ZIMBRA_ADMIN_URN
 } from './constants';
 import { useBackupModuleStore } from './store/backup-module/store';
-import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
