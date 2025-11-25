@@ -10,6 +10,7 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
 import {
@@ -100,5 +101,6 @@ export {
 	useModuleLicenseInfo,
 	useAllServers,
 	useMtaServers,
-	useServersByService
+	useServersByService,
+	useBackupServers
 };

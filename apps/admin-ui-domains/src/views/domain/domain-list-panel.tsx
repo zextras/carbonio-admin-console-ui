@@ -9,10 +9,10 @@ import {
 	useDomainStore,
 	getAllRights,
 	useCurrentUserRights,
-	useModuleLicenseInfo,
 	useIsAdvanced,
 	useAppConfigStore,
-	useGlobalConfigStore
+	useGlobalConfigStore,
+	useBackupServers
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
@@ -43,7 +43,6 @@ import {
 	SECURITY_GROUP,
 	GLOBAL_ROUTE,
 	GLOBAL_QUARANTINE_ROUTE,
-	BACKUP_BASIC,
 	WHITELABEL_SETTINGS,
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
@@ -59,7 +58,6 @@ import {
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useBackupModuleStore } from '../../store/backup-module/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -115,9 +113,10 @@ const DomainListPanel: FC = () => {
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 
 	const isAdvanced = useIsAdvanced();
-	const { moduleLicenseInfo } = useModuleLicenseInfo();
+	const { data: backupData } = useBackupServers({
+		enabled: isAdvanced
+	});
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
-	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
 	const [isShowError, setIsShowError] = useState(false);
@@ -168,7 +167,6 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation]);
 
-	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = useCallback(
 		(domainName: string): void => {
 			setIsLoading(true);
@@ -450,11 +448,16 @@ const DomainListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		if (!getBackupModuleEnable && !isBackupModuleLicensed) {
+		if (!backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
 			const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
 			setManageOptions(options);
 		}
-	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed, isDomainSelect]);
+	}, [
+		backupData?.backupModuleEnable,
+		backupData?.isBackupModuleLicensed,
+		manageItems,
+		isDomainSelect
+	]);
 
 	useMemo(() => {
 		setManageOptions(
@@ -464,17 +467,6 @@ const DomainListPanel: FC = () => {
 			})
 		);
 	}, [isDomainSelect, manageItems]);
-
-	useEffect(() => {
-		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-			const backupModule = moduleLicenseInfo.features.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
-			);
-			if (backupModule[0] && backupModule[0]?.enabled) {
-				setIsBackupModuleLicensed(true);
-			}
-		}
-	}, [moduleLicenseInfo]);
 
 	const toggleDetailView = (): void => {
 		if (isDetailListExpanded) {

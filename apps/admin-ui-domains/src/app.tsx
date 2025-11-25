@@ -7,7 +7,6 @@
 import {
 	addRoute,
 	registerActions,
-	getSoapFetchRequest,
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
@@ -39,7 +38,6 @@ import {
 	TRUE,
 	ZIMBRA_ADMIN_URN
 } from './constants';
-import { useBackupModuleStore } from './store/backup-module/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -60,15 +58,13 @@ const App: FC = () => {
 	const { data: serverList = [] } = useAllServers();
 	const { data: _mtaServerList = [] } = useMtaServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
+	const allConfig = useAllConfig();
+	const isAdvanced = useIsAdvanced();
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
-	const allConfig = useAllConfig();
-	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
 	const { data: rights } = useCurrentUserRights();
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
@@ -187,19 +183,6 @@ const App: FC = () => {
 		});
 	}, [createDomainRight, history, setDomain, setDomainView, t]);
 
-	const checkIsBackupModuleEnable = useCallback(() => {
-		getSoapFetchRequest(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`).then(
-			(data: any) => {
-				const backupServer = data?.servers;
-				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
-					setBackupServerList(backupServer);
-					setBackupModuleEnable(true);
-				} else {
-					setBackupModuleEnable(false);
-				}
-			}
-		);
-	}, [setBackupModuleEnable, setBackupServerList]);
 	const getGlobalConfig = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
@@ -220,12 +203,11 @@ const App: FC = () => {
 	useEffect(() => {
 		if (serverList && serverList.length > 0) {
 			if (isAdvanced) {
-				checkIsBackupModuleEnable();
 				getGlobalConfig();
 			}
 			setAllServersList(serverList);
 		}
-	}, [serverList, isAdvanced, checkIsBackupModuleEnable, getGlobalConfig, setAllServersList]);
+	}, [serverList, isAdvanced, getGlobalConfig, setAllServersList]);
 
 	return null;
 };

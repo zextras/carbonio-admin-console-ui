@@ -7,7 +7,6 @@
 import {
 	addRoute,
 	removeRoute,
-	getSoapFetchRequest,
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
@@ -55,7 +54,6 @@ import {
 	CONFIG
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
-import { useBackupModuleStore } from './store/backup-module';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -84,14 +82,13 @@ const App: FC = () => {
 	const history = useHistory();
 	const { data: serverList = [] } = useAllServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { setBackupServerList, setBackupModuleEnable } = useBackupModuleStore((state) => state);
+	const allConfig = useAllConfig();
+	const isAdvanced = useIsAdvanced();
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
-	const allConfig = useAllConfig();
-	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
 	const { data: rights } = useCurrentUserRights();
 	const userName = accounts?.[0]?.name || '';
@@ -580,19 +577,6 @@ const App: FC = () => {
 		t
 	]);
 
-	const checkIsBackupModuleEnable = useCallback(() => {
-		getSoapFetchRequest(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`).then(
-			(data: any) => {
-				const backupServer = data?.servers;
-				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
-					setBackupServerList(backupServer);
-					setBackupModuleEnable(true);
-				} else {
-					setBackupModuleEnable(false);
-				}
-			}
-		);
-	}, [setBackupModuleEnable, setBackupServerList]);
 	const getGlobalConfig = useCallback(() => {
 		postSoapFetchRequest(`/service/admin/soap/zextras`, {
 			zextras: {
@@ -613,12 +597,11 @@ const App: FC = () => {
 	useEffect(() => {
 		if (serverList && serverList.length > 0) {
 			if (isAdvanced) {
-				checkIsBackupModuleEnable();
 				getGlobalConfig();
 			}
 			setAllServersList(serverList);
 		}
-	}, [serverList, isAdvanced, checkIsBackupModuleEnable, getGlobalConfig, setAllServersList]);
+	}, [serverList, isAdvanced, getGlobalConfig, setAllServersList]);
 
 	return null;
 };
