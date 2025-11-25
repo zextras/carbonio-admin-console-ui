@@ -11,4 +11,3 @@ const handleGetTranslations: HttpResponseResolver<never, any> = async () => Http
 const defaultHandlers = [];
 defaultHandlers.push(http.get('/i18n/en.json', handleGetTranslations));
 export const server = setupServer(...defaultHandlers);
-export default server;

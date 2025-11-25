@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -15,6 +14,7 @@ import {
 	Icon
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useBackupModuleStore } from '../../../store/backup-module/store';
@@ -23,8 +23,7 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
-// eslint-disable-next-line no-shadow
-export enum SMART_SCAN_TYPE {
+enum SMART_SCAN_TYPE {
 	DISABLED = 1,
 	ON_STARTUP_ONLY = 2,
 	ON_STARTUP_AND_SCHEDULED = 3,
@@ -115,7 +114,6 @@ const BackupServersListTable: FC<{
 	);
 
 	const tableRows = useMemo(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		() =>
 			serverList.map((s, i) => ({
 				id: i?.toString(),
@@ -308,7 +306,7 @@ const ServersList: FC = () => {
 					? TYPE[1]?.label
 					: TYPE[0]?.label;
 				const purge = `${backupServer?.attributes?.ZxBackup_DataRetentionDays?.value}/${backupServer?.attributes?.backupAccountsRetentionDays?.value}`;
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+
 				const purgeTooltip = backupServer?.attributes?.backupPurgeScheduler?.value['cron-pattern'];
 				const smartScanStartup = backupServer?.attributes?.ZxBackup_DoSmartScanOnStartup?.value;
 				const backupSmartScan =
@@ -345,7 +343,6 @@ const ServersList: FC = () => {
 		[STATUS, TYPE, getSmartScanStatus]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (servers && servers?.length > 0) {
 			const sList: BackupServerType[] = [];

@@ -62,7 +62,7 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
-export type AttachmentPart = {
+type AttachmentPart = {
 	part?: string;
 	ct?: string;
 	s?: number;
@@ -79,7 +79,7 @@ export type AttachmentPart = {
 	mp?: Array<AttachmentPart>;
 };
 
-export type IncompleteMessage = {
+type IncompleteMessage = {
 	id: string;
 	did?: string;
 	parent: string;
@@ -118,8 +118,8 @@ export type IncompleteMessage = {
 	envelopeTo?: string;
 };
 
-export type SoapEmailParticipantRole = 'f' | 't' | 'c' | 'b' | 'r' | 's' | 'n' | 'rf';
-export type SoapMailParticipant = {
+type SoapEmailParticipantRole = 'f' | 't' | 'c' | 'b' | 'r' | 's' | 'n' | 'rf';
+type SoapMailParticipant = {
 	/** Address */
 	a: string;
 	/** Display name */
@@ -138,7 +138,7 @@ export type SoapMailParticipant = {
 	t: SoapEmailParticipantRole;
 	isGroup?: 0 | 1;
 };
-export type SoapMailMessagePart = {
+type SoapMailMessagePart = {
 	part: string;
 	/**	Content Type  */ ct: 'multipart/alternative' | string;
 	/**	Size  */ s?: number;
@@ -150,7 +150,7 @@ export type SoapMailMessagePart = {
 	// FIXME see IRIS-4029 Based on the compose settings the content could be a string or an object of type { _content: string }
 	content?: string;
 };
-export type MailMessagePart = {
+type MailMessagePart = {
 	contentType: string;
 	size: number;
 	content?: string;
@@ -161,7 +161,7 @@ export type MailMessagePart = {
 	cd?: string;
 	disposition?: 'inline' | 'attachment';
 };
-export const ParticipantRole = {
+const ParticipantRole = {
 	FROM: 'f',
 	TO: 't',
 	CARBON_COPY: 'c',
@@ -171,8 +171,8 @@ export const ParticipantRole = {
 	READ_RECEIPT_NOTIFICATION: 'n',
 	RESENT_FROM: 'rf'
 };
-export type ParticipantRoleType = (typeof ParticipantRole)[keyof typeof ParticipantRole];
-export type Participant = {
+type ParticipantRoleType = (typeof ParticipantRole)[keyof typeof ParticipantRole];
+type Participant = {
 	type: ParticipantRoleType;
 	address: string;
 	name?: string;

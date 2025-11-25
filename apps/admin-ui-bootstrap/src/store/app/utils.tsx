@@ -35,7 +35,7 @@ export const normalizeApp = (app: Partial<CarbonioModule>): CarbonioModule => ({
 
 const FallbackView: FC = () => <p>Missing Component</p>;
 
-export const normalizeBadgeInfo = (badge: Partial<BadgeInfo>): BadgeInfo => ({
+const normalizeBadgeInfo = (badge: Partial<BadgeInfo>): BadgeInfo => ({
 	show: badge.show ?? false,
 	count: badge.count ?? 0,
 	showCount: badge.showCount ?? false,

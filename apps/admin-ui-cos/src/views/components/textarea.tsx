@@ -87,7 +87,7 @@ const Label = styled.label<{ hasError: boolean; hasFocus: boolean }>`
 	}
 `;
 
-export interface TextareaProps {
+interface TextareaProps {
 	/** Textarea's background color */
 	backgroundColor?: string;
 	/** whether to disable the Textarea or not */

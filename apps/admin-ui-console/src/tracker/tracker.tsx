@@ -3,15 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCallback, useEffect } from 'react';
 
 import { useUserAccount } from '@zextras/admin-ui-bootstrap';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
+import { useCallback, useEffect } from 'react';
 
 import { useAdvanceStore } from '../store/advanced/store';
 
-export interface Tracker {
+interface Tracker {
 	capture: (
 		event_name: string,
 		properties?: Properties | null | undefined,

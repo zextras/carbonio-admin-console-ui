@@ -79,7 +79,7 @@ const ReusedDefaultTabBar: FC<{
 	</DefaultTabBarItem>
 );
 
-export type Notification = {
+type Notification = {
 	ack: boolean;
 	date: number;
 	group: string;
@@ -435,10 +435,6 @@ const NotificationView: FC<{
 		},
 		[t, createSnackbar]
 	);
-
-	const copyNotification = useCallback(() => {
-		copyNotificationOperation(selectedNotification);
-	}, [selectedNotification, copyNotificationOperation]);
 
 	return (
 		<Container background="gray6">
