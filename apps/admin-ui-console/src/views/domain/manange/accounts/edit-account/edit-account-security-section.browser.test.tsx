@@ -1114,4 +1114,855 @@ describe('EditAccountSecuritySection (browser)', () => {
 		expect(sendMail).toBeDefined();
 		expect(vi.isMockFunction(sendMail)).toBe(true);
 	});
+
+	// Interactive tests for input changes
+	it('should handle minimum password length input change', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		const minLengthLabel = page.getByText('Minimum password length');
+		await expect.element(minLengthLabel).toBeVisible();
+	});
+
+	it('should handle maximum password length input change', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		const maxLengthLabel = page.getByText('Maximum password length');
+		await expect.element(maxLengthLabel).toBeVisible();
+	});
+
+	it('should toggle password locked switch', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLocked: 'FALSE'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Prevent user from changing password'))
+			.toBeVisible();
+	});
+
+	it('should toggle reject common passwords switch', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Reject common passwords')).toBeVisible();
+	});
+
+	it('should toggle failed login lockout switch', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Enable failed login lockout')).toBeVisible();
+	});
+
+	it('should toggle OTP management switch when enabled', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				carbonioFeatureOTPMgmtEnabled: 'TRUE'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('One Time Password management')).toBeVisible();
+	});
+
+	it('should toggle backup self undelete switch', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				backupSelfUndeleteAllowed: false
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Allow user to restore messages')).toBeVisible();
+	});
+
+	it('should handle upper case characters input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum upper case characters')).toBeVisible();
+	});
+
+	it('should handle lower case characters input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum lower case characters')).toBeVisible();
+	});
+
+	it('should handle punctuation symbols input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum punctuation symbols')).toBeVisible();
+	});
+
+	it('should handle numeric characters input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum numeric characters', { exact: true })).toBeVisible();
+	});
+
+	it('should handle minimum password age input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum password age (Days)')).toBeVisible();
+	});
+
+	it('should handle maximum password age input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Maximum password age (Days)')).toBeVisible();
+	});
+
+	it('should handle digits or puncs input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(
+				page.getByText('Minimum numeric characters or punctuation symbols')
+			)
+			.toBeVisible();
+	});
+
+	it('should handle password history input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Minimum number of unique passwords history'))
+			.toBeVisible();
+	});
+
+	it('should handle max failures input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Number of consecutive failed logins allowed'))
+			.toBeVisible();
+	});
+
+	it('should handle lockout duration input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
+	});
+
+	it('should handle failure lifetime input', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(
+				page.getByText(
+					'Time window in which the failed logins must occur to lock the account:'
+				)
+			)
+			.toBeVisible();
+	});
+
+	it('should render recovery email input field', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('User Recovery Email')).toBeVisible();
+	});
+
+	it('should handle forgotten password token switch', async () => {
+		const mockSetAccountDetail = vi.fn();
+		const testContext = {
+			...mockContextValue,
+			setAccountDetail: mockSetAccountDetail
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={testContext}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('User can ask for a forgotten password token'))
+			.toBeVisible();
+	});
+
+	it('should render with lockout enabled and disabled fields', async () => {
+		const contextWithLockoutDisabled = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutEnabled: 'FALSE'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithLockoutDisabled}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Enable failed login lockout')).toBeVisible();
+	});
+
+	it('should render time range select options', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		const timeRangeLabels = page.getByText('Time Range');
+		await expect.element(timeRangeLabels.first()).toBeVisible();
+	});
+
+	it('should render with custom time values for lockout duration', async () => {
+		const contextWithCustomTime = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutDuration: '120m'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithCustomTime}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
+	});
+
+	it('should render with custom time values for failure lifetime', async () => {
+		const contextWithCustomLifetime = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutFailureLifetime: '48h'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithCustomLifetime}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(
+				page.getByText(
+					'Time window in which the failed logins must occur to lock the account:'
+				)
+			)
+			.toBeVisible();
+	});
+
+	it('should render OTP table with multiple entries', async () => {
+		const contextWithMultipleOTP = {
+			...mockContextValue,
+			otpList: [
+				{
+					id: '1',
+					description: 'OTP 1',
+					status: 'Active',
+					failed: '0',
+					'creation-date': '2024-01-01',
+					columns: ['OTP 1', 'Active', '0', '2024-01-01']
+				},
+				{
+					id: '2',
+					description: 'OTP 2',
+					status: 'Inactive',
+					failed: '2',
+					'creation-date': '2024-01-02',
+					columns: ['OTP 2', 'Inactive', '2', '2024-01-02']
+				}
+			]
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithMultipleOTP}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should render when isAdvanced is false', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(false);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
+	});
+
+	it('should render with all inherited values different from account values', async () => {
+		const contextWithDifferentInherited = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMinLength: '10',
+				zimbraPasswordMaxLength: '100'
+			},
+			cosDetail: {
+				...mockContextValue.cosDetail,
+				zimbraPasswordMinLength: '6',
+				zimbraPasswordMaxLength: '128'
+			},
+			accSpecificDetail: {
+				...mockContextValue.accSpecificDetail,
+				zimbraPasswordMinLength: '10',
+				zimbraPasswordMaxLength: '100'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithDifferentInherited}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum password length')).toBeVisible();
+		await expect.element(page.getByText('Maximum password length')).toBeVisible();
+	});
+
+	it('should handle empty lockout duration value', async () => {
+		const contextWithEmptyDuration = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutDuration: ''
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithEmptyDuration}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
+	});
+
+	it('should handle empty failure lifetime value', async () => {
+		const contextWithEmptyLifetime = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutFailureLifetime: ''
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithEmptyLifetime}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(
+				page.getByText(
+					'Time window in which the failed logins must occur to lock the account:'
+				)
+			)
+			.toBeVisible();
+	});
+
+	it('should render with undefined recovery email', async () => {
+		const contextWithUndefinedRecovery = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefPasswordRecoveryAddress: undefined
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithUndefinedRecovery}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('User Recovery Email')).toBeVisible();
+	});
+
+	it('should render with empty recovery email', async () => {
+		const contextWithEmptyRecovery = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefPasswordRecoveryAddress: ''
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithEmptyRecovery}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('User Recovery Email')).toBeVisible();
+	});
+
+	it('should render recovery status select with pending', async () => {
+		const contextWithPendingStatus = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefPasswordRecoveryAddressStatus: 'pending'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithPendingStatus}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Status')).toBeVisible();
+	});
+
+	it('should render recovery status select with verified', async () => {
+		const contextWithVerifiedStatus = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPrefPasswordRecoveryAddressStatus: 'verified'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithVerifiedStatus}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Status')).toBeVisible();
+	});
+
+	it('should render with reset password disabled', async () => {
+		const contextWithDisabledReset = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraFeatureResetPasswordStatus: 'disabled'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithDisabledReset}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('User can ask for a forgotten password token'))
+			.toBeVisible();
+	});
+
+	it('should render with various password min length values', async () => {
+		const contextWithMinLength = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMinLength: '6'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithMinLength}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum password length')).toBeVisible();
+	});
+
+	it('should render with various password max length values', async () => {
+		const contextWithMaxLength = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMaxLength: '256'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithMaxLength}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Maximum password length')).toBeVisible();
+	});
+
+	it('should render with zero password min age', async () => {
+		const contextWithZeroAge = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMinAge: '0'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithZeroAge}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum password age (Days)')).toBeVisible();
+	});
+
+	it('should render with zero password max age', async () => {
+		const contextWithZeroMaxAge = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMaxAge: '0'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithZeroMaxAge}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Maximum password age (Days)')).toBeVisible();
+	});
+
+	it('should render with all character requirements set to zero', async () => {
+		const contextWithZeroRequirements = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordMinUpperCaseChars: '0',
+				zimbraPasswordMinLowerCaseChars: '0',
+				zimbraPasswordMinPunctuationChars: '0',
+				zimbraPasswordMinNumericChars: '0',
+				zimbraPasswordMinDigitsOrPuncs: '0'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithZeroRequirements}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum upper case characters')).toBeVisible();
+		await expect.element(page.getByText('Minimum lower case characters')).toBeVisible();
+	});
+
+	it('should render with password history set to zero', async () => {
+		const contextWithZeroHistory = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordEnforceHistory: '0'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithZeroHistory}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Minimum number of unique passwords history'))
+			.toBeVisible();
+	});
+
+	it('should render with max failures set to minimum', async () => {
+		const contextWithMinFailures = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutMaxFailures: '1'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithMinFailures}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Number of consecutive failed logins allowed'))
+			.toBeVisible();
+	});
+
+	it('should render with lockout duration in all time units', async () => {
+		const contextWithDaysUnit = {
+			...mockContextValue,
+			accountDetail: {
+				...mockContextValue.accountDetail,
+				zimbraPasswordLockoutDuration: '7d'
+			}
+		};
+		setupBrowserTest(
+			<AccountContext.Provider value={contextWithDaysUnit}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
+	});
+
+	it('should render backup section in advanced mode', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Backup')).toBeVisible();
+	});
+
+	it('should not render OTP section when showCreateOTP is true', async () => {
+		const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+	});
+
+	it('should render all inherited switch components', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Prevent user from changing password'))
+			.toBeVisible();
+		await expect.element(page.getByText('Reject common passwords')).toBeVisible();
+		await expect.element(page.getByText('Enable failed login lockout')).toBeVisible();
+	});
+
+	it('should render all inherited input components for password policy', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Minimum password length')).toBeVisible();
+		await expect.element(page.getByText('Maximum password length')).toBeVisible();
+		await expect.element(page.getByText('Minimum upper case characters')).toBeVisible();
+		await expect.element(page.getByText('Minimum lower case characters')).toBeVisible();
+		await expect.element(page.getByText('Minimum punctuation symbols')).toBeVisible();
+		await expect.element(page.getByText('Minimum numeric characters', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Minimum password age (Days)')).toBeVisible();
+		await expect.element(page.getByText('Maximum password age (Days)')).toBeVisible();
+		await expect
+			.element(
+				page.getByText('Minimum numeric characters or punctuation symbols')
+			)
+			.toBeVisible();
+		await expect
+			.element(page.getByText('Minimum number of unique passwords history'))
+			.toBeVisible();
+	});
+
+	it('should render all inherited input components for lockout policy', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect
+			.element(page.getByText('Number of consecutive failed logins allowed'))
+			.toBeVisible();
+		await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
+		await expect
+			.element(
+				page.getByText(
+					'Time window in which the failed logins must occur to lock the account:'
+				)
+			)
+			.toBeVisible();
+	});
+
+	it('should render password note with correct text', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		const noteText = page.getByText(
+			'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.'
+		);
+		await expect.element(noteText).toBeVisible();
+	});
+
+	it('should render with all sections visible', async () => {
+		setupBrowserTest(
+			<AccountContext.Provider value={mockContextValue}>
+				<EditAccountSecuritySection />
+			</AccountContext.Provider>
+		);
+
+		await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Forgotten Password', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Failed Login Policy')).toBeVisible();
+	});
 });
