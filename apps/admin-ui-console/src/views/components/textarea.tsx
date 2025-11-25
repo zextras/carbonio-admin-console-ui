@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useState } from 'react';
-
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import React, { useCallback, useState } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
 interface ContainerExtendProps extends ContainerProps {
@@ -69,7 +68,10 @@ const Label = styled.label<{ hasError: boolean; hasFocus: boolean }>`
 	color: ${({ theme, hasError, hasFocus }): string =>
 		theme.palette[(hasError && 'error') || (hasFocus && 'primary') || 'secondary'].regular};
 	transform: translateY(-50%);
-	transition: transform 150ms ease-out, font-size 150ms ease-out, top 150ms ease-out,
+	transition:
+		transform 150ms ease-out,
+		font-size 150ms ease-out,
+		top 150ms ease-out,
 		left 150ms ease-out;
 	pointer-events: none;
 	user-select: none;
@@ -85,7 +87,7 @@ const Label = styled.label<{ hasError: boolean; hasFocus: boolean }>`
 	}
 `;
 
-export interface TextareaProps {
+interface TextareaProps {
 	/** Textarea's background color */
 	backgroundColor?: string;
 	/** whether to disable the Textarea or not */
@@ -112,12 +114,6 @@ export interface TextareaProps {
 	rows?: number;
 }
 
-type TextArea = React.ForwardRefExoticComponent<
-	TextareaProps & React.RefAttributes<HTMLDivElement>
-> & {
-	_newId?: number;
-};
-
 const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function TextareaFn(
 	{
 		autoFocus = false,
@@ -141,7 +137,7 @@ const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function T
 		if (!Textarea._newId) {
 			Textarea._newId = 0;
 		}
-		// eslint-disable-next-line no-plusplus
+		 
 		return `textarea-${Textarea._newId++}`;
 	});
 
@@ -170,7 +166,7 @@ const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function T
 			{...rest}
 		>
 			<TextAreaEl
-				// eslint-disable-next-line jsx-a11y/no-autofocus
+				 
 				autoFocus={autoFocus || undefined}
 				autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
 				onFocus={onTextAreaFocus}

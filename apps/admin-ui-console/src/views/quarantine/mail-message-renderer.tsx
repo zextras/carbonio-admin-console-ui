@@ -11,20 +11,20 @@ import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-export const _CI_REGEX = /^<(.*)>$/;
-export const _CI_SRC_REGEX = /^cid:(.*)$/;
+const _CI_REGEX = /^<(.*)>$/;
+const _CI_SRC_REGEX = /^cid:(.*)$/;
 const LINK_REGEX =
 	/(?:https?:\/\/|www\.)+(?![^\s]*?")([\w.,@?!^=%&amp;:()/~+#-]*[\w@?!^=%&amp;()/~+#-])?/gi;
 const LINE_BREAK_REGEX = /(?:\r\n|\r|\n)/g;
 
-export const plainTextToHTML = (str: string): string => {
+const plainTextToHTML = (str: string): string => {
 	if (str !== undefined && str !== null) {
 		return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(LINE_BREAK_REGEX, '<br />');
 	}
 	return '';
 };
 
-export type MailMessagePart = {
+type MailMessagePart = {
 	contentType: string;
 	size: number;
 	content?: string;
@@ -43,14 +43,14 @@ export type EditorAttachmentFiles = {
 	name: string;
 	size: number;
 };
-export type Participant = {
+type Participant = {
 	type: any;
 	address: string;
 	name?: string;
 	fullName?: string;
 };
 
-export type IncompleteMessage = {
+type IncompleteMessage = {
 	id: string;
 	did?: string;
 	parent: string;
@@ -110,27 +110,7 @@ export type AttachmentPart = {
 	cd?: 'inline' | 'attachment';
 	mp?: Array<AttachmentPart>;
 };
-export type ConvMessage = {
-	id: string;
-	parent: string;
-	date: number;
-	isDraft?: boolean;
-};
-export type Conversation = {
-	readonly id: string;
-	date: number;
-	messages: Array<ConvMessage>;
-	participants: Participant[];
-	subject: string;
-	fragment: string;
-	read: boolean;
-	hasAttachment: boolean;
-	flagged: boolean;
-	urgent: boolean;
-	tags: string[];
-	parent: string;
-	messagesInConversation: number;
-};
+
 const ParticipantRole = {
 	FROM: 'f',
 	TO: 't',
@@ -238,7 +218,6 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		let trusteeAddress: Array<string> = [];
 		let availableInTrusteeList = false;
 		if (trusteeList) {
-			 
 			trusteeAddress = isArray(trusteeList)
 				? (trusteeList as string[])
 				: typeof trusteeList === 'string'
@@ -281,7 +260,6 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		[displayBanner, showExternalImage]
 	);
 
-	 
 	useLayoutEffect(() => {
 		if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
 			iframeRef.current.contentDocument.open();
@@ -327,7 +305,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 			parts,
 			(r, v) => {
 				if (!_CI_REGEX.test(v.ci ?? '')) return r;
-				 
+
 				r[_CI_REGEX.exec(v.ci ?? '')?.[1] ?? ''] = v;
 				return r;
 			},
@@ -474,7 +452,6 @@ const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
 			<HtmlMessageRenderer
 				msgId={mailMsg.id}
 				body={mailMsg.body}
-				 
 				// @ts-ignore
 				parts={parts}
 				participants={mailMsg.participants}

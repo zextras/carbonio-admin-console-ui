@@ -967,24 +967,6 @@ export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: str
 	}
 ];
 
-export const delegateDomainHeaders = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	align: string;
-}> => [
-	{
-		id: 'id',
-		label: t('label.account', 'Account'),
-		width: '100%',
-		bold: true,
-		align: 'left'
-	}
-];
-
 export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
 	[
 		{
@@ -1129,38 +1111,6 @@ export const GalServerTableheaders = (t: TFunction): Array<any> => [
 	}
 ];
 
-export const volumeConfigHeader = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	align: string;
-}> => [
-	{
-		id: 'name',
-		label: t('volume.volume_config_header.name', 'Name'),
-		width: '33%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'hsm_scheduled',
-		label: t('volume.volume_config_header.hsm_scheduled', 'HSM Scheduled'),
-		width: '33%',
-		align: 'center',
-		bold: true
-	},
-	{
-		id: 'status',
-		label: t('volume.volume_config_header.status', 'Status'),
-		width: '33%',
-		align: 'center',
-		bold: true
-	}
-];
-
 export const MessageTableHeaders = (t: TFunction): Array<object> => [
 	{
 		id: 'date_time',
@@ -1250,45 +1200,6 @@ export const headerAdvanced = (
 		label: t('volume.server_list_header.description', 'Description'),
 		i18nAllLabel: 'All',
 		width: '177px',
-		bold: true
-	}
-];
-
-export const headerCE = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	i18nAllLabel: string;
-}> => [
-	{
-		id: 'server_name',
-		label: t('volume.server_list_header.server_name', 'Server Name'),
-		i18nAllLabel: 'All',
-		width: '260px',
-		bold: true
-	},
-	{
-		id: 'primary',
-		label: t('volume.server_list_header.primary', 'Primary'),
-		i18nAllLabel: 'All',
-		width: '120px',
-		bold: true
-	},
-	{
-		id: 'index',
-		label: t('volume.server_list_header.index', 'Index'),
-		i18nAllLabel: 'All',
-		width: '120px',
-		bold: true
-	},
-	{
-		id: 'description',
-		label: t('volume.server_list_header.description', 'Description'),
-		i18nAllLabel: 'All',
-		width: '169px',
 		bold: true
 	}
 ];
@@ -1728,7 +1639,7 @@ export const getFormatedDate = (date: Date): any => {
 	return `${yyyy}/${mm}/${dd} | ${hour}:${minutes}:${seconds}`;
 };
 
-export const EMAIL_VALIDATION_REGEX =
+const EMAIL_VALIDATION_REGEX =
 	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
 
 export const isValidEmail = (email: string): boolean => {
@@ -1752,26 +1663,13 @@ export const getAllEmailFromString = (str: string): any => {
 	return Array.from(matches, (match) => match[2]);
 };
 
-export const getEmailDisplayNameFromString = (str: string): any => str.match(/".*?"|'.*?'/g);
-
 export const isValidLdapQuery = (query: string): boolean => {
 	const re = /\([^\\(\\)\\=]+=[^\\(\\)\\=]+\)/;
 	return re.test(query);
 };
 
-export const isValidLdapBaseDN = (basedn: string): boolean => {
-	const reqex =
-		/(?:(?<cn>CN=(?<name>[^,]*)),)?(?:(?<path>(?:(?:CN|OU)=[^,]+,?)+),)?(?<domain>(?:DC=[^,]+,?)+)$/gi;
-	return reqex.test(basedn);
-};
-
 export const isValidHttpsUrl = (url: string): boolean => {
 	const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-	return reqex.test(url);
-};
-
-export const isValidUrl = (url: string): boolean => {
-	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 	return reqex.test(url);
 };
 
@@ -2008,9 +1906,6 @@ export const getFormatedShortDate = (date: Date): any => {
 	const dd = date.getDate();
 	const mm = date.getMonth() + 1; // January is 0!
 	const yyyy = date.getFullYear();
-	const hour = date.getHours();
-	const minutes = date.getMinutes();
-	const seconds = date.getSeconds();
 	return `${mm}/${dd}/${yyyy}`;
 };
 
@@ -2188,11 +2083,6 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 ];
 
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
-
-export const IsValidFQDN = (value: string): boolean => {
-	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9]+([-]+[a-zA-Z0-9]+)*\.)*[a-zA-Z0-9]{2,}$/;
-	return fqdnRegex.test(value);
-};
 
 export const isValidProxy = (value: string): boolean => {
 	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';

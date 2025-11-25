@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 
+import { getIntegratedFunction, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -18,18 +18,14 @@ import {
 	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
-import { getIntegratedFunction, soapFetch } from '@zextras/admin-ui-bootstrap';
 import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
+import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 
-import {
-	MailMessage,
-	EditorAttachmentFiles,
-	Conversation,
-	AttachmentPart
-} from './mail-message-renderer';
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
+
+import { MailMessage, EditorAttachmentFiles, AttachmentPart } from './mail-message-renderer';
 
 type OpenEmlPreviewType = (
 	parentMessageId: string,
@@ -41,17 +37,12 @@ type GetQuarantineMsgData = () => void;
 type SetShowMessageView = (v: boolean) => void;
 type SetMessageViewLoading = (v: boolean) => void;
 
-export type MailEditHeaderType = {
-	folderId: string | number;
-	header: string | undefined;
-};
-
-export type IconColors = Array<{
+type IconColors = Array<{
 	color: string;
 	extension: string;
 }>;
 
-export type AttachmentType = {
+type AttachmentType = {
 	filename?: string;
 	size: number;
 	link: string;
@@ -67,18 +58,11 @@ export type AttachmentType = {
 	setMessageViewLoading: SetMessageViewLoading;
 };
 
-export type PreviewPanelActionsType = {
-	item: Conversation;
-	folderId: string;
-	isMessageView: boolean;
-	conversation: Conversation;
-};
-
-export type CopyToFileResponse = {
+type CopyToFileResponse = {
 	status?: string;
 	value?: Record<string, unknown>;
 };
-export type GetAttachmentsDownloadLinkProps = {
+type GetAttachmentsDownloadLinkProps = {
 	messageId: string;
 	messageSubject: string;
 	attachments: Array<string | undefined>;
@@ -93,7 +77,6 @@ const FileExtensionRegex = /^.+\.([^.]+)$/;
 const getFileExtension = (
 	file: EditorAttachmentFiles | AttachmentPart
 ): { value: string; displayName?: string } => {
-	// eslint-disable-next-line sonarjs/max-switch-cases
 	switch (file.contentType) {
 		case 'text/html':
 			return { value: 'html' };
@@ -225,16 +208,16 @@ const getFileExtension = (
 			return {
 				value: isNil(FileExtensionRegex.exec(file?.filename ?? ''))
 					? '?'
-					: FileExtensionRegex.exec(file?.filename ?? '')?.[1] ?? ''
+					: (FileExtensionRegex.exec(file?.filename ?? '')?.[1] ?? '')
 			};
 	}
 };
-export const calcColor = (label: string, theme: DefaultTheme): string => {
+const calcColor = (label: string, theme: DefaultTheme): string => {
 	let sum = 0;
 	for (let i = 0; i < label.length; i += 1) {
 		sum += label.charCodeAt(i);
 	}
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 	// @ts-ignore
 	return theme.avatarColors[`avatar_${(sum % 50) + 1}`];
 };
@@ -365,7 +348,7 @@ const AttachmentExtension = styled(Text)<{
 	text-transform: uppercase;
 	margin-right: ${({ theme }): string => theme.sizes.padding.small};
 `;
-export const humanFileSize = (inputSize: number): string => {
+const humanFileSize = (inputSize: number): string => {
 	if (inputSize === 0) {
 		return '0 B';
 	}
@@ -395,7 +378,6 @@ const Attachment: FC<AttachmentType> = ({
 
 	const downloadAttachment = useCallback(() => {
 		if (inputRef.current) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			inputRef2.current.value = null;
 			inputRef.current.click();
@@ -552,7 +534,6 @@ const AttachmentsBlock: FC<{
 	getQuarantineMsgData,
 	setShowMessageView,
 	setMessageViewLoading
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 }): ReactElement => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -681,7 +662,6 @@ const AttachmentsBlock: FC<{
 						isExternalMessage={isExternalMessage}
 						part={att?.name ?? ''}
 						iconColors={getAttachmentIconColors({ attachments, theme })}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore
 						att={att}
 						getQuarantineMsgData={getQuarantineMsgData}
@@ -697,10 +677,7 @@ const AttachmentsBlock: FC<{
 					)}
 					{attachmentsCount === 2 && (
 						<Text color="gray1">
-							{
-								// eslint-disable-next-line sonarjs/no-duplicate-string
-								`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`
-							}
+							{`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
 						</Text>
 					)}
 					{attachmentsCount > 2 &&

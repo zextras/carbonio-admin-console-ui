@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/subscription-service';
 
-export interface WscLicenseHook {
+interface WscLicenseHook {
 	isLicensed: boolean;
 	isLoading: boolean;
 	error: string | null;

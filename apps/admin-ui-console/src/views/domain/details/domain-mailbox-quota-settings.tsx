@@ -48,11 +48,7 @@ import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
 
-export const formatQuota = (
-	quotaUsed: number,
-	quotaLimit: number,
-	t: TFunction
-): [string, number] => {
+const formatQuota = (quotaUsed: number, quotaLimit: number, t: TFunction): [string, number] => {
 	if (quotaLimit === 0) {
 		return [t('label.unlimited', 'Unlimited'), 0];
 	}
@@ -62,7 +58,7 @@ export const formatQuota = (
 	return ['1', (quotaUsed / quotaLimit) * 100];
 };
 
-export const getQuotaData = (
+const getQuotaData = (
 	usedQuota: Array<unknown>,
 	t: TFunction,
 	isAdvance = false

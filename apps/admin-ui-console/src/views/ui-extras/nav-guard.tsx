@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useState, FC, useMemo } from 'react';
-
 import { Modal } from '@zextras/carbonio-design-system';
 import { Location } from 'history';
+import React, { useEffect, useState, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Prompt, useHistory } from 'react-router-dom';
 
@@ -65,4 +64,3 @@ export const RouteLeavingGuard: FC<{
 		</>
 	);
 };
-export default RouteLeavingGuard;

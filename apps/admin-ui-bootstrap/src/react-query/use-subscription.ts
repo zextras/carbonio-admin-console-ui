@@ -47,7 +47,7 @@ type VersionResponse = {
 	};
 };
 
-export const queryKeys = {
+const queryKeys = {
 	all: ['subscription'] as const,
 	license: () => [...queryKeys.all, 'license'] as const,
 	version: () => [...queryKeys.all, 'version'] as const
@@ -214,11 +214,11 @@ export const useModuleLicenseInfo = () => {
 
 	const moduleLicenseInfo: ModuleLicenseInfo | null = licenseData?.response
 		? {
-			maintenanceEndDate: licenseData?.response.maintenanceEndDate,
-			maintenanceStatus: licenseData?.response.maintenanceStatus,
-			subType: licenseData?.response.subType,
-			features: licenseData?.response.features
-		}
+				maintenanceEndDate: licenseData?.response.maintenanceEndDate,
+				maintenanceStatus: licenseData?.response.maintenanceStatus,
+				subType: licenseData?.response.subType,
+				features: licenseData?.response.features
+			}
 		: null;
 
 	const licenseBannerShouldBeDisplayed =

@@ -16,7 +16,7 @@ import { SHELL_APP_ID } from '../../constants';
 import type { CarbonioModule } from '../../types/apps';
 import { useAccountStore } from '../account';
 
-export type I18nState = {
+type I18nState = {
 	instances: Record<string, i18n>;
 	defaultI18n: i18n;
 	locale: string;
@@ -63,7 +63,6 @@ const defaultI18nInitOptions: InitOptions = {
 		escapeValue: false // not needed for react as it escapes by default
 	},
 	missingKeyHandler: (_, __, key) => {
-		 
 		console.warn(`Missing translation with key '${key}'`);
 	},
 	backend: {
@@ -78,7 +77,6 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 	setLocale: (locale: string): void => {
 		set(
 			produce((state: I18nState) => {
-				 
 				state.locale = locale;
 				forEach(state.instances, (i18nInst) => i18nInst.changeLanguage(locale));
 			})
@@ -88,7 +86,6 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 		const appsWithShell = addShell(apps);
 		set(
 			produce((state: I18nState) => {
-				 
 				state.instances = reduce<CarbonioModule, Record<string, i18n>>(
 					appsWithShell,
 					(acc, app): Record<string, i18n> => {
@@ -109,15 +106,15 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
 											: `${dropRight(app.js_entrypoint.split('/')).join('/')}/i18n/{{lng}}.json`
 								}
 							});
-						 
+
 						acc[app.name] = newI18n;
 						return acc;
 					},
 					{}
 				);
-				 
+
 				state.defaultI18n.t = state.instances[SHELL_APP_ID].t;
-				 
+
 				state.locale = locale;
 			})
 		);

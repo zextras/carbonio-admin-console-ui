@@ -4,15 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Chip } from '@zextras/carbonio-design-system';
 import React from 'react';
 
-import { Chip } from '@zextras/carbonio-design-system';
-
-export const copyClipboard = (label: string): any => {
+const copyClipboard = (label: string): any => {
 	navigator.clipboard.writeText(label);
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomChip = (props: any): any => {
 	const label = props?.label;
 	const actions = props?.actions
@@ -23,7 +21,7 @@ const CustomChip = (props: any): any => {
 					icon: 'CopyOutline',
 					onClick: () => copyClipboard(label)
 				}
-		  ];
+			];
 	return <Chip {...props} actions={actions} color="black"></Chip>;
 };
 
