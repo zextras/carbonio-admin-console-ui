@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { findIndex, isEmpty, take, pick, map } from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { findIndex, isEmpty, take, pick, map } from 'lodash';
 
 type WizardProps = {
 	data: any;
@@ -28,7 +28,7 @@ const useWizard = ({
 	activeRef,
 	title,
 	activeStep
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
+}:  
 WizardProps): any => {
 	const uncontrolledMode = useMemo(() => !data, [data]);
 	const [innerData, setInnerData] = useState(
@@ -127,9 +127,11 @@ WizardProps): any => {
 		const activeBottom = activeRef.current && activeRef.current.getBoundingClientRect().bottom;
 		const offset = activeTop - sectionTop - 16;
 		if (activeTop < sectionTop || activeBottom > sectionBottom) {
-			sectionRef.current && activeRef.current
-				? sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' })
-				: sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
+			if (sectionRef.current && activeRef.current) {
+				sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' });
+			} else if (sectionRef.current) {
+				sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
+			}
 		}
 		if (activeStep) {
 			goToStep(activeStep);
