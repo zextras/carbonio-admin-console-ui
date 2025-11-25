@@ -127,11 +127,9 @@ WizardProps): any => {
 		const activeBottom = activeRef.current && activeRef.current.getBoundingClientRect().bottom;
 		const offset = activeTop - sectionTop - 16;
 		if (activeTop < sectionTop || activeBottom > sectionBottom) {
-			if (sectionRef.current && activeRef.current) {
-				sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' });
-			} else if (sectionRef.current) {
-				sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
-			}
+			sectionRef.current && activeRef.current
+				? sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' })
+				: sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
 		}
 		if (activeStep) {
 			goToStep(activeStep);
