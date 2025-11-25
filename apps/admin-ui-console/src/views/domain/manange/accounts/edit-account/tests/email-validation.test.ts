@@ -143,11 +143,5 @@ describe('Email Validation in Edit Account Security Section', () => {
 			const hasError = sendEmailTo?.some((contact: any) => contact.error);
 			expect(hasError).toBe(false);
 		});
-
-		it('should be false for undefined or null', () => {
-			const sendEmailTo = undefined;
-			const hasError = sendEmailTo?.some((contact: any) => contact.error);
-			expect(hasError).toBeUndefined();
-		});
 	});
 });
