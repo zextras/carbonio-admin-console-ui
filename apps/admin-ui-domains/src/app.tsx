@@ -38,7 +38,6 @@ import {
 	TRUE,
 	ZIMBRA_ADMIN_URN
 } from './constants';
-import { ReactQueryProvider } from './providers/query-client-provider';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { TrackerProvider } from './tracker/provider';
@@ -48,13 +47,11 @@ import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<ReactQueryProvider>
-		<TrackerProvider>
-			<Suspense fallback={<Spinner />}>
-				<LazyAppView {...props} />
-			</Suspense>
-		</TrackerProvider>
-	</ReactQueryProvider>
+	<TrackerProvider>
+		<Suspense fallback={<Spinner />}>
+			<LazyAppView {...props} />
+		</Suspense>
+	</TrackerProvider>
 );
 
 const App: FC = () => {
