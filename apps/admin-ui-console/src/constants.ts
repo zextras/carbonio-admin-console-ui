@@ -6,14 +6,9 @@
 
 export const MAX_DOMAIN_DISPLAY = 20;
 export const ADVANCED = 'advanced';
-export const NOT_SET = 'not_set';
 export const HTTP = 'http';
 export const HTTPS = 'https';
 export const ACTIVE = 'active';
-export const CLOSED = 'closed';
-export const LOCKED = 'locked';
-export const MAINTENANCE = 'maintenance';
-export const PENDING = 'pending';
 export const MANAGE_APP_ID = 'manage';
 export const STORAGES_ROUTE_ID = 'storage';
 export const SUBSCRIPTIONS_ROUTE_ID = 'subscriptions';
@@ -100,8 +95,6 @@ export const CEPH = 'CEPH';
 export const CLOUDIAN = 'CLOUDIAN';
 export const SCALITYS3 = 'SCALITYS3';
 export const MINIO = 'MINIO';
-export const MOBILE_CALENDAR_FEATURE_SYNC = 'mobileCalendarFeatureSync';
-export const MOBILE_CONTACT_FEATURE_SYNC = 'mobileContactFeatureSync';
 export const ASC = 'asc';
 export const DESC = 'desc';
 export const V4 = 'v4';
@@ -109,11 +102,6 @@ export const AMAZON_USERGUIDE_STORAGE_CLASS_LINK =
 	'https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html';
 export const AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK =
 	'https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html';
-export const SEND_MAILS_ONLY = 'send_mails_only';
-export const READ_MAILS_ONLY = 'read_mails_only';
-export const SEND_READ_MAILS = 'send_read_mails';
-export const MANAGE_NO_SEND = 'manage_no_send';
-export const SEND_READ_MANAGE_MAILS = 'send_read_manage_mails';
 export const MTA_ROUTE_ID = 'mail_transfer_agent';
 export const GENERAL = 'general_lbl';
 export const ZIMBRA_MTA_BLOCKED_EXTENSION = 'zimbraMtaBlockedExtension';
@@ -216,10 +204,6 @@ export const EXCEPTION = 'Exception';
 export const IS_SERVER_LIST_EXPANDED = 'isServerListExpanded';
 export const IS_SERVER_SPECIFIC_LIST_EXPANDED = 'isServerSpecificListExpanded';
 export const SET = 'set';
-export const PERMISSIVE = 'Permissive';
-export const INTERACTIVE = 'Interactive';
-export const STRICT = 'Strict';
-export const ABQ_DISABLED = 'Disabled';
 export const paginationItems: Array<{ label: string; value: number }> = [
 	{
 		label: '5',
