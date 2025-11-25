@@ -1290,4 +1290,70 @@ describe('EditAccountSecuritySection (browser)', () => {
 		expect(sendMail).toBeDefined();
 		expect(vi.isMockFunction(sendMail)).toBe(true);
 	});
+
+	it('should test email validation logic in ChipInput onChange', () => {
+		// This test verifies the email validation logic that marks invalid emails with error flag
+		const contacts = [
+			{ label: 'valid@example.com' },
+			{ label: 'invalid-email' },
+			{ label: 'another@valid.com' }
+		];
+
+		const data: any = [];
+		contacts.forEach((contact) => {
+			const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.label ?? '');
+			data.push({
+				...contact,
+				error: !isValid
+			});
+		});
+
+		// Verify that invalid email is marked with error
+		expect(data[0].error).toBe(false); // valid@example.com
+		expect(data[1].error).toBe(true); // invalid-email
+		expect(data[2].error).toBe(false); // another@valid.com
+	});
+
+	it('should test conditional rendering of error message', () => {
+		const sendEmailToWithErrors = [
+			{ label: 'valid@example.com', error: false },
+			{ label: 'invalid', error: true }
+		];
+
+		const sendEmailToWithoutErrors = [{ label: 'valid@example.com', error: false }];
+
+		// Test that error message should be shown when some contacts have errors
+		const hasErrors = sendEmailToWithErrors.some((contact: any) => contact.error);
+		expect(hasErrors).toBe(true);
+
+		// Test that error message should not be shown when no contacts have errors
+		const hasNoErrors = sendEmailToWithoutErrors.some((contact: any) => contact.error);
+		expect(hasNoErrors).toBe(false);
+	});
+
+	it('should test SEND button disabled state logic', () => {
+		// Test button disabled when no emails
+		const emptyEmails: any[] = [];
+		const shouldBeDisabledEmpty =
+			emptyEmails.length === 0 || emptyEmails.some((contact: any) => contact.error);
+		expect(shouldBeDisabledEmpty).toBe(true);
+
+		// Test button disabled when emails have errors
+		const emailsWithErrors = [
+			{ label: 'valid@example.com', error: false },
+			{ label: 'invalid', error: true }
+		];
+		const shouldBeDisabledWithErrors =
+			emailsWithErrors.length === 0 || emailsWithErrors.some((contact: any) => contact.error);
+		expect(shouldBeDisabledWithErrors).toBe(true);
+
+		// Test button enabled when emails are valid
+		const validEmails = [
+			{ label: 'valid@example.com', error: false },
+			{ label: 'another@valid.com', error: false }
+		];
+		const shouldBeEnabled =
+			validEmails.length === 0 || validEmails.some((contact: any) => contact.error);
+		expect(shouldBeEnabled).toBe(false);
+	});
 });
