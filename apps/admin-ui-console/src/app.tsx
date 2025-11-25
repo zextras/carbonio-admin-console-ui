@@ -7,13 +7,11 @@
 import {
 	addRoute,
 	removeRoute,
-	registerActions,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useDomainStore,
 	useHasRight,
 	getRights,
 	useCurrentUserRights,
@@ -21,37 +19,24 @@ import {
 	useGlobalConfigStore,
 	useAppConfigStore
 } from '@zextras/admin-ui-bootstrap';
-import { Icon, Button } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
+import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-	APP_ID,
 	BACKUP_ROUTE_ID,
 	CARBONIO_SEND_ANALYTICS,
-	COS,
-	COS_ROUTE_ID,
-	CREATE_COS,
-	CREATE_NEW_COS_ROUTE_ID,
-	CREATE_NEW_DOMAIN_ROUTE_ID,
-	CREATE_TOP_DOMAIN,
-	DOMAINS_ROUTE_ID,
-	GLOBAL,
 	LEGAL_HOLD_ROUTE_ID,
-	LIST_COS,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
-	MANAGE,
 	MANAGE_APP_ID,
 	MTA,
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_BACKUP,
-	PRIMARY_BAR_DOMAINS,
 	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_MTA,
 	PRIMARY_BAR_NOTIFICATIONS,
@@ -69,12 +54,10 @@ import {
 	CONFIG
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
-import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { ReactQueryProvider } from './providers/query-client-provider';
 import { getAllServerByService, getAllServers } from './services/get-all-servers-service';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
-import { useCosStore } from './store/cos/store';
 import { useServerStore } from './store/server/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -100,14 +83,6 @@ const PrimaryBarIconButton = styled(Button)`
 		padding: 0 0 0 0.188rem;
 	}
 `;
-const PrimaryBarIcon = styled(Icon)`
-	&:hover {
-		background: transparent;
-	}
-	@media (max-width: 60rem) {
-		padding: 0 0 0 0.188rem;
-	}
-`;
 
 const App: FC = () => {
 	const [t] = useTranslation();
@@ -125,11 +100,9 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
-	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
 	const userName = accounts?.[0]?.name || '';
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const { data: hasAllConfigRights = false } = useHasRight({
 		userName,
 		rightType: CONFIG,
@@ -144,33 +117,6 @@ const App: FC = () => {
 			setUserId(id);
 		}
 	}, [accounts, setUserId]);
-
-	const showCOS = useMemo(() => {
-		const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
-		);
-	}, [rights]);
-
-	const createCosRight = useMemo(() => {
-		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
-		);
-	}, [rights]);
-
-	const createDomainRight = useMemo(() => {
-		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
-		);
-	}, [rights]);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
@@ -249,37 +195,6 @@ const App: FC = () => {
 		[backupTooltipItems]
 	);
 
-	const cosTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.class_of_service_lbl"
-							defaults="<bold>Class of Service</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.cos_primarybar_tooltip"
-							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const CosTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={cosTooltipItems} />,
-		[cosTooltipItems]
-	);
-
 	const privacyTooltipItems = useMemo(
 		() => [
 			{
@@ -340,59 +255,6 @@ const App: FC = () => {
 	const NotificationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={notificationTooltipItems} />,
 		[notificationTooltipItems]
-	);
-
-	const domainsTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.domains_lbl"
-							defaults="<bold>Domains</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.domain_primarybar_tooltip"
-							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const homeTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<Trans
-						i18nKey="label.dashboard"
-						defaults="<bold>Dashboard</bold>"
-						components={{ bold: <strong /> }}
-						t={t}
-					/>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const HomeTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={homeTooltipItems} />,
-		[homeTooltipItems]
-	);
-
-	const DomainTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={domainsTooltipItems} />,
-		[domainsTooltipItems]
 	);
 
 	const storagesTooltipItems = useMemo(
@@ -555,17 +417,6 @@ const App: FC = () => {
 		[leagalHoldTooltipItem]
 	);
 
-	const cosPrimaryBar = useCallback(
-		() => (
-			<PrimaryBarIcon
-				icon={SettingsModOutline}
-				size="large"
-				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
-			/>
-		),
-		[history]
-	);
-
 	useEffect(() => {
 		if (rights && rights.length > 0) {
 			const right = getRights(rights, SERVER);
@@ -666,18 +517,6 @@ const App: FC = () => {
 	]);
 
 	useEffect(() => {
-		addRoute({
-			route: DOMAINS_ROUTE_ID,
-			position: 1,
-			visible: true,
-			label: t('label.domains', 'Domains') || '',
-			primaryBar: 'AtOutline',
-			appView: AppView,
-			primarybarSection: { ...managementSection },
-			tooltip: DomainTooltipView,
-			trackerLabel: PRIMARY_BAR_DOMAINS
-		});
-
 		setConfigRightsRoute();
 
 		if (isAdvanced) {
@@ -735,67 +574,18 @@ const App: FC = () => {
 			});
 		}
 	}, [
-		t,
+		LegalHoldTooltipView,
+		NotificationTooltipView,
+		OperationTooltipView,
+		SubscriptionTooltipView,
+		hasAllConfigRights,
+		isAdvanced,
+		logAndQueuesSection,
 		managementSection,
 		servicesSection,
-		BackupTooltipView,
-		CosTooltipView,
-		DomainTooltipView,
-		StorageTooltipView,
-		SubscriptionTooltipView,
-		logAndQueuesSection,
-		backupPrimaryBar,
-		isAdvanced,
-		OperationTooltipView,
-		HomeTooltipView,
-		PrivacyTooltipView,
-		NotificationTooltipView,
-		hasListServerRights,
-		MTATooltipView,
-		showCOS,
-		hasAllConfigRights,
-		cosPrimaryBar,
-		LegalHoldTooltipView,
-		setConfigRightsRoute
+		setConfigRightsRoute,
+		t
 	]);
-
-	useEffect(() => {
-		registerActions({
-			action: (): any => ({
-				id: 'new-domain',
-				label: t('label.create_new_domain', 'Create New Domain'),
-				icon: '',
-				onClick: (ev: any): void => {
-					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
-					setDomain({});
-					setTimeout(() => {
-						setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
-					}, 100);
-				},
-				disabled: !createDomainRight,
-				group: APP_ID,
-				primary: false
-			}),
-			id: 'new-domain',
-			type: 'new'
-		});
-		registerActions({
-			action: (): any => ({
-				id: 'new-cos',
-				label: t('label.create_new_cos', 'Create New COS'),
-				icon: '',
-				onClick: (ev: any): void => {
-					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
-					setCosView(CREATE_NEW_COS_ROUTE_ID);
-				},
-				disabled: !createCosRight,
-				group: APP_ID,
-				primary: false
-			}),
-			id: 'new-cos',
-			type: 'new'
-		});
-	}, [t, history, setDomainView, setDomain, setCosView, createDomainRight, createCosRight]);
 
 	const checkIsBackupModuleEnable = useCallback(() => {
 		getSoapFetchRequest(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`).then(
