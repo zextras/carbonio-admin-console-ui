@@ -1,3 +1,9 @@
+## [0.11.1-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.1...v0.11.1-devel.2) (2025-11-25)
+
+### Bug Fixes
+
+* fixed the issue of undefined ref in wizard ([a8e8296](https://github.com/zextras/carbonio-admin-console-ui/commit/a8e8296adcc2aafc7ceb75097eaa2e89910b4bb8))
+
 ## [0.11.1-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0...v0.11.1-devel.1) (2025-11-24)
 
 ### Bug Fixes
