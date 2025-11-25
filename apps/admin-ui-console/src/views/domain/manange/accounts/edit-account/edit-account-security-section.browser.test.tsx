@@ -10,7 +10,6 @@ import React from 'react';
 import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 
 import { sendMail } from '../../../../../services/send-mail-service';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { AccountContext } from '../account-context';
 
 import EditAccountSecuritySection from './edit-account-security-section';
@@ -31,11 +30,6 @@ vi.mock('@zextras/admin-ui-bootstrap', async () => {
 // Mock the sendMail service
 vi.mock('../../../../../services/send-mail-service', () => ({
 	sendMail: vi.fn()
-}));
-
-// Mock the fetchSoap service
-vi.mock('../../../../../services/generateOTP-service', () => ({
-	fetchSoap: vi.fn()
 }));
 
 // Suppress MSW cleanup errors that occur when tests finish
