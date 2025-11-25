@@ -11,7 +11,8 @@ import {
 	useIsAdvanced,
 	useUserAccounts,
 	useGlobalConfigStore,
-	useAppConfigStore
+	useAppConfigStore,
+	useAllServers
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -23,7 +24,6 @@ import {
 	TRUE,
 	ZIMBRA_ADMIN_URN
 } from './constants';
-import { getAllServers } from './services/get-all-servers-service';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -48,10 +48,12 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const accounts = useUserAccounts();
+	const { data: servers = [] } = useAllServers({
+		enabled: isAdvanced
+	});
 
 	useEffect(() => {
 		if (accounts?.length > 0) {
-			// FIX-ADMIN-MONOREPO
 			const { id } = accounts[0];
 			setUserId(id);
 		}
@@ -122,20 +124,11 @@ const App: FC = () => {
 		});
 	}, [setGlobalConfig]);
 
-	const getAllServersRequest = useCallback(() => {
-		getAllServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				if (isAdvanced) {
-					getGlobalConfig();
-				}
-			}
-		});
-	}, [isAdvanced, getGlobalConfig]);
-
 	useEffect(() => {
-		getAllServersRequest();
-	}, [getAllServersRequest]);
+		if (servers.length > 0 && isAdvanced) {
+			getGlobalConfig();
+		}
+	}, [servers, isAdvanced, getGlobalConfig]);
 
 	return null;
 };

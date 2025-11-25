@@ -18,8 +18,7 @@ import {
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAppConfigStore,
-	useAllServers,
-	useMtaServers
+	useAllServers
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -87,7 +86,6 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const { data: serverList = [] } = useAllServers();
-	const { data: mtaServerList = [] } = useMtaServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
