@@ -6,6 +6,7 @@
 
 import { page } from '@vitest/browser/context';
 import { setupBrowserTest } from 'admin-ui-test-utils';
+import React from 'react';
 import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 
 
