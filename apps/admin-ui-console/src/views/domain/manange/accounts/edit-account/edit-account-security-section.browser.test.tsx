@@ -956,5 +956,71 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await expect.element(sendButton).toBeDisabled();
 			
 		});
+
+		it('should call sendMail when SEND button is clicked with valid email', async () => {
+			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
+
+			vi.mocked(fetchSoap).mockResolvedValue({
+				ok: true,
+				response: {
+					label: 'test-user@test-domain.com',
+					secret: 'TESTSECRETCODE123',
+					issuer: 'Carbonio',
+					algorithm: 'SHA1',
+					digits_length: 6,
+					period: 30,
+					static_otp_codes: [
+						{ code: '111111' },
+						{ code: '222222' },
+						{ code: '333333' },
+						{ code: '444444' },
+						{ code: '555555' },
+						{ code: '666666' }
+					]
+				}
+			});
+
+			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+			vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+			setupBrowserTest(
+				<AccountContext.Provider value={mockContextValue}>
+					<EditAccountSecuritySection />
+				</AccountContext.Provider>
+			);
+
+			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
+			await expect.element(newOtpButton).toBeVisible();
+			await newOtpButton.click();
+
+			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+			await expect.element(otpEmailInput).toBeVisible();
+			await otpEmailInput.fill('recipient@example.com');
+			await userEvent.keyboard('{Tab}');
+
+			const sendButton = page.getByRole('button', { name: /SEND/i });
+			await expect.element(sendButton).toBeVisible();
+			await expect.element(sendButton).toBeEnabled();
+
+			await sendButton.click();
+
+			expect(sendMail).toHaveBeenCalledWith('SendMsgRequest', expect.objectContaining({
+				_jsns: 'urn:zimbraMail',
+				m: expect.objectContaining({
+					e: expect.arrayContaining([
+						expect.objectContaining({
+							t: 'f',
+							a: 'test-user@test-domain.com',
+							d: 'test-user'
+						}),
+						expect.objectContaining({
+							t: 't',
+							a: 'recipient@example.com'
+						})
+					])
+				})
+			}));
+		});
 	});
 });
