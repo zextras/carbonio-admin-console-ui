@@ -12,15 +12,21 @@ type AdvancedSupportedOptions = Omit<UseQueryOptions<boolean>, 'queryKey' | 'que
 };
 
 export const queryFnIsAdvancedSupported = async (): Promise<boolean> => {
-	const response = await fetch('/services/catalog/services');
-	if (response.ok) {
-		const data = await response.json();
-		if ('items' in data && isArray<string>(data.items)) {
-			const installedServices = data.items as Array<string>;
-			return installedServices.includes('carbonio-advanced');
+	try {
+		const response = await fetch('/services/catalog/services');
+		if (response.ok) {
+			const data = await response.json();
+			if ('items' in data && isArray<string>(data.items)) {
+				const installedServices = data.items as Array<string>;
+				return installedServices.includes('carbonio-advanced');
+			}
 		}
+		return false;
+	} catch (error) {
+		// If the API is unreachable, treat as advanced not supported
+		console.error('Failed to check advanced support:', error);
+		return false;
 	}
-	return false;
 };
 
 // React Query hook to check if carbonio advanced is installed
