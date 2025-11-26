@@ -301,6 +301,7 @@ const EditAccountSecuritySection: FC = () => {
 									ChipComponent={CustomChip}
 									maxChips={null}
 									hasError={hasEmailError}
+									data-testid="otp-email-input"
 								/>
 								<Text color="error" size="small">
 									{hasEmailError &&

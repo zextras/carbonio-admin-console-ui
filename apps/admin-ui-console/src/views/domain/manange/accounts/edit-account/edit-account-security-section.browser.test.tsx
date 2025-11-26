@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
@@ -45,6 +45,7 @@ vi.mock('../../../../app/component/hwizard', () => ({
 			{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
 			{steps.map((step: any, index: number) => (
 				<div key={index}>
+					{step.label && <div>{step.label}</div>}
 					{step.view ? step.view() : step.content}
 				</div>
 			))}
@@ -58,10 +59,11 @@ vi.mock('@zextras/carbonio-design-system', async () => {
 	return {
 		...actual,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		ChipInput: ({ onChange, value, placeholder, hasError }: any) => (
+		ChipInput: ({ onChange, value, placeholder, hasError, ...rest }: any) => (
 			<div data-testid="mock-chip-input">
 				<input
-					data-testid="chip-input-field"
+					{...rest}
+					data-testid={rest['data-testid'] || 'chip-input-field'}
 					placeholder={placeholder}
 					value={JSON.stringify(value)}
 					onChange={(e) => {
@@ -813,38 +815,27 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
-			const mockFetch = vi.fn().mockResolvedValue(
-				new Response(
-					JSON.stringify({
-						Body: {
-							ZxAuthResponse: {
-								ok: true,
-								response: {
-									label: 'test-user@test-domain.com',
-									secret: 'TESTSECRETCODE123',
-									issuer: 'Carbonio',
-									algorithm: 'SHA1',
-									digits_length: 6,
-									period: 30,
-									static_otp_codes: [
-										{ code: '111111' },
-										{ code: '222222' },
-										{ code: '333333' },
-										{ code: '444444' },
-										{ code: '555555' },
-										{ code: '666666' }
-									]
-								}
-							}
-						}
-					}),
-					{
-						status: 200,
-						headers: { 'Content-Type': 'application/json' }
-					}
-				)
-			);
-			globalThis.fetch = mockFetch;
+			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
+			
+			vi.mocked(fetchSoap).mockResolvedValue({
+				ok: true,
+				response: {
+					label: 'test-user@test-domain.com',
+					secret: 'TESTSECRETCODE123',
+					issuer: 'Carbonio',
+					algorithm: 'SHA1',
+					digits_length: 6,
+					period: 30,
+					static_otp_codes: [
+						{ code: '111111' },
+						{ code: '222222' },
+						{ code: '333333' },
+						{ code: '444444' },
+						{ code: '555555' },
+						{ code: '666666' }
+					]
+				}
+			});
 
 			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
 			vi.mocked(useIsAdvanced).mockReturnValue(true);
@@ -857,6 +848,113 @@ describe('EditAccountSecuritySection (browser)', () => {
 
 			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
 			await expect.element(newOtpButton).toBeVisible();
+			await newOtpButton.click();
+
+			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			await expect.element(page.getByText(`Please note: you'll be able to see these codes just once.`)).toBeVisible();
+			await expect.element(page.getByText(`Select an email address to send the OTP to or copy the code above`)).toBeVisible();
+		});
+
+		it('should render OTP wizard with send OTP email input when showCreateOTP is true', async () => {
+			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
+
+			vi.mocked(fetchSoap).mockResolvedValue({
+				ok: true,
+				response: {
+					label: 'test-user@test-domain.com',
+					secret: 'TESTSECRETCODE123',
+					issuer: 'Carbonio',
+					algorithm: 'SHA1',
+					digits_length: 6,
+					period: 30,
+					static_otp_codes: [
+						{ code: '111111' },
+						{ code: '222222' },
+						{ code: '333333' },
+						{ code: '444444' },
+						{ code: '555555' },
+						{ code: '666666' }
+					]
+				}
+			});
+
+			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+			vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+			setupBrowserTest(
+				<AccountContext.Provider value={mockContextValue}>
+					<EditAccountSecuritySection />
+				</AccountContext.Provider>
+			);
+
+			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
+			await expect.element(newOtpButton).toBeVisible();
+			await newOtpButton.click();
+
+			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			await expect.element(page.getByText(`Please note: you'll be able to see these codes just once.`)).toBeVisible();
+			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+			await expect.element(otpEmailInput).toBeVisible();
+			await otpEmailInput.fill('test@example.com');
+			await userEvent.keyboard('{Tab}');
+
+			const sendButton = page.getByRole('button', { name: /SEND/i });
+			await expect.element(sendButton).toBeVisible();
+			await expect.element(sendButton).toBeEnabled();
+		});
+
+		it('should display invalid email msg and button should be disabled for invalid email', async () => {
+			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
+
+			vi.mocked(fetchSoap).mockResolvedValue({
+				ok: true,
+				response: {
+					label: 'test-user@test-domain.com',
+					secret: 'TESTSECRETCODE123',
+					issuer: 'Carbonio',
+					algorithm: 'SHA1',
+					digits_length: 6,
+					period: 30,
+					static_otp_codes: [
+						{ code: '111111' },
+						{ code: '222222' },
+						{ code: '333333' },
+						{ code: '444444' },
+						{ code: '555555' },
+						{ code: '666666' }
+					]
+				}
+			});
+
+			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
+			vi.mocked(useIsAdvanced).mockReturnValue(true);
+
+			setupBrowserTest(
+				<AccountContext.Provider value={mockContextValue}>
+					<EditAccountSecuritySection />
+				</AccountContext.Provider>
+			);
+
+			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
+			await expect.element(newOtpButton).toBeVisible();
+			await newOtpButton.click();
+
+			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+			await expect.element(otpEmailInput).toBeVisible();
+			await otpEmailInput.fill('test@example.com');
+			await userEvent.keyboard('{Tab}');
+
+			await expect.element(page.getByText('One or more email addresses are invalid.')).not.toBeInTheDocument();
+			const sendButton = page.getByRole('button', { name: /SEND/i });
+			await expect.element(sendButton).toBeVisible();
+			await expect.element(sendButton).toBeEnabled();
+
+			await otpEmailInput.fill('test@example'); // Invalid email
+			await userEvent.keyboard('{Tab}');
+			await expect.element(page.getByText('One or more email addresses are invalid.')).toBeVisible();
+			await expect.element(sendButton).toBeDisabled();
+			
 		});
 	});
 });
