@@ -7,7 +7,7 @@
 import {
 	useAllServers,
 	useBackupServers,
-	useIsAdvancedSupported
+	useIsAdvanced
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
@@ -223,7 +223,7 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const { data: backupData } = useBackupServers({
 		enabled: isAdvanced
 	});

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useIsAdvancedSupported } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -103,7 +103,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const { data: isAdvanced = false } = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 
 	const handleSendOTPEmail = useCallback((): void => {
 		const emailRecipients = [
@@ -305,7 +305,10 @@ const EditAccountSecuritySection: FC = () => {
 								/>
 								<Text color="error" size="small">
 									{hasEmailError &&
-										t('domain.editAccount.invalidaEmailError', 'One or more email addresses are invalid.')}
+										t(
+											'domain.editAccount.invalidaEmailError',
+											'One or more email addresses are invalid.'
+										)}
 								</Text>
 							</Row>
 							<Row width="20%" mainAlignment="space-between">
@@ -436,8 +439,10 @@ const EditAccountSecuritySection: FC = () => {
 		}).then((res: any) => {
 			if (res.ok) {
 				setQrData(
-					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${res.response.secret
-					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${res.response.digits_length
+					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
+						res.response.secret
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
+						res.response.digits_length
 					}&period=${res.response.period}`
 				);
 				setSecrateCode(res.response.secret);
@@ -633,7 +638,7 @@ const EditAccountSecuritySection: FC = () => {
 									mainAlignment="space-between"
 									crossAlignment="flex-start"
 									width="fill"
-								// height="calc(100vh - 340px)"
+									// height="calc(100vh - 340px)"
 								>
 									{otpList.length !== 0 && (
 										<Table

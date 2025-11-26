@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvancedSupported } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Button, Container } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -77,7 +77,7 @@ const NewVolume: FC<{
 	const { t } = useTranslation();
 	const context = useContext(VolumeContext);
 
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const { volumeDetail } = context;
 
 	const wizardSteps = [

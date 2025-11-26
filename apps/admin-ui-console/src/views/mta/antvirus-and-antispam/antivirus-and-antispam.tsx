@@ -6,7 +6,7 @@
 import {
 	useAppConfigStore,
 	useCurrentUserRights,
-	useIsAdvancedSupported
+	useIsAdvanced
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
@@ -73,7 +73,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
 		useState<string>('');
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
 	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);

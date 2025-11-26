@@ -12,7 +12,7 @@ import {
 } from './src/network/fetch';
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useGlobalSettings } from './src/react-query/use-global-settings';
-import { useIsAdvancedSupported } from './src/react-query/use-is-advanced-supported';
+import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
 import {
@@ -104,5 +104,5 @@ export {
 	useMtaServers,
 	useServersByService,
 	useBackupServers,
-	useIsAdvancedSupported
+	useIsAdvanced
 };

@@ -6,7 +6,7 @@
 import {
 	useGlobalConfigStore,
 	replaceHistory,
-	useIsAdvancedSupported,
+	useIsAdvanced,
 	useBucketServersListStore
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
@@ -43,7 +43,7 @@ const BucketListPanel: FC = () => {
 	const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const [itemsVolume, setItemsVolume] = useState<any>();
 	const [isShowError, setIsShowError] = useState(false);
 

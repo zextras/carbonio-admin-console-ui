@@ -7,7 +7,7 @@
 import {
 	postSoapFetchRequest,
 	soapFetch,
-	useIsAdvancedSupported,
+	useIsAdvanced,
 	useAllServers
 } from '@zextras/admin-ui-bootstrap';
 import {
@@ -185,7 +185,7 @@ const VolumesDetailPanel: FC = () => {
 	const context = useContext(VolumeContext);
 	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);

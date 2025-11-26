@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvancedSupported } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -46,7 +46,7 @@ const MailstoresCreate: FC<{
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
 
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;

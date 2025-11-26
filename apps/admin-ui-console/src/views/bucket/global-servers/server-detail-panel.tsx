@@ -5,7 +5,7 @@
  */
 import {
 	getSoapFetchRequest,
-	useIsAdvancedSupported,
+	useIsAdvanced,
 	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
 import {
@@ -198,7 +198,7 @@ const ServersListTable: FC<{
 const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { data: allServersList = [] } = useMailstoreServers();
-	const isAdvanced = useIsAdvancedSupported();
+	const isAdvanced = useIsAdvanced();
 	const [serversList, setServersList] = useState<any>([]);
 	const [serverListAll, setServerListAll] = useState<any>([]);
 	const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);
