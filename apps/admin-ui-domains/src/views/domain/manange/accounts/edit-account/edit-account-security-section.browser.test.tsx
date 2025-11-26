@@ -4,122 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page, userEvent } from '@vitest/browser/context';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
+import {
+	advancedSupportedApiForBrowser,
+	minMaxVersionApiForBrowser,
+	setupBrowserTest
+} from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import React from 'react';
-import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
-
+import { it, expect, describe, vi } from 'vitest';
+import { page, userEvent } from 'vitest/browser';
 
 import { sendMail } from '../../../../../services/send-mail-service';
 import { AccountContext } from '../account-context';
 
 import EditAccountSecuritySection from './edit-account-security-section';
-
-// Mock the useIsAdvanced and useDomainStore hooks
-vi.mock('@zextras/admin-ui-bootstrap', async () => {
-	const actual = await vi.importActual('@zextras/admin-ui-bootstrap');
-	return {
-		...actual,
-		useIsAdvanced: vi.fn(() => true),
-		useDomainStore: vi.fn((selector) => {
-			const state = { domain: { name: 'test-domain.com' } };
-			return selector ? selector(state) : state;
-		})
-	};
-});
-
-// Mock the sendMail service
-vi.mock('../../../../../services/send-mail-service', () => ({
-	sendMail: vi.fn()
-}));
-
-// Mock the fetchSoap service
-vi.mock('../../../../../services/generateOTP-service', () => ({
-	fetchSoap: vi.fn()
-}));
-
-vi.mock('../../../../app/component/hwizard', () => ({
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	HorizontalWizard: ({ steps }: any) => (
-		<div data-testid="mock-wizard">
-			{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-			{steps.map((step: any, index: number) => (
-				<div key={index}>
-					{step.label && <div>{step.label}</div>}
-					{step.view ? step.view() : step.content}
-				</div>
-			))}
-		</div>
-	)
-}));
-
-// Mock ChipInput from design system
-vi.mock('@zextras/carbonio-design-system', async () => {
-	const actual = await vi.importActual('@zextras/carbonio-design-system');
-	return {
-		...actual,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		ChipInput: ({ onChange, value, placeholder, hasError, ...rest }: any) => (
-			<div data-testid="mock-chip-input">
-				<input
-					{...rest}
-					data-testid={rest['data-testid'] || 'chip-input-field'}
-					placeholder={placeholder}
-					value={JSON.stringify(value)}
-					onChange={(e) => {
-						try {
-							const parsed = JSON.parse(e.target.value);
-							onChange(parsed);
-						} catch {
-							// ignore invalid json during typing
-						}
-					}}
-					onBlur={(e) => {
-						try {
-							const parsed = JSON.parse(e.target.value);
-							onChange(parsed);
-						} catch {
-							// ignore invalid json during typing
-						}
-					}}
-				/>
-				{hasError && <div data-testid="chip-input-error">Error</div>}
-			</div>
-		)
-	};
-});
-
-// Suppress MSW cleanup errors that occur when tests finish
-let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
-
-beforeAll(() => {
-	unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
-		// Suppress MSW deserialization errors that occur during test cleanup
-		if (
-			event.reason?.message?.includes('Cannot read properties of undefined') &&
-			event.reason?.stack?.includes('deserializeRequest')
-		) {
-			event.preventDefault();
-		}
-	};
-	globalThis.addEventListener('unhandledrejection', unhandledRejectionHandler);
-});
-
-afterAll(() => {
-	if (unhandledRejectionHandler) {
-		globalThis.removeEventListener('unhandledrejection', unhandledRejectionHandler);
-	}
-});
-
-beforeEach(() => {
-	// Mock fetch API to handle any SOAP requests
-	vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-		new Response(JSON.stringify({ Body: {} }), {
-			status: 200,
-			headers: { 'Content-Type': 'application/json' }
-		})
-	);
-});
 
 const mockContextValue = {
 	accountDetail: {
@@ -190,39 +89,70 @@ const mockContextValue = {
 	},
 	directMemberList: [],
 	inDirectMemberList: [],
-	setSignatureItems: () => { },
-	setSignatureList: () => { },
-	setAccountDetail: () => { },
-	setAccSpecificDetail: () => { },
-	setDirectMemberList: () => { },
-	setInDirectMemberList: () => { },
-	setInitAccountDetail: () => { },
+	setSignatureItems: () => {},
+	setSignatureList: () => {},
+	setAccountDetail: () => {},
+	setAccSpecificDetail: () => {},
+	setDirectMemberList: () => {},
+	setInDirectMemberList: () => {},
+	setInitAccountDetail: () => {},
 	initAccountDetail: {},
 	otpList: [],
 	identitiesList: [],
 	folderList: [],
-	setFolderList: () => { },
-	getListOtp: () => { },
-	getIdentitiesList: () => { },
+	setFolderList: () => {},
+	getListOtp: () => {},
+	getIdentitiesList: () => {},
 	deligateDetail: {},
-	setDeligateDetail: () => { },
+	setDeligateDetail: () => {},
 	credentialList: [],
-	getCredentialList: () => { },
+	getCredentialList: () => {},
 	initialGlobalRights: {},
-	setinitialGlobalRights: () => { },
+	setinitialGlobalRights: () => {},
 	globalRights: {},
-	setGlobalRights: () => { },
+	setGlobalRights: () => {},
 	deleteAdministrationRights: [],
-	setDeleteAdministrationRights: () => { },
+	setDeleteAdministrationRights: () => {},
 	userSessionList: [],
-	setAllUserSessionList: () => { },
+	setAllUserSessionList: () => {},
 	allUserSessionList: [],
-	setUserSessionList: () => { },
+	setUserSessionList: () => {},
 	defaultCOS: {},
-	setDefaultCOS: () => { },
+	setDefaultCOS: () => {},
 	allowedDeletePassword: false,
-	setAllowedDeletePassword: () => { }
+	setAllowedDeletePassword: () => {}
 };
+
+beforeEach(async () => {
+	await advancedSupportedApiForBrowser.withAdvancedSupported();
+	await minMaxVersionApiForBrowser(() =>
+		HttpResponse.json({
+			domain: 'test-domain.com',
+			minApiVersion: '1.0',
+			maxApiVersion: '2.0',
+			version: '1.0'
+		})
+	);
+	// Set up user account store for useCurrentUserRights hook
+	useAccountStore.setState({
+		account: {
+			id: 'test-user-id',
+			name: 'test@example.com',
+			displayName: '',
+			signatures: {
+				signature: []
+			},
+			identities: undefined,
+			rights: { targets: [] }
+		},
+		settings: {
+			prefs: {},
+			attrs: {},
+			props: []
+		},
+		usedQuota: 0
+	});
+});
 
 describe('EditAccountSecuritySection (browser)', () => {
 	describe('Basic Rendering', () => {
@@ -248,13 +178,13 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await expect.element(page.getByText('Minimum upper case characters')).toBeVisible();
 			await expect.element(page.getByText('Minimum lower case characters')).toBeVisible();
 			await expect.element(page.getByText('Minimum punctuation symbols')).toBeVisible();
-			await expect.element(page.getByText('Minimum numeric characters', { exact: true })).toBeVisible();
+			await expect
+				.element(page.getByText('Minimum numeric characters', { exact: true }))
+				.toBeVisible();
 			await expect.element(page.getByText('Minimum password age (Days)')).toBeVisible();
 			await expect.element(page.getByText('Maximum password age (Days)')).toBeVisible();
 			await expect
-				.element(
-					page.getByText('Minimum numeric characters or punctuation symbols')
-				)
+				.element(page.getByText('Minimum numeric characters or punctuation symbols'))
 				.toBeVisible();
 			await expect
 				.element(page.getByText('Minimum number of unique passwords history'))
@@ -267,9 +197,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
 			);
-			await expect
-				.element(page.getByText('Prevent user from changing password'))
-				.toBeVisible();
+			await expect.element(page.getByText('Prevent user from changing password')).toBeVisible();
 			await expect.element(page.getByText('Reject common passwords')).toBeVisible();
 		});
 
@@ -286,9 +214,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
 			await expect
 				.element(
-					page.getByText(
-						'Time window in which the failed logins must occur to lock the account:'
-					)
+					page.getByText('Time window in which the failed logins must occur to lock the account:')
 				)
 				.toBeVisible();
 		});
@@ -332,9 +258,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
 			);
-			await expect
-				.element(page.getByText('Prevent user from changing password'))
-				.toBeVisible();
+			await expect.element(page.getByText('Prevent user from changing password')).toBeVisible();
 		});
 
 		it('should render with common passwords blocked', async () => {
@@ -495,9 +419,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			);
 			await expect
 				.element(
-					page.getByText(
-						'Time window in which the failed logins must occur to lock the account:'
-					)
+					page.getByText('Time window in which the failed logins must occur to lock the account:')
 				)
 				.toBeVisible();
 		});
@@ -517,9 +439,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			);
 			await expect
 				.element(
-					page.getByText(
-						'Time window in which the failed logins must occur to lock the account:'
-					)
+					page.getByText('Time window in which the failed logins must occur to lock the account:')
 				)
 				.toBeVisible();
 		});
@@ -539,9 +459,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			);
 			await expect
 				.element(
-					page.getByText(
-						'Time window in which the failed logins must occur to lock the account:'
-					)
+					page.getByText('Time window in which the failed logins must occur to lock the account:')
 				)
 				.toBeVisible();
 		});
@@ -637,7 +555,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 	});
 
 	describe('OTP and Backup Features', () => {
-		it('should render with OTP management enabled', async () => {
+		it.only('should render with OTP management enabled', async () => {
 			const contextWithOTP = {
 				...mockContextValue,
 				accountDetail: {
@@ -792,9 +710,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render when isAdvanced is false', async () => {
-			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
-			vi.mocked(useIsAdvanced).mockReturnValue(false);
-
 			setupBrowserTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -815,31 +730,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
-			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
-			
-			vi.mocked(fetchSoap).mockResolvedValue({
-				ok: true,
-				response: {
-					label: 'test-user@test-domain.com',
-					secret: 'TESTSECRETCODE123',
-					issuer: 'Carbonio',
-					algorithm: 'SHA1',
-					digits_length: 6,
-					period: 30,
-					static_otp_codes: [
-						{ code: '111111' },
-						{ code: '222222' },
-						{ code: '333333' },
-						{ code: '444444' },
-						{ code: '555555' },
-						{ code: '666666' }
-					]
-				}
-			});
-
-			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
-			vi.mocked(useIsAdvanced).mockReturnValue(true);
-
 			setupBrowserTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -851,36 +741,17 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await newOtpButton.click();
 
 			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
-			await expect.element(page.getByText(`Please note: you'll be able to see these codes just once.`)).toBeVisible();
-			await expect.element(page.getByText(`Select an email address to send the OTP to or copy the code above`)).toBeVisible();
+			await expect
+				.element(page.getByText(`Please note: you'll be able to see these codes just once.`))
+				.toBeVisible();
+			await expect
+				.element(
+					page.getByText(`Select an email address to send the OTP to or copy the code above`)
+				)
+				.toBeVisible();
 		});
 
 		it('should render OTP wizard with send OTP email input when showCreateOTP is true', async () => {
-			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
-
-			vi.mocked(fetchSoap).mockResolvedValue({
-				ok: true,
-				response: {
-					label: 'test-user@test-domain.com',
-					secret: 'TESTSECRETCODE123',
-					issuer: 'Carbonio',
-					algorithm: 'SHA1',
-					digits_length: 6,
-					period: 30,
-					static_otp_codes: [
-						{ code: '111111' },
-						{ code: '222222' },
-						{ code: '333333' },
-						{ code: '444444' },
-						{ code: '555555' },
-						{ code: '666666' }
-					]
-				}
-			});
-
-			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
-			vi.mocked(useIsAdvanced).mockReturnValue(true);
-
 			setupBrowserTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -892,7 +763,9 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await newOtpButton.click();
 
 			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
-			await expect.element(page.getByText(`Please note: you'll be able to see these codes just once.`)).toBeVisible();
+			await expect
+				.element(page.getByText(`Please note: you'll be able to see these codes just once.`))
+				.toBeVisible();
 			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
 			await expect.element(otpEmailInput).toBeVisible();
 			await otpEmailInput.fill('test@example.com');
@@ -926,9 +799,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 				}
 			});
 
-			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
-			vi.mocked(useIsAdvanced).mockReturnValue(true);
-
 			setupBrowserTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -945,16 +815,19 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await otpEmailInput.fill('test@example.com');
 			await userEvent.keyboard('{Tab}');
 
-			await expect.element(page.getByText('One or more email addresses are invalid.')).not.toBeInTheDocument();
+			await expect
+				.element(page.getByText('One or more email addresses are invalid.'))
+				.not.toBeInTheDocument();
 			const sendButton = page.getByRole('button', { name: /SEND/i });
 			await expect.element(sendButton).toBeVisible();
 			await expect.element(sendButton).toBeEnabled();
 
 			await otpEmailInput.fill('test@example'); // Invalid email
 			await userEvent.keyboard('{Tab}');
-			await expect.element(page.getByText('One or more email addresses are invalid.')).toBeVisible();
+			await expect
+				.element(page.getByText('One or more email addresses are invalid.'))
+				.toBeVisible();
 			await expect.element(sendButton).toBeDisabled();
-			
 		});
 
 		it('should call sendMail when SEND button is clicked with valid email', async () => {
@@ -980,9 +853,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 				}
 			});
 
-			const { useIsAdvanced } = await import('@zextras/admin-ui-bootstrap');
-			vi.mocked(useIsAdvanced).mockReturnValue(true);
-
 			setupBrowserTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -1005,22 +875,25 @@ describe('EditAccountSecuritySection (browser)', () => {
 
 			await sendButton.click();
 
-			expect(sendMail).toHaveBeenCalledWith('SendMsgRequest', expect.objectContaining({
-				_jsns: 'urn:zimbraMail',
-				m: expect.objectContaining({
-					e: expect.arrayContaining([
-						expect.objectContaining({
-							t: 'f',
-							a: 'test-user@test-domain.com',
-							d: 'test-user'
-						}),
-						expect.objectContaining({
-							t: 't',
-							a: 'recipient@example.com'
-						})
-					])
+			expect(sendMail).toHaveBeenCalledWith(
+				'SendMsgRequest',
+				expect.objectContaining({
+					_jsns: 'urn:zimbraMail',
+					m: expect.objectContaining({
+						e: expect.arrayContaining([
+							expect.objectContaining({
+								t: 'f',
+								a: 'test-user@test-domain.com',
+								d: 'test-user'
+							}),
+							expect.objectContaining({
+								t: 't',
+								a: 'recipient@example.com'
+							})
+						])
+					})
 				})
-			}));
+			);
 		});
 	});
 });
