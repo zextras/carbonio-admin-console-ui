@@ -8,9 +8,10 @@ import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
 import { getAllConfig } from '../network/get-all-config';
 import { getInfo } from '../network/get-info';
-import { getMinMaxAPIVersion } from '../network/get-min-max-api-version';
 import { isAdvancedSupported } from '../network/isAdvancedSupported';
 import { loginConfig } from '../network/login-config';
+import { queryClient } from '../providers/react-query-provider';
+import { queryFnVersionInfo } from '../react-query/use-advanced-version-info';
 import { useAccountStore } from '../store/account';
 import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
@@ -27,33 +28,42 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 		}
 		let initialCalls;
 		if (response.supported) {
-			initialCalls = Promise.all([getInfo(), loginConfig(), getAllConfig(), getMinMaxAPIVersion()]);
+			initialCalls = Promise.all([
+				getInfo(),
+				loginConfig(),
+				getAllConfig(),
+				queryClient.fetchQuery({
+					queryKey: ['advanced-version-info'],
+					queryFn: queryFnVersionInfo,
+					staleTime: Infinity
+				})
+			]);
 		} else {
 			initialCalls = getInfo();
 		}
 		return initialCalls
 			.then(() => {
 				// First get the admin account information for zimbraPrefLocale
-                               return getAccount();
-                       })
-                       .then(() => {
-                               // Fallback to GetInfo locale if GetAccount didn't provide one
-                               const currentLocale = useI18nStore.getState().locale;
-                               if (currentLocale === 'en') {
-                                       const fallbackLocale =
-                                               (
-                                                       (useAccountStore.getState().settings?.prefs?.zimbraPrefLocale as string) ??
-                                                       (useAccountStore.getState().settings?.attrs?.zimbraLocale as string)
-                                               )?.split?.('_')?.[0] ?? 'en';
+				return getAccount();
+			})
+			.then(() => {
+				// Fallback to GetInfo locale if GetAccount didn't provide one
+				const currentLocale = useI18nStore.getState().locale;
+				if (currentLocale === 'en') {
+					const fallbackLocale =
+						(
+							(useAccountStore.getState().settings?.prefs?.zimbraPrefLocale as string) ??
+							(useAccountStore.getState().settings?.attrs?.zimbraLocale as string)
+						)?.split?.('_')?.[0] ?? 'en';
 
-                                       if (fallbackLocale !== 'en') {
-                                               _i18nFactory.setLocale(fallbackLocale);
-                                               useI18nStore.getState().setLocale(fallbackLocale);
-                                       }
-                               } else {
-                                       // Update the old i18n factory to match the new store
-                                       _i18nFactory.setLocale(currentLocale);
-                               }
+					if (fallbackLocale !== 'en') {
+						_i18nFactory.setLocale(fallbackLocale);
+						useI18nStore.getState().setLocale(fallbackLocale);
+					}
+				} else {
+					// Update the old i18n factory to match the new store
+					_i18nFactory.setLocale(currentLocale);
+				}
 				loadApps(Object.values(useAppStore.getState().apps));
 			})
 			.catch((error: Error) => ({ error: error.message }));
