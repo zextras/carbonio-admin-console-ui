@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -43,7 +43,6 @@ import {
 	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
@@ -56,7 +55,7 @@ const MTAOutBoundFlow: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useAppConfigStore((state) => state.config);
 	const updateConfig = useAppConfigStore((state) => state.updateConfig);
-	const mtaServersList = useServerStore((state) => state.mtaServerList);
+	const { data: mtaServersList = [] } = useMtaServers();
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 
 	const { data: rights } = useCurrentUserRights();

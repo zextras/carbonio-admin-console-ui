@@ -10,6 +10,8 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import { useBackupServers } from './src/react-query/use-backup-servers';
+import { useGlobalSettings } from './src/react-query/use-global-settings';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
 import {
@@ -19,6 +21,7 @@ import {
 	getAllRights,
 	useCurrentUserRights
 } from './src/react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
 import {
 	useLicenseInfo,
 	useVersion,
@@ -37,6 +40,7 @@ import { getIntegratedFunction } from './src/store/integrations/getters';
 import { useIntegratedComponent } from './src/store/integrations/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
+import { useBucketServersListStore } from './src/store/shared/bucket-server-list';
 import { useDomainStore } from './src/store/shared/domains';
 import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
@@ -83,6 +87,7 @@ export {
 	useGlobalConfigStore,
 	useAppConfigStore,
 	useConfigurationAttribute,
+	useBucketServersListStore,
 	useHasRight,
 	useRightsByType,
 	getRights,
@@ -90,9 +95,14 @@ export {
 	useCurrentUserRights,
 	useMailstoreServers,
 	useLastLoginTimestamp,
+	useGlobalSettings,
 	useLicenseInfo,
 	useVersion,
 	useActivateLicense,
 	useRemoveLicense,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useAllServers,
+	useMtaServers,
+	useServersByService,
+	useBackupServers
 };

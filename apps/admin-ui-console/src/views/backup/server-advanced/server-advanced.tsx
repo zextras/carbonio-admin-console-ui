@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest, useCurrentUserRights, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -24,13 +24,12 @@ import { useParams } from 'react-router-dom';
 import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useServerStore } from '../../../store/server/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
 	const { server }: { server: string } = useParams();
-	const allServers = useServerStore((state) => state.serverList);
+	const { data: allServers = [] } = useAllServers();
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);

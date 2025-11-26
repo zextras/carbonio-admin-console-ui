@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -32,7 +32,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
@@ -51,7 +50,7 @@ const HSMsettingPanel: FC = () => {
 	const [showCreateHsmPolicyView, setShowCreateHsmPolicyView] = useState<boolean>(false);
 	const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
 	const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
-	const serverList = useServerStore((state) => state.serverList);
+	const { data: serverList = [] } = useAllServers();
 	const [isZxPowerstoreMoveSchedulingEnabled, setIsZxPowerstoreMoveSchedulingEnabled] =
 		useState<boolean>(false);
 	const [powerstoreMoveSchedulerValue, setPowerstoreMoveSchedulerValue] = useState<string>('');

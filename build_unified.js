@@ -102,6 +102,7 @@ function main() {
 
 	const components = [
 		{ name: 'admin-ui-bootstrap', target: 'carbonio-admin-ui' },
+		{ name: 'admin-ui-domains', target: 'carbonio-admin-ui-domains' },
 		{ name: 'admin-ui-console', target: 'carbonio-admin-console-ui' },
 		{ name: 'admin-ui-dashboard', target: 'carbonio-admin-ui-dashboard' },
 		{ name: 'admin-ui-cos', target: 'carbonio-admin-ui-cos' }
@@ -168,7 +169,7 @@ package() {
   commitHash="${commitHash}"
   
   # Set permissions for each component - files and directories only, symlinks are left as-is
-  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos carbonio-admin-ui-dashboard; do
+  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos carbonio-admin-ui-domains carbonio-admin-ui-dashboard; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
       chown -h root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${component}"
       # Only chmod regular files, not symlinks
@@ -196,6 +197,11 @@ package() {
   # Create i18n symlink for carbonio-admin-ui-dashboard with specific commit hash
   if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-dashboard/${commitHash}" ]; then
     ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-dashboard/${commitHash}/i18n"
+  fi
+
+  # Create i18n symlink for carbonio-admin-ui-domains with specific commit hash
+  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-domains/${commitHash}" ]; then
+    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-domains/${commitHash}/i18n"
   fi
  
   }

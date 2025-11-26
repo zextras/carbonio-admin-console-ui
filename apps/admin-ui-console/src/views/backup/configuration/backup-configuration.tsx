@@ -9,7 +9,8 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap,
 	useCurrentUserRights,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useAllServers
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
@@ -45,7 +46,6 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import { useServerStore } from '../../../store/server/store';
 import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -68,7 +68,7 @@ const ovelayStyle = styled(Container)`
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
 	const [t] = useTranslation();
-	const allServers = useServerStore((state) => state.serverList);
+	const { data: allServers = [] } = useAllServers();
 	const createSnackbar = useSnackbar();
 	const [moduleEnableStartup, setModuleEnableStartup] = useState<boolean>(false);
 	const [enableRealtimeScanner, setEnableRealtimeScanner] = useState<boolean>(false);

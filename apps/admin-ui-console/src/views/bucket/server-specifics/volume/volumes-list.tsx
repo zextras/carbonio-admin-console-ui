@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, soapFetch, useIsAdvanced, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -43,7 +43,6 @@ import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import { useServerStore } from '../../../../store/server/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
@@ -190,7 +189,7 @@ const VolumesDetailPanel: FC = () => {
 	const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
-	const serverList = useServerStore((state) => state.serverList);
+	const { data: serverList = [] } = useAllServers();
 	const [selectedServerId, setSelectedServerId] = useState<any>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [volume, setVolume] = useState<Volume | undefined>({

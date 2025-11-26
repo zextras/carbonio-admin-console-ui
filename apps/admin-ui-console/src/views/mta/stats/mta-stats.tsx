@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,13 +15,12 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import MTAStatsMail from './mta-stats-mail';
 import { MtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
-import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
-import { getAllServerByService } from '../../../services/get-all-servers-service';
+import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -29,9 +28,12 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 
+import MTAStatsMail from './mta-stats-mail';
+
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const { data: mtaServerListData = [] } = useMtaServers();
 	const [serverTableRow, setServerTableRow] = useState<Array<any>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
@@ -238,38 +240,15 @@ const MTAStats: FC = () => {
 		}
 	}, [mtaServerList, scanServer]);
 
-	const getAllMTAServers = useCallback(() => {
-		setRequestInprogress(true);
-		getAllServerByService(MTA)
-			.then((data) => {
-				setRequestInprogress(false);
-				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-					const serverList = data?.server;
-					const list: Array<Record<string, string>> = [];
-					serverList.forEach((item: Record<string, string>) => {
-						list.push({ id: item?.id, name: item?.name });
-					});
-					setMtaServerList(list);
-				}
-			})
-			.catch((error) => {
-				setRequestInprogress(false);
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label: error
-						? error?.error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	}, [createSnackbar, t]);
-
 	useEffect(() => {
-		getAllMTAServers();
-	}, [getAllMTAServers]);
+		if (mtaServerListData && mtaServerListData.length > 0) {
+			const list: Array<Record<string, string>> = [];
+			mtaServerListData.forEach((item) => {
+				list.push({ id: item?.id || '', name: item?.name || '' });
+			});
+			setMtaServerList(list);
+		}
+	}, [mtaServerListData]);
 
 	const flushQueues = useCallback(() => {
 		const flushRequest: any[] = [];
