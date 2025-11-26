@@ -4,12 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
-import {
-	advancedSupportedApiForBrowser,
-	minMaxVersionApiForBrowser,
-	setupBrowserTest
-} from 'admin-ui-test-utils';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { createBrowserAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
 import { it, expect, describe, vi } from 'vitest';
@@ -123,41 +119,27 @@ const mockContextValue = {
 	setAllowedDeletePassword: () => {}
 };
 
+function setupEditAccountSecurityTest(component: React.ReactElement) {
+	const queryClient = getQueryClient();
+	queryClient.setQueryData(['advanced-supported'], true);
+
+	return setupBrowserTest(component, { queryClient });
+}
+
 beforeEach(async () => {
-	await advancedSupportedApiForBrowser.withAdvancedSupported();
-	await minMaxVersionApiForBrowser(() =>
-		HttpResponse.json({
-			domain: 'test-domain.com',
-			minApiVersion: '1.0',
-			maxApiVersion: '2.0',
-			version: '1.0'
-		})
-	);
-	// Set up user account store for useCurrentUserRights hook
-	useAccountStore.setState({
-		account: {
-			id: 'test-user-id',
-			name: 'test@example.com',
-			displayName: '',
-			signatures: {
-				signature: []
-			},
-			identities: undefined,
-			rights: { targets: [] }
-		},
-		settings: {
-			prefs: {},
-			attrs: {},
-			props: []
-		},
-		usedQuota: 0
+	// Set up domain store
+	useDomainStore.setState({
+		domain: {
+			name: 'test-domain.com',
+			id: 'domain-id'
+		}
 	});
 });
 
 describe('EditAccountSecuritySection (browser)', () => {
 	describe('Basic Rendering', () => {
 		it('should render all main sections', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -168,7 +150,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render all password policy fields', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -192,7 +174,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render password policy switches', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -202,7 +184,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render failed login lockout fields', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -220,7 +202,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render recovery email field', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -232,7 +214,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render password note for external authentication', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -253,7 +235,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 				...mockContextValue,
 				accountDetail: { ...mockContextValue.accountDetail, zimbraPasswordLocked: 'TRUE' }
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithLocked}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -269,7 +251,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordBlockCommonEnabled: 'TRUE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithBlocked}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -285,7 +267,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordEnforceHistory: '5'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithHistory}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -314,7 +296,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordBlockCommonEnabled: 'TRUE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={fullContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -332,7 +314,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutEnabled: 'TRUE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithLockout}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -348,7 +330,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutDuration: '30s'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithDuration}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -364,7 +346,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutDuration: '15m'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithDuration}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -380,7 +362,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutDuration: '2h'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithDuration}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -396,7 +378,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutDuration: '2d'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithDuration}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -412,7 +394,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutFailureLifetime: '30m'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithLifetime}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -432,7 +414,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutFailureLifetime: '2h'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithLifetime}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -452,7 +434,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutFailureLifetime: '7d'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithLifetime}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -475,7 +457,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLockoutFailureLifetime: '1d'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={lockoutContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -493,7 +475,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPrefPasswordRecoveryAddress: 'recovery@example.com'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithRecovery}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -509,7 +491,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraFeatureResetPasswordStatus: 'enabled'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithReset}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -527,7 +509,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPrefPasswordRecoveryAddressStatus: 'verified'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithVerified}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -545,7 +527,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPrefPasswordRecoveryAddressStatus: 'verified'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={recoveryContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -563,7 +545,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					carbonioFeatureOTPMgmtEnabled: 'TRUE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithOTP}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -579,7 +561,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					backupSelfUndeleteAllowed: true
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithBackup}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -593,7 +575,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 				...mockContextValue,
 				otpList: []
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithEmptyOTP}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -616,7 +598,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					}
 				]
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithOTPList}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -625,7 +607,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render NEW OTP and DELETE buttons', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -644,7 +626,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLocked: 'TRUE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={contextWithInherited}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -667,7 +649,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraPasswordLocked: 'FALSE'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={testContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -684,7 +666,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 	describe('Edge Cases', () => {
 		it('should render with empty accountDetail', async () => {
 			const emptyContext = { ...mockContextValue, accountDetail: {} };
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={emptyContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -701,7 +683,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 					zimbraId: 'min-test-id'
 				}
 			};
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={minimalContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -710,7 +692,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should render when isAdvanced is false', async () => {
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -720,20 +702,62 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 	});
 
-	describe.skip('Email Sending for OTP', () => {
-		it('should have sendMail service mocked', () => {
-			vi.clearAllMocks();
-			vi.mocked(sendMail).mockResolvedValue({} as unknown);
-
-			expect(sendMail).toBeDefined();
-			expect(vi.isMockFunction(sendMail)).toBe(true);
+	describe('Email Sending for OTP', () => {
+		beforeAll(() => {
+			// Mock scrollTo to avoid errors in browser tests where refs might be null
+			const mockScrollTo = vi.fn();
+			if (Element.prototype.scrollTo === undefined || Element.prototype.scrollTo === null) {
+				Element.prototype.scrollTo = mockScrollTo;
+			} else {
+				vi.spyOn(Element.prototype, 'scrollTo').mockImplementation(mockScrollTo);
+			}
+			if (globalThis.HTMLElement) {
+				if (
+					globalThis.HTMLElement.prototype.scrollTo === undefined ||
+					globalThis.HTMLElement.prototype.scrollTo === null
+				) {
+					globalThis.HTMLElement.prototype.scrollTo = mockScrollTo;
+				} else {
+					vi.spyOn(globalThis.HTMLElement.prototype, 'scrollTo').mockImplementation(mockScrollTo);
+				}
+			}
 		});
 
 		it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
-			setupBrowserTest(
-				<AccountContext.Provider value={mockContextValue}>
+			const mockGetListOtp = vi.fn();
+			const testContext = {
+				...mockContextValue,
+				getListOtp: mockGetListOtp
+			};
+
+			setupEditAccountSecurityTest(
+				<AccountContext.Provider value={testContext}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
+			);
+
+			await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+				HttpResponse.json({
+					Body: {
+						ok: true,
+						response: {
+							label: 'test-user@test-domain.com',
+							secret: 'TESTSECRETCODE123',
+							issuer: 'Carbonio',
+							algorithm: 'SHA1',
+							digits_length: 6,
+							period: 30,
+							static_otp_codes: [
+								{ code: '111111' },
+								{ code: '222222' },
+								{ code: '333333' },
+								{ code: '444444' },
+								{ code: '555555' },
+								{ code: '666666' }
+							]
+						}
+					}
+				})
 			);
 
 			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
@@ -752,8 +776,8 @@ describe('EditAccountSecuritySection (browser)', () => {
 				.toBeVisible();
 		});
 
-		it.skip('should render OTP wizard with send OTP email input when showCreateOTP is true', async () => {
-			setupBrowserTest(
+		it('should render OTP wizard with send OTP email input when showCreateOTP is true', async () => {
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -800,7 +824,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 				}
 			});
 
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
@@ -832,29 +856,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 		});
 
 		it('should call sendMail when SEND button is clicked with valid email', async () => {
-			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
-
-			vi.mocked(fetchSoap).mockResolvedValue({
-				ok: true,
-				response: {
-					label: 'test-user@test-domain.com',
-					secret: 'TESTSECRETCODE123',
-					issuer: 'Carbonio',
-					algorithm: 'SHA1',
-					digits_length: 6,
-					period: 30,
-					static_otp_codes: [
-						{ code: '111111' },
-						{ code: '222222' },
-						{ code: '333333' },
-						{ code: '444444' },
-						{ code: '555555' },
-						{ code: '666666' }
-					]
-				}
-			});
-
-			setupBrowserTest(
+			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
