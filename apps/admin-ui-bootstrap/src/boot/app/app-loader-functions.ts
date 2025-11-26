@@ -12,6 +12,8 @@ import {
 	postSoapFetchRequest,
 	fetchExternalSoap
 } from '../../network/fetch';
+import { useBackupServers } from '../../react-query/use-backup-servers';
+import { useGlobalSettings } from '../../react-query/use-global-settings';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
 import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
 import {
@@ -21,6 +23,7 @@ import {
 	getAllRights,
 	useCurrentUserRights
 } from '../../react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from '../../react-query/use-servers';
 import {
 	useLicenseInfo,
 	useVersion,
@@ -39,6 +42,7 @@ import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/app-config/store';
+import { useBucketServersListStore } from '../../store/shared/bucket-server-list/store';
 import { useDomainStore } from '../../store/shared/domains';
 import { useGlobalConfigStore } from '../../store/shared/global-config/store';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
@@ -87,5 +91,11 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useVersion,
 	useActivateLicense,
 	useRemoveLicense,
-	useModuleLicenseInfo
+	useModuleLicenseInfo,
+	useAllServers,
+	useMtaServers,
+	useServersByService,
+	useBucketServersListStore,
+	useBackupServers,
+	useGlobalSettings
 });

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -39,7 +39,6 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
-import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
@@ -60,7 +59,7 @@ const MTAServerGeneral: FC = () => {
 	const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
 	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
 	const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
-	const mtaServerList = useServerStore((state) => state.mtaServerList);
+	const { data: mtaServerList = [] } = useMtaServers();
 	const configInformation = useAppConfigStore((state) => state.config);
 	const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
 		{ n: string; _content: string }[]

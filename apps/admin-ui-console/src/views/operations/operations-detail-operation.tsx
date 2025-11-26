@@ -7,6 +7,7 @@
 import React, { FC, useCallback, useEffect } from 'react';
 
 import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useAllServers } from '@zextras/admin-ui-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -16,13 +17,13 @@ import RunningDetailPanel from './running-detail-panel';
 import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';
 import { useOperationStore } from '../../store/operation/store';
-import { useServerStore } from '../../store/server/store';
 
 const OperationsDetailOperation: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { operation }: { operation: string } = useParams();
-	const serverList = useServerStore((state) => state?.serverList)[0]?.name;
+	const { data: serverList = [] } = useAllServers();
+	const serverName = serverList[0]?.name;
 	const { setAlloperationDetail, setRunningData, setQueuedData } = useOperationStore(
 		(state) => state
 	);
@@ -31,8 +32,8 @@ const OperationsDetailOperation: FC = () => {
 		getAllOperations()
 			.then((response: any) => {
 				const res = JSON.parse(response?.Body?.response?.content);
-				if (res?.response?.[`${serverList}`]?.ok) {
-					const result = res?.response?.[`${serverList}`]?.response?.operationList;
+				if (res?.response?.[`${serverName}`]?.ok) {
+					const result = res?.response?.[`${serverName}`]?.response?.operationList;
 					setAlloperationDetail(result);
 					const RunningOperationData = result?.filter((item: any) => item?.state === STARTED);
 					setRunningData(RunningOperationData);
@@ -49,7 +50,7 @@ const OperationsDetailOperation: FC = () => {
 					})
 				});
 			});
-	}, [createSnackbar, serverList, setAlloperationDetail, setQueuedData, setRunningData, t]);
+	}, [createSnackbar, serverName, setAlloperationDetail, setQueuedData, setRunningData, t]);
 
 	useEffect(() => {
 		getAllOperationAPICallHandler();

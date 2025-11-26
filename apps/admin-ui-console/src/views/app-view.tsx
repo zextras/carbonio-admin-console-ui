@@ -11,7 +11,6 @@ import styled from 'styled-components';
 
 import {
 	BACKUP_ROUTE_ID,
-	DOMAINS_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
@@ -32,8 +31,6 @@ import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import { Subscription } from './core/subscription/subscription';
-import DomainDetailPanel from './domain/domain-detail-panel';
-import DomainListPanel from './domain/domain-list-panel';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import MonitoringView from './monitoring/monitoring-view';
 import MTADetailPanel from './mta/mta-detail-panel';
@@ -64,26 +61,6 @@ const AppView: FC = () => {
 						<Suspense fallback={<Spinner />}>
 							<MonitoringView />
 						</Suspense>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					>
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<DomainListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<DomainDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>

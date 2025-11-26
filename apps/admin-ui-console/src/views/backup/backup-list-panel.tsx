@@ -6,6 +6,7 @@
 import {
 	getRights,
 	replaceHistory,
+	useBucketServersListStore,
 	useCurrentUserRights,
 	useGlobalConfigStore,
 	useModuleLicenseInfo
@@ -26,7 +27,6 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';

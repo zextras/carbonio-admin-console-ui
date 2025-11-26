@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,8 +18,6 @@ import _ from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useBackupModuleStore } from '../../../store/backup-module/store';
-import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
@@ -220,8 +219,15 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
-	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
-	const servers = useServerStore((state) => state.serverList);
+	const isAdvanced = useIsAdvanced();
+	const { data: backupData } = useBackupServers({
+		enabled: isAdvanced
+	});
+	const { data: servers = [] } = useAllServers();
+	const backupServerList = useMemo(
+		() => backupData?.backupServerList || [],
+		[backupData?.backupServerList]
+	);
 
 	const STATUS: any[] = useMemo(
 		() => [
