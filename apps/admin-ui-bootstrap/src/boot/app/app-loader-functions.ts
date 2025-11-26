@@ -13,6 +13,7 @@ import {
 	fetchExternalSoap
 } from '../../network/fetch';
 import { useBackupServers } from '../../react-query/use-backup-servers';
+import { useGlobalSettings } from '../../react-query/use-global-settings';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
 import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
 import {
@@ -95,5 +96,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useMtaServers,
 	useServersByService,
 	useBucketServersListStore,
-	useBackupServers
+	useBackupServers,
+	useGlobalSettings
 });

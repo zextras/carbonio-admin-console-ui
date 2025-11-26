@@ -11,9 +11,9 @@ import {
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
 import { useBackupServers } from './src/react-query/use-backup-servers';
+import { useGlobalSettings } from './src/react-query/use-global-settings';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
-import { useGlobalSettings } from './src/react-query/use-global-settings';
 import {
 	useHasRight,
 	useRightsByType,
