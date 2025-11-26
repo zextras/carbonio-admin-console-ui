@@ -10,6 +10,11 @@ import {
 	postSoapFetchRequest as postSoapFetchRequestFn,
 	fetchExternalSoap as fetchExternalSoapFn
 } from './src/network/fetch';
+import {
+	useAdvanced,
+	useIsAdvancedSupported,
+	useAdvancedVersionInfo
+} from './src/react-query/use-advanced';
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useGlobalSettings } from './src/react-query/use-global-settings';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
@@ -104,5 +109,8 @@ export {
 	useAllServers,
 	useMtaServers,
 	useServersByService,
-	useBackupServers
+	useBackupServers,
+	useAdvanced,
+	useIsAdvancedSupported,
+	useAdvancedVersionInfo
 };

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useIsAdvancedSupported } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Padding,
@@ -103,7 +103,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const isAdvanced = useIsAdvanced();
+	const { data: isAdvanced = false } = useIsAdvancedSupported();
 
 	const handleSendOTPEmail = useCallback((): void => {
 		const emailRecipients = [
