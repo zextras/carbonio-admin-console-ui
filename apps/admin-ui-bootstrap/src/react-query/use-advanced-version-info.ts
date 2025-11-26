@@ -8,8 +8,8 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 type AdvancedVersionInfo = {
 	domain: string;
-	minApiVersion: string;
-	maxApiVersion: string;
+	minApiVersion: number;
+	maxApiVersion: number;
 	version: string;
 };
 
@@ -22,19 +22,23 @@ type useAdvancedVersionInfoOptions = Omit<
 
 // Query function to get version info (only if advanced is supported)
 export const queryFnVersionInfo = async (): Promise<AdvancedVersionInfo | null> => {
-	const response = await fetch('/zx/auth/supported');
-	if (response.ok) {
-		const data = await response.json();
-		if (data?.domain) {
-			const versionInfo = {
-				domain: data.domain,
-				minApiVersion: data.minApiVersion,
-				maxApiVersion: data.maxApiVersion,
-				version: data.version
-			};
+	try {
+		const response = await fetch('/zx/auth/supported');
+		if (response.ok) {
+			const data = await response.json();
+			if (data?.domain) {
+				const versionInfo = {
+					domain: data.domain,
+					minApiVersion: data.minApiVersion,
+					maxApiVersion: data.maxApiVersion,
+					version: data.version
+				};
 
-			return versionInfo;
+				return versionInfo;
+			}
 		}
+	} catch {
+		// Handle network errors or other fetch failures
 	}
 	return null;
 };
