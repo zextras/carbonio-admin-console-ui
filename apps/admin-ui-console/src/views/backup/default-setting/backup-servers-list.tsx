@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import {
+	useAllServers,
+	useBackupServers,
+	useIsAdvancedSupported
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -219,7 +223,7 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const { data: backupData } = useBackupServers({
 		enabled: isAdvanced
 	});

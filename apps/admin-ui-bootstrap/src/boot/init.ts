@@ -8,10 +8,10 @@ import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
 import { getAllConfig } from '../network/get-all-config';
 import { getInfo } from '../network/get-info';
-import { isAdvancedSupported } from '../network/isAdvancedSupported';
 import { loginConfig } from '../network/login-config';
 import { queryClient } from '../providers/react-query-provider';
 import { queryFnVersionInfo } from '../react-query/use-advanced-version-info';
+import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
 import { useAccountStore } from '../store/account';
 import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
@@ -22,12 +22,12 @@ type InitError = {
 	error: string;
 };
 export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
-	isAdvancedSupported().then(async (response): Promise<InitError | void> => {
-		if ('errorMessage' in response) {
-			return { error: response.errorMessage };
+	queryFnIsAdvancedSupported().then(async (supported): Promise<InitError | void> => {
+		if (!supported) {
+			return { error: 'Advanced is not supported' };
 		}
 		let initialCalls;
-		if (response.supported) {
+		if (supported) {
 			initialCalls = Promise.all([
 				getInfo(),
 				loginConfig(),

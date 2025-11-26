@@ -3,7 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import {
+	useAppConfigStore,
+	useCurrentUserRights,
+	useIsAdvancedSupported
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -69,7 +73,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
 		useState<string>('');
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
 	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);

@@ -4,7 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch, useIsAdvanced, useAllServers } from '@zextras/admin-ui-bootstrap';
+import {
+	postSoapFetchRequest,
+	soapFetch,
+	useIsAdvancedSupported,
+	useAllServers
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -180,7 +185,7 @@ const VolumesDetailPanel: FC = () => {
 	const context = useContext(VolumeContext);
 	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);

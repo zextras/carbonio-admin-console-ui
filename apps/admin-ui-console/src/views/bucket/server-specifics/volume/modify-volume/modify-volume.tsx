@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useIsAdvancedSupported, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -93,7 +93,7 @@ const ModifyVolume: FC<{
 }) => {
 	const { t } = useTranslation();
 
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);

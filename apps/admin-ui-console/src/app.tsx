@@ -8,7 +8,7 @@ import {
 	addRoute,
 	removeRoute,
 	useAllConfig,
-	useIsAdvanced,
+	useIsAdvancedSupported,
 	useUserAccounts,
 	useHasRight,
 	getRights,
@@ -82,7 +82,7 @@ const App: FC = () => {
 	const { data: serverList = [] } = useAllServers();
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const allConfig = useAllConfig();
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});

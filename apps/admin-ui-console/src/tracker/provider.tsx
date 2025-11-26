@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigurationAttribute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useConfigurationAttribute, useIsAdvancedSupported } from '@zextras/admin-ui-bootstrap';
 import type { PostHogConfig } from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import React, { useMemo } from 'react';
@@ -16,7 +16,7 @@ export const TrackerProvider = ({
 	children
 }: React.PropsWithChildren<Record<never, never>>): React.JSX.Element => {
 	const feedbackPermission = useConfigurationAttribute('carbonioAllowFeedback') === TRUE;
-	const isAdvanced = useIsAdvanced();
+	const isAdvanced = useIsAdvancedSupported();
 	const showPostHogSurveys = useMemo(
 		() => !isAdvanced && feedbackPermission,
 		[isAdvanced, feedbackPermission]
