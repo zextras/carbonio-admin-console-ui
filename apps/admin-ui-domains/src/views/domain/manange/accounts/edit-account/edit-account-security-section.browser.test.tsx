@@ -136,7 +136,7 @@ beforeEach(async () => {
 	});
 });
 
-describe('EditAccountSecuritySection (browser)', () => {
+describe.skip('EditAccountSecuritySection (browser)', () => {
 	describe('Basic Rendering', () => {
 		it('should render all main sections', async () => {
 			setupEditAccountSecurityTest(

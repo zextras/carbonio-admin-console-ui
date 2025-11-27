@@ -276,7 +276,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.10(react@19.2.0)
+        version: 5.90.11(react@19.2.0)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -309,7 +309,7 @@ importers:
         version: 10.23.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.298.0
+        version: 1.298.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.0)
@@ -352,7 +352,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.10(react@19.2.0))(react@19.2.0)
+        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -442,7 +442,7 @@ importers:
         version: 10.23.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.298.0
+        version: 1.298.1
       react:
         specifier: ^19.1.0
         version: 19.2.0
@@ -542,7 +542,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.10(react@19.2.0)
+        version: 5.90.11(react@19.2.0)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -575,7 +575,7 @@ importers:
         version: 10.23.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.298.0
+        version: 1.298.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.0)
@@ -618,7 +618,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.10(react@19.2.0))(react@19.2.0)
+        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -684,7 +684,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.10(react@19.2.0)
+        version: 5.90.11(react@19.2.0)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -717,7 +717,7 @@ importers:
         version: 10.23.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.298.0
+        version: 1.298.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.0)
@@ -760,7 +760,149 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.10(react@19.2.0))(react@19.2.0)
+        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)
+      '@testing-library/react':
+        specifier: ^16.0.1
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@types/lodash':
+        specifier: ^4.14.197
+        version: 4.17.21
+      '@types/react':
+        specifier: ^19.1.0
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.1.0
+        version: 19.2.3(@types/react@19.2.7)
+      '@types/react-router-dom':
+        specifier: ^5.3.3
+        version: 5.3.3
+      '@types/styled-components':
+        specifier: ^5.1.26
+        version: 5.1.36
+      '@vitest/browser':
+        specifier: ^4.0.5
+        version: 4.0.14(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(vite@7.2.4(@types/node@20.19.25)(jiti@2.6.1)(less@4.4.2)(terser@5.44.1))(vitest@4.0.14)
+      '@vitest/coverage-istanbul':
+        specifier: ^4.0.5
+        version: 4.0.14(vitest@4.0.14)
+      '@vitest/ui':
+        specifier: ^4.0.5
+        version: 4.0.14(vitest@4.0.14)
+      admin-ui-sdk:
+        specifier: workspace:*
+        version: link:../../packages/sdk
+      admin-ui-test-utils:
+        specifier: workspace:*
+        version: link:../../packages/test-utils
+      babel-plugin-styled-components:
+        specifier: ^2.1.4
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+      eslint:
+        specifier: ^9.34.0
+        version: 9.39.1(jiti@2.6.1)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0
+      msw:
+        specifier: ^2.12.2
+        version: 2.12.3(@types/node@20.19.25)(typescript@5.9.3)
+      playwright:
+        specifier: ^1.55.0
+        version: 1.57.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.0(react@19.2.0)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^4.0.5
+        version: 4.0.14(@types/node@20.19.25)(@vitest/browser-playwright@4.0.14)(@vitest/ui@4.0.14)(jiti@2.6.1)(jsdom@26.1.0)(less@4.4.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.1)
+      vitest-browser-react:
+        specifier: ^2.0.2
+        version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@4.0.14)
+
+  apps/admin-ui-subscription:
+    dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.90.5
+        version: 5.90.11(react@19.2.0)
+      '@types/react-csv':
+        specifier: ^1.1.10
+        version: 1.1.10
+      '@zextras/admin-ui-bootstrap':
+        specifier: workspace:*
+        version: link:../admin-ui-bootstrap
+      '@zextras/carbonio-design-system':
+        specifier: ^8.1.0
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+      history:
+        specifier: ^5.3.0
+        version: 5.3.0
+      html-entities:
+        specifier: ^2.6.0
+        version: 2.6.0
+      i18next:
+        specifier: ^22.5.1
+        version: 22.5.1
+      immer:
+        specifier: ^10.1.3
+        version: 10.2.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
+      pnpm:
+        specifier: ^10.15.1
+        version: 10.23.0
+      posthog-js:
+        specifier: ^1.261.0
+        version: 1.298.1
+      qrcode.react:
+        specifier: ^3.1.0
+        version: 3.2.0(react@19.2.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.2.0
+      react-csv:
+        specifier: ^2.2.2
+        version: 2.2.2
+      react-i18next:
+        specifier: ^12.3.1
+        version: 12.3.1(i18next@22.5.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-router-dom:
+        specifier: ^5.3.4
+        version: 5.3.4(react@19.2.0)
+      styled-components:
+        specifier: ^5.3.11
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.22.15
+        version: 7.28.5
+      '@babel/plugin-proposal-class-properties':
+        specifier: ^7.18.6
+        version: 7.18.6(@babel/core@7.28.5)
+      '@babel/plugin-transform-runtime':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-env':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-react':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-typescript':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.90.2
+        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -2387,8 +2529,8 @@ packages:
     resolution: {integrity: sha512-LnhVjMWyMQV9ZmeEy26maJk+8HTIbd59cH4F2MJ439k9DqejRisfFNGAPvRYlKETuh9LrImlS8aKsBgKjMA8WA==}
     engines: {node: '>=14'}
 
-  '@tanstack/query-core@5.90.10':
-    resolution: {integrity: sha512-EhZVFu9rl7GfRNuJLJ3Y7wtbTnENsvzp+YpcAV7kCYiXni1v8qZh++lpw4ch4rrwC0u/EZRnBHIehzCGzwXDSQ==}
+  '@tanstack/query-core@5.90.11':
+    resolution: {integrity: sha512-f9z/nXhCgWDF4lHqgIE30jxLe4sYv15QodfdPDKYAk7nAEjNcndy4dHz3ezhdUaR23BpWa4I2EH4/DZ0//Uf8A==}
 
   '@tanstack/query-devtools@5.91.1':
     resolution: {integrity: sha512-l8bxjk6BMsCaVQH6NzQEE/bEgFy1hAs5qbgXl0xhzezlaQbPk6Mgz9BqEg2vTLPOHD8N4k+w/gdgCbEzecGyNg==}
@@ -2399,8 +2541,8 @@ packages:
       '@tanstack/react-query': ^5.90.10
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.90.10':
-    resolution: {integrity: sha512-BKLss9Y8PQ9IUjPYQiv3/Zmlx92uxffUOX8ZZNoQlCIZBJPT5M+GOMQj7xislvVQ6l1BstBjcX0XB/aHfFYVNw==}
+  '@tanstack/react-query@5.90.11':
+    resolution: {integrity: sha512-3uyzz01D1fkTLXuxF3JfoJoHQMU2fxsfJwE+6N5hHy0dVNoZOvwKP8Z2k7k1KDeD54N20apcJnG75TBAStIrBA==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -3323,8 +3465,8 @@ packages:
     resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
     engines: {node: '>= 0.6'}
 
-  cookie@1.0.2:
-    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 
   copy-anything@2.0.6:
@@ -3623,8 +3765,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.260:
-    resolution: {integrity: sha512-ov8rBoOBhVawpzdre+Cmz4FB+y66Eqrk6Gwqd8NGxuhv99GQ8XqMAr351KEkOt7gukXWDg6gJWEMKgL2RLMPtA==}
+  electron-to-chromium@1.5.262:
+    resolution: {integrity: sha512-NlAsMteRHek05jRUxUR0a5jpjYq9ykk6+kO0yRaMi5moe7u0fVIOeQ3Y30A8dIiWFBNUoQGi1ljb1i5VtS9WQQ==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -5261,8 +5403,8 @@ packages:
       encoding:
         optional: true
 
-  node-forge@1.3.1:
-    resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
+  node-forge@1.3.2:
+    resolution: {integrity: sha512-6xKiQ+cph9KImrRh0VsjH2d8/GXA4FIMlgU4B757iI1ApvcyA9VlouP0yZJha01V+huImO+kKMU7ih+2+E14fw==}
     engines: {node: '>= 6.13.0'}
 
   node-http-proxy-json@0.1.9:
@@ -5303,8 +5445,8 @@ packages:
     resolution: {integrity: sha512-9qny7Z9DsQU8Ou39ERsPU4OZQlSTP47ShQzuKZ6PRXpYLtIFgl/DEBYEXKlvcEa+9tHVcK8CF81Y2V72qaZhWA==}
     engines: {node: '>=18'}
 
-  npm@11.6.3:
-    resolution: {integrity: sha512-QIWnYxYuDjrNGaTp0jrTqgl45QHM+UfdcjPBKmia4LsBkHY8TvEjZpkAVrNO7EOJA//tOP3k+9cioXwqdAfukg==}
+  npm@11.6.4:
+    resolution: {integrity: sha512-ERjKtGoFpQrua/9bG0+h3xiv/4nVdGViCjUYA1AmlV24fFvfnSB7B7dIfZnySQ1FDLd0ZVrWPsLLp78dCtJdRQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
     bundledDependencies:
@@ -5725,8 +5867,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.298.0:
-    resolution: {integrity: sha512-Zwzsf7TO8qJ6DFLuUlQSsT/5OIOcxSBZlKOSk3satkEnwKdmnBXUuxgVXRHrvq1kj7OB2PVAPgZiQ8iHHj9DRA==}
+  posthog-js@1.298.1:
+    resolution: {integrity: sha512-MynFhC2HO6sg5moUfpkd0s6RzAqcqFX75kjIi4Xrj2Gl0/YQWYvFUgvv8FCpWPKPs2mdvNWYhs+oqJg0BVVHPw==}
 
   preact@10.27.2:
     resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
@@ -8582,7 +8724,7 @@ snapshots:
       lodash-es: 4.17.21
       nerf-dart: 1.0.0
       normalize-url: 8.1.0
-      npm: 11.6.3
+      npm: 11.6.4
       rc: 1.2.8
       read-pkg: 10.0.0
       registry-auth-token: 5.1.0
@@ -8739,19 +8881,19 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tanstack/query-core@5.90.10': {}
+  '@tanstack/query-core@5.90.11': {}
 
   '@tanstack/query-devtools@5.91.1': {}
 
-  '@tanstack/react-query-devtools@5.91.1(@tanstack/react-query@5.90.10(react@19.2.0))(react@19.2.0)':
+  '@tanstack/react-query-devtools@5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@tanstack/query-devtools': 5.91.1
-      '@tanstack/react-query': 5.90.10(react@19.2.0)
+      '@tanstack/react-query': 5.90.11(react@19.2.0)
       react: 19.2.0
 
-  '@tanstack/react-query@5.90.10(react@19.2.0)':
+  '@tanstack/react-query@5.90.11(react@19.2.0)':
     dependencies:
-      '@tanstack/query-core': 5.90.10
+      '@tanstack/query-core': 5.90.11
       react: 19.2.0
 
   '@testing-library/dom@10.4.1':
@@ -9633,7 +9775,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.8.31
       caniuse-lite: 1.0.30001757
-      electron-to-chromium: 1.5.260
+      electron-to-chromium: 1.5.262
       node-releases: 2.0.27
       update-browserslist-db: 1.1.4(browserslist@4.28.0)
 
@@ -9869,7 +10011,7 @@ snapshots:
 
   cookie@0.7.1: {}
 
-  cookie@1.0.2: {}
+  cookie@1.1.1: {}
 
   copy-anything@2.0.6:
     dependencies:
@@ -10206,7 +10348,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.260: {}
+  electron-to-chromium@1.5.262: {}
 
   emoji-regex@10.6.0: {}
 
@@ -12189,7 +12331,7 @@ snapshots:
       '@mswjs/interceptors': 0.40.0
       '@open-draft/deferred-promise': 2.2.0
       '@types/statuses': 2.0.6
-      cookie: 1.0.2
+      cookie: 1.1.1
       graphql: 16.12.0
       headers-polyfill: 4.0.3
       is-node-process: 1.2.0
@@ -12263,7 +12405,7 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-forge@1.3.1: {}
+  node-forge@1.3.2: {}
 
   node-http-proxy-json@0.1.9:
     dependencies:
@@ -12303,7 +12445,7 @@ snapshots:
       path-key: 4.0.0
       unicorn-magic: 0.3.0
 
-  npm@11.6.3: {}
+  npm@11.6.4: {}
 
   nth-check@2.1.1:
     dependencies:
@@ -12650,7 +12792,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.298.0:
+  posthog-js@1.298.1:
     dependencies:
       '@posthog/core': 1.6.0
       core-js: 3.47.0
@@ -13117,7 +13259,7 @@ snapshots:
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.14
-      node-forge: 1.3.1
+      node-forge: 1.3.2
 
   semantic-release@25.0.2(typescript@5.9.3):
     dependencies:
