@@ -20,8 +20,7 @@ import {
 	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
 	SERVICES_ROUTE_ID,
-	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID
+	STORAGES_ROUTE_ID
 } from '../constants';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
@@ -30,7 +29,6 @@ import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
-import { Subscription } from './core/subscription/subscription';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import MonitoringView from './monitoring/monitoring-view';
 import MTADetailPanel from './mta/mta-detail-panel';
@@ -99,17 +97,6 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<MTADetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<Subscription />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>

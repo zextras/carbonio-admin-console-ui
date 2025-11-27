@@ -43,12 +43,10 @@ import {
 	PRIMARY_BAR_OPERATIONS,
 	PRIMARY_BAR_PRIVACY,
 	PRIMARY_BAR_STORAGE,
-	PRIMARY_BAR_SUBSCRIPTIONS,
 	PRIVACY_ROUTE_ID,
 	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE,
 	CONFIG
 } from './constants';
@@ -280,37 +278,6 @@ const App: FC = () => {
 		[storagesTooltipItems]
 	);
 
-	const subscriptionTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.subscription_lbl"
-							defaults="<bold>Subscription</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.subscription_primarybar_tooltip"
-							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const SubscriptionTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={subscriptionTooltipItems} />,
-		[subscriptionTooltipItems]
-	);
-
 	const operationTooltipItem = useMemo(
 		() => [
 			{
@@ -514,18 +481,6 @@ const App: FC = () => {
 		if (isAdvanced) {
 			if (hasAllConfigRights) {
 				addRoute({
-					route: SUBSCRIPTIONS_ROUTE_ID,
-					position: 5,
-					visible: true,
-					label: t('label.subscriptions', 'Subscriptions') || '',
-					primaryBar: 'AwardOutline',
-					appView: AppView,
-					primarybarSection: { ...managementSection },
-					tooltip: SubscriptionTooltipView,
-					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
-				});
-
-				addRoute({
 					route: LEGAL_HOLD_ROUTE_ID,
 					position: 2,
 					visible: true,
@@ -537,7 +492,6 @@ const App: FC = () => {
 					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
 				});
 			} else {
-				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
 				removeRoute(LEGAL_HOLD_ROUTE_ID);
 			}
 
@@ -569,7 +523,6 @@ const App: FC = () => {
 		LegalHoldTooltipView,
 		NotificationTooltipView,
 		OperationTooltipView,
-		SubscriptionTooltipView,
 		hasAllConfigRights,
 		isAdvanced,
 		logAndQueuesSection,
