@@ -423,7 +423,6 @@ const App: FC = () => {
 
 	useEffect(() => {
 		setConfigRightsRoute();
-
 		if (isAdvanced) {
 			if (hasAllConfigRights) {
 				addRoute({
@@ -440,7 +439,6 @@ const App: FC = () => {
 			} else {
 				removeRoute(LEGAL_HOLD_ROUTE_ID);
 			}
-
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
@@ -452,7 +450,6 @@ const App: FC = () => {
 				tooltip: NotificationTooltipView,
 				trackerLabel: PRIMARY_BAR_NOTIFICATIONS
 			});
-
 			addRoute({
 				route: OPERATIONS_ROUTE_ID,
 				position: 2,

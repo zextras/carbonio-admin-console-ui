@@ -13,7 +13,7 @@ import { defineConfig } from 'vite';
 import { createModuleRollupOptions } from '../../vite.rollup.config';
 
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
-const packageName = 'carbonio-admin-console-ui';
+const packageName = 'carbonio-admin-ui-privacy';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({

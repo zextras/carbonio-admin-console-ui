@@ -109,7 +109,6 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
-
 				<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
 					<Container
 						orientation="horizontal"
@@ -123,7 +122,6 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
-
 				<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '265px' }}>
