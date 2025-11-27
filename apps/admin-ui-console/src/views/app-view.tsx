@@ -18,7 +18,6 @@ import {
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
-	PRIVACY_ROUTE_ID,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID
 } from '../constants';
@@ -37,7 +36,6 @@ import NotificationsDetailPanel from './notifications/notifications-detail-panel
 import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
-import PrivacyView from './privacy/privacy-view';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
@@ -72,17 +70,6 @@ const AppView: FC = () => {
 							<Suspense fallback={<Spinner />}>
 								<BucketRoutePanel />
 							</Suspense>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<PrivacyView />
-								</Suspense>
-							</DetailViewContainer>
 						</Container>
 					</Container>
 				</Route>

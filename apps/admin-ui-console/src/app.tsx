@@ -41,9 +41,7 @@ import {
 	PRIMARY_BAR_MTA,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
-	PRIMARY_BAR_PRIVACY,
 	PRIMARY_BAR_STORAGE,
-	PRIVACY_ROUTE_ID,
 	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
@@ -177,37 +175,6 @@ const App: FC = () => {
 	const BackupTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={backupTooltipItems} />,
 		[backupTooltipItems]
-	);
-
-	const privacyTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.privacy_lbl"
-							defaults="<bold>Privacy</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.privacy_primarybar_tooltip"
-							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const PrivacyTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={privacyTooltipItems} />,
-		[privacyTooltipItems]
 	);
 
 	const notificationTooltipItems = useMemo(
@@ -435,29 +402,15 @@ const App: FC = () => {
 					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
 				});
 			}
-
-			addRoute({
-				route: PRIVACY_ROUTE_ID,
-				position: 6,
-				visible: true,
-				label: t('label.privacy', 'Privacy') || '',
-				primaryBar: 'ShieldOutline',
-				appView: AppView,
-				primarybarSection: { ...managementSection },
-				tooltip: PrivacyTooltipView,
-				trackerLabel: PRIMARY_BAR_PRIVACY
-			});
 		} else {
 			removeRoute(BACKUP_ROUTE_ID);
 
 			removeRoute(MTA_ROUTE_ID);
-			removeRoute(PRIVACY_ROUTE_ID);
 		}
 	}, [
 		BackupTooltipView,
 		LegalHoldTooltipView,
 		MTATooltipView,
-		PrivacyTooltipView,
 		StorageTooltipView,
 		backupPrimaryBar,
 		hasAllConfigRights,
