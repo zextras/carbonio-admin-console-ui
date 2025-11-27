@@ -12,6 +12,7 @@ import {
 } from './src/network/fetch';
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useGlobalSettings } from './src/react-query/use-global-settings';
+import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
 import {
@@ -31,7 +32,6 @@ import {
 } from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
-import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { useAllConfig } from './src/store/config';
@@ -79,7 +79,6 @@ export {
 	usePrimaryBarState,
 	useAllConfig,
 	useDomainInformation,
-	useIsAdvanced,
 	useIntegratedComponent,
 	pushHistory,
 	useDomainStore,
@@ -104,5 +103,6 @@ export {
 	useAllServers,
 	useMtaServers,
 	useServersByService,
-	useBackupServers
+	useBackupServers,
+	useIsAdvanced
 };

@@ -3,7 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import {
+	useAppConfigStore,
+	useCurrentUserRights,
+	useIsAdvanced
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,

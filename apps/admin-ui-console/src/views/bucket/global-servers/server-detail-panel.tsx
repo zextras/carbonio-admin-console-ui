@@ -1,10 +1,13 @@
- 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getSoapFetchRequest, useIsAdvanced , useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import {
+	getSoapFetchRequest,
+	useIsAdvanced,
+	useMailstoreServers
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -202,7 +205,6 @@ const ServerDetailPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-	 
 	const getServersListType = useCallback((): void => {
 		if (isAdvanced) {
 			setIsRequestInProgress(true);
@@ -221,7 +223,7 @@ const ServerDetailPanel: FC = () => {
 							setIsRequestInProgress(false);
 							const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
 							const responseData = JSON.parse(res?.Body?.response?.content);
-							 
+
 							if (responseData && responseData.ok) {
 								if (allServersList.length > 0) {
 									const serverList = allServersList.map((item) => {
@@ -235,14 +237,12 @@ const ServerDetailPanel: FC = () => {
 											(s: any) => s.name === item?.name
 										);
 										if (findPowerStoreServer) {
-											 
 											indexer = findPowerStoreServer?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
 											hsmScheduled =
 												findPowerStoreServer?.ZxPowerstore?.attributes?.powerstoreMoveScheduler
 													?.value?.[HSM_SCHEDULED_KEY];
 										}
 										if (
-											 
 											responseData &&
 											responseData?.response &&
 											item.name &&
@@ -283,7 +283,6 @@ const ServerDetailPanel: FC = () => {
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
 				});
-			 
 		} else if (!isAdvanced) {
 			if (allServersList.length > 0) {
 				const serverList = allServersList.map((item) => {

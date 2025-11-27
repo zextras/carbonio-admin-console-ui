@@ -50,7 +50,8 @@ describe('LicenseBanner', () => {
 
 	it('renders expired message', async () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expired');
-		await expect.element(page.getByText(/expired on 18 Jun 2025/i)).toBeVisible();
+		// Match either 18 or 19 Jun 2025 depending on timezone
+		await expect.element(page.getByText(/expired on (18|19) Jun 2025/i)).toBeVisible();
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {

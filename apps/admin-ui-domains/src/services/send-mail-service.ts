@@ -5,7 +5,15 @@
  */
 import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
 
-export const sendMail = async (api: string, body: any): Promise<any> =>
-	postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`).then((res: any) =>
-		res.Body?.response?.content ? JSON.parse(res.Body.response.content) : res.Body
-	);
+type SoapResponse = {
+	Body?: {
+		response?: {
+			content?: string;
+		};
+	};
+};
+
+export const sendMail = async (api: string, body: unknown): Promise<unknown> => {
+	const res: SoapResponse = await postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`);
+	return res.Body?.response?.content ? JSON.parse(res.Body.response.content) : res.Body;
+};

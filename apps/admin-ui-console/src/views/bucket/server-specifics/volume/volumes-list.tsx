@@ -4,7 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch, useIsAdvanced, useAllServers } from '@zextras/admin-ui-bootstrap';
+import {
+	postSoapFetchRequest,
+	soapFetch,
+	useIsAdvanced,
+	useAllServers
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,

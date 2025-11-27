@@ -98,12 +98,83 @@ const EditAccountSecuritySection: FC = () => {
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
 	const [secrateCode, setSecrateCode] = useState('');
-	const [sendEmailTo, setSendEmailTo] = useState<any>('');
+	const [sendEmailTo, setSendEmailTo] = useState<any[]>([]);
 	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useIsAdvanced();
+
+	const handleSendOTPEmail = useCallback((): void => {
+		const emailRecipients = [
+			{
+				t: 'f',
+				a: `${accountDetail?.name}@${domainName}`,
+				d: accountDetail?.name
+			},
+			...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' }))
+		];
+
+		sendMail('SendMsgRequest', {
+			_jsns: 'urn:zimbraMail',
+			m: {
+				attach: { mp: [] },
+				su: { _content: 'Account 2FA code' },
+				e: emailRecipients,
+				mp: [
+					{
+						ct: 'text/html',
+						body: true,
+						content: {
+							_content: emailContent(pinCodes, secrateCode)
+						}
+					}
+				]
+			}
+		})
+			.then(() => {
+				setSendEmailTo([]);
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t('domain.editAccount.otpSentSuccessfully', 'OTP has been sent successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			})
+			.catch(() => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [accountDetail?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
+
+	const handleEmailChange = useCallback((contacts: any): void => {
+		const data = map(contacts, (contact) => {
+			const isValid = isValidEmail(contact.label ?? '');
+			return {
+				...contact,
+				error: !isValid
+			};
+		});
+		setSendEmailTo(data);
+	}, []);
+
+	const hasEmailError = useMemo(
+		() => sendEmailTo?.some((contact: any) => contact.error),
+		[sendEmailTo]
+	);
+
+	const isSendDisabled = useMemo(
+		() => sendEmailTo.length === 0 || hasEmailError,
+		[sendEmailTo, hasEmailError]
+	);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -112,169 +183,146 @@ const EditAccountSecuritySection: FC = () => {
 				label: t('label.create_otp', 'CREATE OTP'),
 				icon: 'KeyOutline',
 				view: (): ReactElement => (
-					<>
-						<Container mainAlignment="flex-start">
-							<Row
-								padding={{ top: 'large', left: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-							>
-								<Row width="40%" mainAlignment="flex-start">
-									<QRCode data-testid="qrcode-password" size={179} value={qrData} />
-								</Row>
-								<Row width="60%" mainAlignment="flex-start">
-									<Container>
-										<Padding top="large">
-											<Row mainAlignment="center">
-												<StaticCodesContainer background="gray5">
-													<StaticCodesWrapper>
-														{map(pinCodes, (singleCode: any) => (
-															<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
-														))}
-													</StaticCodesWrapper>
-												</StaticCodesContainer>
-											</Row>
-										</Padding>
-									</Container>
-									<Container
-										orientation="horizontal"
-										width="99%"
-										crossAlignment="center"
-										mainAlignment="space-between"
-									>
-										<Row
-											mainAlignment="center"
-											width="100%"
-											padding={{
-												top: 'small',
-												bottom: 'small'
-											}}
-										>
-											<Text>{t('account_details.secret_code', 'Secret Code')}</Text>
-										</Row>
-									</Container>
-									<Container
-										orientation="horizontal"
-										width="99%"
-										crossAlignment="center"
-										mainAlignment="space-between"
-									>
-										<Row
-											mainAlignment="center"
-											width="100%"
-											padding={{
-												top: 'small',
-												bottom: 'small'
-											}}
-										>
-											<Text>{secrateCode}</Text>
-										</Row>
-									</Container>
-								</Row>
+					<Container mainAlignment="flex-start">
+						<Row
+							padding={{ top: 'large', left: 'large' }}
+							width="100%"
+							mainAlignment="space-between"
+						>
+							<Row width="40%" mainAlignment="flex-start">
+								<QRCode data-testid="qrcode-password" size={179} value={qrData} />
 							</Row>
-							<Container
-								orientation="horizontal"
-								width="99%"
-								crossAlignment="center"
-								mainAlignment="space-between"
-							>
-								<Row
-									mainAlignment="center"
-									width="100%"
-									padding={{
-										top: 'small',
-										bottom: 'small'
-									}}
+							<Row width="60%" mainAlignment="flex-start">
+								<Container>
+									<Padding top="large">
+										<Row mainAlignment="center">
+											<StaticCodesContainer background="gray5">
+												<StaticCodesWrapper>
+													{map(pinCodes, (singleCode: any) => (
+														<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
+													))}
+												</StaticCodesWrapper>
+											</StaticCodesContainer>
+										</Row>
+									</Padding>
+								</Container>
+								<Container
+									orientation="horizontal"
+									width="99%"
+									crossAlignment="center"
+									mainAlignment="space-between"
 								>
-									<Text>
-										{t(
-											'account_details.please_note_code',
-											`Please note: you'll be able to see these codes just once.`
-										)}
-									</Text>
-								</Row>
-							</Container>
-							<Container
-								orientation="horizontal"
-								width="99%"
-								crossAlignment="center"
-								mainAlignment="space-between"
-							>
-								<Row
-									mainAlignment="center"
-									width="100%"
-									padding={{
-										top: 'small',
-										bottom: 'small'
-									}}
+									<Row
+										mainAlignment="center"
+										width="100%"
+										padding={{
+											top: 'small',
+											bottom: 'small'
+										}}
+									>
+										<Text>{t('account_details.secret_code', 'Secret Code')}</Text>
+									</Row>
+								</Container>
+								<Container
+									orientation="horizontal"
+									width="99%"
+									crossAlignment="center"
+									mainAlignment="space-between"
 								>
-									<Text>
-										{t(
-											'account_details.select_email_otp',
-											`Select an email address to send the OTP to or copy the code above`
-										)}
-									</Text>
-								</Row>
-							</Container>
+									<Row
+										mainAlignment="center"
+										width="100%"
+										padding={{
+											top: 'small',
+											bottom: 'small'
+										}}
+									>
+										<Text>{secrateCode}</Text>
+									</Row>
+								</Container>
+							</Row>
+						</Row>
+						<Container
+							orientation="horizontal"
+							width="99%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+						>
 							<Row
-								padding={{ top: 'large', left: 'large' }}
+								mainAlignment="center"
 								width="100%"
-								mainAlignment="space-between"
+								padding={{
+									top: 'small',
+									bottom: 'small'
+								}}
 							>
-								<Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
-									<ChipInput
-										placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
-										onChange={(contacts: any): void => {
-											const data: any = [];
-											map(contacts, (contact) => {
-												if (isValidEmail(contact.label ?? '')) data.push(contact);
-											});
-											setSendEmailTo(data);
-										}}
-										defaultValue={sendEmailTo}
-										value={sendEmailTo}
-										background="gray5"
-										ChipComponent={CustomChip}
-										maxChips={null}
-									/>
-								</Row>
-								<Row width="20%" mainAlignment="space-between">
-									<Button
-										label={t('account_details.send', 'SEND')}
-										icon="PaperPlaneOutline"
-										size="large"
-										iconPlacement="right"
-										onClick={(): void => {
-											sendMail('SendMsgRequest', {
-												_jsns: 'urn:zimbraMail',
-												m: {
-													attach: { mp: [] },
-													su: { _content: 'Account 2FA code' },
-													e: [
-														{
-															t: 'f',
-															a: `${accountDetail?.name}@${domainName}`,
-															d: accountDetail?.name
-														},
-														...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' }))
-													],
-													mp: [
-														{
-															ct: 'text/html',
-															body: true,
-															content: {
-																_content: emailContent(pinCodes, secrateCode)
-															}
-														}
-													]
-												}
-											}).then(() => setSendEmailTo(''));
-										}}
-									></Button>
-								</Row>
+								<Text>
+									{t(
+										'account_details.please_note_code',
+										`Please note: you'll be able to see these codes just once.`
+									)}
+								</Text>
 							</Row>
 						</Container>
-					</>
+						<Container
+							orientation="horizontal"
+							width="99%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+						>
+							<Row
+								mainAlignment="center"
+								width="100%"
+								padding={{
+									top: 'small',
+									bottom: 'small'
+								}}
+							>
+								<Text>
+									{t(
+										'account_details.select_email_otp',
+										`Select an email address to send the OTP to or copy the code above`
+									)}
+								</Text>
+							</Row>
+						</Container>
+						<Row
+							padding={{ top: 'large', left: 'large' }}
+							width="100%"
+							mainAlignment="space-between"
+						>
+							<Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
+								<ChipInput
+									placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
+									onChange={handleEmailChange}
+									defaultValue={sendEmailTo}
+									value={sendEmailTo}
+									background="gray5"
+									ChipComponent={CustomChip}
+									maxChips={null}
+									hasError={hasEmailError}
+									data-testid="otp-email-input"
+								/>
+								<Text color="error" size="small">
+									{hasEmailError &&
+										t(
+											'domain.editAccount.invalidaEmailError',
+											'One or more email addresses are invalid.'
+										)}
+								</Text>
+							</Row>
+							<Row width="20%" mainAlignment="space-between">
+								<Button
+									label={t('account_details.send', 'SEND')}
+									icon="PaperPlaneOutline"
+									size="large"
+									iconPlacement="right"
+									disabled={isSendDisabled}
+									onClick={handleSendOTPEmail}
+								/>
+							</Row>
+						</Row>
+					</Container>
 				),
 				clickDisabled: true,
 				CancelButton: () => <></>,
@@ -290,7 +338,19 @@ const EditAccountSecuritySection: FC = () => {
 				)
 			}
 		],
-		[accountDetail?.name, domainName, pinCodes, qrData, secrateCode, sendEmailTo, t]
+		[
+			accountDetail?.name,
+			domainName,
+			pinCodes,
+			qrData,
+			secrateCode,
+			sendEmailTo,
+			createSnackbar,
+			t,
+			handleEmailChange,
+			hasEmailError,
+			isSendDisabled
+		]
 	);
 	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
 		accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1)
@@ -506,12 +566,14 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeType, setAccountDetail]
 	);
 
-	const onRecoveryStatusChange = (v: any): any => {
+	const onRecoveryStatusChange = (v: unknown): void => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
 	};
 
 	const changeRecoverOption = useCallback(
 		(key: string): void => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED
@@ -1027,6 +1089,7 @@ const EditAccountSecuritySection: FC = () => {
 											showCheckbox={false}
 											onChange={onRecoveryStatusChange}
 											defaultSelection={recoveryStatus.find(
+												// eslint-disable-next-line @typescript-eslint/no-explicit-any
 												(item: any) =>
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}

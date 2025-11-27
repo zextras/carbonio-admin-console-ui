@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import {
+	useAllServers,
+	useBackupServers,
+	useIsAdvanced
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,

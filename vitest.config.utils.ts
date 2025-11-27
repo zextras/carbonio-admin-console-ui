@@ -10,7 +10,6 @@ export const optimizeDepsInclude = [
 	'react-i18next',
 	'react-router-dom',
 	'ua-parser-js',
-	'react-redux',
 	'@tinymce/tinymce-react',
 	'i18next-http-backend',
 	'@sentry/browser',
