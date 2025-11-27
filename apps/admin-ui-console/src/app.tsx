@@ -10,7 +10,6 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useHasRight,
 	getRights,
 	useCurrentUserRights,
 	useMailstoreServers,
@@ -18,7 +17,8 @@ import {
 	useAppConfigStore,
 	useAllServers,
 	useBucketServersListStore,
-	useGlobalSettings
+	useGlobalSettings,
+	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -43,14 +43,11 @@ import {
 	PRIMARY_BAR_OPERATIONS,
 	PRIMARY_BAR_PRIVACY,
 	PRIMARY_BAR_STORAGE,
-	PRIMARY_BAR_SUBSCRIPTIONS,
 	PRIVACY_ROUTE_ID,
 	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID,
-	TRUE,
-	CONFIG
+	TRUE
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { TrackerProvider } from './tracker/provider';
@@ -93,13 +90,8 @@ const App: FC = () => {
 	);
 	const accounts = useUserAccounts();
 	const { data: rights } = useCurrentUserRights();
-	const userName = accounts?.[0]?.name || '';
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { data: hasAllConfigRights = false } = useHasRight({
-		userName,
-		rightType: CONFIG,
-		enabled: Boolean(userName)
-	});
+	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
@@ -280,37 +272,6 @@ const App: FC = () => {
 		[storagesTooltipItems]
 	);
 
-	const subscriptionTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.subscription_lbl"
-							defaults="<bold>Subscription</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.subscription_primarybar_tooltip"
-							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const SubscriptionTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={subscriptionTooltipItems} />,
-		[subscriptionTooltipItems]
-	);
-
 	const operationTooltipItem = useMemo(
 		() => [
 			{
@@ -456,7 +417,6 @@ const App: FC = () => {
 					position: 1,
 					visible: true,
 					label: t('label.backup', 'Backup') || '',
-					// primaryBar: 'HistoryOutline',
 					primaryBar: backupPrimaryBar,
 					appView: AppView,
 					primarybarSection: { ...servicesSection },
@@ -514,18 +474,6 @@ const App: FC = () => {
 		if (isAdvanced) {
 			if (hasAllConfigRights) {
 				addRoute({
-					route: SUBSCRIPTIONS_ROUTE_ID,
-					position: 5,
-					visible: true,
-					label: t('label.subscriptions', 'Subscriptions') || '',
-					primaryBar: 'AwardOutline',
-					appView: AppView,
-					primarybarSection: { ...managementSection },
-					tooltip: SubscriptionTooltipView,
-					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
-				});
-
-				addRoute({
 					route: LEGAL_HOLD_ROUTE_ID,
 					position: 2,
 					visible: true,
@@ -537,7 +485,6 @@ const App: FC = () => {
 					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
 				});
 			} else {
-				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
 				removeRoute(LEGAL_HOLD_ROUTE_ID);
 			}
 
@@ -569,7 +516,6 @@ const App: FC = () => {
 		LegalHoldTooltipView,
 		NotificationTooltipView,
 		OperationTooltipView,
-		SubscriptionTooltipView,
 		hasAllConfigRights,
 		isAdvanced,
 		logAndQueuesSection,
