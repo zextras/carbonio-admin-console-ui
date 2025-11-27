@@ -129,12 +129,6 @@ const App: FC = () => {
 	);
 
 	useEffect(() => {
-		console.log({ hasAllConfigRights });
-	}, [hasAllConfigRights]);
-	useEffect(() => {
-		console.log({ isAdvanced });
-	}, [isAdvanced]);
-	useEffect(() => {
 		if (isAdvanced && hasAllConfigRights) {
 			addRoute({
 				route: SUBSCRIPTIONS_ROUTE_ID,
