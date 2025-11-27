@@ -1,3 +1,9 @@
+## [0.11.1-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.2...v0.11.1-devel.3) (2025-11-27)
+
+### Bug Fixes
+
+* fixed issue of send otp bugs in user security ([#970](https://github.com/zextras/carbonio-admin-console-ui/issues/970)) ([0f43855](https://github.com/zextras/carbonio-admin-console-ui/commit/0f43855e01a9ada69f7857faa6770922a168f7b8))
+
 ## [0.11.1-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.1...v0.11.1-devel.2) (2025-11-25)
 
 ### Bug Fixes
