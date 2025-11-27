@@ -171,7 +171,7 @@ package() {
   commitHash="${commitHash}"
   
   # Set permissions for each component - files and directories only, symlinks are left as-is
-  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos carbonio-admin-ui-domains carbonio-admin-ui-subscription, carbonio-admin-ui-privacy, carbonio-admin-ui-dashboard; do
+  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos carbonio-admin-ui-domains carbonio-admin-ui-subscription carbonio-admin-ui-privacy carbonio-admin-ui-dashboard; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
       chown -h root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${component}"
       # Only chmod regular files, not symlinks
