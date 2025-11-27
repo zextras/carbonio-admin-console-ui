@@ -13,7 +13,7 @@ import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../constants';
 
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
-import { Subscription } from './core/subscription/subscription';
+import { Subscription } from './subscription/subscription';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

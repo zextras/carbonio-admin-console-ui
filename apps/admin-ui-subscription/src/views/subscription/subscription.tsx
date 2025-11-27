@@ -27,8 +27,8 @@ import moment from 'moment';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CONFIG } from '../../../constants';
-import { LicenseBanner } from '../../dashboard/license-banner';
+import { CONFIG } from '../../constants';
+import { LicenseBanner } from '../dashboard/license-banner';
 
 import { ServiceStatus } from './service-status';
 
