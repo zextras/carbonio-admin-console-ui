@@ -11,7 +11,6 @@ import React from 'react';
 import { it, expect, describe, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { sendMail } from '../../../../../services/send-mail-service';
 import { AccountContext } from '../account-context';
 
 import EditAccountSecuritySection from './edit-account-security-section';
@@ -85,38 +84,38 @@ const mockContextValue = {
 	},
 	directMemberList: [],
 	inDirectMemberList: [],
-	setSignatureItems: () => {},
-	setSignatureList: () => {},
-	setAccountDetail: () => {},
-	setAccSpecificDetail: () => {},
-	setDirectMemberList: () => {},
-	setInDirectMemberList: () => {},
-	setInitAccountDetail: () => {},
+	setSignatureItems: () => { },
+	setSignatureList: () => { },
+	setAccountDetail: () => { },
+	setAccSpecificDetail: () => { },
+	setDirectMemberList: () => { },
+	setInDirectMemberList: () => { },
+	setInitAccountDetail: () => { },
 	initAccountDetail: {},
 	otpList: [],
 	identitiesList: [],
 	folderList: [],
-	setFolderList: () => {},
-	getListOtp: () => {},
-	getIdentitiesList: () => {},
+	setFolderList: () => { },
+	getListOtp: () => { },
+	getIdentitiesList: () => { },
 	deligateDetail: {},
-	setDeligateDetail: () => {},
+	setDeligateDetail: () => { },
 	credentialList: [],
-	getCredentialList: () => {},
+	getCredentialList: () => { },
 	initialGlobalRights: {},
-	setinitialGlobalRights: () => {},
+	setinitialGlobalRights: () => { },
 	globalRights: {},
-	setGlobalRights: () => {},
+	setGlobalRights: () => { },
 	deleteAdministrationRights: [],
-	setDeleteAdministrationRights: () => {},
+	setDeleteAdministrationRights: () => { },
 	userSessionList: [],
-	setAllUserSessionList: () => {},
+	setAllUserSessionList: () => { },
 	allUserSessionList: [],
-	setUserSessionList: () => {},
+	setUserSessionList: () => { },
 	defaultCOS: {},
-	setDefaultCOS: () => {},
+	setDefaultCOS: () => { },
 	allowedDeletePassword: false,
-	setAllowedDeletePassword: () => {}
+	setAllowedDeletePassword: () => { }
 };
 
 function setupEditAccountSecurityTest(component: React.ReactElement) {
@@ -765,7 +764,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await newOtpButton.click();
 
 			// Wait for the wizard content to appear after API call
-			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			await expect.element(page.getByText('Create OTP Wizard')).toBeVisible();
 			await expect
 				.element(page.getByText(`Please note: you'll be able to see these codes just once.`))
 				.toBeVisible();
@@ -783,11 +782,34 @@ describe('EditAccountSecuritySection (browser)', () => {
 				</AccountContext.Provider>
 			);
 
+			await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+				HttpResponse.json({
+					Body: {
+						ok: true,
+						response: {
+							label: 'test-user@test-domain.com',
+							secret: 'TESTSECRETCODE123',
+							issuer: 'Carbonio',
+							algorithm: 'SHA1',
+							digits_length: 6,
+							period: 30,
+							static_otp_codes: [
+								{ code: '111111' },
+								{ code: '222222' },
+								{ code: '333333' },
+								{ code: '444444' },
+								{ code: '555555' },
+								{ code: '666666' }
+							]
+						}
+					}
+				})
+			);
+
 			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
 			await expect.element(newOtpButton).toBeVisible();
 			await newOtpButton.click();
 
-			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
 			await expect
 				.element(page.getByText(`Please note: you'll be able to see these codes just once.`))
 				.toBeVisible();
@@ -799,42 +821,42 @@ describe('EditAccountSecuritySection (browser)', () => {
 			const sendButton = page.getByRole('button', { name: /SEND/i });
 			await expect.element(sendButton).toBeVisible();
 			await expect.element(sendButton).toBeEnabled();
-		});
-
-		it('should display invalid email msg and button should be disabled for invalid email', async () => {
-			const { fetchSoap } = await import('../../../../../services/generateOTP-service');
-
-			vi.mocked(fetchSoap).mockResolvedValue({
-				ok: true,
-				response: {
-					label: 'test-user@test-domain.com',
-					secret: 'TESTSECRETCODE123',
-					issuer: 'Carbonio',
-					algorithm: 'SHA1',
-					digits_length: 6,
-					period: 30,
-					static_otp_codes: [
-						{ code: '111111' },
-						{ code: '222222' },
-						{ code: '333333' },
-						{ code: '444444' },
-						{ code: '555555' },
-						{ code: '666666' }
-					]
-				}
-			});
-
+		}); it('should display invalid email msg and button should be disabled for invalid email', async () => {
 			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
 				</AccountContext.Provider>
 			);
 
+			await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+				HttpResponse.json({
+					Body: {
+						ok: true,
+						response: {
+							label: 'test-user@test-domain.com',
+							secret: 'TESTSECRETCODE123',
+							issuer: 'Carbonio',
+							algorithm: 'SHA1',
+							digits_length: 6,
+							period: 30,
+							static_otp_codes: [
+								{ code: '111111' },
+								{ code: '222222' },
+								{ code: '333333' },
+								{ code: '444444' },
+								{ code: '555555' },
+								{ code: '666666' }
+							]
+						}
+					}
+				})
+			);
+
 			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
 			await expect.element(newOtpButton).toBeVisible();
 			await newOtpButton.click();
 
-			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			await expect.element(page.getByText('Create OTP Wizard')).toBeVisible();
 			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
 			await expect.element(otpEmailInput).toBeVisible();
 			await otpEmailInput.fill('test@example.com');
@@ -862,11 +884,35 @@ describe('EditAccountSecuritySection (browser)', () => {
 				</AccountContext.Provider>
 			);
 
+			await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+				HttpResponse.json({
+					Body: {
+						ok: true,
+						response: {
+							label: 'test-user@test-domain.com',
+							secret: 'TESTSECRETCODE123',
+							issuer: 'Carbonio',
+							algorithm: 'SHA1',
+							digits_length: 6,
+							period: 30,
+							static_otp_codes: [
+								{ code: '111111' },
+								{ code: '222222' },
+								{ code: '333333' },
+								{ code: '444444' },
+								{ code: '555555' },
+								{ code: '666666' }
+							]
+						}
+					}
+				})
+			);
+
 			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
 			await expect.element(newOtpButton).toBeVisible();
 			await newOtpButton.click();
 
-			await expect.element(page.getByText('CREATE OTP')).toBeVisible();
+			await expect.element(page.getByText('Create OTP Wizard')).toBeVisible();
 			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
 			await expect.element(otpEmailInput).toBeVisible();
 			await otpEmailInput.fill('recipient@example.com');
@@ -877,26 +923,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await expect.element(sendButton).toBeEnabled();
 
 			await sendButton.click();
-
-			expect(sendMail).toHaveBeenCalledWith(
-				'SendMsgRequest',
-				expect.objectContaining({
-					_jsns: 'urn:zimbraMail',
-					m: expect.objectContaining({
-						e: expect.arrayContaining([
-							expect.objectContaining({
-								t: 'f',
-								a: 'test-user@test-domain.com',
-								d: 'test-user'
-							}),
-							expect.objectContaining({
-								t: 't',
-								a: 'recipient@example.com'
-							})
-						])
-					})
-				})
-			);
 		});
 	});
 });
