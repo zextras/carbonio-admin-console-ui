@@ -62,7 +62,7 @@ const CustomHeaderFactory: FC<any> = ({
 					<Icon icon="ChevronSortDownOutline" size="large" />
 				);
 			}
-			return <Icon icon={ChevronSortEmptyOutline} size="large" />;
+			return <Icon icon={ChevronSortEmptyOutline as any} size="large" />;
 		},
 		[sortedColumn, sortOrder]
 	);
