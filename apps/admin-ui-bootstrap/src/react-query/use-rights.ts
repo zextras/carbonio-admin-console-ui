@@ -5,8 +5,9 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { find } from 'lodash';
 
-import { SHELL_APP_ID } from '../constants';
+import { CONFIG, SHELL_APP_ID } from '../constants';
 import { getSoapFetch } from '../network/fetch';
 import { useUserAccounts } from '../store/account/hooks';
 
@@ -49,16 +50,14 @@ const queryFn = async (userName: string): Promise<Array<Right>> => {
 		}
 	};
 
-	const response = await soapFetch(`GetAllEffectiveRights`, {
+	const response = await soapFetch('GetAllEffectiveRights', {
 		...request
 	});
 
 	return (response as any)?.target || [];
 };
 
-const useRights = (options: RightsOptions = {}) => {
-	const { enabled = true, userName } = options;
-
+const useRights = ({ enabled = true, userName }: RightsOptions = {}) => {
 	return useQuery({
 		queryKey: ['effective-rights', userName],
 		queryFn: () => queryFn(userName || ''),
@@ -90,6 +89,21 @@ export const useHasRight = (
 			)
 		)
 	};
+};
+
+export const useHasAllRights = () => {
+	const accounts = useUserAccounts();
+	const userName = accounts?.[0]?.name || '';
+
+	const { data: rights } = useRights({
+		userName,
+		enabled: Boolean(userName)
+	});
+
+	const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+	return !!(
+		rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
+	);
 };
 
 export const useRightsByType = (options: RightsOptions & { rightType?: string } = {}) => {

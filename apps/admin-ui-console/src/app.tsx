@@ -10,7 +10,6 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useHasRight,
 	getRights,
 	useCurrentUserRights,
 	useMailstoreServers,
@@ -18,7 +17,8 @@ import {
 	useAppConfigStore,
 	useAllServers,
 	useBucketServersListStore,
-	useGlobalSettings
+	useGlobalSettings,
+	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
@@ -47,8 +47,7 @@ import {
 	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
-	TRUE,
-	CONFIG
+	TRUE
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { TrackerProvider } from './tracker/provider';
@@ -91,13 +90,8 @@ const App: FC = () => {
 	);
 	const accounts = useUserAccounts();
 	const { data: rights } = useCurrentUserRights();
-	const userName = accounts?.[0]?.name || '';
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { data: hasAllConfigRights = false } = useHasRight({
-		userName,
-		rightType: CONFIG,
-		enabled: Boolean(userName)
-	});
+	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
@@ -423,7 +417,6 @@ const App: FC = () => {
 					position: 1,
 					visible: true,
 					label: t('label.backup', 'Backup') || '',
-					// primaryBar: 'HistoryOutline',
 					primaryBar: backupPrimaryBar,
 					appView: AppView,
 					primarybarSection: { ...servicesSection },

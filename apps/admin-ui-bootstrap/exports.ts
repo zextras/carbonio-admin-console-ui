@@ -20,7 +20,8 @@ import {
 	useRightsByType,
 	getRights,
 	getAllRights,
-	useCurrentUserRights
+	useCurrentUserRights,
+	useHasAllRights
 } from './src/react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
 import {
@@ -88,6 +89,7 @@ export {
 	useConfigurationAttribute,
 	useBucketServersListStore,
 	useHasRight,
+	useHasAllRights,
 	useRightsByType,
 	getRights,
 	getAllRights,

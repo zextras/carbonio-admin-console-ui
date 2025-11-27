@@ -10,13 +10,13 @@ import {
 	useAllConfig,
 	useIsAdvanced,
 	useUserAccounts,
-	useHasRight,
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAppConfigStore,
 	useAllServers,
 	useBucketServersListStore,
-	useGlobalSettings
+	useGlobalSettings,
+	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,8 +26,7 @@ import {
 	MANAGE_APP_ID,
 	PRIMARY_BAR_SUBSCRIPTIONS,
 	SUBSCRIPTIONS_ROUTE_ID,
-	TRUE,
-	CONFIG
+	TRUE
 } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -58,12 +57,7 @@ const App: FC = () => {
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
 	const accounts = useUserAccounts();
-	const userName = accounts?.[0]?.name || '';
-	const { data: hasAllConfigRights = false } = useHasRight({
-		userName,
-		rightType: CONFIG,
-		enabled: Boolean(userName)
-	});
+	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
@@ -134,6 +128,12 @@ const App: FC = () => {
 		[subscriptionTooltipItems]
 	);
 
+	useEffect(() => {
+		console.log({ hasAllConfigRights });
+	}, [hasAllConfigRights]);
+	useEffect(() => {
+		console.log({ isAdvanced });
+	}, [isAdvanced]);
 	useEffect(() => {
 		if (isAdvanced && hasAllConfigRights) {
 			addRoute({
