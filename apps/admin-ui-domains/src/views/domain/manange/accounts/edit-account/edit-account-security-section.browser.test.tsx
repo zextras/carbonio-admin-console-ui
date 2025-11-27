@@ -924,5 +924,75 @@ describe('EditAccountSecuritySection (browser)', () => {
 
 			await sendButton.click();
 		});
+
+		it('should show error snackbar when sendMail fails', async () => {
+			let requestCount = 0;
+			setupEditAccountSecurityTest(
+				<AccountContext.Provider value={mockContextValue}>
+					<EditAccountSecuritySection />
+				</AccountContext.Provider>
+			);
+
+			await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () => {
+				requestCount++;
+				// First request is for OTP generation, second is for sendMail
+				if (requestCount === 1) {
+					return HttpResponse.json({
+						Body: {
+							ok: true,
+							response: {
+								label: 'test-user@test-domain.com',
+								secret: 'TESTSECRETCODE123',
+								issuer: 'Carbonio',
+								algorithm: 'SHA1',
+								digits_length: 6,
+								period: 30,
+								static_otp_codes: [
+									{ code: '111111' },
+									{ code: '222222' },
+									{ code: '333333' },
+									{ code: '444444' },
+									{ code: '555555' },
+									{ code: '666666' }
+								]
+							}
+						}
+					});
+				}
+				// Simulate sendMail failure
+				return HttpResponse.json(
+					{
+						Body: {
+							Fault: {
+								Code: { Value: 'soap:Sender' },
+								Reason: { Text: 'Failed to send mail' }
+							}
+						}
+					},
+					{ status: 500 }
+				);
+			});
+
+			const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
+			await expect.element(newOtpButton).toBeVisible();
+			await newOtpButton.click();
+
+			await expect.element(page.getByText('Create OTP Wizard')).toBeVisible();
+			const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+			await expect.element(otpEmailInput).toBeVisible();
+			await otpEmailInput.fill('recipient@example.com');
+			await userEvent.keyboard('{Tab}');
+
+			const sendButton = page.getByRole('button', { name: /SEND/i });
+			await expect.element(sendButton).toBeVisible();
+			await expect.element(sendButton).toBeEnabled();
+
+			await sendButton.click();
+
+			// Verify error snackbar is shown
+			await expect
+				.element(page.getByText('Something went wrong. Please try again.'))
+				.toBeVisible();
+		});
 	});
 });
