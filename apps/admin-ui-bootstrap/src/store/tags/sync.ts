@@ -6,47 +6,44 @@
 
 import { forEach, reduce } from 'lodash';
 
-import { useTagStore } from './store';
 import { SoapContext, Tag, Tags } from '../../../types';
 
-export const handleTagRefresh = (tags: Array<Tag>): Tags =>
+import { useTagStore } from './store';
+
+const handleTagRefresh = (tags: Array<Tag>): Tags =>
 	reduce(
 		tags,
 		(acc: Tags, val: Tag): Tags => {
-			// eslint-disable-next-line no-param-reassign
 			acc[val.id] = val;
 			return acc;
 		},
 		{}
 	);
 
-export const handleTagCreated = (tags: Tags, created: Array<Tag>): Tags =>
+const handleTagCreated = (tags: Tags, created: Array<Tag>): Tags =>
 	reduce(
 		created,
 		(acc: Tags, val: Tag): Tags => {
-			// eslint-disable-next-line no-param-reassign
 			acc[val.id] = val;
 			return acc;
 		},
 		tags
 	);
-export const handleTagModified = (tags: Tags, modified: Array<Partial<Tag>>): Tags =>
+const handleTagModified = (tags: Tags, modified: Array<Partial<Tag>>): Tags =>
 	reduce(
 		modified,
 		(acc: Tags, val: Partial<Tag>): Tags => {
 			if (val.id) {
-				// eslint-disable-next-line no-param-reassign
 				acc[val.id] = { ...tags[val.id], ...val };
 			}
 			return acc;
 		},
 		tags
 	);
-export const handleTagDeleted = (tags: Tags, deleted: string[]): Tags =>
+const handleTagDeleted = (tags: Tags, deleted: string[]): Tags =>
 	reduce(
 		deleted,
 		(acc, val) => {
-			// eslint-disable-next-line no-param-reassign
 			delete acc[val];
 			return acc;
 		},

@@ -62,7 +62,7 @@ type ComposerProps = EditorProps & {
 	customInitOptions?: Partial<EditorProps['init']>;
 };
 
-export const FileInput = styled.input`
+const FileInput = styled.input`
 	display: none;
 `;
 

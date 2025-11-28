@@ -44,15 +44,3 @@ export const accountListDirectory = async (
 		...request
 	});
 };
-
-export const getMailboxQuota = async (id: string): Promise<any> => {
-	const request: any = {
-		_jsns: 'urn:zimbraAdmin',
-		mbox: {
-			id
-		}
-	};
-	return soapFetch(`GetMailbox`, {
-		...request
-	});
-};

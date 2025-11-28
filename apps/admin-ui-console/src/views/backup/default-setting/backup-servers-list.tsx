@@ -3,8 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import {
+	useAllServers,
+	useBackupServers,
+	useIsAdvanced
+} from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,16 +19,14 @@ import {
 	Icon
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useBackupModuleStore } from '../../../store/backup-module/store';
-import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
-// eslint-disable-next-line no-shadow
-export enum SMART_SCAN_TYPE {
+enum SMART_SCAN_TYPE {
 	DISABLED = 1,
 	ON_STARTUP_ONLY = 2,
 	ON_STARTUP_AND_SCHEDULED = 3,
@@ -115,7 +117,6 @@ const BackupServersListTable: FC<{
 	);
 
 	const tableRows = useMemo(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		() =>
 			serverList.map((s, i) => ({
 				id: i?.toString(),
@@ -222,8 +223,15 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
-	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
-	const servers = useServerStore((state) => state.serverList);
+	const isAdvanced = useIsAdvanced();
+	const { data: backupData } = useBackupServers({
+		enabled: isAdvanced
+	});
+	const { data: servers = [] } = useAllServers();
+	const backupServerList = useMemo(
+		() => backupData?.backupServerList || [],
+		[backupData?.backupServerList]
+	);
 
 	const STATUS: any[] = useMemo(
 		() => [
@@ -308,7 +316,7 @@ const ServersList: FC = () => {
 					? TYPE[1]?.label
 					: TYPE[0]?.label;
 				const purge = `${backupServer?.attributes?.ZxBackup_DataRetentionDays?.value}/${backupServer?.attributes?.backupAccountsRetentionDays?.value}`;
-				// eslint-disable-next-line sonarjs/no-duplicate-string
+
 				const purgeTooltip = backupServer?.attributes?.backupPurgeScheduler?.value['cron-pattern'];
 				const smartScanStartup = backupServer?.attributes?.ZxBackup_DoSmartScanOnStartup?.value;
 				const backupSmartScan =
@@ -345,7 +353,6 @@ const ServersList: FC = () => {
 		[STATUS, TYPE, getSmartScanStatus]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (servers && servers?.length > 0) {
 			const sList: BackupServerType[] = [];

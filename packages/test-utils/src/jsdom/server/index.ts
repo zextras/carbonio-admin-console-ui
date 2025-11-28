@@ -7,7 +7,7 @@
 import { DefaultBodyType, http, StrictRequest, HttpResponse } from 'msw';
 import { SetupServer } from 'msw/node';
 
-import server from '../mocks/msw-server';
+import { server } from '../mocks/msw-server';
 
 export type APIInterceptor = {
 	getLastRequest: () => StrictRequest<DefaultBodyType>;

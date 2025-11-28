@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import {
 	Container,
 	DefaultTabBarItem,
@@ -18,11 +16,9 @@ import {
 } from '@zextras/carbonio-design-system';
 import { orderBy } from 'lodash';
 import moment from 'moment';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from './customTableHeaderFactory';
-import CustomRowFactory from './customTableRowFactory';
-import NotificationDetail from './notification-detail-view';
 import {
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
@@ -35,6 +31,10 @@ import { readUnreadNotification } from '../../../services/read-unread-notificati
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 import { copyTextToClipboard } from '../../utility/utils';
+
+import CustomHeaderFactory from './customTableHeaderFactory';
+import CustomRowFactory from './customTableRowFactory';
+import NotificationDetail from './notification-detail-view';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -75,7 +75,7 @@ const ReusedDefaultTabBar: FC<{
 	</DefaultTabBarItem>
 );
 
-export type Notification = {
+type Notification = {
 	ack: boolean;
 	date: number;
 	group: string;
@@ -108,7 +108,7 @@ const NotificationView: FC<{
 		all: 0
 	});
 	const [selectedRow, setSelectedRow] = useState<any>([]);
-	const timer = useRef<any>();
+	const timer = useRef<any>(null);
 
 	const items = useMemo(
 		() => [
@@ -277,7 +277,7 @@ const NotificationView: FC<{
 				doDoubleClickAction();
 			}
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
 		[doClickAction, doDoubleClickAction]
 	);
 
@@ -291,13 +291,13 @@ const NotificationView: FC<{
 						setIsRequestInProgress(false);
 						const message = item?.ack
 							? t(
-								'notification.notification_mark_unread_successfully',
-								'Notification mark as unread successfully'
-							)
+									'notification.notification_mark_unread_successfully',
+									'Notification mark as unread successfully'
+								)
 							: t(
-								'notification.notification_mark_read_successfully',
-								'Notification mark as read successfully'
-							);
+									'notification.notification_mark_read_successfully',
+									'Notification mark as read successfully'
+								);
 						if (isShowMessage) {
 							createSnackbar({
 								key: 'success',
@@ -310,7 +310,6 @@ const NotificationView: FC<{
 						}
 						const allData = notificationList.map((nf: Notification) => {
 							if (nf?.id === item?.id) {
-								// eslint-disable-next-line no-param-reassign
 								nf.ack = !item?.ack;
 							}
 							return nf;
@@ -335,7 +334,6 @@ const NotificationView: FC<{
 		[createSnackbar, t, notificationList]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (filterdNotification.length > 0) {
 			const allRows = filterdNotification.map((item: Notification) => ({
@@ -434,10 +432,6 @@ const NotificationView: FC<{
 		[t, createSnackbar]
 	);
 
-	const copyNotification = useCallback(() => {
-		copyNotificationOperation(selectedNotification);
-	}, [selectedNotification, copyNotificationOperation]);
-
 	return (
 		<Container background="gray6">
 			<ListRow>
@@ -454,7 +448,6 @@ const NotificationView: FC<{
 				</Container>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end">
 					<TabBar
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
@@ -526,7 +519,6 @@ const NotificationView: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>

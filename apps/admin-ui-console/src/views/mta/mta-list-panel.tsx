@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { replaceHistory, useGlobalConfigStore, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -19,8 +18,6 @@ import {
 	IS_SERVER_SPECIFICS_EXPANDED,
 	MTA_SERVER_GENERAL
 } from '../../constants';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import { useServerStore } from '../../store/server/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -31,7 +28,7 @@ const MTAListPanel: FC = () => {
 	const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
 	const [serverNames, setServerNames] = useState<any>();
-	const mtaServerList = useServerStore((state) => state.mtaServerList);
+	const { data: mtaServerList = [] } = useMtaServers();
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
 	const [searchServer, setSearchServer] = useState<string>('');

@@ -47,7 +47,7 @@
 		"@tanstack/react-query-devtools": "^5.90.2",
 		"@testing-library/react": "^16.0.1",
 		"@types/lodash": "^4.14.197",
-		"@types/react": "^18.3.11",
+		"@types/react": "^19.1.0",
 		"@types/react-dom": "^19.1.0",
 		"@types/react-router-dom": "^5.3.3",
 		"@types/styled-components": "^5.1.26",
@@ -59,7 +59,7 @@
 		"babel-plugin-styled-components": "^2.1.4",
 		"eslint": "^9.34.0",
 		"jsdom": "^26.1.0",
-		"msw": "^1.3.0",
+		"msw": "^2.12.2",
 		"playwright": "^1.55.0",
 		"react-dom": "^19.1.0",
 		"typescript": "^5.7.2",
@@ -79,6 +79,8 @@
 		"icon": "List"
 	},
 	"msw": {
-		"workerDirectory": "public"
+		"workerDirectory": [
+			"public"
+		]
 	}
 }

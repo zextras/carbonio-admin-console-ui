@@ -9,13 +9,13 @@ import React, { FC, useMemo, useState } from 'react';
 import { Container, Row, Text, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { useAllServers } from '@zextras/admin-ui-bootstrap';
 
 import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { stopOperations } from '../../services/stop-operation';
 import { useOperationStore } from '../../store/operation/store';
-import { useServerStore } from '../../store/server/store';
 import ModalOverlay from '../components/ModalOverlay';
 import { OperationsHeader } from '../utility/utils';
 
@@ -28,7 +28,8 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const serverList = useServerStore((state) => state?.serverList)[0]?.name;
+	const { data: serverList = [] } = useAllServers();
+	const serverName = serverList[0]?.name;
 	const { runningData } = useOperationStore((state) => state);
 	const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
 	const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
@@ -44,7 +45,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 		stopOperations(selectedData?.id)
 			.then((res) => {
 				const result = JSON.parse(res?.Body?.response?.content);
-				if (result?.response?.[`${serverList}`]?.ok) {
+				if (result?.response?.[`${serverName}`]?.ok) {
 					createSnackbar({
 						key: '1',
 						severity: 'success',
@@ -64,7 +65,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 						key: '1',
 						severity: 'error',
 						label: t('label.stop_operation_helperText', '{{message}}', {
-							message: result?.response?.[`${serverList}`]?.error?.message
+							message: result?.response?.[`${serverName}`]?.error?.message
 						})
 					});
 					setOpen(false);

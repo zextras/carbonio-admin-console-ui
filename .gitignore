@@ -61,3 +61,8 @@ apps/*/coverage
 apps/*/junit.xml
 .scannerwork
 **/__screenshots__/**
+package
+artifacts/ubuntu-jammy
+CLAUDE.md
+.mcp.json
+tmp

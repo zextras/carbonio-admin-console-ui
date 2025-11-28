@@ -15,7 +15,6 @@ import {
 	SoapResponse,
 	SuccessSoapResponse
 } from '../../types';
-import { SHELL_APP_ID } from '../constants';
 import { report } from '../reporting';
 import { useAccountStore } from '../store/account';
 import { useNetworkStore } from '../store/network';
@@ -24,15 +23,6 @@ import { handleTagSync } from '../store/tags';
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
 import { retry } from './utils';
-
-export const noOp = (): void => {
-	getSoapFetch(SHELL_APP_ID)(
-		'NoOp',
-		useNetworkStore.getState().pollingInterval === 500
-			? { _jsns: 'urn:zimbraMail', limitToOneBlocked: 1, wait: 1 }
-			: { _jsns: 'urn:zimbraMail' }
-	);
-};
 
 const getAccount = (
 	acc?: Account,
@@ -339,21 +329,3 @@ export const fetchExternalSoap =
 
 		return retry(fetchFn);
 	};
-
-export const getAllServers = async (): Promise<any> => {
-	const fetchFn = (): Promise<any> =>
-		fetch(`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`, {
-			method: 'GET',
-			headers: {
-				Accept: '*/*',
-				'Content-Type': 'application/json'
-			}
-		})
-			.then((res) => (res?.headers.get('content-length') === null ? res : res?.json()))
-			.then((res: any) => handleSoapResponse(res))
-			.catch((e) => {
-				throw e;
-			});
-
-	return retry(fetchFn);
-};

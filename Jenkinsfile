@@ -5,10 +5,10 @@
  */
 
 library(
-    identifier: 'jenkins-packages-build-library@1.0.4',
+    identifier: 'jenkins-lib-common@1.1.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        remote: 'git@github.com:zextras/jenkins-lib-common.git',
         credentialsId: 'jenkins-integration-with-github-account'
     ])
 )
@@ -21,9 +21,10 @@ pipeline {
     }
     environment {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+        GITHUB_TOKEN = credentials('jenkins-integration-with-github-account')
     }
     options {
-        timeout(time: 20, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '50'))
     }
     parameters {
@@ -31,11 +32,8 @@ pipeline {
             description: 'Enable SonarQube Stage',
             name: 'RUN_SONARQUBE'
         booleanParam defaultValue: false,
-            description: 'Whether to upload the packages in playground repositories',
-            name: 'PLAYGROUND'
-    }
-    tools {
-        jfrog 'jfrog-cli'
+            description: 'Bump Version',
+            name: 'BUMP'
     }
     stages {
         stage('Licenses checks') {
@@ -49,6 +47,7 @@ pipeline {
             steps {
                 script {
                     gitMetadata()
+                    properties(defaultPipelineProperties())
 
                     isReleaseBranch = "${BRANCH_NAME}" ==~ /release/
                     echo "isReleaseBranch: ${isReleaseBranch}"
@@ -65,6 +64,13 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     echo "NodeJS Major Version: $nodeVersion"
+                    isMergeCommit = sh(
+                        script: 'git rev-parse --verify --quiet HEAD^2',
+                        returnStatus: true
+                    ) == 0
+                    isBumpBuild = isReleaseBranch && (isMergeCommit || params.BUMP)
+                    echo "Is Merge Commit: $isMergeCommit"
+                    echo "Bump Build: $isBumpBuild"
                 }
                 withCredentials([
                     usernamePassword(
@@ -144,13 +150,102 @@ pipeline {
                 }
             }
         }
+        stage('Release automation') {
+            when {
+                expression { isBumpBuild == true }
+            }
+            steps {
+                container('pnpm') {
+                    script {
+                        sh 'apt-get update && apt-get install -y jq openssh-client'
+
+                        sh """
+                            git config user.email "bot@zextras.com"
+                            git config user.name "Tarsier Bot"
+                        """
+
+                        withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
+                            withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                                sh 'pnpm run release'
+                            }
+                        }
+
+                        def latestTag = sh(
+                            script: 'git describe --tags --abbrev=0',
+                            returnStdout: true
+                        ).trim()
+
+                        echo("Latest tag created: ${latestTag}")
+
+                        def versionBranch = "version-bumper/${latestTag}"
+
+                        sh """
+                            git checkout -b ${versionBranch}
+                            git push origin ${versionBranch}
+                        """
+                    }
+                }
+            }
+            post {
+                success {
+                    container('pnpm') {
+                        withCredentials([
+                            usernamePassword(
+                                credentialsId: 'jenkins-integration-with-github-account',
+                                passwordVariable: 'GH_TOKEN',
+                                usernameVariable: 'GH_USERNAME'
+                            )
+                        ]) {
+                            script {
+                                catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                                    def latestTag = sh(
+                                        script: 'git describe --tags --abbrev=0',
+                                        returnStdout: true
+                                    ).trim()
+
+                                    def versionBranch = "version-bumper/${latestTag}"
+
+                                    sh """
+                                        gh pr create \
+                                            --title "Release ${latestTag}" \
+                                            --head "${versionBranch}" \
+                                            --base "devel" \
+                                            --body "Automated release PR for version ${latestTag}"
+                                    """
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('semantic-release') {
+            when {
+                not {
+                    anyOf {
+                        expression { isPullRequest == true }
+                    }
+                }
+            }
+            steps {
+                container('pnpm') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'npm-zextras-bot-auth-token', usernameVariable: 'AUTH_USERNAME', passwordVariable: 'NPM_TOKEN')]) {
+                            withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                                sh 'pnpm run release'
+                            }
+                        }
+                    }
+                }
+            }
+        }
         stage('build apps') {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'pnpm build'
+                        sh 'node build_unified.js'
                     }
-                    stash includes: 'apps/**', excludes: 'apps/**/node_modules/**', name: 'staging'
+                    stash includes: 'package/**', name: 'staging'
                 }
             }
         }
@@ -159,69 +254,37 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: true,
-                        buildDirs: ['apps'],
+                        skipStash: false,
+                        stashName: 'staging',
+                        buildDirs: ['.'],
                         ubuntuSinglePkg: true,
                         rockySinglePkg: true,
                     ])
                 }
             }
         }
-        stage('Publish containers - devel') {
-            when {
-                anyOf {
-                    expression {
-                        isDevelBranch == true
-                    }
-                    expression {
-                        params.PLAYGROUND == true
-                    }
-                }
-            }
+        stage('Publish docker images') {
             steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        script {
-                            tags = ['latest', 'devel']
-                            dir('apps/admin-ui-bootstrap/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin UI',
-                                        description: 'Carbonio Admin UI Bootstrap Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-console/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-console',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin Console',
-                                        description: 'Carbonio Admin Console Container'
-                                    ]
-                                ])
-                            }
-                            dir('apps/admin-ui-cos/') {
-                                dockerHelper.buildImage([
-                                    imageName: 'registry.dev.zextras.com/dev/admin-ui-cos',
-                                    imageTags: tags,
-                                    ocLabels: [
-                                        title: 'Carbonio Admin COS module',
-                                        description: 'Carbonio Admin COS module Container'
-                                    ]
-                                ])
-                            }
-                        }
-                    }
-                }
+                dockerStage([
+                    dockerfile: 'Dockerfile',
+                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-console-ui',
+                    ocLabels: [
+                        title: 'Carbonio Admin Console UI',
+                        description: 'Carbonio Admin Console UI Container'
+                    ]
+                ])
             }
         }
         stage('Upload artifacts') {
+            when {
+                expression { return uploadStage.shouldUpload() }
+            }
+            tools {
+                jfrog 'jfrog-cli'
+            }
             steps {
                 uploadStage(
-                    packages: yapHelper.getPackageNames('apps/yap.json'),
+                    packages: yapHelper.resolvePackageNames(),
                     ubuntuSinglePkg: true,
                     rockySinglePkg: true,
                 )

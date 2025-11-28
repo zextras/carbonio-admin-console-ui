@@ -1,13 +1,16 @@
-/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
-
+import {
+	useGlobalConfigStore,
+	replaceHistory,
+	useIsAdvanced,
+	useBucketServersListStore
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -19,10 +22,7 @@ import {
 	IS_SERVER_LIST_EXPANDED,
 	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -43,7 +43,7 @@ const BucketListPanel: FC = () => {
 	const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useIsAdvanced();
 	const [itemsVolume, setItemsVolume] = useState<any>();
 	const [isShowError, setIsShowError] = useState(false);
 

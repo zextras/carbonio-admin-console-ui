@@ -11,8 +11,6 @@ import styled from 'styled-components';
 
 import {
 	BACKUP_ROUTE_ID,
-	DASHBOARD,
-	DOMAINS_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
@@ -20,10 +18,8 @@ import {
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
-	PRIVACY_ROUTE_ID,
 	SERVICES_ROUTE_ID,
-	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID
+	STORAGES_ROUTE_ID
 } from '../constants';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
@@ -32,10 +28,6 @@ import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
-import { Subscription } from './core/subscription/subscription';
-import Dashboard from './dashboard/dashboard-view';
-import DomainDetailPanel from './domain/domain-detail-panel';
-import DomainListPanel from './domain/domain-list-panel';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import MonitoringView from './monitoring/monitoring-view';
 import MTADetailPanel from './mta/mta-detail-panel';
@@ -44,13 +36,12 @@ import NotificationsDetailPanel from './notifications/notifications-detail-panel
 import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
-import PrivacyView from './privacy/privacy-view';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
 }
 
-const DetailViewContainer = styled(Container) <ContainerExtendProps>`
+const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;
@@ -61,43 +52,11 @@ const AppView: FC = () => {
 		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
-				<Route path={`/${DASHBOARD}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						background="gray5"
-						height="auto"
-					>
-						<Suspense fallback={<Spinner />}>
-							<Dashboard />
-						</Suspense>
-					</Container>
-				</Route>
 				<Route path={`/${MONITORING}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Suspense fallback={<Spinner />}>
 							<MonitoringView />
 						</Suspense>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					>
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<DomainListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<DomainDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
@@ -114,17 +73,6 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<PrivacyView />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '16.563rem' }}>
@@ -136,17 +84,6 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<MTADetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<Subscription />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>
@@ -172,7 +109,6 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
-
 				<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
 					<Container
 						orientation="horizontal"
@@ -186,7 +122,6 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
-
 				<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '265px' }}>

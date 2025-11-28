@@ -4,20 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import {
 	advancedSupportedApi,
 	minMaxVersionApi,
 	loginConfigApi,
 	getInfoRequestApi,
-	getAllConfigRequestApi
+	getAllConfigRequestApi,
+	server
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { vi, describe, it, expect } from 'vitest';
+import React from 'react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 import I18nFactory from '../../i18n/i18n-factory';
 import * as mockGoToLogin from '../../network/go-to-login';
-import { useIsAdvanced } from '../../store/advance';
+import { queryClient } from '../../providers/react-query-provider';
+import { useIsAdvanced } from '../../react-query/use-is-advanced-supported';
 import { init } from '../init';
 
 vi.mock('../../network/go-to-login', () => ({
@@ -33,37 +37,50 @@ const mocki18n: any = {
 };
 
 describe('init', () => {
+	beforeEach(() => {
+		server.resetHandlers();
+	});
+
 	it('should return error when advanced supported fails', async () => {
 		advancedSupportedApi.withError();
-		const { result } = renderHook(() => init(mocki18n));
-		expect(await result.current).toHaveProperty('error');
+		const result = await init(mocki18n);
+		expect(result).toHaveProperty('error');
 	});
 
 	it('should return error when advanced supported true but other APIs fail', async () => {
 		vi.spyOn(mockGoToLogin, 'goToLogin').mockImplementation(vi.fn());
 		advancedSupportedApi.withAdvancedSupported();
-		minMaxVersionApi(HttpResponse.error);
-		loginConfigApi(HttpResponse.error);
-		getInfoRequestApi(HttpResponse.error);
-		getAllConfigRequestApi(HttpResponse.error);
+		minMaxVersionApi(() => HttpResponse.error());
+		loginConfigApi(() => HttpResponse.error());
+		getInfoRequestApi(() => HttpResponse.error());
+		getAllConfigRequestApi(() => HttpResponse.error());
 
-		const { result } = renderHook(() => init(mocki18n));
-		expect(await result.current).toHaveProperty('error');
+		const result = await init(mocki18n);
+		expect(result).toHaveProperty('error');
 	});
 
 	it('should set advanced true only when all api succeed', async () => {
 		vi.spyOn(mockGoToLogin, 'goToLogin').mockImplementation(vi.fn());
 		advancedSupportedApi.withAdvancedSupported();
 		minMaxVersionApi(() =>
-			HttpResponse.json({ minApiVersion: 1, maxApiVersion: 2, domain: 'test.com' }, { status: 200 })
+			HttpResponse.json(
+				{ minApiVersion: 1, maxApiVersion: 2, domain: 'test.com' },
+				{ status: 200 }
+			)
 		);
 		loginConfigApi(() => HttpResponse.json({}, { status: 200 }));
 		getInfoRequestApi(() => HttpResponse.json({}, { status: 200 }));
 		getAllConfigRequestApi(() => HttpResponse.json({}, { status: 200 }));
 
+		// Mock the Zustand store to check if advanced is set
+		const { result: advancedResult } = renderHook(() => useIsAdvanced(), {
+			wrapper: ({ children }) => (
+				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			)
+		});
+
 		await init(new I18nFactory());
 
-		const { result: advancedResult } = renderHook(() => useIsAdvanced());
 		await waitFor(() => expect(advancedResult.current).toBeTruthy());
 	});
 });

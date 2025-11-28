@@ -11,10 +11,3 @@ export const getAllServers = async (): Promise<any> =>
 		_jsns: 'urn:zimbraAdmin',
 		attrs: 'description,zimbraServiceHostname,zimbraId'
 	});
-
-export const getMailstoresServers = async (): Promise<any> =>
-	soapFetch(`GetAllServers`, {
-		_jsns: 'urn:zimbraAdmin',
-		attrs: 'description,zimbraServiceHostname,zimbraId',
-		service: 'mailbox'
-	});

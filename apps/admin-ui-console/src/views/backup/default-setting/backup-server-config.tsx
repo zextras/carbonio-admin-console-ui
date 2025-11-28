@@ -17,7 +17,7 @@ import {
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
@@ -36,12 +36,12 @@ const BackupServerConfig: FC = () => {
 		t
 	} = useBackupConfig();
 
-	const moduleLicenseInfo = useModuleLicenseStore((state) => state.licenseInfo);
+	const { moduleLicenseInfo } = useModuleLicenseInfo();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
 		useState<boolean>(false);
 	useEffect(() => {
-		if (moduleLicenseInfo && moduleLicenseInfo.features.length > 0) {
+		if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
 			const backupModule = moduleLicenseInfo.features.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);

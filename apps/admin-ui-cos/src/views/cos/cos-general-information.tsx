@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -30,7 +30,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
@@ -56,7 +55,7 @@ const CosGeneralInformation: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const totalAccount = useCosStore((state) => state.totalAccount);
 	const totalDomain = useCosStore((state) => state.totalDomain);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useCurrentUserRights();
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -178,7 +177,7 @@ const CosGeneralInformation: FC = () => {
 	);
 
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
@@ -270,8 +269,7 @@ const CosGeneralInformation: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						:  
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -372,7 +370,6 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
-	 
 	const getAccountList = useCallback((): void => {
 		if (!searchAccountQuery) {
 			return;
@@ -393,11 +390,9 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									 
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								 
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -411,28 +406,22 @@ const CosGeneralInformation: FC = () => {
 									{item?.displayName || <>&nbsp;</>}
 								</Text>,
 								<>
-									{
-										 
-										item?.mail?.length - 1 || 0 ? (
-											<Tooltip
-												key={item?.id}
-												placement="bottom"
-												label={item?.mail.slice(1).join(', ')}
-												maxWidth="auto"
-											>
-												<Text size="small" weight="light" key={item?.id} color="#828282">
-													{
-														 
-														item?.mail?.length - 1 || 0
-													}
-												</Text>
-											</Tooltip>
-										) : (
-											<Text size="small" key={item?.id} color="#828282" weight="light">
-												0
+									{item?.mail?.length - 1 || 0 ? (
+										<Tooltip
+											key={item?.id}
+											placement="bottom"
+											label={item?.mail.slice(1).join(', ')}
+											maxWidth="auto"
+										>
+											<Text size="small" weight="light" key={item?.id} color="#828282">
+												{item?.mail?.length - 1 || 0}
 											</Text>
-										)
-									}
+										</Tooltip>
+									) : (
+										<Text size="small" key={item?.id} color="#828282" weight="light">
+											0
+										</Text>
+									)}
 								</>,
 								<Text size="small" key={item?.id} color="gray0" weight="light">
 									{accountUserType(item)}
@@ -495,7 +484,6 @@ const CosGeneralInformation: FC = () => {
 		searchAccountList(searchAccountString, cosDetail.id);
 	}, [cosDetail?.id, searchAccountList, searchAccountString]);
 
-	 
 	const getDomainList = useCallback((): void => {
 		if (!searchDomainQuery) {
 			return;
@@ -516,11 +504,9 @@ const CosGeneralInformation: FC = () => {
 								if (item[ele?.n]) {
 									item[ele?.n].push(ele._content);
 								} else {
-									 
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								 
 								item[ele?.n] = ele._content;
 							}
 						});
@@ -952,13 +938,7 @@ const CosGeneralInformation: FC = () => {
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							label={t('label.help', 'Help')}
-							type="outlined"
-							color="primary"
-							onClick={(): null => null}
-						/>
-						<Container orientation="horizontal" mainAlignment="flex-end">
+						<Container orientation="horizontal" mainAlignment="flex-end" width="fit">
 							<Padding all="small">
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}
