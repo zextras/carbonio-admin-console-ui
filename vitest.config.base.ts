@@ -13,6 +13,7 @@ import { optimizeDepsInclude } from './vitest.config.utils';
 export default defineConfig({
 	test: {
 		globals: true,
+		passWithNoTests: true,
 		projects: [
 			{
 				optimizeDeps: {
