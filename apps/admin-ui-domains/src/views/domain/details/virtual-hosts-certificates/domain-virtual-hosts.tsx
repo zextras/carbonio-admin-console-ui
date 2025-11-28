@@ -15,7 +15,7 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -37,7 +37,6 @@ import {
 } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { useDomainStore } from '../../../../store/domain/store';
 import ModalOverlay from '../../../components/ModalOverlay';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 

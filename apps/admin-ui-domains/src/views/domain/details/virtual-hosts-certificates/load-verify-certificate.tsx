@@ -15,7 +15,7 @@ import {
 	Icon,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';
@@ -30,7 +30,6 @@ import {
 } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
 import { CertificateTypes } from '../../../utility/utils';
 
