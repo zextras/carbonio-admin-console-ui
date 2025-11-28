@@ -4,21 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 
-import { Container, Row, Padding, Text, Input, Button } from '@zextras/carbonio-design-system';
+import { Container, Row, Text, Input, Button, Tooltip, Dropdown, useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import GenerateCertificateModal from './generate-certificate-modal';
 import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
+import { CertificateTypes } from '../../../utility/utils';
+import { IssueCertiRequest } from '../../../../services/virtual-host-service';
+import { LONG, SHORT } from '../../../../constants';
 
 interface CertificateViewProps {
 	domainCertiDetails?: objectType;
 	toggleCertiBtn: boolean;
 	domainCertificate: any;
 	domainName: string;
+	domainId: string;
+	hasVirtualHosts: boolean;
+	virtualHosts: string[];
 	onVerifyCertificate: () => void;
 	onRemove: () => void;
+	onCertificateGenerated: () => void;
 }
 
 const CertificateView: FC<CertificateViewProps> = ({
@@ -26,10 +34,77 @@ const CertificateView: FC<CertificateViewProps> = ({
 	toggleCertiBtn,
 	domainCertificate,
 	domainName,
+	domainId,
+	hasVirtualHosts,
+	virtualHosts,
 	onVerifyCertificate,
-	onRemove
+	onRemove,
+	onCertificateGenerated
 }) => {
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+	const [modalOpen, setModalOpen] = useState(false);
+	const [selectedCertType, setSelectedCertType] = useState<string>('');
+	const [selectedCertLabel, setSelectedCertLabel] = useState<string>('');
+	const [generateLoading, setGenerateLoading] = useState(false);
+
+	const noCertificateLabel = t('label.no_certificate_to_remove', 'There is no certificate to remove.');
+	const noCertificateDownloadLabel = t('label.no_certificate_to_download', 'There is no certificate to download.');
+	const noVirtualHostLabel = t('label.no_virtual_hosts', 'You need to add at least one Virtual Host.');
+	const requestSuccessLabel = t('label.certificate_request_success', 'Processing request; results will be sent to domain notification recipients.');
+
+	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
+
+	const generateCertificateItems = useMemo(
+		() => certificateTypes.map((certType) => ({
+			id: certType.value,
+			label: certType.label,
+			onClick: (): void => {
+				setSelectedCertType(certType.value);
+				setSelectedCertLabel(certType.label);
+				setModalOpen(true);
+			}
+		})),
+		[certificateTypes]
+	);
+
+	const handleModalClose = (): void => {
+		setModalOpen(false);
+		setSelectedCertType('');
+		setSelectedCertLabel('');
+	};
+
+	const requestCertiClickHandler = (): void => {
+		setGenerateLoading(true);
+		const chainType = selectedCertType === '1' ? LONG : SHORT;
+		IssueCertiRequest(domainId, chainType)
+			.then((res) => {
+				setGenerateLoading(false);
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: requestSuccessLabel,
+					autoHideTimeout: 7000,
+					hideButton: true,
+					replace: true
+				});
+				setModalOpen(false);
+				onCertificateGenerated();
+			})
+			.catch((error) => {
+				setGenerateLoading(false);
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
 
 	const handleDownload = (): void => {
 		const elementCerti = document.createElement('a');
@@ -69,16 +144,25 @@ const CertificateView: FC<CertificateViewProps> = ({
 						{t('label.certificate', 'Certificate')}
 					</Text>
 				</Row>
-				<Row>
-					<Padding left="large">
-						<Button
-							type="ghost"
-							label={t('label.verify_certificate', 'VERIFY CERTIFICATE')}
-							color="primary"
-							onClick={onVerifyCertificate}
-						/>
-					</Padding>
-					<Padding left="large">
+				<Row padding={{ left: 'large' }}>
+					<Button
+						type="ghost"
+						label={t('label.upload_certificate', 'UPLOAD CERTIFICATE')}
+						color="primary"
+						onClick={onVerifyCertificate}
+					/>
+					<Tooltip label={noVirtualHostLabel} disabled={hasVirtualHosts}>
+						<Dropdown items={generateCertificateItems} disabled={!hasVirtualHosts}>
+							<Button
+								type="ghost"
+								label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
+								color="primary"
+								disabled={!hasVirtualHosts}
+								onClick={(): void => { }}
+							/>
+						</Dropdown>
+					</Tooltip>
+					<Tooltip label={noCertificateDownloadLabel} disabled={!toggleCertiBtn}>
 						<Button
 							type="ghost"
 							label={t('label.download_uppercase', 'DOWNLOAD')}
@@ -86,8 +170,8 @@ const CertificateView: FC<CertificateViewProps> = ({
 							disabled={toggleCertiBtn}
 							onClick={handleDownload}
 						/>
-					</Padding>
-					<Padding left="large">
+					</Tooltip>
+					<Tooltip label={noCertificateLabel} disabled={!toggleCertiBtn}>
 						<Button
 							type="ghost"
 							label={t('label.remove', 'Remove')}
@@ -95,7 +179,7 @@ const CertificateView: FC<CertificateViewProps> = ({
 							disabled={toggleCertiBtn}
 							onClick={onRemove}
 						/>
-					</Padding>
+					</Tooltip>
 				</Row>
 			</Row>
 			<ListRow padding={{ top: 'extralarge' }}>
@@ -145,6 +229,16 @@ const CertificateView: FC<CertificateViewProps> = ({
 					/>
 				</Container>
 			</ListRow>
+
+			<GenerateCertificateModal
+				open={modalOpen}
+				certificateType={selectedCertLabel}
+				domainName={domainName}
+				virtualHosts={virtualHosts}
+				loading={generateLoading}
+				onClose={handleModalClose}
+				onGenerate={requestCertiClickHandler}
+			/>
 		</Container>
 	);
 };

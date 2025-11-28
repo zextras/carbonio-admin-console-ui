@@ -93,7 +93,7 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                 <Row takeAvailableSpace>
                     <Input
                         label={t(
-                            'label.new_virtual_host_name',
+                            'label.add_virtual_host_name',
                             'Type a new Virtual Host Name and click on “Add +” to add it to the list'
                         )}
                         backgroundColor="gray5"
@@ -251,7 +251,7 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
                             >
                                 <Trans
                                     i18nKey="label.no_virtual_host_message"
-                                    defaults="There aren’t virtual hosts here.<br />Click to ADD button to enabled new one."
+                                    defaults="There aren’t any virtual hosts yet."
                                     components={{ break: <br /> }}
                                 />
                             </Text>

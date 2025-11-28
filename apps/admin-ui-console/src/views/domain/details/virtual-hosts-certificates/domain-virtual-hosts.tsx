@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -13,12 +13,11 @@ import {
 	Divider,
 	Text,
 	Button,
-	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { soapFetch, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import AlertBanner from './alert-banner';
@@ -27,7 +26,6 @@ import DeleteCertificateModel from './delete-certificate-model';
 import VirtualHostsRow from './VirtualHostsRow';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import { objectType } from '../../../../../types';
-import logo from '../../../../assets/helmet_logo.svg';
 import {
 	TRUE,
 	ZIMBRA_ADMIN_URN,
@@ -42,7 +40,6 @@ import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import ModalOverlay from '../../../components/ModalOverlay';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { isValidVirtualHostname } from '../../../utility/utils';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -50,11 +47,7 @@ const DomainVirtualHosts: FC = () => {
 	const createSnackbar = useSnackbar();
 	const domainInformation: any = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const [selectedRows, setSelectedRows] = useState<any>([]);
-	const [addButtonDisabled, setAddButtonDisabled] = useState(true);
-	const [removeVirtualBtnDisabled, setRemoveVirtualBtnDisabled] = useState(true);
 	const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
-	const [virtualHostValue, setVirutalHostValue] = useState('');
 	const [items, setItems] = useState<any>([]);
 	const [defaultItems, setDefaultItems] = useState<any>([]);
 	const [domainName, setDomainName] = useState<string>('');
@@ -66,9 +59,9 @@ const DomainVirtualHosts: FC = () => {
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
 	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
-	const [errVirtualHostName, setErrVirtualHostName] = useState(true);
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
+
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -124,42 +117,6 @@ const DomainVirtualHosts: FC = () => {
 			setIsDirty(false);
 		}
 	}, [defaultItems, items]);
-
-	const headers = useMemo(
-		() => [
-			{
-				id: 'hosts',
-				label: t('label.virtual_host_name', 'Virtual Host Name'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
-
-	const addVirtualHost = useCallback((): void => {
-		if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
-			const lastId = items.length > 0 ? items[items.length - 1]?.id : '0';
-			const newId = parseInt(lastId, 10) + 1;
-			const item = {
-				id: newId?.toString(),
-				columns: [virtualHostValue],
-				clickable: true
-			};
-			setItems([...items, item]);
-			setAddButtonDisabled(true);
-			setVirutalHostValue('');
-		}
-	}, [virtualHostValue, items]);
-
-	const removeVirtualHost = useCallback((): void => {
-		if (selectedRows && selectedRows.length > 0 && items.length > 0) {
-			const filterItems = items.filter((item: any) => !selectedRows.includes(item.id));
-			setItems(filterItems);
-			setRemoveVirtualBtnDisabled(true);
-			setSelectedRows([]);
-		}
-	}, [selectedRows, items]);
 
 	const onCancel = (): void => {
 		setItems(defaultItems);
@@ -360,6 +317,15 @@ const DomainVirtualHosts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [alertToggle]);
 
+	const getVirtualHostsNames = (): string[] => {
+		return defaultItems.map((item: any) => {
+			if (item.columns[0]?.props?.children) {
+				return item.columns[0].props.children;
+			}
+			return item.columns[0];
+		});
+	};
+
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
 			{toggleLoadVerifyCertWizard && (
@@ -456,8 +422,12 @@ const DomainVirtualHosts: FC = () => {
 						toggleCertiBtn={toggleCertiBtn}
 						domainCertificate={domainCertificate}
 						domainName={domainName}
+						domainId={zimbraId}
+						hasVirtualHosts={defaultItems.length > 0}
+						virtualHosts={getVirtualHostsNames()}
 						onVerifyCertificate={handleLoadAndVerifyCert}
 						onRemove={() => setOpen(true)}
+						onCertificateGenerated={() => setAlertToggle(true)}
 					/>
 				</Container>
 			</Container>
