@@ -23,7 +23,7 @@ import { useParams } from 'react-router-dom';
 import AlertBanner from './alert-banner';
 import CertificateView from './certificate-view';
 import DeleteCertificateModel from './delete-certificate-model';
-import VirtualHostsRow from './VirtualHostsRow';
+import VirtualHostSection from './virtual-host-section';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import { objectType } from '../../../../../types';
 import {
@@ -407,7 +407,7 @@ const DomainVirtualHosts: FC = () => {
 								</Paragraph>
 							</Row>
 						</Padding> */}
-						<VirtualHostsRow
+						<VirtualHostSection
 							items={items}
 							setItems={setItems}
 						/>

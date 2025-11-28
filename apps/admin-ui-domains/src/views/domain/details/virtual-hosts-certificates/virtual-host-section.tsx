@@ -21,12 +21,12 @@ import { useTranslation, Trans } from 'react-i18next';
 import { isValidVirtualHostname } from '../../../utility/utils';
 import logo from '../../../../assets/helmet_logo.svg';
 
-interface VirtualHostsRowProps {
+interface VirtualHostSectionProps {
     items: any[];
     setItems: (items: any[]) => void;
 }
 
-const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) => {
+const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, setItems }) => {
     const [t] = useTranslation();
     const [virtualHostValue, setVirtualHostValue] = useState('');
     const [addButtonDisabled, setAddButtonDisabled] = useState(true);
@@ -263,4 +263,4 @@ const VirtualHostsRow: React.FC<VirtualHostsRowProps> = ({ items, setItems }) =>
     );
 };
 
-export default VirtualHostsRow;
+export default VirtualHostSection;
