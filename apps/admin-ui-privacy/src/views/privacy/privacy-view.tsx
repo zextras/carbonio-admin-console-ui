@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,7 +15,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,135 +26,79 @@ import {
 	TRUE,
 	CONFIG
 } from '../../constants';
-import { modifyConfig } from '../../services/modify-config';
 import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
 	const { config } = useAppConfigStore((state) => state);
-	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
-	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
-	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
-	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const allowFeedbackInitialValue = !!(
+		config.find((item) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
+	);
+	const [allowFeedback, setAllowFeedback] = useState(allowFeedbackInitialValue);
+	const sendAnalyticsInitialValue = !!(
+		config.find((item) => item?.n === CARBONIO_SEND_ANALYTICS)._content === TRUE
+	);
+	const [sendAnalytics, setSendAnalytics] = useState(sendAnalyticsInitialValue);
+	const sendErrorInitialValue = !!(
+		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK).content === TRUE
+	);
+	const [sendFullError, setSendFullError] = useState(sendErrorInitialValue);
+
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
-	const [lastState, setLastState]: any = useState({
-		CARBONIO_SEND_ANALYTICS: false,
-		CARBONIO_SEND_FULL_ERROR_STACK: false,
-		CARBONIO_ALLOW_FEEDBACK: false
-	});
+
 	const { data: rights } = useCurrentUserRights();
 	const allowSetPrivacy = useMemo(() => {
 		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	useEffect(() => {
-		if (config && config.length > 0) {
-			const analytics = config.find((item: any) => item?.n === CARBONIO_SEND_ANALYTICS);
-			if (analytics) {
-				setCarbonioSendAnalytics(analytics?._content === 'TRUE');
-				setLastState((prev: any) => ({
-					...prev,
-					CARBONIO_SEND_ANALYTICS: analytics?._content === 'TRUE'
-				}));
-			}
-			const errorStack = config.find((item: any) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK);
-			if (errorStack) {
-				setCarbonioSendFullErrorStack(errorStack?._content === 'TRUE');
-				setLastState((prev: any) => ({
-					...prev,
-					CARBONIO_SEND_FULL_ERROR_STACK: errorStack?._content === 'TRUE'
-				}));
-			}
-
-			const feedback = config.find((item: any) => item?.n === CARBONIO_ALLOW_FEEDBACK);
-			if (feedback) {
-				setCarbonioAllowFeedback(feedback?._content === 'TRUE');
-				setLastState((prev: any) => ({
-					...prev,
-					CARBONIO_ALLOW_FEEDBACK: feedback?._content === 'TRUE'
-				}));
-			}
-		}
-	}, [config]);
-
 	const isChangeItem = (key: string, value: boolean): void => {
 		setIsDirty(true);
 		if (key === CARBONIO_ALLOW_FEEDBACK) {
-			setCarbonioAllowFeedback(value);
+			setAllowFeedback(value);
 		}
 		if (key === CARBONIO_SEND_ANALYTICS) {
-			setCarbonioSendAnalytics(value);
+			setSendAnalytics(value);
 		}
 		if (key === CARBONIO_SEND_FULL_ERROR_STACK) {
-			setCarbonioSendFullErrorStack(value);
+			setSendFullError(value);
 		}
 	};
 
 	const onCancel = useCallback(() => {
-		setCarbonioAllowFeedback(lastState.CARBONIO_ALLOW_FEEDBACK);
-		setCarbonioSendAnalytics(lastState.CARBONIO_SEND_ANALYTICS);
-		setCarbonioSendFullErrorStack(lastState.CARBONIO_SEND_FULL_ERROR_STACK);
+		setAllowFeedback(allowFeedbackInitialValue);
+		setSendAnalytics(sendAnalyticsInitialValue);
+		setSendFullError(sendErrorInitialValue);
 		setIsDirty(false);
-	}, [lastState]);
+	}, [allowFeedbackInitialValue, sendAnalyticsInitialValue, sendErrorInitialValue]);
 
-	const callAllRequest = useCallback(
-		(req: any) => {
-			Promise.all(req).then((response) => {
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-				updateConfig(CARBONIO_SEND_ANALYTICS, carbonioSendAnalytics ? TRUE : FALSE);
-				updateConfig(CARBONIO_ALLOW_FEEDBACK, carbonioAllowFeedback ? TRUE : FALSE);
-				updateConfig(CARBONIO_SEND_FULL_ERROR_STACK, carbonioSendFullErrorStack ? TRUE : FALSE);
-				setLastState((prev: any) => ({
-					...prev,
-					CARBONIO_SEND_FULL_ERROR_STACK: carbonioSendFullErrorStack,
-					CARBONIO_SEND_ANALYTICS: carbonioSendAnalytics,
-					CARBONIO_ALLOW_FEEDBACK: carbonioAllowFeedback
-				}));
-				setIsDirty(false);
+	const onSave = useCallback(async () => {
+		const response = await soapFetch('Batch', {
+			ModifyConfigRequest: [
+				{ n: CARBONIO_ALLOW_FEEDBACK, _content: allowFeedback ? TRUE : FALSE },
+				{
+					n: CARBONIO_SEND_FULL_ERROR_STACK,
+					_content: sendFullError ? TRUE : FALSE
+				},
+				{
+					n: CARBONIO_SEND_ANALYTICS,
+					_content: sendAnalytics ? TRUE : FALSE
+				}
+			],
+			_jsns: 'urn:zimbra'
+		});
+		if (response)
+			createSnackbar({
+				key: 'success',
+				severity: 'success',
+				label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
 			});
-		},
-		[
-			t,
-			createSnackbar,
-			carbonioSendFullErrorStack,
-			carbonioSendAnalytics,
-			carbonioAllowFeedback,
-			updateConfig
-		]
-	);
-
-	const onSave = useCallback(() => {
-		let attributes: any[] = [];
-		const allRequest: any[] = [];
-		attributes.push({
-			n: CARBONIO_SEND_ANALYTICS,
-			_content: carbonioSendAnalytics ? TRUE : FALSE
-		});
-		allRequest.push(modifyConfig(attributes));
-		attributes = [];
-		attributes.push({
-			n: CARBONIO_ALLOW_FEEDBACK,
-			_content: carbonioAllowFeedback ? TRUE : FALSE
-		});
-		allRequest.push(modifyConfig(attributes));
-
-		attributes = [];
-		attributes.push({
-			n: CARBONIO_SEND_FULL_ERROR_STACK,
-			_content: carbonioSendFullErrorStack ? TRUE : FALSE
-		});
-		allRequest.push(modifyConfig(attributes));
-		callAllRequest(allRequest);
-	}, [carbonioSendAnalytics, carbonioAllowFeedback, carbonioSendFullErrorStack, callAllRequest]);
+		setIsDirty(false);
+	}, [allowFeedback, sendFullError, sendAnalytics, createSnackbar, t]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
@@ -209,10 +153,10 @@ const PrivacyView: FC = () => {
 							padding={{ all: 'small' }}
 						>
 							<Switch
-								value={carbonioSendFullErrorStack}
+								value={sendFullError}
 								label={t('privacy.send_full_error_data', 'Send full error data')}
 								onClick={(): void => {
-									isChangeItem(CARBONIO_SEND_FULL_ERROR_STACK, !carbonioSendFullErrorStack);
+									isChangeItem(CARBONIO_SEND_FULL_ERROR_STACK, !sendFullError);
 								}}
 								iconColor="primary"
 								disabled={!allowSetPrivacy}
@@ -243,10 +187,10 @@ const PrivacyView: FC = () => {
 							padding={{ all: 'small' }}
 						>
 							<Switch
-								value={carbonioSendAnalytics}
+								value={sendAnalytics}
 								label={t('privacy.allow_data_analytics', 'Allow data analytics')}
 								onClick={(): void => {
-									isChangeItem(CARBONIO_SEND_ANALYTICS, !carbonioSendAnalytics);
+									isChangeItem(CARBONIO_SEND_ANALYTICS, !sendAnalytics);
 								}}
 								iconColor="primary"
 								disabled={!allowSetPrivacy}
@@ -277,10 +221,10 @@ const PrivacyView: FC = () => {
 							padding={{ all: 'small' }}
 						>
 							<Switch
-								value={carbonioAllowFeedback}
+								value={allowFeedback}
 								label={t('privacy.allow_live_survey_feedbacks', 'Allow live survey feedbacks')}
 								onClick={(): void => {
-									isChangeItem(CARBONIO_ALLOW_FEEDBACK, !carbonioAllowFeedback);
+									isChangeItem(CARBONIO_ALLOW_FEEDBACK, !allowFeedback);
 								}}
 								iconColor="primary"
 								disabled={!allowSetPrivacy}
