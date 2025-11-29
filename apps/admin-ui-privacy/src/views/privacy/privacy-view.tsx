@@ -36,11 +36,11 @@ const PrivacyView: FC = () => {
 	);
 	const [allowFeedback, setAllowFeedback] = useState(allowFeedbackInitialValue);
 	const sendAnalyticsInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_SEND_ANALYTICS)._content === TRUE
+		config.find((item) => item?.n === CARBONIO_SEND_ANALYTICS)?._content === TRUE
 	);
 	const [sendAnalytics, setSendAnalytics] = useState(sendAnalyticsInitialValue);
 	const sendErrorInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK).content === TRUE
+		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?.content === TRUE
 	);
 	const [sendFullError, setSendFullError] = useState(sendErrorInitialValue);
 
