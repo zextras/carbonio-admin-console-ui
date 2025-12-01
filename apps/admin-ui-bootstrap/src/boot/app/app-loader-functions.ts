@@ -13,6 +13,8 @@ import {
 	fetchExternalSoap
 } from '../../network/fetch';
 import { useBackupServers } from '../../react-query/use-backup-servers';
+import { useAllConfig } from '../../react-query/use-config';
+import { useDomainInformation } from '../../react-query/use-domain-information';
 import { useGlobalSettings } from '../../react-query/use-global-settings';
 import { useIsAdvanced } from '../../react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
@@ -37,8 +39,6 @@ import { usePrimaryBarState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useAppStore } from '../../store/app';
 import { normalizeRoute } from '../../store/app/utils';
-import { useAllConfig } from '../../store/config';
-import { useDomainInformation } from '../../store/domain-information';
 import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';

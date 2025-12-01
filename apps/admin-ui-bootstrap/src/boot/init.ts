@@ -6,11 +6,8 @@
 
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
-import { getAllConfig } from '../network/get-all-config';
 import { getInfo } from '../network/get-info';
 import { loginConfig } from '../network/login-config';
-import { queryClient } from '../providers/react-query-provider';
-import { queryFnVersionInfo } from '../react-query/use-advanced-version-info';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
 import { useAccountStore } from '../store/account';
 import { useAppStore } from '../store/app';
@@ -28,16 +25,7 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 		}
 		let initialCalls;
 		if (supported) {
-			initialCalls = Promise.all([
-				getInfo(),
-				loginConfig(),
-				getAllConfig(),
-				queryClient.fetchQuery({
-					queryKey: ['advanced-version-info'],
-					queryFn: queryFnVersionInfo,
-					staleTime: Infinity
-				})
-			]);
+			initialCalls = Promise.all([getInfo(), loginConfig()]);
 		} else {
 			initialCalls = getInfo();
 		}

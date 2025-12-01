@@ -48,7 +48,7 @@ const Dashboard: FC = () => {
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useIsAdvanced();
 
-	const domainInformation = useDomainInformation();
+	const { data: domainInformation } = useDomainInformation();
 	const { data: rights } = useCurrentUserRights();
 	const adminHasAllRights = useHasRight({ rightType: 'config', rightName: 'getAttrs' }).data;
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);

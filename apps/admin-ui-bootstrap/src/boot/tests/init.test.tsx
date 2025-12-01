@@ -11,7 +11,6 @@ import {
 	minMaxVersionApi,
 	loginConfigApi,
 	getInfoRequestApi,
-	getAllConfigRequestApi,
 	server
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
@@ -53,7 +52,6 @@ describe('init', () => {
 		minMaxVersionApi(() => HttpResponse.error());
 		loginConfigApi(() => HttpResponse.error());
 		getInfoRequestApi(() => HttpResponse.error());
-		getAllConfigRequestApi(() => HttpResponse.error());
 
 		const result = await init(mocki18n);
 		expect(result).toHaveProperty('error');
@@ -70,7 +68,6 @@ describe('init', () => {
 		);
 		loginConfigApi(() => HttpResponse.json({}, { status: 200 }));
 		getInfoRequestApi(() => HttpResponse.json({}, { status: 200 }));
-		getAllConfigRequestApi(() => HttpResponse.json({}, { status: 200 }));
 
 		// Mock the Zustand store to check if advanced is set
 		const { result: advancedResult } = renderHook(() => useIsAdvanced(), {

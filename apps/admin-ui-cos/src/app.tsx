@@ -66,7 +66,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const allConfig = useAllConfig();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
@@ -90,8 +90,9 @@ const App: FC = () => {
 	}, [rights]);
 
 	useEffect(() => {
-		const sendAnalytics = allConfig.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }): boolean => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);

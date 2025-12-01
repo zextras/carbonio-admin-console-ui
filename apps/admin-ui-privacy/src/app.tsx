@@ -45,7 +45,7 @@ const App: FC = () => {
 	const { data: serverList = [] } = useAllServers();
 
 	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const allConfig = useAllConfig();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
@@ -55,8 +55,9 @@ const App: FC = () => {
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
-		const sendAnalytics = allConfig.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);

@@ -30,17 +30,18 @@ import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const config = useAllConfig();
+	const { data: config = [] } = useAllConfig();
 	const allowFeedbackInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
+		config.find((item: { n: string }) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
 	);
 	const [allowFeedback, setAllowFeedback] = useState(allowFeedbackInitialValue);
 	const sendAnalyticsInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_SEND_ANALYTICS)?._content === TRUE
+		config.find((item: { n: string }) => item?.n === CARBONIO_SEND_ANALYTICS)?._content === TRUE
 	);
 	const [sendAnalytics, setSendAnalytics] = useState(sendAnalyticsInitialValue);
 	const sendErrorInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?._content === TRUE
+		config.find((item: { n: string }) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?._content ===
+		TRUE
 	);
 	const [sendFullError, setSendFullError] = useState(sendErrorInitialValue);
 

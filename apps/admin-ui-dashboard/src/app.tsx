@@ -39,15 +39,16 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const allConfig = useAllConfig();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: servers = [] } = useAllServers({
 		enabled: isAdvanced
 	});
 
 	useEffect(() => {
-		const sendAnalytics = allConfig.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);

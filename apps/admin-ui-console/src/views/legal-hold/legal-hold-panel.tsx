@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -19,13 +19,12 @@ import {
 	useScreenMode,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
 import moment from 'moment';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import RestoreAccountView from './restore/restore-account';
 import { BackupAccountItem, DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import {
@@ -46,6 +45,8 @@ import OverlayDivision from '../components/overlayDivision';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
+
+import RestoreAccountView from './restore/restore-account';
 
 const ovelayStyle = styled(Container)`
 	width: 20rem;
@@ -96,7 +97,8 @@ const LegalHoldPanel: FC = () => {
 		{ name: string; id: string; a: { n: string; _content: string }[] }[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const domainName = useDomainInformation()?.name || '';
+	const { data: domainData } = useDomainInformation();
+	const domainName = domainData?.name || '';
 	const [searchDomainName, setSearchDomainName] = useState<string>(domainName);
 	const [selectedDomainName, setSelectedDomainName] = useState<string>(domainName);
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
