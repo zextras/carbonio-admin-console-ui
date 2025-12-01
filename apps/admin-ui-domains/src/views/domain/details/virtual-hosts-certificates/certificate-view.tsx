@@ -14,7 +14,7 @@ import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
 import { CertificateTypes } from '../../../utility/utils';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
-import { LONG } from '../../../../constants';
+import { SHORT } from '../../../../constants';
 
 interface CertificateViewProps {
 	domainCertiDetails?: objectType;
@@ -73,7 +73,7 @@ const CertificateView: FC<CertificateViewProps> = ({
 
 	const requestCertiClickHandler = (): void => {
 		setGenerateLoading(true);
-		IssueCertiRequest(domainId, LONG)
+		IssueCertiRequest(domainId, SHORT)
 			.then((res) => {
 				setGenerateLoading(false);
 				createSnackbar({
