@@ -49,7 +49,7 @@ function setupAccount() {
 	});
 }
 
-export function grantUserConfigRights() {
+export async function grantUserConfigRights() {
 	setupAccount();
 	const mockConfigRightsData = [
 		{
@@ -68,7 +68,7 @@ export function grantUserConfigRights() {
 	return getRightsInterceptor;
 }
 
-export function grantUserCosRights() {
+export async function grantUserCosRights() {
 	const mockCosRightsData = [
 		{
 			type: 'cos',
