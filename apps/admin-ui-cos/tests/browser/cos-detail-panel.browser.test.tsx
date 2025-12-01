@@ -7,6 +7,7 @@
 import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
+	grantUserRights,
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
@@ -45,44 +46,16 @@ const mockApiResponse = {
 	more: false
 };
 
-const mockRightsData = [
-	{
-		type: 'cos',
-		all: [
-			{
-				right: [
-					{ n: 'assignCos' },
-					{ n: 'deleteCos' },
-					{ n: 'listCos' },
-					{ n: 'manageZimlet' },
-					{ n: 'renameCos' }
-				],
-				setAttrs: [{ all: true }],
-				getAttrs: [{ all: true }]
-			}
-		]
-	}
-];
-
 describe('CosDetailPanel', () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
+		grantUserRights();
 
 		useGlobalConfigStore.setState({
 			globalConfig: {},
 			globalConfigList: [],
 			globalConfigView: 'general',
 			globalCarbonioSendAnalytics: false
-		});
-
-		const localStorageMock = {
-			getItem: vi.fn(),
-			setItem: vi.fn(),
-			removeItem: vi.fn(),
-			clear: vi.fn()
-		};
-		Object.defineProperty(window, 'localStorage', {
-			value: localStorageMock
 		});
 	});
 
@@ -92,9 +65,6 @@ describe('CosDetailPanel', () => {
 	});
 
 	it('should render the COS detail panel with basic structure', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsData
-		});
 		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(
@@ -109,9 +79,6 @@ describe('CosDetailPanel', () => {
 		await expect.element(page.getByText('COS List')).toBeVisible();
 	});
 	it('should show the list of COS elements', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsData
-		});
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(
@@ -127,9 +94,6 @@ describe('CosDetailPanel', () => {
 		await expect.element(page.getByText('secondCOS')).toBeVisible();
 	});
 	it('should change the number of visible COS', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsData
-		});
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		setupBrowserTest(
