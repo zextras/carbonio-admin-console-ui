@@ -39,7 +39,7 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 				})
 			]);
 		} else {
-			initialCalls = getInfo();
+			initialCalls = Promise.all([getInfo(), getAllConfig()]);
 		}
 		return initialCalls
 			.then(() => {
