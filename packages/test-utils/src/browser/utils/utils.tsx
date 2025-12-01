@@ -5,8 +5,11 @@
  */
 
 import { QueryClient } from '@tanstack/react-query';
+import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import React, { type ReactElement } from 'react';
 import { render, type RenderResult } from 'vitest-browser-react';
+
+import { createBrowserSoapAPIInterceptor } from '../worker';
 
 import { WrapperProps, Wrapper } from './wrapper';
 
@@ -24,3 +27,40 @@ export const setupBrowserTest = (
 		)
 	});
 };
+
+export function grantUserRights() {
+	const mockRightsDataWithPermission = [
+		{
+			type: 'config',
+			all: [
+				{
+					setAttrs: [{ all: true }],
+					getAttrs: [{ all: true }]
+				}
+			]
+		}
+	];
+	const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+		target: mockRightsDataWithPermission
+	});
+	// Set up user account store for useCurrentUserRights hook
+	useAccountStore.setState({
+		account: {
+			id: 'test-user-id',
+			name: 'test@example.com',
+			displayName: '',
+			signatures: {
+				signature: []
+			},
+			identities: undefined,
+			rights: { targets: [] }
+		},
+		settings: {
+			prefs: {},
+			attrs: {},
+			props: []
+		},
+		usedQuota: 0
+	});
+	return getRightsInterceptor;
+}
