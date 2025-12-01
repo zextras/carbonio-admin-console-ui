@@ -16,14 +16,11 @@ import {
 } from '@zextras/carbonio-design-system';
 import { map, isEmpty, trim, filter, sortBy } from 'lodash';
 import React, { useContext, FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { AppRoute, PrimaryAccessoryView, PrimaryBarView } from '../../types';
 import AppContextProvider from '../boot/app/app-context-provider';
-import { getUsersRights } from '../network/get-user-accounts-rights';
-import { useUserAccounts } from '../store/account';
 import { useAppStore } from '../store/app';
 import { useUtilityBarStore } from '../utility-bar';
 import { checkRoute } from '../utility-bar/utils';
@@ -198,7 +195,6 @@ const PrimaryBarAccessoryElement: FC<PrimaryBarAccessoryItemProps> = ({ view }) 
 
 const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	const isOpen = useUtilityBarStore((s) => s.primaryBarState);
-	const accounts = useUserAccounts();
 
 	const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
 	const onCollapserClick = useCallback(() => {
@@ -208,9 +204,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	const primarybarSections = useAppStore((s) => s.views.primarybarSections);
 	const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
 	const [routes, setRoutes] = useState<Record<string, string>>({});
-	const [allUserRights, setAllUserRights] = useState();
 	const history = useHistory();
-	const [t] = useTranslation();
 
 	useEffect(() => {
 		setRoutes((r) =>
@@ -236,14 +230,14 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	);
 
 	useEffect(() => {
-		let allPrimaryBarView: any = [];
+		let allPrimaryBarView = [];
 		if (primaryBarViews.length > 0) {
 			allPrimaryBarView = primaryBarViews.filter(
 				(item) => item.section === undefined || !item.section
 			);
 			if (primarybarSections.length > 0) {
 				primarybarSections.forEach((item) => {
-					const section: any = {
+					const section = {
 						id: item?.id,
 						position: item?.position,
 						label: item?.label
@@ -266,14 +260,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 			setPrimaryBarViewWithSection(sortBy(allPrimaryBarView, 'position'));
 		}
 	}, [primarybarSections, primaryBarViews]);
-
-	useEffect(() => {
-		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getUsersRights('name', accounts[0].name).then((res) => {
-				setAllUserRights(res?.target);
-			});
-		}
-	}, [accounts]);
 
 	return (
 		<>
