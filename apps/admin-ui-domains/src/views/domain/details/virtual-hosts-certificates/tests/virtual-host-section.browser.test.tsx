@@ -10,7 +10,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import VirtualHostSection from '../virtual-host-section';
-import { t } from 'i18next';
 
 function VirtualHostSectionWrapper() {
     const [items, setItems] = useState([
