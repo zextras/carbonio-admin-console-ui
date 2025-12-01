@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { soapFetch, useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -30,7 +30,7 @@ import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const { config } = useAppConfigStore((state) => state);
+	const config = useAllConfig();
 	const allowFeedbackInitialValue = !!(
 		config.find((item) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
 	);
@@ -40,7 +40,7 @@ const PrivacyView: FC = () => {
 	);
 	const [sendAnalytics, setSendAnalytics] = useState(sendAnalyticsInitialValue);
 	const sendErrorInitialValue = !!(
-		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?.content === TRUE
+		config.find((item) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?._content === TRUE
 	);
 	const [sendFullError, setSendFullError] = useState(sendErrorInitialValue);
 
