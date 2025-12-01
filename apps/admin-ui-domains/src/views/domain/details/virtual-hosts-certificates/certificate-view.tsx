@@ -14,7 +14,7 @@ import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
 import { CertificateTypes } from '../../../utility/utils';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
-import { LONG, SHORT } from '../../../../constants';
+import { LONG } from '../../../../constants';
 
 interface CertificateViewProps {
 	domainCertiDetails?: objectType;
