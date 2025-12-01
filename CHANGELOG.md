@@ -1,3 +1,9 @@
+## [0.11.1-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.3...v0.11.1-devel.4) (2025-12-01)
+
+### Bug Fixes
+
+* mta inbound flow security are not persisting in ce ([#978](https://github.com/zextras/carbonio-admin-console-ui/issues/978)) ([485ba9f](https://github.com/zextras/carbonio-admin-console-ui/commit/485ba9f57705b836aa62549a90a827f28a5a88a5))
+
 ## [0.11.1-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.2...v0.11.1-devel.3) (2025-11-27)
 
 ### Bug Fixes
