@@ -119,7 +119,7 @@ importers:
         version: 4.3.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       darkreader:
         specifier: ^4.9.58
         version: 4.9.114
@@ -167,7 +167,7 @@ importers:
         version: 4.0.1
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       tinymce:
         specifier: ^6.8.4
         version: 6.8.6
@@ -240,7 +240,7 @@ importers:
         version: 1.1.0(typescript@5.9.3)
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       copy-webpack-plugin:
         specifier: ^13.0.1
         version: 13.0.1(webpack@5.103.0)
@@ -285,7 +285,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -327,7 +327,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -388,7 +388,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -421,7 +421,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -454,7 +454,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -512,7 +512,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -551,7 +551,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -593,7 +593,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -654,7 +654,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -693,7 +693,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -735,7 +735,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -796,7 +796,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -824,6 +824,9 @@ importers:
 
   apps/admin-ui-privacy:
     dependencies:
+      '@tanstack/react-form':
+        specifier: ^1.27.0
+        version: 1.27.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.11(react@19.2.0)
@@ -835,7 +838,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -877,7 +880,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -938,7 +941,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -977,7 +980,7 @@ importers:
         version: link:../admin-ui-bootstrap
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))
       history:
         specifier: ^5.3.0
         version: 5.3.0
@@ -1019,7 +1022,7 @@ importers:
         version: 5.3.4(react@19.2.0)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.0)
@@ -1080,7 +1083,7 @@ importers:
         version: link:../../packages/test-utils
       babel-plugin-styled-components:
         specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.1(jiti@2.6.1)
@@ -2671,11 +2674,31 @@ packages:
     resolution: {integrity: sha512-LnhVjMWyMQV9ZmeEy26maJk+8HTIbd59cH4F2MJ439k9DqejRisfFNGAPvRYlKETuh9LrImlS8aKsBgKjMA8WA==}
     engines: {node: '>=14'}
 
+  '@tanstack/devtools-event-client@0.3.5':
+    resolution: {integrity: sha512-RL1f5ZlfZMpghrCIdzl6mLOFLTuhqmPNblZgBaeKfdtk5rfbjykurv+VfYydOFXj0vxVIoA2d/zT7xfD7Ph8fw==}
+    engines: {node: '>=18'}
+
+  '@tanstack/form-core@1.27.0':
+    resolution: {integrity: sha512-QFEhg9/VcrwtpbcN7Qpl8JVVfEm2UJ+dzfDFGGMYub2J9jsgrp2HmaY7LSLlnkpTJlCIDxQiWDkiOFYQtK6yzw==}
+
+  '@tanstack/pacer@0.15.4':
+    resolution: {integrity: sha512-vGY+CWsFZeac3dELgB6UZ4c7OacwsLb8hvL2gLS6hTgy8Fl0Bm/aLokHaeDIP+q9F9HUZTnp360z9uv78eg8pg==}
+    engines: {node: '>=18'}
+
   '@tanstack/query-core@5.90.11':
     resolution: {integrity: sha512-f9z/nXhCgWDF4lHqgIE30jxLe4sYv15QodfdPDKYAk7nAEjNcndy4dHz3ezhdUaR23BpWa4I2EH4/DZ0//Uf8A==}
 
   '@tanstack/query-devtools@5.91.1':
     resolution: {integrity: sha512-l8bxjk6BMsCaVQH6NzQEE/bEgFy1hAs5qbgXl0xhzezlaQbPk6Mgz9BqEg2vTLPOHD8N4k+w/gdgCbEzecGyNg==}
+
+  '@tanstack/react-form@1.27.0':
+    resolution: {integrity: sha512-7MBOtvjlUwkGpvA9TIOs3YdLoyfJWZYtxuAQIdkLDZ9HLrRaRbxWQIZ2H6sRVA35sPvx6uiQMunGHOPKip5AZA==}
+    peerDependencies:
+      '@tanstack/react-start': '*'
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@tanstack/react-start':
+        optional: true
 
   '@tanstack/react-query-devtools@5.91.1':
     resolution: {integrity: sha512-tRnJYwEbH0kAOuToy8Ew7bJw1lX3AjkkgSlf/vzb+NpnqmHPdWM+lA2DSdGQSLi1SU0PDRrrCI1vnZnci96CsQ==}
@@ -2687,6 +2710,18 @@ packages:
     resolution: {integrity: sha512-3uyzz01D1fkTLXuxF3JfoJoHQMU2fxsfJwE+6N5hHy0dVNoZOvwKP8Z2k7k1KDeD54N20apcJnG75TBAStIrBA==}
     peerDependencies:
       react: ^18 || ^19
+
+  '@tanstack/react-store@0.8.0':
+    resolution: {integrity: sha512-1vG9beLIuB7q69skxK9r5xiLN3ztzIPfSQSs0GfeqWGO2tGIyInZx0x1COhpx97RKaONSoAb8C3dxacWksm1ow==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/store@0.7.7':
+    resolution: {integrity: sha512-xa6pTan1bcaqYDS9BDpSiS63qa6EoDkPN9RsRaxHuDdVDNntzq3xNwR5YKTU/V3SkSyC9T4YVOPh2zRQN0nhIQ==}
+
+  '@tanstack/store@0.8.0':
+    resolution: {integrity: sha512-Om+BO0YfMZe//X2z0uLF2j+75nQga6TpTJgLJQBiq85aOyZNIhkCgleNcud2KQg4k4v9Y9l+Uhru3qWMPGTOzQ==}
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -9031,9 +9066,30 @@ snapshots:
       - supports-color
       - typescript
 
+  '@tanstack/devtools-event-client@0.3.5': {}
+
+  '@tanstack/form-core@1.27.0':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.3.5
+      '@tanstack/pacer': 0.15.4
+      '@tanstack/store': 0.7.7
+
+  '@tanstack/pacer@0.15.4':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.3.5
+      '@tanstack/store': 0.7.7
+
   '@tanstack/query-core@5.90.11': {}
 
   '@tanstack/query-devtools@5.91.1': {}
+
+  '@tanstack/react-form@1.27.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@tanstack/form-core': 1.27.0
+      '@tanstack/react-store': 0.8.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - react-dom
 
   '@tanstack/react-query-devtools@5.91.1(@tanstack/react-query@5.90.11(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -9045,6 +9101,17 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.90.11
       react: 19.2.0
+
+  '@tanstack/react-store@0.8.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@tanstack/store': 0.8.0
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      use-sync-external-store: 1.6.0(react@19.2.0)
+
+  '@tanstack/store@0.7.7': {}
+
+  '@tanstack/store@0.8.0': {}
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -9602,7 +9669,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@zextras/carbonio-design-system@8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))':
+  '@zextras/carbonio-design-system@8.1.0(lodash@4.17.21)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))':
     dependencies:
       '@floating-ui/dom': 1.7.4
       core-js: 3.47.0
@@ -9612,7 +9679,7 @@ snapshots:
       react: 19.2.0
       react-datepicker: 4.25.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      styled-components: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+      styled-components: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
 
   accepts@1.3.8:
     dependencies:
@@ -9856,14 +9923,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-styled-components@2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0):
+  babel-plugin-styled-components@2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0):
     dependencies:
       '@babel/helper-annotate-as-pure': 7.27.3
       '@babel/helper-module-imports': 7.27.1(supports-color@5.5.0)
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.5)
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0)
+      styled-components: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -13820,19 +13887,19 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0):
+  styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0):
     dependencies:
       '@babel/helper-module-imports': 7.27.1(supports-color@5.5.0)
       '@babel/traverse': 7.28.5(supports-color@5.5.0)
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/stylis': 0.8.5
       '@emotion/unitless': 0.7.5
-      babel-plugin-styled-components: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@16.13.1)(react@19.2.0))(supports-color@5.5.0)
+      babel-plugin-styled-components: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react-is@17.0.2)(react@19.2.0))(supports-color@5.5.0)
       css-to-react-native: 3.2.0
       hoist-non-react-statics: 3.3.2
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-is: 16.13.1
+      react-is: 17.0.2
       shallowequal: 1.1.0
       supports-color: 5.5.0
     transitivePeerDependencies:

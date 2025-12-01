@@ -17,6 +17,7 @@
 		"test:ci": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@tanstack/react-form": "^1.27.0",
 		"@tanstack/react-query": "^5.90.5",
 		"@types/react-csv": "^1.1.10",
 		"@zextras/admin-ui-bootstrap": "workspace:*",
