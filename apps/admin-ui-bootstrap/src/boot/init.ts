@@ -27,7 +27,7 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 		if (supported) {
 			initialCalls = Promise.all([getInfo(), loginConfig()]);
 		} else {
-			initialCalls = Promise.all([getInfo(), getAllConfig()]);
+			initialCalls = Promise.all([getInfo()]);
 		}
 		return initialCalls
 			.then(() => {
