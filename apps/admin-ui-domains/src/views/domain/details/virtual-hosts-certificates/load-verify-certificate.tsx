@@ -31,7 +31,6 @@ import {
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import Textarea from '../../../components/textarea';
-import { CertificateTypes } from '../../../utility/utils';
 
 const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> = ({
 	setToggleWizardSection,
@@ -39,7 +38,6 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 }) => {
 	let fileReader: FileReader;
 	const { t } = useTranslation();
-	const certificateTypes: any = useMemo(() => CertificateTypes(t), [t]);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
 	const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
@@ -64,20 +62,6 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			content: ''
 		});
 
-	const emptyCertiState = (): void => {
-		setObjDomainCertificate({
-			content: '',
-			fileName: ''
-		});
-		setObjDomainCertificateCaChain({
-			content: '',
-			fileName: ''
-		});
-		setObjDomainCertificatePrivateKey({
-			content: '',
-			fileName: ''
-		});
-	};
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
 	useEffect(() => {

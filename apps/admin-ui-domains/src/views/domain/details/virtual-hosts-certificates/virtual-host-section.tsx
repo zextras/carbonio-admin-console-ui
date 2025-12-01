@@ -35,7 +35,7 @@ const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, setItems
     const [selectedRows, setSelectedRows] = useState<any[]>([]);
     const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
-    // Gestisce la selezione/deselezione di una riga
+    //  Handles the selection/deselection of a row
     const handleRowSelect = (id: string) => {
         setSelectedRows((prevSelected) =>
             prevSelected.includes(id)
