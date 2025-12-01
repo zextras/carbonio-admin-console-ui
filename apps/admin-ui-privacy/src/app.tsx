@@ -9,7 +9,6 @@ import {
 	removeRoute,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAllServers,
@@ -44,21 +43,17 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const { data: serverList = [] } = useAllServers();
-	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
+
+	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.setGlobalCarbonioSendAnalytics
-	);
-	const accounts = useUserAccounts();
 	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
-	
 	useEffect(() => {
 		const sendAnalytics = allConfig.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;
@@ -67,7 +62,6 @@ const App: FC = () => {
 			: setGlobalCarbonioSendAnalytics(false);
 	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
-	
 	useEffect(() => {
 		if (mailstoreServers && mailstoreServers.length > 0) {
 			setVolumeList(mailstoreServers);

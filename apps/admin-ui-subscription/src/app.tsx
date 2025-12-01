@@ -9,10 +9,8 @@ import {
 	removeRoute,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
 	useMailstoreServers,
 	useGlobalConfigStore,
-	useAppConfigStore,
 	useAllServers,
 	useBucketServersListStore,
 	useGlobalSettings,
@@ -45,42 +43,23 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const { data: serverList = [] } = useAllServers();
-	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
+	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
-	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.setGlobalCarbonioSendAnalytics
-	);
-	const accounts = useUserAccounts();
 	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
-		if (accounts?.length > 0) {
-			// FIX-ADMIN-MONOREPO
-			const { id } = accounts[0];
-			setUserId(id);
-		}
-	}, [accounts, setUserId]);
-
-	useEffect(() => {
-		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
+		const sendAnalytics = allConfig.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
 			?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
-	}, [config, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (allConfig && allConfig.length > 0) {
-			setConfig(allConfig);
-		}
-	}, [allConfig, setConfig]);
+	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	useEffect(() => {
 		if (mailstoreServers && mailstoreServers.length > 0) {
