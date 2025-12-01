@@ -14,7 +14,7 @@ import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
 import { CertificateTypes } from '../../../utility/utils';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
-import { LONG } from '../../../../constants';
+import { LONG, SHORT } from '../../../../constants';
 
 interface CertificateViewProps {
 	domainCertiDetails?: objectType;
@@ -44,7 +44,6 @@ const CertificateView: FC<CertificateViewProps> = ({
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [modalOpen, setModalOpen] = useState(false);
-	const [selectedCertType, setSelectedCertType] = useState<string>('');
 	const [selectedCertLabel, setSelectedCertLabel] = useState<string>('');
 	const [generateLoading, setGenerateLoading] = useState(false);
 
@@ -60,7 +59,6 @@ const CertificateView: FC<CertificateViewProps> = ({
 			id: certType.value,
 			label: certType.label,
 			onClick: (): void => {
-				setSelectedCertType(certType.value);
 				setSelectedCertLabel(certType.label);
 				setModalOpen(true);
 			}
@@ -70,14 +68,13 @@ const CertificateView: FC<CertificateViewProps> = ({
 
 	const handleModalClose = (): void => {
 		setModalOpen(false);
-		setSelectedCertType('');
 		setSelectedCertLabel('');
 	};
 
 	const requestCertiClickHandler = (): void => {
 		setGenerateLoading(true);
 		IssueCertiRequest(domainId, LONG)
-			.then(() => {
+			.then((res) => {
 				setGenerateLoading(false);
 				createSnackbar({
 					key: 'success',

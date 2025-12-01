@@ -128,9 +128,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	};
 
 	const uploadClickHandler = useCallback((): any => {
-		const zimbraId =
-			domainInformation &&
-			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
+		const zimbraId = domainInformation?.find((item: any) => item.n === ZIMBRA_ID)?._content;
 		const concatedCertiFile = objDomainCertificate?.content
 			? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
 			: objDomainCertificateCaChain.content;

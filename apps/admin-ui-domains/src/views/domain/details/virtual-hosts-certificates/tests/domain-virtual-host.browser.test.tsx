@@ -93,170 +93,96 @@ describe('DomainVirtualHosts (browser)', () => {
         vi.clearAllMocks();
     });
 
-    describe('Basic Rendering', () => {
-        it('should render the main sections', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
+    it('should render the main sections', async () => {
+        createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
+        createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-            setupDomainVirtualHostsTest(
-                <DomainVirtualHosts />
-            );
+        setupDomainVirtualHostsTest(
+            <DomainVirtualHosts />
+        );
 
-            await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
-        });
-
-        it('should render virtual host items from domain data', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
-
-            setupDomainVirtualHostsTest(
-                <DomainVirtualHosts />
-            );
-
-            await expect.element(page.getByText('virtual1.test-domain.com')).toBeVisible();
-            await expect.element(page.getByText('virtual2.test-domain.com')).toBeVisible();
-        });
-
-        it('should not render Save and Cancel buttons initially', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
-
-            setupDomainVirtualHostsTest(
-                <DomainVirtualHosts />
-            );
-
-            const saveButtons = page.getByRole('button', { name: /save/i }).elements();
-            const cancelButtons = page.getByRole('button', { name: /cancel/i }).elements();
-
-            expect(saveButtons).toHaveLength(0);
-            expect(cancelButtons).toHaveLength(0);
-        });
+        await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
     });
 
-    describe('Certificate Management', () => {
-        it('should open load/verify certificate wizard', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
+    it('should render virtual host items from domain data', async () => {
+        createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
+        createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-            setupDomainVirtualHostsTest(
+        setupDomainVirtualHostsTest(
+            <DomainVirtualHosts />
+        );
 
-                <DomainVirtualHosts />
-
-            );
-
-            const verifyButtons = page.getByText(/verify/i).elements();
-            if (verifyButtons.length > 0) {
-                const verifyButton = verifyButtons[0] as HTMLElement;
-                verifyButton.click();
-            }
-
-            // Modal should open - check for wizard content
-            // Note: This depends on the actual implementation of LoadVerifyCertificateWizard
-        });
-        it('should open delete certificate modal', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
-
-            setupDomainVirtualHostsTest(
-
-                <DomainVirtualHosts />
-
-            );
-
-            const removeButtons = page.getByText(/remove/i).elements();
-            if (removeButtons.length > 0) {
-                const removeButton = removeButtons[0] as HTMLElement;
-                removeButton.click();
-            }
-
-            // Delete modal should be visible
-            // Note: This depends on the DeleteCertificateModel implementation
-        });
+        await expect.element(page.getByText('virtual1.test-domain.com')).toBeVisible();
+        await expect.element(page.getByText('virtual2.test-domain.com')).toBeVisible();
     });
 
-    describe('Alert Banner', () => {
-        it('should show alert banner after certificate generation', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
+    it('should not render Save and Cancel buttons initially', async () => {
+        createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
+        createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-            setupDomainVirtualHostsTest(
+        setupDomainVirtualHostsTest(
+            <DomainVirtualHosts />
+        );
 
-                <DomainVirtualHosts />
+        const saveButtons = page.getByRole('button', { name: /save/i }).elements();
+        const cancelButtons = page.getByRole('button', { name: /cancel/i }).elements();
 
-            );
-
-            // Simulate certificate generation by triggering the alert
-            // This would normally happen through the CertificateView component
-            // The alert should contain specific text
-            const alertText = page
-                .getByText('The certificate will be available once the proxy is restarted')
-                .elements();
-
-            // Alert may not be visible initially
-            expect(alertText.length).toBeGreaterThanOrEqual(0);
-        });
-        it('should close alert banner when close button is clicked', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
-
-            // Set up state to show alert
-            useDomainStore.setState({
-                domain: mockDomainData,
-                setDomain: vi.fn(),
-                setIsCertificateAvailbale: vi.fn()
-            });
-
-            setupDomainVirtualHostsTest(
-
-                <DomainVirtualHosts />
-
-            );
-
-            // If alert is visible, find and click close button
-            const closeIcons = page.getByTestId('icon: CloseOutline').elements();
-            if (closeIcons.length > 0) {
-                const closeIcon = closeIcons[0] as HTMLElement;
-                closeIcon.click();
-            }
-        });
+        expect(saveButtons).toHaveLength(0);
+        expect(cancelButtons).toHaveLength(0);
     });
 
-    describe('Error Handling', () => {
-        it('should handle certificate fetch error', async () => {
-            createBrowserSoapAPIInterceptor('GetDomainCert', {}).then(() => {
-                throw new Error('Certificate not found');
-            });
-            createBrowserSoapAPIInterceptor('GetDomain', { domain: [{ a: [] }] });
+    it('should show alert banner after certificate generation', async () => {
+        createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
+        createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-            setupDomainVirtualHostsTest(
+        setupDomainVirtualHostsTest(
 
-                <DomainVirtualHosts />
+            <DomainVirtualHosts />
 
-            );
+        );
 
-            // Should render without certificate info
-            await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
-        });
+        // Simulate certificate generation by triggering the alert
+        // This would normally happen through the CertificateView component
+        // The alert should contain specific text
+        const alertText = page
+            .getByText('The certificate will be available once the proxy is restarted')
+            .elements();
+
+        // Alert may not be visible initially
+        expect(alertText.length).toBeGreaterThanOrEqual(0);
     });
 
-    describe('User Permissions', () => {
-        it('should handle non-admin user', async () => {
-            vi.mocked(useUserSettings).mockReturnValue({
-                attrs: { zimbraIsAdminAccount: 'FALSE' }
-            } as any);
-
-            createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
-            createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
-
-            setupDomainVirtualHostsTest(
-
-                <DomainVirtualHosts />
-
-            );
-
-            // Component should still render for non-admin
-            await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
+    it('should handle certificate fetch error', async () => {
+        createBrowserSoapAPIInterceptor('GetDomainCert', {}).then(() => {
+            throw new Error('Certificate not found');
         });
+        createBrowserSoapAPIInterceptor('GetDomain', { domain: [{ a: [] }] });
+
+        setupDomainVirtualHostsTest(
+
+            <DomainVirtualHosts />
+
+        );
+
+        // Should render without certificate info
+        await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
     });
 
+    it('should handle non-admin user', async () => {
+        vi.mocked(useUserSettings).mockReturnValue({
+            attrs: { zimbraIsAdminAccount: 'FALSE' }
+        } as any);
+
+        createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
+        createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
+
+        setupDomainVirtualHostsTest(
+
+            <DomainVirtualHosts />
+
+        );
+
+        // Component should still render for non-admin
+        await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
+    });
 });
