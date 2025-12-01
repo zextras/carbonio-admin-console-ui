@@ -5,7 +5,7 @@
  */
 
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
-import { grantUserRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import { grantUserCosRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { page } from 'vitest/browser';
@@ -92,7 +92,7 @@ describe('COSPreferences', () => {
 
 	beforeEach(async () => {
 		vi.resetAllMocks();
-		grantUserRights();
+		grantUserCosRights();
 		setupCosStore();
 
 		// Set up user account store for useCurrentUserRights hook

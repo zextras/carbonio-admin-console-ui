@@ -8,7 +8,7 @@ import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
 	getQueryClient,
-	grantUserRights,
+	grantUserConfigRights,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
 import React from 'react';
@@ -49,7 +49,7 @@ describe('PrivacyView', () => {
 	beforeEach(async () => {});
 
 	it('renders privacy settings page with all switches', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Check main title
@@ -75,7 +75,7 @@ describe('PrivacyView', () => {
 	});
 
 	it('shows save and cancel buttons when switch is toggled', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -97,7 +97,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('shows save and cancel buttons when switch is toggled from TRUE to FALSE', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -119,7 +119,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('hides save and cancel buttons when cancel is clicked', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -145,7 +145,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('calls Batch API when save is clicked', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		// Set up a Batch interceptor to capture the API call
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
@@ -227,7 +227,7 @@ describe('PrivacyView', () => {
 			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfigData });
 
@@ -245,7 +245,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('persists state across multiple toggle operations', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -282,7 +282,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('maintains dirty state when multiple switches are toggled', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -316,7 +316,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('saves all changes when multiple switches are toggled before save', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		// Capture the Batch call
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
@@ -354,7 +354,7 @@ describe('PrivacyView', () => {
 			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		grantUserRights();
+		grantUserConfigRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig });
 
 		// Wait for component to load
@@ -382,7 +382,7 @@ describe('PrivacyView', () => {
 			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfig });
 
@@ -401,7 +401,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('shows success snackbar after successful save', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
 
@@ -427,7 +427,7 @@ describe('PrivacyView', () => {
 	}, 20000);
 
 	it('should change switch icon from ToggleLeft to ToggleRight when clicked', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load
@@ -475,7 +475,7 @@ describe('PrivacyView', () => {
 			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		grantUserRights();
+		grantUserConfigRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig });
 
 		// Wait for component to load
@@ -512,7 +512,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('should correctly handle multiple switch toggles and state changes', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
@@ -561,7 +561,7 @@ describe('PrivacyView', () => {
 	}, 25000);
 
 	it('should maintain correct states when cancel is clicked', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load

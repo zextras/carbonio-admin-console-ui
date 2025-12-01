@@ -8,7 +8,7 @@ import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
-	grantUserRights,
+	grantUserConfigRights,
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
@@ -54,7 +54,7 @@ describe('MTAAdvanced', () => {
 	};
 
 	beforeEach(() => {
-		grantUserRights();
+		grantUserConfigRights();
 		setupConfigStore();
 	});
 
@@ -64,7 +64,7 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should render the component correctly', async () => {
-		grantUserRights();
+		grantUserConfigRights();
 		setupBrowserTest(<MTAAdvanced />);
 		expect(page.getByText('Advanced', { exact: true })).toBeVisible();
 		expectLoggingSectionVisible();

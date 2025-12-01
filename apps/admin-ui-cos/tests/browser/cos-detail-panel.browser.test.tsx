@@ -7,7 +7,7 @@
 import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
-	grantUserRights,
+	grantUserConfigRights,
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
@@ -49,7 +49,7 @@ const mockApiResponse = {
 describe('CosDetailPanel', () => {
 	beforeEach(async () => {
 		vi.resetAllMocks();
-		grantUserRights();
+		grantUserConfigRights();
 
 		useGlobalConfigStore.setState({
 			globalConfig: {},

@@ -28,22 +28,7 @@ export const setupBrowserTest = (
 	});
 };
 
-export function grantUserRights() {
-	const mockRightsDataWithPermission = [
-		{
-			type: 'config',
-			all: [
-				{
-					setAttrs: [{ all: true }],
-					getAttrs: [{ all: true }]
-				}
-			]
-		}
-	];
-	const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-		target: mockRightsDataWithPermission
-	});
-	// Set up user account store for useCurrentUserRights hook
+function setupAccount() {
 	useAccountStore.setState({
 		account: {
 			id: 'test-user-id',
@@ -61,6 +46,49 @@ export function grantUserRights() {
 			props: []
 		},
 		usedQuota: 0
+	});
+}
+
+export function grantUserConfigRights() {
+	setupAccount();
+	const mockConfigRightsData = [
+		{
+			type: 'config',
+			all: [
+				{
+					setAttrs: [{ all: true }],
+					getAttrs: [{ all: true }]
+				}
+			]
+		}
+	];
+	const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+		target: mockConfigRightsData
+	});
+	return getRightsInterceptor;
+}
+
+export function grantUserCosRights() {
+	const mockCosRightsData = [
+		{
+			type: 'cos',
+			all: [
+				{
+					right: [
+						{ n: 'assignCos' },
+						{ n: 'deleteCos' },
+						{ n: 'listCos' },
+						{ n: 'manageZimlet' },
+						{ n: 'renameCos' }
+					],
+					setAttrs: [{ all: true }],
+					getAttrs: [{ all: true }]
+				}
+			]
+		}
+	];
+	const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+		target: mockCosRightsData
 	});
 	return getRightsInterceptor;
 }
