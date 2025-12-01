@@ -5,10 +5,10 @@
  */
 
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
 	getQueryClient,
+	grantUserRights,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
 import React from 'react';
@@ -23,92 +23,33 @@ import {
 } from '../../../constants';
 import PrivacyView from '../privacy-view';
 
+type SetupOptions = {
+	config?: Array<Attribute>;
+};
+const setupTestWithQueryClient = (component: React.ReactElement, options: SetupOptions) => {
+	const queryClient = getQueryClient();
+	queryClient.setQueryData(['all-config', 'effective-rights'], options);
+
+	return setupBrowserTest(component, { queryClient });
+};
+const mockConfigData: Array<Attribute> = [
+	{ n: CARBONIO_SEND_ANALYTICS, _content: 'FALSE' },
+	{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
+	{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'FALSE' }
+];
+
+// Mock the app config store with proper configuration
+const mockUpdateConfig = vi.fn();
+useAppConfigStore.setState({
+	config: [mockConfigData],
+	updateConfig: mockUpdateConfig
+});
+
 describe('PrivacyView', () => {
-	const mockConfigData: Array<Attribute> = [
-		{ n: CARBONIO_SEND_ANALYTICS, _content: 'FALSE' },
-		{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
-		{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'FALSE' }
-	];
-
-	const mockRightsDataWithPermission = [
-		{
-			type: 'config',
-			all: [
-				{
-					setAttrs: [{ all: true }],
-					getAttrs: [{ all: true }]
-				}
-			]
-		}
-	];
-
-	const mockRightsDataWithoutPermission = [
-		{
-			type: 'config',
-			all: [
-				{
-					setAttrs: [{ all: false }],
-					getAttrs: [{ all: true }]
-				}
-			]
-		}
-	];
-
-	// Mock the app config store with proper configuration
-	const mockUpdateConfig = vi.fn();
-	useAppConfigStore.setState({
-		config: [mockConfigData],
-		updateConfig: mockUpdateConfig
-	});
-
-	type SetupOptions = {
-		config?: Array<Attribute>;
-		rights?: Array<any>;
-	};
-	const setupTestWithQueryClient = (component: React.ReactElement, options: SetupOptions) => {
-		const rights = options.rights || mockRightsDataWithPermission;
-		const queryClient = getQueryClient();
-		queryClient.setQueryData(['all-config', 'effective-rights'], {
-			...options,
-			rights
-		});
-
-		return setupBrowserTest(component, { queryClient });
-	};
-
-	beforeEach(async () => {
-		// Set up user account store for useCurrentUserRights hook
-		useAccountStore.setState({
-			account: {
-				id: 'test-user-id',
-				name: 'test@example.com',
-				displayName: '',
-				signatures: {
-					signature: []
-				},
-				identities: undefined,
-				rights: { targets: [] }
-			},
-			settings: {
-				prefs: {},
-				attrs: {},
-				props: []
-			},
-			usedQuota: 0
-		});
-
-		const localStorageMock = {
-			getItem: vi.fn(),
-			setItem: vi.fn(),
-			removeItem: vi.fn(),
-			clear: vi.fn()
-		};
-		Object.defineProperty(window, 'localStorage', {
-			value: localStorageMock
-		});
-	});
+	beforeEach(async () => {});
 
 	it('renders privacy settings page with all switches', async () => {
+		grantUserRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Check main title
@@ -134,17 +75,12 @@ describe('PrivacyView', () => {
 	});
 
 	it('shows save and cancel buttons when switch is toggled', async () => {
-		// Set up API interceptors
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Initially, save/cancel buttons should not be visible
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -161,17 +97,12 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('shows save and cancel buttons when switch is toggled from TRUE to FALSE', async () => {
-		// Set up API interceptors
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Initially, save/cancel buttons should not be visible
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -188,17 +119,12 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('hides save and cancel buttons when cancel is clicked', async () => {
-		// Set up API interceptors
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Click on a switch to make changes
 		const switchLabel = page.getByText('Send full error data');
@@ -219,11 +145,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('calls Batch API when save is clicked', async () => {
-		// Set up API interceptors for initial load
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		// Set up a Batch interceptor to capture the API call
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
@@ -232,7 +154,6 @@ describe('PrivacyView', () => {
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Toggle a switch to make changes
 		const switchLabel = page.getByText('Send full error data');
@@ -274,16 +195,10 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('does not show save/cancel buttons when switches are disabled', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithoutPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
-
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Try to click on switches when disabled (they should not trigger state changes)
 		const errorSwitchLabel = page.getByText('Send full error data');
@@ -307,25 +222,17 @@ describe('PrivacyView', () => {
 	it('loads config values correctly and displays switches in appropriate state', async () => {
 		// Test with mixed TRUE/FALSE values
 		const mixedConfigData = [
-			{
-				a: [
-					{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
-					{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
-					{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
-				]
-			}
+			{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
+			{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
+			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mixedConfigData);
+		grantUserRights();
 
-		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfigData[0].a });
+		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfigData });
 
 		// Wait for the component to load and render
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Verify all switches are visible (actual state verification would require more complex testing)
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
@@ -338,16 +245,12 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('persists state across multiple toggle operations', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Toggle first switch
 		const firstSwitch = page.getByText('Send full error data');
@@ -379,16 +282,12 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('maintains dirty state when multiple switches are toggled', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Toggle first switch
 		const firstSwitch = page.getByText('Send full error data');
@@ -417,10 +316,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('saves all changes when multiple switches are toggled before save', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		// Capture the Batch call
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
@@ -429,7 +325,6 @@ describe('PrivacyView', () => {
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Toggle all three switches
 		await page.getByText('Send full error data').click();
@@ -454,25 +349,16 @@ describe('PrivacyView', () => {
 
 	it('loads correctly with all settings enabled', async () => {
 		const allEnabledConfig = [
-			{
-				a: [
-					{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
-					{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'TRUE' },
-					{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
-				]
-			}
+			{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
+			{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'TRUE' },
+			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', allEnabledConfig);
-
-		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig[0].a });
+		grantUserRights();
+		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// All switches should be visible
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
@@ -491,25 +377,17 @@ describe('PrivacyView', () => {
 
 	it('loads correctly with mixed settings', async () => {
 		const mixedConfig = [
-			{
-				a: [
-					{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
-					{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
-					{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
-				]
-			}
+			{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
+			{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'FALSE' },
+			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mixedConfig);
+		grantUserRights();
 
-		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfig[0].a });
+		await setupTestWithQueryClient(<PrivacyView />, { config: mixedConfig });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// All switches should be visible
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
@@ -523,10 +401,7 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('shows success snackbar after successful save', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
 
@@ -534,7 +409,6 @@ describe('PrivacyView', () => {
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Toggle a switch
 		const firstSwitch = page.getByText('Send full error data');
@@ -553,13 +427,8 @@ describe('PrivacyView', () => {
 	}, 20000);
 
 	it('should change switch icon from ToggleLeft to ToggleRight when clicked', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
-
+		grantUserRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
-		await getRightsInterceptor;
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
@@ -601,25 +470,16 @@ describe('PrivacyView', () => {
 	it('should handle toggle operations when all settings start as TRUE', async () => {
 		// Test with all switches initially enabled (TRUE)
 		const allEnabledConfig = [
-			{
-				a: [
-					{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
-					{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'TRUE' },
-					{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
-				]
-			}
+			{ n: CARBONIO_SEND_ANALYTICS, _content: 'TRUE' },
+			{ n: CARBONIO_SEND_FULL_ERROR_STACK, _content: 'TRUE' },
+			{ n: CARBONIO_ALLOW_FEEDBACK, _content: 'TRUE' }
 		];
 
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		// createBrowserSoapAPIInterceptor('GetConfig', allEnabledConfig);
-
-		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig[0].a });
+		grantUserRights();
+		await setupTestWithQueryClient(<PrivacyView />, { config: allEnabledConfig });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Initially, save/cancel buttons should not be visible
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -652,16 +512,12 @@ describe('PrivacyView', () => {
 	}, 15000);
 
 	it('should correctly handle multiple switch toggles and state changes', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
+		grantUserRights();
 
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Initially, save/cancel buttons should not be visible
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -705,16 +561,11 @@ describe('PrivacyView', () => {
 	}, 25000);
 
 	it('should maintain correct states when cancel is clicked', async () => {
-		const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRightsDataWithPermission
-		});
-		createBrowserSoapAPIInterceptor('GetConfig', mockConfigData);
-
+		grantUserRights();
 		await setupTestWithQueryClient(<PrivacyView />, { config: mockConfigData });
 
 		// Wait for component to load
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
-		await getRightsInterceptor;
 
 		// Initially, save/cancel buttons should not be visible
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
