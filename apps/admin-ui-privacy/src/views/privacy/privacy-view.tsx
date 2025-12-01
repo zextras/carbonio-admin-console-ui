@@ -11,7 +11,6 @@ import {
 	Padding,
 	Text,
 	Divider,
-	Switch,
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
@@ -29,11 +28,7 @@ import {
 } from '../../constants';
 import ListRow from '../list/list-row';
 
-type PrivacyFormValues = {
-	allowFeedback: boolean;
-	sendAnalytics: boolean;
-	sendFullError: boolean;
-};
+import { FormSwitch } from './parts/form-switch';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
@@ -139,7 +134,6 @@ const PrivacyView: FC = () => {
 						<Row orientation="horizontal" width="100%" background="gray6">
 							<Divider />
 						</Row>
-
 						<Container
 							orientation="column"
 							crossAlignment="flex-start"
@@ -156,23 +150,13 @@ const PrivacyView: FC = () => {
 							>
 								<form.Field name="sendFullError">
 									{(field) => (
-										<ListRow>
-											<Container
-												mainAlignment="flex-start"
-												crossAlignment="flex-start"
-												padding={{ all: 'small' }}
-											>
-												<Switch
-													value={field.state.value}
-													label={t('privacy.send_full_error_data', 'Send full error data')}
-													onClick={(): void => {
-														field.handleChange(!field.state.value);
-													}}
-													iconColor="primary"
-													disabled={!allowSetPrivacy}
-												/>
-											</Container>
-										</ListRow>
+										<FormSwitch
+											fieldValue={field.state.value}
+											allowSetPrivacy={allowSetPrivacy}
+											onClick={(): void => {
+												field.handleChange(!field.state.value);
+											}}
+										/>
 									)}
 								</form.Field>
 								<ListRow>
@@ -193,24 +177,13 @@ const PrivacyView: FC = () => {
 								</ListRow>
 								<form.Field name="sendAnalytics">
 									{(field) => (
-										<ListRow>
-											<Container
-												orientation="horizontal"
-												mainAlignment="space-between"
-												crossAlignment="flex-start"
-												padding={{ all: 'small' }}
-											>
-												<Switch
-													value={field.state.value}
-													label={t('privacy.allow_data_analytics', 'Allow data analytics')}
-													onClick={(): void => {
-														field.handleChange(!field.state.value);
-													}}
-													iconColor="primary"
-													disabled={!allowSetPrivacy}
-												/>
-											</Container>
-										</ListRow>
+										<FormSwitch
+											fieldValue={field.state.value}
+											allowSetPrivacy={allowSetPrivacy}
+											onClick={(): void => {
+												field.handleChange(!field.state.value);
+											}}
+										/>
 									)}
 								</form.Field>
 								<ListRow>
@@ -231,27 +204,13 @@ const PrivacyView: FC = () => {
 								</ListRow>
 								<form.Field name="allowFeedback">
 									{(field) => (
-										<ListRow>
-											<Container
-												orientation="horizontal"
-												mainAlignment="space-between"
-												crossAlignment="flex-start"
-												padding={{ all: 'small' }}
-											>
-												<Switch
-													value={field.state.value}
-													label={t(
-														'privacy.allow_live_survey_feedbacks',
-														'Allow live survey feedbacks'
-													)}
-													onClick={(): void => {
-														field.handleChange(!field.state.value);
-													}}
-													iconColor="primary"
-													disabled={!allowSetPrivacy}
-												/>
-											</Container>
-										</ListRow>
+										<FormSwitch
+											fieldValue={field.state.value}
+											allowSetPrivacy={allowSetPrivacy}
+											onClick={(): void => {
+												field.handleChange(!field.state.value);
+											}}
+										/>
 									)}
 								</form.Field>
 								<ListRow>
