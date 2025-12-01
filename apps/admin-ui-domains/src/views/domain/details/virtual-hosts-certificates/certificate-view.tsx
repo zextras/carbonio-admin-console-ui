@@ -76,9 +76,8 @@ const CertificateView: FC<CertificateViewProps> = ({
 
 	const requestCertiClickHandler = (): void => {
 		setGenerateLoading(true);
-		const chainType = selectedCertType === '1' ? LONG : SHORT;
-		IssueCertiRequest(domainId, chainType)
-			.then((res) => {
+		IssueCertiRequest(domainId, LONG)
+			.then(() => {
 				setGenerateLoading(false);
 				createSnackbar({
 					key: 'success',

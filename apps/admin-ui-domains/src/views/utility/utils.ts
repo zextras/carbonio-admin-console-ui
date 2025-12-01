@@ -1071,13 +1071,6 @@ export const CertificateTypes = (t: TFunction): Array<{ value: string; label: st
 			'RSA Certificate'
 		),
 		value: '1'
-	},
-	{
-		label: t(
-			'domain.certificate_ECDSA',
-			'ECDSA Certificate'
-		),
-		value: '2'
 	}
 ];
 

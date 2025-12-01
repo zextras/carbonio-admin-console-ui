@@ -127,6 +127,66 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		setUploadBtnTgl(false);
 	};
 
+	const uploadClickHandler = useCallback((): any => {
+		const zimbraId =
+			domainInformation &&
+			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
+		const concatedCertiFile = objDomainCertificate?.content
+			? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
+			: objDomainCertificateCaChain.content;
+		const body: any = {};
+		const attributes: any[] = [];
+		body.id = zimbraId;
+		body._jsns = ZIMBRA_ADMIN_URN;
+		attributes.push({
+			n: 'zimbraSSLCertificate',
+			_content: concatedCertiFile
+		});
+		attributes.push({
+			n: 'zimbraSSLPrivateKey',
+			_content: objDomainCertificatePrivateKey?.content
+		});
+		body.a = attributes;
+		modifyDomain(body)
+			.then(() => {
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t('domain.certificate_saved', `The certificates have been saved`),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
+				externalData(true);
+				setToggleWizardSection(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [
+		createSnackbar,
+		domainInformation,
+		externalData,
+		isGlobalAdmin,
+		objDomainCertificate?.content,
+		objDomainCertificateCaChain.content,
+		objDomainCertificatePrivateKey?.content,
+		setToggleWizardSection,
+		t
+	]);
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const verifyCertificateHandler = useCallback((): void => {
 		if (objDomainCertificate.content === '') {
@@ -197,6 +257,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					});
 					setVerifyBtnLoading(false);
 					setUploadBtnTgl(true);
+					// Upload the certificate after successful verification
+					uploadClickHandler();
 				} else if (!data?.verifyResult) {
 					createSnackbar({
 						key: 'warning',
@@ -233,58 +295,9 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		objDomainCertificate.content,
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content,
-		t
+		t,
+		uploadClickHandler
 	]);
-
-	const uploadClickHandler = (): any => {
-		const zimbraId =
-			domainInformation &&
-			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-		const concatedCertiFile = objDomainCertificate?.content
-			? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
-			: objDomainCertificateCaChain.content;
-		const body: any = {};
-		const attributes: any[] = [];
-		body.id = zimbraId;
-		body._jsns = ZIMBRA_ADMIN_URN;
-		attributes.push({
-			n: 'zimbraSSLCertificate',
-			_content: concatedCertiFile
-		});
-		attributes.push({
-			n: 'zimbraSSLPrivateKey',
-			_content: objDomainCertificatePrivateKey?.content
-		});
-		body.a = attributes;
-		modifyDomain(body)
-			.then(() => {
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t('domain.certificate_saved', `The certificates have been saved`),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-				if (isGlobalAdmin) {
-					flushCache('domain', 'id', zimbraId);
-				}
-				externalData(true);
-				setToggleWizardSection(false);
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	};
 
 	useEffect(() => {
 		if (objDomainCertificate.content !== '') {
@@ -445,25 +458,18 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					<Button
 						width="fill"
 						size="large"
-						label={t('label.upload_and_verify_certificate', 'UPLOAD & VERIFY CERTIFICATE')}
-						onClick={uploadClickHandler}
-						disabled={!uploadBtnTgl}
+						label={t('label.verify', 'VERIFY')}
+						onClick={verifyCertificateHandler}
+						loading={verifyBtnLoading}
+						disabled={
+							!objDomainCertificate.content ||
+							!objDomainCertificateCaChain.content ||
+							!objDomainCertificatePrivateKey.content
+						}
 					/>
 				</Tooltip>
 			</Container>
-			<Button
-				width="fill"
-				size="large"
-				label={t('label.verify', 'VERIFY')}
-				onClick={verifyCertificateHandler}
-				loading={verifyBtnLoading}
-				type={uploadBtnTgl ? 'outlined' : 'default'}
-				disabled={
-					!objDomainCertificate.content ||
-					!objDomainCertificateCaChain.content ||
-					!objDomainCertificatePrivateKey.content
-				}
-			/>
+
 		</Container>
 	);
 };
