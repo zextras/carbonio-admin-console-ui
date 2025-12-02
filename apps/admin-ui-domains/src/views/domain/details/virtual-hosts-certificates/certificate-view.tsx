@@ -4,17 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+	Container,
+	Row,
+	Text,
+	Input,
+	Button,
+	Tooltip,
+	Dropdown,
+	useSnackbar
+} from '@zextras/carbonio-design-system';
 import React, { FC, useState, useMemo } from 'react';
-
-import { Container, Row, Text, Input, Button, Tooltip, Dropdown, useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import GenerateCertificateModal from './generate-certificate-modal';
-import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
-import { CertificateTypes } from '../../../utility/utils';
-import { IssueCertiRequest } from '../../../../services/virtual-host-service';
 import { SHORT } from '../../../../constants';
+import { IssueCertiRequest } from '../../../../services/virtual-host-service';
+import ListRow from '../../../list/list-row';
+import { CertificateTypes } from '../../../utility/utils';
+
+import { GenerateCertificateModal } from './generate-certificate-modal';
 
 interface CertificateViewProps {
 	domainCertiDetails?: objectType;
@@ -29,7 +38,7 @@ interface CertificateViewProps {
 	onCertificateGenerated: () => void;
 }
 
-const CertificateView: FC<CertificateViewProps> = ({
+export const CertificateView: FC<CertificateViewProps> = ({
 	domainCertiDetails,
 	toggleCertiBtn,
 	domainCertificate,
@@ -47,22 +56,35 @@ const CertificateView: FC<CertificateViewProps> = ({
 	const [selectedCertLabel, setSelectedCertLabel] = useState<string>('');
 	const [generateLoading, setGenerateLoading] = useState(false);
 
-	const noCertificateLabel = t('label.no_certificate_to_remove', 'There is no certificate to remove.');
-	const noCertificateDownloadLabel = t('label.no_certificate_to_download', 'There is no certificate to download.');
-	const noVirtualHostLabel = t('label.no_virtual_hosts', 'You need to add at least one Virtual Host.');
-	const requestSuccessLabel = t('label.certificate_request_success', 'Processing request; results will be sent to domain notification recipients.');
+	const noCertificateLabel = t(
+		'label.no_certificate_to_remove',
+		'There is no certificate to remove.'
+	);
+	const noCertificateDownloadLabel = t(
+		'label.no_certificate_to_download',
+		'There is no certificate to download.'
+	);
+	const noVirtualHostLabel = t(
+		'label.no_virtual_hosts',
+		'You need to add at least one Virtual Host.'
+	);
+	const requestSuccessLabel = t(
+		'label.certificate_request_success',
+		'Processing request; results will be sent to domain notification recipients.'
+	);
 
 	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
 
 	const generateCertificateItems = useMemo(
-		() => certificateTypes.map((certType) => ({
-			id: certType.value,
-			label: certType.label,
-			onClick: (): void => {
-				setSelectedCertLabel(certType.label);
-				setModalOpen(true);
-			}
-		})),
+		() =>
+			certificateTypes.map((certType) => ({
+				id: certType.value,
+				label: certType.label,
+				onClick: (): void => {
+					setSelectedCertLabel(certType.label);
+					setModalOpen(true);
+				}
+			})),
 		[certificateTypes]
 	);
 
@@ -154,7 +176,7 @@ const CertificateView: FC<CertificateViewProps> = ({
 								label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
 								color="primary"
 								disabled={!hasVirtualHosts}
-								onClick={(): void => { }}
+								onClick={(): void => {}}
 							/>
 						</Dropdown>
 					</Tooltip>
@@ -181,10 +203,7 @@ const CertificateView: FC<CertificateViewProps> = ({
 			<ListRow padding={{ top: 'extralarge' }}>
 				<Container padding={{ horizontal: 'small', top: 'small' }}>
 					<Input
-						label={t(
-							'label.subject_name_cname',
-							'Subject Name (Canonical Name record - CNAME)'
-						)}
+						label={t('label.subject_name_cname', 'Subject Name (Canonical Name record - CNAME)')}
 						backgroundColor="gray6"
 						value={domainCertiDetails?.subject || ''}
 					/>
@@ -238,5 +257,3 @@ const CertificateView: FC<CertificateViewProps> = ({
 		</Container>
 	);
 };
-
-export default CertificateView;

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section-component';
 
-import LoadAndVerifyCert from './load-verify-certificate';
+import { LoadAndVerifyCert } from './load-verify-certificate';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -29,7 +29,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-const LoadVerifyCertificateWizard: FC<{
+export const LoadVerifyCertificateWizard: FC<{
 	setToggleWizard: any;
 	setAlertToggle: any;
 }> = ({ setToggleWizard, setAlertToggle }) => {
@@ -57,5 +57,3 @@ const LoadVerifyCertificateWizard: FC<{
 		/>
 	);
 };
-
-export default LoadVerifyCertificateWizard;

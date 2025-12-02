@@ -10,7 +10,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DomainVirtualHosts from '../domain-virtual-hosts';
+import { DomainVirtualHosts } from '../domain-virtual-hosts';
 
 const mockDomainData = {
 	name: 'test-domain.com',

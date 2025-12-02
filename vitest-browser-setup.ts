@@ -11,6 +11,16 @@ import { beforeAll, afterAll, vi, afterEach, beforeEach } from 'vitest';
 vi.stubGlobal('__CARBONIO_DEV__', false);
 vi.stubGlobal('BASE_PATH', '');
 
+const localStorageMock = {
+	getItem: vi.fn(),
+	setItem: vi.fn(),
+	removeItem: vi.fn(),
+	clear: vi.fn()
+};
+Object.defineProperty(window, 'localStorage', {
+	value: localStorageMock
+});
+
 beforeAll(async () => {
 	await startMockWorker();
 });

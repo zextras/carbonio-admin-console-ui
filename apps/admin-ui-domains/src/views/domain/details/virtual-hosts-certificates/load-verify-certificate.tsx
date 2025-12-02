@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Text,
@@ -15,7 +14,7 @@ import {
 	Icon,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';
@@ -32,7 +31,7 @@ import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import Textarea from '../../../components/textarea';
 
-const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> = ({
+export const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> = ({
 	setToggleWizardSection,
 	externalData
 }) => {
@@ -169,13 +168,11 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		t
 	]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const verifyCertificateHandler = useCallback((): void => {
 		if (objDomainCertificate.content === '') {
 			setDomainCertiErr(false);
 		}
 
-		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!isCertificateAvailbale) {
 			if (objDomainCertificateCaChain.content === '') {
 				setDomainCertiCaChainErr(false);
@@ -303,11 +300,22 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	]);
 
 	return (
-		<Container padding={{ all: 'large' }} gap='1.5rem' width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
+		<Container
+			padding={{ all: 'large' }}
+			gap="1.5rem"
+			width="fill"
+			mainAlignment="flex-start"
+			crossAlignment="flex-start"
+		>
 			<Text size="large" weight="bold">
 				{t('label.upload_verify_certificate', 'Upload and Verify Certificate')}
 			</Text>
-			<Container orientation="horizontal" mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+			<Container
+				orientation="horizontal"
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				width="fill"
+			>
 				<Container padding={{ right: '0.25rem' }} width="fit">
 					<Icon icon="InfoOutline" color="secondary" />
 				</Container>
@@ -320,9 +328,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			</Container>
 
 			<Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
-				<Text weight="bold">
-					{t('label.domain_certificate', 'Domain Certificate')}
-				</Text>
+				<Text weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</Text>
 				<Padding bottom="small" />
 				<Textarea
 					label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
@@ -363,7 +369,10 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				</Text>
 				<Padding bottom="small" />
 				<Textarea
-					label={t('label.upload_paste_certificate_ca_chain', 'Upload or paste your Certificate CA Chain')}
+					label={t(
+						'label.upload_paste_certificate_ca_chain',
+						'Upload or paste your Certificate CA Chain'
+					)}
 					backgroundColor="gray5"
 					value={objDomainCertificateCaChain.content || ''}
 					inputName="domainCertificateCaChain"
@@ -396,9 +405,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 
 			<Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
 				<Padding bottom="small" />
-				<Text weight="bold">
-					{t('label.domain_certificate_private_key', 'Domain Private Key')}
-				</Text>
+				<Text weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</Text>
 				<Padding bottom="small" />
 				<Textarea
 					label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
@@ -435,7 +442,10 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			<Container padding={{ top: 'medium' }} width="fill">
 				<Tooltip
 					disabled={!uploadBtnTgl}
-					label={t('label.fill_all_required_fields', 'Please fill in all required fields correctly')}
+					label={t(
+						'label.fill_all_required_fields',
+						'Please fill in all required fields correctly'
+					)}
 				>
 					<Button
 						width="fill"
@@ -451,9 +461,6 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					/>
 				</Tooltip>
 			</Container>
-
 		</Container>
 	);
 };
-
-export default LoadAndVerifyCert;

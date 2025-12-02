@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import VirtualHostSection from '../virtual-host-section';
+import { VirtualHostSection } from '../virtual-host-section';
 
 function VirtualHostSectionWrapper() {
 	const [items, setItems] = useState([
