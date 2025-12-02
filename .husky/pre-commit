@@ -1,9 +1,34 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Auto-generate sonar config if admin-ui directories changed
-if git diff --cached --name-only | grep -E '^apps/admin-ui-|^packages/sdk'; then
-	echo "🔍 Changes detected in admin-ui modules, regenerating Sonar configuration..."
+# Auto-generate sonar config only for structural changes (new apps or SDK changes)
+should_regenerate_sonar=false
+
+# Check 1: New admin-ui app directories added
+staged_additions=$(git diff --cached --name-only --diff-filter=A)
+if echo "$staged_additions" | grep -qE '^apps/admin-ui-[^/]+/?$'; then
+	# Extract and verify these are genuinely new directories
+	for path in $(echo "$staged_additions" | grep -E '^apps/admin-ui-[^/]+/?$' | sed 's|/$||'); do
+		if [ -d "$path" ]; then
+			# Verify this directory didn't exist in HEAD
+			if ! git ls-tree -d HEAD:"$(dirname "$path")" 2>/dev/null | grep -q "$(basename "$path")"; then
+				should_regenerate_sonar=true
+				echo "🆕 New admin-ui app detected: $path"
+				break
+			fi
+		fi
+	done
+fi
+
+# Check 2: Any changes to packages/sdk
+if git diff --cached --name-only | grep -qE '^packages/sdk/'; then
+	should_regenerate_sonar=true
+	echo "📦 SDK changes detected"
+fi
+
+# Regenerate sonar config if structural changes detected
+if [ "$should_regenerate_sonar" = true ]; then
+	echo "🔍 Structural changes detected, regenerating Sonar configuration..."
 	pnpm sonar:generate
 	git add sonar-project.properties
 	echo "✅ Sonar configuration updated and staged"
