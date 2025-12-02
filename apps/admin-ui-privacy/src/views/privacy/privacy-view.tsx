@@ -33,6 +33,7 @@ import { FormSwitch } from './parts/form-switch';
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
 	const { data: config = [] } = useAllConfig();
+
 	const createSnackbar = useSnackbar();
 
 	const { data: rights } = useCurrentUserRights();
