@@ -78,6 +78,8 @@
 			"./apps/admin-ui-dashboard/public",
 			"./apps/admin-ui-subscription/public",
 			"./apps/admin-ui-domains/public",
+			"./apps/admin-ui-privacy/public",
+			"./apps/admin-ui-mta/public",
 			"./apps/admin-ui-cos/public"
 		]
 	},
