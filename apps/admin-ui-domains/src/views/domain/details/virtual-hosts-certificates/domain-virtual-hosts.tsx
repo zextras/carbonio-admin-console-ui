@@ -11,19 +11,15 @@ import {
 	Padding,
 	Divider,
 	Text,
-	Input,
 	Button,
-	Table,
-	Icon,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { objectType } from '../../../../../types';
-import logo from '../../../../assets/helmet_logo.svg';
 import {
 	TRUE,
 	ZIMBRA_ADMIN_URN,
@@ -35,27 +31,22 @@ import {
 } from '../../../../constants';
 import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
-import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { isValidVirtualHostname } from '../../../utility/utils';
 
+import { AlertBanner } from './alert-banner';
+import { CertificateView } from './certificate-view';
 import DeleteCertificateModel from './delete-certificate-model';
-import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
+import { LoadVerifyCertificateWizard } from './load-verify-certificate-wizard';
+import { VirtualHostSection } from './virtual-host-section';
 
-const DomainVirtualHosts: FC = () => {
+export const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
 	const { domainId }: { domainId: string } = useParams();
 	const createSnackbar = useSnackbar();
 	const domainInformation: any = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
-	const [selectedRows, setSelectedRows] = useState<any>([]);
-	const [addButtonDisabled, setAddButtonDisabled] = useState(true);
-	const [removeVirtualBtnDisabled, setRemoveVirtualBtnDisabled] = useState(true);
 	const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
-	const [virtualHostValue, setVirutalHostValue] = useState('');
 	const [items, setItems] = useState<any>([]);
 	const [defaultItems, setDefaultItems] = useState<any>([]);
 	const [domainName, setDomainName] = useState<string>('');
@@ -67,9 +58,9 @@ const DomainVirtualHosts: FC = () => {
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
 	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
-	const [errVirtualHostName, setErrVirtualHostName] = useState(true);
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
+
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -125,42 +116,6 @@ const DomainVirtualHosts: FC = () => {
 			setIsDirty(false);
 		}
 	}, [defaultItems, items]);
-
-	const headers = useMemo(
-		() => [
-			{
-				id: 'hosts',
-				label: t('label.virtual_host_name', 'Virtual Host Name'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
-
-	const addVirtualHost = useCallback((): void => {
-		if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
-			const lastId = items.length > 0 ? items[items.length - 1]?.id : '0';
-			const newId = parseInt(lastId, 10) + 1;
-			const item = {
-				id: newId?.toString(),
-				columns: [virtualHostValue],
-				clickable: true
-			};
-			setItems([...items, item]);
-			setAddButtonDisabled(true);
-			setVirutalHostValue('');
-		}
-	}, [virtualHostValue, items]);
-
-	const removeVirtualHost = useCallback((): void => {
-		if (selectedRows && selectedRows.length > 0 && items.length > 0) {
-			const filterItems = items.filter((item: any) => !selectedRows.includes(item.id));
-			setItems(filterItems);
-			setRemoveVirtualBtnDisabled(true);
-			setSelectedRows([]);
-		}
-	}, [selectedRows, items]);
 
 	const onCancel = (): void => {
 		setItems(defaultItems);
@@ -354,30 +309,19 @@ const DomainVirtualHosts: FC = () => {
 			});
 	};
 
-	const downloadTxtHandler = (): void => {
-		const elementCerti = document.createElement('a');
-		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
-			type: 'application/x-pem-file'
-		});
-		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.pem`;
-		document.body.appendChild(elementCerti);
-		elementCerti.click();
-
-		const elementPrivateKey = document.createElement('a');
-		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
-			type: 'application/x-pem-file'
-		});
-		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.pem`;
-		document.body.appendChild(elementPrivateKey);
-		elementPrivateKey.click();
-	};
-
 	useEffect(() => {
 		getAllCertiDetailsAPICall();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [alertToggle]);
+
+	const getVirtualHostsNames = (): string[] => {
+		return defaultItems.map((item: any) => {
+			if (item.columns[0]?.props?.children) {
+				return item.columns[0].props.children;
+			}
+			return item.columns[0];
+		});
+	};
 
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -445,258 +389,27 @@ const DomainVirtualHosts: FC = () => {
 					style={{ overflow: 'auto' }}
 					width="100%"
 					height="calc(100vh - 150px)"
+					padding="extrasmall"
 				>
-					<Padding value="large">
-						{/*
-						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
-						<Padding vertical="small">
-							<Row mainAlignment="flex-start" width="100%">
-								<Paragraph size="medium" color="secondary">
-									<Trans
-										i18nKey="label.virtual_host_msg"
-										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mail server is restarted."
-										components={{ break: <br /> }}
-									/>
-								</Paragraph>
-							</Row>
-						</Padding> */}
-						<Padding vertical="large" width="100%">
-							<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
-								<Container width="80%">
-									<Input
-										label={t(
-											'label.new_virtual_host_name',
-											'Type a new Virtual Host Name and click on “Add +” to add it to the list'
-										)}
-										backgroundColor="gray5"
-										value={virtualHostValue}
-										onChange={(e: any): any => {
-											setVirutalHostValue(e.target.value);
-											if (e.target.value && isValidVirtualHostname(e.target.value)) {
-												setAddButtonDisabled(false);
-												setErrVirtualHostName(true);
-											} else {
-												setAddButtonDisabled(true);
-												setErrVirtualHostName(false);
-											}
-										}}
-										hasError={!errVirtualHostName}
-									/>
-									{!errVirtualHostName && (
-										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-											<Padding top="extrasmall">
-												<Text color="error" overflow="break-word" size="extrasmall">
-													{t(
-														'domain.virtual_host_name_error',
-														'Please enter valid virtual host name!'
-													)}
-												</Text>
-											</Padding>
-										</Container>
-									)}
-								</Container>
-
-								<Container width="10%">
-									<Button
-										type="ghost"
-										label={t('label.add', 'Add')}
-										color="primary"
-										disabled={addButtonDisabled}
-										onClick={addVirtualHost}
-									/>
-								</Container>
-								<Container width="10%">
-									<Button
-										type="ghost"
-										label={t('label.remove', 'Remove')}
-										color="error"
-										disabled={removeVirtualBtnDisabled}
-										onClick={removeVirtualHost}
-									/>
-								</Container>
-							</Row>
-						</Padding>
-						<Table
-							rows={items}
-							headers={headers}
-							selectedRows={selectedRows}
-							onSelectionChange={(selected: any): any => {
-								setSelectedRows(selected);
-								if (selected && selected.length > 0) {
-									setRemoveVirtualBtnDisabled(false);
-								} else {
-									setRemoveVirtualBtnDisabled(true);
-								}
-							}}
-							HeaderFactory={CustomHeaderFactory}
-							RowFactory={CustomRowFactory}
-						/>
-						{items.length === 0 && (
-							<Container
-								background="gray6"
-								height="fit-content"
-								mainAlignment="center"
-								crossAlignment="center"
-							>
-								<Padding value="57px 0 0 0" width="100%">
-									<Row mainAlignment="center" width="100%">
-										<img src={logo} alt="logo" />
-									</Row>
-								</Padding>
-								<Padding vertical="extralarge" width="100%">
-									<Row mainAlignment="center" crossAlignment="center" width="100%">
-										<Text
-											size="large"
-											color="secondary"
-											weight="regular"
-											style={{ textAlign: 'center' }}
-										>
-											<Trans
-												i18nKey="label.no_virtual_host_message"
-												defaults="There aren’t virtual hosts here.<br />Click to ADD button to enabled new one."
-												components={{ break: <br /> }}
-											/>
-										</Text>
-									</Row>
-								</Padding>
-							</Container>
-						)}
-					</Padding>
-					{alertToggle && (
-						<Container
-							height="fit-content"
-							mainAlignment="space-between"
-							crossAlignment="center"
-							padding={{ horizontal: 'large' }}
-						>
-							<Row
-								padding={{ all: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-								style={{
-									borderRadius: '2px 2px 0px 0px',
-									backgroundColor: '#BDE7FE'
-								}}
-							>
-								<Row>
-									<Icon icon="AlertTriangleOutline" size="large" color="info" />
-									<Padding left="large">
-										<Text>
-											{t(
-												'label.certificate_alert_helperText',
-												'The certificate will be available once the proxy is restarted'
-											)}
-										</Text>
-									</Padding>
-								</Row>
-								<Icon
-									icon="CloseOutline"
-									size="large"
-									style={{ cursor: 'pointer' }}
-									onClick={(): any => setAlertToggle(false)}
-								/>
-							</Row>
-						</Container>
-					)}
+					<Container width="100%">
+						<VirtualHostSection items={items} setItems={setItems} />
+					</Container>
+					{alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
 					<Row width="100%" padding={{ horizontal: 'large' }}>
 						<Divider color="gray2" />
 					</Row>
-					<Container
-						padding={{ all: 'large' }}
-						height="fit"
-						crossAlignment="flex-start"
-						background="gray6"
-					>
-						<Row
-							padding={{ top: 'large' }}
-							width="100%"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-						>
-							<Row>
-								<Text size="medium" color="gray0" weight="bold">
-									{t('label.certificate', 'Certificate')}
-								</Text>
-							</Row>
-							<Row>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.verify_certificate', 'VERIFY CERTIFICATE')}
-										color="primary"
-										onClick={handleLoadAndVerifyCert}
-									/>
-								</Padding>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.download_uppercase', 'DOWNLOAD')}
-										color="primary"
-										disabled={toggleCertiBtn}
-										onClick={downloadTxtHandler}
-									/>
-								</Padding>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.remove', 'Remove')}
-										color="error"
-										disabled={toggleCertiBtn}
-										onClick={(): void => {
-											setOpen(true);
-										}}
-									/>
-								</Padding>
-							</Row>
-						</Row>
-						<ListRow padding={{ top: 'extralarge' }}>
-							<Container padding={{ horizontal: 'small', top: 'small' }}>
-								<Input
-									label={t(
-										'label.subject_name_cname',
-										'Subject Name (Canonical Name record - CNAME)'
-									)}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.subject || ''}
-								/>
-							</Container>
-							<Container padding={{ horizontal: 'small', top: 'small' }}>
-								<Input
-									label={t(
-										'label.subject_name_fqdn',
-										'Subject Alt Name (Fully Qualified Domain Name - FQDN)'
-									)}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.SubjectAltName || ''}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow padding={{ top: 'large' }}>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									backgroundColor="gray6"
-									label={t('label.issuer', 'Issuer')}
-									value={domainCertiDetails?.issuer || ''}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow padding={{ top: 'large' }}>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									label={t('label.valid_not_before', 'Valid from (not before)')}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.notBefore || ''}
-								/>
-							</Container>
-							<Container padding={{ horizontal: 'small' }}>
-								<Input
-									label={t('label.valid_not_after', 'Valid until (not after)')}
-									backgroundColor="gray6"
-									value={domainCertiDetails?.notAfter || ''}
-								/>
-							</Container>
-						</ListRow>
-					</Container>
+					<CertificateView
+						domainCertiDetails={domainCertiDetails}
+						toggleCertiBtn={toggleCertiBtn}
+						domainCertificate={domainCertificate}
+						domainName={domainName}
+						domainId={zimbraId}
+						hasVirtualHosts={defaultItems.length > 0}
+						virtualHosts={getVirtualHostsNames()}
+						onVerifyCertificate={handleLoadAndVerifyCert}
+						onRemove={() => setOpen(true)}
+						onCertificateGenerated={() => setAlertToggle(true)}
+					/>
 				</Container>
 			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
@@ -711,5 +424,3 @@ const DomainVirtualHosts: FC = () => {
 		</Container>
 	);
 };
-
-export default DomainVirtualHosts;

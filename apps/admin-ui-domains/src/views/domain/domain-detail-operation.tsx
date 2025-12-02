@@ -3,20 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import DomainTwoFactorAuthentication from './details/domain-2fa';
-import DomainAuthentication from './details/domain-authentication';
-import DomainDisclaimer from './details/domain-disclaimer';
-import DomainGalSettings from './details/domain-gal-settings';
-import DomainGeneralSettings from './details/domain-general-settings';
-import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
-import DomainSaml from './details/domain-saml';
-import DomainTheme from './details/domain-theme';
 import {
 	GAL,
 	GENERAL_INFORMATION,
@@ -36,17 +28,26 @@ import {
 	DELEGATES_DOMAIN_ADMINS,
 	DISCLAIMER
 } from '../../constants';
-import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
+import { getDomainInformation } from '../../services/domain-information-service';
+import { searchDirectory } from '../../services/search-directory-service';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+
+import DomainTwoFactorAuthentication from './details/domain-2fa';
+import DomainAuthentication from './details/domain-authentication';
+import DomainDisclaimer from './details/domain-disclaimer';
+import DomainGalSettings from './details/domain-gal-settings';
+import DomainGeneralSettings from './details/domain-general-settings';
+import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
+import DomainSaml from './details/domain-saml';
+import DomainTheme from './details/domain-theme';
+import { DomainVirtualHosts } from './details/virtual-hosts-certificates/domain-virtual-hosts';
 import ManageAccounts from './manange/accounts/manage-accounts';
 import ActiveSync from './manange/active-sync/active-sync';
 import ManageDelegates from './manange/delegates/manage-delegates';
 import DomainMailingList from './manange/mailing-list/domain-mailing-list';
 import DomainResources from './manange/resources/domain-resources';
 import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
-import { getDomainInformation } from '../../services/domain-information-service';
-import { searchDirectory } from '../../services/search-directory-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+
 
 const DomainOperations: FC = (): React.JSX.Element => {
 	const [t] = useTranslation();
