@@ -107,7 +107,7 @@ const PrivacyView: FC = () => {
 
 	const privacyFeedbackDescription = t(
 		'privacy.survey_feedback_sub_1',
-		'We promise they will be fast, easy and very useful to understand  how are we doing.'
+		'We promise they will be fast, easy and very useful to understand how are we doing.'
 	);
 
 	return (
@@ -128,8 +128,9 @@ const PrivacyView: FC = () => {
 											{t('label.privacy', 'Privacy')}
 										</Text>
 									</Row>
-
-									{isDirty && <FormButtons onCancel={onCancel} onSave={onSave} />}
+									<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
+										{isDirty && <FormButtons onCancel={onCancel} onSave={onSave} />}
+									</Row>
 								</Row>
 							</Container>
 						</Row>
@@ -154,6 +155,7 @@ const PrivacyView: FC = () => {
 								<form.Field name="sendFullError">
 									{(field) => (
 										<FormSwitch
+											label={t('privacy.send_full_error_data', 'Send full error data')}
 											fieldValue={field.state.value}
 											allowSetPrivacy={allowSetPrivacy}
 											onClick={(): void => {
@@ -166,6 +168,7 @@ const PrivacyView: FC = () => {
 								<form.Field name="sendAnalytics">
 									{(field) => (
 										<FormSwitch
+											label={t('privacy.allow_data_analytics', 'Allow data analytics')}
 											fieldValue={field.state.value}
 											allowSetPrivacy={allowSetPrivacy}
 											onClick={(): void => {
@@ -178,6 +181,10 @@ const PrivacyView: FC = () => {
 								<form.Field name="allowFeedback">
 									{(field) => (
 										<FormSwitch
+											label={t(
+												'privacy.allow_live_survey_feedbacks',
+												'Allow live survey feedbacks'
+											)}
 											fieldValue={field.state.value}
 											allowSetPrivacy={allowSetPrivacy}
 											onClick={(): void => {

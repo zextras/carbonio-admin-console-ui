@@ -5,21 +5,20 @@
  */
 import { Container, Switch } from '@zextras/carbonio-design-system';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import ListRow from '../../list/list-row';
 
 export const FormSwitch = ({
 	fieldValue,
 	allowSetPrivacy,
-	onClick
+	onClick,
+	label
 }: {
 	fieldValue: boolean;
 	allowSetPrivacy: boolean;
 	onClick: () => void;
+	label: string;
 }) => {
-	const [t] = useTranslation();
-
 	return (
 		<ListRow>
 			<Container
@@ -30,7 +29,7 @@ export const FormSwitch = ({
 			>
 				<Switch
 					value={fieldValue}
-					label={t('privacy.allow_live_survey_feedbacks', 'Allow live survey feedbacks')}
+					label={label}
 					onClick={onClick}
 					iconColor="primary"
 					disabled={!allowSetPrivacy}
