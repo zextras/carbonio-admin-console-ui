@@ -27,6 +27,7 @@
 	},
 	"dependencies": {
 		"@fontsource/roboto": "^5.2.6",
+		"@reduxjs/toolkit": "^2.11.0",
 		"@sentry/browser": "^6.17.7",
 		"@tinymce/tinymce-react": "^4.3.2",
 		"@vitest/browser-preview": "^4.0.14",
@@ -45,6 +46,7 @@
 		"react-i18next": "^12.3.1",
 		"react-markdown": "^10.1.0",
 		"react-router-dom": "^5.3.4",
+		"redux-logger": "^3.0.6",
 		"remark-gfm": "^4.0.1",
 		"styled-components": "^5.3.11",
 		"tinymce": "^6.8.4",
