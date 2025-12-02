@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Divider, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Row, Divider, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,23 @@ import { FormSwitch } from './parts/form-switch';
 import { SwitchDescription } from './parts/form-title';
 
 type ModifyConfigAPI = { allowFeedback: boolean; sendAnalytics: boolean; sendFullError: boolean };
+
+async function modifyConfigApi(value: ModifyConfigAPI) {
+	return soapFetch('Batch', {
+		ModifyConfigRequest: [
+			{ n: CARBONIO_ALLOW_FEEDBACK, _content: value.allowFeedback ? TRUE : FALSE },
+			{
+				n: CARBONIO_SEND_FULL_ERROR_STACK,
+				_content: value.sendFullError ? TRUE : FALSE
+			},
+			{
+				n: CARBONIO_SEND_ANALYTICS,
+				_content: value.sendAnalytics ? TRUE : FALSE
+			}
+		],
+		_jsns: 'urn:zimbra'
+	});
+}
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
@@ -46,22 +63,6 @@ const PrivacyView: FC = () => {
 		config.find((item: { n: string }) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?._content ===
 		TRUE
 	);
-
-	const modifyConfigApi = async (value: ModifyConfigAPI) =>
-		soapFetch('Batch', {
-			ModifyConfigRequest: [
-				{ n: CARBONIO_ALLOW_FEEDBACK, _content: value.allowFeedback ? TRUE : FALSE },
-				{
-					n: CARBONIO_SEND_FULL_ERROR_STACK,
-					_content: value.sendFullError ? TRUE : FALSE
-				},
-				{
-					n: CARBONIO_SEND_ANALYTICS,
-					_content: value.sendAnalytics ? TRUE : FALSE
-				}
-			],
-			_jsns: 'urn:zimbra'
-		});
 
 	const form = useForm({
 		defaultValues: {
@@ -114,7 +115,25 @@ const PrivacyView: FC = () => {
 			<form.Subscribe selector={(state) => state.isDirty}>
 				{(isDirty) => (
 					<>
-						<FormButtons isDirty={isDirty} onCancel={onCancel} onSave={onSave} />
+						<Row mainAlignment="flex-start" width="100%">
+							<Container
+								orientation="vertical"
+								mainAlignment="space-around"
+								background="gray6"
+								height="58px"
+							>
+								<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+									<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
+										<Text size="medium" weight="bold" color="gray0">
+											{t('label.privacy', 'Privacy')}
+										</Text>
+									</Row>
+
+									{isDirty && <FormButtons onCancel={onCancel} onSave={onSave} />}
+								</Row>
+							</Container>
+						</Row>
+
 						<Row orientation="horizontal" width="100%" background="gray6">
 							<Divider />
 						</Row>
