@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useState } from 'react';
 
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -15,16 +15,11 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import AlertBanner from './alert-banner';
-import CertificateView from './certificate-view';
-import DeleteCertificateModel from './delete-certificate-model';
-import VirtualHostSection from './virtual-host-section';
-import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import { objectType } from '../../../../../types';
 import {
 	TRUE,
@@ -39,6 +34,12 @@ import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import ModalOverlay from '../../../components/ModalOverlay';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+
+import AlertBanner from './alert-banner';
+import CertificateView from './certificate-view';
+import DeleteCertificateModel from './delete-certificate-model';
+import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
+import VirtualHostSection from './virtual-host-section';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -129,7 +130,7 @@ const DomainVirtualHosts: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
-		// eslint-disable-next-line sonarjs/no-duplicate-string
+		 
 		body._jsns = ZIMBRA_ADMIN_URN;
 		items.forEach((item: any) => {
 			if (item.columns[0]?.props?.children) {
@@ -190,8 +191,8 @@ const DomainVirtualHosts: FC = () => {
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						:  
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -215,12 +216,11 @@ const DomainVirtualHosts: FC = () => {
 				setIsCertificateAvailbale(true);
 			})
 			// TODO: On no cert found server always returns error so used empty catch for now
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			 
 			.catch((error) => {
 				if (error) {
 					setIsCertificateAvailbale(false);
 				}
-
 			});
 		const zimbraData =
 			domainInformation &&
@@ -393,24 +393,8 @@ const DomainVirtualHosts: FC = () => {
 					height="calc(100vh - 150px)"
 					padding="extrasmall"
 				>
-					<Container width='100%'>
-						{/*
-						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
-						<Padding vertical="small">
-							<Row mainAlignment="flex-start" width="100%">
-								<Paragraph size="medium" color="secondary">
-									<Trans
-										i18nKey="label.virtual_host_msg"
-										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mail server is restarted."
-										components={{ break: <br /> }}
-									/>
-								</Paragraph>
-							</Row>
-						</Padding> */}
-						<VirtualHostSection
-							items={items}
-							setItems={setItems}
-						/>
+					<Container width="100%">
+						<VirtualHostSection items={items} setItems={setItems} />
 					</Container>
 					{alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
 					<Row width="100%" padding={{ horizontal: 'large' }}>
