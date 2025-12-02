@@ -10,82 +10,81 @@ import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
 import { optimizeDepsInclude } from './vitest.config.utils';
 
+function jsdomProjectConfig() {
+	return {
+		test: {
+			name: 'unit',
+			environment: 'jsdom',
+			setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
+			alias: {
+				'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
+				'@zextras/admin-ui-bootstrap': path.resolve(
+					__dirname,
+					'./__mocks__/@zextras/admin-ui-bootstrap.js'
+				)
+			},
+			include: ['src/**/*.test.{ts,tsx}'],
+			exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
+			globals: true,
+			css: true,
+			clearMocks: true,
+			mockReset: true,
+			restoreMocks: true,
+			testTimeout: 10000
+		},
+		optimizeDeps: {
+			include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+		}
+	};
+}
+
+function browserProjectConfig() {
+	return {
+		test: {
+			name: 'browser',
+			setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+			alias: {
+				'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.browser.ts')
+			},
+			include: ['**/*.browser.test.{ts,tsx}'],
+			browser: {
+				enabled: true,
+				provider: playwright() as any,
+				instances: [{ browser: 'chromium' as const }],
+				viewport: { width: 834, height: 2000 },
+				headless: !!process.env.CI,
+				screenshotFailures: !process.env.CI
+			},
+			exclude: ['dist/**', 'node_modules/**'],
+			globals: true,
+			css: true,
+			clearMocks: true,
+			testTimeout: 10_000,
+			hookTimeout: 15_000
+		},
+		plugins: [
+			react(),
+			svgr({
+				svgrOptions: {
+					ref: true,
+					svgo: false,
+					titleProp: true,
+					exportType: 'default'
+				},
+				include: '**/*.svg'
+			})
+		],
+		optimizeDeps: {
+			include: optimizeDepsInclude
+		}
+	};
+}
+
 export default defineConfig({
 	test: {
 		globals: true,
 		passWithNoTests: true,
-		projects: [
-			{
-				optimizeDeps: {
-					include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
-				},
-				test: {
-					environment: 'jsdom',
-					setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
-					alias: {
-						'admin-ui-test-utils': path.resolve(
-							__dirname,
-							'./packages/test-utils/src/index.jsdom.ts'
-						),
-						'@zextras/admin-ui-bootstrap': path.resolve(
-							__dirname,
-							'./__mocks__/@zextras/admin-ui-bootstrap.js'
-						)
-					},
-					include: ['src/**/*.test.{ts,tsx}'],
-					exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
-					name: 'unit',
-					globals: true,
-					css: true,
-					clearMocks: true,
-					mockReset: true,
-					restoreMocks: true,
-					testTimeout: 10000
-				}
-			},
-			{
-				plugins: [
-					react(),
-					svgr({
-						svgrOptions: {
-							ref: true,
-							svgo: false,
-							titleProp: true,
-							exportType: 'default'
-						},
-						include: '**/*.svg'
-					})
-				],
-				optimizeDeps: {
-					include: optimizeDepsInclude
-				},
-				test: {
-					setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-					alias: {
-						'admin-ui-test-utils': path.resolve(
-							__dirname,
-							'./packages/test-utils/src/index.browser.ts'
-						)
-					},
-					include: ['**/*.browser.test.{ts,tsx}'],
-					name: 'browser',
-					browser: {
-						enabled: true,
-						provider: playwright() as any,
-						instances: [{ browser: 'chromium' }],
-						viewport: { width: 834, height: 2000 },
-						headless: !!process.env.CI,
-						screenshotFailures: !process.env.CI
-					},
-					exclude: ['dist/**', 'node_modules/**'],
-					globals: true,
-					css: true,
-					clearMocks: true,
-					testTimeout: 10_000,
-					hookTimeout: 15_000
-				}
-			}
-		],
+		projects: [jsdomProjectConfig(), browserProjectConfig()],
 		coverage: {
 			provider: 'istanbul',
 			reporter: ['text', 'json', 'html', 'lcov'],

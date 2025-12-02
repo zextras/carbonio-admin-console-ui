@@ -93,8 +93,8 @@ describe('PrivacyView', () => {
 		await switchLabel.click();
 
 		// Now save and cancel buttons should be visible
-		// await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-		// await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 	}, 15000);
 
 	it('shows save and cancel buttons when switch is toggled from TRUE to FALSE', async () => {
