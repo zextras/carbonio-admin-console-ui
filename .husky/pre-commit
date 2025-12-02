@@ -3,8 +3,8 @@
 
 # Auto-generate sonar config if admin-ui directories changed
 if git diff --cached --name-only | grep -E '^apps/admin-ui-|^packages/sdk'; then
-    echo "🔍 Changes detected in admin-ui modules, regenerating Sonar configuration..."
-    npm run sonar:generate
-    git add sonar-project.properties
-    echo "✅ Sonar configuration updated and staged"
+	echo "🔍 Changes detected in admin-ui modules, regenerating Sonar configuration..."
+	pnpm sonar:generate
+	git add sonar-project.properties
+	echo "✅ Sonar configuration updated and staged"
 fi

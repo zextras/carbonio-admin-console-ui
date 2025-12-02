@@ -229,16 +229,6 @@ function generateSonarProperties(modules) {
 	return content.join('\n');
 }
 
-function backupExistingFile(filePath) {
-	if (fs.existsSync(filePath)) {
-		const backupPath = `${filePath}.backup.${Date.now()}`;
-		fs.copyFileSync(filePath, backupPath);
-		logInfo(`Created backup: ${backupPath}`);
-		return backupPath;
-	}
-	return null;
-}
-
 function main() {
 	const args = process.argv.slice(2);
 	const validateOnly = args.includes('--validate-only');
@@ -279,9 +269,6 @@ function main() {
 			process.exit(1);
 		}
 	}
-
-	// Backup existing file
-	backupExistingFile(outputPath);
 
 	// Write new configuration
 	fs.writeFileSync(outputPath, generatedContent);
