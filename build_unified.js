@@ -100,15 +100,41 @@ function main() {
 		fs.rmSync(packageDir, { recursive: true, force: true });
 	}
 
-	const components = [
-		{ name: 'admin-ui-bootstrap', target: 'carbonio-admin-ui' },
-		{ name: 'admin-ui-domains', target: 'carbonio-admin-ui-domains' },
-		{ name: 'admin-ui-console', target: 'carbonio-admin-console-ui' },
-		{ name: 'admin-ui-dashboard', target: 'carbonio-admin-ui-dashboard' },
-		{ name: 'admin-ui-cos', target: 'carbonio-admin-ui-cos' },
-		{ name: 'admin-ui-subscription', target: 'carbonio-admin-ui-subscription' },
-		{ name: 'admin-ui-privacy', target: 'carbonio-admin-ui-privacy' }
-	];
+	// Dynamically discover all admin-ui components
+	function discoverComponents() {
+		const adminUiDirs = fs.readdirSync(appsDir)
+			.filter(dir => dir.startsWith('admin-ui-') &&
+						  fs.statSync(path.join(appsDir, dir)).isDirectory())
+			.map(dir => {
+				// Read target name from package.json carbonio.name field
+				const packageJsonPath = path.join(appsDir, dir, 'package.json');
+				let target;
+
+				try {
+					const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+					target = packageJson.carbonio?.name;
+				} catch (error) {
+					log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
+					// Fallback pattern for robustness
+					target = dir === 'admin-ui-console'
+						? 'carbonio-admin-console-ui'
+						: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+				}
+
+				if (!target) {
+					log(`Warning: No carbonio.name found for ${dir}, using fallback naming`, 'blue');
+					target = dir === 'admin-ui-console'
+						? 'carbonio-admin-console-ui'
+						: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+				}
+
+				return { name: dir, target };
+			});
+
+		return adminUiDirs;
+	}
+
+	const components = discoverComponents();
 
 	// Build and copy each component
 	for (const component of components) {
@@ -138,6 +164,9 @@ function main() {
 
 	// Create PKGBUILD file
 	log('Creating PKGBUILD...', 'blue');
+
+	// Generate dynamic component list for PKGBUILD
+	const componentList = components.map(c => c.target).join(' ');
 
 	const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
@@ -169,9 +198,12 @@ package() {
 
   # Set commit hash for symlink creation
   commitHash="${commitHash}"
-  
+
+  # Get list of all components from discovered array
+  components=(${componentList})
+
   # Set permissions for each component - files and directories only, symlinks are left as-is
-  for component in carbonio-admin-ui carbonio-admin-console-ui carbonio-admin-ui-cos carbonio-admin-ui-domains carbonio-admin-ui-subscription carbonio-admin-ui-privacy carbonio-admin-ui-dashboard; do
+  for component in "\${components[@]}"; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
       chown -h root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${component}"
       # Only chmod regular files, not symlinks
@@ -181,40 +213,12 @@ package() {
     fi
   done
 
-  # Create i18n symlink for carbonio-admin-ui with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui/${commitHash}/i18n"
-  fi
-
-  # Create i18n symlink for carbonio-admin-console-ui with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-console-ui/${commitHash}/i18n"
-  fi
-
-  # Create i18n symlink for carbonio-admin-ui-cos with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-cos/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-cos/${commitHash}/i18n"
-  fi
-
-  # Create i18n symlink for carbonio-admin-ui-dashboard with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-dashboard/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-dashboard/${commitHash}/i18n"
-  fi
-
- # Create i18n symlink for carbonio-admin-ui-subscription with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-subscription/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-subscription/${commitHash}/i18n"
-  fi
-
- # Create i18n symlink for carbonio-admin-ui-privacy with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-privacy/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-privacy/${commitHash}/i18n"
-  fi
-
-  # Create i18n symlink for carbonio-admin-ui-domains with specific commit hash
-  if [ -d "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-domains/${commitHash}" ]; then
-    ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/carbonio-admin-ui-domains/${commitHash}/i18n"
-  fi
+  # Create i18n symlinks for all components
+  for component in "\${components[@]}"; do
+    if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}/\${commitHash}" ]; then
+      ln -sf /opt/zextras/admin/iris/i18n "\${pkgdir}/opt/zextras/admin/iris/\${component}/\${commitHash}/i18n"
+    fi
+  done
  
   }
 
