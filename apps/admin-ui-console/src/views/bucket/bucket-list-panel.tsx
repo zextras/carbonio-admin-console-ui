@@ -31,11 +31,10 @@ const SelectItem = styled(Row)``;
 
 const BucketListPanel: FC = () => {
 	const [t] = useTranslation();
+
 	const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
 	const volumeList = useBucketServersListStore((state) => state.volumeList);
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { globalCarbonioSendAnalytics } = useGlobalConfigStore();
 	const [isStoreSelect, setIsStoreSelect] = useState(false);
 	const [isStoreVolumeSelect, setIsStoreVolumeSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');

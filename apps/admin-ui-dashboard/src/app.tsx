@@ -9,9 +9,7 @@ import {
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
 	useGlobalConfigStore,
-	useAppConfigStore,
 	useAllServers
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -40,38 +38,21 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
-	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.setGlobalCarbonioSendAnalytics
-	);
-	const allConfig = useAllConfig();
+	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const accounts = useUserAccounts();
 	const { data: servers = [] } = useAllServers({
 		enabled: isAdvanced
 	});
 
 	useEffect(() => {
-		if (accounts?.length > 0) {
-			const { id } = accounts[0];
-			setUserId(id);
-		}
-	}, [accounts, setUserId]);
-
-	useEffect(() => {
-		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
-	}, [config, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (allConfig && allConfig.length > 0) {
-			setConfig(allConfig);
-		}
-	}, [allConfig, setConfig]);
+	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const homeTooltipItems = useMemo(
 		() => [

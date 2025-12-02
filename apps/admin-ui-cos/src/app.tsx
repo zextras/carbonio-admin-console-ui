@@ -11,10 +11,8 @@ import {
 	postSoapFetchRequest,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
 	useCurrentUserRights,
-	useGlobalConfigStore,
-	useAppConfigStore
+	useGlobalConfigStore
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -67,24 +65,11 @@ const PrimaryBarIcon = styled(Icon)`
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
-	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.setGlobalCarbonioSendAnalytics
-	);
-	const allConfig = useAllConfig();
+	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const accounts = useUserAccounts();
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
-
-	useEffect(() => {
-		if (accounts?.length > 0) {
-			// FIX-ADMIN-MONOREPO
-			const { id } = accounts[0];
-			setUserId(id);
-		}
-	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
 		const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
@@ -105,18 +90,13 @@ const App: FC = () => {
 	}, [rights]);
 
 	useEffect(() => {
-		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }): boolean => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
-	}, [config, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (allConfig && allConfig.length > 0) {
-			setConfig(allConfig);
-		}
-	}, [allConfig, setConfig]);
+	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const managementSection = useMemo(
 		() => ({

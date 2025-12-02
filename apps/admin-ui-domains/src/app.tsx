@@ -9,12 +9,10 @@ import {
 	registerActions,
 	useAllConfig,
 	useIsAdvanced,
-	useUserAccounts,
 	useDomainStore,
 	useCurrentUserRights,
 	useMailstoreServers,
 	useGlobalConfigStore,
-	useAppConfigStore,
 	useAllServers,
 	useMtaServers,
 	useBucketServersListStore,
@@ -56,29 +54,17 @@ const App: FC = () => {
 	const history = useHistory();
 	const { data: serverList = [] } = useAllServers();
 	const { data: _mtaServerList = [] } = useMtaServers();
-	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
-	const allConfig = useAllConfig();
+	const { setGlobalCarbonioSendAnalytics, setGlobalConfig } = useGlobalConfigStore();
+	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig, setUserId } = useAppConfigStore((state) => state);
-	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.setGlobalCarbonioSendAnalytics
-	);
-	const accounts = useUserAccounts();
 	const { data: rights } = useCurrentUserRights();
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 
 	const { data: mailstoreServers } = useMailstoreServers();
-
-	useEffect(() => {
-		if (accounts?.length > 0) {
-			const { id } = accounts[0];
-			setUserId(id);
-		}
-	}, [accounts, setUserId]);
 
 	const createDomainRight = useMemo(() => {
 		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
@@ -90,18 +76,13 @@ const App: FC = () => {
 	}, [rights]);
 
 	useEffect(() => {
-		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
-			?._content;
+		const sendAnalytics = allConfig.filter(
+			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
+		)[0]?._content;
 		sendAnalytics === TRUE
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
-	}, [config, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (allConfig && allConfig.length > 0) {
-			setConfig(allConfig);
-		}
-	}, [allConfig, setConfig]);
+	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	useEffect(() => {
 		if (mailstoreServers && mailstoreServers.length > 0) {

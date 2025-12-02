@@ -7,10 +7,10 @@
 /**
  * Attribute type for domain and COS objects
  */
-interface Attribute {
+export type Attribute = {
 	n: string;
 	_content: string;
-}
+};
 
 /**
  * Domain type representing a Zimbra domain

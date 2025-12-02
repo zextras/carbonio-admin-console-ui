@@ -8,6 +8,7 @@ import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
+	grantUserConfigRights,
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
@@ -16,18 +17,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import MTAAdvanced from './mta-advanced';
-
-const mockRights = [
-	{
-		type: 'config',
-		all: [
-			{
-				setAttrs: [{ all: true }],
-				getAttrs: [{ all: true }]
-			}
-		]
-	}
-];
 
 function expectLoggingSectionVisible() {
 	expect(page.getByText('Logging', { exact: true })).toBeVisible();
@@ -65,27 +54,8 @@ describe('MTAAdvanced', () => {
 	};
 
 	beforeEach(() => {
+		grantUserConfigRights();
 		setupConfigStore();
-
-		// Set up user account store for useCurrentUserRights hook
-		useAccountStore.setState({
-			account: {
-				id: 'test-user-id',
-				name: 'test@example.com',
-				displayName: '',
-				signatures: {
-					signature: []
-				},
-				identities: undefined,
-				rights: { targets: [] }
-			},
-			settings: {
-				prefs: {},
-				attrs: {},
-				props: []
-			},
-			usedQuota: 0
-		});
 	});
 
 	afterEach(() => {
@@ -94,9 +64,7 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should render the component correctly', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
+		grantUserConfigRights();
 		setupBrowserTest(<MTAAdvanced />);
 		expect(page.getByText('Advanced', { exact: true })).toBeVisible();
 		expectLoggingSectionVisible();
@@ -105,9 +73,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle mail message size radio button interactions', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
@@ -128,9 +93,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should show error message for invalid message size input', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
@@ -150,9 +112,6 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle switch interactions', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		const loggingSwitchLabel = page.getByText('Enable logging of the remote SMTP client port');
@@ -165,9 +124,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle input field interactions', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
@@ -199,9 +155,6 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle radio button state changes for message size limit', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Start with custom size selected (based on mock data)
@@ -225,9 +178,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle message size input changes', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Ensure custom size is selected
@@ -282,9 +232,6 @@ describe('MTAAdvanced', () => {
 			// Note: No zimbraMtaMaxMessageSize in this config
 		]);
 
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Should default to "No size limit"
@@ -300,9 +247,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should trigger setLimitMaxMessageSize(false) when clicking no limit radio', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Start with custom size selected (has message size in config)
@@ -338,9 +282,6 @@ describe('MTAAdvanced', () => {
 			{ n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' }
 		]);
 
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Should start with "No size limit" selected
@@ -360,9 +301,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should trigger setValue and setZimbraMtaMaxMessageSizeState on input change', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Ensure custom size is selected
@@ -406,9 +344,6 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle select dropdown changes for log levels', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Test that select elements are visible - this ensures the change handlers are attached
@@ -420,9 +355,6 @@ describe('MTAAdvanced', () => {
 	});
 
 	it('should handle save and cancel functionality', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Make a change to trigger dirty state
@@ -445,9 +377,6 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle save functionality with form submission', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		createBrowserSoapAPIInterceptor('ModifyConfig', {});
 		setupBrowserTest(<MTAAdvanced />);
 
@@ -482,9 +411,6 @@ describe('MTAAdvanced', () => {
 	}, 20000);
 
 	it('should handle invalid SMTPD sender login maps', async () => {
-		createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-			target: mockRights
-		});
 		setupBrowserTest(<MTAAdvanced />);
 
 		// Enter an invalid SMTPD sender login maps value to trigger error handling

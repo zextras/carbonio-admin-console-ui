@@ -15,9 +15,9 @@ import {
 	CARBONIO_CE_ADMIN_DOCUMENTATION_URL
 } from '../constants';
 import { logout } from '../network/logout';
+import { useConfigAttribute } from '../react-query/use-config';
 import { useIsAdvanced } from '../react-query/use-is-advanced-supported';
 import { useUserAccount } from '../store/account';
-import { useConfigStore } from '../store/config';
 
 import { useUtilityBarStore } from './store';
 import { openLink, useUtilityViews } from './utils';
@@ -49,11 +49,12 @@ export const ShellUtilityBar: FC = () => {
 	const views = useUtilityViews();
 	const acct = useUserAccount();
 	const isAdvanced = useIsAdvanced();
-	const helpDocumentationUrl = useConfigStore((state) =>
-		isAdvanced
-			? state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE)
-			: CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+	const { data: helpDocumentationUrlAttribute } = useConfigAttribute(
+		CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE
 	);
+	const helpDocumentationUrl = isAdvanced
+		? helpDocumentationUrlAttribute || CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+		: CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
 	const [t] = useTranslation();
 	const accountItems = useMemo(
 		() => [

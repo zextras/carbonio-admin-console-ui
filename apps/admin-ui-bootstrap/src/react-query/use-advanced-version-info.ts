@@ -6,6 +6,8 @@
 
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
+import { useIsAdvanced } from './use-is-advanced-supported';
+
 type AdvancedVersionInfo = {
 	domain: string;
 	minApiVersion: number;
@@ -48,7 +50,8 @@ export const getAdvancedVersionInfo = queryFnVersionInfo;
 
 // React Query hook to get advanced version information
 export const useAdvancedVersionInfo = (options: useAdvancedVersionInfoOptions = {}) => {
-	const { enabled = true, ...queryOptions } = options;
+	const isAdvanced = useIsAdvanced();
+	const { enabled = isAdvanced, ...queryOptions } = options;
 
 	return useQuery({
 		queryKey: ['advanced-version-info'],
