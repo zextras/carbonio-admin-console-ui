@@ -29,6 +29,7 @@
 		"@fontsource/roboto": "^5.2.6",
 		"@sentry/browser": "^6.17.7",
 		"@tinymce/tinymce-react": "^4.3.2",
+		"@vitest/browser-preview": "^4.0.14",
 		"@zextras/carbonio-design-system": "^8.1.0",
 		"darkreader": "^4.9.58",
 		"date-fns": "^4.1.0",
