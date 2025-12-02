@@ -6,254 +6,243 @@
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import React, { useState } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import VirtualHostSection from '../virtual-host-section';
 
 function VirtualHostSectionWrapper() {
-    const [items, setItems] = useState([
-        { id: '1', columns: ['virtual1.test-domain.com'], clickable: true },
-        { id: '2', columns: ['virtual2.test-domain.com'], clickable: true }
-    ]);
+	const [items, setItems] = useState([
+		{ id: '1', columns: ['virtual1.test-domain.com'], clickable: true },
+		{ id: '2', columns: ['virtual2.test-domain.com'], clickable: true }
+	]);
 
-    return <VirtualHostSection items={items} setItems={setItems} />;
+	return <VirtualHostSection items={items} setItems={setItems} />;
 }
 
 function EmptyVirtualHostSectionWrapper() {
-    const [items, setItems] = useState<any[]>([]);
+	const [items, setItems] = useState<any[]>([]);
 
-    return <VirtualHostSection items={items} setItems={setItems} />;
+	return <VirtualHostSection items={items} setItems={setItems} />;
 }
 
 describe('VirtualHostSection (browser)', () => {
+	describe('Basic Rendering', () => {
+		it('should render the input field for adding virtual hosts', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+			const input = page.getByText(
+				'Type a new Virtual Host Name and click on “Add +” to add it to the list'
+			);
+			await expect.element(input).toBeInTheDocument();
+		});
 
-    afterEach(() => {
-        vi.clearAllMocks();
-    });
+		it('should render existing virtual hosts in the list', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-    describe('Basic Rendering', () => {
-        it('should render the input field for adding virtual hosts', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			await expect.element(page.getByText('virtual1.test-domain.com')).toBeVisible();
+			await expect.element(page.getByText('virtual2.test-domain.com')).toBeVisible();
+		});
 
-            const input = page.getByText('Type a new Virtual Host Name and click on “Add +” to add it to the list');
-            await expect.element(input).toBeInTheDocument();
+		it('should render the header with Virtual Host Name label', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        });
+			await expect.element(page.getByText('Virtual Host Name', { exact: true })).toBeVisible();
+		});
 
-        it('should render existing virtual hosts in the list', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+		it('should show empty state when there are no virtual hosts', async () => {
+			setupBrowserTest(<EmptyVirtualHostSectionWrapper />);
 
-            await expect.element(page.getByText('virtual1.test-domain.com')).toBeVisible();
-            await expect.element(page.getByText('virtual2.test-domain.com')).toBeVisible();
-        });
+			await expect.element(page.getByText('There aren’t any virtual hosts yet.')).toBeVisible();
+		});
 
-        it('should render the header with Virtual Host Name label', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+		it('should render the Add button', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            await expect.element(page.getByText('Virtual Host Name', { exact: true })).toBeVisible();
-        });
+			const addButton = page.getByRole('button', { name: /add/i });
+			await expect.element(addButton).toBeVisible();
+		});
+	});
 
-        it('should show empty state when there are no virtual hosts', async () => {
-            setupBrowserTest(<EmptyVirtualHostSectionWrapper />);
+	describe('Adding Virtual Hosts', () => {
+		it('should have Add button disabled initially', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            await expect
-                .element(page.getByText("There aren’t any virtual hosts yet."))
-                .toBeVisible();
-        });
+			const addButton = page.getByRole('button', { name: /add/i });
+			await expect.element(addButton).toBeDisabled();
+		});
 
-        it('should render the Add button', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+		it('should enable Add button when valid hostname is entered', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            const addButton = page.getByRole('button', { name: /add/i });
-            await expect.element(addButton).toBeVisible();
-        });
-    });
+			// Get the input by role textbox (there should be only one)
+			const input = page.getByRole('textbox');
+			const addButton = page.getByRole('button', { name: /add/i });
 
-    describe('Adding Virtual Hosts', () => {
-        it('should have Add button disabled initially', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			await userEvent.fill(input, 'virtual3.test-domain.com');
+			await expect.element(addButton).toBeEnabled();
+		});
 
-            const addButton = page.getByRole('button', { name: /add/i });
-            await expect.element(addButton).toBeDisabled();
-        });
+		it('should not enable Add button for invalid hostname', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should enable Add button when valid hostname is entered', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const input = page.getByRole('textbox');
+			const addButton = page.getByRole('button', { name: /add/i });
 
+			await userEvent.fill(input, 'invalid hostname');
+			await expect.element(addButton).toBeDisabled();
+		});
 
-            // Get the input by role textbox (there should be only one)
-            const input = page.getByRole('textbox');
-            const addButton = page.getByRole('button', { name: /add/i });
+		it('should add a new virtual host when Add button is clicked', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            await userEvent.fill(input, 'virtual3.test-domain.com');
-            await expect.element(addButton).toBeEnabled();
-        });
+			const input = page.getByRole('textbox');
+			const addButton = page.getByRole('button', { name: /add/i });
 
-        it('should not enable Add button for invalid hostname', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			await userEvent.fill(input, 'virtual3.test-domain.com');
+			await userEvent.click(addButton);
 
-            const input = page.getByRole('textbox');
-            const addButton = page.getByRole('button', { name: /add/i });
+			await expect.element(page.getByText('virtual3.test-domain.com')).toBeVisible();
+		});
 
-            await userEvent.fill(input, 'invalid hostname');
-            await expect.element(addButton).toBeDisabled();
-        });
+		it('should clear input field after adding a virtual host', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should add a new virtual host when Add button is clicked', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const input = page.getByRole('textbox');
+			const addButton = page.getByRole('button', { name: /add/i });
 
-            const input = page.getByRole('textbox');
-            const addButton = page.getByRole('button', { name: /add/i });
+			await userEvent.fill(input, 'virtual3.test-domain.com');
+			await userEvent.click(addButton);
 
-            await userEvent.fill(input, 'virtual3.test-domain.com');
-            await userEvent.click(addButton);
+			await expect.element(input).toHaveValue('');
+		});
 
-            await expect.element(page.getByText('virtual3.test-domain.com')).toBeVisible();
-        });
+		it('should disable Add button after adding a virtual host', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should clear input field after adding a virtual host', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const input = page.getByRole('textbox');
+			const addButton = page.getByRole('button', { name: /add/i });
 
-            const input = page.getByRole('textbox');
-            const addButton = page.getByRole('button', { name: /add/i });
+			await userEvent.fill(input, 'virtual3.test-domain.com');
+			await userEvent.click(addButton);
 
-            await userEvent.fill(input, 'virtual3.test-domain.com');
-            await userEvent.click(addButton);
+			await expect.element(addButton).toBeDisabled();
+		});
+	});
 
-            await expect.element(input).toHaveValue('');
-        });
+	describe('Selection and Removal', () => {
+		it('should show checkbox when hovering over a row', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should disable Add button after adding a virtual host', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			await userEvent.hover(firstRow);
 
-            const input = page.getByRole('textbox');
-            const addButton = page.getByRole('button', { name: /add/i });
+			const checkboxes = page.getByTestId('icon: SquareOutline').elements();
+			expect(checkboxes.length).toBeGreaterThan(0);
+		});
 
-            await userEvent.fill(input, 'virtual3.test-domain.com');
-            await userEvent.click(addButton);
+		it('should select a row when clicked', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            await expect.element(addButton).toBeDisabled();
-        });
-    });
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			await userEvent.click(firstRow);
 
-    describe('Selection and Removal', () => {
-        it('should show checkbox when hovering over a row', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const checkedIcon = page.getByTestId('icon: CheckmarkSquareOutline').elements();
+			expect(checkedIcon.length).toBeGreaterThan(0);
+		});
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            await userEvent.hover(firstRow);
+		it('should show Remove button when a single row is selected and hovered', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            const checkboxes = page.getByTestId('icon: SquareOutline').elements();
-            expect(checkboxes.length).toBeGreaterThan(0);
-        });
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			await userEvent.click(firstRow);
+			await userEvent.hover(firstRow);
 
-        it('should select a row when clicked', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const removeButtons = page.getByRole('button', { name: /remove/i }).elements();
+			expect(removeButtons.length).toBeGreaterThan(0);
+		});
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            await userEvent.click(firstRow);
+		it('should remove a single item when Remove button is clicked', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            const checkedIcon = page.getByTestId('icon: CheckmarkSquareOutline').elements();
-            expect(checkedIcon.length).toBeGreaterThan(0);
-        });
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			await userEvent.click(firstRow);
+			await userEvent.hover(firstRow);
 
-        it('should show Remove button when a single row is selected and hovered', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const removeButton = page.getByRole('button', { name: /^remove$/i });
+			await userEvent.click(removeButton);
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            await userEvent.click(firstRow);
-            await userEvent.hover(firstRow);
+			const removedItem = page.getByText('virtual1.test-domain.com').query();
+			expect(removedItem).toBeNull();
+		});
 
-            const removeButtons = page.getByRole('button', { name: /remove/i }).elements();
-            expect(removeButtons.length).toBeGreaterThan(0);
-        });
+		it('should show "Remove selected items" button when multiple rows are selected', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should remove a single item when Remove button is clicked', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			const secondRow = page.getByText('virtual2.test-domain.com');
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            await userEvent.click(firstRow);
-            await userEvent.hover(firstRow);
+			await userEvent.click(firstRow);
+			await userEvent.click(secondRow);
 
-            const removeButton = page.getByRole('button', { name: /^remove$/i });
-            await userEvent.click(removeButton);
+			await expect
+				.element(page.getByRole('button', { name: /remove selected items/i }))
+				.toBeVisible();
+		});
 
-            const removedItem = page.getByText('virtual1.test-domain.com').query();
-            expect(removedItem).toBeNull();
-        });
+		it('should remove multiple selected items when "Remove selected items" is clicked', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-        it('should show "Remove selected items" button when multiple rows are selected', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			const secondRow = page.getByText('virtual2.test-domain.com');
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            const secondRow = page.getByText('virtual2.test-domain.com');
+			await userEvent.click(firstRow);
+			await userEvent.click(secondRow);
 
-            await userEvent.click(firstRow);
-            await userEvent.click(secondRow);
+			const removeSelectedButton = page.getByRole('button', {
+				name: /remove selected items/i
+			});
+			await userEvent.click(removeSelectedButton);
 
-            await expect
-                .element(page.getByRole('button', { name: /remove selected items/i }))
-                .toBeVisible();
-        });
+			const removedItem1 = page.getByText('virtual1.test-domain.com').query();
+			const removedItem2 = page.getByText('virtual2.test-domain.com').query();
 
-        it('should remove multiple selected items when "Remove selected items" is clicked', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			expect(removedItem1).toBeNull();
+			expect(removedItem2).toBeNull();
+		});
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            const secondRow = page.getByText('virtual2.test-domain.com');
+		it('should deselect a row when clicked again', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            await userEvent.click(firstRow);
-            await userEvent.click(secondRow);
+			const firstRow = page.getByText('virtual1.test-domain.com');
+			await userEvent.click(firstRow);
+			await userEvent.click(firstRow);
 
-            const removeSelectedButton = page.getByRole('button', {
-                name: /remove selected items/i
-            });
-            await userEvent.click(removeSelectedButton);
+			// After deselecting, there should be no checked icons for that specific row
+			const checkedIcons = page.getByTestId('icon: CheckmarkSquareOutline').elements();
+			expect(checkedIcons.length).toBe(0);
+		});
+	});
 
-            const removedItem1 = page.getByText('virtual1.test-domain.com').query();
-            const removedItem2 = page.getByText('virtual2.test-domain.com').query();
+	describe('Select All Functionality', () => {
+		it('should select all items when header is clicked', async () => {
+			setupBrowserTest(<VirtualHostSectionWrapper />);
 
-            expect(removedItem1).toBeNull();
-            expect(removedItem2).toBeNull();
-        });
+			const header = page.getByText('Virtual Host Name', { exact: true });
+			await userEvent.click(header);
 
-        it('should deselect a row when clicked again', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
+			const checkedIcons = page.getByTestId('icon: CheckmarkSquareOutline').elements();
+			// Should have 3 checkboxes: 1 in header + 2 items
+			expect(checkedIcons.length).toBeGreaterThanOrEqual(2);
+		});
+	});
 
-            const firstRow = page.getByText('virtual1.test-domain.com');
-            await userEvent.click(firstRow);
-            await userEvent.click(firstRow);
+	describe('Empty State', () => {
+		it('should show helmet logo when there are no items', async () => {
+			setupBrowserTest(<EmptyVirtualHostSectionWrapper />);
 
-            // After deselecting, there should be no checked icons for that specific row
-            const checkedIcons = page.getByTestId('icon: CheckmarkSquareOutline').elements();
-            expect(checkedIcons.length).toBe(0);
-        });
-    });
-
-    describe('Select All Functionality', () => {
-        it('should select all items when header is clicked', async () => {
-            setupBrowserTest(<VirtualHostSectionWrapper />);
-
-            const header = page.getByText('Virtual Host Name', { exact: true });
-            await userEvent.click(header);
-
-            const checkedIcons = page.getByTestId('icon: CheckmarkSquareOutline').elements();
-            // Should have 3 checkboxes: 1 in header + 2 items
-            expect(checkedIcons.length).toBeGreaterThanOrEqual(2);
-        });
-    });
-
-    describe('Empty State', () => {
-        it('should show helmet logo when there are no items', async () => {
-            setupBrowserTest(<EmptyVirtualHostSectionWrapper />);
-
-            const logo = page.getByRole('img', { name: /logo/i });
-            await expect.element(logo).toBeVisible();
-        });
-    });
+			const logo = page.getByRole('img', { name: /logo/i });
+			await expect.element(logo).toBeVisible();
+		});
+	});
 });
