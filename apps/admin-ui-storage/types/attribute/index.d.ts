@@ -4,12 +4,4 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export type Attribute = {
-	n: string;
-	_content: string;
-	c?: boolean;
-};
-
 export type objectType = { [key: string]: string };
-
-export type objAll = { [key: string]: string | boolean | number };
