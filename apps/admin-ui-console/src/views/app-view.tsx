@@ -10,7 +10,6 @@ import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-	BACKUP_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	NOTIFICATION_ROUTE_ID,
@@ -18,8 +17,6 @@ import {
 	SERVICES_ROUTE_ID
 } from '../constants';
 
-import BackupDetailPanel from './backup/backup-detail-panel';
-import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
@@ -43,26 +40,6 @@ const AppView: FC = () => {
 		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
-				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						style={{ overflow: 'hidden' }}
-					>
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<BackupListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<BackupDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
 					<Container
 						orientation="horizontal"
