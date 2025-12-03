@@ -135,7 +135,6 @@ export const paginationItems: Array<{ label: string; value: number }> = [
 export const ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS = 'zimbraMtaSmtpdSenderLoginMaps';
 export const MTA_SERVER_GENERAL = 'mta_server_general';
 export const PRIMARY_BAR_MTA = 'pb_mta';
-export const FLEX_START = 'flex-start';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
 export const PH_API_HOST = 'https://stats.zextras.tools';
