@@ -22,7 +22,9 @@
 		"type-check": "turbo run type-check",
 		"lint": "turbo run lint",
 		"type-lint": "turbo run type-check && turbo run lint",
-		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install"
+		"sonar:generate": "node scripts/generate-sonar-config.js",
+		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"react": "^19.1.0"
@@ -51,6 +53,7 @@
 		"eslint-plugin-sonarjs": "^3.0.5",
 		"eslint-plugin-testing-library": "^7.6.6",
 		"eslint-plugin-unused-imports": "^4.2.0",
+		"husky": "^9.1.7",
 		"knip": "^5.70.1",
 		"playwright": "^1.55.0",
 		"pnpm": "^10.15.1",
@@ -75,6 +78,8 @@
 			"./apps/admin-ui-dashboard/public",
 			"./apps/admin-ui-subscription/public",
 			"./apps/admin-ui-domains/public",
+			"./apps/admin-ui-privacy/public",
+			"./apps/admin-ui-mta/public",
 			"./apps/admin-ui-cos/public"
 		]
 	},

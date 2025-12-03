@@ -5,7 +5,6 @@
  */
 import { type THeader } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { useState } from 'react';
 
 export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
@@ -538,19 +537,6 @@ export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value: string; lab
 	}
 ];
 
-const EMAIL_VALIDATION_REGEX =
-	/(^|\s)([\p{L}\p{N}._%+-]+@(?:[\p{L}\p{N}.-]+\.[\p{L}\p{N}]{2,}|\[[^\]\s<>]+\]))/gu;
-
-export const isValidEmail = (email: string): boolean => {
-	const match = email.trim().match(EMAIL_VALIDATION_REGEX);
-	return match !== null && match[0].trim() === email.trim();
-};
-
-export const getAllEmailFromString = (str: string): any => {
-	const matches = str.matchAll(EMAIL_VALIDATION_REGEX);
-	return Array.from(matches, (match) => match[2]);
-};
-
 export const bytesToSize = (bytes: number): string => {
 	const sizes: string[] = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 	if (bytes === 0) return 'n/a';
@@ -563,47 +549,6 @@ export const copyTextToClipboard = (text: string): void => {
 	if (navigator) {
 		navigator.clipboard.writeText(text);
 	}
-};
-
-export function useLocalStorage<T>(key: string, initialValue: T): any {
-	const [storedValue, setStoredValue] = useState<T>(() => {
-		try {
-			const item = window.localStorage.getItem(key);
-			return item ? JSON.parse(item) : initialValue;
-		} catch (error) {
-			return initialValue;
-		}
-	});
-	const setValue = (value: T | ((val: T) => T)): any => {
-		const valueToStore = value instanceof Function ? value(storedValue) : value;
-		setStoredValue(valueToStore);
-		localStorage.setItem(key, JSON.stringify(valueToStore));
-	};
-	return [storedValue, setValue] as const;
-}
-
-export const isValidProxy = (value: string): boolean => {
-	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
-	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
-	return validProxyRegex.test(value);
-};
-export const isSpaceAvailableInString = (value: string): boolean => {
-	const spaceRegex = /^\S*$/;
-	return !spaceRegex.test(value);
-};
-
-export const isValidHostname = (hostname: string): boolean => {
-	const hostnameRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*(?<!-)$/;
-	return hostnameRegex.test(hostname);
-};
-
-export const validateIpAddress = (value: string): boolean => {
-	const ipv4Regex =
-		/^(!?)(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}\/([0-9]|[12][0-9]|3[0-2])$/;
-	const ipv6Regex =
-		/^(!?)\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\]\/([0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$/;
-
-	return ipv4Regex.test(value) || ipv6Regex.test(value);
 };
 
 type Details = {
@@ -626,19 +571,3 @@ export const formatedErrorMessage = (response: ErrorResponse): ErrorResponse => 
 	}
 	return response;
 };
-
-export function bytesToHumanReadable(bytes: number): string {
-	if (bytes === 0) return '0 Bytes';
-	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
-	const i = Math.floor(Math.log(bytes) / Math.log(1024));
-	const sizeIndex = Math.min(i, sizes.length - 1);
-	return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
-}
-
-export function bytesToMB(bytes: number): number {
-	return parseFloat((bytes / 1024 / 1024).toFixed(2));
-}
-
-export function mbToBytes(mb: number): number {
-	return mb * 1024 * 1024;
-}
