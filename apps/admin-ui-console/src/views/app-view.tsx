@@ -14,7 +14,6 @@ import {
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
-	MONITORING,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	SERVICES_ROUTE_ID,
@@ -28,7 +27,6 @@ import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
-import MonitoringView from './monitoring/monitoring-view';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
@@ -49,13 +47,6 @@ const AppView: FC = () => {
 		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
-				<Route path={`/${MONITORING}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Suspense fallback={<Spinner />}>
-							<MonitoringView />
-						</Suspense>
-					</Container>
-				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '265px' }}>
