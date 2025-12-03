@@ -15,7 +15,6 @@ import {
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	MONITORING,
-	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	SERVICES_ROUTE_ID,
@@ -30,8 +29,6 @@ import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import MonitoringView from './monitoring/monitoring-view';
-import MTADetailPanel from './mta/mta-detail-panel';
-import MTAListPanel from './mta/mta-list-panel';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
@@ -70,22 +67,6 @@ const AppView: FC = () => {
 							<Suspense fallback={<Spinner />}>
 								<BucketRoutePanel />
 							</Suspense>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '16.563rem' }}>
-							<Suspense fallback={<Spinner />}>
-								<MTAListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<MTADetailPanel />
-								</Suspense>
-							</DetailViewContainer>
 						</Container>
 					</Container>
 				</Route>
