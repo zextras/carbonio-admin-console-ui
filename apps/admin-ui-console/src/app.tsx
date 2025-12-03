@@ -25,13 +25,11 @@ import styled from 'styled-components';
 import {
 	BACKUP_ROUTE_ID,
 	CARBONIO_SEND_ANALYTICS,
-	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_BACKUP,
-	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
 	SERVICES_ROUTE_ID,
@@ -204,23 +202,6 @@ const App: FC = () => {
 		[t]
 	);
 
-	const leagalHoldTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<Trans
-						i18nKey="label.legal_hold_lbl"
-						defaults="<bold>Legal Hold</bold>"
-						components={{ bold: <strong /> }}
-						t={t}
-					/>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
@@ -240,11 +221,6 @@ const App: FC = () => {
 		[history]
 	);
 
-	const LegalHoldTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
-		[leagalHoldTooltipItem]
-	);
-
 	const setConfigRightsRoute = useCallback(() => {
 		if (hasAllConfigRights) {
 			if (isAdvanced) {
@@ -259,49 +235,15 @@ const App: FC = () => {
 					tooltip: BackupTooltipView,
 					trackerLabel: PRIMARY_BAR_BACKUP
 				});
-				addRoute({
-					route: LEGAL_HOLD_ROUTE_ID,
-					position: 2,
-					visible: true,
-					label: t('label.legal_hold', 'Legal Hold') || '',
-					primaryBar: 'LockOutline',
-					appView: AppView,
-					primarybarSection: { ...servicesSection },
-					tooltip: LegalHoldTooltipView,
-					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
-				});
 			}
 		} else {
 			removeRoute(BACKUP_ROUTE_ID);
 		}
-	}, [
-		BackupTooltipView,
-		LegalHoldTooltipView,
-		backupPrimaryBar,
-		hasAllConfigRights,
-		isAdvanced,
-		servicesSection,
-		t
-	]);
+	}, [BackupTooltipView, backupPrimaryBar, hasAllConfigRights, isAdvanced, servicesSection, t]);
 
 	useEffect(() => {
 		setConfigRightsRoute();
 		if (isAdvanced) {
-			if (hasAllConfigRights) {
-				addRoute({
-					route: LEGAL_HOLD_ROUTE_ID,
-					position: 2,
-					visible: true,
-					label: t('label.legal_hold', 'Legal Hold') || '',
-					primaryBar: 'LockOutline',
-					appView: AppView,
-					primarybarSection: { ...servicesSection },
-					tooltip: LegalHoldTooltipView,
-					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
-				});
-			} else {
-				removeRoute(LEGAL_HOLD_ROUTE_ID);
-			}
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
@@ -326,7 +268,6 @@ const App: FC = () => {
 			});
 		}
 	}, [
-		LegalHoldTooltipView,
 		NotificationTooltipView,
 		OperationTooltipView,
 		hasAllConfigRights,

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const MAX_DOMAIN_DISPLAY = 20;
 export const ADVANCED = 'advanced';
 export const MANAGE_APP_ID = 'manage';
 export const BACKUP_ROUTE_ID = 'backup';
@@ -14,7 +13,6 @@ export const SERVICES_ROUTE_ID = 'services';
 export const SERVER_CONFIG = 'server_config';
 export const IMPORT_EXTERNAL_BACKUP = 'import_an_external_backup';
 export const SERVERS_LIST = 'servers_list';
-export const RECORD_DISPLAY_LIMIT = 10;
 export const TRUE = 'TRUE';
 export const LOG_AND_QUEUES = 'logandqueues';
 export const OPERATIONS_ROUTE_ID = 'operations';
@@ -44,7 +42,6 @@ export const TRUE_OPERTION = 'True';
 export const FALSE_OPERTION = 'False';
 export const PM = 'PM';
 export const AM = 'AM';
-export const ASC = 'asc';
 export const DESC = 'desc';
 export const LIST_SERVER = 'listServer';
 export const CONFIG = 'config';
@@ -54,17 +51,9 @@ export const IS_DEFAULT_SETTINGS_EXPANDED = 'isDefaultSettingsExpanded';
 export const IS_SERVER_SPECIFICS_EXPANDED = 'isServerSpecificsExpanded';
 export const FINISHED = 'Finished';
 export const EXCEPTION = 'Exception';
-export const SET = 'set';
-export const MOBILE = 'mobile';
 export const PRIMARY_BAR_BACKUP = 'pb_backup';
 export const PRIMARY_BAR_NOTIFICATIONS = 'pb_notifications';
 export const PRIMARY_BAR_OPERATIONS = 'pb_operations';
-export const LEGAL_HOLD_ROUTE_ID = 'legal_hold';
-export const PRIMARY_BAR_LEGAL_HOLD = 'pb_legalhold';
-export const ERROR_LABLE = 'error';
-export const SUCCESS_LABLE = 'success';
-export const UNSET = 'unset';
-export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
 export const PH_API_HOST = 'https://stats.zextras.tools';

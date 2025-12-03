@@ -130,24 +130,3 @@ export const copyTextToClipboard = (text: string): void => {
 		navigator.clipboard.writeText(text);
 	}
 };
-
-type Details = {
-	[key: string]: string;
-};
-
-type ErrorResponse = {
-	code: string;
-	details: Details;
-	message: string;
-	time: number;
-};
-
-export const formatedErrorMessage = (response: ErrorResponse): ErrorResponse => {
-	if (response.details) {
-		Object.entries(response.details).forEach(([key, value]) => {
-			const placeholder = `{${key}}`;
-			response.message = response.message.replace(placeholder, value);
-		});
-	}
-	return response;
-};
