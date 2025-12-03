@@ -31,12 +31,10 @@ import {
 	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
-	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_BACKUP,
 	PRIMARY_BAR_LEGAL_HOLD,
-	PRIMARY_BAR_MTA,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
 	PRIMARY_BAR_STORAGE,
@@ -245,32 +243,6 @@ const App: FC = () => {
 		[t]
 	);
 
-	const mtaTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.mta_lbl"
-							defaults="<bold>MTA</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.mta_primarybar_tooltip"
-							defaults="Mail Transfer Agent"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
 	const leagalHoldTooltipItem = useMemo(
 		() => [
 			{
@@ -291,11 +263,6 @@ const App: FC = () => {
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
-	);
-
-	const MTATooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={mtaTooltipItem} />,
-		[mtaTooltipItem]
 	);
 
 	const backupPrimaryBar: FC = useCallback(
@@ -347,17 +314,6 @@ const App: FC = () => {
 		}
 
 		if (hasAllConfigRights) {
-			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				primarybarSection: { ...managementSection },
-				tooltip: MTATooltipView,
-				trackerLabel: PRIMARY_BAR_MTA
-			});
 			if (isAdvanced) {
 				addRoute({
 					route: BACKUP_ROUTE_ID,
@@ -384,13 +340,10 @@ const App: FC = () => {
 			}
 		} else {
 			removeRoute(BACKUP_ROUTE_ID);
-
-			removeRoute(MTA_ROUTE_ID);
 		}
 	}, [
 		BackupTooltipView,
 		LegalHoldTooltipView,
-		MTATooltipView,
 		StorageTooltipView,
 		backupPrimaryBar,
 		hasAllConfigRights,
