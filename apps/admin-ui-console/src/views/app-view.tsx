@@ -13,18 +13,14 @@ import {
 	BACKUP_ROUTE_ID,
 	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
-	MANAGE_APP_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
-	SERVICES_ROUTE_ID,
-	STORAGES_ROUTE_ID
+	SERVICES_ROUTE_ID
 } from '../constants';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import BucketListPanel from './bucket/bucket-list-panel';
-import BucketRoutePanel from './bucket/bucket-route-panel';
 import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
@@ -47,20 +43,6 @@ const AppView: FC = () => {
 		<Container height={'fit'}>
 			<BreadCrumb />
 			<Switch>
-				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<BucketListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<Suspense fallback={<Spinner />}>
-								<BucketRoutePanel />
-							</Suspense>
-						</Container>
-					</Container>
-				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
 					<Container
 						orientation="horizontal"
