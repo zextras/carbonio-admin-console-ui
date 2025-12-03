@@ -23,7 +23,7 @@
 		"lint": "turbo run lint",
 		"type-lint": "turbo run type-check && turbo run lint",
 		"sonar:generate": "node scripts/generate-sonar-config.js",
-		"reset": "rm -rf node_modules apps/*/node_modules pnpm-lock.yaml .turbo && pnpm store prune --force && pnpm install",
+		"reset": "node scripts/reset.js",
 		"prepare": "husky"
 	},
 	"dependencies": {
