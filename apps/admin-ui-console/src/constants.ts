@@ -13,7 +13,6 @@ export const STORAGES_ROUTE_ID = 'storage';
 export const BACKUP_ROUTE_ID = 'backup';
 export const FIRST_PAGE = 1;
 export const DASHBOARD = 'dashboard';
-export const MONITORING = 'monitoring';
 export const SERVICES_ROUTE_ID = 'services';
 export const SERVER_CONFIG = 'server_config';
 export const IMPORT_EXTERNAL_BACKUP = 'import_an_external_backup';
