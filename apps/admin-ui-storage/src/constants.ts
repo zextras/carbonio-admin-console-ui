@@ -25,7 +25,6 @@ export const ENABLED = 'enabled';
 export const DISABLED = 'disabled';
 export const NO = 'No';
 export const YES = 'YES';
-export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
 export const EMPTY_TYPE_VALUE = 0;
 export const PRIMARY_TYPE_VALUE = 1;
 export const SECONDARY_TYPE_VALUE = 2;

@@ -30,11 +30,16 @@ import { getAllNotifications } from '../../../services/get-all-notifications';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
-import { copyTextToClipboard } from '../../utility/utils';
 
 import CustomHeaderFactory from './customTableHeaderFactory';
 import CustomRowFactory from './customTableRowFactory';
 import NotificationDetail from './notification-detail-view';
+
+const copyTextToClipboard = (text: string): void => {
+	if (navigator) {
+		navigator.clipboard.writeText(text);
+	}
+};
 
 const ReusedDefaultTabBar: FC<{
 	item: any;

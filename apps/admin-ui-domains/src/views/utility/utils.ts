@@ -1535,11 +1535,6 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
 
-export const isValidProxy = (value: string): boolean => {
-	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
-	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
-	return validProxyRegex.test(value);
-};
 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
