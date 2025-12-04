@@ -9,8 +9,6 @@ import {
 	removeRoute,
 	useAllConfig,
 	useIsAdvanced,
-	getRights,
-	useCurrentUserRights,
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAllServers,
@@ -19,7 +17,7 @@ import {
 	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -28,7 +26,6 @@ import {
 	BACKUP_ROUTE_ID,
 	CARBONIO_SEND_ANALYTICS,
 	LEGAL_HOLD_ROUTE_ID,
-	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	NOTIFICATION_ROUTE_ID,
@@ -37,10 +34,7 @@ import {
 	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
-	PRIMARY_BAR_STORAGE,
-	SERVER,
 	SERVICES_ROUTE_ID,
-	STORAGES_ROUTE_ID,
 	TRUE
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
@@ -78,8 +72,6 @@ const App: FC = () => {
 		enabled: isAdvanced
 	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { data: rights } = useCurrentUserRights();
-	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
@@ -186,37 +178,6 @@ const App: FC = () => {
 		[notificationTooltipItems]
 	);
 
-	const storagesTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.storage_lbl"
-							defaults="<bold>Storage</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.storage_primarybar_tooltip"
-							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const StorageTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={storagesTooltipItems} />,
-		[storagesTooltipItems]
-	);
-
 	const operationTooltipItem = useMemo(
 		() => [
 			{
@@ -284,35 +245,7 @@ const App: FC = () => {
 		[leagalHoldTooltipItem]
 	);
 
-	useEffect(() => {
-		if (rights && rights.length > 0) {
-			const right = getRights(rights, SERVER);
-			if (right.length > 0) {
-				const findServerRight = right.find(
-					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
-				);
-				if (findServerRight) {
-					sethasListServerRights(true);
-				}
-			}
-		}
-	}, [rights]);
-
 	const setConfigRightsRoute = useCallback(() => {
-		if (hasListServerRights) {
-			addRoute({
-				route: STORAGES_ROUTE_ID,
-				position: 4,
-				visible: true,
-				label: t('label.storage', 'Storage') || '',
-				primaryBar: 'HardDriveOutline',
-				appView: AppView,
-				primarybarSection: { ...managementSection },
-				tooltip: StorageTooltipView,
-				trackerLabel: PRIMARY_BAR_STORAGE
-			});
-		}
-
 		if (hasAllConfigRights) {
 			if (isAdvanced) {
 				addRoute({
@@ -344,12 +277,9 @@ const App: FC = () => {
 	}, [
 		BackupTooltipView,
 		LegalHoldTooltipView,
-		StorageTooltipView,
 		backupPrimaryBar,
 		hasAllConfigRights,
-		hasListServerRights,
 		isAdvanced,
-		managementSection,
 		servicesSection,
 		t
 	]);
