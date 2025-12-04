@@ -116,7 +116,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -195,7 +195,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -432,151 +432,6 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vitest@4.0.15)
 
-  apps/admin-ui-console:
-    dependencies:
-      '@tanstack/react-query':
-        specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
-      '@types/react-csv':
-        specifier: ^1.1.10
-        version: 1.1.10
-      '@vitest/browser-preview':
-        specifier: ^4.0.14
-        version: 4.0.15(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(vite@7.2.6(@types/node@20.19.25)(jiti@2.6.1)(less@4.4.2)(terser@5.44.1))(vitest@4.0.15)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
-      '@zextras/carbonio-design-system':
-        specifier: ^8.1.0
-        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1))
-      history:
-        specifier: ^5.3.0
-        version: 5.3.0
-      html-entities:
-        specifier: ^2.6.0
-        version: 2.6.0
-      i18next:
-        specifier: ^22.5.1
-        version: 22.5.1
-      immer:
-        specifier: ^10.1.3
-        version: 10.2.0
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      moment:
-        specifier: ^2.30.1
-        version: 2.30.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.24.0
-      posthog-js:
-        specifier: ^1.261.0
-        version: 1.301.1
-      qrcode.react:
-        specifier: ^3.1.0
-        version: 3.2.0(react@19.2.1)
-      react:
-        specifier: ^19.1.0
-        version: 19.2.1
-      react-csv:
-        specifier: ^2.2.2
-        version: 2.2.2
-      react-i18next:
-        specifier: ^12.3.1
-        version: 12.3.1(i18next@22.5.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.1)
-      styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1)
-      zustand:
-        specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.22.15
-        version: 7.28.5
-      '@babel/plugin-proposal-class-properties':
-        specifier: ^7.18.6
-        version: 7.18.6(@babel/core@7.28.5)
-      '@babel/plugin-transform-runtime':
-        specifier: ^7.22.15
-        version: 7.28.5(@babel/core@7.28.5)
-      '@babel/preset-env':
-        specifier: ^7.22.15
-        version: 7.28.5(@babel/core@7.28.5)
-      '@babel/preset-react':
-        specifier: ^7.22.15
-        version: 7.28.5(@babel/core@7.28.5)
-      '@babel/preset-typescript':
-        specifier: ^7.22.15
-        version: 7.28.5(@babel/core@7.28.5)
-      '@tanstack/react-query-devtools':
-        specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
-      '@testing-library/react':
-        specifier: ^16.0.1
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@types/lodash':
-        specifier: ^4.14.197
-        version: 4.17.21
-      '@types/react':
-        specifier: ^19.1.0
-        version: 19.2.7
-      '@types/react-dom':
-        specifier: ^19.1.0
-        version: 19.2.3(@types/react@19.2.7)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
-      '@vitest/browser':
-        specifier: ^4.0.5
-        version: 4.0.15(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(vite@7.2.6(@types/node@20.19.25)(jiti@2.6.1)(less@4.4.2)(terser@5.44.1))(vitest@4.0.15)
-      '@vitest/coverage-istanbul':
-        specifier: ^4.0.5
-        version: 4.0.15(vitest@4.0.15)
-      '@vitest/ui':
-        specifier: ^4.0.5
-        version: 4.0.15(vitest@4.0.15)
-      admin-ui-sdk:
-        specifier: workspace:*
-        version: link:../../packages/sdk
-      admin-ui-test-utils:
-        specifier: workspace:*
-        version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1))(supports-color@5.5.0)
-      eslint:
-        specifier: ^9.34.0
-        version: 9.39.1(jiti@2.6.1)
-      jsdom:
-        specifier: ^26.1.0
-        version: 26.1.0
-      msw:
-        specifier: ^2.12.2
-        version: 2.12.4(@types/node@20.19.25)(typescript@5.9.3)
-      playwright:
-        specifier: ^1.55.0
-        version: 1.57.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.1(react@19.2.1)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.5
-        version: 4.0.15(@types/node@20.19.25)(@vitest/browser-playwright@4.0.15)(@vitest/browser-preview@4.0.15)(@vitest/ui@4.0.15)(jiti@2.6.1)(jsdom@26.1.0)(less@4.4.2)(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.1)
-      vitest-browser-react:
-        specifier: ^2.0.2
-        version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vitest@4.0.15)
-
   apps/admin-ui-cos:
     dependencies:
       '@vitest/browser-preview':
@@ -708,7 +563,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -787,7 +642,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -853,7 +708,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -932,7 +787,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -998,7 +853,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1077,7 +932,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1143,7 +998,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1222,7 +1077,152 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
+      '@testing-library/react':
+        specifier: ^16.0.1
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@types/lodash':
+        specifier: ^4.14.197
+        version: 4.17.21
+      '@types/react':
+        specifier: ^19.1.0
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.1.0
+        version: 19.2.3(@types/react@19.2.7)
+      '@types/react-router-dom':
+        specifier: ^5.3.3
+        version: 5.3.3
+      '@types/styled-components':
+        specifier: ^5.1.26
+        version: 5.1.36
+      '@vitest/browser':
+        specifier: ^4.0.5
+        version: 4.0.15(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(vite@7.2.6(@types/node@20.19.25)(jiti@2.6.1)(less@4.4.2)(terser@5.44.1))(vitest@4.0.15)
+      '@vitest/coverage-istanbul':
+        specifier: ^4.0.5
+        version: 4.0.15(vitest@4.0.15)
+      '@vitest/ui':
+        specifier: ^4.0.5
+        version: 4.0.15(vitest@4.0.15)
+      admin-ui-sdk:
+        specifier: workspace:*
+        version: link:../../packages/sdk
+      admin-ui-test-utils:
+        specifier: workspace:*
+        version: link:../../packages/test-utils
+      babel-plugin-styled-components:
+        specifier: ^2.1.4
+        version: 2.1.4(@babel/core@7.28.5)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1))(supports-color@5.5.0)
+      eslint:
+        specifier: ^9.34.0
+        version: 9.39.1(jiti@2.6.1)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0
+      msw:
+        specifier: ^2.12.2
+        version: 2.12.4(@types/node@20.19.25)(typescript@5.9.3)
+      playwright:
+        specifier: ^1.55.0
+        version: 1.57.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.1(react@19.2.1)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^4.0.5
+        version: 4.0.15(@types/node@20.19.25)(@vitest/browser-playwright@4.0.15)(@vitest/browser-preview@4.0.15)(@vitest/ui@4.0.15)(jiti@2.6.1)(jsdom@26.1.0)(less@4.4.2)(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.1)
+      vitest-browser-react:
+        specifier: ^2.0.2
+        version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vitest@4.0.15)
+
+  apps/admin-ui-notifications:
+    dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.90.5
+        version: 5.90.12(react@19.2.1)
+      '@types/react-csv':
+        specifier: ^1.1.10
+        version: 1.1.10
+      '@vitest/browser-preview':
+        specifier: ^4.0.14
+        version: 4.0.15(msw@2.12.4(@types/node@20.19.25)(typescript@5.9.3))(vite@7.2.6(@types/node@20.19.25)(jiti@2.6.1)(less@4.4.2)(terser@5.44.1))(vitest@4.0.15)
+      '@zextras/admin-ui-bootstrap':
+        specifier: workspace:*
+        version: link:../admin-ui-bootstrap
+      '@zextras/carbonio-design-system':
+        specifier: ^8.1.0
+        version: 8.1.0(lodash@4.17.21)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1))
+      history:
+        specifier: ^5.3.0
+        version: 5.3.0
+      html-entities:
+        specifier: ^2.6.0
+        version: 2.6.0
+      i18next:
+        specifier: ^22.5.1
+        version: 22.5.1
+      immer:
+        specifier: ^10.1.3
+        version: 10.2.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
+      pnpm:
+        specifier: ^10.15.1
+        version: 10.24.0
+      posthog-js:
+        specifier: ^1.261.0
+        version: 1.301.1
+      qrcode.react:
+        specifier: ^3.1.0
+        version: 3.2.0(react@19.2.1)
+      react:
+        specifier: ^19.1.0
+        version: 19.2.1
+      react-csv:
+        specifier: ^2.2.2
+        version: 2.2.2
+      react-i18next:
+        specifier: ^12.3.1
+        version: 12.3.1(i18next@22.5.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react-router-dom:
+        specifier: ^5.3.4
+        version: 5.3.4(react@19.2.1)
+      styled-components:
+        specifier: ^5.3.11
+        version: 5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1)
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.22.15
+        version: 7.28.5
+      '@babel/plugin-proposal-class-properties':
+        specifier: ^7.18.6
+        version: 7.18.6(@babel/core@7.28.5)
+      '@babel/plugin-transform-runtime':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-env':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-react':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@babel/preset-typescript':
+        specifier: ^7.22.15
+        version: 7.28.5(@babel/core@7.28.5)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.90.2
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1288,7 +1288,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1367,7 +1367,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1436,7 +1436,7 @@ importers:
         version: 1.27.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1515,7 +1515,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1581,7 +1581,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1660,7 +1660,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1726,7 +1726,7 @@ importers:
     dependencies:
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.90.11(react@19.2.1)
+        version: 5.90.12(react@19.2.1)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1805,7 +1805,7 @@ importers:
         version: 7.28.5(@babel/core@7.28.5)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)
+        version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)
       '@testing-library/react':
         specifier: ^16.0.1
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -3452,8 +3452,8 @@ packages:
     resolution: {integrity: sha512-vGY+CWsFZeac3dELgB6UZ4c7OacwsLb8hvL2gLS6hTgy8Fl0Bm/aLokHaeDIP+q9F9HUZTnp360z9uv78eg8pg==}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.90.11':
-    resolution: {integrity: sha512-f9z/nXhCgWDF4lHqgIE30jxLe4sYv15QodfdPDKYAk7nAEjNcndy4dHz3ezhdUaR23BpWa4I2EH4/DZ0//Uf8A==}
+  '@tanstack/query-core@5.90.12':
+    resolution: {integrity: sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==}
 
   '@tanstack/query-devtools@5.91.1':
     resolution: {integrity: sha512-l8bxjk6BMsCaVQH6NzQEE/bEgFy1hAs5qbgXl0xhzezlaQbPk6Mgz9BqEg2vTLPOHD8N4k+w/gdgCbEzecGyNg==}
@@ -3473,8 +3473,8 @@ packages:
       '@tanstack/react-query': ^5.90.10
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.90.11':
-    resolution: {integrity: sha512-3uyzz01D1fkTLXuxF3JfoJoHQMU2fxsfJwE+6N5hHy0dVNoZOvwKP8Z2k7k1KDeD54N20apcJnG75TBAStIrBA==}
+  '@tanstack/react-query@5.90.12':
+    resolution: {integrity: sha512-graRZspg7EoEaw0a8faiUASCyJrqjKPdqJ9EwuDRUF9mEYJ1YPczI9H+/agJ0mOJkPCJDk0lsz5QTrLZ/jQ2rg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -7882,8 +7882,8 @@ packages:
   until-async@3.0.2:
     resolution: {integrity: sha512-IiSk4HlzAMqTUseHHe3VhIGyuFmN90zMTpD3Z3y8jeQbzLIq500MVM7Jq2vUAnTKAFPJrqwkzr6PoTcPhGcOiw==}
 
-  update-browserslist-db@1.2.1:
-    resolution: {integrity: sha512-R9NcHbbZ45RoWfTdhn1J9SS7zxNvlddv4YRrHTUaFdtjbmfncfedB45EC9IaqJQ97iAR1GZgOfyRQO+ExIF6EQ==}
+  update-browserslist-db@1.2.2:
+    resolution: {integrity: sha512-E85pfNzMQ9jpKkA7+TJAi4TJN+tBCuWh5rUcS/sv6cFi+1q9LYDwDI5dpUL0u/73EElyQ8d3TEaeW4sPedBqYA==}
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
@@ -9887,7 +9887,7 @@ snapshots:
       '@tanstack/devtools-event-client': 0.3.5
       '@tanstack/store': 0.7.7
 
-  '@tanstack/query-core@5.90.11': {}
+  '@tanstack/query-core@5.90.12': {}
 
   '@tanstack/query-devtools@5.91.1': {}
 
@@ -9899,15 +9899,15 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@tanstack/react-query-devtools@5.91.1(@tanstack/react-query@5.90.11(react@19.2.1))(react@19.2.1)':
+  '@tanstack/react-query-devtools@5.91.1(@tanstack/react-query@5.90.12(react@19.2.1))(react@19.2.1)':
     dependencies:
       '@tanstack/query-devtools': 5.91.1
-      '@tanstack/react-query': 5.90.11(react@19.2.1)
+      '@tanstack/react-query': 5.90.12(react@19.2.1)
       react: 19.2.1
 
-  '@tanstack/react-query@5.90.11(react@19.2.1)':
+  '@tanstack/react-query@5.90.12(react@19.2.1)':
     dependencies:
-      '@tanstack/query-core': 5.90.11
+      '@tanstack/query-core': 5.90.12
       react: 19.2.1
 
   '@tanstack/react-store@0.8.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
@@ -10816,7 +10816,7 @@ snapshots:
       caniuse-lite: 1.0.30001759
       electron-to-chromium: 1.5.264
       node-releases: 2.0.27
-      update-browserslist-db: 1.2.1(browserslist@4.28.1)
+      update-browserslist-db: 1.2.2(browserslist@4.28.1)
 
   buffer-from@1.1.2: {}
 
@@ -15084,7 +15084,7 @@ snapshots:
 
   until-async@3.0.2: {}
 
-  update-browserslist-db@1.2.1(browserslist@4.28.1):
+  update-browserslist-db@1.2.2(browserslist@4.28.1):
     dependencies:
       browserslist: 4.28.1
       escalade: 3.2.0
