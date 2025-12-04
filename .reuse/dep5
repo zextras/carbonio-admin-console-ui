@@ -22,10 +22,6 @@ Files: **/tsconfig.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: build_unified.js
-Copyright: 2025 Zextras <https://www.zextras.com>
-License: AGPL-3.0-only
-
 Files: **/Dockerfile
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
@@ -58,11 +54,7 @@ Files: **/package-lock.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: pnpm-lock.yaml
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: AGPL-3.0-only
-
-Files: pnpm-workspace.yaml
+Files: pnpm**
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
@@ -98,11 +90,7 @@ Files: **/vitest.config.mjs
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: vitest.config.mjs
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: AGPL-3.0-only
-
-Files: vitest.setup.jsdom.ts
+Files: vitest**
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
@@ -174,7 +162,7 @@ Files: **/README.md
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: **/test-runner.js
+Files: scripts/**
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 

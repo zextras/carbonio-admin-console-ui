@@ -63,7 +63,7 @@ function main() {
 	const isDevMode = args.includes('--dev');
 
 	// Get the root directory
-	const rootDir = __dirname;
+	const rootDir = path.join(__dirname, '..');
 	const appsDir = path.join(rootDir, 'apps');
 	const buildDir = path.join(rootDir, 'dist');
 
@@ -102,10 +102,12 @@ function main() {
 
 	// Dynamically discover all admin-ui components
 	function discoverComponents() {
-		const adminUiDirs = fs.readdirSync(appsDir)
-			.filter(dir => dir.startsWith('admin-ui-') &&
-						  fs.statSync(path.join(appsDir, dir)).isDirectory())
-			.map(dir => {
+		const adminUiDirs = fs
+			.readdirSync(appsDir)
+			.filter(
+				(dir) => dir.startsWith('admin-ui-') && fs.statSync(path.join(appsDir, dir)).isDirectory()
+			)
+			.map((dir) => {
 				// Read target name from package.json carbonio.name field
 				const packageJsonPath = path.join(appsDir, dir, 'package.json');
 				let target;
@@ -113,19 +115,22 @@ function main() {
 				try {
 					const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 					target = packageJson.carbonio?.name;
+					// eslint-disable-next-line no-unused-vars
 				} catch (error) {
 					log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
 					// Fallback pattern for robustness
-					target = dir === 'admin-ui-console'
-						? 'carbonio-admin-console-ui'
-						: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+					target =
+						dir === 'admin-ui-console'
+							? 'carbonio-admin-console-ui'
+							: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
 				}
 
 				if (!target) {
 					log(`Warning: No carbonio.name found for ${dir}, using fallback naming`, 'blue');
-					target = dir === 'admin-ui-console'
-						? 'carbonio-admin-console-ui'
-						: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+					target =
+						dir === 'admin-ui-console'
+							? 'carbonio-admin-console-ui'
+							: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
 				}
 
 				return { name: dir, target };
@@ -166,7 +171,7 @@ function main() {
 	log('Creating PKGBUILD...', 'blue');
 
 	// Generate dynamic component list for PKGBUILD
-	const componentList = components.map(c => c.target).join(' ');
+	const componentList = components.map((c) => c.target).join(' ');
 
 	const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
