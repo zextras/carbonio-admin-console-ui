@@ -12,6 +12,16 @@ import 'vitest-browser-react';
 import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 import { beforeAll, afterAll, vi, afterEach, beforeEach } from 'vitest';
 
+const localStorageMock = {
+	getItem: vi.fn(),
+	setItem: vi.fn(),
+	removeItem: vi.fn(),
+	clear: vi.fn()
+};
+Object.defineProperty(window, 'localStorage', {
+	value: localStorageMock
+});
+
 beforeAll(async () => {
 	await startMockWorker();
 });
