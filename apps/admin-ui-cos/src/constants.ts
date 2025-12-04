@@ -27,7 +27,6 @@ export const RECORD_DISPLAY_LIMIT = 10;
 export const TRUE = 'TRUE';
 export const ENABLED = 'enabled';
 export const DISABLED = 'disabled';
-export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
 export const COS = 'cos';
 export const MOBILE_CALENDAR_FEATURE_SYNC = 'mobileCalendarFeatureSync';
 export const MOBILE_CONTACT_FEATURE_SYNC = 'mobileContactFeatureSync';

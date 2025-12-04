@@ -45,7 +45,7 @@ export const queryFnIsAdvancedSupported = async () => {
 };
 
 // React Query hook to check if carbonio advanced is installed
-export const useAdvancedSupportedQuery = (options: AdvancedSupportedOptions = {}) => {
+const useAdvancedSupportedQuery = (options: AdvancedSupportedOptions = {}) => {
 	const { enabled = true, ...queryOptions } = options;
 
 	const { data } = useQuery({

@@ -48,7 +48,6 @@ export const DEFAULT = 'default';
 export const RECORD_DISPLAY_LIMIT = 10;
 export const TRUE = 'TRUE';
 export const FALSE = 'FALSE';
-export const MTA = 'mta';
 export const ENABLED = 'enabled';
 export const DISABLED = 'disabled';
 export const SERVER_DETAIL_VIEW = 'server-detail';
