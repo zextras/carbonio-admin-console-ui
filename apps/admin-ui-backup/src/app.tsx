@@ -7,13 +7,10 @@
 import {
 	addRoute,
 	removeRoute,
-	useAllConfig,
 	useIsAdvanced,
 	useMailstoreServers,
-	useGlobalConfigStore,
 	useAllServers,
 	useBucketServersListStore,
-	useGlobalSettings,
 	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
@@ -22,13 +19,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-	BACKUP_ROUTE_ID,
-	CARBONIO_SEND_ANALYTICS,
-	PRIMARY_BAR_BACKUP,
-	SERVICES_ROUTE_ID,
-	TRUE
-} from './constants';
+import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -57,24 +48,10 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const { data: serverList = [] } = useAllServers();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	useEffect(() => {
 		if (mailstoreServers && mailstoreServers.length > 0) {
@@ -162,12 +139,6 @@ const App: FC = () => {
 			setAllServersList(serverList);
 		}
 	}, [serverList, setAllServersList]);
-
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };
