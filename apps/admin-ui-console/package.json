@@ -9,6 +9,7 @@
 		"build:dev": "sdk build --dev",
 		"deploy": "npm run build && sdk deploy",
 		"deploy:dev": "npm run build:dev && sdk deploy",
+		"reset": "node ../../scripts/reset.js",
 		"start": "sdk watch",
 		"type-check": "tsc --noEmit",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",

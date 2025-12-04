@@ -58,7 +58,7 @@ function main() {
 	const isDevMode = args.includes('--dev');
 
 	// Get the root directory
-	const rootDir = __dirname;
+	const rootDir = path.join(__dirname, '..');
 	const appsDir = path.join(rootDir, 'apps');
 	const buildDir = path.join(rootDir, 'dist');
 

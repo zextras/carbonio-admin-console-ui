@@ -243,7 +243,7 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'node build_unified.js'
+                        sh 'node scripts/build_unified.js'
                     }
                     stash includes: 'package/**', name: 'staging'
                 }
