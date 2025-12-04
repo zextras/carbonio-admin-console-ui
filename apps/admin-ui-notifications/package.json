@@ -1,5 +1,5 @@
 {
-	"name": "@zextras/admin-ui-console",
+	"name": "@zextras/admin-ui-notifications",
 	"private": true,
 	"version": "0.10.9",
 	"description": "Admin module for Zextras Carbonio",
@@ -74,7 +74,7 @@
 	"license": "AGPL-3.0-only",
 	"carbonio": {
 		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
-		"name": "carbonio-admin-console-ui",
+		"name": "carbonio-admin-ui-notifications",
 		"priority": 3,
 		"type": "carbonioAdmin",
 		"display": "Manage",
