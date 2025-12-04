@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
@@ -47,9 +47,7 @@ export const CosListPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [searchCosName, setSearchCosName] = useState('');
 	const [isCosSelect, setIsCosSelect] = useState(false);
 	const [cosList, setCosList] = useState([]);

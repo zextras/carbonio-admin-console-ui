@@ -9,10 +9,10 @@ import { noop } from 'lodash';
 import { HttpResponse } from 'msw';
 import { describe, it, expect, vi } from 'vitest';
 
-import { getAdvancedVersionInfo } from '../../react-query/use-advanced-version-info';
+import { queryFnVersionInfo } from '../../react-query/use-advanced-version-info';
 import * as reporter from '../../reporting/functions';
 
-describe('getAdvancedVersionInfo', () => {
+describe('queryFnVersionInfo', () => {
 	it('returns version info if domain present in response', async () => {
 		minMaxVersionApi(() =>
 			HttpResponse.json(
@@ -26,7 +26,7 @@ describe('getAdvancedVersionInfo', () => {
 			)
 		);
 
-		const result = await getAdvancedVersionInfo();
+		const result = await queryFnVersionInfo();
 
 		expect(result).toEqual({
 			minApiVersion: 2,
@@ -47,7 +47,7 @@ describe('getAdvancedVersionInfo', () => {
 			)
 		);
 
-		const result = await getAdvancedVersionInfo();
+		const result = await queryFnVersionInfo();
 		expect(result).toBeNull();
 	});
 
@@ -55,7 +55,7 @@ describe('getAdvancedVersionInfo', () => {
 		vi.spyOn(reporter, 'report').mockImplementation((): any => noop);
 		minMaxVersionApi(HttpResponse.error);
 
-		const result = await getAdvancedVersionInfo();
+		const result = await queryFnVersionInfo();
 		expect(result).toBeNull();
 	});
 });

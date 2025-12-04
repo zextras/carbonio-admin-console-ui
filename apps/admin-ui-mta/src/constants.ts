@@ -12,7 +12,6 @@ export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
 export const FALSE = 'FALSE';
 export const RECORD_DISPLAY_LIMIT = 10;
-export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
 export const MTA_ROUTE_ID = 'mail_transfer_agent';
 export const GENERAL = 'general_lbl';
 export const ZIMBRA_MTA_BLOCKED_EXTENSION = 'zimbraMtaBlockedExtension';

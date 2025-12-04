@@ -7,7 +7,6 @@ export const MANAGE_APP_ID = 'manage';
 export const SUBSCRIPTIONS_ROUTE_ID = 'subscriptions';
 export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
-export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
 export const CONFIG = 'config';
 export const PRIMARY_BAR_SUBSCRIPTIONS = 'pb_subscriptions';
 export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';

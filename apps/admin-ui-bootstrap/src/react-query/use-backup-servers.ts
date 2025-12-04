@@ -8,9 +8,9 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { getSoapFetchRequest } from '../network/fetch';
 
-export type BackupServer = Record<string, any>;
+type BackupServer = Record<string, any>;
 
-export type BackupServersResponse = {
+type BackupServersResponse = {
 	backupModuleEnable: boolean;
 	backupServerList: Array<BackupServer>;
 	isBackupModuleLicensed: boolean;

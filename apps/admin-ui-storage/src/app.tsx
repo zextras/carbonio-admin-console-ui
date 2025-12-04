@@ -4,29 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	useAllConfig,
-	useIsAdvanced,
-	getRights,
-	useCurrentUserRights,
-	useMailstoreServers,
-	useGlobalConfigStore,
-	useAllServers,
-	useBucketServersListStore,
-	useGlobalSettings
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, getRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
-	CARBONIO_SEND_ANALYTICS,
 	LIST_SERVER,
 	MANAGE_APP_ID,
 	PRIMARY_BAR_STORAGE,
 	SERVER,
-	STORAGES_ROUTE_ID,
-	TRUE
+	STORAGES_ROUTE_ID
 } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -44,32 +31,9 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { data: serverList = [] } = useAllServers();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
+
 	const { data: rights } = useCurrentUserRights();
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { data: mailstoreServers } = useMailstoreServers();
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -139,19 +103,6 @@ const App: FC = () => {
 			});
 		}
 	}, [StorageTooltipView, hasListServerRights, managementSection, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
-
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };

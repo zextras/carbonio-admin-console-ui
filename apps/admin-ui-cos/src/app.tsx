@@ -8,11 +8,7 @@ import {
 	addRoute,
 	removeRoute,
 	registerActions,
-	postSoapFetchRequest,
-	useAllConfig,
-	useIsAdvanced,
-	useCurrentUserRights,
-	useGlobalConfigStore
+	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
@@ -23,7 +19,6 @@ import styled from 'styled-components';
 
 import {
 	APP_ID,
-	CARBONIO_SEND_ANALYTICS,
 	COS,
 	COS_ROUTE_ID,
 	CREATE_COS,
@@ -34,12 +29,9 @@ import {
 	MANAGE,
 	MANAGE_APP_ID,
 	PRIMARY_BAR_COS,
-	SERVICES_ROUTE_ID,
-	TRUE,
-	ZIMBRA_ADMIN_URN
+	SERVICES_ROUTE_ID
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { getAllServers } from './services/get-all-servers-service';
 import { useCosStore } from './store/cos/store';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -65,9 +57,7 @@ const PrimaryBarIcon = styled(Icon)`
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
+
 	const { setCosView } = useCosStore();
 	const { data: rights } = useCurrentUserRights();
 
@@ -88,15 +78,6 @@ const App: FC = () => {
 			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
 		);
 	}, [rights]);
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }): boolean => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -172,7 +153,7 @@ const App: FC = () => {
 				id: 'new-cos',
 				label: t('label.create_new_cos', 'Create New COS'),
 				icon: '',
-				onClick: (ev: any): void => {
+				onClick: (): void => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
 					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
@@ -185,35 +166,6 @@ const App: FC = () => {
 		});
 		history.push(`/${DASHBOARD}`);
 	}, [createCosRight, history, setCosView, t]);
-
-	const getGlobalConfig = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxConfig',
-				action: 'dump_global_config'
-			}
-		}).then((data: any) => {
-			const responseData = JSON.parse(data?.Body?.response?.content);
-			const globalConfig = responseData?.response;
-			if (globalConfig) {
-				setGlobalConfig(globalConfig);
-			}
-		});
-	}, [setGlobalConfig]);
-
-	const getAllServersRequest = useCallback(() => {
-		getAllServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0 && isAdvanced) {
-				getGlobalConfig();
-			}
-		});
-	}, [isAdvanced, getGlobalConfig]);
-
-	useEffect(() => {
-		getAllServersRequest();
-	}, [getAllServersRequest]);
 
 	return null;
 };

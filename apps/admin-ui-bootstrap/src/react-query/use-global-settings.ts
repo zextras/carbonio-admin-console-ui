@@ -5,10 +5,13 @@
  */
 
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { postSoapFetchRequest } from '../network/fetch';
 
-export type GlobalConfig = Record<string, any>;
+import { useAllConfig } from './use-config';
+
+type GlobalConfig = Record<string, any>;
 
 type GlobalConfigOptions = Omit<UseQueryOptions<GlobalConfig>, 'queryKey' | 'queryFn'> & {
 	enabled?: boolean;
@@ -47,4 +50,53 @@ export const useGlobalSettings = (options: GlobalConfigOptions = {}) => {
 		refetchOnReconnect: true,
 		...queryOptions
 	});
+};
+
+// Hook for accessing global carbonio send analytics flag
+export const useGlobalCarbonioSendAnalytics = () => {
+	const { data: allConfig, ...result } = useAllConfig();
+
+	const sendAnalytics = useMemo(() => {
+		if (!allConfig) return false;
+
+		const analyticsConfig = allConfig.find(
+			(items: { n: string }) => items.n === 'carbonioSendAnalytics'
+		)?._content;
+
+		return analyticsConfig === 'TRUE';
+	}, [allConfig]);
+
+	return {
+		...result,
+		data: sendAnalytics
+	};
+};
+
+// Allows components to subscribe to specific config keys only
+export const useGlobalConfigValue = <T = any>(
+	key: string,
+	defaultValue?: T,
+	options: GlobalConfigOptions = {}
+) => {
+	const { data, ...result } = useGlobalSettings(options);
+
+	return {
+		...result,
+		data: data?.[key] ?? defaultValue
+	};
+};
+
+// Transforms global config object into an array format for easy iteration
+export const useGlobalConfigList = (options: GlobalConfigOptions = {}) => {
+	const { data, ...result } = useGlobalSettings(options);
+
+	const configList = useMemo(() => {
+		if (!data) return [];
+		return Object.entries(data).map(([key, value]) => ({ key, value }));
+	}, [data]);
+
+	return {
+		...result,
+		data: configList
+	};
 };

@@ -5,6 +5,7 @@
  */
 
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'path';
 
 import react from '@vitejs/plugin-react';
@@ -13,7 +14,8 @@ import { defineConfig } from 'vite';
 import { createModuleRollupOptions } from '../../vite.rollup.config';
 
 const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
-const packageName = 'carbonio-admin-ui-domains';
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8'));
+const packageName = packageJson.carbonio.name;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({

@@ -15,7 +15,12 @@ import {
 import { useBackupServers } from '../../react-query/use-backup-servers';
 import { useAllConfig } from '../../react-query/use-config';
 import { useDomainInformation } from '../../react-query/use-domain-information';
-import { useGlobalSettings } from '../../react-query/use-global-settings';
+import {
+	useGlobalSettings,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigValue,
+	useGlobalConfigList
+} from '../../react-query/use-global-settings';
 import { useIsAdvanced } from '../../react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
 import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
@@ -43,9 +48,7 @@ import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/app-config/store';
-import { useBucketServersListStore } from '../../store/shared/bucket-server-list/store';
 import { useDomainStore } from '../../store/shared/domains';
-import { useGlobalConfigStore } from '../../store/shared/global-config/store';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
 import { getTags } from '../../store/tags';
 
@@ -85,7 +88,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 		useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),
 	removeRoute: (routeId: string) => useAppStore.getState().setters.removeRoute(routeId),
 	registerActions: useIntegrationsStore.getState().registerActions,
-	useGlobalConfigStore,
 	useAppConfigStore,
 	useConfigurationAttribute,
 	useLastLoginTimestamp,
@@ -97,7 +99,9 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useAllServers,
 	useMtaServers,
 	useServersByService,
-	useBucketServersListStore,
 	useBackupServers,
-	useGlobalSettings
+	useGlobalSettings,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigValue,
+	useGlobalConfigList
 });

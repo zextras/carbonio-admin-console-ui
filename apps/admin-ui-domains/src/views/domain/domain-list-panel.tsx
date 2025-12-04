@@ -11,7 +11,7 @@ import {
 	useCurrentUserRights,
 	useIsAdvanced,
 	useAppConfigStore,
-	useGlobalConfigStore,
+	useGlobalCarbonioSendAnalytics,
 	useBackupServers
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
@@ -91,9 +91,7 @@ const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainId, setDomainId] = useState('');
@@ -251,7 +249,7 @@ const DomainListPanel: FC = () => {
 		[setDomainView]
 	);
 
-	const getTrakingDetials = (dView: string): any => {
+	const getTrakingDetials = (dView: string) => {
 		const value = dView.split('/');
 		return value[0] === GLOBAL_ROUTE;
 	};

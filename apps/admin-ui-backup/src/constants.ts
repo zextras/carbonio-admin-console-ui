@@ -12,7 +12,6 @@ export const SERVER_CONFIG = 'server_config';
 export const IMPORT_EXTERNAL_BACKUP = 'import_an_external_backup';
 export const SERVERS_LIST = 'servers_list';
 export const TRUE = 'TRUE';
-export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
 export const CONFIGURATION_BACKUP = 'configuration_lbl';
 export const ADVANCED_LBL = 'advanced_lbl';
 export const SERVER = 'server';

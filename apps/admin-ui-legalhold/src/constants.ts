@@ -11,7 +11,6 @@ export const SERVICES_ROUTE_ID = 'services';
 export const RECORD_DISPLAY_LIMIT = 10;
 export const TRUE = 'TRUE';
 export const ASC = 'asc';
-export const CONFIG = 'config';
 export const SET = 'set';
 export const MOBILE = 'mobile';
 export const LEGAL_HOLD_ROUTE_ID = 'legal_hold';
