@@ -6,17 +6,15 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import React, { FC, Suspense } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, OPERATIONS_ROUTE_ID } from '../constants';
+import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID } from '../constants';
 
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
-import OperationsDetailPanel from './operations/operations-detail-panel';
-import OperationsListPanel from './operations/operations-list-panel';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
@@ -32,40 +30,22 @@ const AppView: FC = () => {
 	return (
 		<Container height={'fit'}>
 			<BreadCrumb />
-			<Switch>
-				<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '265px' }}>
-							<Suspense fallback={<Spinner />}>
-								<NotificationsListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<NotificationsDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
+			<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
+				<Container orientation="horizontal" mainAlignment="flex-start">
+					<Container style={{ maxWidth: '265px' }}>
+						<Suspense fallback={<Spinner />}>
+							<NotificationsListPanel />
+						</Suspense>
 					</Container>
-				</Route>
-				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '16.563rem' }}>
+					<Container style={{ maxWidth: '100%' }}>
+						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 							<Suspense fallback={<Spinner />}>
-								<OperationsListPanel />
+								<NotificationsDetailPanel />
 							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<OperationsDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
+						</DetailViewContainer>
 					</Container>
-				</Route>
-			</Switch>
+				</Container>
+			</Route>
 		</Container>
 	);
 };
