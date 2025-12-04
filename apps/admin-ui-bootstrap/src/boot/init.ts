@@ -20,6 +20,9 @@ type InitError = {
 };
 export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 	queryFnIsAdvancedSupported().then(async (supported): Promise<InitError | void> => {
+		if (!supported) {
+			return { error: 'Advanced is not supported' };
+		}
 		let initialCalls;
 		if (supported) {
 			initialCalls = Promise.all([getInfo(), loginConfig()]);
