@@ -13,7 +13,12 @@ import {
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useAllConfig } from './src/react-query/use-config';
 import { useDomainInformation } from './src/react-query/use-domain-information';
-import { useGlobalSettings } from './src/react-query/use-global-settings';
+import {
+	useGlobalSettings,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigValue,
+	useGlobalConfigList
+} from './src/react-query/use-global-settings';
 import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
@@ -43,7 +48,6 @@ import { useIntegrationsStore } from './src/store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
 import { useBucketServersListStore } from './src/store/shared/bucket-server-list';
 import { useDomainStore } from './src/store/shared/domains';
-import { useGlobalConfigStore } from './src/store/shared/global-config/store';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
@@ -84,7 +88,6 @@ export {
 	pushHistory,
 	useDomainStore,
 	useStickyBarStore,
-	useGlobalConfigStore,
 	useAppConfigStore,
 	useConfigurationAttribute,
 	useBucketServersListStore,
@@ -97,6 +100,9 @@ export {
 	useMailstoreServers,
 	useLastLoginTimestamp,
 	useGlobalSettings,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigValue,
+	useGlobalConfigList,
 	useLicenseInfo,
 	useVersion,
 	useActivateLicense,
