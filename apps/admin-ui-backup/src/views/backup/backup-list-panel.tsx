@@ -8,7 +8,7 @@ import {
 	replaceHistory,
 	useBucketServersListStore,
 	useCurrentUserRights,
-	useGlobalConfigStore,
+	useGlobalCarbonioSendAnalytics,
 	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
@@ -33,9 +33,7 @@ import ListPanelItem from '../list/list-panel-item';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVERS_LIST);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
