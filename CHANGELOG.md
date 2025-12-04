@@ -1,3 +1,9 @@
+## [0.11.1-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.4...v0.11.1-devel.5) (2025-12-04)
+
+### Bug Fixes
+
+* **apps/admin-ui-bootstrap:** handle unsupported advanced in init ([#987](https://github.com/zextras/carbonio-admin-console-ui/issues/987)) ([36c7cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/36c7cc595956cd134c5f1e071fe4477d80059bd9))
+
 ## [0.11.1-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.3...v0.11.1-devel.4) (2025-12-01)
 
 ### Bug Fixes
