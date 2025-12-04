@@ -4,23 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	useAllConfig,
-	useIsAdvanced,
-	useGlobalConfigStore,
-	useGlobalSettings
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import {
-	CARBONIO_SEND_ANALYTICS,
-	LOG_AND_QUEUES,
-	NOTIFICATION_ROUTE_ID,
-	PRIMARY_BAR_NOTIFICATIONS,
-	TRUE
-} from './constants';
+import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, PRIMARY_BAR_NOTIFICATIONS } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -37,21 +25,7 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const logAndQueuesSection = useMemo(
 		() => ({
@@ -108,12 +82,6 @@ const App: FC = () => {
 			});
 		}
 	}, [NotificationTooltipView, isAdvanced, logAndQueuesSection, t]);
-
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };

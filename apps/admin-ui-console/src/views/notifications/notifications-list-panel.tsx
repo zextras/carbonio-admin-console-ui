@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/carbonio-design-system';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,9 +15,7 @@ import ListPanelItem from '../list/list-panel-item';
 
 const NotificationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [selectedOperationItem, setSelectedOperationItem] = useState(LIST);
 	const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 

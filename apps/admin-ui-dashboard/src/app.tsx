@@ -4,24 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	postSoapFetchRequest,
-	useAllConfig,
-	useIsAdvanced,
-	useGlobalConfigStore,
-	useAllServers
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import {
-	CARBONIO_SEND_ANALYTICS,
-	DASHBOARD,
-	PRIMARY_BAR_DASHBOARD,
-	TRUE,
-	ZIMBRA_ADMIN_URN
-} from './constants';
+import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -38,21 +25,6 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
-	const { data: servers = [] } = useAllServers({
-		enabled: isAdvanced
-	});
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const homeTooltipItems = useMemo(
 		() => [
@@ -88,28 +60,6 @@ const App: FC = () => {
 			trackerLabel: PRIMARY_BAR_DASHBOARD
 		});
 	}, [HomeTooltipView, t]);
-
-	const getGlobalConfig = useCallback(() => {
-		postSoapFetchRequest(`/service/admin/soap/zextras`, {
-			zextras: {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxConfig',
-				action: 'dump_global_config'
-			}
-		}).then((data: any) => {
-			const responseData = JSON.parse(data?.Body?.response?.content);
-			const globalConfig = responseData?.response;
-			if (globalConfig) {
-				setGlobalConfig(globalConfig);
-			}
-		});
-	}, [setGlobalConfig]);
-
-	useEffect(() => {
-		if (servers.length > 0 && isAdvanced) {
-			getGlobalConfig();
-		}
-	}, [servers, isAdvanced, getGlobalConfig]);
 
 	return null;
 };

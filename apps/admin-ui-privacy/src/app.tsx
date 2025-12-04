@@ -4,25 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	removeRoute,
-	useAllConfig,
-	useIsAdvanced,
-	useGlobalConfigStore,
-	useGlobalSettings,
-	useHasAllRights
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import {
-	CARBONIO_SEND_ANALYTICS,
-	MANAGE_APP_ID,
-	PRIMARY_BAR_PRIVACY,
-	PRIVACY_ROUTE_ID,
-	TRUE
-} from './constants';
+import { MANAGE_APP_ID, PRIMARY_BAR_PRIVACY, PRIVACY_ROUTE_ID } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -40,23 +26,7 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
-
 	const hasAllConfigRights = useHasAllRights();
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const privacyTooltipItems = useMemo(
 		() => [
@@ -115,12 +85,6 @@ const App: FC = () => {
 			removeRoute(PRIVACY_ROUTE_ID);
 		}
 	}, [PrivacyTooltipView, hasAllConfigRights, managementSection, t]);
-
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };

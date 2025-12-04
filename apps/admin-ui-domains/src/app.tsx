@@ -7,13 +7,9 @@
 import {
 	addRoute,
 	registerActions,
-	useAllConfig,
-	useIsAdvanced,
 	useDomainStore,
 	useCurrentUserRights,
-	useGlobalConfigStore,
-	useMtaServers,
-	useGlobalSettings
+	useMtaServers
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -22,15 +18,13 @@ import { useHistory } from 'react-router-dom';
 
 import {
 	APP_ID,
-	CARBONIO_SEND_ANALYTICS,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	CREATE_TOP_DOMAIN,
 	DOMAINS_ROUTE_ID,
 	GLOBAL,
 	MANAGE,
 	MANAGE_APP_ID,
-	PRIMARY_BAR_DOMAINS,
-	TRUE
+	PRIMARY_BAR_DOMAINS
 } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
@@ -50,12 +44,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const { data: _mtaServerList = [] } = useMtaServers();
-	const { setGlobalCarbonioSendAnalytics, setGlobalConfig } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
+
 	const { data: rights } = useCurrentUserRights();
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 
@@ -67,15 +56,6 @@ const App: FC = () => {
 			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
 		);
 	}, [rights]);
-
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -137,7 +117,7 @@ const App: FC = () => {
 				id: 'new-domain',
 				label: t('label.create_new_domain', 'Create New Domain'),
 				icon: '',
-				onClick: (ev: any): void => {
+				onClick: (): void => {
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
 					setDomain({});
 					setTimeout(() => {
@@ -152,13 +132,6 @@ const App: FC = () => {
 			type: 'new'
 		});
 	}, [createDomainRight, history, setDomain, setDomainView, t]);
-
-	// Set global config when it loads from React Query
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };

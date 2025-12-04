@@ -3,7 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory, useGlobalConfigStore, useMtaServers } from '@zextras/admin-ui-bootstrap';
+import {
+	replaceHistory,
+	useGlobalCarbonioSendAnalytics,
+	useMtaServers
+} from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,16 +31,14 @@ const MTAListPanel: FC = () => {
 	const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
-	const [serverNames, setServerNames] = useState<any>();
+	const [serverNames, setServerNames] = useState();
 	const { data: mtaServerList = [] } = useMtaServers();
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [isShowError, setIsShowError] = useState(false);
 
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 
 	const toggleServerSpecific = (): void => {
 		if (isServerSpecificsExpanded) {

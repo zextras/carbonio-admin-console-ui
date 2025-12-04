@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGlobalConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	createBrowserSoapAPIInterceptor,
 	grantUserConfigRights,
@@ -40,14 +39,6 @@ describe('CosListPanel', () => {
 		vi.resetAllMocks();
 		grantUserConfigRights();
 		useCosStore.getState().reset();
-
-		// Initialize global config store
-		useGlobalConfigStore.setState({
-			globalConfig: {},
-			globalConfigList: [],
-			globalConfigView: 'general',
-			globalCarbonioSendAnalytics: false
-		});
 	});
 
 	afterEach(() => {

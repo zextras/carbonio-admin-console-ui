@@ -4,26 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	removeRoute,
-	useAllConfig,
-	useIsAdvanced,
-	useGlobalConfigStore,
-	useAllServers,
-	useGlobalSettings,
-	useHasAllRights
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import {
-	CARBONIO_SEND_ANALYTICS,
-	MANAGE_APP_ID,
-	MTA_ROUTE_ID,
-	PRIMARY_BAR_MTA,
-	TRUE
-} from './constants';
+import { MANAGE_APP_ID, MTA_ROUTE_ID, PRIMARY_BAR_MTA } from './constants';
 import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -40,23 +25,8 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { data: serverList = [] } = useAllServers();
-	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
-	const { data: allConfig = [] } = useAllConfig();
-	const isAdvanced = useIsAdvanced();
-	const { data: globalSettings } = useGlobalSettings({
-		enabled: isAdvanced
-	});
-	const hasAllConfigRights = useHasAllRights();
 
-	useEffect(() => {
-		const sendAnalytics = allConfig.filter(
-			(items: { n: string }) => items.n === CARBONIO_SEND_ANALYTICS
-		)[0]?._content;
-		sendAnalytics === TRUE
-			? setGlobalCarbonioSendAnalytics(true)
-			: setGlobalCarbonioSendAnalytics(false);
-	}, [allConfig, setGlobalCarbonioSendAnalytics]);
+	const hasAllConfigRights = useHasAllRights();
 
 	const managementSection = useMemo(
 		() => ({
@@ -115,12 +85,6 @@ const App: FC = () => {
 			removeRoute(MTA_ROUTE_ID);
 		}
 	}, [MTATooltipView, hasAllConfigRights, managementSection, t]);
-
-	useEffect(() => {
-		if (globalSettings) {
-			setGlobalConfig(globalSettings);
-		}
-	}, [globalSettings, setGlobalConfig]);
 
 	return null;
 };
