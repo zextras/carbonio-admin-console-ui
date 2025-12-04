@@ -11,12 +11,11 @@ import { SHELL_APP_ID } from '../../constants';
 import { useReporter } from '../../reporting';
 import { getUserSetting } from '../../store/account';
 import { useI18nStore } from '../../store/i18n/store';
-import StoreFactory from '../redux-store-factory';
 
 import { loadApp, unloadApps } from './load-app';
 import { injectSharedLibraries } from './shared-libraries';
 
-export function loadApps(storeFactory: StoreFactory, apps: Array<CarbonioModule>): void {
+export function loadApps(apps: Array<CarbonioModule>): void {
 	injectSharedLibraries();
 	const appsToLoad = filter(apps, (app) => {
 		if (app.name === SHELL_APP_ID) return false;
@@ -27,7 +26,7 @@ export function loadApps(storeFactory: StoreFactory, apps: Array<CarbonioModule>
 	addI18n(appsToLoad, locale);
 
 	useReporter.getState().setClients(appsToLoad);
-	Promise.allSettled(map(appsToLoad, (app) => loadApp(app, storeFactory)));
+	Promise.allSettled(map(appsToLoad, (app) => loadApp(app)));
 }
 
 export function unloadAllApps(): Promise<void> {

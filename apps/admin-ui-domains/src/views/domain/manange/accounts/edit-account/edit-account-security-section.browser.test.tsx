@@ -84,43 +84,43 @@ const mockContextValue = {
 	},
 	directMemberList: [],
 	inDirectMemberList: [],
-	setSignatureItems: () => { },
-	setSignatureList: () => { },
-	setAccountDetail: () => { },
-	setAccSpecificDetail: () => { },
-	setDirectMemberList: () => { },
-	setInDirectMemberList: () => { },
-	setInitAccountDetail: () => { },
+	setSignatureItems: () => {},
+	setSignatureList: () => {},
+	setAccountDetail: () => {},
+	setAccSpecificDetail: () => {},
+	setDirectMemberList: () => {},
+	setInDirectMemberList: () => {},
+	setInitAccountDetail: () => {},
 	initAccountDetail: {},
 	otpList: [],
 	identitiesList: [],
 	folderList: [],
-	setFolderList: () => { },
-	getListOtp: () => { },
-	getIdentitiesList: () => { },
+	setFolderList: () => {},
+	getListOtp: () => {},
+	getIdentitiesList: () => {},
 	deligateDetail: {},
-	setDeligateDetail: () => { },
+	setDeligateDetail: () => {},
 	credentialList: [],
-	getCredentialList: () => { },
+	getCredentialList: () => {},
 	initialGlobalRights: {},
-	setinitialGlobalRights: () => { },
+	setinitialGlobalRights: () => {},
 	globalRights: {},
-	setGlobalRights: () => { },
+	setGlobalRights: () => {},
 	deleteAdministrationRights: [],
-	setDeleteAdministrationRights: () => { },
+	setDeleteAdministrationRights: () => {},
 	userSessionList: [],
-	setAllUserSessionList: () => { },
+	setAllUserSessionList: () => {},
 	allUserSessionList: [],
-	setUserSessionList: () => { },
+	setUserSessionList: () => {},
 	defaultCOS: {},
-	setDefaultCOS: () => { },
+	setDefaultCOS: () => {},
 	allowedDeletePassword: false,
-	setAllowedDeletePassword: () => { }
+	setAllowedDeletePassword: () => {}
 };
 
 function setupEditAccountSecurityTest(component: React.ReactElement) {
 	const queryClient = getQueryClient();
-	queryClient.setQueryData(['advanced-supported'], true);
+	queryClient.setQueryData(['advanced-supported'], { supported: true });
 
 	return setupBrowserTest(component, { queryClient });
 }
@@ -133,6 +133,10 @@ beforeEach(async () => {
 			id: 'domain-id'
 		}
 	});
+});
+
+afterEach(() => {
+	useDomainStore.setState({});
 });
 
 describe('EditAccountSecuritySection (browser)', () => {
@@ -821,7 +825,8 @@ describe('EditAccountSecuritySection (browser)', () => {
 			const sendButton = page.getByRole('button', { name: /SEND/i });
 			await expect.element(sendButton).toBeVisible();
 			await expect.element(sendButton).toBeEnabled();
-		}); it('should display invalid email msg and button should be disabled for invalid email', async () => {
+		});
+		it('should display invalid email msg and button should be disabled for invalid email', async () => {
 			setupEditAccountSecurityTest(
 				<AccountContext.Provider value={mockContextValue}>
 					<EditAccountSecuritySection />
@@ -990,9 +995,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 			await sendButton.click();
 
 			// Verify error snackbar is shown
-			await expect
-				.element(page.getByText('Something went wrong. Please try again.'))
-				.toBeVisible();
+			await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
 		});
 	});
 });

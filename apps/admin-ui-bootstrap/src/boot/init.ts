@@ -14,18 +14,14 @@ import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
 
 import { loadApps } from './app/load-apps';
-import StoreFactory from './redux-store-factory';
 
 type InitError = {
 	error: string;
 };
-export const init = (
-	_i18nFactory: I18nFactory,
-	_storeFactory: StoreFactory
-): Promise<InitError | void> =>
+export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 	queryFnIsAdvancedSupported().then(async (supported): Promise<InitError | void> => {
 		if (!supported) {
-			return { error: 'Advanced is not installed' };
+			return { error: 'Advanced is not supported' };
 		}
 		let initialCalls;
 		if (supported) {
@@ -56,7 +52,7 @@ export const init = (
 					// Update the old i18n factory to match the new store
 					_i18nFactory.setLocale(currentLocale);
 				}
-				loadApps(_storeFactory, Object.values(useAppStore.getState().apps));
+				loadApps(Object.values(useAppStore.getState().apps));
 			})
 			.catch((error: Error) => ({ error: error.message }));
 	});
