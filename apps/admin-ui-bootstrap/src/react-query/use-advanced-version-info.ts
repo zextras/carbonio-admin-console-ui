@@ -23,7 +23,7 @@ type useAdvancedVersionInfoOptions = Omit<
 };
 
 // Query function to get version info (only if advanced is supported)
-const queryFnVersionInfo = async (): Promise<AdvancedVersionInfo | null> => {
+export const queryFnVersionInfo = async (): Promise<AdvancedVersionInfo | null> => {
 	try {
 		const response = await fetch('/zx/auth/supported');
 		if (response.ok) {
@@ -44,9 +44,6 @@ const queryFnVersionInfo = async (): Promise<AdvancedVersionInfo | null> => {
 	}
 	return null;
 };
-
-// Export the query function for non-React usage
-export const getAdvancedVersionInfo = queryFnVersionInfo;
 
 // React Query hook to get advanced version information
 export const useAdvancedVersionInfo = (options: useAdvancedVersionInfoOptions = {}) => {

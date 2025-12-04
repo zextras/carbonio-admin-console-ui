@@ -11,7 +11,7 @@ import { postSoapFetchRequest } from '../network/fetch';
 
 import { useAllConfig } from './use-config';
 
-export type GlobalConfig = Record<string, any>;
+type GlobalConfig = Record<string, any>;
 
 type GlobalConfigOptions = Omit<UseQueryOptions<GlobalConfig>, 'queryKey' | 'queryFn'> & {
 	enabled?: boolean;
