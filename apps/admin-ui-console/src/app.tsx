@@ -6,30 +6,24 @@
 
 import {
 	addRoute,
-	removeRoute,
 	useAllConfig,
 	useIsAdvanced,
 	useMailstoreServers,
 	useGlobalConfigStore,
 	useAllServers,
 	useBucketServersListStore,
-	useGlobalSettings,
-	useHasAllRights
+	useGlobalSettings
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	CARBONIO_SEND_ANALYTICS,
-	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
-	MANAGE_APP_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
-	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
-	SERVICES_ROUTE_ID,
 	TRUE
 } from './constants';
 import { TrackerProvider } from './tracker/provider';
@@ -56,7 +50,6 @@ const App: FC = () => {
 		enabled: isAdvanced
 	});
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const hasAllConfigRights = useHasAllRights();
 	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
@@ -73,23 +66,6 @@ const App: FC = () => {
 			setVolumeList(mailstoreServers);
 		}
 	}, [mailstoreServers, setVolumeList]);
-
-	const managementSection = useMemo(
-		() => ({
-			id: MANAGE_APP_ID,
-			label: t('label.management', 'Management'),
-			position: 3
-		}),
-		[t]
-	);
-	const servicesSection = useMemo(
-		() => ({
-			id: SERVICES_ROUTE_ID,
-			label: t('label.services', 'Services'),
-			position: 4
-		}),
-		[t]
-	);
 
 	const logAndQueuesSection = useMemo(
 		() => ({
@@ -157,69 +133,13 @@ const App: FC = () => {
 		[t]
 	);
 
-	const leagalHoldTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<Trans
-						i18nKey="label.legal_hold_lbl"
-						defaults="<bold>Legal Hold</bold>"
-						components={{ bold: <strong /> }}
-						t={t}
-					/>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
 	);
 
-	const LegalHoldTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
-		[leagalHoldTooltipItem]
-	);
-
-	const setConfigRightsRoute = useCallback(() => {
-		if (hasAllConfigRights) {
-			if (isAdvanced) {
-				addRoute({
-					route: LEGAL_HOLD_ROUTE_ID,
-					position: 2,
-					visible: true,
-					label: t('label.legal_hold', 'Legal Hold') || '',
-					primaryBar: 'LockOutline',
-					appView: AppView,
-					primarybarSection: { ...servicesSection },
-					tooltip: LegalHoldTooltipView,
-					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
-				});
-			}
-		}
-	}, [LegalHoldTooltipView, hasAllConfigRights, isAdvanced, servicesSection, t]);
-
 	useEffect(() => {
-		setConfigRightsRoute();
 		if (isAdvanced) {
-			if (hasAllConfigRights) {
-				addRoute({
-					route: LEGAL_HOLD_ROUTE_ID,
-					position: 2,
-					visible: true,
-					label: t('label.legal_hold', 'Legal Hold') || '',
-					primaryBar: 'LockOutline',
-					appView: AppView,
-					primarybarSection: { ...servicesSection },
-					tooltip: LegalHoldTooltipView,
-					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
-				});
-			} else {
-				removeRoute(LEGAL_HOLD_ROUTE_ID);
-			}
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
@@ -243,18 +163,7 @@ const App: FC = () => {
 				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
-	}, [
-		LegalHoldTooltipView,
-		NotificationTooltipView,
-		OperationTooltipView,
-		hasAllConfigRights,
-		isAdvanced,
-		logAndQueuesSection,
-		managementSection,
-		servicesSection,
-		setConfigRightsRoute,
-		t
-	]);
+	}, [NotificationTooltipView, OperationTooltipView, isAdvanced, logAndQueuesSection, t]);
 
 	// Handle server list changes
 	useEffect(() => {
