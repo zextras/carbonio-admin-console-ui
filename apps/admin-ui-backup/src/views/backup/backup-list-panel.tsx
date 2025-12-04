@@ -6,9 +6,9 @@
 import {
 	getRights,
 	replaceHistory,
-	useBucketServersListStore,
 	useCurrentUserRights,
 	useGlobalCarbonioSendAnalytics,
+	useMailstoreServers,
 	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
@@ -37,7 +37,7 @@ const BackupListPanel: FC = () => {
 	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVERS_LIST);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
-	const serverList = useBucketServersListStore((state) => state.volumeList || []);
+	const { data: serverList = [], isError, isLoading } = useMailstoreServers();
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
 	const [searchServer, setSearchServer] = useState<string>('');
@@ -171,12 +171,15 @@ const BackupListPanel: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		const filterList = serverList.filter((item: any) => item.name.includes(searchServer));
+		if (isError || isLoading) {
+			return;
+		}
+		const filterList = serverList.filter((item: any) => item.name?.includes(searchServer));
 		addServerToList(filterList);
 		if (serverList.length > 0 && filterList.length === 0) {
 			setIsShowError(true);
 		}
-	}, [searchServer, addServerToList, serverList]);
+	}, [searchServer, addServerToList, serverList, isError, isLoading]);
 
 	useEffect(() => {
 		if (rights && rights.length > 0) {

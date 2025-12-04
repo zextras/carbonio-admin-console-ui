@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	getRights,
-	useCurrentUserRights,
-	useMailstoreServers,
-	useAllServers,
-	useBucketServersListStore
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, getRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -38,18 +31,9 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { data: serverList = [] } = useAllServers();
 
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { data: rights } = useCurrentUserRights();
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-	const { data: mailstoreServers } = useMailstoreServers();
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -119,13 +103,6 @@ const App: FC = () => {
 			});
 		}
 	}, [StorageTooltipView, hasListServerRights, managementSection, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
 
 	return null;
 };

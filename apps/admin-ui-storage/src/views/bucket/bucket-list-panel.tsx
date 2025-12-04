@@ -7,7 +7,7 @@ import {
 	replaceHistory,
 	useIsAdvanced,
 	useGlobalCarbonioSendAnalytics,
-	useBucketServersListStore
+	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
@@ -33,7 +33,7 @@ const BucketListPanel: FC = () => {
 	const [t] = useTranslation();
 
 	const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
-	const volumeList = useBucketServersListStore((state) => state.volumeList);
+	const { data: volumeList = [], isError, isLoading } = useMailstoreServers();
 	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [isStoreSelect, setIsStoreSelect] = useState(false);
 	const [isStoreVolumeSelect, setIsStoreVolumeSelect] = useState(false);
@@ -86,12 +86,15 @@ const BucketListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		const filterList = volumeList.filter((item: any) => item.name.includes(searchVolumeName));
+		if (isError || isLoading) {
+			return;
+		}
+		const filterList = volumeList.filter((item: any) => item.name?.includes(searchVolumeName));
 		addServerToList(filterList);
 		if (volumeList.length > 0 && filterList.length === 0) {
 			setIsShowError(true);
 		}
-	}, [searchVolumeName, addServerToList, volumeList]);
+	}, [searchVolumeName, addServerToList, volumeList, isError, isLoading]);
 
 	const globalServerOption = useMemo(
 		() => [

@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	addRoute,
-	removeRoute,
-	useIsAdvanced,
-	useMailstoreServers,
-	useAllServers,
-	useBucketServersListStore,
-	useHasAllRights
-} from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useIsAdvanced, useHasAllRights } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -47,17 +39,8 @@ const PrimaryBarIconButton = styled(Button)`
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const { data: serverList = [] } = useAllServers();
 	const isAdvanced = useIsAdvanced();
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const hasAllConfigRights = useHasAllRights();
-	const { data: mailstoreServers } = useMailstoreServers();
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const servicesSection = useMemo(
 		() => ({
@@ -132,13 +115,6 @@ const App: FC = () => {
 			removeRoute(BACKUP_ROUTE_ID);
 		}
 	}, [BackupTooltipView, backupPrimaryBar, hasAllConfigRights, isAdvanced, servicesSection, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
 
 	return null;
 };

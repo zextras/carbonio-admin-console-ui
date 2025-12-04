@@ -48,7 +48,6 @@ import { getIntegratedFunction } from '../../store/integrations/getters';
 import { useIntegratedComponent } from '../../store/integrations/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/app-config/store';
-import { useBucketServersListStore } from '../../store/shared/bucket-server-list/store';
 import { useDomainStore } from '../../store/shared/domains';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
 import { getTags } from '../../store/tags';
@@ -100,7 +99,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useAllServers,
 	useMtaServers,
 	useServersByService,
-	useBucketServersListStore,
 	useBackupServers,
 	useGlobalSettings,
 	useGlobalCarbonioSendAnalytics,
