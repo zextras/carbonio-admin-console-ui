@@ -36,7 +36,7 @@ export const queryFnIsAdvancedSupported = async () => {
 				return { supported: isAdvanced };
 			}
 		}
-		return { errorMessage: 'Advanced is not supported' };
+		return { supported: false };
 	} catch (error) {
 		// If the API is unreachable, treat as advanced not supported
 		console.error('Failed to check advanced support: ', error);
