@@ -11,11 +11,8 @@ import {
 	useIsAdvanced,
 	useDomainStore,
 	useCurrentUserRights,
-	useMailstoreServers,
 	useGlobalConfigStore,
-	useAllServers,
 	useMtaServers,
-	useBucketServersListStore,
 	useGlobalSettings
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
@@ -52,7 +49,6 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const { data: serverList = [] } = useAllServers();
 	const { data: _mtaServerList = [] } = useMtaServers();
 	const { setGlobalCarbonioSendAnalytics, setGlobalConfig } = useGlobalConfigStore();
 	const { data: allConfig = [] } = useAllConfig();
@@ -60,11 +56,8 @@ const App: FC = () => {
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const { data: rights } = useCurrentUserRights();
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
-
-	const { data: mailstoreServers } = useMailstoreServers();
 
 	const createDomainRight = useMemo(() => {
 		const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
@@ -83,12 +76,6 @@ const App: FC = () => {
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
 	}, [allConfig, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const managementSection = useMemo(
 		() => ({
@@ -165,13 +152,6 @@ const App: FC = () => {
 			type: 'new'
 		});
 	}, [createDomainRight, history, setDomain, setDomainView, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
 
 	// Set global config when it loads from React Query
 	useEffect(() => {

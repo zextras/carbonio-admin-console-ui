@@ -8,10 +8,7 @@ import {
 	addRoute,
 	useAllConfig,
 	useIsAdvanced,
-	useMailstoreServers,
 	useGlobalConfigStore,
-	useAllServers,
-	useBucketServersListStore,
 	useGlobalSettings
 } from '@zextras/admin-ui-bootstrap';
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
@@ -21,9 +18,7 @@ import {
 	CARBONIO_SEND_ANALYTICS,
 	LOG_AND_QUEUES,
 	NOTIFICATION_ROUTE_ID,
-	OPERATIONS_ROUTE_ID,
 	PRIMARY_BAR_NOTIFICATIONS,
-	PRIMARY_BAR_OPERATIONS,
 	TRUE
 } from './constants';
 import { TrackerProvider } from './tracker/provider';
@@ -42,15 +37,12 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { data: serverList = [] } = useAllServers();
 	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
 	const { data: allConfig = [] } = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
 		const sendAnalytics = allConfig.filter(
@@ -60,12 +52,6 @@ const App: FC = () => {
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
 	}, [allConfig, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const logAndQueuesSection = useMemo(
 		() => ({
@@ -107,37 +93,6 @@ const App: FC = () => {
 		[notificationTooltipItems]
 	);
 
-	const operationTooltipItem = useMemo(
-		() => [
-			{
-				header: (
-					<>
-						<Trans
-							i18nKey="label.operation_lbl"
-							defaults="<bold>Operations</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-						{'\n\n'}
-						<Trans
-							i18nKey="label.operation_primarybar_tooltip"
-							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
-
-	const OperationTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={operationTooltipItem} />,
-		[operationTooltipItem]
-	);
-
 	useEffect(() => {
 		if (isAdvanced) {
 			addRoute({
@@ -151,26 +106,8 @@ const App: FC = () => {
 				tooltip: NotificationTooltipView,
 				trackerLabel: PRIMARY_BAR_NOTIFICATIONS
 			});
-			addRoute({
-				route: OPERATIONS_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.operations', 'Operations') || '',
-				primaryBar: 'ListOutline',
-				appView: AppView,
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView,
-				trackerLabel: PRIMARY_BAR_OPERATIONS
-			});
 		}
-	}, [NotificationTooltipView, OperationTooltipView, isAdvanced, logAndQueuesSection, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
+	}, [NotificationTooltipView, isAdvanced, logAndQueuesSection, t]);
 
 	useEffect(() => {
 		if (globalSettings) {

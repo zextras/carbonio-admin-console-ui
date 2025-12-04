@@ -9,10 +9,7 @@ import {
 	removeRoute,
 	useAllConfig,
 	useIsAdvanced,
-	useMailstoreServers,
 	useGlobalConfigStore,
-	useAllServers,
-	useBucketServersListStore,
 	useGlobalSettings,
 	useHasAllRights
 } from '@zextras/admin-ui-bootstrap';
@@ -42,7 +39,6 @@ const AppView: FC = (props) => (
 
 const App: FC = () => {
 	const [t] = useTranslation();
-	const { data: serverList = [] } = useAllServers();
 
 	const { setGlobalConfig, setGlobalCarbonioSendAnalytics } = useGlobalConfigStore();
 	const { data: allConfig = [] } = useAllConfig();
@@ -50,9 +46,8 @@ const App: FC = () => {
 	const { data: globalSettings } = useGlobalSettings({
 		enabled: isAdvanced
 	});
-	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
+
 	const hasAllConfigRights = useHasAllRights();
-	const { data: mailstoreServers } = useMailstoreServers();
 
 	useEffect(() => {
 		const sendAnalytics = allConfig.filter(
@@ -62,12 +57,6 @@ const App: FC = () => {
 			? setGlobalCarbonioSendAnalytics(true)
 			: setGlobalCarbonioSendAnalytics(false);
 	}, [allConfig, setGlobalCarbonioSendAnalytics]);
-
-	useEffect(() => {
-		if (mailstoreServers && mailstoreServers.length > 0) {
-			setVolumeList(mailstoreServers);
-		}
-	}, [mailstoreServers, setVolumeList]);
 
 	const privacyTooltipItems = useMemo(
 		() => [
@@ -126,13 +115,6 @@ const App: FC = () => {
 			removeRoute(PRIVACY_ROUTE_ID);
 		}
 	}, [PrivacyTooltipView, hasAllConfigRights, managementSection, t]);
-
-	// Handle server list changes
-	useEffect(() => {
-		if (serverList && serverList.length > 0) {
-			setAllServersList(serverList);
-		}
-	}, [serverList, setAllServersList]);
 
 	useEffect(() => {
 		if (globalSettings) {
