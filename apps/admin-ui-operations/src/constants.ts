@@ -10,7 +10,6 @@ export const TRUE = 'TRUE';
 export const LOG_AND_QUEUES = 'logandqueues';
 export const OPERATIONS_ROUTE_ID = 'operations';
 export const CARBONIO_SEND_ANALYTICS = 'carbonioSendAnalytics';
-export const LIST = 'list';
 export const RUNNING_ROUTE_ID = 'running';
 export const QUEUED_ROUTE_ID = 'queued';
 export const DONE_ROUTE_ID = 'done';
