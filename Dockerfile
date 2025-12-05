@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM --platform=$BUILDPLATFORM backplane/jq:latest AS builder
+FROM --platform=$BUILDPLATFORM backplane/jq:latest@sha256:7356453dcc4afa6c77261dd56168539f407f6b743c44fa03351a59b46d7cb197 AS builder
 
 # Define path variables
 ENV IRIS_BASE_PATH="/opt/zextras/admin/iris" \
@@ -15,7 +15,7 @@ RUN mkdir -p "${WEB_PATH}"
 COPY package/opt/zextras/admin/iris/ ${WEB_PATH}/
 
 # Final stage - built for all target platforms
-FROM backplane/jq:latest
+FROM backplane/jq:latest@sha256:7356453dcc4afa6c77261dd56168539f407f6b743c44fa03351a59b46d7cb197
 
 # Just copy the prepared files (no execution needed)
 COPY --from=builder /opt/zextras /opt/zextras
