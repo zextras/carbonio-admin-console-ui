@@ -182,7 +182,8 @@ function main() {
 	const buildStats = {
 		total: components.length,
 		built: 0,
-		skipped: 0
+		skipped: 0,
+		builtPackages: []
 	};
 
 	// Build and copy each component
@@ -214,6 +215,7 @@ function main() {
 			const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
 			execCommand(buildCommand);
 			buildStats.built++;
+			buildStats.builtPackages.push(component.name);
 
 			const commitHashDir = path.join(distSourceDir, commitHash);
 			if (!fs.existsSync(commitHashDir)) {
@@ -338,6 +340,16 @@ postinst() {
 	log(`   Total components: ${buildStats.total}`, 'blue');
 	log(`   Built: ${buildStats.built}`, 'green');
 	log(`   Skipped: ${buildStats.skipped}`, 'green');
+
+	// List the packages that were built
+	if (buildStats.builtPackages.length > 0) {
+		log(`   Built packages:`, 'blue');
+		buildStats.builtPackages.forEach((packageName) => {
+			log(`     • ${packageName}`, 'green');
+		});
+	}
+
+
 	log('=== Build complete! ===', 'green');
 }
 
