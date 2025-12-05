@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 
 interface GenerateCertificateModalProps {
 	open: boolean;
-	certificateType: string;
 	domainName: string;
 	virtualHosts: string[];
 	loading: boolean;
@@ -28,7 +27,6 @@ interface GenerateCertificateModalProps {
 
 export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
 	open,
-	certificateType,
 	domainName,
 	virtualHosts,
 	loading,
@@ -36,6 +34,7 @@ export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
 	onGenerate
 }) => {
 	const [t] = useTranslation();
+	const certificateAuthority = "Let's Encrypt";
 
 	return (
 		<Modal
@@ -79,11 +78,11 @@ export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
 				>
 					<Row mainAlignment="flex-start" width="fill">
 						<Text weight="bold" size="small" color="gray0">
-							{t('label.certificate_type', 'Certificate Type')}:
+							{t('label.certificate_authority', 'Certificate Authority')}:
 						</Text>
 						<Padding left="extrasmall">
 							<Text size="small" color="gray0">
-								{certificateType}
+								{certificateAuthority}
 							</Text>
 						</Padding>
 					</Row>
