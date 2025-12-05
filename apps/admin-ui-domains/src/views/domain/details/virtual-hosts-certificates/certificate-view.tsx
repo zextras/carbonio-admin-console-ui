@@ -11,17 +11,15 @@ import {
 	Input,
 	Button,
 	Tooltip,
-	Dropdown,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import React, { FC, useState, useMemo } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { objectType } from '../../../../../types';
 import { SHORT } from '../../../../constants';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
 import ListRow from '../../../list/list-row';
-import { CertificateTypes } from '../../../utility/utils';
 
 import { GenerateCertificateModal } from './generate-certificate-modal';
 
@@ -53,7 +51,6 @@ export const CertificateView: FC<CertificateViewProps> = ({
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [modalOpen, setModalOpen] = useState(false);
-	const [selectedCertLabel, setSelectedCertLabel] = useState<string>('');
 	const [generateLoading, setGenerateLoading] = useState(false);
 
 	const noCertificateLabel = t(
@@ -73,30 +70,14 @@ export const CertificateView: FC<CertificateViewProps> = ({
 		'Processing request; results will be sent to domain notification recipients.'
 	);
 
-	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
-
-	const generateCertificateItems = useMemo(
-		() =>
-			certificateTypes.map((certType) => ({
-				id: certType.value,
-				label: certType.label,
-				onClick: (): void => {
-					setSelectedCertLabel(certType.label);
-					setModalOpen(true);
-				}
-			})),
-		[certificateTypes]
-	);
-
 	const handleModalClose = (): void => {
 		setModalOpen(false);
-		setSelectedCertLabel('');
 	};
 
 	const requestCertiClickHandler = (): void => {
 		setGenerateLoading(true);
 		IssueCertiRequest(domainId, SHORT)
-			.then((res) => {
+			.then(() => {
 				setGenerateLoading(false);
 				createSnackbar({
 					key: 'success',
@@ -170,15 +151,15 @@ export const CertificateView: FC<CertificateViewProps> = ({
 						onClick={onVerifyCertificate}
 					/>
 					<Tooltip label={noVirtualHostLabel} disabled={hasVirtualHosts}>
-						<Dropdown items={generateCertificateItems} disabled={!hasVirtualHosts}>
-							<Button
-								type="ghost"
-								label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
-								color="primary"
-								disabled={!hasVirtualHosts}
-								onClick={(): void => {}}
-							/>
-						</Dropdown>
+						<Button
+							type="ghost"
+							label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
+							color="primary"
+							disabled={!hasVirtualHosts}
+							onClick={(): void => {
+								setModalOpen(true);
+							}}
+						/>
 					</Tooltip>
 					<Tooltip label={noCertificateDownloadLabel} disabled={!toggleCertiBtn}>
 						<Button
@@ -247,7 +228,6 @@ export const CertificateView: FC<CertificateViewProps> = ({
 
 			<GenerateCertificateModal
 				open={modalOpen}
-				certificateType={selectedCertLabel}
 				domainName={domainName}
 				virtualHosts={virtualHosts}
 				loading={generateLoading}
