@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-//
-// SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-only
-//
+
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -50,6 +46,40 @@ function copyRecursive(src, dest) {
 			fs.copyFileSync(srcPath, destPath);
 		}
 	}
+}
+
+function isBuildAlreadyExists(componentName, commitHash) {
+	const componentDir = path.join(__dirname, '..', 'apps', componentName);
+	const commitHashDir = path.join(componentDir, 'dist', 'source', commitHash);
+
+	if (!fs.existsSync(commitHashDir)) {
+		return false;
+	}
+
+	// Validate build completeness by checking for required files
+	const requiredFiles = ['component.json'];
+	let jsFiles = [];
+
+	try {
+		jsFiles = fs
+			.readdirSync(commitHashDir)
+			.filter((f) => f.startsWith('app.') && f.endsWith('.js'));
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+
+	if (jsFiles.length === 0) {
+		return false;
+	}
+
+	for (const file of requiredFiles) {
+		if (!fs.existsSync(path.join(commitHashDir, file))) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 function main() {
@@ -133,23 +163,42 @@ function main() {
 
 	const components = discoverComponents();
 
+	// Track build statistics
+	const buildStats = {
+		total: components.length,
+		built: 0,
+		skipped: 0
+	};
+
 	// Build and copy each component
 	for (const component of components) {
-		log(`=== Building ${component.name} ===`, 'blue');
+		log(`=== Processing ${component.name} ===`, 'blue');
 		const componentDir = path.join(appsDir, component.name);
-		process.chdir(componentDir);
-		const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
-		execCommand(buildCommand);
 		const distSourceDir = path.join(componentDir, 'dist', 'source');
-		if (fs.existsSync(distSourceDir)) {
-			log(`Copying ${component.name} to package...`, 'green');
-			const targetDir = path.join(installDir, component.target);
-			fs.mkdirSync(targetDir, { recursive: true });
-			copyRecursive(distSourceDir, targetDir);
+
+		// Check if build already exists for current commit
+		if (isBuildAlreadyExists(component.name, commitHash)) {
+			log(`⚡ Skipping ${component.name} - build already exists for ${commitHash}`, 'green');
+			buildStats.skipped++;
 		} else {
-			log(`Error: No dist/source directory found for ${component.name}`, 'red');
-			process.exit(1);
+			log(`🔨 Building ${component.name}...`, 'blue');
+			process.chdir(componentDir);
+			const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
+			execCommand(buildCommand);
+			buildStats.built++;
+
+			const commitHashDir = path.join(distSourceDir, commitHash);
+			if (!fs.existsSync(commitHashDir)) {
+				log(`Error: No dist/source/${commitHash} directory found for ${component.name}`, 'red');
+				process.exit(1);
+			}
 		}
+
+		// Copy to package (regardless of whether it was just built or already existed)
+		log(`Copying ${component.name} to package...`, 'green');
+		const targetDir = path.join(installDir, component.target);
+		fs.mkdirSync(targetDir, { recursive: true });
+		copyRecursive(path.join(distSourceDir, commitHash), targetDir);
 	}
 
 	// Return to root directory
@@ -255,6 +304,12 @@ postinst() {
 
 	fs.writeFileSync(path.join(packageDir, 'PKGBUILD'), pkgbuildContent);
 	log('PKGBUILD created', 'green');
+
+	// Print build summary
+	log('\n📊 Build Summary:', 'blue');
+	log(`   Total components: ${buildStats.total}`, 'blue');
+	log(`   Built: ${buildStats.built}`, 'green');
+	log(`   Skipped: ${buildStats.skipped}`, 'green');
 	log('=== Build complete! ===', 'green');
 }
 
