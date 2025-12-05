@@ -1,3 +1,9 @@
+## [0.12.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.1...v0.12.0-devel.2) (2025-12-05)
+
+### Bug Fixes
+
+* simplify certificate modal props ([#993](https://github.com/zextras/carbonio-admin-console-ui/issues/993)) ([74a1699](https://github.com/zextras/carbonio-admin-console-ui/commit/74a169991c6a0c1111d51672cf5e7d36b9d89dcc))
+
 ## [0.12.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.5...v0.12.0-devel.1) (2025-12-05)
 
 ### Features

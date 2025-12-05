@@ -48,7 +48,7 @@ function copyRecursive(src, dest) {
 	}
 }
 
-function isBuildAlreadyExists(componentName, commitHash) {
+function buildAlreadyExists(componentName, commitHash) {
 	const componentDir = path.join(__dirname, '..', 'apps', componentName);
 	const commitHashDir = path.join(componentDir, 'dist', 'source', commitHash);
 
@@ -57,7 +57,6 @@ function isBuildAlreadyExists(componentName, commitHash) {
 	}
 
 	// Validate build completeness by checking for required files
-	const requiredFiles = ['component.json'];
 	let jsFiles = [];
 
 	try {
@@ -65,7 +64,7 @@ function isBuildAlreadyExists(componentName, commitHash) {
 			.readdirSync(commitHashDir)
 			.filter((f) => f.startsWith('app.') && f.endsWith('.js'));
 	} catch (error) {
-		console.error(error);
+		log(error.message, 'red');
 		return false;
 	}
 
@@ -73,10 +72,9 @@ function isBuildAlreadyExists(componentName, commitHash) {
 		return false;
 	}
 
-	for (const file of requiredFiles) {
-		if (!fs.existsSync(path.join(commitHashDir, file))) {
-			return false;
-		}
+	// Check if component.json exists
+	if (!fs.existsSync(path.join(commitHashDir, 'component.json'))) {
+		return false;
 	}
 
 	return true;
@@ -193,7 +191,7 @@ function main() {
 		const distSourceDir = path.join(componentDir, 'dist', 'source');
 
 		// Check if build already exists for current commit AND if there are uncommitted changes
-		const buildExists = isBuildAlreadyExists(component.name, commitHash);
+		const buildExists = buildAlreadyExists(component.name, commitHash);
 		const hasChanges = hasUncommittedChanges(component.name);
 
 		if (buildExists && !hasChanges) {
@@ -231,7 +229,6 @@ function main() {
 		copyRecursive(path.join(distSourceDir, commitHash), targetDir);
 	}
 
-	// Return to root directory
 	process.chdir(rootDir);
 
 	// Create PKGBUILD file
@@ -348,7 +345,6 @@ postinst() {
 			log(`     • ${packageName}`, 'green');
 		});
 	}
-
 
 	log('=== Build complete! ===', 'green');
 }
