@@ -49,31 +49,19 @@ function copyRecursive(src, dest) {
 }
 
 function buildAlreadyExists(componentName, commitHash) {
-	const componentDir = path.join(__dirname, '..', 'apps', componentName);
-	const commitHashDir = path.join(componentDir, 'dist', 'source', commitHash);
-
+	const commitHashDir = path.join(
+		__dirname,
+		'..',
+		'package',
+		'opt',
+		'zextras',
+		'admin',
+		'iris',
+		componentName,
+		commitHash
+	);
+	console.log('=====>', commitHashDir);
 	if (!fs.existsSync(commitHashDir)) {
-		return false;
-	}
-
-	// Validate build completeness by checking for required files
-	let jsFiles = [];
-
-	try {
-		jsFiles = fs
-			.readdirSync(commitHashDir)
-			.filter((f) => f.startsWith('app.') && f.endsWith('.js'));
-	} catch (error) {
-		log(error.message, 'red');
-		return false;
-	}
-
-	if (jsFiles.length === 0) {
-		return false;
-	}
-
-	// Check if component.json exists
-	if (!fs.existsSync(path.join(commitHashDir, 'component.json'))) {
 		return false;
 	}
 
@@ -95,6 +83,42 @@ function hasUncommittedChanges(componentName) {
 	}
 }
 
+function getLastTag() {
+	return execSync('git describe --tags --abbrev=0', {
+		encoding: 'utf-8',
+		stdio: 'pipe'
+	}).trim();
+}
+
+// Dynamically discover all admin-ui components
+function discoverComponents(appsDir) {
+	const adminUiDirs = fs
+		.readdirSync(appsDir)
+		.filter(
+			(dir) => dir.startsWith('admin-ui-') && fs.statSync(path.join(appsDir, dir)).isDirectory()
+		)
+		.map((dir) => {
+			// Read target name from package.json carbonio.name field
+			const packageJsonPath = path.join(appsDir, dir, 'package.json');
+			let target;
+			try {
+				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+				target = packageJson.carbonio?.name;
+				// eslint-disable-next-line no-unused-vars
+			} catch (error) {
+				log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
+				// Fallback pattern for robustness
+				target = `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+			}
+			if (!target) {
+				log(`Warning: No carbonio.name found for ${dir}, using fallback naming`, 'blue');
+				target = `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
+			}
+			return { name: dir, target };
+		});
+	return adminUiDirs;
+}
+
 function main() {
 	// Parse command line arguments
 	const args = process.argv.slice(2);
@@ -103,14 +127,6 @@ function main() {
 	// Get the root directory
 	const rootDir = path.join(__dirname, '..');
 	const appsDir = path.join(rootDir, 'apps');
-	const buildDir = path.join(rootDir, 'dist');
-
-	function getLastTag() {
-		return execSync('git describe --tags --abbrev=0', {
-			encoding: 'utf-8',
-			stdio: 'pipe'
-		}).trim();
-	}
 
 	const pkgVersion = getLastTag().replace(/^v/, '');
 
@@ -127,54 +143,7 @@ function main() {
 	const packageDir = path.join(rootDir, 'package');
 	const installDir = path.join(packageDir, 'opt', 'zextras', 'admin', 'iris');
 
-	// Clean up previous build directory
-	if (fs.existsSync(buildDir)) {
-		log('Cleaning previous build directory...', 'blue');
-		fs.rmSync(buildDir, { recursive: true, force: true });
-	}
-
-	// Clean up previous package directory
-	if (fs.existsSync(packageDir)) {
-		log('Cleaning previous package directory...', 'blue');
-		fs.rmSync(packageDir, { recursive: true, force: true });
-	}
-
-	// Dynamically discover all admin-ui components
-	function discoverComponents() {
-		const adminUiDirs = fs
-			.readdirSync(appsDir)
-			.filter(
-				(dir) => dir.startsWith('admin-ui-') && fs.statSync(path.join(appsDir, dir)).isDirectory()
-			)
-			.map((dir) => {
-				// Read target name from package.json carbonio.name field
-				const packageJsonPath = path.join(appsDir, dir, 'package.json');
-				let target;
-				try {
-					const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-					target = packageJson.carbonio?.name;
-					// eslint-disable-next-line no-unused-vars
-				} catch (error) {
-					log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
-					// Fallback pattern for robustness
-					target =
-						dir === 'admin-ui-console'
-							? 'carbonio-admin-console-ui'
-							: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
-				}
-				if (!target) {
-					log(`Warning: No carbonio.name found for ${dir}, using fallback naming`, 'blue');
-					target =
-						dir === 'admin-ui-console'
-							? 'carbonio-admin-console-ui'
-							: `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
-				}
-				return { name: dir, target };
-			});
-		return adminUiDirs;
-	}
-
-	const components = discoverComponents();
+	const components = discoverComponents(appsDir);
 
 	// Track build statistics
 	const buildStats = {
@@ -185,13 +154,13 @@ function main() {
 	};
 
 	// Build and copy each component
-	for (const component of components) {
+	components.forEach((component) => {
 		log(`=== Processing ${component.name} ===`, 'blue');
 		const componentDir = path.join(appsDir, component.name);
 		const distSourceDir = path.join(componentDir, 'dist', 'source');
 
 		// Check if build already exists for current commit AND if there are uncommitted changes
-		const buildExists = buildAlreadyExists(component.name, commitHash);
+		const buildExists = buildAlreadyExists(component.target, commitHash);
 		const hasChanges = hasUncommittedChanges(component.name);
 
 		if (buildExists && !hasChanges) {
@@ -210,6 +179,12 @@ function main() {
 			}
 
 			process.chdir(componentDir);
+
+			// Clean up previous package directory for the specific component
+			log('Cleaning previous package directory...', 'blue');
+			const componentInstallDir = path.join(installDir, component.target);
+			fs.rmSync(componentInstallDir, { recursive: true, force: true });
+
 			const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
 			execCommand(buildCommand);
 			buildStats.built++;
@@ -220,14 +195,14 @@ function main() {
 				log(`Error: No dist/source/${commitHash} directory found for ${component.name}`, 'red');
 				process.exit(1);
 			}
-		}
 
-		// Copy to package (regardless of whether it was just built or already existed)
-		log(`Copying ${component.name} to package...`, 'green');
-		const targetDir = path.join(installDir, component.target);
-		fs.mkdirSync(targetDir, { recursive: true });
-		copyRecursive(path.join(distSourceDir, commitHash), targetDir);
-	}
+			// Copy to package (regardless of whether it was just built or already existed)
+			log(`Copying ${component.name} to package...`, 'green');
+			const targetDir = path.join(installDir, component.target);
+			fs.mkdirSync(targetDir, { recursive: true });
+			copyRecursive(path.join(distSourceDir), targetDir);
+		}
+	});
 
 	process.chdir(rootDir);
 
