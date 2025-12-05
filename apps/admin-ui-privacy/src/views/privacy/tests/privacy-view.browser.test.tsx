@@ -559,7 +559,7 @@ describe('PrivacyView', () => {
 		// Buttons should disappear after cancel
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 25000);
+	});
 
 	it('should maintain correct states when cancel is clicked', async () => {
 		grantUserConfigRights();
@@ -601,5 +601,5 @@ describe('PrivacyView', () => {
 		await expect.element(page.getByText('Send full error data')).toBeVisible();
 		await expect.element(page.getByText('Allow data analytics')).toBeVisible();
 		await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-	}, 25000);
+	});
 });
