@@ -82,6 +82,21 @@ function isBuildAlreadyExists(componentName, commitHash) {
 	return true;
 }
 
+function hasUncommittedChanges(componentName) {
+	try {
+		// Check if there are any uncommitted changes in the app directory
+		const result = execSync('git status --porcelain apps/' + componentName, {
+			encoding: 'utf-8',
+			stdio: 'pipe'
+		});
+		// If result is not empty, there are changes
+		return result.trim().length > 0;
+	} catch (error) {
+		log(`Error checking git status for ${componentName}: ${error.message}`, 'red');
+		return true;
+	}
+}
+
 function main() {
 	// Parse command line arguments
 	const args = process.argv.slice(2);
@@ -176,12 +191,25 @@ function main() {
 		const componentDir = path.join(appsDir, component.name);
 		const distSourceDir = path.join(componentDir, 'dist', 'source');
 
-		// Check if build already exists for current commit
-		if (isBuildAlreadyExists(component.name, commitHash)) {
-			log(`⚡ Skipping ${component.name} - build already exists for ${commitHash}`, 'green');
+		// Check if build already exists for current commit AND if there are uncommitted changes
+		const buildExists = isBuildAlreadyExists(component.name, commitHash);
+		const hasChanges = hasUncommittedChanges(component.name);
+
+		if (buildExists && !hasChanges) {
+			log(
+				`⚡ Skipping ${component.name} - build already exists for ${commitHash} and no uncommitted changes`,
+				'green'
+			);
 			buildStats.skipped++;
 		} else {
-			log(`🔨 Building ${component.name}...`, 'blue');
+			// Explain why we need to build
+			if (!buildExists) {
+				log(`🔨 Building ${component.name} - no existing build for ${commitHash}`, 'blue');
+			}
+			if (hasChanges) {
+				log(`🔨 Building ${component.name} - uncommitted changes detected`, 'blue');
+			}
+
 			process.chdir(componentDir);
 			const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
 			execCommand(buildCommand);
