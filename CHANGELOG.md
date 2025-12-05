@@ -1,3 +1,13 @@
+## [0.12.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.5...v0.12.0-devel.1) (2025-12-05)
+
+### Features
+
+* **ci:** add renovate definition for dependencies management ([#988](https://github.com/zextras/carbonio-admin-console-ui/issues/988)) ([01823d4](https://github.com/zextras/carbonio-admin-console-ui/commit/01823d45e90a3de036207e22c53f49e9672970f5))
+
+### Performance Improvements
+
+* **ci:** optimize stashing by including only required files ([#994](https://github.com/zextras/carbonio-admin-console-ui/issues/994)) ([38f2b0f](https://github.com/zextras/carbonio-admin-console-ui/commit/38f2b0fe291441e4312931805a8f0e9a0df37b23))
+
 ## [0.11.1-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.4...v0.11.1-devel.5) (2025-12-04)
 
 ### Bug Fixes
