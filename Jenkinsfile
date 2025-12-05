@@ -245,7 +245,7 @@ pipeline {
                     script {
                         sh 'node scripts/build_unified.js'
                     }
-                    stash includes: 'package/**', name: 'staging'
+                    stash includes: 'package/**,yap.json', name: 'staging'
                 }
             }
         }
@@ -254,7 +254,7 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: false,
+                        skipStash: true,
                         stashName: 'staging',
                         buildDirs: ['.'],
                         ubuntuSinglePkg: true,
