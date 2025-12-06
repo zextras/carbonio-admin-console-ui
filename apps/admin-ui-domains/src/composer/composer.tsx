@@ -5,12 +5,15 @@
  */
 import type { IAllProps as EditorProps } from '@tinymce/tinymce-react';
 import { Editor } from '@tinymce/tinymce-react';
+import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/carbonio-design-system';
 import React, { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
 // TinyMCE so the global var exists
 import tinymce from 'tinymce/tinymce';
+
 import 'tinymce/models/dom';
 // Theme
 import 'tinymce/themes/silver';
@@ -39,11 +42,7 @@ import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
-
-import { SUPPORTED_LOCALES } from '../../constants';
-import { useUserSettings } from '../account';
-import { getT } from '../i18n/hooks';
-import { useI18nStore } from '../i18n/store';
+import { SUPPORTED_LOCALES } from './utils';
 
 type ComposerProps = EditorProps & {
 	/** The callback invoked when an edit is performed into the editor. `([text, html]) => {}` */
@@ -103,8 +102,8 @@ const Composer = ({
 			inputRef.current.click();
 		}
 	}, []);
-	const t = getT();
-	const { locale } = useI18nStore.getState();
+	const [t] = useTranslation();
+	const locale = getLocale();
 	const language = useMemo(() => {
 		const localeObj =
 			locale in SUPPORTED_LOCALES && SUPPORTED_LOCALES[locale as keyof typeof SUPPORTED_LOCALES];

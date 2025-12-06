@@ -44,8 +44,7 @@ import { usePrimaryBarState } from '../../shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useAppStore } from '../../store/app';
 import { normalizeRoute } from '../../store/app/utils';
-import { getIntegratedFunction } from '../../store/integrations/getters';
-import { useIntegratedComponent } from '../../store/integrations/hooks';
+import { getLocale } from '../../store/i18n/hooks';
 import { useIntegrationsStore } from '../../store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/app-config/store';
 import { useDomainStore } from '../../store/shared/domains';
@@ -57,9 +56,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	postSoapFetchRequest,
 	fetchExternalSoap,
 
-	// INTEGRATIONS
-	getIntegratedFunction,
-	useIntegratedComponent,
 	// ACCOUNTS
 	useUserAccount,
 	useUserAccounts,
@@ -101,5 +97,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useGlobalSettings,
 	useGlobalCarbonioSendAnalytics,
 	useGlobalConfigValue,
-	useGlobalConfigList
+	useGlobalConfigList,
+	getLocale
 });

@@ -17,13 +17,6 @@ export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => 
 		addRoute: (route: Partial<AppRouteDescriptor>) =>
 			appSetters.addRoute(normalizeRoute(route, pkg)),
 		removeRoute: (routeId: string) => appSetters.removeRoute(routeId),
-		registerHooks: integrations.registerHooks,
-		removeHooks: integrations.removeHooks,
-		registerFunctions: integrations.registerFunctions,
-		removeFunctions: integrations.removeFunctions,
-		registerActions: integrations.registerActions,
-		removeActions: integrations.removeActions,
-		registerComponents: integrations.registerComponents(pkg.name),
-		removeComponents: integrations.removeComponents
+		registerActions: integrations.registerActions
 	};
 };

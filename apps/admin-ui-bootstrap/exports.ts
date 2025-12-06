@@ -42,8 +42,7 @@ import { usePrimaryBarState } from './src/shell/hooks';
 import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
-import { getIntegratedFunction } from './src/store/integrations/getters';
-import { useIntegratedComponent } from './src/store/integrations/hooks';
+import { getLocale } from './src/store/i18n/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
 import { useDomainStore } from './src/store/shared/domains';
@@ -71,13 +70,11 @@ export {
 	registerActions,
 	useUserAccount,
 	useUserAccounts,
-	getIntegratedFunction,
 	useUserSettings,
 	replaceHistory,
 	usePrimaryBarState,
 	useAllConfig,
 	useDomainInformation,
-	useIntegratedComponent,
 	pushHistory,
 	useDomainStore,
 	useStickyBarStore,
@@ -104,5 +101,6 @@ export {
 	useMtaServers,
 	useServersByService,
 	useBackupServers,
-	useIsAdvanced
+	useIsAdvanced,
+	getLocale
 };

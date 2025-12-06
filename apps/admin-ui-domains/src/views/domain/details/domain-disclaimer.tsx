@@ -4,11 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	useIntegratedComponent,
-	useUserSettings,
-	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
+import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Button,
@@ -27,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
+import Composer from '../../../composer/composer';
 import {
 	AMAVIS_DISCLAIMER_OPTIONS,
 	FALSE,
@@ -64,7 +61,6 @@ const DomainDisclaimer: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [Composer] = useIntegratedComponent('composer');
 	const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
 	const [domainDisclaimerInitialDetail, setDomainDisclaimerInitialDetail] =
 		useState<DomainDisclaimerType>();
@@ -421,7 +417,6 @@ const DomainDisclaimer: FC = () => {
 					>
 						<EditorWrapper>
 							<Composer
-								// @ts-ignore
 								value={defaulRichTextContent}
 								onEditorChange={(ev: any): void => {
 									setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);

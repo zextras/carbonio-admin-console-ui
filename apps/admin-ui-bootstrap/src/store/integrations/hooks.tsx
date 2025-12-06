@@ -7,29 +7,11 @@
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
 import { compact, map } from 'lodash';
-import React, { useMemo, FunctionComponent } from 'react';
+import { useMemo } from 'react';
 
 import { Action } from '../../../types';
-import AppContextProvider from '../../boot/app/app-context-provider';
 
 import { useIntegrationsStore } from './store';
-
-export const useIntegratedComponent = (id: string): [FunctionComponent<unknown>, boolean] => {
-	const Integration = useIntegrationsStore((s) => s.components?.[id]);
-	return useMemo(() => {
-		if (Integration) {
-			const C: FunctionComponent<unknown> = (props: unknown) => (
-				<AppContextProvider pkg={Integration.app}>
-					{}
-					{/* @ts-ignore */}
-					<Integration.item {...props} />
-				</AppContextProvider>
-			);
-			return [C, true];
-		}
-		return [(): null => null, false];
-	}, [Integration]);
-};
 
 export const useActions = <T,>(target: T, type: string): Array<Action> => {
 	const factories = useIntegrationsStore((s) => s.actions[type]);

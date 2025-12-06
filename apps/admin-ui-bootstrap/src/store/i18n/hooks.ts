@@ -13,3 +13,5 @@ export const getT = (): TFunction => {
 	const { instances, defaultI18n } = useI18nStore.getState();
 	return instances[SHELL_APP_ID]?.t ?? defaultI18n.t;
 };
+
+export const getLocale = (): string => useI18nStore.getState().locale;
