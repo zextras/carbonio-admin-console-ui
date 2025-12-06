@@ -16,8 +16,6 @@ import styled from 'styled-components';
 
 import { AppRoute } from '../../types';
 import { CARBONIO_LOGO_URL } from '../constants';
-import { SearchBar } from '../search/search-bar';
-import { useAppStore } from '../store/app';
 import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
 
@@ -34,7 +32,6 @@ const ShellHeader: FC<{
 	children?: React.ReactNode;
 }> = ({ activeRoute, mobileNavIsOpen, onMobileMenuClick, children }) => {
 	const screenMode = useScreenMode();
-	const searchEnabled = useAppStore((s) => s.views.search.length > 0);
 	const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
 		useLoginConfigStore();
 	const logoSrc = useMemo(() => {
@@ -91,10 +88,6 @@ const ShellHeader: FC<{
 						<CreationButton activeRoute={activeRoute} />
 					</Padding>
 				</Container>
-
-				<Responsive mode="desktop">
-					{searchEnabled && <SearchBar activeRoute={activeRoute} />}
-				</Responsive>
 			</Container>
 			<Container orientation="horizontal" width="25%" mainAlignment="flex-end">
 				<Responsive mode="desktop">{children}</Responsive>
