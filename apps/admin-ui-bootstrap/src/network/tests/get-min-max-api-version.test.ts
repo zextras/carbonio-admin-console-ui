@@ -5,12 +5,10 @@
  */
 
 import { minMaxVersionApi } from 'admin-ui-test-utils';
-import { noop } from 'lodash';
 import { HttpResponse } from 'msw';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 import { queryFnVersionInfo } from '../../react-query/use-advanced-version-info';
-import * as reporter from '../../reporting/functions';
 
 describe('queryFnVersionInfo', () => {
 	it('returns version info if domain present in response', async () => {
@@ -52,7 +50,6 @@ describe('queryFnVersionInfo', () => {
 	});
 
 	it('returns null if api fails', async () => {
-		vi.spyOn(reporter, 'report').mockImplementation((): any => noop);
 		minMaxVersionApi(HttpResponse.error);
 
 		const result = await queryFnVersionInfo();

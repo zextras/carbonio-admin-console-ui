@@ -5,10 +5,10 @@
  */
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
-	postSoapFetchRequest as postSoapFetchRequestFn,
-	fetchExternalSoap as fetchExternalSoapFn,
 	soapFetch,
-	getSoapFetchRequest
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	fetchExternalSoap
 } from './src/network/fetch';
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useAllConfig } from './src/react-query/use-config';
@@ -57,8 +57,6 @@ import { AppRouteDescriptor } from './types/apps';
 // to make the admin panel a micro-frontend
 const pkg = { name: 'admin-ui-console', priority: 3, icon: 'List' };
 
-const postSoapFetchRequest = postSoapFetchRequestFn(pkg.name);
-const fetchExternalSoap = fetchExternalSoapFn(pkg.name);
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
 	useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);

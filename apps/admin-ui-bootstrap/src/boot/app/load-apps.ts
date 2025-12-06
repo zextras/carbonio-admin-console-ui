@@ -8,7 +8,6 @@ import { filter, map } from 'lodash';
 
 import { CarbonioModule } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-import { useReporter } from '../../reporting';
 import { getUserSetting } from '../../store/account';
 import { useI18nStore } from '../../store/i18n/store';
 
@@ -24,8 +23,6 @@ export function loadApps(apps: Array<CarbonioModule>): void {
 
 	const { locale, addI18n } = useI18nStore.getState();
 	addI18n(appsToLoad, locale);
-
-	useReporter.getState().setClients(appsToLoad);
 	Promise.allSettled(map(appsToLoad, (app) => loadApp(app)));
 }
 

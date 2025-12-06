@@ -19,9 +19,7 @@ type GlobalConfigOptions = Omit<UseQueryOptions<GlobalConfig>, 'queryKey' | 'que
 
 // Query function for global configuration
 const queryFn = async (): Promise<GlobalConfig> => {
-	const postRequest = postSoapFetchRequest('admin-ui-console');
-
-	const response = (await postRequest('/service/admin/soap/zextras', {
+	const response = (await postSoapFetchRequest('/service/admin/soap/zextras', {
 		zextras: {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxConfig',

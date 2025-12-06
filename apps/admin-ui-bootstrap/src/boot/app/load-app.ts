@@ -9,7 +9,6 @@ import { ComponentType } from 'react';
 
 import { IShellWindow, CarbonioModule } from '../../../types';
 import * as CONSTANTS from '../../constants';
-import { report } from '../../reporting';
 import { useAppStore } from '../../store/app';
 import { AppLink } from '../../ui-extras/app-link';
 
@@ -39,7 +38,6 @@ function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'][
 				appPkg.name
 			] = {
-				report: report(appPkg.name),
 				AppLink,
 				...getAppSetters(appPkg),
 				...getAppFunctions(appPkg),

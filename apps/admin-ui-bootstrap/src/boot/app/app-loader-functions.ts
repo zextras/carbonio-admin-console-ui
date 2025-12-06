@@ -55,8 +55,8 @@ import { getTags } from '../../store/tags';
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
 	soapFetch,
 	getSoapFetchRequest,
-	postSoapFetchRequest: postSoapFetchRequest(pkg.name),
-	fetchExternalSoap: fetchExternalSoap(pkg.name),
+	postSoapFetchRequest,
+	fetchExternalSoap,
 
 	// INTEGRATIONS
 	getIntegratedFunction,
