@@ -15,7 +15,7 @@ import { AppLink } from '../../ui-extras/app-link';
 import { getAppFunctions } from './app-loader-functions';
 import { getAppSetters } from './app-loader-setters';
 
-export const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
+const _scripts: { [pkgName: string]: HTMLScriptElement } = {};
 let _scriptId = 0;
 
 function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {

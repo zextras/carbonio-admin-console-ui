@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { TFunction } from 'i18next';
-
-import { SHELL_APP_ID } from '../../constants';
 
 import { useI18nStore } from './store';
-
-export const getT = (): TFunction => {
-	const { instances, defaultI18n } = useI18nStore.getState();
-	return instances[SHELL_APP_ID]?.t ?? defaultI18n.t;
-};
 
 export const getLocale = (): string => useI18nStore.getState().locale;
