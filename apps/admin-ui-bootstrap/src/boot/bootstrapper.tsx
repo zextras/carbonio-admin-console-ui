@@ -6,27 +6,17 @@
 
 import { SnackbarManager, ModalManager } from '@zextras/carbonio-design-system';
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
 import { useBridge } from '../store/context-bridge';
 
-import { registerDefaultViews } from './app/default-views';
 import { unloadAllApps } from './app/load-apps';
 import BootstrapperContextProvider from './bootstrapper-provider';
 import BootstrapperRouter from './bootstrapper-router';
 import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
-
-const DefaultViewsRegister: FC = () => {
-	const [t] = useTranslation();
-	useEffect(() => {
-		registerDefaultViews(t);
-	}, [t]);
-	return null;
-};
 
 const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
 	useBridge({
@@ -61,7 +51,6 @@ const Bootstrapper: FC = () => {
 						<ModalManager>
 							<BootstrapperContextProvider i18nFactory={i18nFactory}>
 								<TBridge i18nFactory={i18nFactory} />
-								<DefaultViewsRegister />
 								<BootstrapperRouter />
 							</BootstrapperContextProvider>
 						</ModalManager>
