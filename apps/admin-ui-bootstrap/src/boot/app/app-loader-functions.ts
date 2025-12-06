@@ -7,10 +7,10 @@
 import { CarbonioModule, AppRouteDescriptor } from '../../../types';
 import { replaceHistory, pushHistory } from '../../history/hooks';
 import {
-	getSoapFetch,
-	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap
+	fetchExternalSoap,
+	soapFetch,
+	getSoapFetchRequest
 } from '../../network/fetch';
 import { useBackupServers } from '../../react-query/use-backup-servers';
 import { useAllConfig } from '../../react-query/use-config';
@@ -53,8 +53,8 @@ import { useStickyBarStore } from '../../store/shared/sticky-bar';
 import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
-	soapFetch: getSoapFetch(pkg.name),
-	getSoapFetchRequest: getSoapFetchRequest(pkg.name),
+	soapFetch,
+	getSoapFetchRequest,
 	postSoapFetchRequest: postSoapFetchRequest(pkg.name),
 	fetchExternalSoap: fetchExternalSoap(pkg.name),
 

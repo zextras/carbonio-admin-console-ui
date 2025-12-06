@@ -7,11 +7,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { find } from 'lodash';
 
-import { CONFIG, SHELL_APP_ID } from '../constants';
-import { getSoapFetch } from '../network/fetch';
+import { CONFIG } from '../constants';
+import { soapFetch } from '../network/fetch';
 import { useUserAccounts } from '../store/account/hooks';
-
-const soapFetch = getSoapFetch(SHELL_APP_ID);
 
 type Right = {
 	type: string;

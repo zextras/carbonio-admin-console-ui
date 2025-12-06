@@ -4,38 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SHELL_APP_ID } from '../constants';
 import { useAccountStore } from '../store/account';
 import { useI18nStore } from '../store/i18n/store';
 
-import { getSoapFetch } from './fetch';
+import { soapFetch } from './fetch';
 
-export const getAccount = (): Promise<void> => {
-        const { account } = useAccountStore.getState();
+export const getAccount = async (): Promise<void> => {
+	const { account } = useAccountStore.getState();
 
-        if (!account?.name) {
-                console.warn('No account name available for GetAccount request');
-                return Promise.resolve();
-        }
+	if (!account?.name) {
+		console.warn('No account name available for GetAccount request');
+		return Promise.resolve();
+	}
 
-        return getSoapFetch(SHELL_APP_ID)<
-                { _jsns: string; account: { by: string; _content: string } },
-                any
-        >('GetAccount', {
-                _jsns: 'urn:zimbraAdmin',
-                account: {
-                        by: 'name',
-                        _content: account.name
-                }
-        }).then((res: any): void => {
-                if (res?.a && Array.isArray(res.a)) {
-                        // Find zimbraPrefLocale attribute
-                        const localeAttr = res.a.find((attr: any) => attr.n === 'zimbraPrefLocale');
+	return soapFetch<{ _jsns: string; account: { by: string; _content: string } }, any>(
+		'GetAccount',
+		{
+			_jsns: 'urn:zimbraAdmin',
+			account: {
+				by: 'name',
+				_content: account.name
+			}
+		}
+	).then((res: any): void => {
+		if (res?.a && Array.isArray(res.a)) {
+			// Find zimbraPrefLocale attribute
+			const localeAttr = res.a.find((attr: any) => attr.n === 'zimbraPrefLocale');
 
-                        if (localeAttr?._content) {
-                                const userLocale = localeAttr._content.split('_')[0] ?? 'en';
-                                useI18nStore.getState().setLocale(userLocale);
-                        }
-                }
-        });
+			if (localeAttr?._content) {
+				const userLocale = localeAttr._content.split('_')[0] ?? 'en';
+				useI18nStore.getState().setLocale(userLocale);
+			}
+		}
+	});
 };
