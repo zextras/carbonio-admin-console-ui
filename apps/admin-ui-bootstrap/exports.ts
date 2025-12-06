@@ -48,7 +48,6 @@ import { useIntegrationsStore } from './src/store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
 import { useDomainStore } from './src/store/shared/domains';
 import { useStickyBarStore } from './src/store/shared/sticky-bar';
-import { getTags } from './src/store/tags';
 import { AppRouteDescriptor } from './types/apps';
 
 // NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
@@ -74,7 +73,6 @@ export {
 	useUserAccounts,
 	getIntegratedFunction,
 	useUserSettings,
-	getTags,
 	replaceHistory,
 	usePrimaryBarState,
 	useAllConfig,

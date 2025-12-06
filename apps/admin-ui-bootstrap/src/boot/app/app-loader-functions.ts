@@ -50,7 +50,6 @@ import { useIntegrationsStore } from '../../store/integrations/store';
 import { useAppConfigStore, useConfigurationAttribute } from '../../store/shared/app-config/store';
 import { useDomainStore } from '../../store/shared/domains';
 import { useStickyBarStore } from '../../store/shared/sticky-bar';
-import { getTags } from '../../store/tags';
 
 export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> => ({
 	soapFetch,
@@ -65,7 +64,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useUserAccount,
 	useUserAccounts,
 	useUserSettings,
-	getTags,
 	// HISTORY
 	replaceHistory,
 	pushHistory,

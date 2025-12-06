@@ -15,7 +15,6 @@ export const useUserAccount = vi.fn();
 export const useUserAccounts = vi.fn();
 export const useUserSettings = vi.fn();
 export const getIntegratedFunction = vi.fn();
-export const getTags = vi.fn();
 export const usePrimaryBarState = vi.fn();
 export const useAllConfig = vi.fn();
 export const useIsAdvanced = vi.fn();

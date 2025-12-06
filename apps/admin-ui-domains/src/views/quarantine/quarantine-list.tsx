@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getTags, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -437,25 +437,7 @@ const QuarantineList: FC = () => {
 		}),
 		[]
 	);
-	const getTagIdsFromName = (names: string | undefined): Array<string | undefined> => {
-		const tags = getTags();
-		return map(names?.split(','), (name) =>
-			find(tags, { name }) ? find(tags, { name })?.id : `nil:${name}`
-		);
-	};
 
-	const getTagIds = useCallback(
-		(ta: string | undefined, tn: string | undefined): Array<string | undefined> => {
-			if (!isNil(ta)) {
-				return filter(ta.split(','), (tag) => tag !== '');
-			}
-			if (!isNil(tn)) {
-				return getTagIdsFromName(tn);
-			}
-			return [];
-		},
-		[]
-	);
 	const normalizeMailPartMapFn = useCallback((v: SoapMailMessagePart): MailMessagePart => {
 		const ret: MailMessagePart = {
 			contentType: v.ct,
@@ -804,7 +786,7 @@ const QuarantineList: FC = () => {
 				fragment: m.fr,
 				subject: m.su,
 				participants: normalizeParticipants(m.e),
-				tags: getTagIds(m.t, m.tn),
+				tags: [],
 				parts: normalizeMailParts(m.mp),
 				attachments: getAttachments(m.mp),
 				invite: m.inv,
@@ -830,14 +812,7 @@ const QuarantineList: FC = () => {
 				envelopeTo: sanitizeEmail(attrs['X-Envelope-To'])
 			};
 		},
-		[
-			generateBodyContent,
-			getAttachments,
-			getTagIds,
-			normalizeMailParts,
-			normalizeParticipants,
-			parseFlags
-		]
+		[generateBodyContent, getAttachments, normalizeMailParts, normalizeParticipants, parseFlags]
 	);
 
 	const getMessageResponses = useCallback(
