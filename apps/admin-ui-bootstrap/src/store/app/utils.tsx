@@ -59,7 +59,6 @@ export const normalizeRoute = (
 		visible: data?.visible ?? true,
 		label: data?.label ?? '',
 		primaryBar: data.primaryBar ?? app.icon ?? 'CubeOutline',
-		secondaryBar: data.secondaryBar,
 		appView: data.appView ?? FallbackView,
 		primarybarSection: data.primarybarSection,
 		tooltip: data?.tooltip,

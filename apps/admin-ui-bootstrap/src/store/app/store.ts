@@ -14,8 +14,7 @@ import {
 	AppView,
 	CarbonioModule,
 	PrimarybarSection,
-	PrimaryBarView,
-	SecondaryBarView
+	PrimaryBarView
 } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
 
@@ -43,11 +42,8 @@ export const useAppStore = create<AppState>((set) => ({
 	routes: {},
 	views: {
 		primaryBar: [],
-		secondaryBar: [],
 		appView: [],
 		utilityBar: [],
-		primaryBarAccessories: [],
-		secondaryBarAccessories: [],
 		primarybarSections: []
 	},
 	setters: {
@@ -124,20 +120,6 @@ export const useAppStore = create<AppState>((set) => ({
 							'position'
 						);
 					}
-					if (routeData.secondaryBar) {
-						state.views.secondaryBar = unionWith<SecondaryBarView>(
-							[
-								{
-									app: routeData.app,
-									id: routeData.id,
-									route: routeData.route,
-									component: routeData.secondaryBar
-								}
-							],
-							state.views.secondaryBar,
-							(a, b): boolean => a.id === b.id
-						);
-					}
 					if (routeData.appView) {
 						state.views.appView = unionWith<AppView>(
 							[
@@ -165,8 +147,6 @@ export const useAppStore = create<AppState>((set) => ({
 					state.routes = omit(state.routes, [id]);
 
 					state.views.primaryBar = filterById(state.views.primaryBar, id);
-
-					state.views.secondaryBar = filterById(state.views.secondaryBar, id);
 
 					state.views.appView = filterById(state.views.appView, id);
 				})

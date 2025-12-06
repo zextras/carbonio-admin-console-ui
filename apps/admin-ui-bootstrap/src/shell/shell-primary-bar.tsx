@@ -8,22 +8,19 @@ import {
 	Container,
 	Button,
 	Row,
-	Tooltip,
 	Text,
 	Padding,
 	Divider,
 	Popper
 } from '@zextras/carbonio-design-system';
-import { map, trim, filter, sortBy } from 'lodash';
-import React, { FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { map, trim, sortBy } from 'lodash';
+import React, { FC, useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { AppRoute, PrimaryAccessoryView, PrimaryBarView } from '../../types';
-import AppContextProvider from '../boot/app/app-context-provider';
+import { AppRoute, PrimaryBarView } from '../../types';
 import { useAppStore } from '../store/app';
 import { useUtilityBarStore } from '../utility-bar';
-import { checkRoute } from '../utility-bar/utils';
 
 import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
@@ -63,10 +60,6 @@ type PrimaryBarItemProps = {
 	active: boolean;
 	isExpanded: boolean;
 	onClick: () => void;
-};
-
-type PrimaryBarAccessoryItemProps = {
-	view: PrimaryAccessoryView;
 };
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
@@ -131,26 +124,6 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
 	);
 };
 
-const PrimaryBarAccessoryElement: FC<PrimaryBarAccessoryItemProps> = ({ view }) => (
-	<Tooltip label={view.label} placement="right" key={view.id}>
-		<AppContextProvider key={view.id} pkg={view.app}>
-			{typeof view.component === 'string' ? (
-				<Button
-					type="ghost"
-					color={'text'}
-					icon={view.component}
-					backgroundColor="gray6"
-					iconColor="text"
-					onClick={view.onClick}
-					size="large"
-				/>
-			) : (
-				<view.component />
-			)}
-		</AppContextProvider>
-	</Tooltip>
-);
-
 const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
@@ -177,15 +150,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 			setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(history.location.pathname, '/') }));
 		}
 	}, [activeRoute, history.location.pathname, primaryBarViews]);
-	const primaryBarAccessoryViews = useAppStore((s) => s.views.primaryBarAccessories);
-	const accessories = useMemo(
-		() =>
-			sortBy(
-				filter(primaryBarAccessoryViews, (v) => checkRoute(v, activeRoute)),
-				'position'
-			),
-		[activeRoute, primaryBarAccessoryViews]
-	);
 
 	useEffect(() => {
 		let allPrimaryBarView = [];
@@ -285,11 +249,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 						) : null
 					)}
 				</Container>
-				<Container mainAlignment="flex-end" height="fit">
-					{accessories.map((v) => (
-						<PrimaryBarAccessoryElement view={v} key={v?.id} />
-					))}
-				</Container>
+				<Container mainAlignment="flex-end" height="fit"></Container>
 			</PrimaryBarContainer>
 			<Collapser onClick={onCollapserClick} open={isOpen} />
 		</>

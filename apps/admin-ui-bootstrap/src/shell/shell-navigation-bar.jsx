@@ -10,7 +10,6 @@ import { Container, Responsive } from '@zextras/carbonio-design-system';
 
 import ShellMobileNav from './shell-mobile-nav';
 import ShellPrimaryBar from './shell-primary-bar';
-import ShellSecondaryBar from './shell-secondary-bar';
 
 export default function ShellNavigationBar({ mobileNavIsOpen, activeRoute }) {
 	return (
@@ -24,7 +23,6 @@ export default function ShellNavigationBar({ mobileNavIsOpen, activeRoute }) {
 		>
 			<Responsive mode="desktop">
 				<ShellPrimaryBar activeRoute={activeRoute} />
-				<ShellSecondaryBar activeRoute={activeRoute} />
 			</Responsive>
 			<Responsive mode="mobile">
 				<ShellMobileNav mobileNavIsOpen={mobileNavIsOpen} activeRoute={activeRoute} />

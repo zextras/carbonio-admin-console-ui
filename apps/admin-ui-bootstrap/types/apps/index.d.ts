@@ -122,7 +122,6 @@ export type AppRouteDescriptor = {
 	position: number;
 	visible: boolean;
 	label: string;
-	secondaryBar?: ComponentType<SecondaryBarComponentProps>;
 	appView: ComponentType<AppViewComponentProps>;
 	primarybarSection: PrimarybarSection | undefined;
 	// eslint-disable-next-line sonarjs/no-redundant-optional
@@ -141,11 +140,8 @@ export type AppState = {
 	routes: Record<string, AppRoute>;
 	views: {
 		primaryBar: Array<PrimaryBarView>;
-		secondaryBar: Array<SecondaryBarView>;
 		appView: Array<AppView>;
 		utilityBar: Array<UtilityView>;
-		primaryBarAccessories: Array<PrimaryAccessoryView>;
-		secondaryBarAccessories: Array<SecondaryAccessoryView>;
 		primarybarSections: Array<PrimarybarSection>;
 	};
 	setters: AppSetters;
