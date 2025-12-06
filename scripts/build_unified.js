@@ -153,14 +153,6 @@ function main() {
 		builtPackages: []
 	};
 
-	// Track build statistics
-	const buildStats = {
-		total: components.length,
-		built: 0,
-		skipped: 0,
-		builtPackages: []
-	};
-
 	// Build and copy each component
 	components.forEach((component) => {
 		log(`=== Processing ${component.name} ===`, 'blue');
