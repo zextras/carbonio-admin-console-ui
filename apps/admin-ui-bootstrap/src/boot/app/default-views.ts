@@ -9,16 +9,9 @@ import { produce } from 'immer';
 
 import { AppState } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-import DevBoard from '../../dev/dev-board';
 import DevBoardTrigger from '../../dev/dev-board-trigger';
 import { useAppStore } from '../../store/app';
 
-const devModeBoardView = {
-	id: 'dev-mode',
-	app: SHELL_APP_ID,
-	component: DevBoard,
-	route: 'devtools'
-};
 const devModeTrigger = {
 	id: 'dev-mode-t',
 	component: DevBoardTrigger,
@@ -30,7 +23,6 @@ export const registerDefaultViews = (t: TFunction): void => {
 	useAppStore.setState(
 		produce((s: AppState) => {
 			if (__CARBONIO_DEV__) {
-				s.views.board.push(devModeBoardView);
 				s.views.primaryBarAccessories.push(devModeTrigger);
 			}
 		})

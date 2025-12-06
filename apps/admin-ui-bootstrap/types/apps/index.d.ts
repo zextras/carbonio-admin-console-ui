@@ -131,34 +131,8 @@ export type AppRouteDescriptor = {
 };
 export type AppSetters = {
 	addApps: (apps: Array<Partial<CarbonioModule>>) => void;
-	// add route (id route primaryBar secondaryBar app)
 	addRoute: (routeData: AppRouteDescriptor) => string;
-	setRouteVisibility: (id: string, visible: boolean) => void;
-	// remove route (id | route)
 	removeRoute: (id: string) => void;
-	//
-	// update primaryBar
-	updatePrimaryBadge: (badge: Partial<BadgeInfo>, id: string) => void;
-	updateUtilityBadge: (badge: Partial<BadgeInfo>, id: string) => void;
-	// add search
-	addSearchView: (data: SearchView) => string;
-	// remove search
-	removeSearchView: (id: string) => void;
-	//
-	// add utility
-	addUtilityView: (data: UtilityView) => string;
-	// remove utility
-	removeUtilityView: (id: string) => void;
-	//
-	// add primaryAccessory
-	addPrimaryAccessoryView: (data: PrimaryAccessoryView) => string;
-	// remove primaryAccessory
-	removePrimaryAccessoryView: (id: string) => void;
-	//
-	// add secondaryAccessory
-	addSecondaryAccessoryView: (data: SecondaryAccessoryView) => string;
-	// remove secondaryAccessory
-	removeSecondaryAccessoryView: (id: string) => void;
 };
 export type AppState = {
 	apps: Record<string, CarbonioModule>;
@@ -169,9 +143,7 @@ export type AppState = {
 		primaryBar: Array<PrimaryBarView>;
 		secondaryBar: Array<SecondaryBarView>;
 		appView: Array<AppView>;
-		board: Array<BoardView>;
 		utilityBar: Array<UtilityView>;
-		search: Array<SearchView>;
 		primaryBarAccessories: Array<PrimaryAccessoryView>;
 		secondaryBarAccessories: Array<SecondaryAccessoryView>;
 		primarybarSections: Array<PrimarybarSection>;
