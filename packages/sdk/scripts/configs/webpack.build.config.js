@@ -196,7 +196,6 @@ exports.setupWebpackBuildConfig = (
 		'@emotion/styled': `__ZAPP_SHARED_LIBRARIES__['@emotion/styled']`,
 		'@zextras/carbonio-ui-preview': `__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-ui-preview']`,
 		'@zextras/admin-ui-bootstrap': `__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap']['${options.name}']`,
-		darkreader: `__ZAPP_SHARED_LIBRARIES__['darkreader']`,
 		/* Exports for App's Handlers */
 		msw: `__ZAPP_SHARED_LIBRARIES__['msw']`
 	};

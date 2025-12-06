@@ -21,7 +21,6 @@ export const SHARED_EXTERNALS = [
 	'@zextras/carbonio-ui-preview',
 	'@zextras/admin-ui-bootstrap',
 	'@zextras/carbonio-design-system',
-	'darkreader',
 	'msw',
 	'i18next'
 ] as const;
@@ -44,7 +43,6 @@ export function createSharedGlobals(packageName: string): Record<string, string>
 		'@zextras/admin-ui-bootstrap': `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
 		'@zextras/carbonio-design-system':
 			'__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-design-system"]',
-		darkreader: '__ZAPP_SHARED_LIBRARIES__["darkreader"]',
 		msw: '__ZAPP_SHARED_LIBRARIES__["msw"]',
 		i18next: '__ZAPP_SHARED_LIBRARIES__["i18next"]'
 	};

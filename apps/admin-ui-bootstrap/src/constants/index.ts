@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { DynamicThemeFix } from 'darkreader';
 import type { Locale } from 'date-fns';
 
 export const SHELL_APP_ID = 'carbonio-admin-ui';
@@ -26,28 +25,13 @@ export const ACTION_TYPES = {
 	NEW: 'new'
 };
 
-export const darkReaderDynamicThemeFixes: DynamicThemeFix = {
-	ignoreImageAnalysis: ['.no-dr-invert *'],
-	invert: [],
-	css: `
-		.tox, .force-white-bg, .tox-swatches-menu, .tox .tox-edit-area__iframe {
-			background-color: #fff !important;
-			background: #fff !important;
-		}
-	`,
-	ignoreInlineStyle: ['.tox-menu *'],
-	disableStyleSheetsProxy: false
-};
-
 export const BASENAME = `/carbonioAdmin`;
 
 export const CARBONIO_HELP_ADMIN_URL = 'https://docs.zextras.com/carbonio-ce/html/management.html';
 export const CARBONIO_HELP_ADVANCED_URL =
 	'https://docs.zextras.com/carbonio/html/administration.html';
 
-export const DARK_READER_VALUES = ['auto', 'enabled', 'disabled'] as const;
 export const LOGIN_V3_CONFIG_PATH = '/zx/login/v3/config';
-export const DARK_READER_PROP_KEY = 'zappDarkreaderMode';
 export const CARBONIO_LOGO_URL = 'https://www.zextras.com';
 export const LOCAL_STORAGE_LAST_PRIMARY_KEY = 'config';
 export const SCALING_OPTIONS = [

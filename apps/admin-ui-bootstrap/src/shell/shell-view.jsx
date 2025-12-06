@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Row, ModalManager, SnackbarManager, Modal, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,6 @@ import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
-import { ThemeCallbacksContext } from '../boot/theme-provider';
-import { useDarkReaderResultValue } from '../dark-mode/use-dark-reader-result-value';
 import { useCurrentRoute } from '../history/hooks';
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 
@@ -30,17 +28,6 @@ const Background = styled.div`
 	min-width: 100%;
 	max-width: 100%;
 `;
-
-function DarkReaderListener() {
-	const { setDarkReaderState } = useContext(ThemeCallbacksContext);
-	const darkReaderResultValue = useDarkReaderResultValue();
-	useEffect(() => {
-		if (darkReaderResultValue) {
-			setDarkReaderState(darkReaderResultValue);
-		}
-	}, [darkReaderResultValue, setDarkReaderState]);
-	return null;
-}
 
 function Shell() {
 	const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -67,8 +54,6 @@ function Shell() {
 					)}
 				</Text>
 			</Modal>
-			<DarkReaderListener />
-			{/* <MainAppRerouter /> */}
 			<ShellHeader
 				activeRoute={activeRoute}
 				mobileNavIsOpen={mobileNavOpen}
