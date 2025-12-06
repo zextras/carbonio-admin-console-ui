@@ -277,9 +277,6 @@ importers:
       '@zextras/carbonio-design-system':
         specifier: ^8.1.0
         version: 8.1.0(lodash@4.17.21)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(styled-components@5.3.11(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react-is@17.0.2)(react@19.2.1))
-      darkreader:
-        specifier: ^4.9.58
-        version: 4.9.117
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
