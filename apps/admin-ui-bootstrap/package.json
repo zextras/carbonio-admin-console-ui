@@ -55,10 +55,10 @@
 		"zustand": "^4.4.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.22.15",
-		"@babel/preset-env": "^7.22.15",
-		"@babel/preset-react": "^7.22.15",
-		"@babel/preset-typescript": "^7.22.15",
+		"@babel/core": "^7.28.5",
+		"@babel/preset-env": "^7.28.5",
+		"@babel/preset-react": "^7.28.5",
+		"@babel/preset-typescript": "^7.28.5",
 		"@svgr/webpack": "^8.1.0",
 		"@testing-library/react": "^16.0.1",
 		"@types/lodash": "^4.14.197",
