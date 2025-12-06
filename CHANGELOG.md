@@ -1,3 +1,9 @@
+## [0.12.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.2...v0.12.0-devel.3) (2025-12-06)
+
+### Performance Improvements
+
+* optimize build script to skip redundant builds ([#995](https://github.com/zextras/carbonio-admin-console-ui/issues/995)) ([e639bcb](https://github.com/zextras/carbonio-admin-console-ui/commit/e639bcba65da48cda979747062d7423686b7faba))
+
 ## [0.12.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.1...v0.12.0-devel.2) (2025-12-05)
 
 ### Bug Fixes
