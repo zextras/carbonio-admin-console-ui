@@ -14,8 +14,8 @@ import {
 	Divider,
 	Popper
 } from '@zextras/carbonio-design-system';
-import { map, isEmpty, trim, filter, sortBy } from 'lodash';
-import React, { useContext, FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { map, trim, filter, sortBy } from 'lodash';
+import React, { FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -26,7 +26,6 @@ import { useUtilityBarStore } from '../utility-bar';
 import { checkRoute } from '../utility-bar/utils';
 
 import BadgeWrap from './badge-wrap';
-import { BoardValueContext, BoardSetterContext } from './boards/board-context';
 import { Collapser } from './collapser';
 
 const PrimaryBarContainer = styled(Container)`
@@ -58,26 +57,6 @@ const CustomText = styled(Text)`
 	display: flex;
 	align-items: center;
 `;
-const ToggleBoardIcon: FC = () => {
-	// @ts-ignore
-	const { boards, minimized } = useContext(BoardValueContext);
-
-	// @ts-ignore
-	const { toggleMinimized } = useContext(BoardSetterContext);
-
-	if (isEmpty(boards)) return null;
-	return (
-		<Container orientation="horizontal" mainAlignment="flex-start" background="transparent">
-			<Button
-				type="ghost"
-				color={'primary'}
-				icon={minimized ? 'BoardOpen' : 'BoardCollapse'}
-				onClick={toggleMinimized}
-				size="large"
-			/>
-		</Container>
-	);
-};
 
 type PrimaryBarItemProps = {
 	view: PrimaryBarView;
@@ -89,27 +68,6 @@ type PrimaryBarItemProps = {
 type PrimaryBarAccessoryItemProps = {
 	view: PrimaryAccessoryView;
 };
-
-// Alternative layout for the primary bar
-// const AdminPrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, onClick }) => (
-// 	<PrimaryContainer
-// 		orientation="horizontal"
-// 		mainAlignment="flex-start"
-// 		height="48px"
-// 		onClick={onClick}
-// 	>
-// 		<BadgeWrap badge={view.badge}>
-// 			{typeof view.component === 'string' ? (
-// 				<Icon icon={view.component} color={active ? 'primary' : 'text'} size="large" />
-// 			) : (
-// 				<view.component active={active} />
-// 			)}
-// 		</BadgeWrap>
-// 		<Padding right="large">
-// 			<Text color={active ? 'primary' : 'text'}>{view.label}</Text>
-// 		</Padding>
-// 	</PrimaryContainer>
-// );
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
 	const [open, setOpen] = useState(false);
@@ -331,7 +289,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 					{accessories.map((v) => (
 						<PrimaryBarAccessoryElement view={v} key={v?.id} />
 					))}
-					<ToggleBoardIcon />
 				</Container>
 			</PrimaryBarContainer>
 			<Collapser onClick={onCollapserClick} open={isOpen} />

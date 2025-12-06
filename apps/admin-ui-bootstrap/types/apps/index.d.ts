@@ -92,8 +92,6 @@ export type SecondaryBarView = CarbonioView<SecondaryBarComponentProps>;
 
 export type AppView = CarbonioView<AppViewComponentProps>;
 
-export type BoardView = CarbonioView<BoardViewComponentProps>;
-
 export type UtilityView = CarbonioAccessoryView<UtilityBarComponentProps> & {
 	button: string | ComponentType<UtilityBarComponentProps>;
 	component: ComponentType<UtilityBarComponentProps>;
@@ -142,12 +140,6 @@ export type AppSetters = {
 	// update primaryBar
 	updatePrimaryBadge: (badge: Partial<BadgeInfo>, id: string) => void;
 	updateUtilityBadge: (badge: Partial<BadgeInfo>, id: string) => void;
-	//
-	// add board
-	addBoardView: (data: BoardView) => string;
-	// remove board
-	removeBoardView: (id: string) => void;
-	//
 	// add search
 	addSearchView: (data: SearchView) => string;
 	// remove search

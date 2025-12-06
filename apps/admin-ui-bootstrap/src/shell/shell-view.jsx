@@ -6,19 +6,11 @@
 
 import React, { useEffect, useState, useContext } from 'react';
 
-import {
-	Row,
-	Responsive,
-	ModalManager,
-	SnackbarManager,
-	Modal,
-	Text
-} from '@zextras/carbonio-design-system';
+import { Row, ModalManager, SnackbarManager, Modal, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import AppViewContainer from './app-view-container';
-import AppBoardWindow from './boards/app-board-window';
 import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
@@ -89,9 +81,6 @@ function Shell() {
 				<AppViewContainer activeRoute={activeRoute} />
 				<ShellUtilityPanel />
 			</Row>
-			<Responsive mode="desktop">
-				<AppBoardWindow />
-			</Responsive>
 		</Background>
 	);
 }

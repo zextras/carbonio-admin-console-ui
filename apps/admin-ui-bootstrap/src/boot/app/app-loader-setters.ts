@@ -7,7 +7,6 @@
 
 import {
 	AppRouteDescriptor,
-	BoardView,
 	CarbonioModule,
 	PrimaryAccessoryView,
 	SearchView,
@@ -20,8 +19,7 @@ import {
 	normalizeSearchView,
 	normalizeUtilityView,
 	normalizePrimaryAccessoryView,
-	normalizeSecondaryAccessoryView,
-	normalizeBoardView
+	normalizeSecondaryAccessoryView
 } from '../../store/app/utils';
 import { useIntegrationsStore } from '../../store/integrations/store';
 
@@ -36,12 +34,6 @@ export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => 
 		setRouteVisibility: (routeId: string, visible: boolean) =>
 			appSetters.setRouteVisibility(routeId, visible),
 		removeRoute: (routeId: string) => appSetters.removeRoute(routeId),
-		// add board
-		addBoardView: (data: Partial<BoardView>) =>
-			appSetters.addBoardView(normalizeBoardView(data, pkg)),
-		// remove board
-		removeBoardView: appSetters.removeBoardView,
-		//
 		// add search
 		addSearchView: (data: Partial<SearchView>) =>
 			appSetters.addSearchView(normalizeSearchView(data, pkg)),

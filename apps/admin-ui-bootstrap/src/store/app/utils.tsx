@@ -10,7 +10,6 @@ import React, { FC } from 'react';
 import {
 	AppRouteDescriptor,
 	BadgeInfo,
-	BoardView,
 	CarbonioModule,
 	PrimaryAccessoryView,
 	SearchView,
@@ -118,13 +117,3 @@ export const normalizeSecondaryAccessoryView = (
 	id: data?.id ?? app.name,
 	component: data?.component ?? FallbackView
 });
-
-export const normalizeBoardView = (data: Partial<BoardView>, app: CarbonioModule): BoardView => {
-	const route = trim(data.route ?? app.name, '/');
-	return {
-		app: app.name,
-		route,
-		id: data?.id ?? route,
-		component: data?.component ?? FallbackView
-	};
-};

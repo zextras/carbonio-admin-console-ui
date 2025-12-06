@@ -13,7 +13,6 @@ import {
 	AppState,
 	AppView,
 	BadgeInfo,
-	BoardView,
 	CarbonioModule,
 	PrimaryAccessoryView,
 	PrimarybarSection,
@@ -191,25 +190,6 @@ export const useAppStore = create<AppState>((set) => ({
 				})
 			);
 		},
-		// add board
-		addBoardView: (data: BoardView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.board = unionBy([data], state.views.board, 'id');
-				})
-			);
-			return data.id;
-		},
-
-		// remove board
-		removeBoardView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.board = filterById(state.views.board, id);
-				})
-			);
-		},
-		//
 		// add search
 		addSearchView: (data: SearchView): string => {
 			set(
