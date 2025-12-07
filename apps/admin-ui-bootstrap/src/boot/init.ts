@@ -6,6 +6,7 @@
 
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
+import { getComponents } from '../network/get-components';
 import { getInfo } from '../network/get-info';
 import { loginConfig } from '../network/login-config';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
@@ -25,9 +26,9 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 		}
 		let initialCalls;
 		if (response.supported) {
-			initialCalls = Promise.all([getInfo(), loginConfig()]);
+			initialCalls = Promise.all([getInfo(), getComponents(), loginConfig()]);
 		} else {
-			initialCalls = Promise.all([getInfo()]);
+			initialCalls = Promise.all([getInfo(), getComponents()]);
 		}
 		return initialCalls
 			.then(() => {

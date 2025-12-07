@@ -44,8 +44,7 @@ function setupAccount() {
 			prefs: {},
 			attrs: {},
 			props: []
-		},
-		usedQuota: 0
+		}
 	});
 }
 

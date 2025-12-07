@@ -41,8 +41,6 @@ const getAccount = (
 };
 
 const handleResponse = (api: string, res: SoapResponse<any>): any => {
-	const { usedQuota } = useAccountStore.getState();
-
 	if (res?.Body?.Fault) {
 		if (
 			find(
@@ -60,13 +58,6 @@ const handleResponse = (api: string, res: SoapResponse<any>): any => {
 			`${errMessage}
 			`
 		);
-	}
-	if (res?.Header?.context) {
-		const responseUsedQuota =
-			res.Header.context?.refresh?.mbx?.[0]?.s ?? res.Header.context?.notify?.[0]?.mbx?.[0]?.s;
-		useAccountStore.setState({
-			usedQuota: responseUsedQuota ?? usedQuota
-		});
 	}
 	return (<SuccessSoapResponse<any>>res).Body[`${api}Response`] as any;
 };

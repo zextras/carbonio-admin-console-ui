@@ -111,8 +111,7 @@ describe('COSPreferences', () => {
 				prefs: {},
 				attrs: {},
 				props: []
-			},
-			usedQuota: 0
+			}
 		});
 	});
 
