@@ -53,7 +53,6 @@ import {
 	GetCosResponse,
 	CosA
 } from '../../../../services/cos-general-information-service';
-import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
@@ -1006,30 +1005,12 @@ const ManageAccounts: FC = () => {
 		[closeAccountDetailDialog]
 	);
 
-	/** Commented code for fix issue of AC-529 */
-	// useOutsideClick(tableRef, closeAccountDetailDialog);
-
 	useEffect(() => {
 		window.addEventListener('keydown', handleKeyEvent);
 		return () => {
 			window.removeEventListener('keydown', handleKeyEvent);
 		};
 	}, [handleKeyEvent]);
-
-	const getInfoDetail = useCallback(() => {
-		fetchSoapData('GetInfoRequest', {
-			rights: 'sendAs,sendAsDistList,viewFreeBusy,sendOnBehalfOf,sendOnBehalfOfDistList',
-			_jsns: 'urn:zimbraAccount'
-		}).then((res) => {
-			const data = res?.Body?.GetInfoResponse?.attrs?._attrs;
-			// User type is now handled by the rights hook
-		});
-	}, [accountUserType]);
-
-	useEffect(() => {
-		getInfoDetail();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	useEffect(() => {
 		const table = tableRef.current;
