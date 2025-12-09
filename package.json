@@ -17,6 +17,7 @@
 		"build:unified:dev": "node ./scripts/build_unified.js --dev",
 		"release": "semantic-release",
 		"release:dry": "semantic-release --dry-run",
+		"deploy:unified": "node ./scripts/deploy-unified.js",
 		"test": "node scripts/test-runner.js",
 		"test:ci": "turbo run test:ci",
 		"type-check": "turbo run type-check",
