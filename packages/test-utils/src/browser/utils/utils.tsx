@@ -5,7 +5,7 @@
  */
 
 import { QueryClient } from '@tanstack/react-query';
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
+import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
 import React, { type ReactElement } from 'react';
 import { render, type RenderResult } from 'vitest-browser-react';
 
@@ -29,23 +29,25 @@ export const setupBrowserTest = (
 };
 
 function setupAccount() {
-	useAccountStore.setState({
-		account: {
-			id: 'test-user-id',
-			name: 'test@example.com',
-			displayName: '',
-			signatures: {
-				signature: []
-			},
-			identities: undefined,
-			rights: { targets: [] }
+	// Populate React Query cache with test data
+	queryClient.setQueryData(['account', 'info'], {
+		id: 'test-user-id',
+		name: 'test@example.com',
+		displayName: '',
+		signatures: {
+			signature: []
 		},
-		settings: {
-			prefs: {},
-			attrs: {},
-			props: []
-		}
+		identities: undefined,
+		rights: { targets: [] }
 	});
+
+	queryClient.setQueryData(['account', 'settings'], {
+		prefs: {},
+		attrs: {},
+		props: []
+	});
+
+	queryClient.setQueryData(['account', 'version'], '1.0.0');
 }
 
 export async function grantUserConfigRights() {

@@ -9,8 +9,8 @@ import { getAccount } from '../network/get-account';
 import { getComponents } from '../network/get-components';
 import { getInfo } from '../network/get-info';
 import { loginConfig } from '../network/login-config';
+import { queryClient } from '../providers/react-query-provider';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
-import { useAccountStore } from '../store/account';
 import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
 
@@ -39,10 +39,11 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
 				// Fallback to GetInfo locale if GetAccount didn't provide one
 				const currentLocale = useI18nStore.getState().locale;
 				if (currentLocale === 'en') {
+					const settings = queryClient.getQueryData(['account', 'settings']) as any;
 					const fallbackLocale =
 						(
-							(useAccountStore.getState().settings?.prefs?.zimbraPrefLocale as string) ??
-							(useAccountStore.getState().settings?.attrs?.zimbraLocale as string)
+							(settings?.prefs?.zimbraPrefLocale as string) ??
+							(settings?.attrs?.zimbraLocale as string)
 						)?.split?.('_')?.[0] ?? 'en';
 
 					if (fallbackLocale !== 'en') {

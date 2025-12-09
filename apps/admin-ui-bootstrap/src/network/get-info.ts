@@ -5,9 +5,9 @@
  */
 
 import { GetInfoResponse } from '../../types';
-import { useAccountStore } from '../store/account';
-import { normalizeAccount } from '../store/account/normalization';
+import { queryClient } from '../providers/react-query-provider';
 
+import { normalizeAccount } from './account-api';
 import { soapFetch } from './fetch';
 
 export const getInfo = (): Promise<void> =>
@@ -17,10 +17,8 @@ export const getInfo = (): Promise<void> =>
 	}).then((res: any): void => {
 		if (res) {
 			const { account, settings, version } = normalizeAccount(res);
-			useAccountStore.setState({
-				account,
-				settings,
-				zimbraVersion: version
-			});
+			queryClient.setQueryData(['account', 'info'], account);
+			queryClient.setQueryData(['account', 'settings'], settings);
+			queryClient.setQueryData(['account', 'version'], version);
 		}
 	});

@@ -14,7 +14,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { DefaultTheme } from 'styled-components';
 
 import { ThemeExtension } from '../../types';
-import { useAccountStore } from '../store/account/store';
+import { useUserSettings } from '../react-query/use-account';
 
 type CustomTheme = Partial<Omit<DefaultTheme, 'palette'>> & {
 	palette?: Partial<DefaultTheme['palette']>;
@@ -110,7 +110,8 @@ interface ThemeProviderProps {
 	children?: React.ReactNode | React.ReactNode[];
 }
 export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
-	const zimbraPrefFontSize = useAccountStore((s) => s.settings.prefs?.zimbraPrefFontSize as string);
+	const settings = useUserSettings();
+	const zimbraPrefFontSize = settings?.prefs?.zimbraPrefFontSize as string;
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {

@@ -15,9 +15,9 @@ import {
 	CARBONIO_CE_ADMIN_DOCUMENTATION_URL
 } from '../constants';
 import { logout } from '../network/logout';
+import { useUserAccount } from '../react-query/use-account';
 import { useConfigAttribute } from '../react-query/use-config';
 import { useIsAdvanced } from '../react-query/use-is-advanced-supported';
-import { useUserAccount } from '../store/account';
 
 import { useUtilityBarStore } from './store';
 import { openLink, useUtilityViews } from './utils';

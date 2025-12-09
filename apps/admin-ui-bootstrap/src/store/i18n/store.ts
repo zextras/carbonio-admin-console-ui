@@ -13,8 +13,8 @@ import { initReactI18next } from 'react-i18next';
 import { create } from 'zustand';
 
 import { SHELL_APP_ID } from '../../constants';
+import { queryClient } from '../../providers/react-query-provider';
 import type { CarbonioModule } from '../../types/apps';
-import { useAccountStore } from '../account';
 
 type I18nState = {
 	instances: Record<string, i18n>;
@@ -43,7 +43,15 @@ const addShell = (apps: Array<CarbonioModule>): Array<CarbonioModule> => [
 	}
 ];
 
-const { settings } = useAccountStore.getState();
+const getDefaultSettings = (): any => {
+	try {
+		return queryClient.getQueryData(['account', 'settings']);
+	} catch {
+		return null;
+	}
+};
+
+const settings = getDefaultSettings();
 
 const defaultLng =
 	(settings?.prefs?.zimbraPrefLocale as string) ??

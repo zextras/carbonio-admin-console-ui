@@ -7,11 +7,18 @@
 import { find, isArray } from 'lodash';
 
 import { Account, ErrorSoapResponse, SoapResponse, SuccessSoapResponse } from '../../types';
-import { useAccountStore } from '../store/account';
+import { queryClient } from '../providers/react-query-provider';
 
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
 import { retry } from './utils';
+
+const getAccountDataFromCache = (): { account?: Account; zimbraVersion: string } => {
+	const account = queryClient.getQueryData<Account>(['account', 'info']);
+	const zimbraVersion = queryClient.getQueryData<string>(['account', 'version']) || '';
+
+	return { account: account || undefined, zimbraVersion };
+};
 
 const getAccount = (
 	acc?: Account,
@@ -72,7 +79,7 @@ export const soapFetch = <Request, Response>(
 		noSession?: boolean;
 	}
 ): Promise<Response> => {
-	const { zimbraVersion, account } = useAccountStore.getState();
+	const { zimbraVersion, account } = getAccountDataFromCache();
 	const header: any = {
 		context: {
 			_jsns: 'urn:zimbra',
@@ -111,8 +118,6 @@ export const soapFetch = <Request, Response>(
 
 	return retry(fetchFn);
 };
-
-/* POST and GET Soap */
 
 const handleSoapResponse = (res: any): any => {
 	if (res?.Body?.Fault) {
@@ -185,7 +190,7 @@ export const postSoapFetchRequest = <Request, Response>(
 	api?: string,
 	otherAccount?: string
 ): Promise<Response> => {
-	const { zimbraVersion, account } = useAccountStore.getState();
+	const { zimbraVersion, account } = getAccountDataFromCache();
 	let bodyItem: any = {};
 	if (api) {
 		bodyItem = {

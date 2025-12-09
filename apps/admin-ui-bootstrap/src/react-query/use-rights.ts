@@ -9,7 +9,7 @@ import { find } from 'lodash';
 
 import { CONFIG } from '../constants';
 import { soapFetch } from '../network/fetch';
-import { useUserAccounts } from '../store/account/hooks';
+import { useUserAccounts } from './use-account';
 
 type Right = {
 	type: string;

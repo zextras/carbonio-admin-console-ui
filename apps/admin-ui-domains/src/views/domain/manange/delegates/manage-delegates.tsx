@@ -288,13 +288,13 @@ const ManageDelegates: FC = () => {
 
 	const getDeletePasswordRight = useCallback(
 		(target: string): void => {
-			checkRightRequest(target, account.name, 'set.account.userPassword').then(
+			checkRightRequest(target, account?.name ?? '', 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
 					setAllowedDeletePassword(data?.allow);
 				}
 			);
 		},
-		[account.name]
+		[account?.name]
 	);
 
 	const getAccountDetail = useCallback(

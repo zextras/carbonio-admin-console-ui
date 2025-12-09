@@ -42,11 +42,11 @@ const Bootstrapper: FC = () => {
 		};
 	}, [i18nFactory]);
 	return (
-		<ThemeProvider>
-			{error ? (
-				<ErrorPage />
-			) : (
-				<ReactQueryProvider>
+		<ReactQueryProvider>
+			<ThemeProvider>
+				{error ? (
+					<ErrorPage />
+				) : (
 					<SnackbarManager>
 						<ModalManager>
 							<BootstrapperContextProvider i18nFactory={i18nFactory}>
@@ -55,9 +55,9 @@ const Bootstrapper: FC = () => {
 							</BootstrapperContextProvider>
 						</ModalManager>
 					</SnackbarManager>
-				</ReactQueryProvider>
-			)}
-		</ThemeProvider>
+				)}
+			</ThemeProvider>
+		</ReactQueryProvider>
 	);
 };
 

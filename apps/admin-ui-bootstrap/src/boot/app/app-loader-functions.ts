@@ -12,6 +12,7 @@ import {
 	soapFetch,
 	getSoapFetchRequest
 } from '../../network/fetch';
+import { useUserAccount, useUserAccounts, useUserSettings } from '../../react-query/use-account';
 import { useBackupServers } from '../../react-query/use-backup-servers';
 import { useAllConfig } from '../../react-query/use-config';
 import { useDomainInformation } from '../../react-query/use-domain-information';
@@ -41,7 +42,6 @@ import {
 	useModuleLicenseInfo
 } from '../../react-query/use-subscription';
 import { usePrimaryBarState } from '../../shell/hooks';
-import { useUserAccount, useUserAccounts, useUserSettings } from '../../store/account';
 import { useAppStore } from '../../store/app';
 import { normalizeRoute } from '../../store/app/utils';
 import { getLocale } from '../../store/i18n/hooks';

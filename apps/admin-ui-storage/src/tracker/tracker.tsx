@@ -48,7 +48,7 @@ export const useTracker = (): Tracker => {
 				postHog.identify(hashUserId, { is_ce: !isAdvanced });
 			});
 		}
-	}, [account.id, postHog, isAdvanced]);
+	}, [account?.id, postHog, isAdvanced]);
 
 	const capture = useCallback<Tracker['capture']>(
 		(eventName, properties, options) => {

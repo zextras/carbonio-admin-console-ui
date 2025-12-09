@@ -5,4 +5,4 @@
  */
 
 export { useContextBridge } from './src/store/context-bridge';
-export { useAccountStore } from './src/store/account';
+export { queryClient } from './src/providers/react-query-provider';

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import { grantUserCosRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
@@ -94,25 +93,6 @@ describe('COSPreferences', () => {
 		vi.resetAllMocks();
 		grantUserCosRights();
 		setupCosStore();
-
-		// Set up user account store for useCurrentUserRights hook
-		useAccountStore.setState({
-			account: {
-				id: 'test-user-id',
-				name: 'test@example.com',
-				displayName: '',
-				signatures: {
-					signature: []
-				},
-				identities: undefined,
-				rights: { targets: [] }
-			},
-			settings: {
-				prefs: {},
-				attrs: {},
-				props: []
-			}
-		});
 	});
 
 	afterEach(() => {

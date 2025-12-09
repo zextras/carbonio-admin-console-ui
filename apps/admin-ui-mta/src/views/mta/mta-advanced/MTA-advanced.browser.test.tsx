@@ -5,7 +5,6 @@
  */
 
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
 	grantUserConfigRights,
@@ -60,7 +59,6 @@ describe('MTAAdvanced', () => {
 
 	afterEach(() => {
 		resetMockWorker();
-		useAccountStore.setState({});
 	});
 
 	it('should render the component correctly', async () => {

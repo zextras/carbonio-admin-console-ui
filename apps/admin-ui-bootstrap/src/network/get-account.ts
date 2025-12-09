@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAccountStore } from '../store/account';
+import { queryClient } from '../providers/react-query-provider';
 import { useI18nStore } from '../store/i18n/store';
 
 import { soapFetch } from './fetch';
 
 export const getAccount = async (): Promise<void> => {
-	const { account } = useAccountStore.getState();
+	const account = queryClient.getQueryData(['account', 'info']) as any;
 
 	if (!account?.name) {
 		console.warn('No account name available for GetAccount request');

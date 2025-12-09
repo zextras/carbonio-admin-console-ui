@@ -39,7 +39,7 @@ import {
 	useModuleLicenseInfo
 } from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
-import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
+import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { getLocale } from './src/store/i18n/hooks';

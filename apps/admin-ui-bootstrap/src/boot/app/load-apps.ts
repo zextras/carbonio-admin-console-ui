@@ -8,7 +8,7 @@ import { filter, map } from 'lodash';
 
 import { CarbonioModule } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-import { getUserSetting } from '../../store/account';
+import { getUserSetting } from '../../react-query/use-account';
 import { useI18nStore } from '../../store/i18n/store';
 
 import { loadApp, unloadApps } from './load-app';
