@@ -95,7 +95,7 @@ describe('PrivacyView', () => {
 		// Now save and cancel buttons should be visible
 		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-	}, 15000);
+	});
 
 	it('shows save and cancel buttons when switch is toggled from TRUE to FALSE', async () => {
 		grantUserConfigRights();
@@ -117,7 +117,7 @@ describe('PrivacyView', () => {
 		// Now save and cancel buttons should be visible
 		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-	}, 15000);
+	});
 
 	it('hides save and cancel buttons when cancel is clicked', async () => {
 		grantUserConfigRights();
@@ -143,7 +143,7 @@ describe('PrivacyView', () => {
 		// Save/cancel buttons should disappear
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('calls Batch API when save is clicked', async () => {
 		grantUserConfigRights();
@@ -193,7 +193,7 @@ describe('PrivacyView', () => {
 			],
 			_jsns: 'urn:zimbra'
 		});
-	}, 15000);
+	});
 
 	it('does not show save/cancel buttons when switches are disabled', async () => {
 		await setupTestWithQueryClient({ config: mockConfigData });
@@ -218,7 +218,7 @@ describe('PrivacyView', () => {
 		// Save/cancel buttons should NOT appear when switches are disabled
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('loads config values correctly and displays switches in appropriate state', async () => {
 		// Test with mixed TRUE/FALSE values
@@ -243,7 +243,7 @@ describe('PrivacyView', () => {
 		// Initially no save/cancel buttons
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('persists state across multiple toggle operations', async () => {
 		grantUserConfigRights();
@@ -280,7 +280,7 @@ describe('PrivacyView', () => {
 		// Buttons should disappear
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('maintains dirty state when multiple switches are toggled', async () => {
 		grantUserConfigRights();
@@ -314,7 +314,7 @@ describe('PrivacyView', () => {
 
 		// Buttons should be gone
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('saves all changes when multiple switches are toggled before save', async () => {
 		grantUserConfigRights();
@@ -374,7 +374,7 @@ describe('PrivacyView', () => {
 		const firstSwitch = page.getByText('Send full error data');
 		await firstSwitch.click();
 		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-	}, 15000);
+	});
 
 	it('loads correctly with mixed settings', async () => {
 		const mixedConfig = [
@@ -399,7 +399,7 @@ describe('PrivacyView', () => {
 		const analyticsSwitch = page.getByText('Allow data analytics');
 		await analyticsSwitch.click();
 		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-	}, 15000);
+	});
 
 	it('shows success snackbar after successful save', async () => {
 		grantUserConfigRights();
@@ -510,7 +510,7 @@ describe('PrivacyView', () => {
 		// Buttons should disappear after cancel
 		expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
 		expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-	}, 15000);
+	});
 
 	it('should correctly handle multiple switch toggles and state changes', async () => {
 		grantUserConfigRights();
