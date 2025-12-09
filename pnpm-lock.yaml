@@ -22,7 +22,7 @@ importers:
         specifier: ^12.0.2
         version: 12.0.2(semantic-release@25.0.2(typescript@5.9.3))
       '@tsconfig/node12':
-        specifier: ^12.1.4
+        specifier: ^12.1.7
         version: 12.1.7
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.41.0
