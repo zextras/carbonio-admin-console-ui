@@ -15,5 +15,3 @@ export const NOTIFICATION_ROUTE_ID = 'notifications';
 export const LIST = 'list';
 export const DESC = 'desc';
 export const PRIMARY_BAR_NOTIFICATIONS = 'pb_notifications';
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';

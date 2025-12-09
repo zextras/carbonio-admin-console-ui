@@ -66,6 +66,4 @@ export const GLOBAL = 'global';
 export const LIST_COS = 'listCos';
 export const CREATE_COS = 'createCos';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';

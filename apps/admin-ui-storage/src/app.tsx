@@ -15,18 +15,15 @@ import {
 	SERVER,
 	STORAGES_ROUTE_ID
 } from './constants';
-import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<Suspense fallback={<Spinner />}>
+		<LazyAppView {...props} />
+	</Suspense>
 );
 
 const App: FC = () => {

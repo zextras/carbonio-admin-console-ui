@@ -67,5 +67,3 @@ export const INDEX = 'index';
 export const PRIMARY_BAR_STORAGE = 'pb_storage';
 export const FLEX_START = 'flex-start';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';

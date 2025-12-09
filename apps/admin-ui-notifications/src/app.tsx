@@ -9,18 +9,15 @@ import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, PRIMARY_BAR_NOTIFICATIONS } from './constants';
-import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<Suspense fallback={<Spinner />}>
+		<LazyAppView {...props} />
+	</Suspense>
 );
 
 const App: FC = () => {

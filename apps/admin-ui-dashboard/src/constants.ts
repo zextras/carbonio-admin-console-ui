@@ -36,7 +36,3 @@ export const PRIMARY_BAR_DASHBOARD = 'pb_dashboard';
 
 // API Config
 export const LIST_SERVER = 'listServer';
-
-// PostHog Analytics
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';

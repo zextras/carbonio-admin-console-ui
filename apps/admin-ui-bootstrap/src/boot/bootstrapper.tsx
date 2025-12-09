@@ -10,6 +10,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
 import { useBridge } from '../store/context-bridge';
+import { TrackerProvider } from '../tracker/provider';
 
 import { unloadAllApps } from './app/load-apps';
 import BootstrapperContextProvider from './bootstrapper-provider';
@@ -49,10 +50,12 @@ const Bootstrapper: FC = () => {
 				) : (
 					<SnackbarManager>
 						<ModalManager>
-							<BootstrapperContextProvider i18nFactory={i18nFactory}>
-								<TBridge i18nFactory={i18nFactory} />
-								<BootstrapperRouter />
-							</BootstrapperContextProvider>
+							<TrackerProvider>
+								<BootstrapperContextProvider i18nFactory={i18nFactory}>
+									<TBridge i18nFactory={i18nFactory} />
+									<BootstrapperRouter />
+								</BootstrapperContextProvider>
+							</TrackerProvider>
 						</ModalManager>
 					</SnackbarManager>
 				)}
