@@ -14,7 +14,7 @@ const normalizeSettings = (
 	props: settings.props.prop ?? []
 });
 
-export const normalizeAccount = ({
+const normalizeAccount = ({
 	id,
 	name,
 	attrs,
@@ -43,6 +43,7 @@ export const normalizeAccount = ({
 		version
 	};
 };
+
 const directSoapFetch = async <Request, Response>(
 	api: string,
 	body: Request
@@ -116,45 +117,4 @@ export const fetchAccountSettings = async (): Promise<AccountSettings> => {
 
 	const { settings } = normalizeAccount(response);
 	return settings;
-};
-
-export const fetchZimbraVersion = async (): Promise<string> => {
-	const response = await directSoapFetch<{ _jsns: string; rights: string }, GetInfoResponse>(
-		'GetInfo',
-		{
-			_jsns: 'urn:zimbraAccount',
-			rights: 'sendAs,sendAsDistList,viewFreeBusy,sendOnBehalfOf,sendOnBehalfOfDistList'
-		}
-	);
-
-	if (!response) {
-		throw new Error('Failed to fetch version info: No response received');
-	}
-
-	const { version } = normalizeAccount(response);
-	return version;
-};
-
-export const fetchCompleteAccountData = async (): Promise<{
-	account: Account;
-	settings: AccountSettings;
-	version: string;
-}> => {
-	const response = await directSoapFetch<{ _jsns: string; rights: string }, GetInfoResponse>(
-		'GetInfo',
-		{
-			_jsns: 'urn:zimbraAccount',
-			rights: 'sendAs,sendAsDistList,viewFreeBusy,sendOnBehalfOf,sendOnBehalfOfDistList'
-		}
-	);
-
-	if (!response) {
-		throw new Error('Failed to fetch complete account data: No response received');
-	}
-
-	return normalizeAccount(response) as {
-		account: Account;
-		settings: AccountSettings;
-		version: string;
-	};
 };

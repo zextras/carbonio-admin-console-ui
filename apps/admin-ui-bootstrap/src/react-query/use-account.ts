@@ -9,8 +9,8 @@ import { get, join } from 'lodash';
 import { useMemo } from 'react';
 
 import { Account, AccountSettings } from '../../types';
-import { fetchAccountInfo, fetchAccountSettings } from '../network/account-api';
 import { queryClient } from '../providers/react-query-provider';
+import { fetchAccountInfo, fetchAccountSettings } from '../services/account-api';
 
 const accountQueryKeys = {
 	all: ['account'] as const,
