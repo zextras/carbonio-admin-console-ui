@@ -73,9 +73,9 @@ function hasUncommittedChanges(componentName) {
 		// Check if there are any uncommitted changes in the app directory
 		const result = execSync('git status --porcelain apps/' + componentName, {
 			encoding: 'utf-8',
-			stdio: 'pipe'
+			stdio: 'pipe',
+			cwd: path.join(__dirname, '..')
 		});
-		// If result is not empty, there are changes
 		return result.trim().length > 0;
 	} catch (error) {
 		log(`Error checking git status for ${componentName}: ${error.message}`, 'red');
