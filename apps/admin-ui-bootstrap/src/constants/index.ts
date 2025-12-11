@@ -94,9 +94,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			key: 'zh-CN',
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "zh-CN" */ import('date-fns/locale/zh-CN').then(
-					({ zhCN }) => zhCN
-				)
+				/* webpackMode: "lazy", webpackChunkName: "zh-CN" */ import('date-fns/locale/zh-CN').then(module => module.default)
 		},
 		tinymceLocale: 'zh-Hans'
 	},
@@ -105,9 +103,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'nl',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "nl" */ import('date-fns/locale/nl').then(
-					({ nl }) => nl
-				)
+				/* webpackMode: "lazy", webpackChunkName: "nl" */ import('date-fns/locale/nl').then(module => module.default)
 		}
 	},
 	en: {
@@ -116,9 +112,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			key: 'en-US',
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "en-US" */ import('date-fns/locale/en-US').then(
-					({ enUS }) => enUS
-				)
+				/* webpackMode: "lazy", webpackChunkName: "en-US" */ import('date-fns/locale/en-US').then(module => module.default)
 		}
 	},
 	de: {
@@ -126,9 +120,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'de',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "de" */ import('date-fns/locale/de').then(
-					({ de }) => de
-				)
+				/* webpackMode: "lazy", webpackChunkName: "de" */ import('date-fns/locale/de').then(module => module.default)
 		}
 	},
 	hi: {
@@ -136,9 +128,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'hi',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "hi" */ import('date-fns/locale/hi').then(
-					({ hi }) => hi
-				)
+				/* webpackMode: "lazy", webpackChunkName: "hi" */ import('date-fns/locale/hi').then(module => module.default)
 		}
 	},
 	hu: {
@@ -147,9 +137,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		tinymceLocale: 'hu_HU',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "hu" */ import('date-fns/locale/hu').then(
-					({ hu }) => hu
-				)
+				/* webpackMode: "lazy", webpackChunkName: "hu" */ import('date-fns/locale/hu').then(module => module.default)
 		}
 	},
 	it: {
@@ -157,9 +145,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'it',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "it" */ import('date-fns/locale/it').then(
-					({ it }) => it
-				)
+				/* webpackMode: "lazy", webpackChunkName: "it" */ import('date-fns/locale/it').then(module => module.default)
 		}
 	},
 	ja: {
@@ -167,9 +153,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'ja',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "ja" */ import('date-fns/locale/ja').then(
-					({ ja }) => ja
-				)
+				/* webpackMode: "lazy", webpackChunkName: "ja" */ import('date-fns/locale/ja').then(module => module.default)
 		}
 	},
 
@@ -179,9 +163,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		tinymceLocale: 'pt_BR',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "pt" */ import('date-fns/locale/pt').then(
-					({ pt }) => pt
-				)
+				/* webpackMode: "lazy", webpackChunkName: "pt" */ import('date-fns/locale/pt').then(module => module.default)
 		}
 	},
 	pl: {
@@ -189,9 +171,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'pl',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "pl" */ import('date-fns/locale/pl').then(
-					({ pl }) => pl
-				)
+				/* webpackMode: "lazy", webpackChunkName: "pl" */ import('date-fns/locale/pl').then(module => module.default)
 		}
 	},
 
@@ -200,9 +180,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'ro',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "ro" */ import('date-fns/locale/ro').then(
-					({ ro }) => ro
-				)
+				/* webpackMode: "lazy", webpackChunkName: "ro" */ import('date-fns/locale/ro').then(module => module.default)
 		}
 	},
 	ru: {
@@ -210,9 +188,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'ru',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "ru" */ import('date-fns/locale/ru').then(
-					({ ru }) => ru
-				)
+				/* webpackMode: "lazy", webpackChunkName: "ru" */ import('date-fns/locale/ru').then(module => module.default)
 		}
 	},
 	es: {
@@ -220,9 +196,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'es',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "es" */ import('date-fns/locale/es').then(
-					({ es }) => es
-				)
+				/* webpackMode: "lazy", webpackChunkName: "es" */ import('date-fns/locale/es').then(module => module.default)
 		}
 	},
 	th: {
@@ -231,9 +205,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		tinymceLocale: 'th_TH',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "th" */ import('date-fns/locale/th').then(
-					({ th }) => th
-				)
+				/* webpackMode: "lazy", webpackChunkName: "th" */ import('date-fns/locale/th').then(module => module.default)
 		}
 	},
 	tr: {
@@ -241,9 +213,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'tr',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "tr" */ import('date-fns/locale/tr').then(
-					({ tr }) => tr
-				)
+				/* webpackMode: "lazy", webpackChunkName: "tr" */ import('date-fns/locale/tr').then(module => module.default)
 		}
 	},
 	fr: {
@@ -252,9 +222,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		tinymceLocale: 'fr_FR',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "fr" */ import('date-fns/locale/fr').then(
-					({ fr }) => fr
-				)
+				/* webpackMode: "lazy", webpackChunkName: "fr" */ import('date-fns/locale/fr').then(module => module.default)
 		}
 	},
 	vi: {
@@ -262,9 +230,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'vi',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "vi" */ import('date-fns/locale/vi').then(
-					({ vi }) => vi
-				)
+				/* webpackMode: "lazy", webpackChunkName: "vi" */ import('date-fns/locale/vi').then(module => module.default)
 		}
 	},
 	ky: {
@@ -277,9 +243,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		value: 'bs',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "bs" */ import('date-fns/locale/bs').then(
-					({ bs }) => bs
-				)
+				/* webpackMode: "lazy", webpackChunkName: "bs" */ import('date-fns/locale/bs').then(module => module.default)
 		}
 	},
 	sl: {
@@ -288,9 +252,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		tinymceLocale: 'sl_SI',
 		dateFnsLocale: {
 			localeImportPath: () =>
-				/* webpackMode: "lazy", webpackChunkName: "sl" */ import('date-fns/locale/sl').then(
-					({ sl }) => sl
-				)
+				/* webpackMode: "lazy", webpackChunkName: "sl" */ import('date-fns/locale/sl').then(module => module.default)
 		}
 	}
 } as const;
