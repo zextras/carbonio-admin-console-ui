@@ -19,8 +19,8 @@ import {
 	useScreenMode,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
 import { debounce } from 'lodash';
-import moment from 'moment';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -360,7 +360,7 @@ const LegalHoldPanel: FC = () => {
 						crossAlignment="flex-start"
 					>
 						<Text size="small" weight="light" key={item?.name} color="gray0">
-							{moment(item?.creationTimestamp).format('DD/MM/YYYY')}
+							{format(item?.creationTimestamp, 'dd/MM/yyyy')}
 						</Text>
 					</Container>,
 					<Container
@@ -371,7 +371,7 @@ const LegalHoldPanel: FC = () => {
 						crossAlignment="flex-start"
 					>
 						<Text size="small" weight="light" key={item?.name} color="gray0">
-							{item?.deletedTimestamp ? moment(item?.deletedTimestamp).format('DD/MM/YYYY') : ''}
+							{item?.deletedTimestamp ? format(item?.deletedTimestamp, 'dd/MM/yyyy') : ''}
 						</Text>
 					</Container>,
 					<Container
