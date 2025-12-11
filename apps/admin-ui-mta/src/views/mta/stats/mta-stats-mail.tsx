@@ -15,7 +15,7 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { format } from 'date-fns';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -257,7 +257,7 @@ const MTAStatsMail: FC<{
 							</Text>
 						</Container>,
 						<Text color="gray0" weight="light" key={item?.id}>
-							{moment(parseInt(item?.arrivalTime, 10)).format('DD/MM/YY - HH:mm')}
+							{format(new Date(parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
 						</Text>,
 						<Text color="gray0" weight="light" key={item?.id}>
 							{item?.size}
