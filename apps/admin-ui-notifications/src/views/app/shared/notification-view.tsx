@@ -14,8 +14,8 @@ import {
 	Divider,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
 import { orderBy } from 'lodash';
-import moment from 'moment';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -374,7 +374,7 @@ const NotificationView: FC<{
 							}
 						}}
 					>
-						{moment(item?.date).format('DD-MM-YYYY - HH:mm A')}
+						{format(item?.date, 'dd-MM-yyyy - HH:mm a')}
 					</Text>,
 					<Text
 						size="small"
@@ -419,7 +419,7 @@ const NotificationView: FC<{
 	const copyNotificationOperation = useCallback(
 		(notificationSelected: Notification) => {
 			const notificationItem = `
-			${t('label.date', 'Date')} : ${moment(notificationSelected?.date).format('DD-MM-YYYY - HH:mm A')} \n
+			${t('label.date', 'Date')} : ${format(notificationSelected?.date, 'dd-MM-yyyy - HH:mm a')} \n
 			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
 			${t('label.what_inside', 'What’s inside?')} : ${notificationSelected?.subject} \n
 			${t('label.content', 'Content')} : ${notificationSelected?.text}

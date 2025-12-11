@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Divider,
@@ -16,18 +15,19 @@ import {
 	useSnackbar,
 	Button
 } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { format } from 'date-fns';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ActiveDeviceConfirmation from './active-device-confirmation';
 import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
 import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-detail';
 import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
-import { useStickyBarStore } from '@zextras/admin-ui-bootstrap'
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
+
+import ActiveDeviceConfirmation from './active-device-confirmation';
 
 type MobileDeviceDetail = {
 	accountEmail: string;
@@ -107,7 +107,6 @@ const ActiveDeviceDetail: FC<{
 	const [abqStatus, setAbqStatus] = useState<any>(abqStatusOptions[0]);
 	const [status, setStatus] = useState<any>(statusOptions[0]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (selectedMobileDeviceDetail) {
 			setIsDetailRequestInProgess(true);
@@ -137,8 +136,7 @@ const ActiveDeviceDetail: FC<{
 						severity: 'error',
 						label: error
 							? error?.error
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -176,7 +174,7 @@ const ActiveDeviceDetail: FC<{
 						createSnackbar({
 							key: 'success',
 							severity: 'success',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+
 							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -510,7 +508,7 @@ const ActiveDeviceDetail: FC<{
 							backgroundColor="gray5"
 							value={
 								mobileDeviceDetail?.lastSeen
-									? moment(mobileDeviceDetail?.lastSeen).format('YY/MM/DD | hh:mm:ss a')
+									? format(new Date(mobileDeviceDetail?.lastSeen), 'yy/MM/dd | hh:mm:ss a')
 									: ''
 							}
 						/>

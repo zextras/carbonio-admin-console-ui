@@ -14,7 +14,7 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { format } from 'date-fns';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -394,7 +394,7 @@ const MTAStats: FC = () => {
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 								<Text size="small" overflow="ellipsis">
 									&nbsp;
-									{currentTime === '' ? '-' : moment(currentTime).format('HH:mm:ss DD dddd YYYY')}
+									{currentTime === '' ? '-' : format(new Date(currentTime), 'HH:mm:ss dd eeee yyyy')}
 								</Text>
 							</Container>
 						</Container>

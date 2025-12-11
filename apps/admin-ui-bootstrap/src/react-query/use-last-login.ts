@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import { SHELL_APP_ID } from '../constants';
 import { getSoapFetch } from '../network/fetch';
@@ -44,9 +44,10 @@ export const useLastLoginTimestamp = (options: LastLoginTimestampOptions = {}) =
 			return '';
 		}
 
-		return moment(lastLoginAttribute._content, 'YYYYMMDDHHmmss.SSSZ').format(
-			'dddd DD MMM YYYY | h:mm a'
+		const parsedDate = new Date(
+			lastLoginAttribute._content.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.(\d{3})\d/, '$1-$2-$3T$4:$5:$6.$7')
 		);
+		return format(parsedDate, 'eeee dd MMM yyyy | h:mm a');
 	}
 
 	return useQuery({

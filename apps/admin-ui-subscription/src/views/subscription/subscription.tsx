@@ -22,8 +22,8 @@ import {
 	Quota,
 	Tooltip
 } from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
 import { find } from 'lodash';
-import moment from 'moment';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -52,7 +52,7 @@ export type AllModuleConfig = {
 	enabled: boolean;
 };
 
-const DATE_FORMAT = 'DD MMM YYYY';
+const DATE_FORMAT = 'dd MMM yyyy';
 
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
@@ -371,7 +371,7 @@ export const Subscription = (): React.JSX.Element => {
 								label={t('core.subscription.date_start', 'Date Start')}
 								value={
 									services.response.dateStart
-										? moment(services.response.dateStart).format(DATE_FORMAT)
+										? format(services.response.dateStart, DATE_FORMAT)
 										: ''
 								}
 							/>
@@ -385,9 +385,11 @@ export const Subscription = (): React.JSX.Element => {
 							<Input
 								label={t('core.subscription.date_end', 'Date End')}
 								value={
-									services.response.notYetValid || !services.response.authenticationToken
+									services.response.notYetValid ||
+									!services.response.authenticationToken ||
+									!services.response.dateEnd
 										? ''
-										: moment(services.response.dateEnd).format(DATE_FORMAT)
+										: format(services.response.dateEnd, DATE_FORMAT)
 								}
 							/>
 						</Row>
@@ -400,7 +402,7 @@ export const Subscription = (): React.JSX.Element => {
 							>
 								<Input
 									label={t('core.subscription.maintenance_end_date', 'Maintenance End Date')}
-									value={moment(services.response.maintenanceEndDate).format(DATE_FORMAT)}
+									value={format(services.response.maintenanceEndDate, DATE_FORMAT)}
 								/>
 							</Row>
 						)}
@@ -425,7 +427,7 @@ export const Subscription = (): React.JSX.Element => {
 										label={t('core.subscription.last_validation_check', 'Last Validation Check')}
 										value={
 											services.response.lastValidationCheck
-												? moment(services.response.lastValidationCheck).format(DATE_FORMAT)
+												? format(services.response.lastValidationCheck, DATE_FORMAT)
 												: ''
 										}
 									/>
@@ -456,7 +458,7 @@ export const Subscription = (): React.JSX.Element => {
 										)}
 										value={
 											services.response.nextValidationDeadline
-												? moment(services.response.nextValidationDeadline).format(DATE_FORMAT)
+												? format(services.response.nextValidationDeadline, DATE_FORMAT)
 												: ''
 										}
 									/>

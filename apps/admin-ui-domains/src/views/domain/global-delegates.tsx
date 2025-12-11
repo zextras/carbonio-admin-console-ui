@@ -14,8 +14,8 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
 import { flatMapDeep, filter, debounce } from 'lodash';
-import moment from 'moment';
 import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -333,7 +333,7 @@ const GlobalDelegates: FC = () => {
 										{item?.failed_attempts}
 									</Text>,
 									<Text size="medium" key={item?.id}>
-										{moment(item?.created).format('DD/MMM/YYYY')}
+										{format(new Date(item?.created), 'dd/MMM/yyyy')}
 									</Text>,
 									<Text size="medium" key={item?.id} color="gray0">
 										{item?.description || <>&nbsp;</>}
