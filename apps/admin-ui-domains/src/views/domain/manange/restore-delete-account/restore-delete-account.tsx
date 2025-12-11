@@ -4,24 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
-
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { noop } from 'lodash';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import RestoreAccountWizard from './restore-delete-account-wizard';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
+
+import RestoreAccountWizard from './restore-delete-account-wizard';
 
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const createSnackbar = useSnackbar();
-	const [showRestoreAccountWizard, setShowRestoreAccountWizard] = useState<boolean>(false);
-	const context = useContext(RestoreDeleteAccountContext);
-	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
 
@@ -32,23 +28,6 @@ const RestoreDeleteAccount: FC = () => {
 			history.push(lastloc);
 		}, 10);
 	}, [history]);
-
-	const resetAllFields = useCallback(() => {
-		setRestoreAccountDetail((prev: any) => ({
-			...prev,
-			name: '',
-			id: '',
-			status: '',
-			createDate: '',
-			copyAccount: '',
-			dateTime: null,
-			lastAvailableStatus: false,
-			hsmApply: false,
-			dataSource: false,
-			isEmailNotificationEnable: false,
-			notificationReceiver: ''
-		}));
-	}, [setRestoreAccountDetail]);
 
 	useMemo(() => {
 		if (isSuccess) {
@@ -85,7 +64,7 @@ const RestoreDeleteAccount: FC = () => {
 				body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
 			}
 			if (dateTime) {
-				body.date = moment(dateTime).valueOf();
+				body.date = new Date(dateTime).getTime();
 			}
 			if (body?.date < createDate) {
 				body.date = createDate;
@@ -155,7 +134,7 @@ const RestoreDeleteAccount: FC = () => {
 					mainAlignment="flex-start"
 				>
 					<RestoreAccountWizard
-						setShowRestoreAccountWizard={setShowRestoreAccountWizard}
+						setShowRestoreAccountWizard={noop}
 						restoreAccountRequest={restoreAccountRequest}
 						isRequestWorkInProgress={isRequestWorkInProgress}
 					/>

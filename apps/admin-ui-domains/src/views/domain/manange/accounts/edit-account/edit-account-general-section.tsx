@@ -22,8 +22,8 @@ import {
 	Table,
 	Quota
 } from '@zextras/carbonio-design-system';
+import { format, parse } from 'date-fns';
 import { debounce, map } from 'lodash';
-import moment from 'moment';
 import React, {
 	FC,
 	useEffect,
@@ -378,8 +378,7 @@ const EditAccountGeneralSection: FC<{
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						:  
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1042,8 +1041,9 @@ const EditAccountGeneralSection: FC<{
 							backgroundColor="gray6"
 							value={
 								accountDetail?.zimbraCreateTimestamp
-									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
-											'DD MMM YYYY | hh:MM:SS A'
+									? format(
+											parse(accountDetail?.zimbraCreateTimestamp, 'yyyyMMddHHmmss.X', new Date()),
+											'dd MMM yyyy | hh:mm:ss a'
 										)
 									: t('label.not_available', 'Not Available')
 							}
@@ -1055,8 +1055,9 @@ const EditAccountGeneralSection: FC<{
 							backgroundColor="gray6"
 							value={
 								accountDetail?.zimbraLastLogonTimestamp
-									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(
-											'DD MMM YYYY | hh:MM:SS A'
+									? format(
+											parse(accountDetail?.zimbraCreateTimestamp, 'yyyyMMddHHmmss.X', new Date()),
+											'dd MMM yyyy | hh:mm:ss a'
 										)
 									: t('label.never_logged_in', 'Never logged in')
 							}
@@ -1095,9 +1096,8 @@ const EditAccountGeneralSection: FC<{
 								<Tooltip
 									placement="top"
 									label={t(
-										 
 										'label.try_local_password_management_ldap',
-										 
+
 										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>

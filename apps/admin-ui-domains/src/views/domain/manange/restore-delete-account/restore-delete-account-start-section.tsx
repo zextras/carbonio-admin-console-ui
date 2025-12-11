@@ -3,21 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useMemo } from 'react';
-
 import { Container, Input, Row } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { format } from 'date-fns';
+import React, { FC, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../../list/list-row';
+
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(RestoreDeleteAccountContext);
-	const { restoreAccountDetail, setRestoreAccountDetail } = context;
-	const domainName = useDomainStore((state) => state.domain?.name);
+	const { restoreAccountDetail } = context;
 	const restoreDateTimeValue = useMemo(() => {
 		if (!restoreAccountDetail?.dateTime) return '';
 
@@ -26,7 +24,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 				? restoreAccountDetail.dateTime
 				: restoreAccountDetail.createDate;
 
-		return moment(selectedDate).format('D MMMM YYYY | hh:mm:ss A');
+		return format(new Date(selectedDate), 'd MMMM yyyy | hh:mm:ss a');
 	}, [restoreAccountDetail?.createDate, restoreAccountDetail?.dateTime]);
 	return (
 		<Container
@@ -62,7 +60,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 											? ''
 											: `${restoreAccountDetail?.copyAccount.split('@')[0]}@${
 													restoreAccountDetail?.copyDomain
-											  }`
+												}`
 									}
 								/>
 							</Container>
