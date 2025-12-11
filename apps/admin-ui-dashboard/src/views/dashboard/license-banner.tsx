@@ -6,7 +6,7 @@
 
 import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Row, Text } from '@zextras/carbonio-design-system';
-import moment from 'moment';
+import { format } from 'date-fns';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -26,7 +26,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	const maintenanceEndDate = moduleLicenseInfo?.maintenanceEndDate ?? 0;
 	const [t] = useTranslation();
 
-	const maintenanceEndDateFormatted = moment(maintenanceEndDate).format('DD MMM YYYY');
+	const maintenanceEndDateFormatted = format(maintenanceEndDate, 'dd MMM yyyy');
 
 	const bannerExpiredDescription = t(
 		'banner.maintenance-expired-description',
