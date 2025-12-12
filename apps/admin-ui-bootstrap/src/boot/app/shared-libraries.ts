@@ -28,7 +28,7 @@ export function injectSharedLibraries(): void {
 		react: React,
 		'react-dom': ReactDOM,
 		'react-i18next': ReactI18n,
-		lodash: Lodash,
+		'lodash-es': Lodash,
 		'react-router-dom': ReactRouterDom,
 		'styled-components': StyledComponents,
 		// DO NOT RENAME THIS
