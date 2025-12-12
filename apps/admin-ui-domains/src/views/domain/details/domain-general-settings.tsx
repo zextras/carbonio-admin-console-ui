@@ -242,7 +242,6 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [cosList]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		setDomainDirectoies({
 			account: [],

@@ -18,7 +18,6 @@ const HSMcreatePolicy: FC<any> = () => {
 	const [hsmQuery, setHsmQuery] = useState<string>('');
 	const [sourceVolumeNames, setSourceVolumeNames] = useState<string>('');
 	const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		const enabledString: string[] = [];
 		const largerSmallerString: string[] = [];

@@ -29,7 +29,7 @@ export const OperationsTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
 						onClick={(): void => {
@@ -58,7 +58,7 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							justifyContent: 'flex-center'
 						}}
 						onClick={(): void => {

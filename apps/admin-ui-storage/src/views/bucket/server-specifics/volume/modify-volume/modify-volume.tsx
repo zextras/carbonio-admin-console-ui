@@ -4,1188 +4,1353 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	Link,
-	Modal,
-	Padding,
-	Radio,
-	Row,
-	Select,
-	Switch,
-	Text,
-	Tooltip,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { isEmpty } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+  soapFetch,
+  useIsAdvanced,
+  useStickyBarStore,
+} from "@zextras/admin-ui-bootstrap";
+import {
+  Button,
+  Container,
+  Divider,
+  Input,
+  Link,
+  Modal,
+  Padding,
+  Radio,
+  Row,
+  Select,
+  Switch,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from "@zextras/carbonio-design-system";
+import { isEmpty } from "lodash-es";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Trans, useTranslation } from "react-i18next";
+import styled from "styled-components";
 
-import { Bucket, BucketVolume, objectType, Volume, VolumeType } from '../../../../../../types';
 import {
-	ALIBABA,
-	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
-	AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
-	CEPH,
-	CLOUDIAN,
-	CUSTOM_S3,
-	EMC,
-	FILEBLOB,
-	INDEX,
-	MINIO,
-	OPENIO,
-	PRIMARY,
-	PRIMARY_TYPE_VALUE,
-	S3,
-	SCALITYS3,
-	SECONDARY,
-	SECONDARY_TYPE_VALUE,
-	SWIFT,
-	UNUSED,
-	USAGE_IN_EXTERNAL_BACKUP,
-	ZIMBRA_ADMIN_URN
-} from '../../../../../constants';
-import { fetchSoap } from '../../../../../services/bucket-service';
-import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import Displayer from '../../../../components/displayer';
-import OverlayDivision from '../../../../components/overlayDivision';
-import ListRow from '../../../../list/list-row';
-import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+  Bucket,
+  BucketVolume,
+  objectType,
+  Volume,
+  VolumeType,
+} from "../../../../../../types";
+import {
+  ALIBABA,
+  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  CEPH,
+  CLOUDIAN,
+  CUSTOM_S3,
+  EMC,
+  FILEBLOB,
+  INDEX,
+  MINIO,
+  OPENIO,
+  PRIMARY,
+  PRIMARY_TYPE_VALUE,
+  S3,
+  SCALITYS3,
+  SECONDARY,
+  SECONDARY_TYPE_VALUE,
+  SWIFT,
+  UNUSED,
+  USAGE_IN_EXTERNAL_BACKUP,
+  ZIMBRA_ADMIN_URN,
+} from "../../../../../constants";
+import { fetchSoap } from "../../../../../services/bucket-service";
+import { useBucketVolumeStore } from "../../../../../store/bucket-volume/store";
+import Displayer from "../../../../components/displayer";
+import OverlayDivision from "../../../../components/overlayDivision";
+import ListRow from "../../../../list/list-row";
+import {
+  BucketTypeItems,
+  volumeAllocationList,
+  volumeTypeList,
+} from "../../../../utility/utils";
 
 const ovelayStyle = styled(Container)`
-	position: fixed;
-	width: 39.4rem;
-	top: 0rem;
-	right: 0;
-	bottom: 0;
-	height: auto;
-	max-height: 100%;
-	overflow: hidden;
-	background: #0d0d0d;
-	opacity: 0.4;
-	z-index: 11;
-	padding-top: 2rem;
+  position: fixed;
+  width: 39.4rem;
+  top: 0rem;
+  right: 0;
+  bottom: 0;
+  height: auto;
+  max-height: 100%;
+  overflow: hidden;
+  background: #0d0d0d;
+  opacity: 0.4;
+  z-index: 11;
+  padding-top: 2rem;
 `;
 
 const ModifyVolume: FC<{
-	volumeId: any;
-	setmodifyVolumeToggle: (newValue: boolean) => void;
-	getAllVolumesRequest: () => void;
-	selectedServerId: any;
-	volumeList: {
-		primaries: Volume[];
-		indexes: Volume[];
-		secondaries: Volume[];
-	};
-	setOpen: (newValue: boolean) => void;
+  volumeId: any;
+  setmodifyVolumeToggle: (newValue: boolean) => void;
+  getAllVolumesRequest: () => void;
+  selectedServerId: any;
+  volumeList: {
+    primaries: Volume[];
+    indexes: Volume[];
+    secondaries: Volume[];
+  };
+  setOpen: (newValue: boolean) => void;
 }> = ({
-	volumeId,
-	setmodifyVolumeToggle,
-	getAllVolumesRequest,
-	selectedServerId,
-	volumeList,
-	setOpen
+  volumeId,
+  setmodifyVolumeToggle,
+  getAllVolumesRequest,
+  selectedServerId,
+  volumeList,
+  setOpen,
 }) => {
-	const { t } = useTranslation();
+  const { t } = useTranslation();
 
-	const isAdvanced = useIsAdvanced();
-	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
-	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
-	const [isDirty, setIsDirty] = useState(false);
-	const [volumeDetail, setVolumeDetail] = useState<any>({
-		name: '',
-		id: 0,
-		type: 0,
-		compressBlobs: false,
-		isCurrent: false,
-		rootpath: '',
-		compressionThreshold: ''
-	});
-	const [name, setName] = useState<string>(volumeDetail?.name);
-	const [type, setType] = useState<any>();
-	const [id, setId] = useState<string>(volumeDetail?.id);
-	const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
-	const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
-	const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
-	const isCurrentRef = useRef<HTMLDivElement>(null);
-	const [compressionThreshold, setCompressionThreshold] = useState<string>(
-		volumeDetail?.compressionThreshold
-	);
-	const [previousDetail, setPreviousDetail] = useState<any>({});
-	const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
-	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
-	const [allocation, setAllocation] = useState<any>();
-	const [bucketName, setBucketName] = useState('');
-	const [storeType, setStoreType] = useState<string | undefined>('');
-	const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
-	const [bucketS3, setBucketS3] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [volumePrefix, setVolumePrefix] = useState<string | undefined>(
-		externalVolDetail?.volumePrefix
-	);
-	const [useInfrequentAccess, setUseInfrequentAccess] = useState<boolean | undefined>(
-		externalVolDetail?.useInfrequentAccess
-	);
-	const [useIntelligentTiering, setUseIntelligentTiering] = useState<boolean | undefined>(
-		externalVolDetail?.useIntelligentTiering
-	);
-	const [infrequentAccessThreshold, setInfrequentAccessThreshold] = useState<
-		number | string | undefined
-	>(externalVolDetail?.infrequentAccessThreshold);
-	const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
-	const [currentVolume, setCurrentVolume] = useState<Volume>();
-	const createSnackbar = useSnackbar();
-	const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
-		(state) => state
-	);
-	const { isSticky, setIsSticky } = useStickyBarStore();
+  const isAdvanced = useIsAdvanced();
+  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
+  const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
+  const [isDirty, setIsDirty] = useState(false);
+  const [volumeDetail, setVolumeDetail] = useState<any>({
+    name: "",
+    id: 0,
+    type: 0,
+    compressBlobs: false,
+    isCurrent: false,
+    rootpath: "",
+    compressionThreshold: "",
+  });
+  const [name, setName] = useState<string>(volumeDetail?.name);
+  const [type, setType] = useState<any>();
+  const [id, setId] = useState<string>(volumeDetail?.id);
+  const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
+  const [compressBlobs, setCompressBlobs] = useState<boolean>(
+    volumeDetail?.compressBlobs,
+  );
+  const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
+  const isCurrentRef = useRef<HTMLDivElement>(null);
+  const [compressionThreshold, setCompressionThreshold] = useState<string>(
+    volumeDetail?.compressionThreshold,
+  );
+  const [previousDetail, setPreviousDetail] = useState<any>({});
+  const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
+  const [allocation, setAllocation] = useState<any>();
+  const [bucketName, setBucketName] = useState("");
+  const [storeType, setStoreType] = useState<string | undefined>("");
+  const [bucketConfigurationId, setBucketConfigurationId] = useState<
+    string | undefined
+  >();
+  const [bucketS3, setBucketS3] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [volumePrefix, setVolumePrefix] = useState<string | undefined>(
+    externalVolDetail?.volumePrefix,
+  );
+  const [useInfrequentAccess, setUseInfrequentAccess] = useState<
+    boolean | undefined
+  >(externalVolDetail?.useInfrequentAccess);
+  const [useIntelligentTiering, setUseIntelligentTiering] = useState<
+    boolean | undefined
+  >(externalVolDetail?.useIntelligentTiering);
+  const [infrequentAccessThreshold, setInfrequentAccessThreshold] = useState<
+    number | string | undefined
+  >(externalVolDetail?.infrequentAccessThreshold);
+  const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
+  const [currentVolume, setCurrentVolume] = useState<Volume>();
+  const createSnackbar = useSnackbar();
+  const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } =
+    useBucketVolumeStore((state) => state);
+  const { isSticky, setIsSticky } = useStickyBarStore();
 
-	const labelMap: Record<number | string, string> = {
-		1: PRIMARY,
-		2: SECONDARY,
-		10: INDEX
-	};
-	const onUnusedBucketListChange = (e: any): void => {
-		const selectedBucketDetail = isVolumeAllDetail?.filter(
-			(item: BucketVolume) => item?.uuid === e
-		)[0];
+  const labelMap: Record<number | string, string> = {
+    1: PRIMARY,
+    2: SECONDARY,
+    10: INDEX,
+  };
+  const onUnusedBucketListChange = (e: any): void => {
+    const selectedBucketDetail = isVolumeAllDetail?.filter(
+      (item: BucketVolume) => item?.uuid === e,
+    )[0];
 
-		setBucketName(selectedBucketDetail?.bucketName);
-		setStoreType(selectedBucketDetail?.storeType);
-		setBucketConfigurationId(selectedBucketDetail?.uuid);
-	};
+    setBucketName(selectedBucketDetail?.bucketName);
+    setStoreType(selectedBucketDetail?.storeType);
+    setBucketConfigurationId(selectedBucketDetail?.uuid);
+  };
 
-	const updatePreviousDetail = (): void => {
-		const latestData: { [key: string]: string | boolean | number | undefined | VolumeType } = {};
-		latestData.name = name;
-		latestData.type = type;
-		latestData.id = id;
-		latestData.rootpath = rootpath;
-		latestData.compressBlobs = compressBlobs;
-		latestData.isCurrent = isCurrent;
-		latestData.compressionThreshold = compressionThreshold;
-		latestData.volumePrefix = volumePrefix;
-		latestData.infrequentAccessThreshold = infrequentAccessThreshold;
-		latestData.bucketConfigurationId = bucketConfigurationId;
-		latestData.useInfrequentAccess = useInfrequentAccess;
-		latestData.useIntelligentTiering = useIntelligentTiering;
-		setPreviousDetail(latestData);
-		setIsDirty(false);
-	};
+  const updatePreviousDetail = (): void => {
+    const latestData: {
+      [key: string]: string | boolean | number | undefined | VolumeType;
+    } = {};
+    latestData.name = name;
+    latestData.type = type;
+    latestData.id = id;
+    latestData.rootpath = rootpath;
+    latestData.compressBlobs = compressBlobs;
+    latestData.isCurrent = isCurrent;
+    latestData.compressionThreshold = compressionThreshold;
+    latestData.volumePrefix = volumePrefix;
+    latestData.infrequentAccessThreshold = infrequentAccessThreshold;
+    latestData.bucketConfigurationId = bucketConfigurationId;
+    latestData.useInfrequentAccess = useInfrequentAccess;
+    latestData.useIntelligentTiering = useIntelligentTiering;
+    setPreviousDetail(latestData);
+    setIsDirty(false);
+  };
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	const onSave = async (): Promise<void> => {
-		setIsLoading(true);
-		if (isAdvanced) {
-			if (type) {
-				type.label = labelMap[type?.value];
-			}
-			const obj: { [key: string]: string | boolean | number | undefined } = {};
+  const onSave = async (): Promise<void> => {
+    setIsLoading(true);
+    if (isAdvanced) {
+      if (type) {
+        type.label = labelMap[type?.value];
+      }
+      const obj: { [key: string]: string | boolean | number | undefined } = {};
 
-			obj._jsns = ZIMBRA_ADMIN_URN;
-			obj.module = 'ZxPowerstore';
-			obj.action = 'doUpdateVolume';
-			obj.targetServers = selectedServerName;
-			obj.currentVolumeName = volumeDetail?.name;
-			obj.volumeName = name;
-			obj.volumeType = type?.label?.toLowerCase();
-			obj.volumeCurrent = isCurrent;
-			obj.storeType = externalVolDetail?.storeType;
+      obj._jsns = ZIMBRA_ADMIN_URN;
+      obj.module = "ZxPowerstore";
+      obj.action = "doUpdateVolume";
+      obj.targetServers = selectedServerName;
+      obj.currentVolumeName = volumeDetail?.name;
+      obj.volumeName = name;
+      obj.volumeType = type?.label?.toLowerCase();
+      obj.volumeCurrent = isCurrent;
+      obj.storeType = externalVolDetail?.storeType;
 
-			if (Object.keys(externalVolDetail)?.length === 0) {
-				obj.volumePath = rootpath;
-				obj.volumeCompressed = compressBlobs;
-				obj.volumeThreshold = compressionThreshold || 0;
-			} else {
-				if (
-					externalVolDetail?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
-					externalVolDetail?.storeType?.toUpperCase() === CEPH?.toUpperCase() ||
-					externalVolDetail?.storeType?.toUpperCase() === CLOUDIAN?.toUpperCase() ||
-					externalVolDetail?.storeType?.toUpperCase() === EMC?.toUpperCase() ||
-					externalVolDetail?.storeType?.toUpperCase() === SCALITYS3?.toUpperCase() ||
-					externalVolDetail?.storeType?.toUpperCase() === MINIO ||
-					externalVolDetail?.storeType?.toUpperCase() === CUSTOM_S3?.toUpperCase()
-				) {
-					obj.volumePrefix = volumePrefix;
-					obj.bucketConfigurationId = bucketConfigurationId;
-				}
-				if (externalVolDetail?.storeType?.toUpperCase() === S3?.toUpperCase()) {
-					obj.volumePrefix = volumePrefix;
-					obj.bucketConfigurationId = bucketConfigurationId;
-					obj.useInfrequentAccess = useInfrequentAccess;
-					obj.infrequentAccessThreshold = infrequentAccessThreshold;
-					obj.useIntelligentTiering = useIntelligentTiering;
-				}
-				if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
-					obj.volumePath = rootpath;
-					obj.volumeCompressed = compressBlobs;
-					obj.volumeThreshold = compressionThreshold || 0;
-				}
-				if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
-					obj.url = '';
-					obj.account = '';
-					obj.namespace = '';
-					obj.proxyPort = 1;
-					obj.accountPort = 1;
-				}
-				if (externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
-					obj.url = '';
-					obj.username = '';
-					obj.password = '';
-					obj.authenticationMethod = '';
-					obj.authenticationMethodScope = '';
-					obj.tenantId = '';
-					obj.tenantName = '';
-					obj.domain = '';
-					obj.proxyHost = '';
-					obj.proxyPort = 10;
-					obj.proxyUsername = '';
-					obj.proxyPassword = '';
-					obj.publicHost = '';
-					obj.privateHost = '';
-					obj.region = '';
-					obj.maxDeleteObjectsCount = 10;
-				}
-			}
+      if (Object.keys(externalVolDetail)?.length === 0) {
+        obj.volumePath = rootpath;
+        obj.volumeCompressed = compressBlobs;
+        obj.volumeThreshold = compressionThreshold || 0;
+      } else {
+        if (
+          externalVolDetail?.storeType?.toUpperCase() ===
+            ALIBABA?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === CEPH?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() ===
+            CLOUDIAN?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === EMC?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() ===
+            SCALITYS3?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === MINIO ||
+          externalVolDetail?.storeType?.toUpperCase() ===
+            CUSTOM_S3?.toUpperCase()
+        ) {
+          obj.volumePrefix = volumePrefix;
+          obj.bucketConfigurationId = bucketConfigurationId;
+        }
+        if (externalVolDetail?.storeType?.toUpperCase() === S3?.toUpperCase()) {
+          obj.volumePrefix = volumePrefix;
+          obj.bucketConfigurationId = bucketConfigurationId;
+          obj.useInfrequentAccess = useInfrequentAccess;
+          obj.infrequentAccessThreshold = infrequentAccessThreshold;
+          obj.useIntelligentTiering = useIntelligentTiering;
+        }
+        if (
+          externalVolDetail?.storeType?.toUpperCase() ===
+          FILEBLOB?.toUpperCase()
+        ) {
+          obj.volumePath = rootpath;
+          obj.volumeCompressed = compressBlobs;
+          obj.volumeThreshold = compressionThreshold || 0;
+        }
+        if (
+          externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()
+        ) {
+          obj.url = "";
+          obj.account = "";
+          obj.namespace = "";
+          obj.proxyPort = 1;
+          obj.accountPort = 1;
+        }
+        if (
+          externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()
+        ) {
+          obj.url = "";
+          obj.username = "";
+          obj.password = "";
+          obj.authenticationMethod = "";
+          obj.authenticationMethodScope = "";
+          obj.tenantId = "";
+          obj.tenantName = "";
+          obj.domain = "";
+          obj.proxyHost = "";
+          obj.proxyPort = 10;
+          obj.proxyUsername = "";
+          obj.proxyPassword = "";
+          obj.publicHost = "";
+          obj.privateHost = "";
+          obj.region = "";
+          obj.maxDeleteObjectsCount = 10;
+        }
+      }
 
-			await fetchSoap('zextras', obj)
-				.then((res) => {
-					const result = JSON.parse(res?.Body?.response?.content);
-					const updateResponse = result?.response?.[selectedServerName];
+      await fetchSoap("zextras", obj)
+        .then((res) => {
+          const result = JSON.parse(res?.Body?.response?.content);
+          const updateResponse = result?.response?.[selectedServerName];
 
-					if (updateResponse?.ok) {
-						createSnackbar({
-							key: '1',
-							severity: 'success',
-							label: t('label.volume_detail_success', 'All changes have been saved successfully')
-						});
-						getAllVolumesRequest();
-						setmodifyVolumeToggle(false);
-						setIsLoading(false);
-					} else {
-						createSnackbar({
-							key: 'error',
-							severity: 'error',
-							 
-							label: t('label.volume_detail_error', '{{message}}', {
-								 
-								message: 'Something went wrong, please try again'
-							}),
-							autoHideTimeout: 5000
-						});
-						setmodifyVolumeToggle(false);
-						setIsLoading(false);
-					}
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t('label.volume_detail_error', '{{message}}', {
-							message: 'Something went wrong, please try again'
-						}),
-						autoHideTimeout: 5000
-					});
-					setmodifyVolumeToggle(false);
-					setIsLoading(false);
-				});
-		} else {
-			await soapFetch(
-				'ModifyVolume',
-				{
-					_jsns: ZIMBRA_ADMIN_URN,
-					module: 'ZxCore',
-					action: 'ModifyVolumeRequest',
-					id,
-					volume: {
-						id,
-						name,
-						rootpath,
-						type: type?.value,
-						compressBlobs: compressBlobs ? 1 : 0,
-						compressionThreshold,
-						isCurrent: isCurrent ? 1 : 0
-					}
-				},
-				selectedServerId
-			)
-				.then(() => {
-					if (isCurrent) {
-						soapFetch(
-							'SetCurrentVolume',
-							{
-								_jsns: ZIMBRA_ADMIN_URN,
-								module: 'ZxCore',
-								action: 'SetCurrentVolumeRequest',
-								id,
-								type: type?.value
-							},
-							{
-								otherAccount: selectedServerId
-							}
-						).catch(() => {
-							createSnackbar({
-								key: 'error',
-								severity: 'error',
-								label: t('label.volume_detail_error', '{{message}}', {
-									message: 'Something went wrong, please try again'
-								}),
-								autoHideTimeout: 5000
-							});
-							setIsLoading(false);
-						});
-					}
-					createSnackbar({
-						key: '1',
-						severity: 'success',
-						label: t('label.volume_detail_success', 'All changes have been saved successfully')
-					});
-					getAllVolumesRequest();
-					setmodifyVolumeToggle(false);
-					setIsLoading(false);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t('label.volume_detail_error', '{{message}}', {
-							message: 'Something went wrong, please try again'
-						}),
-						autoHideTimeout: 5000
-					});
-					setmodifyVolumeToggle(false);
-					setIsLoading(false);
-				});
-		}
-		updatePreviousDetail();
-	};
+          if (updateResponse?.ok) {
+            createSnackbar({
+              key: "1",
+              severity: "success",
+              label: t(
+                "label.volume_detail_success",
+                "All changes have been saved successfully",
+              ),
+            });
+            getAllVolumesRequest();
+            setmodifyVolumeToggle(false);
+            setIsLoading(false);
+          } else {
+            createSnackbar({
+              key: "error",
+              severity: "error",
 
-	const onUndo = (): void => {
-		previousDetail?.name ? setName(previousDetail?.name) : setName(volumeDetail?.name);
-		const volumeTypeObject = volTypeList?.find(
-			(item: VolumeType) => item?.value === volumeDetail?.type
-		);
-		previousDetail?.type ? setType(previousDetail?.type) : setType(volumeTypeObject);
-		previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
-		previousDetail?.rootpath
-			? setRootpath(previousDetail?.rootpath)
-			: setRootpath(volumeDetail?.rootpath);
-		previousDetail?.compressBlobs
-			? setCompressBlobs(previousDetail?.compressBlobs)
-			: setCompressBlobs(volumeDetail?.compressBlobs);
-		previousDetail?.isCurrent
-			? setIsCurrent(previousDetail?.isCurrent)
-			: setIsCurrent(volumeDetail?.isCurrent);
-		previousDetail?.compressionThreshold
-			? setCompressionThreshold(previousDetail?.compressionThreshold)
-			: setCompressionThreshold(volumeDetail?.compressionThreshold);
-		previousDetail?.bucketConfigurationId
-			? setBucketConfigurationId(previousDetail?.bucketConfigurationId)
-			: setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
-		previousDetail?.volumePrefix
-			? setVolumePrefix(previousDetail?.volumePrefix)
-			: setVolumePrefix(externalVolDetail?.volumePrefix);
-		previousDetail?.infrequentAccessThreshold
-			? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
-			: setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
-		previousDetail?.useInfrequentAccess
-			? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
-			: setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
-		previousDetail?.useIntelligentTiering
-			? setUseIntelligentTiering(previousDetail?.useIntelligentTiering)
-			: setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
-		setIsDirty(false);
-	};
+              label: t("label.volume_detail_error", "{{message}}", {
+                message: "Something went wrong, please try again",
+              }),
+              autoHideTimeout: 5000,
+            });
+            setmodifyVolumeToggle(false);
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          createSnackbar({
+            key: "error",
+            severity: "error",
+            label: t("label.volume_detail_error", "{{message}}", {
+              message: "Something went wrong, please try again",
+            }),
+            autoHideTimeout: 5000,
+          });
+          setmodifyVolumeToggle(false);
+          setIsLoading(false);
+        });
+    } else {
+      await soapFetch(
+        "ModifyVolume",
+        {
+          _jsns: ZIMBRA_ADMIN_URN,
+          module: "ZxCore",
+          action: "ModifyVolumeRequest",
+          id,
+          volume: {
+            id,
+            name,
+            rootpath,
+            type: type?.value,
+            compressBlobs: compressBlobs ? 1 : 0,
+            compressionThreshold,
+            isCurrent: isCurrent ? 1 : 0,
+          },
+        },
+        selectedServerId,
+      )
+        .then(() => {
+          if (isCurrent) {
+            soapFetch(
+              "SetCurrentVolume",
+              {
+                _jsns: ZIMBRA_ADMIN_URN,
+                module: "ZxCore",
+                action: "SetCurrentVolumeRequest",
+                id,
+                type: type?.value,
+              },
+              {
+                otherAccount: selectedServerId,
+              },
+            ).catch(() => {
+              createSnackbar({
+                key: "error",
+                severity: "error",
+                label: t("label.volume_detail_error", "{{message}}", {
+                  message: "Something went wrong, please try again",
+                }),
+                autoHideTimeout: 5000,
+              });
+              setIsLoading(false);
+            });
+          }
+          createSnackbar({
+            key: "1",
+            severity: "success",
+            label: t(
+              "label.volume_detail_success",
+              "All changes have been saved successfully",
+            ),
+          });
+          getAllVolumesRequest();
+          setmodifyVolumeToggle(false);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          createSnackbar({
+            key: "error",
+            severity: "error",
+            label: t("label.volume_detail_error", "{{message}}", {
+              message: "Something went wrong, please try again",
+            }),
+            autoHideTimeout: 5000,
+          });
+          setmodifyVolumeToggle(false);
+          setIsLoading(false);
+        });
+    }
+    updatePreviousDetail();
+  };
 
-	const onVolumeTypeChange = useCallback(
-		(e: number | null): void => {
-			const volumeObject: VolumeType = volTypeList?.find(
-				(item: VolumeType): boolean => item?.value === e
-			);
-			setType(volumeObject);
-		},
-		[volTypeList]
-	);
-	const buttons = [
-		{
-			align: 'right',
-			color: 'error',
-			label: t('label.delete', 'delete'),
-			loading: !volumeDetail?.id,
-			onClick: (): void => {
-				setOpen(true);
-			}
-		},
-		{
-			align: 'left',
-			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-			onClick: (): void => {
-				setIsSticky(!isSticky);
-			}
-		}
-	];
+  const onUndo = (): void => {
+    previousDetail?.name
+      ? setName(previousDetail?.name)
+      : setName(volumeDetail?.name);
+    const volumeTypeObject = volTypeList?.find(
+      (item: VolumeType) => item?.value === volumeDetail?.type,
+    );
+    previousDetail?.type
+      ? setType(previousDetail?.type)
+      : setType(volumeTypeObject);
+    previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
+    previousDetail?.rootpath
+      ? setRootpath(previousDetail?.rootpath)
+      : setRootpath(volumeDetail?.rootpath);
+    previousDetail?.compressBlobs
+      ? setCompressBlobs(previousDetail?.compressBlobs)
+      : setCompressBlobs(volumeDetail?.compressBlobs);
+    previousDetail?.isCurrent
+      ? setIsCurrent(previousDetail?.isCurrent)
+      : setIsCurrent(volumeDetail?.isCurrent);
+    previousDetail?.compressionThreshold
+      ? setCompressionThreshold(previousDetail?.compressionThreshold)
+      : setCompressionThreshold(volumeDetail?.compressionThreshold);
+    previousDetail?.bucketConfigurationId
+      ? setBucketConfigurationId(previousDetail?.bucketConfigurationId)
+      : setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
+    previousDetail?.volumePrefix
+      ? setVolumePrefix(previousDetail?.volumePrefix)
+      : setVolumePrefix(externalVolDetail?.volumePrefix);
+    previousDetail?.infrequentAccessThreshold
+      ? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
+      : setInfrequentAccessThreshold(
+          externalVolDetail?.infrequentAccessThreshold,
+        );
+    previousDetail?.useInfrequentAccess
+      ? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
+      : setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
+    previousDetail?.useIntelligentTiering
+      ? setUseIntelligentTiering(previousDetail?.useIntelligentTiering)
+      : setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
+    setIsDirty(false);
+  };
 
-	const getAllBuckets = useCallback(() => {
-		fetchSoap('zextras', {
-			_jsns: ZIMBRA_ADMIN_URN,
-			module: 'ZxCore',
-			action: 'listBuckets',
-			type: 'all',
-			targetServer: selectedServerName,
-			showSecrets: true
-		}).then((res) => {
-			const response = JSON.parse(res.Body.response.content);
-			if (response.ok) {
-				const bucName = response.response.values.find(
-					(b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId
-				)?.bucketName;
-				setBucketName(bucName);
-				setStoreType(externalVolDetail?.storeType);
-				setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
+  const onVolumeTypeChange = useCallback(
+    (e: number | null): void => {
+      const volumeObject: VolumeType = volTypeList?.find(
+        (item: VolumeType): boolean => item?.value === e,
+      );
+      setType(volumeObject);
+    },
+    [volTypeList],
+  );
+  const buttons = [
+    {
+      align: "right",
+      color: "error",
+      label: t("label.delete", "delete"),
+      loading: !volumeDetail?.id,
+      onClick: (): void => {
+        setOpen(true);
+      },
+    },
+    {
+      align: "left",
+      icon: isSticky ? "Pin3Outline" : "Unpin3Outline",
+      onClick: (): void => {
+        setIsSticky(!isSticky);
+      },
+    },
+  ];
 
-				const volUnusedBucketList: object[] = [];
-				const allData = response?.response?.values
-					?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
-					.map((items: objectType) => {
-						const volumeObject: string | undefined = bucketTypeItems?.find(
-							(s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase()
-						)?.label;
-						volUnusedBucketList.push({
-							label: `${volumeObject} | ${items?.label}`,
-							value: items?.uuid
-						});
-						return items;
-					});
-				setIsVolumeAllDetail(allData);
-				setBackupUnusedBucketList(volUnusedBucketList);
-			}
-		});
-	}, [
-		bucketTypeItems,
-		externalVolDetail?.bucketConfigurationId,
-		externalVolDetail?.storeType,
-		selectedServerName,
-		setIsVolumeAllDetail
-	]);
+  const getAllBuckets = useCallback(() => {
+    fetchSoap("zextras", {
+      _jsns: ZIMBRA_ADMIN_URN,
+      module: "ZxCore",
+      action: "listBuckets",
+      type: "all",
+      targetServer: selectedServerName,
+      showSecrets: true,
+    }).then((res) => {
+      const response = JSON.parse(res.Body.response.content);
+      if (response.ok) {
+        const bucName = response.response.values.find(
+          (b: objectType) =>
+            b?.uuid === externalVolDetail?.bucketConfigurationId,
+        )?.bucketName;
+        setBucketName(bucName);
+        setStoreType(externalVolDetail?.storeType);
+        setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.name !== name) {
-			setIsDirty(true);
-		}
+        const volUnusedBucketList: object[] = [];
+        const allData = response?.response?.values
+          ?.filter(
+            (items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+          )
+          .map((items: objectType) => {
+            const volumeObject: string | undefined = bucketTypeItems?.find(
+              (s) =>
+                s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
+            )?.label;
+            volUnusedBucketList.push({
+              label: `${volumeObject} | ${items?.label}`,
+              value: items?.uuid,
+            });
+            return items;
+          });
+        setIsVolumeAllDetail(allData);
+        setBackupUnusedBucketList(volUnusedBucketList);
+      }
+    });
+  }, [
+    bucketTypeItems,
+    externalVolDetail?.bucketConfigurationId,
+    externalVolDetail?.storeType,
+    selectedServerName,
+    setIsVolumeAllDetail,
+  ]);
 
-		if (
-			externalVolDetail?.name !== undefined &&
-			name !== undefined &&
-			externalVolDetail?.name !== name
-		) {
-			setIsDirty(true);
-		}
-	}, [externalVolDetail, name, volumeDetail]);
+  useEffect(() => {
+    if (volumeDetail !== undefined && volumeDetail?.name !== name) {
+      setIsDirty(true);
+    }
 
-	useEffect(() => {
-		if (
-			volumeDetail !== undefined &&
-			type?.value !== undefined &&
-			volumeDetail?.type !== type?.value
-		) {
-			setIsDirty(true);
-		}
-	}, [type?.value, volumeDetail]);
+    if (
+      externalVolDetail?.name !== undefined &&
+      name !== undefined &&
+      externalVolDetail?.name !== name
+    ) {
+      setIsDirty(true);
+    }
+  }, [externalVolDetail, name, volumeDetail]);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.id !== id) {
-			setIsDirty(true);
-		}
-	}, [volumeDetail, id]);
+  useEffect(() => {
+    if (
+      volumeDetail !== undefined &&
+      type?.value !== undefined &&
+      volumeDetail?.type !== type?.value
+    ) {
+      setIsDirty(true);
+    }
+  }, [type?.value, volumeDetail]);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.rootpath !== rootpath) {
-			setIsDirty(true);
-		}
-	}, [volumeDetail, rootpath]);
+  useEffect(() => {
+    if (volumeDetail !== undefined && volumeDetail?.id !== id) {
+      setIsDirty(true);
+    }
+  }, [volumeDetail, id]);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.compressBlobs !== compressBlobs) {
-			setIsDirty(true);
-		}
-	}, [volumeDetail, compressBlobs]);
+  useEffect(() => {
+    if (volumeDetail !== undefined && volumeDetail?.rootpath !== rootpath) {
+      setIsDirty(true);
+    }
+  }, [volumeDetail, rootpath]);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.isCurrent !== isCurrent) {
-			setIsDirty(true);
-		}
-	}, [volumeDetail, isCurrent]);
+  useEffect(() => {
+    if (
+      volumeDetail !== undefined &&
+      volumeDetail?.compressBlobs !== compressBlobs
+    ) {
+      setIsDirty(true);
+    }
+  }, [volumeDetail, compressBlobs]);
 
-	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.compressionThreshold !== compressionThreshold) {
-			setIsDirty(true);
-		}
-	}, [volumeDetail, compressionThreshold]);
+  useEffect(() => {
+    if (volumeDetail !== undefined && volumeDetail?.isCurrent !== isCurrent) {
+      setIsDirty(true);
+    }
+  }, [volumeDetail, isCurrent]);
 
-	useEffect(() => {
-		if (externalVolDetail !== undefined && externalVolDetail?.volumePrefix !== volumePrefix) {
-			setIsDirty(true);
-		}
-	}, [externalVolDetail, volumePrefix]);
+  useEffect(() => {
+    if (
+      volumeDetail !== undefined &&
+      volumeDetail?.compressionThreshold !== compressionThreshold
+    ) {
+      setIsDirty(true);
+    }
+  }, [volumeDetail, compressionThreshold]);
 
-	useEffect(() => {
-		if (
-			externalVolDetail !== undefined &&
-			bucketConfigurationId &&
-			externalVolDetail?.bucketConfigurationId !== bucketConfigurationId
-		) {
-			setIsDirty(true);
-		}
-	}, [bucketConfigurationId, externalVolDetail]);
+  useEffect(() => {
+    if (
+      externalVolDetail !== undefined &&
+      externalVolDetail?.volumePrefix !== volumePrefix
+    ) {
+      setIsDirty(true);
+    }
+  }, [externalVolDetail, volumePrefix]);
 
-	useEffect(() => {
-		if (
-			externalVolDetail !== undefined &&
-			useInfrequentAccess !== undefined &&
-			externalVolDetail?.useInfrequentAccess !== useInfrequentAccess
-		) {
-			setIsDirty(true);
-		}
-	}, [externalVolDetail, useInfrequentAccess]);
+  useEffect(() => {
+    if (
+      externalVolDetail !== undefined &&
+      bucketConfigurationId &&
+      externalVolDetail?.bucketConfigurationId !== bucketConfigurationId
+    ) {
+      setIsDirty(true);
+    }
+  }, [bucketConfigurationId, externalVolDetail]);
 
-	useEffect(() => {
-		if (
-			externalVolDetail !== undefined &&
-			useIntelligentTiering !== undefined &&
-			externalVolDetail?.useIntelligentTiering !== useIntelligentTiering
-		) {
-			setIsDirty(true);
-		}
-	}, [externalVolDetail, useIntelligentTiering]);
+  useEffect(() => {
+    if (
+      externalVolDetail !== undefined &&
+      useInfrequentAccess !== undefined &&
+      externalVolDetail?.useInfrequentAccess !== useInfrequentAccess
+    ) {
+      setIsDirty(true);
+    }
+  }, [externalVolDetail, useInfrequentAccess]);
 
-	useEffect(() => {
-		if (
-			externalVolDetail !== undefined &&
-			infrequentAccessThreshold !== undefined &&
-			externalVolDetail?.infrequentAccessThreshold !== infrequentAccessThreshold
-		) {
-			setIsDirty(true);
-		}
-	}, [externalVolDetail, infrequentAccessThreshold]);
+  useEffect(() => {
+    if (
+      externalVolDetail !== undefined &&
+      useIntelligentTiering !== undefined &&
+      externalVolDetail?.useIntelligentTiering !== useIntelligentTiering
+    ) {
+      setIsDirty(true);
+    }
+  }, [externalVolDetail, useIntelligentTiering]);
 
-	useEffect(() => {
-		setName(volumeDetail?.name);
-		const volumeTypeObject = volTypeList?.find(
-			(item: VolumeType) => item?.value === volumeDetail?.type
-		);
-		setType(volumeTypeObject);
-		setId(volumeDetail?.id);
-		setRootpath(volumeDetail?.rootpath);
-		setCompressBlobs(volumeDetail?.compressBlobs);
-		setIsCurrent(volumeDetail?.isCurrent);
-		setCompressionThreshold(volumeDetail?.compressionThreshold);
-		setIsDirty(false);
-	}, [volTypeList, volumeDetail]);
+  useEffect(() => {
+    if (
+      externalVolDetail !== undefined &&
+      infrequentAccessThreshold !== undefined &&
+      externalVolDetail?.infrequentAccessThreshold !== infrequentAccessThreshold
+    ) {
+      setIsDirty(true);
+    }
+  }, [externalVolDetail, infrequentAccessThreshold]);
 
-	useEffect(() => {
-		if (!isEmpty(externalVolDetail)) {
-			getAllBuckets();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [externalVolDetail]);
+  useEffect(() => {
+    setName(volumeDetail?.name);
+    const volumeTypeObject = volTypeList?.find(
+      (item: VolumeType) => item?.value === volumeDetail?.type,
+    );
+    setType(volumeTypeObject);
+    setId(volumeDetail?.id);
+    setRootpath(volumeDetail?.rootpath);
+    setCompressBlobs(volumeDetail?.compressBlobs);
+    setIsCurrent(volumeDetail?.isCurrent);
+    setCompressionThreshold(volumeDetail?.compressionThreshold);
+    setIsDirty(false);
+  }, [volTypeList, volumeDetail]);
 
-	useEffect(() => {
-		setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
-		setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
-		setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
-	}, [
-		externalVolDetail?.infrequentAccessThreshold,
-		externalVolDetail?.useInfrequentAccess,
-		externalVolDetail?.useIntelligentTiering
-	]);
+  useEffect(() => {
+    if (!isEmpty(externalVolDetail)) {
+      getAllBuckets();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalVolDetail]);
 
-	useEffect(() => {
-		if (externalVolDetail?.storeType === S3) {
-			setBucketS3(true);
-		} else {
-			setBucketS3(false);
-		}
-	}, [externalVolDetail?.storeType]);
+  useEffect(() => {
+    setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
+    setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
+    setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
+  }, [
+    externalVolDetail?.infrequentAccessThreshold,
+    externalVolDetail?.useInfrequentAccess,
+    externalVolDetail?.useIntelligentTiering,
+  ]);
 
-	useEffect(() => {
-		if (isAdvanced) {
-			if (volumeDetail?.type === 1) {
-				const volDetail = volumeList?.primaries?.filter(
-					(items: Volume) => items?.id === volumeDetail?.id
-				)[0];
-				if (volDetail?.bucketConfigurationId) {
-					setExternalVolDetail(volDetail);
-					setVolumePrefix(volDetail?.volumePrefix);
-				} else {
-					setExternalVolDetail({});
-				}
-				const volume = volumeList?.primaries?.find((v: Volume) => v?.isCurrent);
-				setCurrentVolume(volume);
-			}
-			if (volumeDetail?.type === 2) {
-				const volDetail = volumeList?.secondaries?.filter(
-					(items: Volume) => items?.id === volumeDetail?.id
-				)[0];
-				if (volDetail?.bucketConfigurationId) {
-					setExternalVolDetail(volDetail);
-					setVolumePrefix(volDetail?.volumePrefix);
-				} else {
-					setExternalVolDetail({});
-				}
+  useEffect(() => {
+    if (externalVolDetail?.storeType === S3) {
+      setBucketS3(true);
+    } else {
+      setBucketS3(false);
+    }
+  }, [externalVolDetail?.storeType]);
 
-				const volume = volumeList?.secondaries?.find((v: Volume) => v?.isCurrent);
-				setCurrentVolume(volume);
-			}
-			if (volumeDetail?.type === 10) {
-				const volDetail = volumeList?.indexes?.filter(
-					(items: Volume) => items?.id === volumeDetail?.id
-				)[0];
-				if (volDetail?.bucketConfigurationId) {
-					setExternalVolDetail(volDetail);
-					setVolumePrefix(volDetail?.volumePrefix);
-				} else {
-					setExternalVolDetail({});
-				}
-				const volume = volumeList?.indexes?.find((v: Volume) => v?.isCurrent);
-				setCurrentVolume(volume);
-			}
-		}
-	}, [
-		volumeList?.primaries,
-		volumeDetail?.type,
-		volumeList?.secondaries,
-		volumeList?.indexes,
-		isAdvanced,
-		volumeDetail?.id
-	]);
+  useEffect(() => {
+    if (isAdvanced) {
+      if (volumeDetail?.type === 1) {
+        const volDetail = volumeList?.primaries?.filter(
+          (items: Volume) => items?.id === volumeDetail?.id,
+        )[0];
+        if (volDetail?.bucketConfigurationId) {
+          setExternalVolDetail(volDetail);
+          setVolumePrefix(volDetail?.volumePrefix);
+        } else {
+          setExternalVolDetail({});
+        }
+        const volume = volumeList?.primaries?.find((v: Volume) => v?.isCurrent);
+        setCurrentVolume(volume);
+      }
+      if (volumeDetail?.type === 2) {
+        const volDetail = volumeList?.secondaries?.filter(
+          (items: Volume) => items?.id === volumeDetail?.id,
+        )[0];
+        if (volDetail?.bucketConfigurationId) {
+          setExternalVolDetail(volDetail);
+          setVolumePrefix(volDetail?.volumePrefix);
+        } else {
+          setExternalVolDetail({});
+        }
 
-	useEffect(() => {
-		const volumeTypeObject = volAllocationList?.find(
-			(item: VolumeType) => item?.value === volumeDetail?.type
-		);
-		setAllocation(volumeTypeObject);
-	}, [volAllocationList, volumeDetail?.type]);
+        const volume = volumeList?.secondaries?.find(
+          (v: Volume) => v?.isCurrent,
+        );
+        setCurrentVolume(volume);
+      }
+      if (volumeDetail?.type === 10) {
+        const volDetail = volumeList?.indexes?.filter(
+          (items: Volume) => items?.id === volumeDetail?.id,
+        )[0];
+        if (volDetail?.bucketConfigurationId) {
+          setExternalVolDetail(volDetail);
+          setVolumePrefix(volDetail?.volumePrefix);
+        } else {
+          setExternalVolDetail({});
+        }
+        const volume = volumeList?.indexes?.find((v: Volume) => v?.isCurrent);
+        setCurrentVolume(volume);
+      }
+    }
+  }, [
+    volumeList?.primaries,
+    volumeDetail?.type,
+    volumeList?.secondaries,
+    volumeList?.indexes,
+    isAdvanced,
+    volumeDetail?.id,
+  ]);
 
-	const getVolumeDetailData = useCallback(
-		(volId: string): void => {
-			setIsLoading(true);
-			soapFetch(
-				'GetVolume',
-				{
-					_jsns: ZIMBRA_ADMIN_URN,
-					module: 'ZxPowerstore',
-					id: volId
-				},
-				{
-					otherAccount: selectedServerId
-				}
-			)
-				.then((response) => {
-					const typedResponse = response as { volume: Volume[]; _jsns: string };
-					const volData = typedResponse?.volume[0];
-					setVolumeDetail(volData);
-					setmodifyVolumeToggle(true);
-					setIsLoading(false);
-				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t('label.volume_detail_error', '{{message}}', {
-							message: 'Something went wrong, please try again'
-						}),
-						autoHideTimeout: 5000
-					});
-					getAllVolumesRequest();
-					setIsLoading(false);
-				});
-		},
-		[
-			setVolumeDetail,
-			setmodifyVolumeToggle,
-			createSnackbar,
-			t,
-			getAllVolumesRequest,
-			selectedServerId
-		]
-	);
+  useEffect(() => {
+    const volumeTypeObject = volAllocationList?.find(
+      (item: VolumeType) => item?.value === volumeDetail?.type,
+    );
+    setAllocation(volumeTypeObject);
+  }, [volAllocationList, volumeDetail?.type]);
 
-	useEffect(() => {
-		if (volumeId) getVolumeDetailData(volumeId);
-	}, [volumeId, getVolumeDetailData]);
+  const getVolumeDetailData = useCallback(
+    (volId: string): void => {
+      setIsLoading(true);
+      soapFetch(
+        "GetVolume",
+        {
+          _jsns: ZIMBRA_ADMIN_URN,
+          module: "ZxPowerstore",
+          id: volId,
+        },
+        {
+          otherAccount: selectedServerId,
+        },
+      )
+        .then((response) => {
+          const typedResponse = response as { volume: Volume[]; _jsns: string };
+          const volData = typedResponse?.volume[0];
+          setVolumeDetail(volData);
+          setmodifyVolumeToggle(true);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          createSnackbar({
+            key: "error",
+            severity: "error",
+            label: t("label.volume_detail_error", "{{message}}", {
+              message: "Something went wrong, please try again",
+            }),
+            autoHideTimeout: 5000,
+          });
+          getAllVolumesRequest();
+          setIsLoading(false);
+        });
+    },
+    [
+      setVolumeDetail,
+      setmodifyVolumeToggle,
+      createSnackbar,
+      t,
+      getAllVolumesRequest,
+      selectedServerId,
+    ],
+  );
 
-	return (
-		<>
-			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
-			<Container
-				background="gray6"
-				mainAlignment="flex-start"
-				orientation="vertical"
-				style={{ overflowY: 'auto' }}
-			>
-				<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-						<Text size="extralarge" weight="bold">
-							{t('label.volume_detail_page_title', '{{message}} Details', {
-								message: volumeDetail?.name
-							})}
-						</Text>
-					</Row>
-					<Row
-						padding={{ all: 'small' }}
-						width="50%"
-						mainAlignment="flex-end"
-						crossAlignment="flex-end"
-					>
-						<Padding right="small">
-							{isDirty && (
-								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
-							)}
-						</Padding>
-						{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
-					</Row>
-					<Row padding={{ horizontal: 'small' }}>
-						<Button
-							type="ghost"
-							color={'text'}
-							icon="CloseOutline"
-							onClick={(): void => setmodifyVolumeToggle(false)}
-						/>
-					</Row>
-				</Row>
-				<Divider />
-				<Displayer buttons={buttons} pinIcon={isSticky} />
-				{Object.keys(externalVolDetail)?.length === 0 ? (
-					<Container
-						padding={{ horizontal: 'large', bottom: 'large' }}
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-					>
-						<Row padding={{ top: 'small' }} width="100%">
-							<Input
-								label={t('label.volume_name', 'Volume Name')}
-								value={name}
-								backgroundColor="gray5"
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-									setName(e?.target?.value)
-								}
-							/>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Select
-								items={volTypeList}
-								background="gray5"
-								label={t('label.volume_main', 'Volume Main')}
-								selection={type}
-								showCheckbox={false}
-								onChange={onVolumeTypeChange}
-								disabled
-							/>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Input
-								label={t('label.volume_id', 'Volume ID')}
-								value={id}
-								backgroundColor="gray6"
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setId(e?.target?.value)}
-							/>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Input
-								label={t('label.path', 'Path')}
-								value={rootpath}
-								backgroundColor="gray5"
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-									setRootpath(e?.target?.value)
-								}
-							/>
-						</Row>
-						<Padding top="extrasmall">
-							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t(
-									'the_change_will_not_move_the_data',
+  useEffect(() => {
+    if (volumeId) getVolumeDetailData(volumeId);
+  }, [volumeId, getVolumeDetailData]);
 
-									'The change will not move the data'
-								)}
-							</Text>
-						</Padding>
-						<Row
-							padding={{ top: 'large' }}
-							width="100%"
-							mainAlignment="center"
-							crossAlignment="center"
-							background="gray6"
-						>
-							<Row width={isAdvanced ? '48%' : '100%'}>
-								<Radio
-									label={t('label.primary_volume', 'This is a Primary Volume')}
-									value={PRIMARY_TYPE_VALUE}
-									checked={type?.value === 1}
-									onClick={(): void => {
-										onVolumeTypeChange(1);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
-							{isAdvanced && (
-								<Row width="48%">
-									<Radio
-										label={t('label.secondary_volume', 'This is a Secondary Volume')}
-										value={SECONDARY_TYPE_VALUE}
-										checked={type?.value === 2}
-										onClick={(): void => {
-											onVolumeTypeChange(2);
-										}}
-										iconColor="primary"
-									/>
-								</Row>
-							)}
-						</Row>
-						<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
-							{volumeDetail?.type !== 10 && (
-								<>
-									<Row width="48%" mainAlignment="flex-start">
-										<Switch
-											value={compressBlobs}
-											label={t('label.enable_compression', 'Enable Compression')}
-											onClick={(): void => setCompressBlobs(!compressBlobs)}
-											iconColor="primary"
-										/>
-										<Padding top="extrasmall">
-											<Text color="secondary" overflow="break-word" size="extrasmall">
-												{t(
-													'this_will_not_affect_data_already_stored',
-													'This will not affect data already stored'
-												)}
-											</Text>
-										</Padding>
-									</Row>
-									<Padding horizontal="small" />
-								</>
-							)}
-							<Row width="48%" mainAlignment="flex-start">
-								<Tooltip
-									placement="top"
-									label={t(
-										'warning.is_current',
-										'Firstly, you have to set another volume as the current one.'
-									)}
-									maxWidth="auto"
-									disabled={!isCurrent}
-								>
-									<Switch
-										ref={isCurrentRef}
-										value={isCurrent}
-										label={t('label.enable_current', 'Enable as Current')}
-										onClick={(): void => {
-											!isCurrent && setIsCurrentToggle(true);
-										}}
-										iconColor="primary"
-									/>
-								</Tooltip>
-							</Row>
-						</Row>
-						{volumeDetail?.type !== 10 && (
-							<>
-								<Row padding={{ top: 'small' }} width="50%">
-									<Input
-										label={t('label.compression_threshold', 'Compression Threshold')}
-										value={compressionThreshold}
-										backgroundColor="gray6"
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-											setCompressionThreshold(e?.target?.value)
-										}
-										color="secondary"
-									/>
-								</Row>
-								<Padding top="extrasmall">
-									<Text color="secondary" overflow="break-word" size="extrasmall">
-										{t(
-											'this_will_not_affect_data_already_stored',
-											'This will not affect data already stored'
-										)}
-									</Text>
-								</Padding>
-							</>
-						)}
-					</Container>
-				) : (
-					<Container
-						padding={{ horizontal: 'large', bottom: 'large' }}
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-					>
-						<Row padding={{ top: 'small' }} width="100%">
-							<Input
-								inputName="server"
-								label={t('label.volume_server_name', 'Server')}
-								value={selectedServerName}
-								backgroundColor="gray5"
-							/>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Select
-								items={volAllocationList}
-								background="gray5"
-								label={t('label.storage_type', 'Storage Type')}
-								showCheckbox={false}
-								selection={allocation}
-								disabled
-								onChange={(): void => {
-									// console.log('__');
-								}}
-							/>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Input
-								label={t('label.volume_name', 'Volume Name')}
-								value={name}
-								backgroundColor="gray6"
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-									setName(e?.target?.value)
-								}
-							/>
-						</Row>
-						{backupUnusedBucketList?.length !== 0 && (
-							<>
-								<Row padding={{ top: 'large' }} width="100%">
-									<Select
-										items={backupUnusedBucketList}
-										background="gray5"
-										label={t(
-											'label.volume_available_unused_Buckets_list_in_backup',
-											'Available Buckets List (that are not in use in the backup)'
-										)}
-										showCheckbox={false}
-										selection={backupUnusedBucketList?.find(
-											(b: Bucket) => b.value === bucketConfigurationId
-										)}
-										onChange={onUnusedBucketListChange}
-									/>
-								</Row>
-								<Padding top="extrasmall">
-									<Text color="secondary" overflow="break-word" size="extrasmall">
-										{t('the_change_will_not_move_the_data', 'The change will not move the data')}
-									</Text>
-								</Padding>
-							</>
-						)}
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ top: 'large', right: 'large' }}
-							>
-								<Input
-									label={t('label.bucket_name', 'Bucket Name')}
-									backgroundColor="gray6"
-									value={bucketName}
-								/>
-							</Container>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ top: 'large', right: 'large' }}
-							>
-								<Input label={t('label.type', 'Type')} backgroundColor="gray6" value={storeType} />
-							</Container>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ top: 'large' }}
-							>
-								<Input
-									label={t('label.ID', 'ID')}
-									backgroundColor="gray6"
-									value={bucketConfigurationId}
-								/>
-							</Container>
-						</ListRow>
-						<Row
-							padding={{ top: 'large' }}
-							width="100%"
-							mainAlignment="center"
-							crossAlignment="center"
-							background="gray6"
-						>
-							<Row width="48%">
-								<Radio
-									label={t('label.primary_volume', 'This is a Primary Volume')}
-									value={PRIMARY_TYPE_VALUE}
-									checked={type?.value === 1}
-									onClick={(): void => {
-										onVolumeTypeChange(1);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
-							<Row width="48%">
-								<Radio
-									label={t('label.secondary_volume', 'This is a Secondary Volume')}
-									value={SECONDARY_TYPE_VALUE}
-									checked={type?.value === 2}
-									onClick={(): void => {
-										onVolumeTypeChange(2);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%">
-							<Input
-								inputName="prefix"
-								label={t(
-									'label.prefix_name',
-									'Prefix - all objects will have this prefix in their name'
-								)}
-								value={volumePrefix}
-								backgroundColor="gray5"
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-									setVolumePrefix(e?.target?.value)
-								}
-							/>
-						</Row>
-						<Padding top="extrasmall">
-							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
-							</Text>
-						</Padding>
-						{bucketS3 && (
-							<>
-								<Row
-									padding={{ top: 'large' }}
-									mainAlignment="flex-start"
-									width="100%"
-									background="gray6"
-								>
-									<Input
-										inputName="infrequentAccessThreshold"
-										label={t('label.size_threshold', 'Size Threshold')}
-										backgroundColor="gray5"
-										value={infrequentAccessThreshold}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-											setInfrequentAccessThreshold(e?.target?.value)
-										}
-									/>
-								</Row>
-								<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-									<Row mainAlignment="flex-start" width="100%">
-										<Switch
-											value={useInfrequentAccess}
-											label={t('label.use_infraquent_access', 'Use infrequent access')}
-											onClick={(): void => setUseInfrequentAccess(!useInfrequentAccess)}
-											iconColor="primary"
-										/>
-									</Row>
-									<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-										<Link
-											color="secondary"
-											href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											<Trans
-												i18nKey="label.use_infraquent_access_helptext"
-												defaults="<underline>Amazon Storage Class Documentation</underline>"
-												components={{ underline: <u /> }}
-											/>
-										</Link>
-									</Row>
-								</Row>
-								<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-									<Switch
-										value={useIntelligentTiering}
-										label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-										onClick={(): void => setUseIntelligentTiering(!useIntelligentTiering)}
-										iconColor="primary"
-									/>
-								</Row>
-								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-									<Link
-										color="secondary"
-										href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										<Trans
-											i18nKey="label.use_intelligent_tiering_helptext"
-											defaults="<underline>Amazon Tiering Documentation</underline>"
-											components={{ underline: <u /> }}
-										/>
-									</Link>
-								</Row>
-							</>
-						)}
-						<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-							<Tooltip
-								placement="top"
-								label={t(
-									'warning.is_current',
-									'Firstly, you have to set another volume as the current one.'
-								)}
-								maxWidth="auto"
-								disabled={!isCurrent}
-							>
-								<Switch
-									ref={isCurrentRef}
-									value={isCurrent}
-									label={t('label.enable_current', 'Enable as Current')}
-									onClick={(): void => {
-										!isCurrent && setIsCurrentToggle(true);
-									}}
-									iconColor="primary"
-								/>
-							</Tooltip>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-							<Text color="secondary">
-								{t(
-									'label.enable_current_helptext',
-									'Enabling this option will disable the current active volume.'
-								)}
-							</Text>
-						</Row>
-					</Container>
-				)}
-				<Modal
-					open={isCurrentToggle && !isCurrent}
-					title={t(
-						'modal.iscurrent_confirm.title',
-						'You are setting {{name}} as the current volume',
-						{
-							name
-						}
-					)}
-					onClose={(): void => setIsCurrentToggle(false)}
-					onConfirm={(): void => {
-						setIsCurrent(true);
-						setIsCurrentToggle(false);
-					}}
-					confirmLabel={t('modal.iscurrent_confirm.confirm_label', 'YES, PROCEED')}
-					onSecondaryAction={(): void => setIsCurrentToggle(false)}
-					secondaryActionLabel={t('modal.iscurrent_confirm.secondary_label', 'NO, GO BACK')}
-					showCloseIcon
-				>
-					<Padding vertical="small">
-						<Text>
-							<Trans
-								i18nKey="modal.iscurrent_confirm.body_message"
-								defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
-								components={{ break: <br />, bold: <strong /> }}
-								values={{ type: type?.label, currentVolumeName: currentVolume?.name, name }}
-							/>
-						</Text>
-					</Padding>
-				</Modal>
-			</Container>
-		</>
-	);
+  return (
+    <>
+      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      <Container
+        background="gray6"
+        mainAlignment="flex-start"
+        orientation="vertical"
+        style={{ overflowY: "auto" }}
+      >
+        <Row
+          mainAlignment="flex-start"
+          crossAlignment="center"
+          width="100%"
+          height="4.15rem"
+        >
+          <Row
+            mainAlignment="flex-start"
+            padding={{ all: "large" }}
+            takeAvailableSpace
+          >
+            <Text size="extralarge" weight="bold">
+              {t("label.volume_detail_page_title", "{{message}} Details", {
+                message: volumeDetail?.name,
+              })}
+            </Text>
+          </Row>
+          <Row
+            padding={{ all: "small" }}
+            width="50%"
+            mainAlignment="flex-end"
+            crossAlignment="flex-end"
+          >
+            <Padding right="small">
+              {isDirty && (
+                <Button
+                  label={t("label.cancel", "Cancel")}
+                  color="secondary"
+                  onClick={onUndo}
+                />
+              )}
+            </Padding>
+            {isDirty && (
+              <Button
+                label={t("label.save", "Save")}
+                color="primary"
+                onClick={onSave}
+              />
+            )}
+          </Row>
+          <Row padding={{ horizontal: "small" }}>
+            <Button
+              type="ghost"
+              color={"text"}
+              icon="CloseOutline"
+              onClick={(): void => setmodifyVolumeToggle(false)}
+            />
+          </Row>
+        </Row>
+        <Divider />
+        <Displayer buttons={buttons} pinIcon={isSticky} />
+        {Object.keys(externalVolDetail)?.length === 0 ? (
+          <Container
+            padding={{ horizontal: "large", bottom: "large" }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+          >
+            <Row padding={{ top: "small" }} width="100%">
+              <Input
+                label={t("label.volume_name", "Volume Name")}
+                value={name}
+                backgroundColor="gray5"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                  setName(e?.target?.value)
+                }
+              />
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Select
+                items={volTypeList}
+                background="gray5"
+                label={t("label.volume_main", "Volume Main")}
+                selection={type}
+                showCheckbox={false}
+                onChange={onVolumeTypeChange}
+                disabled
+              />
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Input
+                label={t("label.volume_id", "Volume ID")}
+                value={id}
+                backgroundColor="gray6"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                  setId(e?.target?.value)
+                }
+              />
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Input
+                label={t("label.path", "Path")}
+                value={rootpath}
+                backgroundColor="gray5"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                  setRootpath(e?.target?.value)
+                }
+              />
+            </Row>
+            <Padding top="extrasmall">
+              <Text color="secondary" overflow="break-word" size="extrasmall">
+                {t(
+                  "the_change_will_not_move_the_data",
+
+                  "The change will not move the data",
+                )}
+              </Text>
+            </Padding>
+            <Row
+              padding={{ top: "large" }}
+              width="100%"
+              mainAlignment="center"
+              crossAlignment="center"
+              background="gray6"
+            >
+              <Row width={isAdvanced ? "48%" : "100%"}>
+                <Radio
+                  label={t("label.primary_volume", "This is a Primary Volume")}
+                  value={PRIMARY_TYPE_VALUE}
+                  checked={type?.value === 1}
+                  onClick={(): void => {
+                    onVolumeTypeChange(1);
+                  }}
+                  iconColor="primary"
+                />
+              </Row>
+              {isAdvanced && (
+                <Row width="48%">
+                  <Radio
+                    label={t(
+                      "label.secondary_volume",
+                      "This is a Secondary Volume",
+                    )}
+                    value={SECONDARY_TYPE_VALUE}
+                    checked={type?.value === 2}
+                    onClick={(): void => {
+                      onVolumeTypeChange(2);
+                    }}
+                    iconColor="primary"
+                  />
+                </Row>
+              )}
+            </Row>
+            <Row
+              mainAlignment="flex-start"
+              padding={{ top: "large" }}
+              width="100%"
+            >
+              {volumeDetail?.type !== 10 && (
+                <>
+                  <Row width="48%" mainAlignment="flex-start">
+                    <Switch
+                      value={compressBlobs}
+                      label={t(
+                        "label.enable_compression",
+                        "Enable Compression",
+                      )}
+                      onClick={(): void => setCompressBlobs(!compressBlobs)}
+                      iconColor="primary"
+                    />
+                    <Padding top="extrasmall">
+                      <Text
+                        color="secondary"
+                        overflow="break-word"
+                        size="extrasmall"
+                      >
+                        {t(
+                          "this_will_not_affect_data_already_stored",
+                          "This will not affect data already stored",
+                        )}
+                      </Text>
+                    </Padding>
+                  </Row>
+                  <Padding horizontal="small" />
+                </>
+              )}
+              <Row width="48%" mainAlignment="flex-start">
+                <Tooltip
+                  placement="top"
+                  label={t(
+                    "warning.is_current",
+                    "Firstly, you have to set another volume as the current one.",
+                  )}
+                  maxWidth="auto"
+                  disabled={!isCurrent}
+                >
+                  <Switch
+                    ref={isCurrentRef}
+                    value={isCurrent}
+                    label={t("label.enable_current", "Enable as Current")}
+                    onClick={(): void => {
+                      !isCurrent && setIsCurrentToggle(true);
+                    }}
+                    iconColor="primary"
+                  />
+                </Tooltip>
+              </Row>
+            </Row>
+            {volumeDetail?.type !== 10 && (
+              <>
+                <Row padding={{ top: "small" }} width="50%">
+                  <Input
+                    label={t(
+                      "label.compression_threshold",
+                      "Compression Threshold",
+                    )}
+                    value={compressionThreshold}
+                    backgroundColor="gray6"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                      setCompressionThreshold(e?.target?.value)
+                    }
+                    color="secondary"
+                  />
+                </Row>
+                <Padding top="extrasmall">
+                  <Text
+                    color="secondary"
+                    overflow="break-word"
+                    size="extrasmall"
+                  >
+                    {t(
+                      "this_will_not_affect_data_already_stored",
+                      "This will not affect data already stored",
+                    )}
+                  </Text>
+                </Padding>
+              </>
+            )}
+          </Container>
+        ) : (
+          <Container
+            padding={{ horizontal: "large", bottom: "large" }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+          >
+            <Row padding={{ top: "small" }} width="100%">
+              <Input
+                inputName="server"
+                label={t("label.volume_server_name", "Server")}
+                value={selectedServerName}
+                backgroundColor="gray5"
+              />
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Select
+                items={volAllocationList}
+                background="gray5"
+                label={t("label.storage_type", "Storage Type")}
+                showCheckbox={false}
+                selection={allocation}
+                disabled
+                onChange={(): void => {
+                  // console.log('__');
+                }}
+              />
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Input
+                label={t("label.volume_name", "Volume Name")}
+                value={name}
+                backgroundColor="gray6"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                  setName(e?.target?.value)
+                }
+              />
+            </Row>
+            {backupUnusedBucketList?.length !== 0 && (
+              <>
+                <Row padding={{ top: "large" }} width="100%">
+                  <Select
+                    items={backupUnusedBucketList}
+                    background="gray5"
+                    label={t(
+                      "label.volume_available_unused_Buckets_list_in_backup",
+                      "Available Buckets List (that are not in use in the backup)",
+                    )}
+                    showCheckbox={false}
+                    selection={backupUnusedBucketList?.find(
+                      (b: Bucket) => b.value === bucketConfigurationId,
+                    )}
+                    onChange={onUnusedBucketListChange}
+                  />
+                </Row>
+                <Padding top="extrasmall">
+                  <Text
+                    color="secondary"
+                    overflow="break-word"
+                    size="extrasmall"
+                  >
+                    {t(
+                      "the_change_will_not_move_the_data",
+                      "The change will not move the data",
+                    )}
+                  </Text>
+                </Padding>
+              </>
+            )}
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: "large", right: "large" }}
+              >
+                <Input
+                  label={t("label.bucket_name", "Bucket Name")}
+                  backgroundColor="gray6"
+                  value={bucketName}
+                />
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: "large", right: "large" }}
+              >
+                <Input
+                  label={t("label.type", "Type")}
+                  backgroundColor="gray6"
+                  value={storeType}
+                />
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: "large" }}
+              >
+                <Input
+                  label={t("label.ID", "ID")}
+                  backgroundColor="gray6"
+                  value={bucketConfigurationId}
+                />
+              </Container>
+            </ListRow>
+            <Row
+              padding={{ top: "large" }}
+              width="100%"
+              mainAlignment="center"
+              crossAlignment="center"
+              background="gray6"
+            >
+              <Row width="48%">
+                <Radio
+                  label={t("label.primary_volume", "This is a Primary Volume")}
+                  value={PRIMARY_TYPE_VALUE}
+                  checked={type?.value === 1}
+                  onClick={(): void => {
+                    onVolumeTypeChange(1);
+                  }}
+                  iconColor="primary"
+                />
+              </Row>
+              <Row width="48%">
+                <Radio
+                  label={t(
+                    "label.secondary_volume",
+                    "This is a Secondary Volume",
+                  )}
+                  value={SECONDARY_TYPE_VALUE}
+                  checked={type?.value === 2}
+                  onClick={(): void => {
+                    onVolumeTypeChange(2);
+                  }}
+                  iconColor="primary"
+                />
+              </Row>
+            </Row>
+            <Row padding={{ top: "large" }} width="100%">
+              <Input
+                inputName="prefix"
+                label={t(
+                  "label.prefix_name",
+                  "Prefix - all objects will have this prefix in their name",
+                )}
+                value={volumePrefix}
+                backgroundColor="gray5"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                  setVolumePrefix(e?.target?.value)
+                }
+              />
+            </Row>
+            <Padding top="extrasmall">
+              <Text color="secondary" overflow="break-word" size="extrasmall">
+                {t(
+                  "the_change_will_not_move_the_data",
+                  "The change will not move the data",
+                )}
+              </Text>
+            </Padding>
+            {bucketS3 && (
+              <>
+                <Row
+                  padding={{ top: "large" }}
+                  mainAlignment="flex-start"
+                  width="100%"
+                  background="gray6"
+                >
+                  <Input
+                    inputName="infrequentAccessThreshold"
+                    label={t("label.size_threshold", "Size Threshold")}
+                    backgroundColor="gray5"
+                    value={infrequentAccessThreshold}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                      setInfrequentAccessThreshold(e?.target?.value)
+                    }
+                  />
+                </Row>
+                <Row
+                  padding={{ top: "large" }}
+                  mainAlignment="flex-start"
+                  width="100%"
+                >
+                  <Row mainAlignment="flex-start" width="100%">
+                    <Switch
+                      value={useInfrequentAccess}
+                      label={t(
+                        "label.use_infraquent_access",
+                        "Use infrequent access",
+                      )}
+                      onClick={(): void =>
+                        setUseInfrequentAccess(!useInfrequentAccess)
+                      }
+                      iconColor="primary"
+                    />
+                  </Row>
+                  <Row
+                    mainAlignment="flex-start"
+                    width="100%"
+                    padding={{ left: "extralarge" }}
+                  >
+                    <Link
+                      color="secondary"
+                      href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Trans
+                        i18nKey="label.use_infraquent_access_helptext"
+                        defaults="<underline>Amazon Storage Class Documentation</underline>"
+                        components={{ underline: <u /> }}
+                      />
+                    </Link>
+                  </Row>
+                </Row>
+                <Row
+                  padding={{ top: "large" }}
+                  mainAlignment="flex-start"
+                  width="100%"
+                >
+                  <Switch
+                    value={useIntelligentTiering}
+                    label={t(
+                      "label.use_intelligent_tiering",
+                      "Use intelligent tiering",
+                    )}
+                    onClick={(): void =>
+                      setUseIntelligentTiering(!useIntelligentTiering)
+                    }
+                    iconColor="primary"
+                  />
+                </Row>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  padding={{ left: "extralarge" }}
+                >
+                  <Link
+                    color="secondary"
+                    href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Trans
+                      i18nKey="label.use_intelligent_tiering_helptext"
+                      defaults="<underline>Amazon Tiering Documentation</underline>"
+                      components={{ underline: <u /> }}
+                    />
+                  </Link>
+                </Row>
+              </>
+            )}
+            <Row
+              padding={{ top: "large" }}
+              mainAlignment="flex-start"
+              width="100%"
+            >
+              <Tooltip
+                placement="top"
+                label={t(
+                  "warning.is_current",
+                  "Firstly, you have to set another volume as the current one.",
+                )}
+                maxWidth="auto"
+                disabled={!isCurrent}
+              >
+                <Switch
+                  ref={isCurrentRef}
+                  value={isCurrent}
+                  label={t("label.enable_current", "Enable as Current")}
+                  onClick={(): void => {
+                    !isCurrent && setIsCurrentToggle(true);
+                  }}
+                  iconColor="primary"
+                />
+              </Tooltip>
+            </Row>
+            <Row
+              mainAlignment="flex-start"
+              width="100%"
+              padding={{ left: "extralarge" }}
+            >
+              <Text color="secondary">
+                {t(
+                  "label.enable_current_helptext",
+                  "Enabling this option will disable the current active volume.",
+                )}
+              </Text>
+            </Row>
+          </Container>
+        )}
+        <Modal
+          open={isCurrentToggle && !isCurrent}
+          title={t(
+            "modal.iscurrent_confirm.title",
+            "You are setting {{name}} as the current volume",
+            {
+              name,
+            },
+          )}
+          onClose={(): void => setIsCurrentToggle(false)}
+          onConfirm={(): void => {
+            setIsCurrent(true);
+            setIsCurrentToggle(false);
+          }}
+          confirmLabel={t(
+            "modal.iscurrent_confirm.confirm_label",
+            "YES, PROCEED",
+          )}
+          onSecondaryAction={(): void => setIsCurrentToggle(false)}
+          secondaryActionLabel={t(
+            "modal.iscurrent_confirm.secondary_label",
+            "NO, GO BACK",
+          )}
+          showCloseIcon
+        >
+          <Padding vertical="small">
+            <Text>
+              <Trans
+                i18nKey="modal.iscurrent_confirm.body_message"
+                defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
+                components={{ break: <br />, bold: <strong /> }}
+                values={{
+                  type: type?.label,
+                  currentVolumeName: currentVolume?.name,
+                  name,
+                }}
+              />
+            </Text>
+          </Padding>
+        </Modal>
+      </Container>
+    </>
+  );
 };
 
 export default ModifyVolume;

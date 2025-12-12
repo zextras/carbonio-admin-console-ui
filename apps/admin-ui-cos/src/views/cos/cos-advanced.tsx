@@ -259,8 +259,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setInitalValues = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(obj: AccountType): void => {
+			(obj: AccountType): void => {
 			if (obj) {
 				setValue(
 					'zimbraMailForwardingAddressMaxLength',
@@ -478,7 +477,6 @@ const CosAdvanced: FC = () => {
 		[timeItems]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: AccountType = {};

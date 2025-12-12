@@ -166,9 +166,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'label.logo_for_login_page',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'Logo for Login Page'
 						)}
 					</Text>
@@ -259,9 +259,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'label.logo_for_webapp',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'Logo for WebApp'
 						)}
 					</Text>
@@ -430,9 +430,9 @@ const EndUserThemeConfigs: FC<{
 							components={{ bold: <strong /> }}
 						/>{' '}
 						{t(
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'label.background_login_page',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							'Background Login Page'
 						)}
 					</Text>

@@ -50,7 +50,7 @@ const Connection: FC<{
 	const [buttonColor, setButtonColor] = useState<string>('primary');
 	const [icon, setIcon] = useState<string>('ActivityOutline');
 	const [buttonDetail, setButtonDetail] = useState(
-		// eslint-disable-next-line sonarjs/no-duplicate-string
+		
 		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 	);
 	const [bucketName, setBucketName] = useState('');
@@ -76,7 +76,6 @@ const Connection: FC<{
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;

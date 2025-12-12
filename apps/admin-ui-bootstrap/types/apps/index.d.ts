@@ -124,7 +124,6 @@ export type AppRouteDescriptor = {
 	label: string;
 	appView: ComponentType<AppViewComponentProps>;
 	primarybarSection: PrimarybarSection | undefined;
-	// eslint-disable-next-line sonarjs/no-redundant-optional
 	tooltip?: ComponentType<{}> | undefined;
 	trackerLabel?: string;
 };

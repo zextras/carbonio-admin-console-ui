@@ -29,7 +29,7 @@ export const ReceivingMails = ({
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+			
 			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
 			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
 		],

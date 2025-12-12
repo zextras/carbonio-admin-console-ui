@@ -66,7 +66,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
 				value: '500'
 			},
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+			
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
 			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
 			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },

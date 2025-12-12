@@ -49,7 +49,7 @@ const ServersListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i?.toString(),
 				columns: [
-					// eslint-disable-next-line sonarjs/no-duplicate-string
+					
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
 						<Text size="small" weight="regular">
 							{v?.name}

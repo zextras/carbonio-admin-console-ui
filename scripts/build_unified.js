@@ -1,218 +1,245 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  copyFileSync,
+  statSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "fs";
+import { join } from "path";
+import { execSync } from "child_process";
 
 // Colors for output
 const colors = {
-	green: '\x1b[0;32m',
-	blue: '\x1b[0;34m',
-	red: '\x1b[0;31m',
-	reset: '\x1b[0m'
+  green: "\x1b[0;32m",
+  blue: "\x1b[0;34m",
+  red: "\x1b[0;31m",
+  reset: "\x1b[0m",
 };
 
-function log(message, color = 'reset') {
-	console.log(`${colors[color]}${message}${colors.reset}`);
+function log(message, color = "reset") {
+  console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function execCommand(command, options = {}) {
-	try {
-		return execSync(command, {
-			stdio: 'inherit',
-			encoding: 'utf-8',
-			...options
-		});
-	} catch (error) {
-		log(`Error executing command: ${command} - ${error.message}`, 'red');
-		process.exit(1);
-	}
+  try {
+    return execSync(command, {
+      stdio: "inherit",
+      encoding: "utf-8",
+      ...options,
+    });
+  } catch (error) {
+    log(`Error executing command: ${command} - ${error.message}`, "red");
+    process.exit(1);
+  }
 }
 
 function copyRecursive(src, dest) {
-	if (!fs.existsSync(src)) {
-		log(`Error: Source directory does not exist: ${src}`, 'red');
-		process.exit(1);
-	}
-	fs.mkdirSync(dest, { recursive: true });
-	const entries = fs.readdirSync(src, { withFileTypes: true });
-	for (const entry of entries) {
-		const srcPath = path.join(src, entry.name);
-		const destPath = path.join(dest, entry.name);
-		if (entry.isDirectory()) {
-			copyRecursive(srcPath, destPath);
-		} else {
-			fs.copyFileSync(srcPath, destPath);
-		}
-	}
+  if (!existsSync(src)) {
+    log(`Error: Source directory does not exist: ${src}`, "red");
+    process.exit(1);
+  }
+  mkdirSync(dest, { recursive: true });
+  const entries = readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = join(src, entry.name);
+    const destPath = join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyRecursive(srcPath, destPath);
+    } else {
+      copyFileSync(srcPath, destPath);
+    }
+  }
 }
 
 function buildAlreadyExists(componentName, commitHash) {
-	const commitHashDir = path.join(
-		__dirname,
-		'..',
-		'package',
-		'opt',
-		'zextras',
-		'admin',
-		'iris',
-		componentName,
-		commitHash
-	);
-	console.log('=====>', commitHashDir);
-	if (!fs.existsSync(commitHashDir)) {
-		return false;
-	}
+  const commitHashDir = join(
+    __dirname,
+    "..",
+    "package",
+    "opt",
+    "zextras",
+    "admin",
+    "iris",
+    componentName,
+    commitHash,
+  );
+  console.log("=====>", commitHashDir);
+  if (!existsSync(commitHashDir)) {
+    return false;
+  }
 
-	return true;
+  return true;
 }
 
 function hasUncommittedChanges(componentName) {
-	try {
-		// Check if there are any uncommitted changes in the app directory
-		const result = execSync('git status --porcelain apps/' + componentName, {
-			encoding: 'utf-8',
-			stdio: 'pipe',
-			cwd: path.join(__dirname, '..')
-		});
-		return result.trim().length > 0;
-	} catch (error) {
-		log(`Error checking git status for ${componentName}: ${error.message}`, 'red');
-		return true;
-	}
+  try {
+    // Check if there are any uncommitted changes in the app directory
+    const result = execSync("git status --porcelain apps/" + componentName, {
+      encoding: "utf-8",
+      stdio: "pipe",
+      cwd: join(__dirname, ".."),
+    });
+    return result.trim().length > 0;
+  } catch (error) {
+    log(
+      `Error checking git status for ${componentName}: ${error.message}`,
+      "red",
+    );
+    return true;
+  }
 }
 
 function getLastTag() {
-	return execSync('git describe --tags --abbrev=0', {
-		encoding: 'utf-8',
-		stdio: 'pipe'
-	}).trim();
+  return execSync("git describe --tags --abbrev=0", {
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
 }
 
 // Dynamically discover all admin-ui components
 function discoverComponents(appsDir) {
-	const adminUiDirs = fs
-		.readdirSync(appsDir)
-		.filter(
-			(dir) => dir.startsWith('admin-ui-') && fs.statSync(path.join(appsDir, dir)).isDirectory()
-		)
-		.map((dir) => {
-			// Read target name from package.json carbonio.name field
-			const packageJsonPath = path.join(appsDir, dir, 'package.json');
-			let target;
-			try {
-				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-				target = packageJson.carbonio?.name;
-				 
-			} catch (error) {
-				log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
-				// Fallback pattern for robustness
-				target = `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
-			}
-			if (!target) {
-				log(`Warning: No carbonio.name found for ${dir}, using fallback naming`, 'blue');
-				target = `carbonio-admin-ui-${dir.replace('admin-ui-', '')}`;
-			}
-			return { name: dir, target };
-		});
-	return adminUiDirs;
+  const adminUiDirs = readdirSync(appsDir)
+    .filter(
+      (dir) =>
+        dir.startsWith("admin-ui-") &&
+        statSync(join(appsDir, dir)).isDirectory(),
+    )
+    .map((dir) => {
+      // Read target name from package.json carbonio.name field
+      const packageJsonPath = join(appsDir, dir, "package.json");
+      let target;
+      try {
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+        target = packageJson.carbonio?.name;
+      } catch (error) {
+        log(
+          `Warning: Could not read package.json for ${dir}, using fallback naming`,
+          "blue",
+        );
+        // Fallback pattern for robustness
+        target = `carbonio-admin-ui-${dir.replace("admin-ui-", "")}`;
+      }
+      if (!target) {
+        log(
+          `Warning: No carbonio.name found for ${dir}, using fallback naming`,
+          "blue",
+        );
+        target = `carbonio-admin-ui-${dir.replace("admin-ui-", "")}`;
+      }
+      return { name: dir, target };
+    });
+  return adminUiDirs;
 }
 
 function main() {
-	// Parse command line arguments
-	const args = process.argv.slice(2);
-	const isDevMode = args.includes('--dev');
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  const isDevMode = args.includes("--dev");
 
-	// Get the root directory
-	const rootDir = path.join(__dirname, '..');
-	const appsDir = path.join(rootDir, 'apps');
+  // Get the root directory
+  const rootDir = join(__dirname, "..");
+  const appsDir = join(rootDir, "apps");
 
-	const pkgVersion = getLastTag().replace(/^v/, '');
+  const pkgVersion = getLastTag().replace(/^v/, "");
 
-	log('=== Building unified admin package ===', 'blue');
+  log("=== Building unified admin package ===", "blue");
 
-	// Get commit hash
-	const commitHash = execSync('git rev-parse HEAD', {
-		encoding: 'utf-8'
-	}).trim();
+  // Get commit hash
+  const commitHash = execSync("git rev-parse HEAD", {
+    encoding: "utf-8",
+  }).trim();
 
-	log(`Commit hash: ${commitHash}`, 'green');
+  log(`Commit hash: ${commitHash}`, "green");
 
-	// Set up installation directories
-	const packageDir = path.join(rootDir, 'package');
-	const installDir = path.join(packageDir, 'opt', 'zextras', 'admin', 'iris');
+  // Set up installation directories
+  const packageDir = join(rootDir, "package");
+  const installDir = join(packageDir, "opt", "zextras", "admin", "iris");
 
-	const components = discoverComponents(appsDir);
+  const components = discoverComponents(appsDir);
 
-	// Track build statistics
-	const buildStats = {
-		total: components.length,
-		built: 0,
-		skipped: 0,
-		builtPackages: []
-	};
+  // Track build statistics
+  const buildStats = {
+    total: components.length,
+    built: 0,
+    skipped: 0,
+    builtPackages: [],
+  };
 
-	// Build and copy each component
-	components.forEach((component) => {
-		log(`=== Processing ${component.name} ===`, 'blue');
-		const componentDir = path.join(appsDir, component.name);
-		const distSourceDir = path.join(componentDir, 'dist', 'source');
+  // Build and copy each component
+  components.forEach((component) => {
+    log(`=== Processing ${component.name} ===`, "blue");
+    const componentDir = join(appsDir, component.name);
+    const distSourceDir = join(componentDir, "dist", "source");
 
-		// Check if build already exists for current commit AND if there are uncommitted changes
-		const buildExists = buildAlreadyExists(component.target, commitHash);
-		const hasChanges = hasUncommittedChanges(component.name);
+    // Check if build already exists for current commit AND if there are uncommitted changes
+    const buildExists = buildAlreadyExists(component.target, commitHash);
+    const hasChanges = hasUncommittedChanges(component.name);
 
-		if (buildExists && !hasChanges) {
-			log(
-				`⚡ Skipping ${component.name} - build already exists for ${commitHash} and no uncommitted changes`,
-				'green'
-			);
-			buildStats.skipped++;
-		} else {
-			// Explain why we need to build
-			if (!buildExists) {
-				log(`🔨 Building ${component.name} - no existing build for ${commitHash}`, 'blue');
-			}
-			if (hasChanges) {
-				log(`🔨 Building ${component.name} - uncommitted changes detected`, 'blue');
-			}
+    if (buildExists && !hasChanges) {
+      log(
+        `⚡ Skipping ${component.name} - build already exists for ${commitHash} and no uncommitted changes`,
+        "green",
+      );
+      buildStats.skipped++;
+    } else {
+      // Explain why we need to build
+      if (!buildExists) {
+        log(
+          `🔨 Building ${component.name} - no existing build for ${commitHash}`,
+          "blue",
+        );
+      }
+      if (hasChanges) {
+        log(
+          `🔨 Building ${component.name} - uncommitted changes detected`,
+          "blue",
+        );
+      }
 
-			process.chdir(componentDir);
+      process.chdir(componentDir);
 
-			// Clean up previous package directory for the specific component
-			log('Cleaning previous package directory...', 'blue');
-			const componentInstallDir = path.join(installDir, component.target);
-			fs.rmSync(componentInstallDir, { recursive: true, force: true });
+      // Clean up previous package directory for the specific component
+      log("Cleaning previous package directory...", "blue");
+      const componentInstallDir = join(installDir, component.target);
+      rmSync(componentInstallDir, { recursive: true, force: true });
 
-			const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
-			execCommand(buildCommand);
-			buildStats.built++;
-			buildStats.builtPackages.push(component.name);
+      const buildCommand = isDevMode ? "pnpm build:dev" : "pnpm build";
+      execCommand(buildCommand);
+      buildStats.built++;
+      buildStats.builtPackages.push(component.name);
 
-			const commitHashDir = path.join(distSourceDir, commitHash);
-			if (!fs.existsSync(commitHashDir)) {
-				log(`Error: No dist/source/${commitHash} directory found for ${component.name}`, 'red');
-				process.exit(1);
-			}
+      const commitHashDir = join(distSourceDir, commitHash);
+      if (!existsSync(commitHashDir)) {
+        log(
+          `Error: No dist/source/${commitHash} directory found for ${component.name}`,
+          "red",
+        );
+        process.exit(1);
+      }
 
-			// Copy to package (regardless of whether it was just built or already existed)
-			log(`Copying ${component.name} to package...`, 'green');
-			const targetDir = path.join(installDir, component.target);
-			fs.mkdirSync(targetDir, { recursive: true });
-			copyRecursive(path.join(distSourceDir), targetDir);
-		}
-	});
+      // Copy to package (regardless of whether it was just built or already existed)
+      log(`Copying ${component.name} to package...`, "green");
+      const targetDir = join(installDir, component.target);
+      mkdirSync(targetDir, { recursive: true });
+      copyRecursive(join(distSourceDir), targetDir);
+    }
+  });
 
-	process.chdir(rootDir);
+  process.chdir(rootDir);
 
-	// Create PKGBUILD file
-	log('Creating PKGBUILD...', 'blue');
+  // Create PKGBUILD file
+  log("Creating PKGBUILD...", "blue");
 
-	// Generate dynamic component list for PKGBUILD (space-separated for bash array)
-	const componentList = components.map((c) => c.target).join(' ');
+  // Generate dynamic component list for PKGBUILD (space-separated for bash array)
+  const componentList = components.map((c) => c.target).join(" ");
 
-	const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
+  const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
 pkgver="${pkgVersion}"
 pkgrel="1"
@@ -304,24 +331,24 @@ postinst() {
 }
 `;
 
-	fs.writeFileSync(path.join(packageDir, 'PKGBUILD'), pkgbuildContent);
-	log('PKGBUILD created', 'green');
+  writeFileSync(join(packageDir, "PKGBUILD"), pkgbuildContent);
+  log("PKGBUILD created", "green");
 
-	// Print build summary
-	log('\n📊 Build Summary:', 'blue');
-	log(`   Total components: ${buildStats.total}`, 'blue');
-	log(`   Built: ${buildStats.built}`, 'green');
-	log(`   Skipped: ${buildStats.skipped}`, 'green');
+  // Print build summary
+  log("\n📊 Build Summary:", "blue");
+  log(`   Total components: ${buildStats.total}`, "blue");
+  log(`   Built: ${buildStats.built}`, "green");
+  log(`   Skipped: ${buildStats.skipped}`, "green");
 
-	// List the packages that were built
-	if (buildStats.builtPackages.length > 0) {
-		log(`   Built packages:`, 'blue');
-		buildStats.builtPackages.forEach((packageName) => {
-			log(`     • ${packageName}`, 'green');
-		});
-	}
+  // List the packages that were built
+  if (buildStats.builtPackages.length > 0) {
+    log(`   Built packages:`, "blue");
+    buildStats.builtPackages.forEach((packageName) => {
+      log(`     • ${packageName}`, "green");
+    });
+  }
 
-	log('=== Build complete! ===', 'green');
+  log("=== Build complete! ===", "green");
 }
 
 main();

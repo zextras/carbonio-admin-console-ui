@@ -312,7 +312,7 @@ const ManageDelegates: FC = () => {
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							: 
 								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,

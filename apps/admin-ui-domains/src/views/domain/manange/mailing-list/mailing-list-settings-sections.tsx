@@ -152,7 +152,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,

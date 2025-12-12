@@ -4,21 +4,12 @@ import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
-import sonarjs from "eslint-plugin-sonarjs";
 
-// Convert all sonarjs rules to warnings
-const sonarjsWarnRules = Object.fromEntries(
-  Object.entries(sonarjs.configs.recommended.rules).map(([rule, config]) => [
-    rule,
-    Array.isArray(config) ? ["warn", ...config.slice(1)] : "warn",
-  ]),
-);
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
-  sonarjs.configs.recommended,
   {
     ignores: [
       "**/node_modules/**",
@@ -29,7 +20,7 @@ export default tseslint.config(
       "package/**",
       "**/*vitest*",
       "**/*webpack*",
-      "packages/**",
+      "**/sdk/**",
       "**/*.config.*",
     ],
   },
@@ -42,7 +33,6 @@ export default tseslint.config(
     settings: { react: { version: "detect" } },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      ...sonarjsWarnRules,
       "no-console": ["error", { allow: ["error"] }],
       "@typescript-eslint/no-unused-vars": [
         "warn",
@@ -53,7 +43,6 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
-      "sonarjs/file-header": "off",
       // TODO: remove all the rules below this line once the codebase is cleaned up
       "react/no-children-prop": "warn",
       "@typescript-eslint/no-unused-expressions": "warn",

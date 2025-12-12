@@ -249,9 +249,9 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							severity: 'error',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							label: t('label.volume_detail_error', '{{message}}', {
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								message: 'Something went wrong, please try again'
 							})
 						});

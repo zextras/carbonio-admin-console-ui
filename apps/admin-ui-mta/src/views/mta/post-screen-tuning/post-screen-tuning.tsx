@@ -975,7 +975,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={intervalOptions}
 								background="gray5"
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
 								selection={dnsblMinTTLUnit}

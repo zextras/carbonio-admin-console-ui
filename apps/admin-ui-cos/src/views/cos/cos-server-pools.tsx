@@ -93,7 +93,7 @@ const CosServerPools: FC = () => {
 							{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
 								<Text size="small" weight="light">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.enabled',
 										'Enabled'
 									)}
@@ -101,7 +101,7 @@ const CosServerPools: FC = () => {
 							) : (
 								<Text size="small" weight="light" color="error">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.disabled',
 										'Disabled'
 									)}

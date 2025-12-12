@@ -624,9 +624,9 @@ const EditMailingListView: FC<any> = ({
 				setIsShowError(true);
 				setOwnerErrorMessage(
 					t(
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						'label.distribution_list_not_exists_error_msg',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						'The Distribution List / User does not exist. Please check the spelling and try again.'
 					)
 				);
@@ -804,7 +804,7 @@ const EditMailingListView: FC<any> = ({
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						: 
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -990,7 +990,6 @@ const EditMailingListView: FC<any> = ({
 		[allOwnerList, _allOwnerLists]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		const attributes: any[] = [];
 		const request: any[] = [];

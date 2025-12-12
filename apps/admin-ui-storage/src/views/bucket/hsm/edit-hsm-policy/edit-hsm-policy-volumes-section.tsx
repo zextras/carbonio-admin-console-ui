@@ -151,7 +151,6 @@ const EditHsmPolicyVolumesSection: FC<{
 		}
 	}, [hsmDetail?.allVolumes, selectedDestinationVolume, setHsmDetail]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		if (currentPolicy && currentPolicy?.hsmQuery && hsmDetail?.isVolumeLoaded === false) {
 			const queries = currentPolicy?.hsmQuery.split(' ');

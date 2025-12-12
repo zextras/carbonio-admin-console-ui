@@ -186,7 +186,7 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'medium' }}>
 								<Input
 									label={t('backup.schedule', 'Schedule')}
-									// eslint-disable-next-line sonarjs/no-duplicate-string
+									
 									value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerInput}

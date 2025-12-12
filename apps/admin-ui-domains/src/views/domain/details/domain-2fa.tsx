@@ -51,7 +51,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 					severity: 'error',
 					label: error
 						? error?.error
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						: 
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -70,7 +70,6 @@ const DomainTwoFactorAuthentication: FC = () => {
 		setIsDirty(dif.length > 0);
 	}, [arrPolicies, arrPoliciesToModify]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleOnSave = (): void => {
 		const dif = differenceWith(arrPoliciesToModify, arrPolicies, isEqual);
 

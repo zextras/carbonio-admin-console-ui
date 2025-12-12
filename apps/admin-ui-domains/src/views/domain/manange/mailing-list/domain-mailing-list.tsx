@@ -487,8 +487,7 @@ const DomainMailingList: FC = () => {
 			allOwnersList: any[],
 			ownerGrantEmailType: { value: string },
 			ownerGrantEmails: string[]
-			// eslint-disable-next-line sonarjs/cognitive-complexity
-		) => {
+				) => {
 			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({

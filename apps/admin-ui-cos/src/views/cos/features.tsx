@@ -185,7 +185,7 @@ export const Features: FC<{
 							<InheritedSwitch
 								subValue={featuresDetail?.carbonioFeatureTeamEnabled}
 								onChange={changeSwitchOption}
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
 								inheritedValue={cosDetail?.carbonioFeatureTeamEnabled}

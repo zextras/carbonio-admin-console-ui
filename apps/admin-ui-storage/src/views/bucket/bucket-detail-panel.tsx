@@ -77,7 +77,7 @@ const BucketListTable: FC<{
 							onClick={(): void => {
 								onClick(i);
 							}}
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
 							<Text size="small" weight="regular">

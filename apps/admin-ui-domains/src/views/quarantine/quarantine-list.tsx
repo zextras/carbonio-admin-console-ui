@@ -205,7 +205,7 @@ const MessageListTable: FC<{
 				id: i,
 				columns: [
 					<Row
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={v.id}
 						onClick={(): void => {
@@ -934,7 +934,7 @@ const QuarantineList: FC = () => {
 								severity: 'error',
 								label: error?.message
 									? error?.message
-									: // eslint-disable-next-line sonarjs/no-duplicate-string
+									: 
 										t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 								autoHideTimeout: 3000,
 								hideButton: true,
