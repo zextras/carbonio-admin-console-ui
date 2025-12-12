@@ -4,20 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useMemo, useState } from 'react';
-
-import { Container, Row, Text, Divider, useSnackbar } from '@zextras/carbonio-design-system';
+import { useAllServers } from '@zextras/admin-ui-bootstrap';
+import { Container, Divider, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useAllServers } from '@zextras/admin-ui-bootstrap';
 
-import DeleteOpearationsModel from './delete-operations-model';
-import { OperationsTable } from './operations-table';
-import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { stopOperations } from '../../services/stop-operation';
 import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
 import { OperationsHeader } from '../utility/utils';
+import DeleteOpearationsModel from './delete-operations-model';
+import { OperationsTable } from './operations-table';
+import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
 const RelativeContainer = styled(Container)`
 	position: relative;

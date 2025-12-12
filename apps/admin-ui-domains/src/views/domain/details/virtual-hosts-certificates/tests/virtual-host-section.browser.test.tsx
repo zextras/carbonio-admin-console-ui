@@ -5,7 +5,7 @@
  */
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 

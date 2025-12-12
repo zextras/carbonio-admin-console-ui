@@ -6,41 +6,39 @@
 
 import {
 	postSoapFetchRequest,
-	useUserAccount,
 	useDomainStore,
-	useIsAdvanced
-} from '@zextras/admin-ui-bootstrap';
+	useIsAdvanced,
+	useUserAccount} from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Input,
-	Row,
-	Text,
-	Table,
 	Divider,
 	Icon,
+	Input,
 	Padding,
-	Button,
-	useSnackbar,
-	Tooltip
-} from '@zextras/carbonio-design-system';
+	Row,
+	Table,
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { debounce, flatMapDeep, filter } from 'lodash';
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { debounce, filter,flatMapDeep } from 'lodash';
+import { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import {
 	ABQ_MODE,
 	ACCOUNT,
-	RECORD_DISPLAY_LIMIT,
 	ASC,
-	DESC,
 	BACKUP_ENABLED,
 	BACKUP_SELF_UNDELETE_ALLOWED,
+	COS,
+	DESC,
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
-	COS,
 	MAILBOX_QUOTA_USED,
+	RECORD_DISPLAY_LIMIT,
 	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import {
@@ -49,10 +47,9 @@ import {
 } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import {
+	CosA,
 	getCosGeneralInformation,
-	GetCosResponse,
-	CosA
-} from '../../../../services/cos-general-information-service';
+	GetCosResponse} from '../../../../services/cos-general-information-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
@@ -67,7 +64,6 @@ import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-
 import { AccountContext } from './account-context';
 import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';

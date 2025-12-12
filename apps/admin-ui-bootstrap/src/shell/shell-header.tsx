@@ -5,12 +5,11 @@
  */
 
 import {
+	Button,
 	Container,
 	Padding,
 	Responsive,
-	useScreenMode,
-	Button
-} from '@zextras/carbonio-design-system';
+	useScreenMode} from '@zextras/carbonio-design-system';
 import React, { FC, useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -18,7 +17,6 @@ import { AppRoute } from '../../types';
 import { CARBONIO_LOGO_URL } from '../constants';
 import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
-
 import { CreationButton } from './creation-button';
 
 const CustomImg = styled.img`

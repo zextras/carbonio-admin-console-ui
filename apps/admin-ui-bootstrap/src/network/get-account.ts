@@ -6,7 +6,6 @@
 
 import { queryClient } from '../providers/react-query-provider';
 import { useI18nStore } from '../store/i18n/store';
-
 import { soapFetch } from './fetch';
 
 export const getAccount = async (): Promise<void> => {

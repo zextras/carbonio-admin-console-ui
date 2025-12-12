@@ -6,24 +6,24 @@
 
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Divider,
 	Button,
-	Padding,
+	Container,
+	Divider,
 	Icon,
 	Input,
+	Padding,
+	Row,
 	Table,
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format, parse } from 'date-fns';
 import { debounce } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
+import { ASC, DESC,RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -34,7 +34,6 @@ import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 

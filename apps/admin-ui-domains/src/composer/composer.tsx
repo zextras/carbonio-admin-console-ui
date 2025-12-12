@@ -3,17 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { IAllProps as EditorProps } from '@tinymce/tinymce-react';
-import { Editor } from '@tinymce/tinymce-react';
-import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/carbonio-design-system';
-import React, { useCallback, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
-// TinyMCE so the global var exists
-import tinymce from 'tinymce/tinymce';
-
 import 'tinymce/models/dom';
 // Theme
 import 'tinymce/themes/silver';
@@ -42,6 +31,18 @@ import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
+
+import type { IAllProps as EditorProps } from '@tinymce/tinymce-react';
+import { Editor } from '@tinymce/tinymce-react';
+import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { Container } from '@zextras/carbonio-design-system';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
+// TinyMCE so the global var exists
+import tinymce from 'tinymce/tinymce';
+
 import { SUPPORTED_LOCALES } from './utils';
 
 type ComposerProps = EditorProps & {

@@ -1,18 +1,17 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo } from 'react';
-
-import { Container, Row, Text, Table, Icon } from '@zextras/carbonio-design-system';
+import { Container, Icon,Row, Table, Text } from '@zextras/carbonio-design-system';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import MiliSecondToDate from './functions/miliSecondToDate';
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
+import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
 	operations: Array<any>;

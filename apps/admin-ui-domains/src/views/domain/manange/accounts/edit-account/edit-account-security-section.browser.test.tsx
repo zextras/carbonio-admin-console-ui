@@ -8,11 +8,10 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { createBrowserAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
-import { it, expect, describe, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { AccountContext } from '../account-context';
-
 import EditAccountSecuritySection from './edit-account-security-section';
 
 const mockContextValue = {

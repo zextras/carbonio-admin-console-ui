@@ -1,11 +1,10 @@
 import { vi } from 'vitest';
 
 export {
-	soapFetch,
+	fetchExternalSoap,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap
-} from '@zextras/admin-ui-bootstrap';
+	soapFetch} from '@zextras/admin-ui-bootstrap';
 
 export const useDomainInformation = vi.fn();
 export const addRoute = vi.fn();

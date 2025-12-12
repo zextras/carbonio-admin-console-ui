@@ -5,8 +5,7 @@
  */
 
 import { grantUserCosRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
-import React from 'react';
-import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../../../store/cos/store';

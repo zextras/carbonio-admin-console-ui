@@ -6,16 +6,16 @@
 
 import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Divider,
-	Padding,
 	Button,
-	Switch,
-	Input,
+	Container,
+	Divider,
 	Icon,
+	Input,
+	Padding,
+	Row,
+	Switch,
 	Table,
+	Text,
 	useScreenMode,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
@@ -45,7 +45,6 @@ import OverlayDivision from '../components/overlayDivision';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
-
 import RestoreAccountView from './restore/restore-account';
 
 const ovelayStyle = styled(Container)`

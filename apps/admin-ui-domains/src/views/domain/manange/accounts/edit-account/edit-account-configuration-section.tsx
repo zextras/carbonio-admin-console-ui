@@ -6,18 +6,17 @@
 
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
+	ChipInput,
 	Container,
+	Divider,
+	Icon,
+	Input,
 	Row,
 	Text,
-	ChipInput,
-	Icon,
-	Divider,
-	Input,
-	useSnackbar,
-	Tooltip
-} from '@zextras/carbonio-design-system';
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
-import React, { FC, useContext, useCallback, useState, useEffect, ChangeEvent } from 'react';
+import React, { ChangeEvent,FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ACCOUNT } from '../../../../../constants';

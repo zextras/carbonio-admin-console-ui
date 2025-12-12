@@ -5,7 +5,7 @@
  */
 
 import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, PRIMARY_BAR_PRIVACY, PRIVACY_ROUTE_ID } from './constants';

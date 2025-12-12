@@ -3,25 +3,23 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
-
 import {
-	Container,
-	Row,
-	Padding,
-	Text,
 	Button,
-	Select,
 	ChipInput,
-	ChipItem
-} from '@zextras/carbonio-design-system';
+	ChipItem,
+	Container,
+	Padding,
+	Row,
+	Select,
+	Text} from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
-import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
+import { isValidIpRange,TwoFactorWhatToTrust } from '../../utility/utils';
 
 type TwoFactorPolicy = {
 	label: string;
@@ -218,7 +216,7 @@ export const TwoFactorAuthencationConfig: FC<{
 									}}
 									hasError={hasValidIpCheck(cVal)}
 									value={map(
-										// @ts-ignore
+										// @ts-expect-error - needs a fix
 										arrPoliciesToModify.find((obj: any) => Object.hasOwn(obj, cVal.keyToGet))?.[
 											cVal.keyToGet
 										]?.trustedIpRange,

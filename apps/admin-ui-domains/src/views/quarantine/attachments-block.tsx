@@ -17,14 +17,13 @@ import {
 	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
-import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
-import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
+import { filter, find, includes, isNil, map, uniqBy } from 'lodash';
+import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
-
-import { MailMessage, EditorAttachmentFiles, AttachmentPart } from './mail-message-renderer';
+import { AttachmentPart,EditorAttachmentFiles, MailMessage } from './mail-message-renderer';
 
 type OpenEmlPreviewType = (
 	parentMessageId: string,
@@ -213,7 +212,7 @@ const calcColor = (label: string, theme: DefaultTheme): string => {
 		sum += label.charCodeAt(i);
 	}
 
-	// @ts-ignore
+	// @ts-expect-error - needs a fix
 	return theme.avatarColors[`avatar_${(sum % 50) + 1}`];
 };
 const getLocationOrigin = (): string => window.location.origin;
@@ -373,7 +372,7 @@ const Attachment: FC<AttachmentType> = ({
 
 	const downloadAttachment = useCallback(() => {
 		if (inputRef.current) {
-			// @ts-ignore
+			// @ts-expect-error - needs a fix
 			inputRef2.current.value = null;
 			inputRef.current.click();
 		}
@@ -561,7 +560,7 @@ const AttachmentsBlock: FC<{
 						isExternalMessage={isExternalMessage}
 						part={att?.name ?? ''}
 						iconColors={getAttachmentIconColors({ attachments, theme })}
-						// @ts-ignore
+						// @ts-expect-error - needs a fix
 						att={att}
 						getQuarantineMsgData={getQuarantineMsgData}
 						setShowMessageView={setShowMessageView}

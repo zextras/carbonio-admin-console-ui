@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
-import React, { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../types/account';

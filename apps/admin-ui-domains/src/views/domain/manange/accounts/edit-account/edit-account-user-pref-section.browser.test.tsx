@@ -4,13 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page } from 'vitest/browser';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import React from 'react';
-import { it, expect, describe, vi, beforeAll, afterAll, beforeEach } from 'vitest';
+import { afterAll, beforeAll, beforeEach,describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { AccountContext } from '../account-context';
-
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 
 const signatureItems: unknown[] = [];

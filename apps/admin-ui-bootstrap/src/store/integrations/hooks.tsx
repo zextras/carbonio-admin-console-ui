@@ -10,7 +10,6 @@ import { compact, map } from 'lodash';
 import { useMemo } from 'react';
 
 import { Action } from '../../../types';
-
 import { useIntegrationsStore } from './store';
 
 export const useActions = <T,>(target: T, type: string): Array<Action> => {

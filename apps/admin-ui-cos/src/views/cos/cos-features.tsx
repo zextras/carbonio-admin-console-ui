@@ -6,7 +6,7 @@
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import _, { find, isEqual, reduce } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -21,7 +21,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosStore } from '../../store/cos/store';
 import { PageLayout } from '../page-layout';
-
 import { Features } from './features';
 
 const CosFeatures: FC = () => {

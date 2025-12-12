@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
+import { Checkbox,Container, Icon, Row, Select, Text } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -148,7 +148,7 @@ const CustomHeaderFactory: FC<any> = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									// @ts-ignore // Need to fix it with custom soultion
+									// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 									multiple
 									items={column.items}
 									i18nAllLabel={column.i18nAllLabel || 'All'}

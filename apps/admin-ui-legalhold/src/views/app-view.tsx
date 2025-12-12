@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/carbonio-design-system';
-import React, { FC, Suspense } from 'react';
+import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 
 import { LEGAL_HOLD_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
-
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';

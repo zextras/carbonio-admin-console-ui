@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-	Select,
-	Tooltip,
-	IconCheckbox,
-	Text,
-	Row,
 	Container,
+	IconCheckbox,
 	Padding,
-	SelectItem
-} from '@zextras/carbonio-design-system';
-import React, { FC, useMemo } from 'react';
+	Row,
+	Select,
+	SelectItem,
+	Text,
+	Tooltip} from '@zextras/carbonio-design-system';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedSelect: FC<{

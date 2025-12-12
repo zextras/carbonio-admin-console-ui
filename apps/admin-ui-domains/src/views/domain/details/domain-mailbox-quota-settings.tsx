@@ -4,23 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore,useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
-	Select,
 	Button,
-	Padding,
-	Table,
+	Container,
 	Divider,
-	useSnackbar,
-	THeader
-} from '@zextras/carbonio-design-system';
+	Input,
+	Padding,
+	Row,
+	Select,
+	Table,
+	Text,
+	THeader,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash';
-import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {

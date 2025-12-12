@@ -5,17 +5,17 @@
  */
 import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
+	Divider,
+	Padding,
 	Row,
 	Text,
-	Button,
-	Padding,
-	Divider,
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -25,6 +25,7 @@ import {
 	CONFIG,
 	FALSE,
 	TRUE,
+	ZIMBRA_ADMIN_URN,
 	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
 	ZIMBRA_AMAVIS_LOG_LEVEL,
 	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
@@ -33,10 +34,8 @@ import {
 	ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_MY_NETWORKS,
 	ZIMBRA_MTA_RELAY_HOST,
-	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_SASL_AUTH_ENABLED,
-	ZIMBRA_ADMIN_URN
-} from '../../../../constants';
+	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL} from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';

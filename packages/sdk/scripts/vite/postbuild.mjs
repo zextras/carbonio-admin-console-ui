@@ -7,9 +7,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFileSync, writeFileSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { execSync } from 'node:child_process';
+import { copyFileSync, existsSync,readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 // The project root is the current working directory where the script is called from
 const projectRoot = process.cwd();

@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ 
 export const modifyAccountRequest = async (id: string, modifiedData: any): Promise<any> => {
 	const attrList: { n: string; _content: string }[] = [];
 	Object.keys(modifiedData).forEach((ele: any): void => {

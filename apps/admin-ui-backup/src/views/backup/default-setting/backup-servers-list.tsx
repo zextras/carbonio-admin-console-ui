@@ -11,15 +11,14 @@ import {
 } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
-	Row,
-	Text,
 	Divider,
+	Icon,
+	Row,
 	Table,
-	Tooltip,
-	Icon
-} from '@zextras/carbonio-design-system';
+	Text,
+	Tooltip} from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';

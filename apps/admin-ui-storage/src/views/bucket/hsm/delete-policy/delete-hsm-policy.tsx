@@ -3,21 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback } from 'react';
-
 import {
-	Container,
-	Modal,
-	Text,
 	Button,
+	Container,
+	Input,
+	Modal,
 	Padding,
 	Row,
-	Input,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { FC, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { MESSAGE, DOCUMENT, CONTACT, APPOINTMENT } from '../../../../constants';
+import { APPOINTMENT,CONTACT, DOCUMENT, MESSAGE } from '../../../../constants';
 
 const DeleteHsmPolicy: FC<{
 	showDeletePolicyView: boolean;

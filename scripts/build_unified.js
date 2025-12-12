@@ -104,7 +104,7 @@ function discoverComponents(appsDir) {
 			try {
 				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 				target = packageJson.carbonio?.name;
-				// eslint-disable-next-line no-unused-vars
+				 
 			} catch (error) {
 				log(`Warning: Could not read package.json for ${dir}, using fallback naming`, 'blue');
 				// Fallback pattern for robustness

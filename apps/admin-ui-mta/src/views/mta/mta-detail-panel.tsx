@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import { Container } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
 import MTADetailOperationPanel from './mta-detail-operation-panel';

@@ -4,21 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore,useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Padding,
 	Button,
+	Container,
 	Divider,
-	Switch,
-	Select,
 	Input,
-	useSnackbar,
+	Padding,
 	Radio,
-	RadioGroup
-} from '@zextras/carbonio-design-system';
+	RadioGroup,
+	Row,
+	Select,
+	Switch,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { find, isEqual } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,11 +33,10 @@ import {
 	ZIMBRA_MITER_NUM_THREADS,
 	ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_MESSAGE_SIZE,
+	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
 	ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
 	ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
-} from '../../../constants';
+	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL} from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
@@ -610,7 +608,7 @@ const MTAAdvanced: FC = () => {
 										item.value === mtaAdvancedDetail?.zimbraAmavisLogLevel
 								) || amavisLogLevelOptions[0]
 							}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onAmavisLogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -626,7 +624,7 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraAmavisSALogLevel
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onAmavisSALogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -653,7 +651,7 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaSmtpdTlsLoglevel
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onSMTPClientLogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -672,7 +670,7 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaLmtpTlsLoglevel
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onLMTPTlsLogLevelChange}
 							disabled={!allowSetMTA}
 						/>

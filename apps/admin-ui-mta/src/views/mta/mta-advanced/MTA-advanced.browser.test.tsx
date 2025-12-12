@@ -11,7 +11,6 @@ import {
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
-import React from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 

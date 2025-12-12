@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -13,12 +14,10 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { AttributeValue } from '../constants/types';
-
 import { CalendarOptions } from './CalendarOptions';
 import { ContactOptions } from './ContactOptions';
 import { ForwardingOptions } from './ForwardingOptions';

@@ -3,15 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-module.exports = {
-  printWidth: 100,
-  arrowParens: "always",
-  semi: true,
-  tabWidth: 2,
-  singleQuote: true,
-  trailingComma: "none",
-  useTabs: true,
-  quoteProps: "as-needed",
-  jsxSingleQuote: false,
-  bracketSpacing: true,
-};
+export const printWidth = 100;
+export const arrowParens = "always";
+export const semi = true;
+export const tabWidth = 2;
+export const singleQuote = true;
+export const trailingComma = "all";
+export const useTabs = true;
+export const quoteProps = "as-needed";
+export const jsxSingleQuote = false;
+export const bracketSpacing = true;

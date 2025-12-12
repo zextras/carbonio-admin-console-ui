@@ -11,7 +11,6 @@ import {
 	grantUserConfigRights,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
-import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 

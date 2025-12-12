@@ -6,17 +6,16 @@
 
 import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
 	Divider,
-	Row,
-	Text,
 	Input,
+	Row,
 	Select,
-	useSnackbar,
-	Button
-} from '@zextras/carbonio-design-system';
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
@@ -26,7 +25,6 @@ import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
-
 import ActiveDeviceConfirmation from './active-device-confirmation';
 
 type MobileDeviceDetail = {

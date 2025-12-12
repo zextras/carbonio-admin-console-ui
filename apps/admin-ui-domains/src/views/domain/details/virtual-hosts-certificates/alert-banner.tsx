@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Row, Padding, Text, Icon } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import { Container, Icon,Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface AlertBannerProps {

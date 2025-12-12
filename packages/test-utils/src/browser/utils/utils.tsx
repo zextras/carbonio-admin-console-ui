@@ -6,12 +6,11 @@
 
 import { QueryClient } from '@tanstack/react-query';
 import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
-import React, { type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { render, type RenderResult } from 'vitest-browser-react';
 
 import { createBrowserSoapAPIInterceptor } from '../worker';
-
-import { WrapperProps, Wrapper } from './wrapper';
+import { Wrapper,WrapperProps } from './wrapper';
 
 export const setupBrowserTest = (
 	ui: ReactElement,

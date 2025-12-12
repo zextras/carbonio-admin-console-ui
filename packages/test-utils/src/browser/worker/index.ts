@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultBodyType, http, StrictRequest, HttpResponse, HttpResponseResolver } from 'msw';
+import { DefaultBodyType, http, HttpResponse, HttpResponseResolver,StrictRequest } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { test } from 'vitest';
 

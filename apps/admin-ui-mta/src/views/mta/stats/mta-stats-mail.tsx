@@ -5,14 +5,14 @@
  */
 
 import {
-	Container,
-	Row,
-	Text,
 	Button,
-	Divider,
+	Container,
 	DefaultTabBarItem,
+	Divider,
+	Row,
 	TabBar,
 	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
@@ -23,15 +23,15 @@ import styled from 'styled-components';
 import { MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import {
+	ACTIVE,
 	CORRUPT,
 	DEFERRED,
+	DELETE,
 	HOLD,
 	INCOMING,
-	ACTIVE,
+	RECORD_DISPLAY_LIMIT,
 	RELEASE,
 	REQUEUE,
-	DELETE,
-	RECORD_DISPLAY_LIMIT,
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
@@ -544,7 +544,7 @@ const MTAStatsMail: FC<{
 			>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto" width="100%">
 					<TabBar
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {

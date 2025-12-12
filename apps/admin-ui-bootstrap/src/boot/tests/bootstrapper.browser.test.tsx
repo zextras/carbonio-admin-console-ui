@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page } from 'vitest/browser';
 import {
 	advancedSupportedApiForBrowser,
 	getInfoRequestApiForBrowser,
@@ -13,8 +12,8 @@ import {
 	setupBrowserTest
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import React from 'react';
 import { describe, expect, it } from 'vitest';
+import { page } from 'vitest/browser';
 
 import Bootstrapper from '../bootstrapper';
 

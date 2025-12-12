@@ -3,31 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useEffect,
-	useCallback,
-	useMemo,
-	useContext,
-	useState,
-	ChangeEvent
-} from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import {
 	Container,
+	Icon,
 	Input,
 	PasswordInput,
 	Row,
 	Select,
-	Text,
-	Icon,
-	Switch
-} from '@zextras/carbonio-design-system';
+	Switch,
+	Text} from '@zextras/carbonio-design-system';
 import { find, head } from 'lodash';
+import {
+	ChangeEvent,
+	FC,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState} from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountContext } from './account-context';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import Textarea from '../../../../components/textarea';
 import {
 	AccountStatus,
@@ -36,6 +32,7 @@ import {
 	getModifiedName
 } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
+import { AccountContext } from './account-context';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);

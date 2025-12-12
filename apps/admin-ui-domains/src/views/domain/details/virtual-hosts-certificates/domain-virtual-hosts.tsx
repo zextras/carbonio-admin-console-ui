@@ -4,18 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
 	Button,
+	Container,
+	Divider,
+	Padding,
+	Row,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -33,7 +33,6 @@ import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import ModalOverlay from '../../../components/ModalOverlay';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-
 import { AlertBanner } from './alert-banner';
 import { CertificateView } from './certificate-view';
 import DeleteCertificateModel from './delete-certificate-model';

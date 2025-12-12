@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-unused-vars */
+ 
 
 const { execSync } = require('child_process');
 const fs = require('fs');

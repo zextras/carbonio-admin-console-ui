@@ -6,37 +6,35 @@
 
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
+	Checkbox,
+	ChipInput,
+	ChipInputProps,
 	Container,
+	Divider,
 	Padding,
 	Row,
-	Button,
-	Text,
-	useSnackbar,
 	Table,
-	Divider,
-	ChipInput,
-	Checkbox,
-	ChipInputProps
-} from '@zextras/carbonio-design-system';
-import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
-import React, {
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash';
+import {
 	FC,
-	useMemo,
-	useContext,
-	useState,
 	ReactElement,
-	useEffect,
 	useCallback,
-	useRef
-} from 'react';
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
 import {
-	SEND_MAILS_ONLY,
-	READ_MAILS_ONLY,
-	SEND_READ_MAILS,
 	MANAGE_NO_SEND,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
 	SEND_READ_MANAGE_MAILS,
 	ZIMBRA_ADMIN_URN
 } from '../../../../../constants';
@@ -51,7 +49,6 @@ import { generateSnackbarFromError } from '../../../../error/generate-snackbar-e
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
-
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';

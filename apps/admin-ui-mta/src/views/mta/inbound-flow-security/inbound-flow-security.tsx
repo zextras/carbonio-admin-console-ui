@@ -5,23 +5,24 @@
  */
 import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Padding,
 	Button,
-	Divider,
-	Switch,
 	ChipInput,
-	useSnackbar,
-	Tooltip
-} from '@zextras/carbonio-design-system';
-import { isEqual, find, uniq } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+	Container,
+	Divider,
+	Padding,
+	Row,
+	Switch,
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { find, isEqual, uniq } from 'lodash';
+import { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
 import {
+	_REJECT_UNKNOWN_CLIENT_HOSTNAME,
+	CONFIG,
 	FALSE,
 	REJECT_INVALID_HELO_HOSTNAME,
 	REJECT_NON_FQDN_HELO_HOSTNAME,
@@ -39,10 +40,7 @@ import {
 	ZIMBRA_MTA_RESTRICTION,
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-	_REJECT_UNKNOWN_CLIENT_HOSTNAME,
-	CONFIG
-} from '../../../constants';
+	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS} from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';

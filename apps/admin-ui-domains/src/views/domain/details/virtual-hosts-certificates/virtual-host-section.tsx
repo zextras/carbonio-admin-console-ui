@@ -4,19 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-	Row,
-	Container,
-	Input,
 	Button,
-	Padding,
-	Text,
+	Container,
+	Icon,
+	Input,
 	List,
 	ListItem,
-	Icon,
+	Padding,
+	Row,
+	Text,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import React, { useState, useCallback } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import React, { useCallback,useState } from 'react';
+import { Trans,useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/helmet_logo.svg';
 import { isValidVirtualHostname } from '../../../utility/utils';

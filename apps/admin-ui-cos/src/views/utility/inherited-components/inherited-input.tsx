@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Input, Tooltip, IconCheckbox, Text, Row, Padding } from '@zextras/carbonio-design-system';
+import { IconCheckbox, Input, Padding,Row, Text, Tooltip } from '@zextras/carbonio-design-system';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

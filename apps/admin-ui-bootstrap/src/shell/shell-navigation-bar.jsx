@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
-
 import { Container, Responsive } from '@zextras/carbonio-design-system';
+import React from 'react';
 
 import ShellMobileNav from './shell-mobile-nav';
 import ShellPrimaryBar from './shell-primary-bar';

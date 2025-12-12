@@ -5,8 +5,8 @@
  */
 
 import {
-	useCurrentUserRights,
 	useActivateLicense,
+	useCurrentUserRights,
 	useLicenseInfo,
 	useRemoveLicense,
 	useVersion
@@ -15,21 +15,20 @@ import {
 	Button,
 	Container,
 	Divider,
-	Row,
-	Text,
 	Input,
 	Modal,
 	Quota,
+	Row,
+	Text,
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { find } from 'lodash';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../../constants';
 import { LicenseBanner } from '../../dashboard/license-banner';
-
 import { ServiceStatus } from './service-status';
 
 type Module = {

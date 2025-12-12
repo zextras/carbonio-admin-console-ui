@@ -6,16 +6,15 @@
 
 import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
+import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash';
 import {
-	useState,
-	useEffect,
-	useCallback,
-	useMemo,
 	ChangeEvent,
 	Dispatch,
-	SetStateAction
-} from 'react';
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../constants';

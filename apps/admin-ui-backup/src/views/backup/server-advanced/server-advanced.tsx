@@ -4,24 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, useCurrentUserRights, useAllServers } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest, useAllServers,useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Divider,
 	Button,
-	Switch,
+	Container,
+	Divider,
 	Input,
-	useSnackbar,
-	Padding
-} from '@zextras/carbonio-design-system';
+	Padding,
+	Row,
+	Switch,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { SERVER, CONFIG } from '../../../constants';
+import { CONFIG,SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import ListRow from '../../list/list-row';

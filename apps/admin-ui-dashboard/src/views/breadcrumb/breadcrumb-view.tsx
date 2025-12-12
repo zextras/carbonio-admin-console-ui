@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
-import { Container, Text, Row, Padding, Icon } from '@zextras/carbonio-design-system';
+import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { Container, Icon,Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
-import { useLastLoginTimestamp } from '@zextras/admin-ui-bootstrap';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};

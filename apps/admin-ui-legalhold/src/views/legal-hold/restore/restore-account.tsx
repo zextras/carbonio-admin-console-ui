@@ -6,18 +6,17 @@
 
 import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Row,
-	Text,
+	DateTimePicker,
 	Divider,
 	Input,
-	Button,
-	Table,
-	DateTimePicker,
-	useSnackbar,
 	Padding,
-	Switch
-} from '@zextras/carbonio-design-system';
+	Row,
+	Switch,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { cloneDeep, debounce, unionBy } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';

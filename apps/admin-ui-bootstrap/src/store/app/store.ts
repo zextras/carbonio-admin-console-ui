@@ -17,7 +17,6 @@ import {
 	PrimaryBarView
 } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-
 import { normalizeApp } from './utils';
 
 const filterById = <T extends { id: string }>(items: Array<T>, id: string): Array<T> =>

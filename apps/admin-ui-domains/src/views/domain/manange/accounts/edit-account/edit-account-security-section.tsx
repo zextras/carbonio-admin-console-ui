@@ -6,30 +6,28 @@
 
 import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
+	ChipInput,
 	Container,
+	Icon,
+	Input,
 	Padding,
 	Row,
-	Button,
-	Text,
-	useSnackbar,
-	Table,
-	ChipInput,
-	Icon,
+	Select,
 	Switch,
-	Input,
-	Select
-} from '@zextras/carbonio-design-system';
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
 import QRCode from 'qrcode.react';
-import React, {
+import {
+	ChangeEvent,
 	FC,
-	useMemo,
-	useContext,
-	useState,
 	ReactElement,
 	useCallback,
-	ChangeEvent
-} from 'react';
+	useContext,
+	useMemo,
+	useState} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -49,7 +47,6 @@ import InheritedSwitch from '../../../../utility/inherited-components/inherited-
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
-
 import { ServicesPassphrase } from './services-passphrase';
 
 const StaticCodesContainer = styled(Row)`

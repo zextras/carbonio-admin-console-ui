@@ -8,7 +8,6 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { postSoapFetchRequest } from '../network/fetch';
-
 import { useAllConfig } from './use-config';
 
 type GlobalConfig = Record<string, any>;

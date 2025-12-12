@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
+import { ChipInput,Container, Divider, Row, Text } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
-import React, {
+import {
+	ChangeEvent,
 	FC,
 	useCallback,
-	useMemo,
 	useContext,
-	useState,
 	useEffect,
-	ChangeEvent
-} from 'react';
+	useMemo,
+	useState} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from '../../../../components/customChip';
@@ -22,14 +21,12 @@ import InheritedInput from '../../../../utility/inherited-components/inherited-i
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import {
-	timeZoneList,
-	conversationGroupBy,
 	appointmentReminder,
 	charactorSet,
-	isValidEmail
-} from '../../../../utility/utils';
+	conversationGroupBy,
+	isValidEmail,
+	timeZoneList} from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
-
 import { SignatureDetail } from './signature-detail';
 
 const EditAccountUserPrefrencesSection: FC<{

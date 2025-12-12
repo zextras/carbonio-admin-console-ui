@@ -5,62 +5,58 @@
  */
 
 import {
-	useUserSettings,
-	useDomainStore,
 	useCurrentUserRights,
+	useDomainStore,
+	useIsAdvanced,
 	useStickyBarStore,
-	useIsAdvanced
-} from '@zextras/admin-ui-bootstrap';
+	useUserSettings} from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
 	Button,
-	useSnackbar,
-	TabBar,
+	Container,
 	DefaultTabBarItem,
-	Text,
-	Row,
 	Divider,
-	Padding,
+	Icon,
 	Modal,
-	Icon
-} from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
-import React, {
+	Padding,
+	Row,
+	TabBar,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { differenceBy, find,isEqual, reduce, remove } from 'lodash';
+import {
 	FC,
 	ReactElement,
 	useCallback,
-	useEffect,
-	useState,
 	useContext,
-	useMemo
-} from 'react';
+	useEffect,
+	useMemo,
+	useState} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import {
+	ABQ_MODE,
 	ACCOUNT,
+	ADMIN_LOGIN_AS,
+	ADMINISTRATION,
+	BACKUP_ENABLED,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	CHANGE_DISPLAY_NAME_BOOLEAN,
+	CHANGE_NAME_BOOLEAN,
+	CLOSED,
 	CONFIGURATION,
-	PROFILE,
 	DELEGATES,
+	DOMAIN_NAME,
+	FILES_QUOTA_LIMIT,
 	GENERAL_SECTION,
+	IS_DEFAULT_USER_NAME,
 	MOBILE_CALENDAR_FEATURE_SYNC,
 	MOBILE_CONTACT_FEATURE_SYNC,
+	PROFILE,
 	SECURITY,
-	USER_PREFERENCES,
-	DOMAIN_NAME,
-	UID,
-	ADMINISTRATION,
-	CHANGE_NAME_BOOLEAN,
-	CHANGE_DISPLAY_NAME_BOOLEAN,
-	IS_DEFAULT_USER_NAME,
 	TRUE,
-	CLOSED,
-	ABQ_MODE,
-	BACKUP_ENABLED,
-	ADMIN_LOGIN_AS,
-	BACKUP_SELF_UNDELETE_ALLOWED,
-	FILES_QUOTA_LIMIT
-} from '../../../../../constants';
+	UID,
+	USER_PREFERENCES} from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
@@ -80,7 +76,6 @@ import { generateSnackbarFromError } from '../../../../error/generate-snackbar-e
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
-
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';

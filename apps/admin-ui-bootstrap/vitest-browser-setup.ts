@@ -10,7 +10,7 @@
 import 'vitest-browser-react';
 
 import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
-import { beforeAll, afterAll, vi, afterEach, beforeEach } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach,vi } from 'vitest';
 
 const localStorageMock = {
 	getItem: vi.fn(),

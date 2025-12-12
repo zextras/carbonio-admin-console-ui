@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
-
 import { Accordion, Collapse, Container, Padding } from '@zextras/carbonio-design-system';
-import { reduce, find, get, sortBy } from 'lodash';
+import { find, get, reduce, sortBy } from 'lodash';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import AppContextProvider from '../boot/app/app-context-provider';

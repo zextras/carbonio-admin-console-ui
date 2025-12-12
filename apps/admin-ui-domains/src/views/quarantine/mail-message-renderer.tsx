@@ -7,7 +7,7 @@
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
-import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -452,7 +452,7 @@ const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
 			<HtmlMessageRenderer
 				msgId={mailMsg.id}
 				body={mailMsg.body}
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				parts={parts}
 				participants={mailMsg.participants}
 			/>

@@ -4,24 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useMailstoreServers,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
-	Divider,
 	Button,
-	Padding,
+	Container,
+	Divider,
 	Dropdown,
+	DropdownItem,
+	Icon,
+	Input,
+	Padding,
+	Row,
 	Select,
 	Switch,
-	Icon,
-	Tooltip,
 	Table,
-	useSnackbar,
-	DropdownItem
-} from '@zextras/carbonio-design-system';
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -31,18 +30,17 @@ import {
 	Attribute,
 	DomainDataType,
 	IntervalType,
-	Server,
-	objectType
-} from '../../../../types';
+	objectType,
+	Server} from '../../../../types';
 import {
-	FALSE,
-	TRUE,
-	INTERNAL_GAL,
-	ZIMBRA,
 	EXTERNAL_SERVER_EXAMPLE,
+	FALSE,
+	INTERNAL_GAL,
 	LDAP_BIND_DN_LABLE,
 	LDAP_FILTER_LABEL,
 	LDAP_SEARCH_BASE_LABEL,
+	TRUE,
+	ZIMBRA,
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
@@ -60,7 +58,6 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
-
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 

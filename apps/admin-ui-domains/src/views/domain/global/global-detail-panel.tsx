@@ -5,16 +5,16 @@
  */
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
+	ChipInput,
+	ChipItem,
 	Container,
-	Row,
-	Text,
 	Divider,
 	Input,
-	ChipInput,
 	Padding,
-	Button,
+	Row,
 	Switch,
-	ChipItem,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { filter, isEqual, map } from 'lodash';

@@ -6,17 +6,17 @@
 
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Text,
-	Input,
-	Row,
-	Switch,
-	Icon,
-	Table,
-	Padding,
 	Button,
-	Select,
 	ChipInput,
+	Container,
+	Icon,
+	Input,
+	Padding,
+	Row,
+	Select,
+	Switch,
+	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -43,7 +43,6 @@ import Textarea from '../../../components/textarea';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
-
 import { MailingListContext } from './mailinglist-context';
 
 const MailingListSection: FC<any> = () => {

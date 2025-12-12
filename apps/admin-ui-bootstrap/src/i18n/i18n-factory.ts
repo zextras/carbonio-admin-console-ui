@@ -9,7 +9,7 @@ import Backend from 'i18next-http-backend';
 // import LanguageDetector from 'i18next-browser-languagedetector';
 import { dropRight, forEach } from 'lodash';
 
-import { II18nFactory, CarbonioModule } from '../../types';
+import { CarbonioModule,II18nFactory } from '../../types';
 import { SHELL_APP_ID } from '../constants';
 import { getShell } from '../store/app';
 
@@ -31,7 +31,7 @@ export default class I18nFactory implements II18nFactory {
 		}
 	}
 
-	// eslint-disable-next-line class-methods-use-this
+	 
 	public getAppI18n(appPkgDescription: CarbonioModule | { name: string }): i18n {
 		if (this._cache[appPkgDescription.name]) {
 			return this._cache[appPkgDescription.name];

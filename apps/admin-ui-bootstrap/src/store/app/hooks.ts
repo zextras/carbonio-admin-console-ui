@@ -10,7 +10,6 @@ import { sortBy } from 'lodash';
 import { useMemo } from 'react';
 
 import { AppRoute, CarbonioModule } from '../../../types';
-
 import { useAppStore } from './store';
 
 const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);

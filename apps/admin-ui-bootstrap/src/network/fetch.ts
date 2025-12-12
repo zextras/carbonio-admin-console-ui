@@ -8,7 +8,6 @@ import { find, isArray } from 'lodash';
 
 import { Account, ErrorSoapResponse, SoapResponse, SuccessSoapResponse } from '../../types';
 import { queryClient } from '../providers/react-query-provider';
-
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
 import { retry } from './utils';

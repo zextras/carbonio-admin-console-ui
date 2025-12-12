@@ -6,16 +6,16 @@
 
 import { useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
 	Button,
+	Container,
 	Divider,
+	Row,
 	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MtaStats } from '../../../../types';
@@ -27,7 +27,6 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
-
 import MTAStatsMail from './mta-stats-mail';
 
 const MTAStats: FC = () => {

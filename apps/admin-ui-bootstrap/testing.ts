@@ -4,5 +4,5 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export { useContextBridge } from './src/store/context-bridge';
 export { queryClient } from './src/providers/react-query-provider';
+export { useContextBridge } from './src/store/context-bridge';

@@ -10,7 +10,7 @@ import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { useHistory, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter,useHistory } from 'react-router-dom';
 
 const getAppI18n = (): i18n => {
 	const newI18n = i18next.createInstance();

@@ -6,27 +6,26 @@
 
 import { postSoapFetchRequest, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Table,
-	Divider,
 	Button,
+	Container,
+	Divider,
+	Row,
+	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { flatMapDeep, filter, debounce } from 'lodash';
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { debounce,filter, flatMapDeep } from 'lodash';
+import { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
+	CosA,
 	getCosGeneralInformation,
-	GetCosResponse,
-	CosA
-} from '../../services/cos-general-information-service';
+	GetCosResponse} from '../../services/cos-general-information-service';
 import { getAccountRequest } from '../../services/get-account';
 import { getAccountMembershipRequest } from '../../services/get-account-membership';
 import { getSessions } from '../../services/get-sessions';
@@ -39,7 +38,6 @@ import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-
 import { AccountContext } from './manange/accounts/account-context';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 

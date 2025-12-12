@@ -7,11 +7,10 @@
 import { forOwn } from 'lodash';
 import { ComponentType } from 'react';
 
-import { IShellWindow, CarbonioModule } from '../../../types';
+import { CarbonioModule,IShellWindow } from '../../../types';
 import * as CONSTANTS from '../../constants';
 import { useAppStore } from '../../store/app';
 import { AppLink } from '../../ui-extras/app-link';
-
 import { getAppFunctions } from './app-loader-functions';
 import { getAppSetters } from './app-loader-setters';
 
@@ -70,7 +69,7 @@ function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 		} catch (err) {
 			console.error(err);
 
-			// @ts-ignore
+			// @ts-expect-error - needs a fix
 			reject(err);
 		}
 	});

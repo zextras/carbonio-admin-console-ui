@@ -8,7 +8,6 @@ import { isEmpty, map } from 'lodash';
 import React, { FC, memo, Suspense, useMemo } from 'react';
 
 import { useAppStore } from '../../store/app';
-
 import AppContextProvider from './app-context-provider';
 
 const Mounter: FC<{ children: React.ReactNode; appId: string }> = ({ children, appId }) => (

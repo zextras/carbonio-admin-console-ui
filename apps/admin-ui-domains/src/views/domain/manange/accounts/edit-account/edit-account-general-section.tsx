@@ -5,38 +5,36 @@
  */
 import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Select,
-	Text,
-	Icon,
-	Switch,
-	Divider,
-	Tooltip,
-	ChipInput,
 	Button,
-	useSnackbar,
+	ChipInput,
+	Container,
+	Divider,
+	Icon,
+	Input,
 	Modal,
 	Padding,
+	Quota,
+	Row,
+	Select,
+	Switch,
 	Table,
-	Quota
-} from '@zextras/carbonio-design-system';
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { format, parse } from 'date-fns';
 import { debounce, map } from 'lodash';
 import React, {
+	ChangeEvent,
 	FC,
-	useEffect,
 	useCallback,
-	useMemo,
 	useContext,
-	useState,
-	ChangeEvent
-} from 'react';
+	useEffect,
+	useMemo,
+	useState} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { objectType, Attribute } from '../../../../../../types';
+import { Attribute,objectType } from '../../../../../../types';
 import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
@@ -53,14 +51,13 @@ import { generateSnackbarFromError } from '../../../../error/generate-snackbar-e
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import {
-	localeList,
-	AccountStatus,
 	ABQStatus,
-	GbToBytes,
-	BytesToGB,
+	AccountStatus,
 	backupEnabledStatus,
-	isValidDecimalNumber
-} from '../../../../utility/utils';
+	BytesToGB,
+	GbToBytes,
+	isValidDecimalNumber,
+	localeList} from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 

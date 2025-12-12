@@ -5,16 +5,16 @@
  */
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
 	Button,
+	Container,
+	Divider,
+	Padding,
+	Row,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import _ from 'lodash';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

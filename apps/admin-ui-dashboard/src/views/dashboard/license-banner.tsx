@@ -7,11 +7,11 @@
 import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Row, Text } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
-import { SUBSCRIPTIONS_ROUTE_ID, MANAGE_APP_ID } from '../../constants';
+import { MANAGE_APP_ID,SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import ListRow from '../list/list-row';
 
 type licenseBannerProps = {

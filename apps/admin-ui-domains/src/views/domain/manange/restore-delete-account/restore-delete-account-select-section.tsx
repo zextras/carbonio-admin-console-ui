@@ -6,18 +6,17 @@
 
 import { getSoapFetchRequest, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Text,
+	Divider,
+	Icon,
 	Input,
 	Row,
-	Icon,
 	Table,
-	useSnackbar,
-	Divider,
-	Button
-} from '@zextras/carbonio-design-system';
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -25,7 +24,6 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Paging from '../../../components/paging';
 import ListRow from '../../../list/list-row';
 import { getFormatedShortDate } from '../../../utility/utils';
-
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {

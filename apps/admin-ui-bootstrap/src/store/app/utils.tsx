@@ -5,7 +5,7 @@
  */
 
 import { trim } from 'lodash';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 import { AppRouteDescriptor, BadgeInfo, CarbonioModule } from '../../../types';
 

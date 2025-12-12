@@ -5,13 +5,12 @@
  */
 
 import { ModalManagerContext, useSnackbar } from '@zextras/carbonio-design-system';
-import React, { FC, useContext } from 'react';
+import { FC, useContext } from 'react';
 import { BrowserRouter, useHistory } from 'react-router-dom';
 
 import { BASENAME } from '../constants';
 import ShellView from '../shell/shell-view';
 import { useBridge } from '../store/context-bridge';
-
 import AppLoaderMounter from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {

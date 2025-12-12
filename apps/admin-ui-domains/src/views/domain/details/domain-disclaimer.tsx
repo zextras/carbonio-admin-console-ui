@@ -4,21 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
 	Button,
-	Row,
-	Padding,
+	Container,
 	Divider,
-	Text,
-	useSnackbar,
+	Padding,
+	Row,
 	Switch,
-	TextArea
-} from '@zextras/carbonio-design-system';
+	Text,
+	TextArea,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { encode } from 'html-entities';
 import { isEqual } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -400,7 +399,7 @@ const DomainDisclaimer: FC = () => {
 						<TextAreaEditor
 							label={''}
 							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
-							// @ts-ignore
+							// @ts-expect-error - needs a fix
 							onChange={(event: ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
 							}}

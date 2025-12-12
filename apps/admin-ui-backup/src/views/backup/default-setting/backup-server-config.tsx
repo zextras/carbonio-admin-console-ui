@@ -3,21 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
-
+import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
-	Row,
-	Text,
 	Divider,
-	Switch,
 	Input,
-	Padding
-} from '@zextras/carbonio-design-system';
+	Padding,
+	Row,
+	Switch,
+	Text} from '@zextras/carbonio-design-system';
+import { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';

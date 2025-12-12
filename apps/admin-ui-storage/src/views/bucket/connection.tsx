@@ -3,20 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo, ChangeEvent } from 'react';
-
 import {
+	Button,
 	Container,
+	Icon,
 	Input,
-	Row,
-	Select,
 	Padding,
 	PasswordInput,
-	Button,
-	useSnackbar,
+	Row,
+	Select,
 	Text,
-	Icon
-} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { ChangeEvent,FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TestConnectionObjectType } from '../../../types';

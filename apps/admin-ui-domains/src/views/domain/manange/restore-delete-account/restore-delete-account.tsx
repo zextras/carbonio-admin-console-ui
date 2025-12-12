@@ -6,12 +6,11 @@
 
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
 import { noop } from 'lodash';
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
-
 import RestoreAccountWizard from './restore-delete-account-wizard';
 
 const RestoreDeleteAccount: FC = () => {

@@ -7,30 +7,28 @@
 import {
 	Container,
 	DefaultTabBarItem,
-	Text,
+	Divider,
+	Icon,
 	TabBar,
 	Table,
-	Icon,
-	Divider,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { orderBy } from 'lodash';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+	DESC,
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
 	NOTIFICATION_INFORMATION,
-	NOTIFICATION_WARNING,
-	DESC
-} from '../../../constants';
+	NOTIFICATION_WARNING} from '../../../constants';
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
-
 import CustomHeaderFactory from './customTableHeaderFactory';
 import CustomRowFactory from './customTableRowFactory';
 import NotificationDetail from './notification-detail-view';
@@ -452,7 +450,7 @@ const NotificationView: FC<{
 				</Container>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end">
 					<TabBar
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {
@@ -484,7 +482,7 @@ const NotificationView: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>

@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-	Switch,
-	Tooltip,
-	IconCheckbox,
-	Text,
-	Row,
 	Container,
-	Padding
-} from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+	IconCheckbox,
+	Padding,
+	Row,
+	Switch,
+	Text,
+	Tooltip} from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedSwitch: FC<{

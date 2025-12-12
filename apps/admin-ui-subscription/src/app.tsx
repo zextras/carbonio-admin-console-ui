@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, removeRoute, useIsAdvanced, useHasAllRights } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { addRoute, removeRoute, useHasAllRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, PRIMARY_BAR_SUBSCRIPTIONS, SUBSCRIPTIONS_ROUTE_ID } from './constants';

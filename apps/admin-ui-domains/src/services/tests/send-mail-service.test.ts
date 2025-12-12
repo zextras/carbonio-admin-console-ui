@@ -5,7 +5,7 @@
  */
 
 import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach,describe, expect, it, vi } from 'vitest';
 
 import { sendMail } from '../send-mail-service';
 

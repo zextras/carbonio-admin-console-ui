@@ -6,7 +6,7 @@
 
 import { Row, Text } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AllModuleConfig } from './subscription';

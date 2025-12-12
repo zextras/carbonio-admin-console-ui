@@ -6,21 +6,21 @@
 
 import { useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
-	Icon,
-	Divider,
-	Select,
 	Button,
-	Padding,
+	Container,
+	Divider,
+	Icon,
+	Input,
 	Modal,
+	Padding,
+	Row,
+	Select,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format, parse } from 'date-fns';
 import _ from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
@@ -33,7 +33,6 @@ import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-
 import { SendInviteAccounts } from './send-invite-accounts';
 
 export enum RESOURCE_TYPE {

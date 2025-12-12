@@ -5,41 +5,37 @@
  */
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
-	soapFetch,
+	fetchExternalSoap,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap
-} from './src/network/fetch';
+	soapFetch} from './src/network/fetch';
+import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
 import { useBackupServers } from './src/react-query/use-backup-servers';
 import { useAllConfig } from './src/react-query/use-config';
 import { useDomainInformation } from './src/react-query/use-domain-information';
 import {
-	useGlobalSettings,
 	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
 	useGlobalConfigValue,
-	useGlobalConfigList
-} from './src/react-query/use-global-settings';
+	useGlobalSettings} from './src/react-query/use-global-settings';
 import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './src/react-query/use-last-login';
 import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
 import {
-	useHasRight,
-	useRightsByType,
-	getRights,
 	getAllRights,
+	getRights,
 	useCurrentUserRights,
-	useHasAllRights
-} from './src/react-query/use-rights';
+	useHasAllRights,
+	useHasRight,
+	useRightsByType} from './src/react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
 import {
-	useLicenseInfo,
-	useVersion,
 	useActivateLicense,
+	useLicenseInfo,
+	useModuleLicenseInfo,
 	useRemoveLicense,
-	useModuleLicenseInfo
-} from './src/react-query/use-subscription';
+	useVersion} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
-import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
 import { getLocale } from './src/store/i18n/hooks';
@@ -61,46 +57,45 @@ const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRo
 const registerActions = useIntegrationsStore.getState().registerActions;
 
 export {
-	soapFetch,
+	addRoute,
+	fetchExternalSoap,
+	getAllRights,
+	getLocale,
+	getRights,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap,
-	addRoute,
-	removeRoute,
+	pushHistory,
 	registerActions,
+	removeRoute,
+	replaceHistory,
+	soapFetch,
+	useActivateLicense,
+	useAllConfig,
+	useAllServers,
+	useAppConfigStore,
+	useBackupServers,
+	useConfigurationAttribute,
+	useCurrentUserRights,
+	useDomainInformation,
+	useDomainStore,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
+	useGlobalConfigValue,
+	useGlobalSettings,
+	useHasAllRights,
+	useHasRight,
+	useIsAdvanced,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useMailstoreServers,
+	useModuleLicenseInfo,
+	useMtaServers,
+	usePrimaryBarState,
+	useRemoveLicense,
+	useRightsByType,
+	useServersByService,
+	useStickyBarStore,
 	useUserAccount,
 	useUserAccounts,
 	useUserSettings,
-	replaceHistory,
-	usePrimaryBarState,
-	useAllConfig,
-	useDomainInformation,
-	pushHistory,
-	useDomainStore,
-	useStickyBarStore,
-	useAppConfigStore,
-	useConfigurationAttribute,
-	useHasRight,
-	useHasAllRights,
-	useRightsByType,
-	getRights,
-	getAllRights,
-	useCurrentUserRights,
-	useMailstoreServers,
-	useLastLoginTimestamp,
-	useGlobalSettings,
-	useGlobalCarbonioSendAnalytics,
-	useGlobalConfigValue,
-	useGlobalConfigList,
-	useLicenseInfo,
-	useVersion,
-	useActivateLicense,
-	useRemoveLicense,
-	useModuleLicenseInfo,
-	useAllServers,
-	useMtaServers,
-	useServersByService,
-	useBackupServers,
-	useIsAdvanced,
-	getLocale
-};
+	useVersion};

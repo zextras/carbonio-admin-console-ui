@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
+import { Container, Input, Padding, Row, Select, Text } from '@zextras/carbonio-design-system';
+import {
 	ChangeEvent,
 	FC,
 	useCallback,
@@ -12,15 +13,12 @@ import React, {
 	useMemo,
 	useState
 } from 'react';
-
-import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import { objectType } from '../../../../../../../types';
 import {
-	LOCAL_TYPE_VALUE,
 	EXTERNAL_TYPE_VALUE,
+	LOCAL_TYPE_VALUE,
 	UNUSED,
 	USAGE_IN_EXTERNAL_BACKUP,
 	ZIMBRA_ADMIN_URN
@@ -29,6 +27,7 @@ import { fetchSoap } from '../../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresDefinition: FC<{
 	externalData: any;

@@ -9,17 +9,16 @@ import {
 	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Row,
-	Text,
 	Divider,
-	Input,
 	Icon,
+	Input,
+	Row,
 	Table,
-	Button
-} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

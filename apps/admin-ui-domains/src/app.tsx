@@ -7,12 +7,12 @@
 import {
 	addRoute,
 	registerActions,
-	useDomainStore,
 	useCurrentUserRights,
+	useDomainStore,
 	useMtaServers
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 

@@ -5,21 +5,21 @@
  */
 import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Padding,
 	Button,
+	ChipInput,
+	Container,
 	Divider,
+	Input,
+	Padding,
+	Row,
 	Select,
 	Switch,
-	Input,
 	Table,
+	Text,
 	Tooltip,
-	ChipInput,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { isEqual, find, some, map, join, split, trim } from 'lodash';
+import { find, isEqual, join, map, some, split, trim } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +27,7 @@ import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
 import {
 	ANTISPAM,
 	ANTIVIRUS,
+	CONFIG,
 	FALSE,
 	OPENDKIM,
 	TRUE,
@@ -39,9 +40,7 @@ import {
 	ZIMBRA_MTA_SMTP_HELLO_NAME,
 	ZIMBRA_MTA_TLS_SECURITY_LEVEL,
 	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
-	CONFIG
-} from '../../../constants';
+	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP} from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -623,7 +622,7 @@ const MTAOutBoundFlow: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onTlsSecurityOptions}
 							disabled={!allowSetMTA}
 						/>

@@ -5,11 +5,10 @@
  */
 import { Container, Responsive } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import React, { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import AppContextProvider from '../boot/app/app-context-provider';
-
 import { useUtilityBarStore } from './store';
 import { useUtilityViews } from './utils';
 

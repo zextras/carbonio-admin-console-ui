@@ -5,23 +5,21 @@
  */
 
 import {
-	Container,
 	Button,
-	Row,
-	Text,
-	Padding,
+	Container,
 	Divider,
-	Popper
-} from '@zextras/carbonio-design-system';
-import { map, trim, sortBy } from 'lodash';
-import React, { FC, useState, useEffect, useCallback, useRef } from 'react';
+	Padding,
+	Popper,
+	Row,
+	Text} from '@zextras/carbonio-design-system';
+import { map, sortBy,trim } from 'lodash';
+import React, { FC, useCallback, useEffect, useRef,useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { AppRoute, PrimaryBarView } from '../../types';
 import { useAppStore } from '../store/app';
 import { useUtilityBarStore } from '../utility-bar';
-
 import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
 

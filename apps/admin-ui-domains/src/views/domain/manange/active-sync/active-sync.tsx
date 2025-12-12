@@ -6,21 +6,21 @@
 
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
 	Divider,
-	Row,
-	Text,
-	Button,
+	Icon,
 	Input,
 	Padding,
+	Row,
 	Table,
-	Icon,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { debounce } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans,useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
@@ -28,7 +28,6 @@ import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-
 import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {

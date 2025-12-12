@@ -5,7 +5,7 @@
  */
 
 import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, PRIMARY_BAR_NOTIFICATIONS } from './constants';

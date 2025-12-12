@@ -4,18 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Modal, ModalManager, Row, SnackbarManager, Text } from '@zextras/carbonio-design-system';
 import React, { useEffect, useState } from 'react';
-
-import { Row, ModalManager, SnackbarManager, Modal, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { useCurrentRoute } from '../history/hooks';
+import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
-import { useCurrentRoute } from '../history/hooks';
-import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 
 const Background = styled.div`
 	background: ${({ theme }) => theme.palette.gray6.regular};

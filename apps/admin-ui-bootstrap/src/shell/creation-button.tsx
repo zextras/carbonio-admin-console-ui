@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useMemo, useState } from 'react';
-
-import { MultiButton, Button, Dropdown } from '@zextras/carbonio-design-system';
-import { reduce, groupBy } from 'lodash';
+import { Button, Dropdown,MultiButton } from '@zextras/carbonio-design-system';
+import { groupBy,reduce } from 'lodash';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 

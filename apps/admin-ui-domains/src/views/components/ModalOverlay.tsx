@@ -5,7 +5,6 @@
  */
 import React, { FC, useEffect, useRef } from 'react';
 
-
 import { ModalOverlayContainer, ModalSubOverlayContainer } from './styled';
 
 interface ModalOverlayProps {

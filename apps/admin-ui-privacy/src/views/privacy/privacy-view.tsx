@@ -5,20 +5,18 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Divider, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Divider, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { find } from 'lodash';
-import React, { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
 	CARBONIO_ALLOW_FEEDBACK,
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
+	CONFIG,
 	FALSE,
-	TRUE,
-	CONFIG
-} from '../../constants';
-
+	TRUE} from '../../constants';
 import { FormButtons } from './parts/form-buttons';
 import { FormSwitch } from './parts/form-switch';
 import { SwitchDescription } from './parts/form-title';

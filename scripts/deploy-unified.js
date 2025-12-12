@@ -27,7 +27,7 @@ const run = (command) => {
 	console.log(`\n> ${command}`);
 	try {
 		execSync(command, { stdio: 'inherit', encoding: 'utf-8' });
-		// eslint-disable-next-line no-unused-vars
+		 
 	} catch (error) {
 		console.error(`\n❌ Command failed: ${command}`);
 		process.exit(1);

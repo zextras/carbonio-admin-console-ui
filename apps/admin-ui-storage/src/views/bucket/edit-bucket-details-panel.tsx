@@ -1,26 +1,24 @@
-/* eslint-disable no-shadow */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
+	Button,
 	Container,
-	Input,
-	Row,
 	Divider,
+	Icon,
+	Input,
 	Padding,
 	PasswordInput,
-	Button,
-	Text,
-	Table,
-	useSnackbar,
+	Row,
 	Select,
-	Icon
-} from '@zextras/carbonio-design-system';
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { find, get } from 'lodash';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TestConnectionObjectType } from '../../../types';

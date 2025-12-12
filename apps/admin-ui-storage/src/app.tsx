@@ -5,7 +5,7 @@
  */
 
 import { addRoute, getRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {

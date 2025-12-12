@@ -5,8 +5,8 @@
  */
 
 import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Button, Table, Text } from '@zextras/carbonio-design-system';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { Button, Container, Icon, Table, Text } from '@zextras/carbonio-design-system';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -174,7 +174,7 @@ const DashboardServerList: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>

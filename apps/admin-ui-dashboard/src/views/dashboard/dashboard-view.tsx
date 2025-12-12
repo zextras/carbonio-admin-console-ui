@@ -5,26 +5,26 @@
  */
 
 import {
-	useUserAccounts,
-	useDomainInformation,
-	useIsAdvanced,
-	useDomainStore,
-	useHasRight,
 	getRights,
 	useCurrentUserRights,
+	useDomainInformation,
+	useDomainStore,
+	useHasRight,
+	useIsAdvanced,
+	useUserAccounts,
 	useVersion
 } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
 	ACCOUNTS,
+	DISTRIBUTION_LIST,
 	DOMAINS_ROUTE_ID,
 	LIST,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
-	DISTRIBUTION_LIST,
 	MANAGE,
 	NOTIFICATION_ROUTE_ID,
 	SERVER,
@@ -32,7 +32,6 @@ import {
 	STORAGES_ROUTE_ID
 } from '../../constants';
 import ListRow from '../list/list-row';
-
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';

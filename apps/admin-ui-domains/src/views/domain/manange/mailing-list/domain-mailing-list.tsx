@@ -3,42 +3,38 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Divider,
 	Button,
-	Padding,
+	Container,
+	Divider,
 	Icon,
 	Input,
+	Padding,
+	Row,
 	Table,
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import CreateMailingList from './create-mailing-list';
-import EditMailingListView from './edit-mailing-detail-view';
 import logo from '../../../../assets/gardian.svg';
 import {
 	ALL,
+	ASC,
+	DESC,
 	EMAIL,
 	FALSE,
 	GRP,
 	PUB,
 	RECORD_DISPLAY_LIMIT,
-	TRUE,
-	ASC,
-	DESC
-} from '../../../../constants';
+	TRUE} from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
@@ -46,6 +42,8 @@ import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import CreateMailingList from './create-mailing-list';
+import EditMailingListView from './edit-mailing-detail-view';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -129,7 +127,7 @@ const DomainMailingList: FC = () => {
 					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
 					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				 
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -392,7 +390,7 @@ const DomainMailingList: FC = () => {
 				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
 				.then((data: any) => {
 					setIsUpdateRecord(true);
-					// eslint-disable-next-line no-shadow
+					 
 					let isError = false;
 					let errorMessage = '';
 					data.forEach((item: any) => {

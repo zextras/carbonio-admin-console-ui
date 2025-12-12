@@ -6,23 +6,23 @@
 
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
 	Button,
-	Divider,
-	Modal,
-	Table,
-	Padding,
 	Collapse,
+	Container,
+	Divider,
 	Icon,
+	Input,
+	Modal,
+	Padding,
+	Row,
+	Table,
+	Text,
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
-import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -43,7 +43,6 @@ import ModalOverlay from '../components/ModalOverlay';
 import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
-
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -280,7 +279,7 @@ const MessageListTable: FC<{
 			<ListRow>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					<Table
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						headers={MessageTableHeaders(t)}
 						rows={tableRows}
 						showCheckbox={false}
@@ -1411,7 +1410,7 @@ const QuarantineList: FC = () => {
 								<Text
 									size="large"
 									weight="bold"
-									// @ts-ignore
+									// @ts-expect-error - needs a fix
 
 									color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
 									style={{ display: 'flex', paddingLeft: '0.25rem' }}
@@ -1422,7 +1421,7 @@ const QuarantineList: FC = () => {
 									<Text style={{ paddingLeft: '0.25rem' }}>
 										<Icon
 											color={
-												// @ts-ignore
+												// @ts-expect-error - needs a fix
 
 												message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
 											}

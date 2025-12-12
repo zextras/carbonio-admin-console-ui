@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { soapFetch, useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
-	Text,
-	Padding,
 	Container,
-	useSnackbar,
 	Icon,
-	Tooltip
-} from '@zextras/carbonio-design-system';
+	Padding,
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -218,11 +217,11 @@ export const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: 
 		} else {
 			soapFetch(`VerifyCertKey`, {
 				_jsns: ZIMBRA_ADMIN_URN,
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				ca: objDomainCertificateCaChain.content.replaceAll('\r', ''),
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				cert: objDomainCertificate.content.replaceAll('\r', ''),
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				privkey: objDomainCertificatePrivateKey.content.replaceAll('\r', '')
 			}).then((data: any) => {
 				if (data?.verifyResult) {

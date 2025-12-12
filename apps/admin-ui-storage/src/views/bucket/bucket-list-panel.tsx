@@ -5,23 +5,22 @@
  */
 import {
 	replaceHistory,
-	useIsAdvanced,
 	useGlobalCarbonioSendAnalytics,
+	useIsAdvanced,
 	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
-import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
+import { Container, Padding,Row, Text } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import {
 	BUCKET_LIST,
-	SERVERS_LIST,
-	HSM_SETTINGS,
 	DATA_VOLUMES,
+	HSM_SETTINGS,
 	IS_SERVER_LIST_EXPANDED,
-	IS_SERVER_SPECIFIC_LIST_EXPANDED
-} from '../../constants';
+	IS_SERVER_SPECIFIC_LIST_EXPANDED,
+	SERVERS_LIST} from '../../constants';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';

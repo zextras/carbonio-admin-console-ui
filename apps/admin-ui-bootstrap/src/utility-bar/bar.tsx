@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Tooltip, Dropdown, Text, Button } from '@zextras/carbonio-design-system';
+import { Button,Container, Dropdown, Text, Tooltip } from '@zextras/carbonio-design-system';
 import { map, noop } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { UtilityView } from '../../types/apps';
@@ -18,7 +18,6 @@ import { logout } from '../network/logout';
 import { useUserAccount } from '../react-query/use-account';
 import { useConfigAttribute } from '../react-query/use-config';
 import { useIsAdvanced } from '../react-query/use-is-advanced-supported';
-
 import { useUtilityBarStore } from './store';
 import { openLink, useUtilityViews } from './utils';
 

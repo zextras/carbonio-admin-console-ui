@@ -6,27 +6,27 @@
 
 import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Input,
-	Padding,
-	Text,
 	Button,
+	Container,
 	Divider,
-	Switch,
-	Select,
-	useSnackbar,
-	Radio,
+	Input,
+	Link,
 	Modal,
+	Padding,
+	Radio,
+	Row,
+	Select,
+	Switch,
+	Text,
 	Tooltip,
-	Link
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { Bucket, BucketVolume, Volume, VolumeType, objectType } from '../../../../../../types';
+import { Bucket, BucketVolume, objectType, Volume, VolumeType } from '../../../../../../types';
 import {
 	ALIBABA,
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -272,9 +272,9 @@ const ModifyVolume: FC<{
 						createSnackbar({
 							key: 'error',
 							severity: 'error',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							 
 							label: t('label.volume_detail_error', '{{message}}', {
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								 
 								message: 'Something went wrong, please try again'
 							}),
 							autoHideTimeout: 5000

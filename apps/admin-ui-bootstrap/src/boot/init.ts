@@ -12,7 +12,6 @@ import { queryClient } from '../providers/react-query-provider';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
 import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
-
 import { loadApps } from './app/load-apps';
 
 type InitError = {

@@ -5,15 +5,14 @@
  */
 
 import {
-	Modal,
-	Container,
-	Row,
-	Text,
 	Button,
+	Container,
+	Icon,
+	Modal,
 	Padding,
-	Icon
-} from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+	Row,
+	Text} from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface GenerateCertificateModalProps {

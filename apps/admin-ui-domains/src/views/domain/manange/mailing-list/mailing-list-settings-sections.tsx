@@ -3,24 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-
 import {
-	Container,
-	Row,
-	Text,
-	Switch,
-	Select,
-	Table,
 	Button,
+	Container,
+	Divider,
 	Padding,
-	useSnackbar,
-	Divider
-} from '@zextras/carbonio-design-system';
+	Row,
+	Select,
+	Switch,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MailingListContext } from './mailinglist-context';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
@@ -29,6 +26,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
+import { MailingListContext } from './mailinglist-context';
 
 const MailingListSettingsSection: FC<any> = () => {
 	const { t } = useTranslation();

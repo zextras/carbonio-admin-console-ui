@@ -5,7 +5,7 @@
  */
 
 import { To } from 'history';
-import { find, startsWith, replace, trim } from 'lodash';
+import { find, replace, startsWith, trim } from 'lodash';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 

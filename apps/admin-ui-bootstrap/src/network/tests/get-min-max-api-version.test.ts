@@ -6,7 +6,7 @@
 
 import { minMaxVersionApi } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { describe, it, expect } from 'vitest';
+import { describe, expect,it } from 'vitest';
 
 import { queryFnVersionInfo } from '../../react-query/use-advanced-version-info';
 

@@ -5,11 +5,10 @@
  */
 import { Container, Input, Row } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import React, { FC, useContext, useMemo } from 'react';
+import { FC, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ListRow from '../../../list/list-row';
-
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {

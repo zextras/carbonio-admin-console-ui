@@ -5,7 +5,7 @@
  */
 
 import { addRoute } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';

@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Dropdown, Icon,Input } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
-
-import { Input, Dropdown, Icon } from '@zextras/carbonio-design-system';
 
 interface DropDownInputType {
 	items: any;
@@ -71,7 +70,7 @@ const DropDownInput: FC<DropDownInputType> = ({
 				label={inputLabel}
 				onChange={onChange}
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
+				// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 				CustomIcon={(): React.ReactChild =>
 					isCustomIcon ? (
 						<Icon

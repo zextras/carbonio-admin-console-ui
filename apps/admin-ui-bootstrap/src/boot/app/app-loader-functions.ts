@@ -4,43 +4,39 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CarbonioModule, AppRouteDescriptor } from '../../../types';
-import { replaceHistory, pushHistory } from '../../history/hooks';
+import { AppRouteDescriptor,CarbonioModule } from '../../../types';
+import { pushHistory,replaceHistory } from '../../history/hooks';
 import {
-	postSoapFetchRequest,
 	fetchExternalSoap,
-	soapFetch,
-	getSoapFetchRequest
-} from '../../network/fetch';
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	soapFetch} from '../../network/fetch';
 import { useUserAccount, useUserAccounts, useUserSettings } from '../../react-query/use-account';
 import { useBackupServers } from '../../react-query/use-backup-servers';
 import { useAllConfig } from '../../react-query/use-config';
 import { useDomainInformation } from '../../react-query/use-domain-information';
 import {
-	useGlobalSettings,
 	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
 	useGlobalConfigValue,
-	useGlobalConfigList
-} from '../../react-query/use-global-settings';
+	useGlobalSettings} from '../../react-query/use-global-settings';
 import { useIsAdvanced } from '../../react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
 import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
 import {
-	useHasRight,
-	useRightsByType,
-	getRights,
 	getAllRights,
+	getRights,
 	useCurrentUserRights,
-	useHasAllRights
-} from '../../react-query/use-rights';
+	useHasAllRights,
+	useHasRight,
+	useRightsByType} from '../../react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from '../../react-query/use-servers';
 import {
-	useLicenseInfo,
-	useVersion,
 	useActivateLicense,
+	useLicenseInfo,
+	useModuleLicenseInfo,
 	useRemoveLicense,
-	useModuleLicenseInfo
-} from '../../react-query/use-subscription';
+	useVersion} from '../../react-query/use-subscription';
 import { usePrimaryBarState } from '../../shell/hooks';
 import { useAppStore } from '../../store/app';
 import { normalizeRoute } from '../../store/app/utils';

@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest, useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Icon,
-	Padding,
 	Button,
+	Container,
+	Icon,
 	Input,
+	Padding,
+	Row,
 	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
