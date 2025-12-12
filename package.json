@@ -83,7 +83,8 @@
       "./apps/admin-ui-storage/public",
       "./apps/admin-ui-backup/public",
       "./apps/admin-ui-legalhold/public",
-      "./apps/admin-ui-cos/public"
+      "./apps/admin-ui-cos/public",
+      "public"
     ]
   },
   "carbonio": {
