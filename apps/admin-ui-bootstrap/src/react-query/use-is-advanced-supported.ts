@@ -5,7 +5,7 @@
  */
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 
 type AdvancedSupportedSuccess = {
   supported: boolean;

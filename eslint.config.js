@@ -48,7 +48,7 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-require-imports": "warn",
       "@typescript-eslint/no-unsafe-function-type": "warn",
-      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-object-type": "warn",
       "react/prop-types": "off",
     },

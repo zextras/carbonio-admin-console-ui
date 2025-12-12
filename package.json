@@ -2,6 +2,7 @@
   "name": "admin-ui",
   "version": "0.0.0-semantically-released",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.15.0",
   "engines": {
     "node": ">=22.14.0"
@@ -25,8 +26,7 @@
     "lint-fix": "turbo run lint-fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar:generate": "node scripts/generate-sonar-config.js",
-    "reset": "node scripts/reset.js",
-    "prepare": "husky"
+    "reset": "node scripts/reset.js"
   },
   "dependencies": {
     "react": "^19.1.0"
@@ -53,7 +53,6 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-testing-library": "^7.6.6",
     "eslint-plugin-unused-imports": "^4.3.0",
-    "husky": "^9.1.7",
     "knip": "^5.70.1",
     "playwright": "^1.55.0",
     "pnpm": "^10.15.1",
