@@ -31,6 +31,9 @@ vi.stubGlobal('tinymce', {
 	util: {
 		Delay: {
 			setEditorTimeout: vi.fn()
+		},
+		Promise: {
+			resolve: vi.fn((value) => Promise.resolve(value))
 		}
 	}
 });
