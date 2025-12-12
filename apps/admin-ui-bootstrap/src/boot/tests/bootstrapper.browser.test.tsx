@@ -12,12 +12,20 @@ import {
 	setupBrowserTest
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import Bootstrapper from '../bootstrapper';
 
 describe('Bootstrapper', () => {
+	beforeEach(() => {
+		vi.spyOn(console, 'error').mockImplementation(() => {});
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
 	it('should display error when is advanced supported api fails', async () => {
 		advancedSupportedApiForBrowser.withError();
 		minMaxVersionApiForBrowser(HttpResponse.error);
