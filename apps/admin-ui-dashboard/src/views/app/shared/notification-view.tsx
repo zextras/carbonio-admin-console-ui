@@ -374,90 +374,90 @@ const NotificationView: FC<{
     [createSnackbar, t, notificationList],
   );
 
-  useEffect(() => {
-    if (filterdNotification.length > 0) {
-      const allRows = filterdNotification.map((item: Notification) => ({
-        id: item?.id,
-        columns: [
-          <Text
-            size="small"
-            color="gray0"
-            weight="regular"
-            key={item.id}
-            onClick={(event: any): void => {
-              setSelectedNotification(item);
-              handleClick(event);
-              setSelectedRow([item?.id]);
-              if (item?.ack === false) {
-                markAsReadUnread(item, false);
-              }
-            }}
-          >
-            {item?.server}
-          </Text>,
-          <Text
-            size="small"
-            color="gray0"
-            weight={item?.ack ? "light" : "medium"}
-            key={item.id}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              setSelectedNotification(item);
-              handleClick(event);
-              setSelectedRow([item?.id]);
-              if (item?.ack === false) {
-                markAsReadUnread(item, false);
-              }
-            }}
-          >
-            {format(item?.date, "dd-MM-yyyy - HH:mm a")}
-          </Text>,
-          <Text
-            size="small"
-            color="gray0"
-            weight={item?.ack ? "light" : "medium"}
-            key={item.id}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              setSelectedNotification(item);
-              handleClick(event);
-              setSelectedRow([item?.id]);
-              if (item?.ack === false) {
-                markAsReadUnread(item, false);
-              }
-            }}
-          >
-            {item?.level}
-          </Text>,
-          <Text
-            size="small"
-            color="gray0"
-            weight={item?.ack ? "light" : "medium"}
-            key={item.id}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              setSelectedNotification(item);
-              handleClick(event);
-              setSelectedRow([item?.id]);
-              if (item?.ack === false) {
-                markAsReadUnread(item, false);
-              }
-            }}
-          >
-            {item?.subject}
-          </Text>,
-        ],
-      }));
-      setNotificationRows(allRows);
-    } else {
-      setNotificationRows([]);
-    }
-  }, [filterdNotification, handleClick, markAsReadUnread]);
+	useEffect(() => {
+		if (filterdNotification.length > 0) {
+			const allRows = filterdNotification.map((item: Notification) => ({
+				id: item?.id,
+				columns: [
+					<Text
+						size="small"
+						color="gray0"
+						weight="regular"
+						key={item.id}
+						onClick={(event: any): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.server}
+					</Text>,
+					<Text
+						size="small"
+						color="gray0"
+						weight={item?.ack ? 'light' : 'medium'}
+						key={item.id}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{format(item?.date, 'dd-MM-yyyy - HH:mm a')}
+					</Text>,
+					<Text
+						size="small"
+						color="gray0"
+						weight={item?.ack ? 'light' : 'medium'}
+						key={item.id}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.level}
+					</Text>,
+					<Text
+						size="small"
+						color="gray0"
+						weight={item?.ack ? 'light' : 'medium'}
+						key={item.id}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.subject}
+					</Text>
+				]
+			}));
+			setNotificationRows(allRows);
+		} else {
+			setNotificationRows([]);
+		}
+	}, [filterdNotification, handleClick, markAsReadUnread]);
 
-  const copyNotificationOperation = useCallback(
-    (notificationSelected: Notification) => {
-      const notificationItem = `
-			${t("label.date", "Date")} : ${format(notificationSelected?.date, "dd-MM-yyyy - HH:mm a")} \n
-			${t("label.type", "Type")} : ${notificationSelected?.level} \n
-			${t("label.what_inside", "What’s inside?")} : ${notificationSelected?.subject} \n
-			${t("label.content", "Content")} : ${notificationSelected?.text}
+	const copyNotificationOperation = useCallback(
+		(notificationSelected: Notification) => {
+			const notificationItem = `
+			${t('label.date', 'Date')} : ${format(notificationSelected?.date, 'dd-MM-yyyy - HH:mm a')} \n
+			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
+			${t('label.what_inside', 'What’s inside?')} : ${notificationSelected?.subject} \n
+			${t('label.content', 'Content')} : ${notificationSelected?.text}
 		`;
       copyTextToClipboard(notificationItem);
       createSnackbar({

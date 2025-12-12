@@ -44,6 +44,7 @@ export const useLastLoginTimestamp = (options: LastLoginTimestampOptions = {}) =
 			parse(lastLoginAttribute._content, 'yyyyMMddHHmmss.SSSxx', new Date()),
 			'EEEE dd MMM yyyy | h:mm a'
 		);
+		return format(parsedDate, 'eeee dd MMM yyyy | h:mm a');
 	}
 
 	return useQuery({

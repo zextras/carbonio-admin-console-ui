@@ -13,6 +13,8 @@ import { useHistory } from 'react-router-dom';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 
+import RestoreAccountWizard from './restore-delete-account-wizard';
+
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();

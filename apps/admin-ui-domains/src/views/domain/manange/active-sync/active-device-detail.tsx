@@ -27,6 +27,8 @@ import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
 import ActiveDeviceConfirmation from './active-device-confirmation';
 
+import ActiveDeviceConfirmation from './active-device-confirmation';
+
 type MobileDeviceDetail = {
 	accountEmail: string;
 	accountName: string;

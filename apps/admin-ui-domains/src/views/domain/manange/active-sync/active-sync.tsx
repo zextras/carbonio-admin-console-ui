@@ -30,6 +30,8 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ActiveDeviceDetail from './active-device-detail';
 
+import ActiveDeviceDetail from './active-device-detail';
+
 type MobileDevice = {
 	accountEmail: string;
 	accountName: string;

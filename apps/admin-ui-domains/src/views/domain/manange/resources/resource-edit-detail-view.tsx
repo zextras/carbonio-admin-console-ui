@@ -932,246 +932,240 @@ const ResourceEditDetailView: FC<any> = ({
         <Divider color="gray3" />
       </Row>
 
-      <Container
-        padding={{ left: "large", right: "large" }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="calc(100% - 64px)"
-        background="white"
-        style={{ overflow: "auto" }}
-      >
-        <Displayer buttons={buttons} pinIcon={isSticky} />
-        <Row>
-          <Text size="small" weight="bold">
-            {t("label.resource", "Resource")}
-          </Text>
-        </Row>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ right: "small" }}>
-              <Input
-                label={t("label.name", "Name")}
-                backgroundColor="gray5"
-                value={resourceName}
-                onChange={(e: any): any => {
-                  setResourceName(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ left: "small" }}>
-              <Input
-                label={t("label.email", "Email")}
-                backgroundColor="gray5"
-                value={resourceMail}
-                onChange={(e: any): any => {
-                  setResourceMail(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ right: "small" }}>
-              <Input
-                label={t("label.server", "Server")}
-                backgroundColor="gray6"
-                value={resourceDetailData?.zimbraMailHost}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ left: "small" }}>
-              <Select
-                items={resourceTypeOptions}
-                background="gray5"
-                label={t("label.type", "Type")}
-                showCheckbox={false}
-                onChange={onResouseTypeChange}
-                selection={zimbraCalResType}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ right: "small" }}>
-              <Select
-                items={accountStatusOptions}
-                background="gray5"
-                label={t("label.status", "Status")}
-                showCheckbox={false}
-                onChange={onAccountStatusChange}
-                selection={zimbraAccountStatus}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ left: "small" }}>
-              <Select
-                items={cosItems}
-                background="gray5"
-                label={t("label.class_of_service", "Class of Service")}
-                showCheckbox={false}
-                onChange={onCosChange}
-                selection={zimbraCOSId}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%">
-              <Select
-                items={autoRefuseOption}
-                background="gray5"
-                label={t("label.auto_refuse", "Auto-Refuse")}
-                showCheckbox={false}
-                onChange={onAutoRefuseChange}
-                selection={zimbraCalResAutoDeclineRecurring}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%">
-              <Select
-                items={schedulePolicyItems}
-                background="gray5"
-                label={t("label.schedule_policy", "Set Policy")}
-                showCheckbox={false}
-                onChange={onSchedulePolicyChange}
-                selection={schedulePolicyType}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ right: "small" }}>
-              <Input
-                label={t(
-                  "label.maximum_conflict_allowed",
-                  "Maximum Conflict Allowed",
-                )}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxNumConflictsAllowed}
-                onChange={(e: any): any => {
-                  setZimbraCalResMaxNumConflictsAllowed(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ left: "small" }}>
-              <Input
-                label={t(
-                  "label.percentage_maximum_conflict_allowed",
-                  "% Maximum Conflict Allowed",
-                )}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxPercentConflictsAllowed}
-                onChange={(e: any): any => {
-                  setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ right: "small" }}>
-              <Input
-                label={t("label.id_lbl", "ID")}
-                backgroundColor="gray6"
-                value={selectedResourceList?.id}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: "large" }}
-          >
-            <Row width="100%" padding={{ left: "small" }}>
-              <Input
-                label={t("label.creation_date", "Creation Date")}
-                backgroundColor="gray6"
-                value={
-                  resourceDetailData?.zimbraCreateTimestamp
-                    ? format(
-                        parse(
-                          resourceDetailData?.zimbraCreateTimestamp,
-                          "yyyyMMddHHmmss.X",
-                          new Date(),
-                        ),
-                        "dd MMM yyyy | hh:mm:ss a",
-                      )
-                    : "--"
-                }
-              />
-            </Row>
-          </Container>
-        </ListRow>
+			<Container
+				padding={{ left: 'large', right: 'large' }}
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				height="calc(100% - 64px)"
+				background="white"
+				style={{ overflow: 'auto' }}
+			>
+				<Displayer buttons={buttons} pinIcon={isSticky} />
+				<Row>
+					<Text size="small" weight="bold">
+						{t('label.resource', 'Resource')}
+					</Text>
+				</Row>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ right: 'small' }}>
+							<Input
+								label={t('label.name', 'Name')}
+								backgroundColor="gray5"
+								value={resourceName}
+								onChange={(e: any): any => {
+									setResourceName(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-end"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ left: 'small' }}>
+							<Input
+								label={t('label.email', 'Email')}
+								backgroundColor="gray5"
+								value={resourceMail}
+								onChange={(e: any): any => {
+									setResourceMail(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ right: 'small' }}>
+							<Input
+								label={t('label.server', 'Server')}
+								backgroundColor="gray6"
+								value={resourceDetailData?.zimbraMailHost}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-end"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ left: 'small' }}>
+							<Select
+								items={resourceTypeOptions}
+								background="gray5"
+								label={t('label.type', 'Type')}
+								showCheckbox={false}
+								onChange={onResouseTypeChange}
+								selection={zimbraCalResType}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ right: 'small' }}>
+							<Select
+								items={accountStatusOptions}
+								background="gray5"
+								label={t('label.status', 'Status')}
+								showCheckbox={false}
+								onChange={onAccountStatusChange}
+								selection={zimbraAccountStatus}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-end"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ left: 'small' }}>
+							<Select
+								items={cosItems}
+								background="gray5"
+								label={t('label.class_of_service', 'Class of Service')}
+								showCheckbox={false}
+								onChange={onCosChange}
+								selection={zimbraCOSId}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%">
+							<Select
+								items={autoRefuseOption}
+								background="gray5"
+								label={t('label.auto_refuse', 'Auto-Refuse')}
+								showCheckbox={false}
+								onChange={onAutoRefuseChange}
+								selection={zimbraCalResAutoDeclineRecurring}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%">
+							<Select
+								items={schedulePolicyItems}
+								background="gray5"
+								label={t('label.schedule_policy', 'Set Policy')}
+								showCheckbox={false}
+								onChange={onSchedulePolicyChange}
+								selection={schedulePolicyType}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ right: 'small' }}>
+							<Input
+								label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
+								backgroundColor="gray5"
+								value={zimbraCalResMaxNumConflictsAllowed}
+								onChange={(e: any): any => {
+									setZimbraCalResMaxNumConflictsAllowed(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-end"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ left: 'small' }}>
+							<Input
+								label={t('label.percentage_maximum_conflict_allowed', '% Maximum Conflict Allowed')}
+								backgroundColor="gray5"
+								value={zimbraCalResMaxPercentConflictsAllowed}
+								onChange={(e: any): any => {
+									setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ right: 'small' }}>
+							<Input
+								label={t('label.id_lbl', 'ID')}
+								backgroundColor="gray6"
+								value={selectedResourceList?.id}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-end"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%" padding={{ left: 'small' }}>
+							<Input
+								label={t('label.creation_date', 'Creation Date')}
+								backgroundColor="gray6"
+								value={
+									resourceDetailData?.zimbraCreateTimestamp
+										? format(
+												parse(
+													resourceDetailData?.zimbraCreateTimestamp,
+													'yyyyMMddHHmmss.X',
+													new Date()
+												),
+												'dd MMM yyyy | hh:mm:ss a'
+											)
+										: '--'
+								}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
 
         <>
           <Row width="100%" padding={{ top: "medium" }}>
