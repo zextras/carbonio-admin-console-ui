@@ -11,8 +11,12 @@ import {
   rmSync,
   writeFileSync,
 } from "fs";
-import { join } from "path";
+import { join, dirname } from "path";
 import { execSync } from "child_process";
+import { fileURLToPath } from "url";
+
+const fileName = fileURLToPath(import.meta.url);
+const dirName = dirname(fileName);
 
 // Colors for output
 const colors = {
@@ -59,7 +63,7 @@ function copyRecursive(src, dest) {
 
 function buildAlreadyExists(componentName, commitHash) {
   const commitHashDir = join(
-    __dirname,
+    dirName,
     "..",
     "package",
     "opt",
@@ -83,7 +87,7 @@ function hasUncommittedChanges(componentName) {
     const result = execSync("git status --porcelain apps/" + componentName, {
       encoding: "utf-8",
       stdio: "pipe",
-      cwd: join(__dirname, ".."),
+      cwd: join(dirName, ".."),
     });
     return result.trim().length > 0;
   } catch (error) {
@@ -143,7 +147,7 @@ function main() {
   const isDevMode = args.includes("--dev");
 
   // Get the root directory
-  const rootDir = join(__dirname, "..");
+  const rootDir = join(dirName, "..");
   const appsDir = join(rootDir, "apps");
 
   const pkgVersion = getLastTag().replace(/^v/, "");
@@ -168,7 +172,7 @@ function main() {
     total: components.length,
     built: 0,
     skipped: 0,
-    builtPackages: [],
+    builtPackages: [] as Array<string>,
   };
 
   // Build and copy each component
