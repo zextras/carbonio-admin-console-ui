@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -18,9 +18,9 @@ import {
 	Padding,
 	Switch
 } from '@zextras/carbonio-design-system';
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import { format } from 'date-fns';
 import { cloneDeep, debounce, unionBy } from 'lodash';
-import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BackupAccountItem } from '../../../../types';
@@ -516,7 +516,9 @@ const RestoreAccountView: FC<{
 						</Container>
 						<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
 							<Text size="small" overflow="ellipsis">
-								{moment(legalHoldAccount?.creationTimestamp).format('DD/MM/YYYY')}
+								{legalHoldAccount?.creationTimestamp
+									? format(legalHoldAccount?.creationTimestamp, 'dd/MM/yyyy')
+									: ''}
 							</Text>
 						</Container>
 					</Container>
@@ -535,7 +537,7 @@ const RestoreAccountView: FC<{
 							</Container>
 							<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
 								<Text size="small" overflow="ellipsis">
-									{moment(legalHoldAccount?.deletedTimestamp).format('DD/MM/YYYY')}
+									{format(legalHoldAccount?.deletedTimestamp, 'dd/MM/yyyy')}
 								</Text>
 							</Container>
 						</Container>

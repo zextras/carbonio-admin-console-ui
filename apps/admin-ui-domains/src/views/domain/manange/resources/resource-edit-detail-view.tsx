@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore , useStickyBarStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Input,
@@ -18,8 +18,8 @@ import {
 	Modal,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format, parse } from 'date-fns';
 import _ from 'lodash';
-import moment from 'moment';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -1047,8 +1047,13 @@ const ResourceEditDetailView: FC<any> = ({
 								backgroundColor="gray6"
 								value={
 									resourceDetailData?.zimbraCreateTimestamp
-										? moment(resourceDetailData?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
-												'DD MMM YYYY | hh:MM:SS A'
+										? format(
+												parse(
+													resourceDetailData?.zimbraCreateTimestamp,
+													'yyyyMMddHHmmss.X',
+													new Date()
+												),
+												'dd MMM yyyy | hh:mm:ss a'
 											)
 										: '--'
 								}

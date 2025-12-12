@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -17,25 +17,26 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format, parse } from 'date-fns';
 import { debounce } from 'lodash';
-import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import CreateResource from './create-resource';
-import ResourceEditDetailView from './resource-edit-detail-view';
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+
+import CreateResource from './create-resource';
+import ResourceEditDetailView from './resource-edit-detail-view';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -109,7 +110,7 @@ const DomainResources: FC = () => {
 					{ label: resourceStatusFilter[0].label, value: resourceStatusFilter[0].value },
 					{ label: resourceStatusFilter[1].label, value: resourceStatusFilter[1].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -236,11 +237,15 @@ const DomainResources: FC = () => {
 									>
 										<Text size="small" weight="light" key={item?.id} color="gray0">
 											{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
-												? moment(
-														item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
-															?._content,
-														'YYYYMMDDHHmmss.Z'
-												  ).format('YY/MM/DD | hh:MM')
+												? format(
+														parse(
+															item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
+																?._content,
+															'yyyyMMddHHmmss.X',
+															new Date()
+														),
+														'yy/MM/dd | hh:mm'
+													)
 												: t('label.never_logged_in', 'Never logged In')}
 										</Text>
 									</Container>,
@@ -354,7 +359,6 @@ const DomainResources: FC = () => {
 			zimbraPrefCalendarAutoAcceptSignatureId: any,
 			zimbraPrefCalendarAutoDeclineSignatureId: any,
 			zimbraPrefCalendarAutoDenySignatureId: any
-			// eslint-disable-next-line sonarjs/cognitive-complexity
 		): void => {
 			createResource(name, password, attr)
 				.then((data) => {
@@ -386,25 +390,22 @@ const DomainResources: FC = () => {
 												zimbraPrefCalendarAutoAcceptSignatureId?.value
 													? signatureRes.filter(
 															(item: any) =>
-																// eslint-disable-next-line max-len
 																item.name === zimbraPrefCalendarAutoAcceptSignatureId?.label
-													  )[0]?.id
+														)[0]?.id
 													: '',
 											zimbraPrefCalendarAutoDeclineSignatureId:
 												zimbraPrefCalendarAutoDeclineSignatureId?.value
 													? signatureRes.filter(
 															(item: any) =>
-																// eslint-disable-next-line max-len
 																item.name === zimbraPrefCalendarAutoDeclineSignatureId?.label
-													  )[0]?.id
+														)[0]?.id
 													: '',
 											zimbraPrefCalendarAutoDenySignatureId:
 												zimbraPrefCalendarAutoDenySignatureId?.value
 													? signatureRes.filter(
 															(item: any) =>
-																// eslint-disable-next-line max-len
 																item.name === zimbraPrefCalendarAutoDenySignatureId?.label
-													  )[0]?.id
+														)[0]?.id
 													: ''
 										};
 										const attrList: { n: string; _content: string }[] = [];

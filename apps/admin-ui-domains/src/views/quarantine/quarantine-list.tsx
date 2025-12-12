@@ -20,8 +20,8 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
-import moment from 'moment';
 import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -181,7 +181,7 @@ type Participant = {
 
 const getDateTime = (d: number): string => {
 	const date = new Date(d);
-	return moment(date).format('DD/MM/YY HH:mm');
+	return format(date, 'dd/MM/yy HH:mm');
 };
 
 const MessageListTable: FC<{
@@ -1495,18 +1495,13 @@ const QuarantineList: FC = () => {
 											<Text size="small" weight="bold">
 												{t('label.date', 'Date')} :{' '}
 											</Text>
-											<Text size="small">
-												{' '}
-												{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
-											</Text>
+											<Text size="small"> {format(message?.date, 'dd-MM-yyyy - HH:mm a')}</Text>
 										</Row>
 										<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
 											<Text size="small" weight="bold">
 												{t('label.received', 'Received')} :{' '}
 											</Text>
-											<Text size="small">
-												{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
-											</Text>
+											<Text size="small">{format(message?.date, 'dd-MM-yyyy - HH:mm a')}</Text>
 										</Row>
 									</Row>
 									<Row width="100%" padding={{ top: 'medium' }}>
