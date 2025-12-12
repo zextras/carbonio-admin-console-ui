@@ -5,7 +5,7 @@
  */
 
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { get, join } from 'lodash';
+import { get, join } from 'lodash-es';
 import { useMemo } from 'react';
 
 import { Account, AccountSettings } from '../../types';

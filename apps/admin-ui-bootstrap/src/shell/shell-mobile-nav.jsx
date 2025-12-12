@@ -5,7 +5,7 @@
  */
 
 import { Accordion, Collapse, Container, Padding } from '@zextras/carbonio-design-system';
-import { find, get, reduce, sortBy } from 'lodash';
+import { find, get, reduce, sortBy } from 'lodash-es';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 

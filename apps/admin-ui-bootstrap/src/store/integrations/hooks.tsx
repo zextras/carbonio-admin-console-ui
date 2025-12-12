@@ -6,7 +6,7 @@
 
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
-import { compact, map } from 'lodash';
+import { compact, map } from 'lodash-es';
 import { useMemo } from 'react';
 
 import { Action } from '../../../types';

@@ -23,7 +23,7 @@ import {
 	Shimmer,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC,useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';

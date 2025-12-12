@@ -22,7 +22,7 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { find,isEqual } from 'lodash';
+import { find,isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

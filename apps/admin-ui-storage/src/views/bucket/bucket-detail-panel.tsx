@@ -16,7 +16,7 @@ import {
 	Tooltip,
 	useSnackbar} from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { filter } from 'lodash';
+import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -6,7 +6,7 @@
  */
 import { SelectItem } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { divide, multiply } from 'lodash';
+import { divide, multiply } from 'lodash-es';
 import { useState } from 'react';
 
 import { TwoFactorPolicy } from '../../../types';

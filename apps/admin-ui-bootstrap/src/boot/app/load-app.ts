@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { forOwn } from 'lodash';
+import { forOwn } from 'lodash-es';
 import { ComponentType } from 'react';
 
 import { CarbonioModule,IShellWindow } from '../../../types';

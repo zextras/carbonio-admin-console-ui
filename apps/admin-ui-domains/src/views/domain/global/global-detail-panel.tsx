@@ -17,7 +17,7 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { filter, isEqual, map } from 'lodash';
+import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

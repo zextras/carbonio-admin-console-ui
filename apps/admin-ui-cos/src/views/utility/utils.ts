@@ -7,7 +7,7 @@
 
 import { SelectItem } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { divide, multiply } from 'lodash';
+import { divide, multiply } from 'lodash-es';
 
 import { NOT_SET } from '../../constants';
 

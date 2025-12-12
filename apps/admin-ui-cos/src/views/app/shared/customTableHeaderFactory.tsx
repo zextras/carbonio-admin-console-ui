@@ -5,7 +5,7 @@
  */
 
 import { Checkbox,Container, Icon, Row, Select, Text } from '@zextras/carbonio-design-system';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';

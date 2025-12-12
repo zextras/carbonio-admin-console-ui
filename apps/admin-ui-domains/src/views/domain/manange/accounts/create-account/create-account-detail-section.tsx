@@ -13,7 +13,7 @@ import {
 	Select,
 	Switch,
 	Text} from '@zextras/carbonio-design-system';
-import { find, head } from 'lodash';
+import { find, head } from 'lodash-es';
 import {
 	ChangeEvent,
 	FC,

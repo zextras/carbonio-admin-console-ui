@@ -22,7 +22,7 @@ import {
 	TabBar,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { differenceBy, find,isEqual, reduce, remove } from 'lodash';
+import { differenceBy, find,isEqual, reduce, remove } from 'lodash-es';
 import {
 	FC,
 	ReactElement,

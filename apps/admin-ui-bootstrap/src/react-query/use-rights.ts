@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { find } from 'lodash';
+import { find } from 'lodash-es';
 
 import { CONFIG } from '../constants';
 import { soapFetch } from '../network/fetch';

@@ -6,7 +6,7 @@
 import { useForm } from '@tanstack/react-form';
 import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { Container, Divider, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
+import { find } from 'lodash-es';
 import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -5,7 +5,7 @@
  */
 
 import { produce } from 'immer';
-import { forEach } from 'lodash';
+import { forEach } from 'lodash-es';
 import { create } from 'zustand';
 
 import { ActionFactory, AnyFunction, IntegrationsState } from '../../../types';

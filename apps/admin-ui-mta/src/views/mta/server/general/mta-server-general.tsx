@@ -14,7 +14,7 @@ import {
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
+import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

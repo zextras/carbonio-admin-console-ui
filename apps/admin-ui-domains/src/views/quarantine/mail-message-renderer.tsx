@@ -6,7 +6,7 @@
 
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
-import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
+import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

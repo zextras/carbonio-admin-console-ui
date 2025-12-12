@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { trim } from 'lodash';
+import { trim } from 'lodash-es';
 import { FC } from 'react';
 
 import { AppRouteDescriptor, BadgeInfo, CarbonioModule } from '../../../types';

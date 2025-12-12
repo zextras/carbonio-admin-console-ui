@@ -16,7 +16,7 @@ import {
 	TextArea,
 	useSnackbar} from '@zextras/carbonio-design-system';
 import { encode } from 'html-entities';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

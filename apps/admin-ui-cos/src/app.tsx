@@ -11,7 +11,7 @@ import {
 	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
+import { find } from 'lodash-es';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';

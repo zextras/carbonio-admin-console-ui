@@ -18,7 +18,7 @@ import {
 	THeader,
 	useSnackbar} from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { isEqual, reduce } from 'lodash';
+import { isEqual, reduce } from 'lodash-es';
 import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

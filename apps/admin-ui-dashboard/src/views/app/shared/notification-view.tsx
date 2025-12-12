@@ -15,7 +15,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

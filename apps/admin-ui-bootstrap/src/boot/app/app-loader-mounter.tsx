@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map } from 'lodash-es';
 import React, { FC, memo, Suspense, useMemo } from 'react';
 
 import { useAppStore } from '../../store/app';

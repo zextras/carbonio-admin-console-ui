@@ -21,7 +21,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
+import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

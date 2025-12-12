@@ -6,7 +6,7 @@
 
 import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
-import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash';
+import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash-es';
 import {
 	ChangeEvent,
 	Dispatch,

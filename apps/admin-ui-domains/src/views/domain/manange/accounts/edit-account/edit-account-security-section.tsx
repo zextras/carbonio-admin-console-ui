@@ -18,7 +18,7 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import {
 	ChangeEvent,

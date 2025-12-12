@@ -20,7 +20,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
+import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';

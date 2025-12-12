@@ -14,7 +14,7 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { debounce, sortedUniq, uniq } from 'lodash';
+import { debounce, sortedUniq, uniq } from 'lodash-es';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

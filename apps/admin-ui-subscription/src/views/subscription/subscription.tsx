@@ -23,7 +23,7 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { find } from 'lodash';
+import { find } from 'lodash-es';
 import React, { useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

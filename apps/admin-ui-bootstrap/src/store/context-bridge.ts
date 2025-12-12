@@ -5,7 +5,7 @@
  */
 
 
-import { reduce } from 'lodash';
+import { reduce } from 'lodash-es';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 

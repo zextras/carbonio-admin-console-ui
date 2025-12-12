@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { find, isArray } from 'lodash';
+import { find, isArray } from 'lodash-es';
 
 import { Account, ErrorSoapResponse, SoapResponse, SuccessSoapResponse } from '../../types';
 import { queryClient } from '../providers/react-query-provider';

@@ -13,7 +13,7 @@ import {
 	Row,
 	Switch,
 	Text} from '@zextras/carbonio-design-system';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import { FC, useContext, useEffect,useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -17,7 +17,7 @@ import {
 	within
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { filter } from 'lodash';
+import { filter } from 'lodash-es';
 import React, { type ReactElement } from 'react';
 
 import { Wrapper, WrapperProps } from './wrapper';

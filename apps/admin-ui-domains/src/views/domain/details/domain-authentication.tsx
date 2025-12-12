@@ -21,7 +21,7 @@ import {
 	Tooltip as TooltipDefault,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

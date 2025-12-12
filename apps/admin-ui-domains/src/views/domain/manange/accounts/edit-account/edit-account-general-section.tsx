@@ -22,7 +22,7 @@ import {
 	Tooltip,
 	useSnackbar} from '@zextras/carbonio-design-system';
 import { format, parse } from 'date-fns';
-import { debounce, map } from 'lodash';
+import { debounce, map } from 'lodash-es';
 import React, {
 	ChangeEvent,
 	FC,

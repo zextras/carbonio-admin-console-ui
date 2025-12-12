@@ -5,7 +5,7 @@
  */
 
 import * as ZappUI from '@zextras/carbonio-design-system';
-import * as Lodash from 'lodash';
+import * as Lodash from 'lodash-es';
 import * as PropTypes from 'prop-types';
 import React from 'react';
 import * as ReactDOM from 'react-dom';

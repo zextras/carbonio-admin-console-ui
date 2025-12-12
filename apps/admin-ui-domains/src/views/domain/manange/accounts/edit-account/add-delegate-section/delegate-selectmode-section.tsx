@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Row, Select, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { FC, useCallback,useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -6,7 +6,7 @@
 
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useMemo } from 'react';
 
 import { AppRoute, CarbonioModule } from '../../../types';

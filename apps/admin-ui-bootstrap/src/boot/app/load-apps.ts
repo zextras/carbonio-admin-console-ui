@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { filter, map } from 'lodash';
+import { filter, map } from 'lodash-es';
 
 import { CarbonioModule } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';

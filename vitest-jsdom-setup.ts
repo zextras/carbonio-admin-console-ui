@@ -5,7 +5,7 @@
  */
 
 import { server } from 'admin-ui-test-utils';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 vi.stubGlobal('__CARBONIO_DEV__', false);

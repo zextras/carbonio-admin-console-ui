@@ -12,7 +12,7 @@ import {
 	Popper,
 	Row,
 	Text} from '@zextras/carbonio-design-system';
-import { map, sortBy,trim } from 'lodash';
+import { map, sortBy,trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef,useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';

@@ -5,7 +5,7 @@
  */
 
 import { produce } from 'immer';
-import { filter, find, omit, reduce, sortBy, unionWith } from 'lodash';
+import { filter, find, omit, reduce, sortBy, unionWith } from 'lodash-es';
 import { create } from 'zustand';
 
 import {

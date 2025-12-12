@@ -5,7 +5,7 @@
  */
 
 import { ChipInput,Container, Divider, Row, Text } from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash';
+import { map, some } from 'lodash-es';
 import {
 	ChangeEvent,
 	FC,

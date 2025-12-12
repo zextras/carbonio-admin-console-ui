@@ -5,7 +5,7 @@
  */
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
-import _, { find, isEqual, reduce } from 'lodash';
+import _, { find, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

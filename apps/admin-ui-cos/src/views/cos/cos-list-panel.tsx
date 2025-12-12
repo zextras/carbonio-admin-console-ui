@@ -6,7 +6,7 @@
 
 import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Padding, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';

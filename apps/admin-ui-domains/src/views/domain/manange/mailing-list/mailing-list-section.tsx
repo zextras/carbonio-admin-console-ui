@@ -19,7 +19,7 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { debounce, sortedUniq, uniq } from 'lodash';
+import { debounce, sortedUniq, uniq } from 'lodash-es';
 import React, {
 	ChangeEvent,
 	FC,

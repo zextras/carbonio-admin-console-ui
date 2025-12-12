@@ -18,7 +18,7 @@ import {
 	Switch,
 	Text,
 	useSnackbar} from '@zextras/carbonio-design-system';
-import { find, isEqual } from 'lodash';
+import { find, isEqual } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

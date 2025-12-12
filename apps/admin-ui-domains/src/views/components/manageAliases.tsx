@@ -14,7 +14,7 @@ import {
 	Row,
 	Select,
 	Text} from '@zextras/carbonio-design-system';
-import { cloneDeep, uniqBy } from 'lodash';
+import { cloneDeep, uniqBy } from 'lodash-es';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

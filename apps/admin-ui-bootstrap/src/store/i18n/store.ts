@@ -8,7 +8,7 @@ import type { i18n, InitOptions } from 'i18next';
 import i18next from 'i18next';
 import Backend from 'i18next-http-backend';
 import { produce } from 'immer';
-import { dropRight, forEach, reduce } from 'lodash';
+import { dropRight, forEach, reduce } from 'lodash-es';
 import { initReactI18next } from 'react-i18next';
 import { create } from 'zustand';
 

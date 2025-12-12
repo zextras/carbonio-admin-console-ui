@@ -5,7 +5,7 @@
  */
 
 import { Container, useSnackbar } from '@zextras/carbonio-design-system';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';

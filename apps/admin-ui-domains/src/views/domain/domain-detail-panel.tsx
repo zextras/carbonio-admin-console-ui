@@ -5,7 +5,7 @@
  */
 import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon,Padding, Row, Text } from '@zextras/carbonio-design-system';
-import { cloneDeep, find } from 'lodash';
+import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect,useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Route, Switch, useLocation,useRouteMatch } from 'react-router-dom';

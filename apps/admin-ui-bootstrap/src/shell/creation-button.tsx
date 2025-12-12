@@ -5,7 +5,7 @@
  */
 
 import { Button, Dropdown,MultiButton } from '@zextras/carbonio-design-system';
-import { groupBy,reduce } from 'lodash';
+import { groupBy,reduce } from 'lodash-es';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
