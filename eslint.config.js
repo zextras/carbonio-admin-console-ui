@@ -40,10 +40,11 @@ export default tseslint.config(
       ],
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-      "@typescript-eslint/no-explicit-any": "warn",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       // TODO: remove all the rules below this line once the codebase is cleaned up
+      "unused-imports/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-explicit-any": "warn",
       "react/no-children-prop": "warn",
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-require-imports": "warn",
