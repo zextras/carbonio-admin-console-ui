@@ -6,6 +6,7 @@
 
 import {
 	createBrowserSoapAPIInterceptor,
+	getQueryClient,
 	grantUserConfigRights,
 	resetMockWorker,
 	setupBrowserTest
@@ -34,8 +35,15 @@ const mockApiResponse = {
 };
 
 describe('CosListPanel', () => {
+	let queryClient: ReturnType<typeof getQueryClient>;
+
 	beforeEach(async () => {
 		vi.resetAllMocks();
+		queryClient = getQueryClient();
+		// Set up config data for useGlobalCarbonioSendAnalytics hook
+		queryClient.setQueryData(['all-config'], [
+			{ n: 'carbonioSendAnalytics', _content: 'FALSE' }
+		]);
 		grantUserConfigRights();
 		useCosStore.getState().reset();
 	});
@@ -48,7 +56,7 @@ describe('CosListPanel', () => {
 	it('should render all parts of the component', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await expect.element(page.getByText('General')).toBeVisible();
 		await expect.element(page.getByText('COS List')).toBeVisible();
@@ -65,7 +73,7 @@ describe('CosListPanel', () => {
 	it('should show details grayed out when no COS is selected', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
 		await expect.element(page.getByText('Features')).toHaveStyle({ opacity: '0.5' });
@@ -78,7 +86,7 @@ describe('CosListPanel', () => {
 	it('should show clickable details when COS is selected', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
 		await page.getByText('Select a Class of Service').click();
@@ -90,7 +98,7 @@ describe('CosListPanel', () => {
 	it('should hide details when the details button is pressed', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await expect.element(page.getByText('Select a Class of Service')).toBeVisible();
 		await page.getByText('Select a Class of Service').click();
@@ -103,7 +111,7 @@ describe('CosListPanel', () => {
 	it('should show detail options in bold when selected after selecting a COS', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
@@ -116,7 +124,7 @@ describe('CosListPanel', () => {
 	it('should change chevron icon when details dropdown is toggled', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await page.getByText('Select a Class of Service').click();
 		await page.getByText('firstCOS').click();
@@ -133,7 +141,7 @@ describe('CosListPanel', () => {
 	it('should change General icon when its section is toggled', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list' });
+		setupBrowserTest(<CosListPanel />, { initialRouterEntry: '/cos/cos_list', queryClient });
 
 		await expect.element(page.getByText('General')).toBeVisible();
 		const buttonBeforeClick = page.getByRole('button').first().element();
