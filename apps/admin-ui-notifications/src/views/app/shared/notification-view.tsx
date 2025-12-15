@@ -13,19 +13,11 @@ import {
   Table,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
-import { format } from "date-fns";
-import { orderBy } from "lodash-es";
-import {
-  FC,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useTranslation } from "react-i18next";
+} from '@zextras/carbonio-design-system';
+import { format } from 'date-fns';
+import { orderBy } from 'lodash-es';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   DESC,
@@ -33,14 +25,14 @@ import {
   NOTIFICATION_ERROR,
   NOTIFICATION_INFORMATION,
   NOTIFICATION_WARNING,
-} from "../../../constants";
-import { getAllNotifications } from "../../../services/get-all-notifications";
-import { readUnreadNotification } from "../../../services/read-unread-notification";
-import ModalOverlay from "../../components/ModalOverlay";
-import ListRow from "../../list/list-row";
-import CustomHeaderFactory from "./customTableHeaderFactory";
-import CustomRowFactory from "./customTableRowFactory";
-import NotificationDetail from "./notification-detail-view";
+} from '../../../constants';
+import { getAllNotifications } from '../../../services/get-all-notifications';
+import { readUnreadNotification } from '../../../services/read-unread-notification';
+import ModalOverlay from '../../components/ModalOverlay';
+import ListRow from '../../list/list-row';
+import CustomHeaderFactory from './customTableHeaderFactory';
+import CustomRowFactory from './customTableRowFactory';
+import NotificationDetail from './notification-detail-view';
 
 const copyTextToClipboard = (text: string): void => {
   if (navigator) {
@@ -59,35 +51,27 @@ const ReusedDefaultTabBar: FC<{
     selected={selected}
     onClick={onClick}
     orientation="horizontal"
-    background={"transparent"}
-    underlineColor={"primary"}
+    background={'transparent'}
+    underlineColor={'primary'}
     forceWidthEquallyDistributed={false}
   >
     <Container
       orientation="horizontal"
       mainAlignment="flex-start"
       crossAlignment="flex-start"
-      padding={{ all: "medium" }}
+      padding={{ all: 'medium' }}
       width="fill"
     >
-      <Container width="2rem" padding={{ right: "small" }}>
+      <Container width="2rem" padding={{ right: 'small' }}>
         <Icon
           icon={item?.icon}
-          height={"1rem"}
+          height={'1rem'}
           width="1rem"
-          color={selected ? "primary" : "gray"}
+          color={selected ? 'primary' : 'gray'}
         />
       </Container>
-      <Container
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        width="auto"
-      >
-        <Text
-          size="small"
-          weight="regular"
-          color={selected ? "primary" : "gray"}
-        >
+      <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
+        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
           {item.label} ({item?.count})
         </Text>
       </Container>
@@ -113,20 +97,14 @@ const NotificationView: FC<{
 }> = ({ isShowTitle, isAddPadding = false }) => {
   const [t] = useTranslation();
   const [change, setChange] = useState(NOTIFICATION_ALL);
-  const [setClick] = useState("");
+  const [setClick] = useState('');
   const createSnackbar = useSnackbar();
-  const [notificationList, setNotificationList] = useState<Array<Notification>>(
-    [],
-  );
-  const [filterdNotification, setFilterdNotification] = useState<
-    Array<Notification>
-  >([]);
+  const [notificationList, setNotificationList] = useState<Array<Notification>>([]);
+  const [filterdNotification, setFilterdNotification] = useState<Array<Notification>>([]);
   const [notificationRows, setNotificationRows] = useState<Array<any>>([]);
-  const [showNotificationDetail, setShowNotificationDetail] =
-    useState<boolean>(false);
+  const [showNotificationDetail, setShowNotificationDetail] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<any>({});
-  const [isRequestInProgress, setIsRequestInProgress] =
-    useState<boolean>(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [notificationCount, setNotificationCount] = useState<any>({
     warning: 0,
     error: 0,
@@ -140,29 +118,29 @@ const NotificationView: FC<{
     () => [
       {
         id: NOTIFICATION_ALL,
-        icon: "KeypadOutline",
-        label: t("notification.all", "ALL"),
+        icon: 'KeypadOutline',
+        label: t('notification.all', 'ALL'),
         count: notificationCount?.all,
         CustomComponent: ReusedDefaultTabBar,
       },
       {
         id: NOTIFICATION_INFORMATION,
-        icon: "InfoOutline",
-        label: t("notification.information", "INFORMATION"),
+        icon: 'InfoOutline',
+        label: t('notification.information', 'INFORMATION'),
         count: notificationCount?.information,
         CustomComponent: ReusedDefaultTabBar,
       },
       {
         id: NOTIFICATION_WARNING,
-        icon: "AlertTriangleOutline",
-        label: t("notification.warning", "WARNING"),
+        icon: 'AlertTriangleOutline',
+        label: t('notification.warning', 'WARNING'),
         count: notificationCount?.warning,
         CustomComponent: ReusedDefaultTabBar,
       },
       {
         id: NOTIFICATION_ERROR,
-        icon: "CloseCircleOutline",
-        label: t("notification.error", "ERROR"),
+        icon: 'CloseCircleOutline',
+        label: t('notification.error', 'ERROR'),
         count: notificationCount?.error,
         CustomComponent: ReusedDefaultTabBar,
       },
@@ -173,27 +151,27 @@ const NotificationView: FC<{
   const headers: any[] = useMemo(
     () => [
       {
-        id: "server",
-        label: t("label.server", "Server"),
-        width: "20%",
+        id: 'server',
+        label: t('label.server', 'Server'),
+        width: '20%',
         bold: true,
       },
       {
-        id: "date",
-        label: t("label.date", "Date"),
-        width: "20%",
+        id: 'date',
+        label: t('label.date', 'Date'),
+        width: '20%',
         bold: true,
       },
       {
-        id: "type",
-        label: t("label.type", "Type"),
-        width: "20%",
+        id: 'type',
+        label: t('label.type', 'Type'),
+        width: '20%',
         bold: true,
       },
       {
-        id: "whatinside",
-        label: t("label.what_inside", "What’s inside?"),
-        width: "40%",
+        id: 'whatinside',
+        label: t('label.what_inside', 'What’s inside?'),
+        width: '40%',
         bold: true,
       },
     ],
@@ -212,16 +190,11 @@ const NotificationView: FC<{
             let warningCount = 0;
             let errorCount = 0;
             Object.keys(content?.response).forEach((ele) => {
-              if (
-                content?.response[ele] &&
-                content?.response[ele]?.response?.notifications
-              ) {
-                const allNotification =
-                  content?.response[ele]?.response?.notifications;
+              if (content?.response[ele] && content?.response[ele]?.response?.notifications) {
+                const allNotification = content?.response[ele]?.response?.notifications;
                 notificationItems.push(...allNotification);
                 const info = allNotification.filter(
-                  (item: Notification) =>
-                    item?.level === NOTIFICATION_INFORMATION,
+                  (item: Notification) => item?.level === NOTIFICATION_INFORMATION,
                 );
                 const warn = allNotification.filter(
                   (item: Notification) => item?.level === NOTIFICATION_WARNING,
@@ -236,11 +209,7 @@ const NotificationView: FC<{
               }
             });
             setNotificationList(
-              orderBy(
-                notificationItems,
-                (item: Notification) => new Date(item?.date),
-                [DESC],
-              ),
+              orderBy(notificationItems, (item: Notification) => new Date(item?.date), [DESC]),
             );
             setNotificationCount({
               all: allCount,
@@ -253,14 +222,11 @@ const NotificationView: FC<{
       })
       .catch((error: any) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error
             ? error?.error
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -329,17 +295,17 @@ const NotificationView: FC<{
             setIsRequestInProgress(false);
             const message = item?.ack
               ? t(
-                  "notification.notification_mark_unread_successfully",
-                  "Notification mark as unread successfully",
+                  'notification.notification_mark_unread_successfully',
+                  'Notification mark as unread successfully',
                 )
               : t(
-                  "notification.notification_mark_read_successfully",
-                  "Notification mark as read successfully",
+                  'notification.notification_mark_read_successfully',
+                  'Notification mark as read successfully',
                 );
             if (isShowMessage) {
               createSnackbar({
-                key: "success",
-                severity: "success",
+                key: 'success',
+                severity: 'success',
                 label: message,
                 autoHideTimeout: 3000,
                 hideButton: true,
@@ -358,14 +324,11 @@ const NotificationView: FC<{
         .catch((error: any) => {
           setIsRequestInProgress(false);
           createSnackbar({
-            key: "error",
-            severity: "error",
+            key: 'error',
+            severity: 'error',
             label: error
               ? error?.error
-              : t(
-                  "label.something_wrong_error_msg",
-                  "Something went wrong. Please try again.",
-                ),
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -375,86 +338,86 @@ const NotificationView: FC<{
     [createSnackbar, t, notificationList],
   );
 
-	useEffect(() => {
-		if (filterdNotification.length > 0) {
-			const allRows = filterdNotification.map((item: Notification) => ({
-				id: item?.id,
-				columns: [
-					<Text
-						size="small"
-						color="gray0"
-						weight="regular"
-						key={item.id}
-						onClick={(event: any): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-							setSelectedRow([item?.id]);
-							if (item?.ack === false) {
-								markAsReadUnread(item, false);
-							}
-						}}
-					>
-						{item?.server}
-					</Text>,
-					<Text
-						size="small"
-						color="gray0"
-						weight={item?.ack ? 'light' : 'medium'}
-						key={item.id}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-							setSelectedRow([item?.id]);
-							if (item?.ack === false) {
-								markAsReadUnread(item, false);
-							}
-						}}
-					>
-						{format(item?.date, 'dd-MM-yyyy - HH:mm a')}
-					</Text>,
-					<Text
-						size="small"
-						color="gray0"
-						weight={item?.ack ? 'light' : 'medium'}
-						key={item.id}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-							setSelectedRow([item?.id]);
-							if (item?.ack === false) {
-								markAsReadUnread(item, false);
-							}
-						}}
-					>
-						{item?.level}
-					</Text>,
-					<Text
-						size="small"
-						color="gray0"
-						weight={item?.ack ? 'light' : 'medium'}
-						key={item.id}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-							setSelectedRow([item?.id]);
-							if (item?.ack === false) {
-								markAsReadUnread(item, false);
-							}
-						}}
-					>
-						{item?.subject}
-					</Text>
-				]
-			}));
-			setNotificationRows(allRows);
-		} else {
-			setNotificationRows([]);
-		}
-	}, [filterdNotification, handleClick, markAsReadUnread]);
+  useEffect(() => {
+    if (filterdNotification.length > 0) {
+      const allRows = filterdNotification.map((item: Notification) => ({
+        id: item?.id,
+        columns: [
+          <Text
+            size="small"
+            color="gray0"
+            weight="regular"
+            key={item.id}
+            onClick={(event: any): void => {
+              setSelectedNotification(item);
+              handleClick(event);
+              setSelectedRow([item?.id]);
+              if (item?.ack === false) {
+                markAsReadUnread(item, false);
+              }
+            }}
+          >
+            {item?.server}
+          </Text>,
+          <Text
+            size="small"
+            color="gray0"
+            weight={item?.ack ? 'light' : 'medium'}
+            key={item.id}
+            onClick={(event: { stopPropagation: () => void }): void => {
+              setSelectedNotification(item);
+              handleClick(event);
+              setSelectedRow([item?.id]);
+              if (item?.ack === false) {
+                markAsReadUnread(item, false);
+              }
+            }}
+          >
+            {format(item?.date, 'dd-MM-yyyy - HH:mm a')}
+          </Text>,
+          <Text
+            size="small"
+            color="gray0"
+            weight={item?.ack ? 'light' : 'medium'}
+            key={item.id}
+            onClick={(event: { stopPropagation: () => void }): void => {
+              setSelectedNotification(item);
+              handleClick(event);
+              setSelectedRow([item?.id]);
+              if (item?.ack === false) {
+                markAsReadUnread(item, false);
+              }
+            }}
+          >
+            {item?.level}
+          </Text>,
+          <Text
+            size="small"
+            color="gray0"
+            weight={item?.ack ? 'light' : 'medium'}
+            key={item.id}
+            onClick={(event: { stopPropagation: () => void }): void => {
+              setSelectedNotification(item);
+              handleClick(event);
+              setSelectedRow([item?.id]);
+              if (item?.ack === false) {
+                markAsReadUnread(item, false);
+              }
+            }}
+          >
+            {item?.subject}
+          </Text>,
+        ],
+      }));
+      setNotificationRows(allRows);
+    } else {
+      setNotificationRows([]);
+    }
+  }, [filterdNotification, handleClick, markAsReadUnread]);
 
-	const copyNotificationOperation = useCallback(
-		(notificationSelected: Notification) => {
-			const notificationItem = `
+  const copyNotificationOperation = useCallback(
+    (notificationSelected: Notification) => {
+      const notificationItem = `
 			${t('label.date', 'Date')} : ${format(notificationSelected?.date, 'dd-MM-yyyy - HH:mm a')} \n
 			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
 			${t('label.what_inside', 'What’s inside?')} : ${notificationSelected?.subject} \n
@@ -462,12 +425,9 @@ const NotificationView: FC<{
 		`;
       copyTextToClipboard(notificationItem);
       createSnackbar({
-        key: "success",
-        severity: "success",
-        label: t(
-          "notification.copy_notification_successfully",
-          "Notification copied successfully",
-        ),
+        key: 'success',
+        severity: 'success',
+        label: t('notification.copy_notification_successfully', 'Notification copied successfully'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -482,17 +442,17 @@ const NotificationView: FC<{
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
-          padding={{ left: isAddPadding ? "large" : "" }}
+          padding={{ left: isAddPadding ? 'large' : '' }}
         >
           {isShowTitle && (
             <Text size="large" weight="bold" color="gray0">
-              {t("notification.notifications_list", "Notifications’ List")}
+              {t('notification.notifications_list', 'Notifications’ List')}
             </Text>
           )}
         </Container>
         <Container mainAlignment="flex-end" crossAlignment="flex-end">
           <TabBar
-            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
+            // @ts-expect-error - fix this later
             items={items}
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
@@ -514,7 +474,7 @@ const NotificationView: FC<{
           width="fill"
           maxHeight="calc(100vh - 21.25rem)"
           minHeight="auto"
-          padding={{ all: isAddPadding ? "large" : "" }}
+          padding={{ all: isAddPadding ? 'large' : '' }}
         >
           <Table
             selectedRows={selectedRow}
@@ -522,7 +482,7 @@ const NotificationView: FC<{
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            style={{ overflow: "auto", height: "100%" }}
+            style={{ overflow: 'auto', height: '100%' }}
             RowFactory={CustomRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
