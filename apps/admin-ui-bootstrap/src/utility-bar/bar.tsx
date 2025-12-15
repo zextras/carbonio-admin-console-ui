@@ -10,20 +10,21 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { UtilityView } from '../../types/apps';
-import { CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE, CARBONIO_CE_ADMIN_DOCUMENTATION_URL } from '../constants';
+import {
+	CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
+	CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+} from '../constants';
 import { logout } from '../network/logout';
+import { useConfigAttribute } from '../react-query/use-config';
+import { useIsAdvanced } from '../react-query/use-is-advanced-supported';
 import { useUserAccount } from '../store/account';
-import { getIsAdvanced } from '../store/advance';
-import { useConfigStore } from '../store/config';
 
 import { useUtilityBarStore } from './store';
 import { openLink, useUtilityViews } from './utils';
 
-
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
 	const { mode, setMode, current, setCurrent } = useUtilityBarStore();
 	const onClick = useCallback((): void => {
-
 		setMode(current !== view.id ? 'open' : mode !== 'open' ? 'open' : 'closed');
 		setCurrent(view.id);
 	}, [current, mode, setCurrent, setMode, view.id]);
@@ -47,10 +48,13 @@ export const ShellUtilityBar: FC = () => {
 	const [accountName, setAccountName] = useState('');
 	const views = useUtilityViews();
 	const acct = useUserAccount();
-	const isAdvanced = getIsAdvanced();
-	const helpDocumentationUrl = useConfigStore((state) =>
-		isAdvanced ? state.getConfigAttribute(CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE) : CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+	const isAdvanced = useIsAdvanced();
+	const { data: helpDocumentationUrlAttribute } = useConfigAttribute(
+		CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE
 	);
+	const helpDocumentationUrl = isAdvanced
+		? helpDocumentationUrlAttribute || CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+		: CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
 	const [t] = useTranslation();
 	const accountItems = useMemo(
 		() => [

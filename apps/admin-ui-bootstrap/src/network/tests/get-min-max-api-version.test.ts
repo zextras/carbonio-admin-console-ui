@@ -4,38 +4,39 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { renderHook } from '@testing-library/react';
 import { minMaxVersionApi } from 'admin-ui-test-utils';
 import { noop } from 'lodash';
 import { HttpResponse } from 'msw';
 import { describe, it, expect, vi } from 'vitest';
 
+import { queryFnVersionInfo } from '../../react-query/use-advanced-version-info';
 import * as reporter from '../../reporting/functions';
-import { useAdvanceStore } from '../../store/advance';
-import { getMinMaxAPIVersion } from '../get-min-max-api-version';
 
-describe('getMinMaxApiVersion', () => {
-	it('sets fields in advanced store if domain present in response', async () => {
+describe('queryFnVersionInfo', () => {
+	it('returns version info if domain present in response', async () => {
 		minMaxVersionApi(() =>
 			HttpResponse.json(
 				{
 					minApiVersion: 2,
 					maxApiVersion: 3,
-					domain: 'test.com'
+					domain: 'test.com',
+					version: '1.0.0'
 				},
 				{ status: 200 }
 			)
 		);
-		await getMinMaxAPIVersion();
-		const { result } = renderHook(() => useAdvanceStore());
-		expect(result.current).toEqual({
+
+		const result = await queryFnVersionInfo();
+
+		expect(result).toEqual({
 			minApiVersion: 2,
 			maxApiVersion: 3,
-			domain: 'test.com'
+			domain: 'test.com',
+			version: '1.0.0'
 		});
 	});
 
-	it('throw error if no domain present in response', async () => {
+	it('returns null if no domain present in response', async () => {
 		minMaxVersionApi(() =>
 			HttpResponse.json(
 				{
@@ -46,13 +47,15 @@ describe('getMinMaxApiVersion', () => {
 			)
 		);
 
-		await expect(getMinMaxAPIVersion).rejects.toThrow();
+		const result = await queryFnVersionInfo();
+		expect(result).toBeNull();
 	});
 
-	it('return error if api fails', async () => {
+	it('returns null if api fails', async () => {
 		vi.spyOn(reporter, 'report').mockImplementation((): any => noop);
 		minMaxVersionApi(HttpResponse.error);
 
-		await expect(getMinMaxAPIVersion).rejects.toThrow();
+		const result = await queryFnVersionInfo();
+		expect(result).toBeNull();
 	});
 });

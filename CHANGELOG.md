@@ -3,6 +3,57 @@
 ### Bug Fixes
 
 * mta inbound flow security are not persisting in ce ([10dfee2](https://github.com/zextras/carbonio-admin-console-ui/commit/10dfee23a14b9e907ad65722b16ab0d283966542))
+## [0.12.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.2...v0.12.0-devel.3) (2025-12-06)
+
+### Performance Improvements
+
+* optimize build script to skip redundant builds ([#995](https://github.com/zextras/carbonio-admin-console-ui/issues/995)) ([e639bcb](https://github.com/zextras/carbonio-admin-console-ui/commit/e639bcba65da48cda979747062d7423686b7faba))
+
+## [0.12.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.1...v0.12.0-devel.2) (2025-12-05)
+
+### Bug Fixes
+
+* simplify certificate modal props ([#993](https://github.com/zextras/carbonio-admin-console-ui/issues/993)) ([74a1699](https://github.com/zextras/carbonio-admin-console-ui/commit/74a169991c6a0c1111d51672cf5e7d36b9d89dcc))
+
+## [0.12.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.5...v0.12.0-devel.1) (2025-12-05)
+
+### Features
+
+* **ci:** add renovate definition for dependencies management ([#988](https://github.com/zextras/carbonio-admin-console-ui/issues/988)) ([01823d4](https://github.com/zextras/carbonio-admin-console-ui/commit/01823d45e90a3de036207e22c53f49e9672970f5))
+
+### Performance Improvements
+
+* **ci:** optimize stashing by including only required files ([#994](https://github.com/zextras/carbonio-admin-console-ui/issues/994)) ([38f2b0f](https://github.com/zextras/carbonio-admin-console-ui/commit/38f2b0fe291441e4312931805a8f0e9a0df37b23))
+
+## [0.11.1-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.4...v0.11.1-devel.5) (2025-12-04)
+
+### Bug Fixes
+
+* **apps/admin-ui-bootstrap:** handle unsupported advanced in init ([#987](https://github.com/zextras/carbonio-admin-console-ui/issues/987)) ([36c7cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/36c7cc595956cd134c5f1e071fe4477d80059bd9))
+
+## [0.11.1-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.3...v0.11.1-devel.4) (2025-12-01)
+
+### Bug Fixes
+
+* mta inbound flow security are not persisting in ce ([#978](https://github.com/zextras/carbonio-admin-console-ui/issues/978)) ([485ba9f](https://github.com/zextras/carbonio-admin-console-ui/commit/485ba9f57705b836aa62549a90a827f28a5a88a5))
+
+## [0.11.1-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.2...v0.11.1-devel.3) (2025-11-27)
+
+### Bug Fixes
+
+* fixed issue of send otp bugs in user security ([#970](https://github.com/zextras/carbonio-admin-console-ui/issues/970)) ([0f43855](https://github.com/zextras/carbonio-admin-console-ui/commit/0f43855e01a9ada69f7857faa6770922a168f7b8))
+
+## [0.11.1-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1-devel.1...v0.11.1-devel.2) (2025-11-25)
+
+### Bug Fixes
+
+* fixed the issue of undefined ref in wizard ([a8e8296](https://github.com/zextras/carbonio-admin-console-ui/commit/a8e8296adcc2aafc7ceb75097eaa2e89910b4bb8))
+
+## [0.11.1-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0...v0.11.1-devel.1) (2025-11-24)
+
+### Bug Fixes
+
+* **ci:** correct image name for admin console UI ([#971](https://github.com/zextras/carbonio-admin-console-ui/issues/971)) ([0dcecfa](https://github.com/zextras/carbonio-admin-console-ui/commit/0dcecfa0e0cce1948f2ec17f5af2ecc303cd9869))
 
 ## [0.11.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.10.9...v0.11.0) (2025-11-17)
 

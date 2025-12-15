@@ -6,7 +6,6 @@
 
 import { useState } from 'react';
 
-import { useNetworkStore } from '../store/network';
 import { useUtilityBarStore } from '../utility-bar';
 
 export function useLocalStorage<T>(key: string, initialValue: T): any {
@@ -32,5 +31,3 @@ export function useLocalStorage<T>(key: string, initialValue: T): any {
 }
 
 export const usePrimaryBarState = (): boolean => useUtilityBarStore((s) => s.primaryBarState);
-
-export const useNetworkState = (): any => useNetworkStore.getState();

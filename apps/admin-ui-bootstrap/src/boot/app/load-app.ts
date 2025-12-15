@@ -36,9 +36,9 @@ function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 		};
 		try {
 			// DO NOT RENAME THIS
-			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__[
-				'@zextras/admin-ui-bootstrap'
-			][appPkg.name] = {
+			(window as unknown as IShellWindow).__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'][
+				appPkg.name
+			] = {
 				report: report(appPkg.name),
 				AppLink,
 				...getAppSetters(appPkg),
@@ -61,14 +61,6 @@ function loadAppModule(appPkg: CarbonioModule): Promise<CarbonioModule> {
 				);
 				resolve(appPkg);
 			};
-
-			// if (FLAVOR === 'NPM' && typeof cliSettings !== 'undefined' && cliSettings.hasHandlers) {
-
-			// (
-			// 	window as unknown as IShellWindow<SharedLibrariesAppsMap, ComponentClass>
-			// ).__ZAPP_HMR_HANDLERS__[appPkg.name] = (handlers: RequestHandlersList): void =>
-			// 	updateAppHandlers(appPkg, handlers);
-			// }
 			const script: HTMLScriptElement = document.createElement('script');
 			script.setAttribute('type', 'text/javascript');
 			script.setAttribute('data-pkg_name', appPkg.name);

@@ -47,6 +47,7 @@ pipeline {
             steps {
                 script {
                     gitMetadata()
+                    properties(defaultPipelineProperties())
 
                     isReleaseBranch = "${BRANCH_NAME}" ==~ /release/
                     echo "isReleaseBranch: ${isReleaseBranch}"
@@ -242,9 +243,9 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'node build_unified.js'
+                        sh 'node scripts/build_unified.js'
                     }
-                    stash includes: 'package/**', name: 'staging'
+                    stash includes: 'package/**,yap.json', name: 'staging'
                 }
             }
         }
@@ -253,7 +254,7 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: false,
+                        skipStash: true,
                         stashName: 'staging',
                         buildDirs: ['.'],
                         ubuntuSinglePkg: true,
@@ -262,30 +263,16 @@ pipeline {
                 }
             }
         }
-        stage('Publish containers - devel') {
-            when {
-                anyOf {
-                    expression {
-                        isDevelBranch == true
-                    }
-                }
-            }
+        stage('Publish docker images') {
             steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        script {
-                            tags = ['latest', 'devel']
-                            dockerHelper.buildImage([
-                                imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
-                                imageTags: tags,
-                                ocLabels: [
-                                    title: 'Carbonio Admin Console UI',
-                                    description: 'Carbonio Admin Console UI Container'
-                                ]
-                            ])
-                        }
-                    }
-                }
+                dockerStage([
+                    dockerfile: 'Dockerfile',
+                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-console-ui',
+                    ocLabels: [
+                        title: 'Carbonio Admin Console UI',
+                        description: 'Carbonio Admin Console UI Container'
+                    ]
+                ])
             }
         }
         stage('Upload artifacts') {

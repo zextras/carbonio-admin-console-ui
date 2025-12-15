@@ -21,7 +21,7 @@ export function loadApps(apps: Array<CarbonioModule>): void {
 		if (app.name === SHELL_APP_ID) return false;
 		return !(app.attrKey && getUserSetting('attrs', app.attrKey) !== 'TRUE');
 	});
-	
+
 	const { locale, addI18n } = useI18nStore.getState();
 	addI18n(appsToLoad, locale);
 

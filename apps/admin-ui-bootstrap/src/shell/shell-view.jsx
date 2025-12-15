@@ -50,7 +50,7 @@ function DarkReaderListener() {
 	return null;
 }
 
-export function Shell() {
+function Shell() {
 	const [mobileNavOpen, setMobileNavOpen] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [t] = useTranslation();

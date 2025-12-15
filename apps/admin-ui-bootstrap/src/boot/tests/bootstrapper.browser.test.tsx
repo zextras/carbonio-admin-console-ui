@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { page } from '@vitest/browser/context';
+import { page } from 'vitest/browser';
 import {
 	advancedSupportedApiForBrowser,
-	getAllConfigRequestApiForBrowser,
 	getInfoRequestApiForBrowser,
 	loginConfigApiForBrowser,
 	minMaxVersionApiForBrowser,
@@ -25,7 +24,6 @@ describe('Bootstrapper', () => {
 		minMaxVersionApiForBrowser(HttpResponse.error);
 		loginConfigApiForBrowser(HttpResponse.error);
 		getInfoRequestApiForBrowser(HttpResponse.error);
-		getAllConfigRequestApiForBrowser(HttpResponse.error);
 
 		setupBrowserTest(<Bootstrapper />, {
 			initialRouterEntry: '/carbonioAdmin'

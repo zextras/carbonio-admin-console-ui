@@ -1,0 +1,426 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { soapFetch, useUserSettings, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import {
+	Container,
+	Row,
+	Padding,
+	Divider,
+	Text,
+	Button,
+	useSnackbar
+} from '@zextras/carbonio-design-system';
+import _ from 'lodash';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
+import { objectType } from '../../../../../types';
+import {
+	TRUE,
+	ZIMBRA_ADMIN_URN,
+	ZIMBRA_DOMAIN_NAME,
+	ZIMBRA_ID,
+	ZIMBRA_SSL_CERTIFICATE,
+	ZIMBRA_SSL_PRIVATE_KEY,
+	ZIMBRA_VIRTUAL_HOSTNAME
+} from '../../../../constants';
+import { flushCache } from '../../../../services/flush-cache-service';
+import { modifyDomain } from '../../../../services/modify-domain-service';
+import ModalOverlay from '../../../components/ModalOverlay';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+
+import { AlertBanner } from './alert-banner';
+import { CertificateView } from './certificate-view';
+import DeleteCertificateModel from './delete-certificate-model';
+import { LoadVerifyCertificateWizard } from './load-verify-certificate-wizard';
+import { VirtualHostSection } from './virtual-host-section';
+
+export const DomainVirtualHosts: FC = () => {
+	const [t] = useTranslation();
+	const { domainId }: { domainId: string } = useParams();
+	const createSnackbar = useSnackbar();
+	const domainInformation: any = useDomainStore((state) => state.domain?.a);
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
+	const [items, setItems] = useState<any>([]);
+	const [defaultItems, setDefaultItems] = useState<any>([]);
+	const [domainName, setDomainName] = useState<string>('');
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [zimbraId, setZimbraId] = useState('');
+	const [toggleLoadVerifyCertWizard, setToggleLoadVerifyCertWizard] = useState(false);
+	const [domainCertificate, setDomainCertificate] = useState<any>(null);
+	const [open, setOpen] = useState(false);
+	const [alertToggle, setAlertToggle] = useState(false);
+	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
+	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
+
+	const closeHandler = (): void => {
+		setOpen(false);
+	};
+
+	useEffect(() => {
+		if (!!domainInformation && domainInformation.length > 0) {
+			const zimbraIdArray = domainInformation.filter(
+				(domainData: any) => domainData.n === ZIMBRA_ID
+			);
+			if (zimbraIdArray && zimbraIdArray.length > 0) {
+				setZimbraId(zimbraIdArray[0]._content);
+			}
+			const domainNameArray = domainInformation.filter(
+				(domainData: any) => domainData.n === ZIMBRA_DOMAIN_NAME
+			);
+			if (domainNameArray && domainNameArray.length > 0) {
+				setDomainName(domainNameArray[0]._content);
+			}
+			const domainVirtualHostArray = domainInformation.filter(
+				(domainData: any) => domainData.n === ZIMBRA_VIRTUAL_HOSTNAME
+			);
+			if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
+				const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
+					id: (index + 1)?.toString(),
+					columns: [
+						<Text key={index + 1} color="gray0" weight="regular">
+							{domainData._content}
+						</Text>
+					]
+				}));
+				setItems(virtualHostItems);
+				setDefaultItems(virtualHostItems);
+			} else {
+				setItems([]);
+				setDefaultItems([]);
+			}
+		}
+	}, [domainInformation]);
+
+	useEffect(() => {
+		if (!_.isEqual(defaultItems, items)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [defaultItems, items]);
+
+	const onCancel = (): void => {
+		setItems(defaultItems);
+	};
+
+	const onSave = (): void => {
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
+		body.id = zimbraId;
+
+		body._jsns = ZIMBRA_ADMIN_URN;
+		items.forEach((item: any) => {
+			if (item.columns[0]?.props?.children) {
+				attributes.push({
+					n: ZIMBRA_VIRTUAL_HOSTNAME,
+					_content: item.columns[0]?.props?.children
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_VIRTUAL_HOSTNAME,
+					_content: item.columns[0]
+				});
+			}
+		});
+		if (attributes?.length === 0) {
+			attributes.push({
+				n: ZIMBRA_VIRTUAL_HOSTNAME,
+				_content: ''
+			});
+		}
+		body.a = attributes;
+		modifyDomain(body)
+			.then((data) => {
+				if (data?.warning && Array.isArray(data.warning) && data.warning.length > 0) {
+					data.warning.forEach((warning: any) => {
+						createSnackbar({
+							key: `warning-${warning.type ?? Date.now()}`,
+							severity: 'warning',
+							label:
+								warning.message ??
+								t('label.warning_message', 'A warning occurred during the operation'),
+							autoHideTimeout: 5000,
+							hideButton: true,
+							replace: false
+						});
+					});
+				}
+
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: false
+				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
+				const domainData: any = data?.domain?.[0];
+				if (domainData) {
+					setDomain(domainData);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	const handleLoadAndVerifyCert = (): void => {
+		setToggleLoadVerifyCertWizard(!toggleLoadVerifyCertWizard);
+	};
+
+	const getAllCertiDetailsAPICall = useCallback((): void => {
+		soapFetch('GetDomainCert', {
+			_jsns: ZIMBRA_ADMIN_URN,
+			domain: domainId
+		})
+			.then((res: any) => {
+				const data = _.mapValues(res?.cert[0], (value) => value[0]._content);
+				setDomainCertiDetails(data);
+				setToggleCertiBtn(false);
+				setIsCertificateAvailbale(true);
+			})
+			// TODO: On no cert found server always returns error so used empty catch for now
+
+			.catch((error) => {
+				if (error) {
+					setIsCertificateAvailbale(false);
+				}
+			});
+		const zimbraData =
+			domainInformation &&
+			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
+		soapFetch(`GetDomain`, {
+			_jsns: ZIMBRA_ADMIN_URN,
+			attrs: 'zimbraSSLCertificate,zimbraSSLPrivateKey',
+			domain: {
+				by: 'name',
+				_content: zimbraData
+			}
+		})
+			.then((response: any) => {
+				if (response?.domain[0]?.a) {
+					const certificates = _.reduce(
+						response?.domain[0]?.a,
+						(result, item) => ({ ...result, [item.n]: item._content }),
+						{}
+					);
+					setDomainCertificate(certificates);
+				} else {
+					setDomainCertificate(null);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
+
+	const deleteHandler = (): void => {
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
+		body.id = zimbraId;
+		body._jsns = ZIMBRA_ADMIN_URN;
+		attributes.push({
+			n: ZIMBRA_SSL_CERTIFICATE,
+			_content: ''
+		});
+		attributes.push({
+			n: ZIMBRA_SSL_PRIVATE_KEY,
+			_content: ''
+		});
+		body.a = attributes;
+		modifyDomain(body)
+			.then(() => {
+				setDomainCertificate(null);
+				createSnackbar({
+					key: 'success',
+					severity: 'success',
+					label: t('domain.certificate_removed', `The certificates has been removed`),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
+				setOpen(false);
+				getAllCertiDetailsAPICall();
+				setDomainCertiDetails({});
+				setToggleCertiBtn(true);
+				setIsCertificateAvailbale(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					severity: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	useEffect(() => {
+		getAllCertiDetailsAPICall();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [alertToggle]);
+
+	const getVirtualHostsNames = (): string[] => {
+		return defaultItems.map((item: any) => {
+			if (item.columns[0]?.props?.children) {
+				return item.columns[0].props.children;
+			}
+			return item.columns[0];
+		});
+	};
+
+	return (
+		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
+			{toggleLoadVerifyCertWizard && (
+				<ModalOverlay open={toggleLoadVerifyCertWizard}>
+					<LoadVerifyCertificateWizard
+						setToggleWizard={setToggleLoadVerifyCertWizard}
+						setAlertToggle={setAlertToggle}
+					/>
+				</ModalOverlay>
+			)}
+			<Container
+				orientation="column"
+				background="gray6"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+			>
+				{open && (
+					<DeleteCertificateModel
+						open={open}
+						closeHandler={closeHandler}
+						deleteHandler={deleteHandler}
+					/>
+				)}
+				<Row mainAlignment="flex-start" width="100%">
+					<Container orientation="vertical" mainAlignment="space-around" height="56px">
+						<Row orientation="horizontal" width="100%">
+							<Row
+								padding={{ all: 'large' }}
+								mainAlignment="flex-start"
+								width="50%"
+								crossAlignment="flex-start"
+							>
+								<Text size="medium" weight="bold" color="gray0">
+									{t('label.virtual_hosts', 'Virtual Hosts')}
+								</Text>
+							</Row>
+							<Row
+								padding={{ all: 'large' }}
+								width="50%"
+								mainAlignment="flex-end"
+								crossAlignment="flex-end"
+							>
+								<Padding right="small">
+									{isDirty && (
+										<Button
+											label={t('label.cancel', 'Cancel')}
+											color="secondary"
+											onClick={onCancel}
+										/>
+									)}
+								</Padding>
+								{isDirty && (
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+								)}
+							</Row>
+						</Row>
+					</Container>
+					<Divider color="gray2" />
+				</Row>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					style={{ overflow: 'auto' }}
+					width="100%"
+					height="calc(100vh - 150px)"
+					padding="extrasmall"
+				>
+					<Container width="100%">
+						<VirtualHostSection items={items} setItems={setItems} />
+					</Container>
+					{alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
+					<Row width="100%" padding={{ horizontal: 'large' }}>
+						<Divider color="gray2" />
+					</Row>
+					<CertificateView
+						domainCertiDetails={domainCertiDetails}
+						toggleCertiBtn={toggleCertiBtn}
+						domainCertificate={domainCertificate}
+						domainName={domainName}
+						domainId={zimbraId}
+						hasVirtualHosts={defaultItems.length > 0}
+						virtualHosts={getVirtualHostsNames()}
+						onVerifyCertificate={handleLoadAndVerifyCert}
+						onRemove={() => setOpen(true)}
+						onCertificateGenerated={() => setAlertToggle(true)}
+					/>
+				</Container>
+			</Container>
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
+		</Container>
+	);
+};
