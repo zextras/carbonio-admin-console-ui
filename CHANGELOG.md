@@ -1,3 +1,11 @@
+## [0.12.0-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.3...v0.12.0-devel.4) (2025-12-15)
+
+### Bug Fixes
+
+* added translation key ([4b15ce8](https://github.com/zextras/carbonio-admin-console-ui/commit/4b15ce8887e6029f47bed0ca7a4a4a3e81e36701))
+* added translation key refs: CO-2960 ([4b1fdf1](https://github.com/zextras/carbonio-admin-console-ui/commit/4b1fdf1e468ea1b2847d8917c5fa906d8bb80a76))
+* fixed string ([8b600aa](https://github.com/zextras/carbonio-admin-console-ui/commit/8b600aa8f3be56c441e456736d6fc2d4d9153745))
+
 ## [0.12.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.2...v0.12.0-devel.3) (2025-12-06)
 
 ### Performance Improvements
