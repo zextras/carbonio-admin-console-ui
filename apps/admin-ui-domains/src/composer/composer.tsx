@@ -33,15 +33,14 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
 
-import type { IAllProps as EditorProps } from '@tinymce/tinymce-react';
-import { Editor } from '@tinymce/tinymce-react';
+import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
 import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/carbonio-design-system';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
-import tinymce from 'tinymce/tinymce';
+// eslint-disable-next-line no-duplicate-imports
+import tinymce, { type EditorOptions, type TinyMCE, type Ui } from 'tinymce/tinymce';
 
 import { SUPPORTED_LOCALES } from './utils';
 

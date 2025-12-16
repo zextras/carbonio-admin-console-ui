@@ -5,17 +5,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { i18n, InitOptions } from "i18next";
-import i18next from "i18next";
-import Backend from "i18next-http-backend";
-import { produce } from "immer";
-import { dropRight, forEach, reduce } from "lodash-es";
-import { initReactI18next } from "react-i18next";
-import { create } from "zustand";
+import i18next, { type i18n, type InitOptions } from 'i18next';
+import Backend from 'i18next-http-backend';
+import { produce } from 'immer';
+import { dropRight, forEach, reduce } from 'lodash-es';
+import { initReactI18next } from 'react-i18next';
+import { create } from 'zustand';
 
-import { SHELL_APP_ID } from "../../constants";
-import { queryClient } from "../../providers/react-query-provider";
-import type { CarbonioModule } from "../../types/apps";
+import { SHELL_APP_ID } from '../../constants';
+import { queryClient } from '../../providers/react-query-provider';
+import type { CarbonioModule } from '../../types/apps';
 
 type I18nState = {
   instances: Record<string, i18n>;
@@ -31,22 +30,22 @@ type I18nActions = {
 const addShell = (apps: Array<CarbonioModule>): Array<CarbonioModule> => [
   ...apps,
   {
-    commit: "",
-    description: "",
-    js_entrypoint: "",
+    commit: '',
+    description: '',
+    js_entrypoint: '',
     name: SHELL_APP_ID,
     priority: -1,
-    version: "",
-    type: "shell",
-    attrKey: "",
-    icon: "",
-    display: "Shell",
+    version: '',
+    type: 'shell',
+    attrKey: '',
+    icon: '',
+    display: 'Shell',
   },
 ];
 
 const getDefaultSettings = (): any => {
   try {
-    return queryClient.getQueryData(["account", "settings"]);
+    return queryClient.getQueryData(['account', 'settings']);
   } catch {
     return null;
   }
@@ -57,16 +56,16 @@ const settings = getDefaultSettings();
 const defaultLng =
   (settings?.prefs?.zimbraPrefLocale as string) ??
   (settings?.attrs?.zimbraLocale as string) ??
-  "en";
+  'en';
 
 const defaultI18n = i18next.createInstance({ lng: defaultLng });
 
 const defaultI18nInitOptions: InitOptions = {
   returnEmptyString: true,
   returnNull: false,
-  compatibilityJSON: "v4",
+  compatibilityJSON: 'v4',
   lng: defaultLng,
-  fallbackLng: "en",
+  fallbackLng: 'en',
   debug: false,
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
@@ -112,7 +111,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
                   loadPath:
                     app.name === SHELL_APP_ID
                       ? `${BASE_PATH}i18n/{{lng}}.json`
-                      : `${dropRight(app.js_entrypoint.split("/")).join("/")}/i18n/{{lng}}.json`,
+                      : `${dropRight(app.js_entrypoint.split('/')).join('/')}/i18n/{{lng}}.json`,
                 },
               });
 
