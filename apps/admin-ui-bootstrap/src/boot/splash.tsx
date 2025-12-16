@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import '../splash.css';
-import React, { FC } from 'react';
+
+import { FC } from 'react';
 
 import Helmet from '../svg/carbonio-head.svg';
 

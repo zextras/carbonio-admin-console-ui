@@ -6,16 +6,15 @@
 
 import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
 	Button,
-	Text,
-	useSnackbar,
+	Container,
+	Divider,
 	Input,
 	Padding,
-	Divider
-} from '@zextras/carbonio-design-system';
-import React, { ChangeEvent, FC, useState } from 'react';
+	Row,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';

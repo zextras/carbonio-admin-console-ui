@@ -4,14 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { filter, map } from 'lodash';
+import { filter, map } from 'lodash-es';
 
 import { CarbonioModule } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-import { useReporter } from '../../reporting';
-import { getUserSetting } from '../../store/account';
+import { getUserSetting } from '../../react-query/use-account';
 import { useI18nStore } from '../../store/i18n/store';
-
 import { loadApp, unloadApps } from './load-app';
 import { injectSharedLibraries } from './shared-libraries';
 
@@ -21,11 +19,9 @@ export function loadApps(apps: Array<CarbonioModule>): void {
 		if (app.name === SHELL_APP_ID) return false;
 		return !(app.attrKey && getUserSetting('attrs', app.attrKey) !== 'TRUE');
 	});
-	
+
 	const { locale, addI18n } = useI18nStore.getState();
 	addI18n(appsToLoad, locale);
-
-	useReporter.getState().setClients(appsToLoad);
 	Promise.allSettled(map(appsToLoad, (app) => loadApp(app)));
 }
 

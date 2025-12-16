@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, forwardRef } from 'react';
-
 import { Container, Text } from '@zextras/carbonio-design-system';
+import React, { FC, forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { BadgeInfo } from '../../types';
@@ -25,7 +24,7 @@ const MiniBadge = styled(Container)<{ badge: BadgeInfo }>`
 	pointer-events: none;
 `;
 
-// eslint-disable-next-line react/display-name
+ 
 const BadgeWrap: FC<{ badge: BadgeInfo; isExpanded: boolean; children?: React.ReactNode }> =
 	forwardRef(({ badge, children, isExpanded }, ref) => (
 		<Container

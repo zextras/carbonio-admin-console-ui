@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
 import { useSnackbar } from '@zextras/carbonio-design-system';
-import { find, forEach, isEqual, size } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { find, forEach, isEqual, size } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
@@ -16,9 +17,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../constants';
 import { flushCache } from '../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../services/modify-cos-service';
 import { useCosStore } from '../store/cos/store';
-import { Right, Rights, useRightsStore } from '../store/rights/store';
 import { PageLayout } from '../views/page-layout';
-
 import { WscSettings } from './wsc-settings';
 
 const WscCosSettings: FC = () => {
@@ -32,10 +31,10 @@ const WscCosSettings: FC = () => {
 
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const setCos = useCosStore((state) => state.setCos);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 

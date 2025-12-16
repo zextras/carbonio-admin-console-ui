@@ -14,10 +14,10 @@ export type SoapFetch = <Request, Response>(
 	api: string,
 	body: Request,
 	options?: {
-		otherAccount?: string,
-		targetServer?: string,
-		authToken?: string,
-		noSession?: boolean
+		otherAccount?: string;
+		targetServer?: string;
+		authToken?: string;
+		noSession?: boolean;
 	}
 ) => Promise<Response>;
 
@@ -45,7 +45,6 @@ export type AccountState = {
 	account?: Account;
 	settings: AccountSettings;
 	zimbraVersion: string;
-	usedQuota: number;
 };
 
 export type Account = {

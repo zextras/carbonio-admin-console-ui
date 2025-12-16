@@ -3,20 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
 
 import {
+	Button,
 	Container,
-	Input,
-	Row,
-	Text,
-	Table,
 	Divider,
 	Icon,
-	useSnackbar,
-	Button
-} from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+	Input,
+	Row,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash-es';
+import React, { FC, ReactElement,useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
@@ -317,7 +316,7 @@ const CosList: FC = () => {
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setSearchString(e.target.value);
 									}}
-									CustomIcon={(): JSX.Element => (
+									CustomIcon={(): React.JSX.Element => (
 										<Icon icon="FunnelOutline" size="large" color="primary" />
 									)}
 								/>

@@ -4,22 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext } from 'react';
-
 import { ModalManagerContext, useSnackbar } from '@zextras/carbonio-design-system';
+import { FC, useContext } from 'react';
 import { BrowserRouter, useHistory } from 'react-router-dom';
 
 import { BASENAME } from '../constants';
-import AppLoaderMounter from './app/app-loader-mounter';
 import ShellView from '../shell/shell-view';
 import { useBridge } from '../store/context-bridge';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import AppLoaderMounter from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {
 	const history = useHistory();
 	const createSnackbar = useSnackbar();
-	
+
 	const createModal = useContext(ModalManagerContext) as Function;
 	useBridge({
 		functions: {
