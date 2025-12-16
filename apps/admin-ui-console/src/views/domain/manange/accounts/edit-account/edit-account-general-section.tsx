@@ -3,15 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useEffect,
-	useCallback,
-	useMemo,
-	useContext,
-	useState,
-	ChangeEvent
-} from 'react';
 
 import {
 	Container,
@@ -33,6 +24,15 @@ import {
 } from '@zextras/carbonio-design-system';
 import { debounce, map } from 'lodash';
 import moment from 'moment';
+import React, {
+	FC,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+	useState,
+	ChangeEvent
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -380,8 +380,7 @@ const EditAccountGeneralSection: FC<{
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -671,11 +670,11 @@ const EditAccountGeneralSection: FC<{
 				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
+					)}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
 				: `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
-				  )}`,
+					)}`,
 		[initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed, t]
 	);
 
@@ -685,11 +684,11 @@ const EditAccountGeneralSection: FC<{
 				? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t(
 						'label.of',
 						'Of'
-				  )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
+					)}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
 				: `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
 						'label.unlimited',
 						'unlimited'
-				  )}`,
+					)}`,
 		[initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t]
 	);
 
@@ -1045,8 +1044,8 @@ const EditAccountGeneralSection: FC<{
 							value={
 								accountDetail?.zimbraCreateTimestamp
 									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
-											'DD MMM YYYY | hh:MM:SS A'
-									  )
+											'DD MMM YYYY | hh:mm:ss A'
+										)
 									: t('label.not_available', 'Not Available')
 							}
 						/>
@@ -1058,8 +1057,8 @@ const EditAccountGeneralSection: FC<{
 							value={
 								accountDetail?.zimbraLastLogonTimestamp
 									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(
-											'DD MMM YYYY | hh:MM:SS A'
-									  )
+											'DD MMM YYYY | hh:mm:ss A'
+										)
 									: t('label.never_logged_in', 'Never logged in')
 							}
 							defaultValue={t('label.never_logged_in', 'Never logged in')}
@@ -1097,9 +1096,8 @@ const EditAccountGeneralSection: FC<{
 								<Tooltip
 									placement="top"
 									label={t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
 										'label.try_local_password_management_ldap',
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+
 										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>
