@@ -14,8 +14,8 @@
   "scripts": {
     "build": "turbo run build",
     "build:dev": "turbo run build:dev",
-    "build:unified": "node ./scripts/build_unified.js",
-    "build:unified:dev": "node ./scripts/build_unified.js --dev",
+    "build:unified": "node ./scripts/build_unified.ts",
+    "build:unified:dev": "node ./scripts/build_unified.ts --dev",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "deploy:unified": "node ./scripts/deploy-unified.js",
