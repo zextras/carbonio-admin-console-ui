@@ -1,3 +1,9 @@
+## [0.11.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1...v0.11.2) (2025-12-16)
+
+### Bug Fixes
+
+* correctly format date in various parts of the code ([a2cd3f0](https://github.com/zextras/carbonio-admin-console-ui/commit/a2cd3f0d95b6da9a91e492f3dbf91994f2243261))
+
 ## [0.11.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0...v0.11.1) (2025-12-05)
 
 ### Bug Fixes
