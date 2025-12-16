@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
+import noticeConfig from './notice.config.js';
 
 export default tseslint.config(
   js.configs.recommended,
@@ -56,8 +57,5 @@ export default tseslint.config(
       'react/prop-types': 'off',
     },
   },
-  {
-    files: ['**/*.test.*'],
-    rules: { 'no-console': 'off' },
-  },
+  noticeConfig,
 );
