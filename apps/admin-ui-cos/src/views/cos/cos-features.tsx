@@ -232,7 +232,7 @@ const CosFeatures: FC = () => {
 
 	return (
 		<PageLayout
-			title={t('cos.features', 'Features')}
+			title={t('label.features', 'Features')}
 			onSave={onSave}
 			onCancel={onCancel}
 			unSavedChanges={isDirty}
