@@ -54,6 +54,7 @@ export default tseslint.config(
       'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      'no-duplicate-imports': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
