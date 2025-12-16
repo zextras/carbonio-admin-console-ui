@@ -11,7 +11,7 @@ import {
   useDomainStore,
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash-es';
-import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, memo, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -36,12 +36,15 @@ const AppView: FC = (props) => (
   </Suspense>
 );
 
+const MemoizedAppView = memo(AppView);
+
 const App: FC = () => {
   const [t] = useTranslation();
   const history = useHistory();
 
   const { data: rights } = useCurrentUserRights();
-  const { setDomainView, setDomain } = useDomainStore((state) => state);
+  const setDomainView = useDomainStore((state) => state.setDomainView);
+  const setDomain = useDomainStore((state) => state.setDomain);
 
   const createDomainRight = useMemo(() => {
     const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
@@ -84,7 +87,7 @@ const App: FC = () => {
         options: [],
       },
     ];
-    
+
     return <PrimaryBarTooltip items={domainsTooltipItems} />;
   }, [t]);
 
@@ -95,15 +98,15 @@ const App: FC = () => {
       visible: true,
       label: t('label.domains', 'Domains') || '',
       primaryBar: 'AtOutline',
-      appView: AppView,
-      primarybarSection: { ...managementSection },
+      appView: MemoizedAppView,
+      primarybarSection: managementSection,
       tooltip: DomainTooltipView,
       trackerLabel: PRIMARY_BAR_DOMAINS,
     });
   }, [DomainTooltipView, managementSection, t]);
 
   useEffect(() => {
-    registerActions({
+    const actionConfig = {
       action: (): any => ({
         id: 'new-domain',
         label: t('label.create_new_domain', 'Create New Domain'),
@@ -120,8 +123,9 @@ const App: FC = () => {
         primary: false,
       }),
       id: 'new-domain',
-      type: 'new',
-    });
+      type: 'new' as const,
+    };
+    registerActions(actionConfig);
   }, [createDomainRight, history, setDomain, setDomainView, t]);
 
   return null;
