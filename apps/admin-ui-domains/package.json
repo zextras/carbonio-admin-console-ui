@@ -12,7 +12,8 @@
     "reset": "node ../../scripts/reset.js",
     "start": "sdk watch",
     "type-check": "tsc --noEmit",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
+    "lint": "eslint --cache --quiet",
+    "lint:fix": "eslint --fix --quiet --cache",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
     "test:ci": "vitest run --coverage"
