@@ -41,6 +41,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import type { EditorOptions, TinyMCE, Ui } from 'tinymce/tinymce';
+import tinymce from 'tinymce/tinymce';
 
 import { SUPPORTED_LOCALES } from './utils';
 
