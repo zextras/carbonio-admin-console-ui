@@ -36,7 +36,8 @@ export default defineConfig(({ mode }) => ({
 	],
 	resolve: {
 		alias: {
-			'app-entrypoint': resolve(__dirname, 'src/app.tsx')
+			'app-entrypoint': resolve(__dirname, 'src/app.tsx'),
+			'tinymce/tinymce': resolve(__dirname, 'node_modules/tinymce/tinymce.min.js')
 		}
 	},
 	define: {

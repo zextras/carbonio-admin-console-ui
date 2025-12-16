@@ -7,12 +7,11 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import {
 	advancedSupportedApi,
-	minMaxVersionApi,
+	getInfoRequestApi,
 	loginConfigApi,
-	getInfoRequestApi
-} from 'admin-ui-test-utils';
+	minMaxVersionApi} from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { vi, describe, it, expect } from 'vitest';
+import { describe, expect,it, vi } from 'vitest';
 
 import I18nFactory from '../../i18n/i18n-factory';
 import * as mockGoToLogin from '../../network/go-to-login';

@@ -7,15 +7,14 @@
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
-	Row,
 	Input,
 	Padding,
-	Switch,
-	Text,
+	Radio,
+	Row,
 	Select,
-	Radio
-} from '@zextras/carbonio-design-system';
-import React, {
+	Switch,
+	Text} from '@zextras/carbonio-design-system';
+import {
 	ChangeEvent,
 	FC,
 	useCallback,
@@ -35,7 +34,6 @@ import {
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
 import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
-
 import { VolumeContext } from './volume-context';
 
 const MailstoresCreate: FC<{

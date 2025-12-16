@@ -5,8 +5,8 @@
  */
 
 import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Button, useSnackbar, Padding } from '@zextras/carbonio-design-system';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Container, Padding,useSnackbar } from '@zextras/carbonio-design-system';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -16,7 +16,6 @@ import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import OverlayDivision from '../../../../components/overlayDivision';
-
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';

@@ -5,18 +5,17 @@
  */
 
 import {
+	Button,
 	Container,
-	Input,
-	Row,
-	Text,
-	Table,
 	Divider,
 	Icon,
-	useSnackbar,
-	Button
-} from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
+	Input,
+	Row,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash-es';
+import React, { FC, ReactElement,useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';

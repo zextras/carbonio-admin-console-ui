@@ -3,17 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import {
-	Container,
-	Row,
-	Padding,
-	Text,
 	Button,
+	Container,
 	Icon,
-	Modal
-} from '@zextras/carbonio-design-system';
+	Modal,
+	Padding,
+	Row,
+	Text} from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 export const ResetTheme: FC<{

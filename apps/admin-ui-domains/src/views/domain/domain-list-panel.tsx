@@ -5,18 +5,17 @@
  */
 
 import {
-	replaceHistory,
-	useDomainStore,
 	getAllRights,
-	useCurrentUserRights,
-	useIsAdvanced,
+	replaceHistory,
 	useAppConfigStore,
+	useBackupServers,
+	useCurrentUserRights,
+	useDomainStore,
 	useGlobalCarbonioSendAnalytics,
-	useBackupServers
-} from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+	useIsAdvanced} from '@zextras/admin-ui-bootstrap';
+import { Container, Icon, Padding, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -26,44 +25,42 @@ import {
 	ACCOUNTS,
 	ACTIVE_SYNC,
 	AUTHENTICATION,
+	BOOLEAN_FALSE,
+	CONFIG,
+	DELEGATES_DOMAIN_ADMINS,
+	DISCLAIMER,
+	DISTRIBUTION_LIST,
 	DOMAINS_ROUTE_ID,
+	FALSE,
 	GAL,
 	GENERAL_SETTINGS,
-	MAILBOX_QUOTA,
-	DISTRIBUTION_LIST,
-	MANAGE_APP_ID,
-	MAX_DOMAIN_DISPLAY,
-	RESTORE_ACCOUNT,
-	VIRTUAL_HOSTS,
-	SAML,
-	CONFIG,
-	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
-	TWO_FACTOR_AUTHENTICATION,
-	SECURITY_GROUP,
-	GLOBAL_ROUTE,
+	GLOBAL_ACTIVE_SYNC_ROUTE,
+	GLOBAL_ADMINISTRATORS,
+	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_QUARANTINE_ROUTE,
-	WHITELABEL_SETTINGS,
-	GLOBAL_WHITELABEL_SETTINGS,
-	DELEGATES_DOMAIN_ADMINS,
-	RESOURCES,
-	DISCLAIMER,
+	GLOBAL_ROUTE,
 	GLOBAL_SETTINGS_ROUTE,
+	GLOBAL_WHITELABEL_SETTINGS,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED,
-	GLOBAL_ACTIVE_SYNC_ROUTE,
-	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-	FALSE,
-	BOOLEAN_FALSE,
-	GLOBAL_ADMINISTRATORS
-} from '../../constants';
+	MAILBOX_QUOTA,
+	MANAGE_APP_ID,
+	MAX_DOMAIN_DISPLAY,
+	RESOURCES,
+	RESTORE_ACCOUNT,
+	SAML,
+	SECURITY_GROUP,
+	TWO_FACTOR_AUTHENTICATION,
+	VIRTUAL_HOSTS,
+	WHITELABEL_SETTINGS,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED} from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-
 import GlobalListPanel from './global-list-panel';
 
 const SelectItem = styled(Row)``;

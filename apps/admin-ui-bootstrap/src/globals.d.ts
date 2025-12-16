@@ -19,7 +19,7 @@ type cliSettingsNamespace = {
 	hasHandlers?: boolean;
 	isWatch: boolean;
 	isStandalone: boolean;
-	// eslint-disable-next-line camelcase
+	 
 	app_package: {
 		package: string;
 		name: string;

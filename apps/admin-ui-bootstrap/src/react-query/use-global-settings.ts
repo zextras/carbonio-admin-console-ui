@@ -8,7 +8,6 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { postSoapFetchRequest } from '../network/fetch';
-
 import { useAllConfig } from './use-config';
 
 type GlobalConfig = Record<string, any>;
@@ -19,9 +18,7 @@ type GlobalConfigOptions = Omit<UseQueryOptions<GlobalConfig>, 'queryKey' | 'que
 
 // Query function for global configuration
 const queryFn = async (): Promise<GlobalConfig> => {
-	const postRequest = postSoapFetchRequest('admin-ui-console');
-
-	const response = (await postRequest('/service/admin/soap/zextras', {
+	const response = (await postSoapFetchRequest('/service/admin/soap/zextras', {
 		zextras: {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxConfig',

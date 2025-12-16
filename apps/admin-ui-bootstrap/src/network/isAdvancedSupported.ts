@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isArray } from 'lodash';
+import { isArray } from 'lodash-es';
 
 type Supported = {
 	supported: boolean;

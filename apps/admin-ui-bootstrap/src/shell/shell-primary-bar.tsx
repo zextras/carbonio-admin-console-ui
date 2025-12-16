@@ -5,28 +5,22 @@
  */
 
 import {
-	Container,
 	Button,
-	Row,
-	Tooltip,
-	Text,
-	Padding,
+	Container,
 	Divider,
-	Popper
-} from '@zextras/carbonio-design-system';
-import { map, isEmpty, trim, filter, sortBy } from 'lodash';
-import React, { useContext, FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
+	Padding,
+	Popper,
+	Row,
+	Text} from '@zextras/carbonio-design-system';
+import { map, sortBy,trim } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useRef,useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { AppRoute, PrimaryAccessoryView, PrimaryBarView } from '../../types';
-import AppContextProvider from '../boot/app/app-context-provider';
+import { AppRoute, PrimaryBarView } from '../../types';
 import { useAppStore } from '../store/app';
 import { useUtilityBarStore } from '../utility-bar';
-import { checkRoute } from '../utility-bar/utils';
-
 import BadgeWrap from './badge-wrap';
-import { BoardValueContext, BoardSetterContext } from './boards/board-context';
 import { Collapser } from './collapser';
 
 const PrimaryBarContainer = styled(Container)`
@@ -58,26 +52,6 @@ const CustomText = styled(Text)`
 	display: flex;
 	align-items: center;
 `;
-const ToggleBoardIcon: FC = () => {
-	// @ts-ignore
-	const { boards, minimized } = useContext(BoardValueContext);
-
-	// @ts-ignore
-	const { toggleMinimized } = useContext(BoardSetterContext);
-
-	if (isEmpty(boards)) return null;
-	return (
-		<Container orientation="horizontal" mainAlignment="flex-start" background="transparent">
-			<Button
-				type="ghost"
-				color={'primary'}
-				icon={minimized ? 'BoardOpen' : 'BoardCollapse'}
-				onClick={toggleMinimized}
-				size="large"
-			/>
-		</Container>
-	);
-};
 
 type PrimaryBarItemProps = {
 	view: PrimaryBarView;
@@ -85,31 +59,6 @@ type PrimaryBarItemProps = {
 	isExpanded: boolean;
 	onClick: () => void;
 };
-
-type PrimaryBarAccessoryItemProps = {
-	view: PrimaryAccessoryView;
-};
-
-// Alternative layout for the primary bar
-// const AdminPrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, onClick }) => (
-// 	<PrimaryContainer
-// 		orientation="horizontal"
-// 		mainAlignment="flex-start"
-// 		height="48px"
-// 		onClick={onClick}
-// 	>
-// 		<BadgeWrap badge={view.badge}>
-// 			{typeof view.component === 'string' ? (
-// 				<Icon icon={view.component} color={active ? 'primary' : 'text'} size="large" />
-// 			) : (
-// 				<view.component active={active} />
-// 			)}
-// 		</BadgeWrap>
-// 		<Padding right="large">
-// 			<Text color={active ? 'primary' : 'text'}>{view.label}</Text>
-// 		</Padding>
-// 	</PrimaryContainer>
-// );
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
 	const [open, setOpen] = useState(false);
@@ -173,26 +122,6 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
 	);
 };
 
-const PrimaryBarAccessoryElement: FC<PrimaryBarAccessoryItemProps> = ({ view }) => (
-	<Tooltip label={view.label} placement="right" key={view.id}>
-		<AppContextProvider key={view.id} pkg={view.app}>
-			{typeof view.component === 'string' ? (
-				<Button
-					type="ghost"
-					color={'text'}
-					icon={view.component}
-					backgroundColor="gray6"
-					iconColor="text"
-					onClick={view.onClick}
-					size="large"
-				/>
-			) : (
-				<view.component />
-			)}
-		</AppContextProvider>
-	</Tooltip>
-);
-
 const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 	const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
@@ -219,15 +148,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 			setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(history.location.pathname, '/') }));
 		}
 	}, [activeRoute, history.location.pathname, primaryBarViews]);
-	const primaryBarAccessoryViews = useAppStore((s) => s.views.primaryBarAccessories);
-	const accessories = useMemo(
-		() =>
-			sortBy(
-				filter(primaryBarAccessoryViews, (v) => checkRoute(v, activeRoute)),
-				'position'
-			),
-		[activeRoute, primaryBarAccessoryViews]
-	);
 
 	useEffect(() => {
 		let allPrimaryBarView = [];
@@ -327,12 +247,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 						) : null
 					)}
 				</Container>
-				<Container mainAlignment="flex-end" height="fit">
-					{accessories.map((v) => (
-						<PrimaryBarAccessoryElement view={v} key={v?.id} />
-					))}
-					<ToggleBoardIcon />
-				</Container>
+				<Container mainAlignment="flex-end" height="fit"></Container>
 			</PrimaryBarContainer>
 			<Collapser onClick={onCollapserClick} open={isOpen} />
 		</>

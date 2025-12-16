@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Padding, Text } from '@zextras/carbonio-design-system';
-import React, { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 
 export const BoxLayout: FC<{

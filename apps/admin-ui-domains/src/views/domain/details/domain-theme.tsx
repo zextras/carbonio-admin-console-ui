@@ -3,18 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useUserSettings, useDomainStore, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore,useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Padding,
-	Divider,
-	Text,
 	Button,
+	Container,
+	Divider,
+	Padding,
+	Row,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { cloneDeep, isEqual, reduce } from 'lodash';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { cloneDeep, isEqual, reduce } from 'lodash-es';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -182,13 +182,13 @@ const DomainTheme: FC = () => {
 		const modifiedKeys: any = reduce(
 			domainTheme,
 			function (result, value, key): any {
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				return isEqual(value, intialThemeConfig[key]) ? result : [...result, key];
 			},
 			[]
 		);
 		modifiedKeys.forEach((ele: any) => {
-			// @ts-ignore
+			// @ts-expect-error - needs a fix
 			attributes.push({ n: ele, _content: domainTheme[ele] });
 		});
 		body.a = attributes;

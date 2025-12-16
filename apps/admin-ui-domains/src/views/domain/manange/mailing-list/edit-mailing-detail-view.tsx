@@ -4,23 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUserSettings, useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useStickyBarStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Row,
 	Divider,
+	Input,
 	Modal,
 	Padding,
-	Input,
-	Table,
-	Text,
+	Row,
 	Select,
 	Switch,
-	Button,
+	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
+import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -624,9 +624,9 @@ const EditMailingListView: FC<any> = ({
 				setIsShowError(true);
 				setOwnerErrorMessage(
 					t(
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						'label.distribution_list_not_exists_error_msg',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						'The Distribution List / User does not exist. Please check the spelling and try again.'
 					)
 				);
@@ -804,7 +804,7 @@ const EditMailingListView: FC<any> = ({
 					severity: 'error',
 					label: error?.message
 						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						: 
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -990,7 +990,6 @@ const EditMailingListView: FC<any> = ({
 		[allOwnerList, _allOwnerLists]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		const attributes: any[] = [];
 		const request: any[] = [];

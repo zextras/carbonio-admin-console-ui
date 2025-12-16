@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
-import { cloneDeep, find } from 'lodash';
-import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
+import { Button, Container, Icon,Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { cloneDeep, find } from 'lodash-es';
+import { FC, useCallback, useEffect,useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation,useRouteMatch } from 'react-router-dom';
 
 import logo from '../../assets/ninja_robo.svg';
 import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 import { useLocalStorage } from '../utility/utils';
-
 import CreateDomain from './create-new-domain';
 import DomainOperations from './domain-detail-operation';
 import GlobalDetailPanel from './global/global-detail-panel';

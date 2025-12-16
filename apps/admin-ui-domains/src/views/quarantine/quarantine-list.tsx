@@ -4,25 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getTags, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
 	Button,
-	Divider,
-	Modal,
-	Table,
-	Padding,
 	Collapse,
+	Container,
+	Divider,
 	Icon,
+	Input,
+	Modal,
+	Padding,
+	Row,
+	Table,
+	Text,
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
-import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
+import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -43,7 +43,6 @@ import ModalOverlay from '../components/ModalOverlay';
 import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
-
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -206,7 +205,7 @@ const MessageListTable: FC<{
 				id: i,
 				columns: [
 					<Row
-						// eslint-disable-next-line sonarjs/no-duplicate-string
+						
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={v.id}
 						onClick={(): void => {
@@ -280,7 +279,7 @@ const MessageListTable: FC<{
 			<ListRow>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					<Table
-						// @ts-ignore // Need to fix it with custom soultion
+						// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 						headers={MessageTableHeaders(t)}
 						rows={tableRows}
 						showCheckbox={false}
@@ -437,25 +436,7 @@ const QuarantineList: FC = () => {
 		}),
 		[]
 	);
-	const getTagIdsFromName = (names: string | undefined): Array<string | undefined> => {
-		const tags = getTags();
-		return map(names?.split(','), (name) =>
-			find(tags, { name }) ? find(tags, { name })?.id : `nil:${name}`
-		);
-	};
 
-	const getTagIds = useCallback(
-		(ta: string | undefined, tn: string | undefined): Array<string | undefined> => {
-			if (!isNil(ta)) {
-				return filter(ta.split(','), (tag) => tag !== '');
-			}
-			if (!isNil(tn)) {
-				return getTagIdsFromName(tn);
-			}
-			return [];
-		},
-		[]
-	);
 	const normalizeMailPartMapFn = useCallback((v: SoapMailMessagePart): MailMessagePart => {
 		const ret: MailMessagePart = {
 			contentType: v.ct,
@@ -804,7 +785,7 @@ const QuarantineList: FC = () => {
 				fragment: m.fr,
 				subject: m.su,
 				participants: normalizeParticipants(m.e),
-				tags: getTagIds(m.t, m.tn),
+				tags: [],
 				parts: normalizeMailParts(m.mp),
 				attachments: getAttachments(m.mp),
 				invite: m.inv,
@@ -830,14 +811,7 @@ const QuarantineList: FC = () => {
 				envelopeTo: sanitizeEmail(attrs['X-Envelope-To'])
 			};
 		},
-		[
-			generateBodyContent,
-			getAttachments,
-			getTagIds,
-			normalizeMailParts,
-			normalizeParticipants,
-			parseFlags
-		]
+		[generateBodyContent, getAttachments, normalizeMailParts, normalizeParticipants, parseFlags]
 	);
 
 	const getMessageResponses = useCallback(
@@ -960,7 +934,7 @@ const QuarantineList: FC = () => {
 								severity: 'error',
 								label: error?.message
 									? error?.message
-									: // eslint-disable-next-line sonarjs/no-duplicate-string
+									: 
 										t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 								autoHideTimeout: 3000,
 								hideButton: true,
@@ -1436,7 +1410,7 @@ const QuarantineList: FC = () => {
 								<Text
 									size="large"
 									weight="bold"
-									// @ts-ignore
+									// @ts-expect-error - needs a fix
 
 									color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
 									style={{ display: 'flex', paddingLeft: '0.25rem' }}
@@ -1447,7 +1421,7 @@ const QuarantineList: FC = () => {
 									<Text style={{ paddingLeft: '0.25rem' }}>
 										<Icon
 											color={
-												// @ts-ignore
+												// @ts-expect-error - needs a fix
 
 												message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
 											}

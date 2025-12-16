@@ -6,27 +6,25 @@
 
 import {
 	replaceHistory,
+	useDomainStore,
 	useIsAdvanced,
-	useUserSettings,
-	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
+	useUserSettings} from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Input,
-	Row,
-	Text,
-	Select,
-	Divider,
 	Button,
-	Padding,
-	Shimmer,
-	Modal,
 	ChipInput,
-	useSnackbar,
-	ChipItem
-} from '@zextras/carbonio-design-system';
-import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
-import React, { useEffect, useMemo, useState, useCallback, FC } from 'react';
+	ChipItem,
+	Container,
+	Divider,
+	Input,
+	Modal,
+	Padding,
+	Row,
+	Select,
+	Shimmer,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
+import React, { FC,useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -55,8 +53,7 @@ import Textarea from '../../components/textarea';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
-
+import { getDateFromStr, getFormatedDate, isValidEmail,timeZoneList } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
 
@@ -245,7 +242,6 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [cosList]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		setDomainDirectoies({
 			account: [],

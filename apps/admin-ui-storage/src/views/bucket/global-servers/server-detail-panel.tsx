@@ -9,17 +9,16 @@ import {
 	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
 import {
+	Button,
 	Container,
-	Row,
-	Text,
 	Divider,
-	Input,
 	Icon,
+	Input,
+	Row,
 	Table,
-	Button
-} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -50,7 +49,7 @@ const ServersListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i?.toString(),
 				columns: [
-					// eslint-disable-next-line sonarjs/no-duplicate-string
+					
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
 						<Text size="small" weight="regular">
 							{v?.name}

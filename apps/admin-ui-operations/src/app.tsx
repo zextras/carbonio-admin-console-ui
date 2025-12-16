@@ -5,22 +5,19 @@
  */
 
 import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, OPERATIONS_ROUTE_ID, PRIMARY_BAR_OPERATIONS } from './constants';
-import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<Suspense fallback={<Spinner />}>
+		<LazyAppView {...props} />
+	</Suspense>
 );
 
 const App: FC = () => {

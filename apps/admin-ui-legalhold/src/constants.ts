@@ -20,5 +20,3 @@ export const SUCCESS_LABLE = 'success';
 export const UNSET = 'unset';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';

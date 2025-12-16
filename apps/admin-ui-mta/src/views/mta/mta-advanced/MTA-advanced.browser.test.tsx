@@ -5,14 +5,12 @@
  */
 
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import { useAccountStore } from '@zextras/admin-ui-bootstrap/testing';
 import {
 	createBrowserSoapAPIInterceptor,
 	grantUserConfigRights,
 	resetMockWorker,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
-import React from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -60,7 +58,6 @@ describe('MTAAdvanced', () => {
 
 	afterEach(() => {
 		resetMockWorker();
-		useAccountStore.setState({});
 	});
 
 	it('should render the component correctly', async () => {

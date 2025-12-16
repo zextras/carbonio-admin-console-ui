@@ -6,18 +6,18 @@
 
 import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
 	Button,
-	Padding,
-	Text,
+	Container,
 	Divider,
-	Switch,
 	Input,
+	Padding,
+	Row,
+	Switch,
 	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -36,7 +36,6 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
-
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';

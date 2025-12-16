@@ -3,21 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
-
 import {
 	Container,
-	Row,
 	Input,
-	Switch,
-	Text,
+	Link,
 	Padding,
 	Radio,
-	Link
-} from '@zextras/carbonio-design-system';
+	Row,
+	Switch,
+	Text} from '@zextras/carbonio-design-system';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import {
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
 	AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
@@ -28,6 +25,7 @@ import {
 } from '../../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import ListRow from '../../../../../list/list-row';
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresConfig: FC<{
 	onSelection: any;

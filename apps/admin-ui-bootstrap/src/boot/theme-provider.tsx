@@ -9,32 +9,12 @@ import {
 	ThemeProvider as UIThemeProvider,
 	ThemeProviderProps as UIThemeProviderProps
 } from '@zextras/carbonio-design-system';
-import { auto, disable, enable, setFetchMethod } from 'darkreader';
-import { reduce } from 'lodash';
-import React, { createContext, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { createGlobalStyle, DefaultTheme } from 'styled-components';
+import { reduce } from 'lodash-es';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { DefaultTheme } from 'styled-components';
 
-import { DarkReaderPropValues, ThemeExtension } from '../../types';
-import { darkReaderDynamicThemeFixes } from '../constants';
-import { useAccountStore } from '../store/account/store';
-
-import { useGetPrimaryColor } from './use-get-primary-color';
-
-setFetchMethod(window.fetch);
-
-interface ThemeCallbacks {
-	addExtension: (newExtension: ThemeExtension, id: string) => void;
-	setDarkReaderState: (newState: DarkReaderPropValues) => void;
-}
-
-export const ThemeCallbacksContext = createContext<ThemeCallbacks>({
-	addExtension: () => {
-		throw Error('Not implemented');
-	},
-	setDarkReaderState: () => {
-		throw Error('not implemented');
-	}
-});
+import { ThemeExtension } from '../../types';
+import { useUserSettings } from '../react-query/use-account';
 
 type CustomTheme = Partial<Omit<DefaultTheme, 'palette'>> & {
 	palette?: Partial<DefaultTheme['palette']>;
@@ -73,16 +53,6 @@ const iconExtension: ThemeExtension = (theme) => ({
 		Linked: theme.icons.ArrowCircleLeft
 	}
 });
-
-interface GlobalStyledProps {
-	baseFontSize: number;
-}
-
-const GlobalStyle = createGlobalStyle<GlobalStyledProps>`
-  html {
-    font-size: ${({ baseFontSize }): string => `${baseFontSize}%`};
-  }
-`;
 
 const themeSizes = (
 	size: 'small' | 'normal' | 'large' | 'larger' | 'default' | string
@@ -140,7 +110,8 @@ interface ThemeProviderProps {
 	children?: React.ReactNode | React.ReactNode[];
 }
 export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
-	const zimbraPrefFontSize = useAccountStore((s) => s.settings.prefs?.zimbraPrefFontSize as string);
+	const settings = useUserSettings();
+	const zimbraPrefFontSize = settings?.prefs?.zimbraPrefFontSize as string;
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {
@@ -162,12 +133,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Eleme
 		}));
 	}, [zimbraPrefFontSize]);
 
-	const primaryColor = useGetPrimaryColor();
-
 	useLayoutEffect(() => {
-		const customThemePalette: Partial<DefaultTheme['palette']> = primaryColor
-			? { primary: generateColorSet({ regular: primaryColor }) }
-			: {};
+		const customThemePalette: Partial<DefaultTheme['palette']> = {
+			primary: generateColorSet({ regular: '#2b73d2' })
+		};
 		setExtensions((extension) => ({
 			...extension,
 			palette: paletteExtension({
@@ -175,36 +144,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Eleme
 			}),
 			icons: iconExtension
 		}));
-	}, [primaryColor]);
-
-	const [darkReaderState, setDarkReaderState] = useState<DarkReaderPropValues>('disabled');
-
-	useEffect(() => {
-		switch (darkReaderState) {
-			case 'disabled':
-				auto(false);
-				disable();
-				break;
-			case 'enabled':
-				auto(false);
-				enable(
-					{
-						sepia: -50
-					},
-					darkReaderDynamicThemeFixes
-				);
-				break;
-			case 'auto':
-			default:
-				auto(
-					{
-						sepia: -50
-					},
-					darkReaderDynamicThemeFixes
-				);
-				break;
-		}
-	}, [darkReaderState]);
+	}, []);
 
 	const aggregatedExtensions = useCallback<NonNullable<(typeof UIThemeProviderProps)['extension']>>(
 		(theme: any) =>
@@ -221,24 +161,5 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Eleme
 		[extensions]
 	);
 
-	const addExtension = useCallback<ThemeCallbacks['addExtension']>((newExtension, id) => {
-		setExtensions((ext) => ({ ...ext, [id]: newExtension }));
-	}, []);
-
-	/* In future we need to do admin UI's font support auto scalling feature */
-	// const baseFontSize = useMemo<GlobalStyledProps['baseFontSize']>(
-	// 	() => getAutoScalingFontSize(),
-	// 	[]
-	// );
-
-	return (
-		<UIThemeProvider extension={aggregatedExtensions}>
-			<ThemeCallbacksContext.Provider value={{ addExtension, setDarkReaderState }}>
-				{/* Just commented for now in future if apply font size via settings
-				<GlobalStyle baseFontSize={baseFontSize} />
-				*/}
-				{children}
-			</ThemeCallbacksContext.Provider>
-		</UIThemeProvider>
-	);
+	return <UIThemeProvider extension={aggregatedExtensions}>{children}</UIThemeProvider>;
 };

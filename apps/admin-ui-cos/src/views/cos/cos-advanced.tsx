@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
-import { find } from 'lodash';
-import React, {
+import { find } from 'lodash-es';
+import {
 	ChangeEvent,
 	Dispatch,
 	FC,
@@ -38,7 +38,6 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useCosStore } from '../../store/cos/store';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
-
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
 import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
 import COSForwarding from './advanced/cos-forwarding';
@@ -260,8 +259,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setInitalValues = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(obj: AccountType): void => {
+			(obj: AccountType): void => {
 			if (obj) {
 				setValue(
 					'zimbraMailForwardingAddressMaxLength',
@@ -479,7 +477,6 @@ const CosAdvanced: FC = () => {
 		[timeItems]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: AccountType = {};

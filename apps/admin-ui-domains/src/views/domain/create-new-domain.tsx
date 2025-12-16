@@ -6,26 +6,26 @@
 
 import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
 	Button,
-	Text,
-	Input,
-	Select,
-	Padding,
-	Divider,
-	Tooltip,
-	Switch,
 	ChipInput,
+	Container,
+	Divider,
+	Input,
+	Padding,
+	Row,
+	Select,
+	Switch,
+	Text,
+	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash';
+import { map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Attribute, DomainResponse, SelectItem, objectType } from '../../../types';
+import { Attribute, DomainResponse, objectType,SelectItem } from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,

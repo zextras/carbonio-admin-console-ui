@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
-
-import { Container, Text, Row, Button } from '@zextras/carbonio-design-system';
+import { Button,Container, Row, Text } from '@zextras/carbonio-design-system';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { FIRST_PAGE } from '../../constants';

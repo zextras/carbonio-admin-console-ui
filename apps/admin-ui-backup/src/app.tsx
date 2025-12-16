@@ -4,27 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, removeRoute, useIsAdvanced, useHasAllRights } from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useHasAllRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/carbonio-design-system';
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
-import { TrackerProvider } from './tracker/provider';
 import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<TrackerProvider>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</TrackerProvider>
+	<Suspense fallback={<Spinner />}>
+		<LazyAppView {...props} />
+	</Suspense>
 );
 
 const PrimaryBarIconButton = styled(Button)`
@@ -85,7 +82,7 @@ const App: FC = () => {
 	const backupPrimaryBar: FC = useCallback(
 		() => (
 			<PrimaryBarIconButton
-				// @ts-ignore // Need to fix it with custom soultion
+				// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				type="ghost"
 				size={'extralarge'}

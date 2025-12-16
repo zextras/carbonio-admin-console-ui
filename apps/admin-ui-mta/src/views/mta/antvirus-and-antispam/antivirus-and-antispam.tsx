@@ -9,27 +9,28 @@ import {
 	useIsAdvanced
 } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Padding,
 	Button,
+	Container,
 	Divider,
-	Switch,
-	useSnackbar,
 	Input,
-	Select,
-	Table,
 	Modal,
-	SelectItem
-} from '@zextras/carbonio-design-system';
-import { isEqual, find } from 'lodash';
+	Padding,
+	Row,
+	Select,
+	SelectItem,
+	Switch,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { find,isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import {
+	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
 	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+	CONFIG,
 	D_DISCARD,
 	D_PASS,
 	FALSE,
@@ -44,10 +45,7 @@ import {
 	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
 	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
 	ZIMBRA_VIRUS_WARN_ADMIN,
-	ZIMBRA_VIRUS_WARN_RECIPIENT,
-	CONFIG,
-	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
-} from '../../../constants';
+	ZIMBRA_VIRUS_WARN_RECIPIENT} from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -896,7 +894,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
 							)}
-							// @ts-ignore
+							// @ts-expect-error - needs a fix
 							onChange={onSpamTagPercentChange}
 							disabled={!allowSetMTA}
 						/>
@@ -920,7 +918,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
-							// @ts-ignore
+							// @ts-expect-error - needs a fix
 							onChange={onSpamDestinyChange}
 							disabled={!allowSetMTA}
 						/>
@@ -935,7 +933,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
-							// @ts-ignore
+							// @ts-expect-error - needs a fix
 							onChange={onSpamKillPercentChange}
 							disabled={
 								mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS ||

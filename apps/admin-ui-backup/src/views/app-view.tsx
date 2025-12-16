@@ -5,12 +5,11 @@
  */
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
-import React, { FC, Suspense } from 'react';
+import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { BACKUP_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
-
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';

@@ -7,9 +7,9 @@
  */
 
 import { spawn } from 'node:child_process';
+import { existsSync,rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { rmSync, existsSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // The project root is the current working directory where the script is called from

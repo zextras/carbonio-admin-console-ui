@@ -5,7 +5,6 @@
  */
 
 import { Chip } from '@zextras/carbonio-design-system';
-import React from 'react';
 
 const copyClipboard = (label: string): any => {
 	navigator.clipboard.writeText(label);

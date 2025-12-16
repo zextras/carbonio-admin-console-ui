@@ -6,11 +6,8 @@
 
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { SHELL_APP_ID } from '../constants';
-import { getSoapFetch } from '../network/fetch';
+import { soapFetch } from '../network/fetch';
 import { Attribute } from '../store/shared/domains/types';
-
-const soapFetch = getSoapFetch(SHELL_APP_ID);
 
 type ConfigOptions = Omit<UseQueryOptions<Array<Attribute>>, 'queryKey' | 'queryFn'> & {
 	enabled?: boolean;

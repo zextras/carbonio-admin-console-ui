@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { useUserAccounts, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { useCurrentUserRights,useUserAccounts } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/carbonio-design-system';
 import { ChangeEvent } from 'react';
-import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, Mock,vi } from 'vitest';
 
 vi.mock('@zextras/admin-ui-bootstrap');
 

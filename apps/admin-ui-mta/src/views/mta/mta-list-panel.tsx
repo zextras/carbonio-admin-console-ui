@@ -8,20 +8,19 @@ import {
 	useGlobalCarbonioSendAnalytics,
 	useMtaServers
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import { Container, Padding, Row, Text } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+	ADVANCED,
 	ANTIVIRUS_AND_ANTISPAM,
 	GENERAL,
-	OUTBOUND_FLOW,
-	ADVANCED,
-	POSTSCREEN_TUNING,
-	QUEUE,
 	IS_SERVER_SPECIFICS_EXPANDED,
-	MTA_SERVER_GENERAL
-} from '../../constants';
+	MTA_SERVER_GENERAL,
+	OUTBOUND_FLOW,
+	POSTSCREEN_TUNING,
+	QUEUE} from '../../constants';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';

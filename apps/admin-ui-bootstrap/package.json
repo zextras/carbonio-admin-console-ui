@@ -1,114 +1,112 @@
 {
-	"name": "@zextras/admin-ui-bootstrap",
-	"version": "0.9.36",
-	"description": "The Zextras Carbonio web admin",
-	"private": true,
-	"main": "./exports.ts",
-	"exports": {
-		".": "./exports.ts",
-		"./testing": "./testing.ts"
-	},
-	"types": "./exports.ts",
-	"engines": {
-		"node": "v22",
-		"npm": "v10"
-	},
-	"scripts": {
-		"build": "sdk build-shell",
-		"build:dev": "sdk build-shell --dev",
-		"type-check": "tsc --noEmit",
-		"lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet",
-		"deploy": "npm run build && sdk deploy --admin",
-		"deploy:dev": "npm run build:dev && sdk deploy --admin",
-		"reset": "node ../../scripts/reset.js",
-		"start": "sdk watch --admin",
-		"test": "vitest run",
-		"test:watch": "vitest --browser --watch --open",
-		"test:ci": "vitest run --coverage"
-	},
-	"dependencies": {
-		"@fontsource/roboto": "^5.2.6",
-		"@reduxjs/toolkit": "^2.11.0",
-		"@sentry/browser": "^6.17.7",
-		"@tinymce/tinymce-react": "^4.3.2",
-		"@vitest/browser-preview": "^4.0.14",
-		"@zextras/carbonio-design-system": "^8.1.0",
-		"darkreader": "^4.9.58",
-		"date-fns": "^4.1.0",
-		"history": "^5.3.0",
-		"i18next": "^22.5.1",
-		"i18next-http-backend": "^2.5.0",
-		"immer": "^10.0.2",
-		"lodash": "^4.17.21",
-		"date-fns": "^4.1.0",
-		"pnpm": "^10.15.1",
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0",
-		"react-i18next": "^12.3.1",
-		"react-markdown": "^10.1.0",
-		"react-router-dom": "^5.3.4",
-		"redux-logger": "^3.0.6",
-		"remark-gfm": "^4.0.1",
-		"styled-components": "^5.3.11",
-		"tinymce": "^6.8.4",
-		"ua-parser-js": "^1.0.41",
-		"zustand": "^4.4.1"
-	},
-	"devDependencies": {
-		"@babel/core": "^7.28.5",
-		"@babel/preset-env": "^7.28.5",
-		"@babel/preset-react": "^7.28.5",
-		"@babel/preset-typescript": "^7.28.5",
-		"@svgr/webpack": "^8.1.0",
-		"@testing-library/react": "^16.3.0",
-		"@types/lodash": "^4.14.197",
-		"@types/node": "^20.17.27",
-		"@types/prop-types": "^15.7.15",
-		"@types/react": "^19.1.0",
-		"@types/react-dom": "^19.2.0",
-		"@types/react-router-dom": "^5.3.3",
-		"@types/styled-components": "^5.1.26",
-		"@types/ua-parser-js": "^0.7.39",
-		"@vitest/browser": "^4.0.5",
-		"@vitest/coverage-istanbul": "^4.0.5",
-		"admin-ui-sdk": "workspace:*",
-		"admin-ui-test-utils": "workspace:*",
-		"autoprefixer": "^10.4.21",
-		"babel-plugin-i18next-extract": "^1.1.0",
-		"babel-plugin-styled-components": "^2.1.4",
-		"copy-webpack-plugin": "^13.0.1",
-		"eslint": "^9.34.0",
-		"html-webpack-plugin": "^5.6.4",
-		"jsdom": "^26.1.0",
-		"msw": "^2.12.2",
-		"playwright": "^1.55.0",
-		"prop-types": "^15.8.1",
-		"typescript": "^5.7.2",
-		"vitest": "^4.0.5",
-		"vitest-browser-react": "^2.0.2"
-	},
-	"files": [
-		"dist/",
-		"README.md"
-	],
-	"keywords": [
-		"zextras"
-	],
-	"author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
-	"maintainers": [],
-	"license": "AGPL-3.0-only",
-	"sdk": {
-		"svgr": true
-	},
-	"carbonio": {
-		"name": "carbonio-admin-ui",
-		"translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
-		"type": "shell",
-		"priority": -1,
-		"display": "Admin Shell",
-		"icon": "CubeOutline"
-	},
-	"msw": {
-		"workerDirectory": "./public"
-	}
+  "name": "@zextras/admin-ui-bootstrap",
+  "version": "0.9.36",
+  "description": "The Zextras Carbonio web admin",
+  "private": true,
+  "main": "./exports.ts",
+  "exports": {
+    ".": "./exports.ts",
+    "./testing": "./testing.ts"
+  },
+  "types": "./exports.ts",
+  "engines": {
+    "node": "v22",
+    "npm": "v10"
+  },
+  "scripts": {
+    "build": "sdk build-shell",
+    "build:dev": "sdk build-shell --dev",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint --cache --quiet",
+    "lint:fix": "eslint --fix --quiet --cache",
+    "deploy": "npm run build && sdk deploy --admin",
+    "deploy:dev": "npm run build:dev && sdk deploy --admin",
+    "reset": "node ../../scripts/reset.js",
+    "start": "sdk watch --admin",
+    "test": "vitest run",
+    "test:watch": "vitest --browser --watch --open",
+    "test:ci": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@fontsource/roboto": "^5.2.6",
+    "@tanstack/react-query": "^5.90.5",
+    "@vitest/browser-preview": "^4.0.14",
+    "@zextras/carbonio-design-system": "^8.1.0",
+    "history": "^5.3.0",
+    "i18next": "^22.5.1",
+    "i18next-http-backend": "^2.5.0",
+    "immer": "^10.0.2",
+    "lodash-es": "^4.17.21",
+    "date-fns": "^4.1.0",
+    "pnpm": "^10.15.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-i18next": "^12.3.1",
+    "react-router-dom": "^5.3.4",
+    "styled-components": "^5.3.11",
+    "ua-parser-js": "^1.0.41",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@svgr/webpack": "^8.1.0",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "@types/lodash-es": "^4.14.197",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^20.17.27",
+    "@types/prop-types": "^15.7.15",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.26",
+    "@types/ua-parser-js": "^0.7.39",
+    "@vitejs/plugin-react": "^5.0.2",
+    "@vitest/browser": "^4.0.5",
+    "@vitest/coverage-istanbul": "^4.0.5",
+    "admin-ui-sdk": "workspace:*",
+    "admin-ui-test-utils": "workspace:*",
+    "babel-plugin-i18next-extract": "^1.1.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "copy-webpack-plugin": "^13.0.1",
+    "eslint": "^9.34.0",
+    "html-webpack-plugin": "^5.6.4",
+    "jsdom": "^26.1.0",
+    "msw": "^2.12.2",
+    "playwright": "^1.55.0",
+    "prop-types": "^15.8.1",
+    "typescript": "^5.7.2",
+    "vite": "^7.2.6",
+    "vitest": "^4.0.5",
+    "vitest-browser-react": "^2.0.2"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "keywords": [
+    "zextras"
+  ],
+  "author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
+  "maintainers": [],
+  "license": "AGPL-3.0-only",
+  "sdk": {
+    "svgr": true
+  },
+  "carbonio": {
+    "name": "carbonio-admin-ui",
+    "translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
+    "type": "shell",
+    "priority": -1,
+    "display": "Admin Shell",
+    "icon": "CubeOutline"
+  },
+  "msw": {
+    "workerDirectory": [
+      "./public",
+      "public"
+    ]
+  }
 }

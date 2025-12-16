@@ -7,7 +7,7 @@
 
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+ 
 export const deleteMailingListAliasRequest = async (id: string, alias: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',

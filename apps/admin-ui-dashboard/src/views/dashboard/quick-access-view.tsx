@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Text, Icon, Divider, ContainerProps } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import { Container, ContainerProps,Divider, Icon, Text } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

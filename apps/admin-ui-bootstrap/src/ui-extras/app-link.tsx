@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useMemo } from 'react';
-
+import { FC, useMemo } from 'react';
 import { Link as RRLink, LinkProps } from 'react-router-dom';
 
 import { parseParams } from '../history/hooks';
 
 type AppLinkProps = LinkProps & {
-	route?: string;
+  route?: string;
 };
 export const AppLink: FC<AppLinkProps> = ({ to, route, ...rest }) => {
-	//@ts-ignore
-	const _to = useMemo(() => parseParams({ path: to, route }), [route, to]);
-	return <RRLink style={{ textDecoration: 'none' }} to={_to} {...rest} />;
+  //@ts-expect-error - fix this
+  const _to = useMemo(() => parseParams({ path: to, route }), [route, to]);
+  return <RRLink style={{ textDecoration: 'none' }} to={_to} {...rest} />;
 };

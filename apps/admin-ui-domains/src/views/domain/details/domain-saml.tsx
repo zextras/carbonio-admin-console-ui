@@ -5,27 +5,26 @@
  */
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Divider,
-	Text,
-	Input,
 	Button,
+	Container,
+	Divider,
+	Icon,
+	Input,
+	Padding,
+	Row,
 	Switch,
 	Table,
-	Padding,
-	useSnackbar,
-	Icon,
-	Tooltip
-} from '@zextras/carbonio-design-system';
+	Text,
+	Tooltip,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import logo from '../../../assets/ninja_robo.svg';
 import {
-	SAML_METADATA_JSON_FILE,
 	CONTENT_TYPE_TEXT_PLAIN,
+	SAML_METADATA_JSON_FILE,
 	ZIMBRA_PUBLIC_SERVICE_HOSTNAME,
 	ZIMBRA_PUBLIC_SERVICE_PROTOCOL
 } from '../../../constants';

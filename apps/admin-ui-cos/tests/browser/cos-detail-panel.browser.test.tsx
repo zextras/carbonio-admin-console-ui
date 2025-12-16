@@ -9,9 +9,8 @@ import {
 	grantUserConfigRights,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
-import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { it, expect, describe, beforeEach, afterEach } from 'vitest';
+import { afterEach,beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';

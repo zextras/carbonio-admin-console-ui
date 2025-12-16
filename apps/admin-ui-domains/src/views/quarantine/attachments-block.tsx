@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getIntegratedFunction, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -18,14 +17,13 @@ import {
 	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
-import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
-import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
+import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
+import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
-
-import { MailMessage, EditorAttachmentFiles, AttachmentPart } from './mail-message-renderer';
+import { AttachmentPart,EditorAttachmentFiles, MailMessage } from './mail-message-renderer';
 
 type OpenEmlPreviewType = (
 	parentMessageId: string,
@@ -58,10 +56,6 @@ type AttachmentType = {
 	setMessageViewLoading: SetMessageViewLoading;
 };
 
-type CopyToFileResponse = {
-	status?: string;
-	value?: Record<string, unknown>;
-};
 type GetAttachmentsDownloadLinkProps = {
 	messageId: string;
 	messageSubject: string;
@@ -218,7 +212,7 @@ const calcColor = (label: string, theme: DefaultTheme): string => {
 		sum += label.charCodeAt(i);
 	}
 
-	// @ts-ignore
+	// @ts-expect-error - needs a fix
 	return theme.avatarColors[`avatar_${(sum % 50) + 1}`];
 };
 const getLocationOrigin = (): string => window.location.origin;
@@ -378,7 +372,7 @@ const Attachment: FC<AttachmentType> = ({
 
 	const downloadAttachment = useCallback(() => {
 		if (inputRef.current) {
-			// @ts-ignore
+			// @ts-expect-error - needs a fix
 			inputRef2.current.value = null;
 			inputRef.current.click();
 		}
@@ -509,18 +503,6 @@ const Attachment: FC<AttachmentType> = ({
 	);
 };
 
-const copyToFiles = (
-	att: AttachmentPart,
-	message: MailMessage,
-	nodes: any
-): Promise<CopyToFileResponse> =>
-	soapFetch('CopyToFiles', {
-		_jsns: 'urn:zimbraMail',
-		mid: message.id,
-		part: att.name,
-		destinationFolderId: nodes?.[0]?.id
-	});
-
 const AttachmentsBlock: FC<{
 	message: MailMessage;
 	isExternalMessage?: boolean;
@@ -536,7 +518,6 @@ const AttachmentsBlock: FC<{
 	setMessageViewLoading
 }): ReactElement => {
 	const [t] = useTranslation();
-	const createSnackbar = useSnackbar();
 	const [expanded, setExpanded] = useState(false);
 	const attachments = useMemo(
 		() => filter(message?.attachments, { cd: 'attachment' }),
@@ -555,89 +536,6 @@ const AttachmentsBlock: FC<{
 			}),
 		[message, attachmentsParts]
 	);
-
-	const getLabel = useCallback(
-		({ allSuccess, allFails }: { allSuccess: boolean; allFails: boolean }): string => {
-			if (allSuccess) {
-				return t(
-					'message.snackbar.all_att_saved',
-					'Attachments successfully saved in the selected folder'
-				);
-			}
-			if (allFails) {
-				return t(
-					'message.snackbar.att_err',
-					'There seems to be a problem when saving, please try again'
-				);
-			}
-			return t(
-				'message.snackbar.some_att_fails',
-				'There seems to be a problem when saving some files, please try again'
-			);
-		},
-		[t]
-	);
-
-	const confirmAction = useCallback(
-		(nodes: any) => {
-			const promises = map(attachments, (att) => copyToFiles(att, message, nodes));
-			Promise.allSettled(promises).then((res: CopyToFileResponse[]) => {
-				const isFault = res.length === filter(res, (r) => r?.value?.Fault)?.length;
-				const allSuccess = isFault
-					? false
-					: res.length === filter(res, ['status', 'fulfilled'])?.length;
-				const allFails = res.length === filter(res, ['status', 'rejected'])?.length;
-				const type = allSuccess ? 'info' : 'warning';
-				const label = getLabel({ allSuccess, allFails });
-				createSnackbar({
-					key: `calendar-moved-root`,
-					replace: true,
-					severity: type,
-					hideButton: true,
-					label,
-					autoHideTimeout: 4000
-				});
-			});
-		},
-		[attachments, createSnackbar, getLabel, message]
-	);
-
-	const isAValidDestination = useCallback((node: any) => node?.permissions?.can_write_file, []);
-
-	const actionTarget = useMemo(
-		() => ({
-			title: t('label.select_folder', 'Select folder'),
-			confirmAction,
-			confirmLabel: t('label.save', 'Save'),
-			disabledTooltip: t('label.invalid_destination', 'This node is not a valid destination'),
-			allowFiles: false,
-			allowFolders: true,
-			isValidSelection: isAValidDestination,
-			canSelectOpenedFolder: true,
-			maxSelection: 1
-		}),
-		[confirmAction, isAValidDestination, t]
-	);
-
-	const [uploadIntegration, isUploadIntegrationAvailable] = getIntegratedFunction('select-nodes');
-
-	const getSaveToFilesLink = useCallback((): ReactElement | null => {
-		if (!isUploadIntegrationAvailable) {
-			return null;
-		}
-
-		return (
-			<Link
-				size="medium"
-				onClick={(): void => {
-					uploadIntegration && uploadIntegration(actionTarget);
-				}}
-				style={{ paddingLeft: '0.5rem' }}
-			>
-				{t('label.save_to_files', 'Save to Files')}
-			</Link>
-		);
-	}, [actionTarget, isUploadIntegrationAvailable, t, uploadIntegration]);
 
 	return attachmentsCount > 0 ? (
 		<Container crossAlignment="flex-start">
@@ -662,7 +560,7 @@ const AttachmentsBlock: FC<{
 						isExternalMessage={isExternalMessage}
 						part={att?.name ?? ''}
 						iconColors={getAttachmentIconColors({ attachments, theme })}
-						// @ts-ignore
+						// @ts-expect-error - needs a fix
 						att={att}
 						getQuarantineMsgData={getQuarantineMsgData}
 						setShowMessageView={setShowMessageView}
@@ -720,7 +618,6 @@ const AttachmentsBlock: FC<{
 						defaultValue_other: 'Download all'
 					})}
 				</Link>
-				{getSaveToFilesLink()}
 			</Row>
 		</Container>
 	) : (

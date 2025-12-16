@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -51,7 +51,7 @@ export const useAppConfigStore = create<ConfigState>()(
 					state.config = ele
 						? state.config.map((item: any) => {
 								if (item?.n === key) {
-									// eslint-disable-next-line no-param-reassign
+									 
 									item._content = value;
 								}
 								return item;

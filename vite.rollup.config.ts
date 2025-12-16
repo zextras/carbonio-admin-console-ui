@@ -4,59 +4,60 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { OutputOptions, RollupOptions } from 'rollup';
+import type { OutputOptions, RollupOptions } from "rollup";
 
 /**
  * Shared external dependencies for all microfrontend modules
  */
 export const SHARED_EXTERNALS = [
-	'react',
-	'react-dom',
-	'react-i18next',
-	'lodash',
-	'react-router-dom',
-	'styled-components',
-	'@emotion/react',
-	'@emotion/styled',
-	'@zextras/carbonio-ui-preview',
-	'@zextras/admin-ui-bootstrap',
-	'@zextras/carbonio-design-system',
-	'darkreader',
-	'msw',
-	'i18next'
+  "react",
+  "react-dom",
+  "react-i18next",
+  "lodash-es",
+  "react-router-dom",
+  "styled-components",
+  "@emotion/react",
+  "@emotion/styled",
+  "@zextras/carbonio-ui-preview",
+  "@zextras/admin-ui-bootstrap",
+  "@zextras/carbonio-design-system",
+  "msw",
+  "i18next",
 ] as const;
 
 /**
  * Creates global mappings for externalized dependencies
  * Maps package names to their runtime window.__ZAPP_SHARED_LIBRARIES__ locations
  */
-export function createSharedGlobals(packageName: string): Record<string, string> {
-	return {
-		react: '__ZAPP_SHARED_LIBRARIES__["react"]',
-		'react-dom': '__ZAPP_SHARED_LIBRARIES__["react-dom"]',
-		'react-i18next': '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
-		lodash: '__ZAPP_SHARED_LIBRARIES__["lodash"]',
-		'react-router-dom': '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
-		'styled-components': '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
-		'@emotion/react': '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
-		'@emotion/styled': '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
-		'@zextras/carbonio-ui-preview': '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-ui-preview"]',
-		'@zextras/admin-ui-bootstrap': `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
-		'@zextras/carbonio-design-system':
-			'__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-design-system"]',
-		darkreader: '__ZAPP_SHARED_LIBRARIES__["darkreader"]',
-		msw: '__ZAPP_SHARED_LIBRARIES__["msw"]',
-		i18next: '__ZAPP_SHARED_LIBRARIES__["i18next"]'
-	};
+export function createSharedGlobals(
+  packageName: string,
+): Record<string, string> {
+  return {
+    react: '__ZAPP_SHARED_LIBRARIES__["react"]',
+    "react-dom": '__ZAPP_SHARED_LIBRARIES__["react-dom"]',
+    "react-i18next": '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
+    "lodash-es": '__ZAPP_SHARED_LIBRARIES__["lodash-es"]',
+    "react-router-dom": '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
+    "styled-components": '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
+    "@emotion/react": '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
+    "@emotion/styled": '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
+    "@zextras/carbonio-ui-preview":
+      '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-ui-preview"]',
+    "@zextras/admin-ui-bootstrap": `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
+    "@zextras/carbonio-design-system":
+      '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-design-system"]',
+    msw: '__ZAPP_SHARED_LIBRARIES__["msw"]',
+    i18next: '__ZAPP_SHARED_LIBRARIES__["i18next"]',
+  };
 }
 
 /**
  * Configuration options for module rollup
  */
 export interface ModuleRollupOptions {
-	packageName: string;
-	externals?: string[];
-	includeDefaults?: boolean;
+  packageName: string;
+  externals?: string[];
+  includeDefaults?: boolean;
 }
 
 /**
@@ -65,31 +66,35 @@ export interface ModuleRollupOptions {
  * @param options - Configuration for the module
  * @returns RollupOptions configured for the module
  */
-export function createModuleRollupOptions(options: ModuleRollupOptions): RollupOptions {
-	const { packageName, externals = [], includeDefaults = true } = options;
+export function createModuleRollupOptions(
+  options: ModuleRollupOptions,
+): RollupOptions {
+  const { packageName, externals = [], includeDefaults = true } = options;
 
-	const allExternals = includeDefaults ? [...SHARED_EXTERNALS, ...externals] : externals;
+  const allExternals = includeDefaults
+    ? [...SHARED_EXTERNALS, ...externals]
+    : externals;
 
-	const output: OutputOptions = {
-		exports: 'default',
-		entryFileNames: '[name].[hash].js',
-		chunkFileNames: '[name].[hash].chunk.js',
-		inlineDynamicImports: true,
-		assetFileNames: (assetInfo) => {
-			const fileName = assetInfo.names?.[0] || assetInfo.name || '';
-			if (fileName.endsWith('.css')) {
-				return 'style.[hash].css';
-			}
-			return '[name].[hash][extname]';
-		},
-		interop: 'compat',
-		globals: createSharedGlobals(packageName)
-	};
+  const output: OutputOptions = {
+    exports: "default",
+    entryFileNames: "[name].[hash].js",
+    chunkFileNames: "[name].[hash].chunk.js",
+    inlineDynamicImports: true,
+    assetFileNames: (assetInfo) => {
+      const fileName = assetInfo.names?.[0] || assetInfo.name || "";
+      if (fileName.endsWith(".css")) {
+        return "style.[hash].css";
+      }
+      return "[name].[hash][extname]";
+    },
+    interop: "compat",
+    globals: createSharedGlobals(packageName),
+  };
 
-	return {
-		external: allExternals,
-		output
-	};
+  return {
+    external: allExternals,
+    output,
+  };
 }
 
 /**
@@ -99,19 +104,19 @@ export function createModuleRollupOptions(options: ModuleRollupOptions): RollupO
  * @returns RollupOptions configured for the shell
  */
 export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
-	const output: OutputOptions = {
-		entryFileNames: isDev ? 'zapp-shell.bundle.js' : 'zapp-admin-ui.bundle.js',
-		chunkFileNames: '[name].[hash].chunk.js',
-		assetFileNames: (assetInfo) => {
-			const fileName = assetInfo.names?.[0] || assetInfo.name || '';
-			if (fileName.endsWith('.css')) {
-				return '[name].[hash].css';
-			}
-			return '[name].[hash][extname]';
-		}
-	};
+  const output: OutputOptions = {
+    entryFileNames: isDev ? "zapp-shell.bundle.js" : "zapp-admin-ui.bundle.js",
+    chunkFileNames: "[name].[hash].chunk.js",
+    assetFileNames: (assetInfo) => {
+      const fileName = assetInfo.names?.[0] || assetInfo.name || "";
+      if (fileName.endsWith(".css")) {
+        return "[name].[hash].css";
+      }
+      return "[name].[hash][extname]";
+    },
+  };
 
-	return {
-		output
-	};
+  return {
+    output,
+  };
 }

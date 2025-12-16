@@ -5,7 +5,6 @@
  */
 
 import { Container, Padding, Text } from '@zextras/carbonio-design-system';
-import React from 'react';
 
 import ListRow from '../../list/list-row';
 

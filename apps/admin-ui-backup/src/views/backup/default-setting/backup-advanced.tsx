@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo } from 'react';
-
-import { Container, Row, Divider, Input, Switch, Select } from '@zextras/carbonio-design-system';
+import { Container, Divider, Input, Row, Select,Switch } from '@zextras/carbonio-design-system';
+import { FC, useMemo } from 'react';
 
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';

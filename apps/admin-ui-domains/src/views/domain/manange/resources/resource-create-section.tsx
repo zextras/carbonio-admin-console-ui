@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useCallback } from 'react';
-
-import { Container, Input, Row, Text, Icon, Divider } from '@zextras/carbonio-design-system';
+import { Container, Divider,Icon, Input, Row, Text } from '@zextras/carbonio-design-system';
+import { FC, useCallback,useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import ListRow from '../../../list/list-row';
 import { ResourceContext } from './resource-context';
 import { SendInviteAccounts } from './send-invite-accounts';
-import ListRow from '../../../list/list-row';
 
 const ResourceCreateSection: FC = () => {
 	const context = useContext(ResourceContext);

@@ -5,22 +5,21 @@
  */
 
 import {
+	Button,
 	Container,
+	Input,
 	Row,
 	Text,
-	Input,
-	Button,
 	Tooltip,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { objectType } from '../../../../../types';
 import { SHORT } from '../../../../constants';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
 import ListRow from '../../../list/list-row';
-
 import { GenerateCertificateModal } from './generate-certificate-modal';
 
 interface CertificateViewProps {

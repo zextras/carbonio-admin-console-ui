@@ -6,23 +6,22 @@
 
 import {
 	postSoapFetchRequest,
+	useDomainStore,
 	useIsAdvanced,
 	useUserAccount,
-	useUserSettings,
-	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
+	useUserSettings} from '@zextras/admin-ui-bootstrap';
 import {
-	Row,
+	Button,
 	Container,
 	Divider,
-	Text,
-	Button,
+	Row,
 	Table,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
-import { debounce, filter, flatMapDeep } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, filter, flatMapDeep } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
@@ -38,10 +37,9 @@ import {
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import {
-	GetCosResponse,
+	CosA,
 	getCosGeneralInformation,
-	CosA
-} from '../../../../services/cos-general-information-service';
+	GetCosResponse} from '../../../../services/cos-general-information-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSessions } from '../../../../services/get-sessions';
@@ -60,7 +58,6 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import EditAccount from '../accounts/edit-account/edit-account';
-
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 type UserSession = {
@@ -288,13 +285,13 @@ const ManageDelegates: FC = () => {
 
 	const getDeletePasswordRight = useCallback(
 		(target: string): void => {
-			checkRightRequest(target, account.name, 'set.account.userPassword').then(
+			checkRightRequest(target, account?.name ?? '', 'set.account.userPassword').then(
 				(data: CheckRightResponse) => {
 					setAllowedDeletePassword(data?.allow);
 				}
 			);
 		},
-		[account.name]
+		[account?.name]
 	);
 
 	const getAccountDetail = useCallback(
@@ -315,7 +312,7 @@ const ManageDelegates: FC = () => {
 						severity: 'error',
 						label: error?.message
 							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							: 
 								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,

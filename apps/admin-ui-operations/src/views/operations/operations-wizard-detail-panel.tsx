@@ -1,25 +1,23 @@
-/* eslint-disable no-shadow */
+ 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
-
 import {
-	Container,
-	Input,
-	Row,
-	Divider,
-	Padding,
 	Button,
+	Container,
+	Divider,
+	Input,
+	Padding,
+	Row,
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import MiliSecondToDate from './functions/miliSecondToDate';
 import {
 	DONE_ROUTE_ID,
 	FALSE_OPERTION,
@@ -30,6 +28,7 @@ import {
 } from '../../constants';
 import ListRow from '../list/list-row';
 import { copyTextToClipboard } from '../utility/utils';
+import MiliSecondToDate from './functions/miliSecondToDate';
 
 const OperationsWizardDetailPanel: FC<{
 	setWizardDetailToggle: (value: boolean) => void;

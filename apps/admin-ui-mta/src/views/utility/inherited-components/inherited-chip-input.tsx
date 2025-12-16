@@ -3,18 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback } from 'react';
-
 import {
 	ChipInput,
-	Tooltip,
+	Container,
 	IconCheckbox,
-	Text,
-	Row,
 	Padding,
-	Container
-} from '@zextras/carbonio-design-system';
-import { map } from 'lodash';
+	Row,
+	Text,
+	Tooltip} from '@zextras/carbonio-design-system';
+import { map } from 'lodash-es';
+import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedChipInput: FC<{

@@ -4,28 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
+import { FC } from "react";
+import { useParams } from "react-router-dom";
 
-import { useParams } from 'react-router-dom';
-
-import NotificationListView from './notification-list-view';
-import { LIST } from '../../constants';
+import { LIST } from "../../constants";
+import NotificationListView from "./notification-list-view";
 
 const NotificationDetailOperation: FC = () => {
-	const { operation }: { operation: string } = useParams();
-	return (
-		<>
-			{((): any => {
-				// eslint-disable-next-line sonarjs/no-small-switch
-				switch (operation) {
-					case LIST:
-						return <NotificationListView />;
-					default:
-						return null;
-				}
-			})()}
-		</>
-	);
+  const { operation }: { operation: string } = useParams();
+  return (
+    <>
+      {((): any => {
+        switch (operation) {
+          case LIST:
+            return <NotificationListView />;
+          default:
+            return null;
+        }
+      })()}
+    </>
+  );
 };
 
 export default NotificationDetailOperation;

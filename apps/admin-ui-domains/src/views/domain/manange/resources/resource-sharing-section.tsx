@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useCallback } from 'react';
-
 import { Container, Row, Text } from '@zextras/carbonio-design-system';
+import { FC, useCallback,useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ResourceContext } from './resource-context';

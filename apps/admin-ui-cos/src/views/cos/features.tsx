@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback } from 'react';
+import { Container, Divider,Row, Text } from '@zextras/carbonio-design-system';
+import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
@@ -185,7 +185,7 @@ export const Features: FC<{
 							<InheritedSwitch
 								subValue={featuresDetail?.carbonioFeatureTeamEnabled}
 								onChange={changeSwitchOption}
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
 								inheritedValue={cosDetail?.carbonioFeatureTeamEnabled}

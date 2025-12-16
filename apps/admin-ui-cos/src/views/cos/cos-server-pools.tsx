@@ -17,8 +17,8 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { debounce, find } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { debounce, find } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -93,7 +93,7 @@ const CosServerPools: FC = () => {
 							{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
 								<Text size="small" weight="light">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.enabled',
 										'Enabled'
 									)}
@@ -101,7 +101,7 @@ const CosServerPools: FC = () => {
 							) : (
 								<Text size="small" weight="light" color="error">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.disabled',
 										'Disabled'
 									)}

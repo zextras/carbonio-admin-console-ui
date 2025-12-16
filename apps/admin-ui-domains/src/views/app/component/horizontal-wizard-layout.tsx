@@ -7,7 +7,7 @@
  */
 
 import { Button, Icon, Padding, Row, RowProps, Text } from '@zextras/carbonio-design-system';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

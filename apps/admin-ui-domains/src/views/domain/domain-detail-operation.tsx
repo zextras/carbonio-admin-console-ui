@@ -10,28 +10,26 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import {
+	ACCOUNTS,
+	ACTIVE_SYNC,
+	AUTHENTICATION,
+	DELEGATES_DOMAIN_ADMINS,
+	DISCLAIMER,
+	DISTRIBUTION_LIST,
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
-	VIRTUAL_HOSTS,
-	AUTHENTICATION,
 	MAILBOX_QUOTA,
-	ACCOUNTS,
-	DISTRIBUTION_LIST,
 	RESOURCES,
 	RESTORE_ACCOUNT,
-	ACTIVE_SYNC,
 	SAML,
-	TWO_FACTOR_AUTHENTICATION,
-	WHITELABEL_SETTINGS,
 	SECURITY_GROUP,
-	DELEGATES_DOMAIN_ADMINS,
-	DISCLAIMER
-} from '../../constants';
+	TWO_FACTOR_AUTHENTICATION,
+	VIRTUAL_HOSTS,
+	WHITELABEL_SETTINGS} from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-
 import DomainTwoFactorAuthentication from './details/domain-2fa';
 import DomainAuthentication from './details/domain-authentication';
 import DomainDisclaimer from './details/domain-disclaimer';

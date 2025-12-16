@@ -5,20 +5,19 @@
  */
 import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	useSnackbar,
-	Row,
-	Padding,
-	Text,
 	Button,
+	Container,
 	Divider,
 	Icon,
-	Select,
 	Input,
+	Padding,
+	Row,
+	Select,
+	SelectItem,
 	Switch,
-	SelectItem
-} from '@zextras/carbonio-design-system';
-import { isEqual } from 'lodash';
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -849,7 +848,7 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onBlackListActionChange}
 						/>
 					</Container>
@@ -901,7 +900,7 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
 							)}
-							// @ts-ignore // Need to fix it with custom soultion
+							// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 							onChange={onDNSBlackListActionChange}
 						/>
 					</Container>
@@ -976,7 +975,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={intervalOptions}
 								background="gray5"
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
 								selection={dnsblMinTTLUnit}
@@ -1104,7 +1103,7 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction
 								)}
-								// @ts-ignore // Need to fix it with custom soultion
+								// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 								onChange={onBareNewLineActionChange}
 							/>
 						</Container>
@@ -1176,7 +1175,7 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction
 								)}
-								// @ts-ignore // Need to fix it with custom soultion
+								// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 								onChange={onNonSMTPCommandActionChange}
 							/>
 						</Container>
@@ -1248,7 +1247,7 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction
 								)}
-								// @ts-ignore // Need to fix it with custom soultion
+								// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 								onChange={onPipeLiningActionChange}
 							/>
 						</Container>

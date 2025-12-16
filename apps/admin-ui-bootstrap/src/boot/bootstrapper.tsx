@@ -4,29 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SnackbarManager, ModalManager } from '@zextras/carbonio-design-system';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { ModalManager,SnackbarManager } from '@zextras/carbonio-design-system';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
 import { useBridge } from '../store/context-bridge';
-
-import { registerDefaultViews } from './app/default-views';
+import { TrackerProvider } from '../tracker/provider';
 import { unloadAllApps } from './app/load-apps';
 import BootstrapperContextProvider from './bootstrapper-provider';
 import BootstrapperRouter from './bootstrapper-router';
 import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
-
-const DefaultViewsRegister: FC = () => {
-	const [t] = useTranslation();
-	useEffect(() => {
-		registerDefaultViews(t);
-	}, [t]);
-	return null;
-};
 
 const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
 	useBridge({
@@ -52,23 +42,24 @@ const Bootstrapper: FC = () => {
 		};
 	}, [i18nFactory]);
 	return (
-		<ThemeProvider>
-			{error ? (
-				<ErrorPage />
-			) : (
-				<ReactQueryProvider>
+		<ReactQueryProvider>
+			<ThemeProvider>
+				{error ? (
+					<ErrorPage />
+				) : (
 					<SnackbarManager>
 						<ModalManager>
-							<BootstrapperContextProvider i18nFactory={i18nFactory}>
-								<TBridge i18nFactory={i18nFactory} />
-								<DefaultViewsRegister />
-								<BootstrapperRouter />
-							</BootstrapperContextProvider>
+							<TrackerProvider>
+								<BootstrapperContextProvider i18nFactory={i18nFactory}>
+									<TBridge i18nFactory={i18nFactory} />
+									<BootstrapperRouter />
+								</BootstrapperContextProvider>
+							</TrackerProvider>
 						</ModalManager>
 					</SnackbarManager>
-				</ReactQueryProvider>
-			)}
-		</ThemeProvider>
+				)}
+			</ThemeProvider>
+		</ReactQueryProvider>
 	);
 };
 

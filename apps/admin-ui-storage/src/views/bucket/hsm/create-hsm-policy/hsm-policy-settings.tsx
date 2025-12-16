@@ -4,22 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-
 import {
-	Text,
-	Input,
-	Container,
-	Checkbox,
-	Select,
 	Button,
-	Switch,
+	Checkbox,
+	Container,
+	Divider,
+	Input,
 	Padding,
-	Table,
 	Row,
-	useSnackbar,
-	Divider
-} from '@zextras/carbonio-design-system';
+	Select,
+	Switch,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 

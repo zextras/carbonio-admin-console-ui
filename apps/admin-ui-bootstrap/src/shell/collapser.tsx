@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FunctionComponent } from 'react';
-
 import { Icon } from '@zextras/carbonio-design-system';
+import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const VerticalDivider = styled.div`

@@ -12,7 +12,7 @@ import {
 	Row,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';

@@ -9,5 +9,3 @@ export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
 export const CONFIG = 'config';
 export const PRIMARY_BAR_SUBSCRIPTIONS = 'pb_subscriptions';
-export const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
-export const PH_API_HOST = 'https://stats.zextras.tools';

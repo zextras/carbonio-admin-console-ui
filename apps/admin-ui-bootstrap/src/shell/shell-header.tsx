@@ -5,23 +5,18 @@
  */
 
 import {
+	Button,
 	Container,
 	Padding,
 	Responsive,
-	useScreenMode,
-	Button
-} from '@zextras/carbonio-design-system';
+	useScreenMode} from '@zextras/carbonio-design-system';
 import React, { FC, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { AppRoute } from '../../types';
 import { CARBONIO_LOGO_URL } from '../constants';
-import { useDarkMode } from '../dark-mode/use-dark-mode';
-import { SearchBar } from '../search/search-bar';
-import { useAppStore } from '../store/app';
 import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
-
 import { CreationButton } from './creation-button';
 
 const CustomImg = styled.img`
@@ -35,16 +30,11 @@ const ShellHeader: FC<{
 	children?: React.ReactNode;
 }> = ({ activeRoute, mobileNavIsOpen, onMobileMenuClick, children }) => {
 	const screenMode = useScreenMode();
-	const searchEnabled = useAppStore((s) => s.views.search.length > 0);
 	const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
 		useLoginConfigStore();
-	const { darkModeEnabled, darkReaderStatus } = useDarkMode();
 	const logoSrc = useMemo(() => {
-		if (darkModeEnabled) {
-			return carbonioAdminUiDarkAppLogo || carbonioAdminUiAppLogo;
-		}
 		return carbonioAdminUiAppLogo || carbonioAdminUiDarkAppLogo;
-	}, [carbonioAdminUiDarkAppLogo, carbonioAdminUiAppLogo, darkModeEnabled]);
+	}, [carbonioAdminUiDarkAppLogo, carbonioAdminUiAppLogo]);
 
 	const logoUrl = useMemo(() => carbonioLogoURL || CARBONIO_LOGO_URL, [carbonioLogoURL]);
 
@@ -87,21 +77,15 @@ const ShellHeader: FC<{
 					width="auto"
 				>
 					<Container width="auto" height={32} crossAlignment="flex-start">
-						{darkReaderStatus && (
-							<a target="_blank" href={logoUrl} rel="noreferrer">
-								{logoSrc ? <CustomImg src={logoSrc} /> : <Logo height="2rem" />}
-							</a>
-						)}
+						<a target="_blank" href={logoUrl} rel="noreferrer">
+							{logoSrc ? <CustomImg src={logoSrc} /> : <Logo height="2rem" />}
+						</a>
 					</Container>
 
 					<Padding horizontal="extralarge">
 						<CreationButton activeRoute={activeRoute} />
 					</Padding>
 				</Container>
-
-				<Responsive mode="desktop">
-					{searchEnabled && <SearchBar activeRoute={activeRoute} />}
-				</Responsive>
 			</Container>
 			<Container orientation="horizontal" width="25%" mainAlignment="flex-end">
 				<Responsive mode="desktop">{children}</Responsive>

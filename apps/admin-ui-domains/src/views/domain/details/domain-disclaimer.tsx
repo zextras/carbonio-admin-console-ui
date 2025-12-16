@@ -4,29 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
-	useIntegratedComponent,
-	useUserSettings,
-	useDomainStore
-} from '@zextras/admin-ui-bootstrap';
-import {
-	Container,
 	Button,
-	Row,
-	Padding,
+	Container,
 	Divider,
-	Text,
-	useSnackbar,
+	Padding,
+	Row,
 	Switch,
-	TextArea
-} from '@zextras/carbonio-design-system';
+	Text,
+	TextArea,
+	useSnackbar} from '@zextras/carbonio-design-system';
 import { encode } from 'html-entities';
-import { isEqual } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { isEqual } from 'lodash-es';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
+import Composer from '../../../composer/composer';
 import {
 	AMAVIS_DISCLAIMER_OPTIONS,
 	FALSE,
@@ -64,7 +60,6 @@ const DomainDisclaimer: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [Composer] = useIntegratedComponent('composer');
 	const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
 	const [domainDisclaimerInitialDetail, setDomainDisclaimerInitialDetail] =
 		useState<DomainDisclaimerType>();
@@ -404,7 +399,7 @@ const DomainDisclaimer: FC = () => {
 						<TextAreaEditor
 							label={''}
 							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
-							// @ts-ignore
+							// @ts-expect-error - needs a fix
 							onChange={(event: ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
 							}}
@@ -421,7 +416,6 @@ const DomainDisclaimer: FC = () => {
 					>
 						<EditorWrapper>
 							<Composer
-								// @ts-ignore
 								value={defaulRichTextContent}
 								onEditorChange={(ev: any): void => {
 									setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);

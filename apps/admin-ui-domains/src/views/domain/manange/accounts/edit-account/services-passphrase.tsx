@@ -3,24 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import {
-	Input,
-	Row,
-	Text,
-	Select,
 	Button,
-	useSnackbar,
-	Modal,
 	Container,
-	Icon
-} from '@zextras/carbonio-design-system';
+	Icon,
+	Input,
+	Modal,
+	Row,
+	Select,
+	Text,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap'
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 
@@ -33,7 +31,7 @@ interface CredentialType {
 	label?: string;
 	services?: string;
 	enabled?: boolean;
-	// eslint-disable-next-line camelcase
+	 
 	text_data?: CredentialTextDataType;
 }
 
@@ -51,7 +49,7 @@ interface AddCredentialApiType {
 	ok?: boolean;
 	response?: {
 		list?: CredentialType;
-		// eslint-disable-next-line camelcase
+		 
 		text_data: { password: '' };
 	};
 }

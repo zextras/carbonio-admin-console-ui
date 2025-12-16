@@ -7,41 +7,39 @@
 import {
 	postSoapFetchRequest,
 	soapFetch,
-	useIsAdvanced,
-	useAllServers
-} from '@zextras/admin-ui-bootstrap';
+	useAllServers,
+	useIsAdvanced} from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Divider,
-	Table,
 	Button,
-	useSnackbar,
-	THeader
-} from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+	Container,
+	Divider,
+	Row,
+	Table,
+	Text,
+	THeader,
+	useSnackbar} from '@zextras/carbonio-design-system';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Volume, objectType } from '../../../../../types';
+import { objectType,Volume } from '../../../../../types';
 import {
-	NO,
-	YES,
-	CUSTOM_S3,
-	S3,
-	FILEBLOB,
-	CENTRALIZED,
-	OPENIO,
-	SWIFT,
 	ALIBABA,
+	CENTRALIZED,
 	CEPH,
 	CLOUDIAN,
+	CUSTOM_S3,
 	EMC,
-	SCALITYS3,
-	LOCAL_VALUE,
+	FILEBLOB,
 	FLEX_START,
+	LOCAL_VALUE,
+	NO,
+	OPENIO,
+	S3,
+	SCALITYS3,
+	SWIFT,
+	YES,
 	ZIMBRA_ADMIN_URN
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
@@ -51,8 +49,7 @@ import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
-import { volTableHeader, indexerHeaders } from '../../../utility/utils';
-
+import { indexerHeaders,volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
 import { VolumeContext } from './create-volume/volume-context';
@@ -252,9 +249,9 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							severity: 'error',
-							// eslint-disable-next-line sonarjs/no-duplicate-string
+							
 							label: t('label.volume_detail_error', '{{message}}', {
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+								
 								message: 'Something went wrong, please try again'
 							})
 						});
@@ -561,7 +558,7 @@ const VolumesDetailPanel: FC = () => {
 					isCurrent: attr?.isCurrent === 1
 				},
 				'zextras'
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 			).then(async (res: { Body: { response: { content: string } } }): Promise<void> => {
 				const result = JSON.parse(res?.Body?.response?.content);
 				const responseData = Object.values(result?.response)[0];

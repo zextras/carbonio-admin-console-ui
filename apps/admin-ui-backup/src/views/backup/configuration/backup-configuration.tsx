@@ -5,32 +5,33 @@
  */
 
 import {
+	fetchExternalSoap,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap,
+	useAllServers,
 	useCurrentUserRights,
-	useModuleLicenseInfo,
-	useAllServers
-} from '@zextras/admin-ui-bootstrap';
+	useModuleLicenseInfo} from '@zextras/admin-ui-bootstrap';
 import {
-	Container,
-	Row,
-	Text,
-	Divider,
 	Button,
-	Switch,
+	Container,
+	Divider,
 	Input,
 	Padding,
+	Row,
 	Select,
+	Switch,
+	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { isEmpty, find } from 'lodash';
+import { find,isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { Trans,useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
+	BACKUP_REALTIME,
+	CONFIG,
 	LOCAL_VALUE,
 	MANAGE_EXTERNAL_VOLUME,
 	MOUNTPOINT,
@@ -39,8 +40,6 @@ import {
 	S3,
 	S3_BUCKET,
 	SERVER,
-	CONFIG,
-	BACKUP_REALTIME,
 	ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
@@ -338,7 +337,7 @@ const BackupConfiguration: FC = () => {
 							severity: 'error',
 							label: error?.message
 								? error?.message
-								: // eslint-disable-next-line sonarjs/no-duplicate-string
+								: 
 									t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -1506,7 +1505,7 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedItemInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									// @ts-ignore // DS only support string
+									// @ts-expect-error - needs a fix // DS only support string
 									description={
 										<Trans
 											i18nKey="backup.back_delete_account_warning_message"
@@ -1546,7 +1545,7 @@ const BackupConfiguration: FC = () => {
 										setKeepDeletedAccountsInBackup(e.target.value);
 									}}
 									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-									// @ts-ignore // DS only support string
+									// @ts-expect-error - needs a fix // DS only support string
 									description={
 										<Trans
 											i18nKey="backup.back_delete_account_warning_message"

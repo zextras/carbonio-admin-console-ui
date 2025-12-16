@@ -7,7 +7,7 @@
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 export const createAccountRequest = async (
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+	 
 	attr: any,
 	name: string,
 	password: string

@@ -11,7 +11,7 @@ import {
 	useMailstoreServers,
 	useModuleLicenseInfo
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
+import { Container, Padding,Row, Text } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,9 +24,8 @@ import {
 	IS_SERVER_SPECIFICS_EXPANDED,
 	LIST_SERVER,
 	SERVER,
-	SERVERS_LIST,
-	SERVER_CONFIG
-} from '../../constants';
+	SERVER_CONFIG,
+	SERVERS_LIST} from '../../constants';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';

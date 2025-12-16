@@ -1,9 +1,4 @@
 #!/bin/bash
-#
-# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
-#
-# SPDX-License-Identifier: GPL-2.0-only
-#
 
 # This script builds system packages (deb/rpm) for the Carbonio Admin UI.
 # It uses the YAP (Yet Another Packager) tool within a Docker container to create

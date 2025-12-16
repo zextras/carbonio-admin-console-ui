@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
-
 import { Container, Row, Select, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
+import { FC, useCallback,useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -78,7 +77,7 @@ const DelegateSelectModeSection: FC = () => {
 				if (accountListResponse && Array.isArray(accountListResponse)) {
 					const accountListArr: any[] = [];
 					if (data?.dl?.length) {
-						// eslint-disable-next-line no-param-reassign
+						 
 						data.account = data?.dl;
 					}
 					data?.account.map(

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Divider, Text, Row, Button } from '@zextras/carbonio-design-system';
+import { Button,Divider, Row, Text } from '@zextras/carbonio-design-system';
 import React from 'react';
 
 type SectionHeaderProps = {

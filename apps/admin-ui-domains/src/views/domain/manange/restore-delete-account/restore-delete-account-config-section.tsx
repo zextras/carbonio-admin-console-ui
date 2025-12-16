@@ -3,29 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
-
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
+	DateTimePicker,
+	Divider,
+	Dropdown,
+	Icon,
 	Input,
 	Row,
 	Switch,
-	DateTimePicker,
-	Icon,
 	Text,
-	Divider,
-	Dropdown,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const DatePickerContainer = styled(Container)`
 	.react-datepicker__input-container {

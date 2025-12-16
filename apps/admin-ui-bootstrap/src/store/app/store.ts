@@ -5,26 +5,18 @@
  */
 
 import { produce } from 'immer';
-import { filter, find, findIndex, omit, reduce, sortBy, unionBy, unionWith } from 'lodash';
+import { filter, find, omit, reduce, sortBy, unionWith } from 'lodash-es';
 import { create } from 'zustand';
 
 import {
 	AppRouteDescriptor,
 	AppState,
 	AppView,
-	BadgeInfo,
-	BoardView,
 	CarbonioModule,
-	PrimaryAccessoryView,
 	PrimarybarSection,
-	PrimaryBarView,
-	SearchView,
-	SecondaryAccessoryView,
-	SecondaryBarView,
-	UtilityView
+	PrimaryBarView
 } from '../../../types';
 import { SHELL_APP_ID } from '../../constants';
-
 import { normalizeApp } from './utils';
 
 const filterById = <T extends { id: string }>(items: Array<T>, id: string): Array<T> =>
@@ -49,13 +41,8 @@ export const useAppStore = create<AppState>((set) => ({
 	routes: {},
 	views: {
 		primaryBar: [],
-		secondaryBar: [],
 		appView: [],
-		board: [],
 		utilityBar: [],
-		search: [],
-		primaryBarAccessories: [],
-		secondaryBarAccessories: [],
 		primarybarSections: []
 	},
 	setters: {
@@ -132,20 +119,6 @@ export const useAppStore = create<AppState>((set) => ({
 							'position'
 						);
 					}
-					if (routeData.secondaryBar) {
-						state.views.secondaryBar = unionWith<SecondaryBarView>(
-							[
-								{
-									app: routeData.app,
-									id: routeData.id,
-									route: routeData.route,
-									component: routeData.secondaryBar
-								}
-							],
-							state.views.secondaryBar,
-							(a, b): boolean => a.id === b.id
-						);
-					}
 					if (routeData.appView) {
 						state.views.appView = unionWith<AppView>(
 							[
@@ -166,17 +139,6 @@ export const useAppStore = create<AppState>((set) => ({
 			);
 			return routeData.id;
 		},
-		setRouteVisibility: (id: string, visible: boolean): void => {
-			set(
-				produce((state: AppState) => {
-					const idx = findIndex(state.views.primaryBar, (view) => view.id === id);
-					if (idx >= 0) {
-						state.views.primaryBar[idx].visible = visible;
-					}
-				})
-			);
-		},
-
 		// remove route (id | route)
 		removeRoute: (id: string): void => {
 			set(
@@ -185,136 +147,7 @@ export const useAppStore = create<AppState>((set) => ({
 
 					state.views.primaryBar = filterById(state.views.primaryBar, id);
 
-					state.views.secondaryBar = filterById(state.views.secondaryBar, id);
-
 					state.views.appView = filterById(state.views.appView, id);
-				})
-			);
-		},
-		// add board
-		addBoardView: (data: BoardView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.board = unionBy([data], state.views.board, 'id');
-				})
-			);
-			return data.id;
-		},
-
-		// remove board
-		removeBoardView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.board = filterById(state.views.board, id);
-				})
-			);
-		},
-		//
-		// add search
-		addSearchView: (data: SearchView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.search = sortBy(unionBy([data], state.views.search, 'id'), 'position');
-				})
-			);
-			return data.id;
-		},
-		// remove search
-		removeSearchView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.search = filterById(state.views.search, id);
-				})
-			);
-		},
-		//
-		// add utility
-		addUtilityView: (data: UtilityView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.utilityBar = sortBy(
-						unionBy([data], state.views.utilityBar, 'id'),
-						'position'
-					);
-				})
-			);
-			return data.id;
-		},
-		// remove utility
-		removeUtilityView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.utilityBar = filterById(state.views.utilityBar, id);
-				})
-			);
-		},
-		//
-		// add primaryAccessory
-		addPrimaryAccessoryView: (data: PrimaryAccessoryView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.primaryBarAccessories = unionBy(
-						[data],
-						state.views.primaryBarAccessories,
-						'id'
-					);
-				})
-			);
-			return data.id;
-		},
-		// remove primaryAccessory
-		removePrimaryAccessoryView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.primaryBarAccessories = filterById(state.views.primaryBarAccessories, id);
-				})
-			);
-		},
-		//
-		// add secondaryAccessory
-		addSecondaryAccessoryView: (data: SecondaryAccessoryView): string => {
-			set(
-				produce((state: AppState) => {
-					state.views.secondaryBarAccessories = unionBy(
-						[data],
-						state.views.secondaryBarAccessories,
-						'id'
-					);
-				})
-			);
-			return data.id;
-		},
-		// remove secondaryAccessory
-		removeSecondaryAccessoryView: (id: string): void => {
-			set(
-				produce((state: AppState) => {
-					state.views.secondaryBarAccessories = filterById(state.views.secondaryBarAccessories, id);
-				})
-			);
-		},
-		updatePrimaryBadge: (badge: Partial<BadgeInfo>, id: string): void => {
-			set(
-				produce((state: AppState) => {
-					const idx = findIndex(state.views.primaryBar, (bar) => bar.id === id);
-					if (idx >= 0) {
-						state.views.primaryBar[idx].badge = {
-							...state.views.primaryBar[idx].badge,
-							...badge
-						};
-					}
-				})
-			);
-		},
-		updateUtilityBadge: (badge: Partial<BadgeInfo>, id: string): void => {
-			set(
-				produce((state: AppState) => {
-					const idx = findIndex(state.views.utilityBar, (bar) => bar.id === id);
-					if (idx >= 0) {
-						state.views.utilityBar[idx].badge = {
-							...state.views.utilityBar[idx].badge,
-							...badge
-						};
-					}
 				})
 			);
 		}

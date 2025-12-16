@@ -6,14 +6,13 @@
 
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { useMemo } from 'react';
 
 import { AppRoute, CarbonioModule } from '../../../types';
-
 import { useAppStore } from './store';
 
-export const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
+const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
 export const useAppList = (): Array<CarbonioModule> => {
 	const apps = useApps();
 	return useMemo(() => sortBy(apps, (a) => a.priority), [apps]);

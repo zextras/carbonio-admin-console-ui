@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/carbonio-design-system';
-import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { HorizontalWizard } from '../../../../../app/component/hwizard';
 import { Section } from '../../../../../app/component/section-component';
 import { volumeTypeList } from '../../../../../utility/utils';
-
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';

@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text, Padding } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import { Container, Padding,Text } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 
 const PrimaryBarTooltip: FC<{ items: any[] }> = ({ items }) => (
 	<Container

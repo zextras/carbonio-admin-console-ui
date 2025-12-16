@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
-import { Container, Row, Padding, Text, Divider, Button } from '@zextras/carbonio-design-system';
+import { Button,Container, Divider, Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 
 const ListPanelItem: FC<{
 	title: string;
