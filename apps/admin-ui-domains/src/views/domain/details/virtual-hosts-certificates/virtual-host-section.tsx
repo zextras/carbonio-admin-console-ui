@@ -178,7 +178,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
 						<Button
 							type="ghost"
 							color="error"
-							label="Remove selected items"
+							label={t('button.remove_selected_items', "Remove selected items")}
 							size="small"
 							onClick={removeVirtualHost}
 						/>

@@ -66,7 +66,7 @@ export const CertificateView: FC<CertificateViewProps> = ({
 	);
 	const requestSuccessLabel = t(
 		'label.certificate_request_success',
-		'Processing request; results will be sent to domain notification recipients.'
+		'Processing. Results will be notified to global and domain recipients'
 	);
 
 	const handleModalClose = (): void => {
