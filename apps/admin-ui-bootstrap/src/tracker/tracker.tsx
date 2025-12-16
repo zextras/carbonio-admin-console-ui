@@ -10,52 +10,52 @@ import { usePostHog } from 'posthog-js/react';
 import { useCallback, useEffect } from 'react';
 
 interface Tracker {
-	capture: (
-		event_name: string,
-		properties?: Properties | null | undefined,
-		options?: CaptureOptions | undefined
-	) => void;
+  capture: (
+    event_name: string,
+    properties?: Properties | null | undefined,
+    options?: CaptureOptions | undefined,
+  ) => void;
 }
 
 const hashToSHA256 = async (value: string): Promise<ArrayBuffer> => {
-	const encoder = new TextEncoder();
-	const data = encoder.encode(value);
-	return window.crypto.subtle.digest('SHA-256', data);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(value);
+  return window.crypto.subtle.digest('SHA-256', data);
 };
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-	const bytes = new Uint8Array(buffer);
-	const binary = bytes.reduce((res, byte) => res + String.fromCharCode(byte), '');
-	return window.btoa(binary);
+  const bytes = new Uint8Array(buffer);
+  const binary = bytes.reduce((res, byte) => res + String.fromCharCode(byte), '');
+  return window.btoa(binary);
 };
 
 export const useTracker = (): Tracker => {
-	const postHog = usePostHog();
-	const isAdvanced = useIsAdvanced();
-	const isCarbonioCE = !isAdvanced;
-	const account = useUserAccount();
+  const postHog = usePostHog();
+  const isAdvanced = useIsAdvanced();
+  const isCarbonioCE = !isAdvanced;
+  const account = useUserAccount();
 
-	useEffect(() => {
-		if (isCarbonioCE !== undefined) {
-			postHog.setPersonProperties({ is_ce: isCarbonioCE });
-		}
-	}, [isCarbonioCE, postHog]);
+  useEffect(() => {
+    if (isCarbonioCE !== undefined) {
+      postHog.setPersonProperties({ is_ce: isCarbonioCE });
+    }
+  }, [isCarbonioCE, postHog]);
 
-	useEffect(() => {
-		if (account?.id) {
-			hashToSHA256(account.id).then((arrayBuffer) => {
-				const hashUserId = arrayBufferToBase64(arrayBuffer);
-				postHog.identify(hashUserId, { is_ce: !isAdvanced });
-			});
-		}
-	}, [account?.id, postHog, isAdvanced]);
+  useEffect(() => {
+    if (account?.id) {
+      hashToSHA256(account.id).then((arrayBuffer) => {
+        const hashUserId = arrayBufferToBase64(arrayBuffer);
+        postHog.identify(hashUserId, { is_ce: !isAdvanced });
+      });
+    }
+  }, [account, postHog, isAdvanced]);
 
-	const capture = useCallback<Tracker['capture']>(
-		(eventName, properties, options) => {
-			postHog.capture(eventName, properties, options);
-		},
-		[postHog]
-	);
+  const capture = useCallback<Tracker['capture']>(
+    (eventName, properties, options) => {
+      postHog.capture(eventName, properties, options);
+    },
+    [postHog],
+  );
 
-	return { capture };
+  return { capture };
 };

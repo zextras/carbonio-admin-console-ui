@@ -4,24 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  useIsAdvanced,
-  useMailstoreServers,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Icon,
-  Table,
-  Text,
-} from "@zextras/carbonio-design-system";
-import { FC, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import styled from "styled-components";
+import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { Button, Container, Icon, Table, Text } from '@zextras/carbonio-design-system';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import CustomHeaderFactory from "../app/shared/customTableHeaderFactory";
-import CustomRowFactory from "../app/shared/customTableRowFactory";
-import ListRow from "../list/list-row";
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import ListRow from '../list/list-row';
 
 const VersionText = styled(Text)`
   background: ${({ theme }): string => theme.palette.primary.regular};
@@ -81,7 +72,7 @@ const DashboardServerList: FC<{
               {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
             </VersionText>
           ) : (
-            ""
+            ''
           ),
           <Text
             size="small"
@@ -93,9 +84,8 @@ const DashboardServerList: FC<{
             }}
           >
             {item && item?.a
-              ? item?.a.find((attribute: any) => attribute?.n === "description")
-                  ?._content
-              : ""}
+              ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
+              : ''}
           </Text>,
         ],
       }));
@@ -108,27 +98,27 @@ const DashboardServerList: FC<{
   const headers: any[] = useMemo(
     () => [
       {
-        id: "server_name",
-        label: t("dashboard.server_name", "Server name"),
-        width: "25%",
+        id: 'server_name',
+        label: t('dashboard.server_name', 'Server name'),
+        width: '25%',
         bold: true,
       },
       {
-        id: "carbonio_core",
-        label: t("dashboard.core_version", "Core Version"),
-        width: "20%",
+        id: 'carbonio_core',
+        label: t('dashboard.core_version', 'Core Version'),
+        width: '20%',
         bold: true,
       },
       {
-        id: "carbonio",
-        label: "",
-        width: isAdvanced ? "20%" : "0%",
+        id: 'carbonio',
+        label: '',
+        width: isAdvanced ? '20%' : '0%',
         bold: true,
       },
       {
-        id: "description",
-        label: t("dashboard.description", "Description"),
-        width: "35%",
+        id: 'description',
+        label: t('dashboard.description', 'Description'),
+        width: '35%',
         bold: true,
       },
     ],
@@ -139,21 +129,17 @@ const DashboardServerList: FC<{
     <Container background="gray6">
       <ListRow>
         <Container
-          padding={{ all: "extralarge" }}
+          padding={{ all: 'extralarge' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
         >
           <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              width="2.2rem"
-            >
-              <Icon icon="HardDriveOutline" height={"1.5rem"} width="1.5rem" />
+            <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
+              <Icon icon="HardDriveOutline" height={'1.5rem'} width="1.5rem" />
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
               <Text size="medium" color="gray0" weight="bold">
-                {t("label.mailstores_list", "Mailstores List")}
+                {t('label.mailstores_list', 'Mailstores List')}
               </Text>
             </Container>
           </ListRow>
@@ -161,14 +147,11 @@ const DashboardServerList: FC<{
         <Container
           mainAlignment="flex-end"
           crossAlignment="flex-end"
-          padding={{ all: "extralarge" }}
+          padding={{ all: 'extralarge' }}
         >
           <Button
             type="ghost"
-            label={t(
-              "dashboard.go_to_mailstores_server_list",
-              "Go to mailstores servers list",
-            )}
+            label={t('dashboard.go_to_mailstores_server_list', 'Go to mailstores servers list')}
             color="primary"
             onClick={goToMailStoreServerList}
             size="large"
@@ -189,7 +172,7 @@ const DashboardServerList: FC<{
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            style={{ overflow: "auto", height: "100%" }}
+            style={{ overflow: 'auto', height: '100%' }}
             RowFactory={CustomRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
