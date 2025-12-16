@@ -18,7 +18,7 @@ Files: CHANGELOG.md
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: eslint.config.js
+Files: *.config.js
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: GPL-2.0-only
 
