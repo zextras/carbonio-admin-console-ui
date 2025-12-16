@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
 	Container,
 	Row,
@@ -19,9 +19,9 @@ import {
 	Button,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -56,14 +56,12 @@ import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
 
-// eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
 	APPROVAL = 'APPROVAL',
 	REJECT = 'REJECT'
 }
 
-// eslint-disable-next-line no-shadow
 export enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
@@ -156,7 +154,7 @@ const EditMailingListView: FC<any> = ({
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
-				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - hh:MM')
+				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - HH:mm')
 				: '',
 		[zimbraCreateTimestamp]
 	);
@@ -321,7 +319,6 @@ const EditMailingListView: FC<any> = ({
 	);
 
 	const getMailingList = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -631,9 +628,8 @@ const EditMailingListView: FC<any> = ({
 						setIsShowError(true);
 						setOwnerErrorMessage(
 							t(
-								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'label.distribution_list_already_in_list_error',
-								// eslint-disable-next-line sonarjs/no-duplicate-string
+
 								'The Distribution List / User is already in the list'
 							)
 						);
@@ -711,7 +707,6 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantType]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
@@ -841,7 +836,7 @@ const EditMailingListView: FC<any> = ({
 					label: error?.message
 						? error?.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -961,7 +956,6 @@ const EditMailingListView: FC<any> = ({
 		Promise.all(requests)
 			.then((response: any) => Promise.all(response))
 			.then((data: any) => {
-				// eslint-disable-next-line no-shadow
 				let isError = false;
 				let errorMessage = '';
 				if (grantType?.value !== EMAIL) {
@@ -1274,12 +1268,11 @@ const EditMailingListView: FC<any> = ({
 		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
 			const deleteAliasArr = differenceBy(zimbraDefaultMailAlias, zimbraMailAlias, 'label');
 			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
-			// eslint-disable-next-line array-callback-return
+
 			deleteAliasArr.forEach((aliasName: any) => {
 				request.push(deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
 			});
 
-			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName: any) => {
 				request.push(addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
 			});
@@ -1751,7 +1744,6 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantEmailsList]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleClickDeleteEvent = useCallback(() => {
 		setIsDeleteBtnLoading(true);
 		const getGrantBody: any = {};
@@ -1770,7 +1762,6 @@ const EditMailingListView: FC<any> = ({
 					const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
 					const granteeRightLenght = granteeRights?.values();
 
-					// eslint-disable-next-line no-restricted-syntax
 					for (const value of granteeRightLenght) {
 						granteeTotal += value;
 					}
@@ -1808,7 +1799,6 @@ const EditMailingListView: FC<any> = ({
 					const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
 					const targetRightLenght = targetRights?.values();
 
-					// eslint-disable-next-line no-restricted-syntax
 					for (const value of targetRightLenght) {
 						targetTotal += value;
 					}
@@ -1892,7 +1882,7 @@ const EditMailingListView: FC<any> = ({
 			color: 'error',
 			loading: isDeleteBtnLoading,
 			onClick: handleClickDeleteEvent,
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+
 			label: t('label.delete', 'delete')
 		},
 		{

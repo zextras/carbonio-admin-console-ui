@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
 
 import { Container, Text, Row, Divider, Input, Button } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useStickyBarStore } from '../../../store/sticky-bar/store';
@@ -105,7 +105,7 @@ const NotificationDetail: FC<{
 				<Container padding={{ bottom: 'large', right: 'small', left: 'extralarge' }}>
 					<Input
 						label={t('label.date', 'Date')}
-						value={moment(notification?.date).format('DD-MM-YYYY - HH:mm A')}
+						value={moment(notification?.date).format('DD-MM-YYYY - hh:mm A')}
 						backgroundColor="gray6"
 					/>
 				</Container>

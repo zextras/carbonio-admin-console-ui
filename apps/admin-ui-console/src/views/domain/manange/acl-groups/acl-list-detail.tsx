@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -20,6 +19,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 import { deleteDistributionList } from '../../../../services/delete-distribution-list';
@@ -32,14 +32,12 @@ import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import { getDateFromStr } from '../../../utility/utils';
 
-// eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
 	APPROVAL = 'APPROVAL',
 	REJECT = 'REJECT'
 }
 
-// eslint-disable-next-line no-shadow
 export enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
@@ -60,7 +58,7 @@ const AclListDetail: FC<any> = ({
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
-				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - hh:MM')
+				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - HH:mm')
 				: '',
 		[zimbraCreateTimestamp]
 	);
@@ -219,7 +217,6 @@ const AclListDetail: FC<any> = ({
 	);
 
 	const getAclList = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -427,8 +424,7 @@ const AclListDetail: FC<any> = ({
 					severity: 'error',
 					label: error.message
 						? error.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -437,7 +433,6 @@ const AclListDetail: FC<any> = ({
 			});
 	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleClickDeleteEvent = useCallback(() => {
 		setIsDeleteBtnLoading(true);
 		const getGrantBody: any = {};
@@ -456,7 +451,6 @@ const AclListDetail: FC<any> = ({
 					const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
 					const granteeRightLenght = granteeRights?.values();
 
-					// eslint-disable-next-line no-restricted-syntax
 					for (const value of granteeRightLenght) {
 						granteeTotal += value;
 					}
@@ -494,7 +488,6 @@ const AclListDetail: FC<any> = ({
 					const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
 					const targetRightLenght = targetRights?.values();
 
-					// eslint-disable-next-line no-restricted-syntax
 					for (const value of targetRightLenght) {
 						targetTotal += value;
 					}
