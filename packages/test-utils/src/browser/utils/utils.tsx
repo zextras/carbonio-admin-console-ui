@@ -4,12 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryClient } from '@tanstack/react-query';
+import { type QueryClient } from '@tanstack/react-query';
 import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
+import { clone, cloneDeep, map } from 'lodash-es';
 import { type ReactElement } from 'react';
 import { render, type RenderResult } from 'vitest-browser-react';
 
-import { createBrowserSoapAPIInterceptor } from '../worker';
+import { allConfigBaseResponseMock } from '../../api-mocks/get-all-config-response-mock';
+import { getAllConfigRightsBaseResponseMock } from '../../api-mocks/get-all-config-rights-response';
+import { getInfoResponseBaseMock } from '../../api-mocks/get-info-response-mock';
 import { Wrapper, WrapperProps } from './wrapper';
 
 export const setupBrowserTest = (
@@ -65,10 +68,7 @@ export async function grantUserConfigRights() {
       ],
     },
   ];
-  const getRightsInterceptor = createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
-    target: mockConfigRightsData,
-  });
-  return getRightsInterceptor;
+  queryClient.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
 }
 
 export async function grantUserCosRights() {
@@ -92,4 +92,106 @@ export async function grantUserCosRights() {
     },
   ];
   queryClient.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
+}
+type GetGetInfoResponseMockOptions = {
+  prefs?: typeof getInfoResponseBaseMock.prefs._attrs;
+  attrs?: typeof getInfoResponseBaseMock.attrs._attrs;
+};
+
+export function getGetInfoResponseMock(
+  options?: GetGetInfoResponseMockOptions,
+): typeof getInfoResponseBaseMock {
+  const overrides = {
+    ...(options?.prefs && {
+      prefs: {
+        _attrs: {
+          ...getInfoResponseBaseMock.prefs._attrs,
+          ...options.prefs,
+        },
+      },
+    }),
+    ...(options?.attrs && {
+      attrs: {
+        _attrs: {
+          ...getInfoResponseBaseMock.attrs._attrs,
+          ...options.attrs,
+        },
+      },
+    }),
+  };
+  return {
+    ...getInfoResponseBaseMock,
+    ...overrides,
+  };
+}
+
+type ConfigItem = { n: string; _content: string };
+type ConfigOverrides = Record<string, string>;
+
+export function getAllConfigResponseMock(
+  options?: ConfigOverrides,
+): typeof allConfigBaseResponseMock {
+  if (!options) {
+    return {
+      ...allConfigBaseResponseMock,
+      a: map(allConfigBaseResponseMock.a.map, clone),
+    };
+  }
+
+  const optionsArray: ConfigItem[] = Object.entries(options).map(([n, _content]) => ({
+    n,
+    _content,
+  }));
+
+  const updatedBaseConfig: ConfigItem[] = allConfigBaseResponseMock.a.map((item) => {
+    const overrideContent = options[item.n];
+    if (overrideContent !== undefined) {
+      return { ...item, _content: overrideContent };
+    }
+    return { ...item };
+  });
+
+  const baseNames = new Set(allConfigBaseResponseMock.a.map((item) => item.n));
+  const newConfigItems: ConfigItem[] = optionsArray.filter((option) => !baseNames.has(option.n));
+  const finalConfigArray: ConfigItem[] = [...updatedBaseConfig, ...newConfigItems];
+
+  return {
+    ...allConfigBaseResponseMock,
+    a: finalConfigArray,
+  };
+}
+
+export type RightOverrides = Record<string, string[]>;
+
+export function getAllConfigRightsResponseMock(
+  overrides?: RightOverrides,
+): typeof getAllConfigRightsBaseResponseMock {
+  const baseClone = cloneDeep(getAllConfigRightsBaseResponseMock);
+
+  if (!overrides) {
+    return baseClone;
+  }
+
+  const updatedTargets = baseClone.target.map((targetGroup) => {
+    const targetType = targetGroup.type;
+    const newRightsList = overrides[targetType];
+
+    if (newRightsList === undefined) {
+      return targetGroup;
+    }
+
+    return {
+      ...targetGroup,
+      all:
+        targetGroup.all?.map((allEntry) => ({
+          ...allEntry,
+          right: newRightsList.map((rightName) => ({ n: rightName })),
+        })) || targetGroup.all,
+    };
+  });
+
+  return {
+    ...baseClone,
+    target: updatedTargets,
+  };
 }
