@@ -133,7 +133,7 @@ export const COSPreferences = (): React.JSX.Element => {
 
 	return (
 		<PageLayout
-			title={t('cos.preferences', 'Preferences')}
+			title={t('label.preferences', 'Preferences')}
 			onSave={handleSave}
 			onCancel={handleCancel}
 			unSavedChanges={hasUnsavedChanges}
