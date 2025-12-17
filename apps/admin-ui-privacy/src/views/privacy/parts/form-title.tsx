@@ -8,20 +8,18 @@ import { Container, Padding, Text } from '@zextras/carbonio-design-system';
 
 import ListRow from '../../list/list-row';
 
-export const SwitchDescription = ({ label }: { label: string }) => {
-	return (
-		<ListRow>
-			<Container
-				mainAlignment="flex-start"
-				crossAlignment="flex-start"
-				padding={{ left: 'extralarge' }}
-			>
-				<Padding left="large">
-					<Text size="small" weight="regular" color="gray1">
-						{label}
-					</Text>
-				</Padding>
-			</Container>
-		</ListRow>
-	);
-};
+export const SwitchDescription = ({ label }: { label: string }) => (
+  <ListRow>
+    <Container
+      mainAlignment="flex-start"
+      crossAlignment="flex-start"
+      padding={{ left: 'extralarge' }}
+    >
+      <Padding left="large">
+        <Text size="small" weight="regular" color="gray1">
+          {label}
+        </Text>
+      </Padding>
+    </Container>
+  </ListRow>
+);

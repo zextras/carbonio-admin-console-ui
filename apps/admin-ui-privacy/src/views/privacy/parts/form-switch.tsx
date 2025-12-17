@@ -8,32 +8,30 @@ import { Container, Switch } from '@zextras/carbonio-design-system';
 import ListRow from '../../list/list-row';
 
 export const FormSwitch = ({
-	fieldValue,
-	allowSetPrivacy,
-	onClick,
-	label
+  fieldValue,
+  allowSetPrivacy,
+  onClick,
+  label,
 }: {
-	fieldValue: boolean;
-	allowSetPrivacy: boolean;
-	onClick: () => void;
-	label: string;
-}) => {
-	return (
-		<ListRow>
-			<Container
-				orientation="horizontal"
-				mainAlignment="space-between"
-				crossAlignment="flex-start"
-				padding={{ all: 'small' }}
-			>
-				<Switch
-					value={fieldValue}
-					label={label}
-					onClick={onClick}
-					iconColor="primary"
-					disabled={!allowSetPrivacy}
-				/>
-			</Container>
-		</ListRow>
-	);
-};
+  fieldValue: boolean;
+  allowSetPrivacy: boolean;
+  onClick: () => void;
+  label: string;
+}) => (
+  <ListRow>
+    <Container
+      orientation="horizontal"
+      mainAlignment="space-between"
+      crossAlignment="flex-start"
+      padding={{ all: 'small' }}
+    >
+      <Switch
+        value={fieldValue}
+        label={label}
+        onClick={onClick}
+        iconColor="primary"
+        disabled={!allowSetPrivacy}
+      />
+    </Container>
+  </ListRow>
+);
