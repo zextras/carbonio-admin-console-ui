@@ -4,37 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
-import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
+import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
+import { Container, Icon, Padding, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-	GENERAL_INFORMATION,
-	FEATURES,
-	PREFERENCES,
-	MAX_COS_DISPLAY,
-	MANAGE_APP_ID,
-	COS_ROUTE_ID,
 	ADVANCED,
-	SERVER_POOLS,
 	COS,
 	COS_LIST,
+	COS_ROUTE_ID,
 	CREATE_NEW_COS_ROUTE_ID,
+	FEATURES,
+	GENERAL_INFORMATION,
 	IS_COS_DETAIL_LIST_EXPANDED,
+	MANAGE_APP_ID,
+	MAX_COS_DISPLAY,
+	PREFERENCES,
+	SERVER_POOLS,
 	WSC
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-
 import GeneralListPanel from './general-list-panel';
 
 const SelectItem = styled(Row)``;
@@ -48,9 +46,7 @@ export const CosListPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
+	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [searchCosName, setSearchCosName] = useState('');
 	const [isCosSelect, setIsCosSelect] = useState(false);
 	const [cosList, setCosList] = useState([]);
@@ -60,7 +56,7 @@ export const CosListPanel: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos);
 	const cosName: any = useCosStore((state) => state.cos?.name);
 	const [isShowError, setIsShowError] = useState(false);
-	const prevCosRef = useRef();
+	const prevCosRef = useRef(null);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
 	const getCosLists = useCallback(

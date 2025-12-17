@@ -4,37 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { createContext, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-
 import {
 	generateColorSet,
 	ThemeProvider as UIThemeProvider,
 	ThemeProviderProps as UIThemeProviderProps
 } from '@zextras/carbonio-design-system';
-import { auto, disable, enable, setFetchMethod } from 'darkreader';
-import { reduce } from 'lodash';
-import { createGlobalStyle, DefaultTheme } from 'styled-components';
+import { reduce } from 'lodash-es';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { DefaultTheme } from 'styled-components';
 
-import { useGetPrimaryColor } from './use-get-primary-color';
-import { DarkReaderPropValues, ThemeExtension } from '../../types';
-import { darkReaderDynamicThemeFixes } from '../constants';
-import { useAccountStore } from '../store/account/store';
-
-setFetchMethod(window.fetch);
-
-interface ThemeCallbacks {
-	addExtension: (newExtension: ThemeExtension, id: string) => void;
-	setDarkReaderState: (newState: DarkReaderPropValues) => void;
-}
-
-export const ThemeCallbacksContext = createContext<ThemeCallbacks>({
-	addExtension: () => {
-		throw Error('Not implemented');
-	},
-	setDarkReaderState: () => {
-		throw Error('not implemented');
-	}
-});
+import { ThemeExtension } from '../../types';
+import { useUserSettings } from '../react-query/use-account';
 
 type CustomTheme = Partial<Omit<DefaultTheme, 'palette'>> & {
 	palette?: Partial<DefaultTheme['palette']>;
@@ -74,23 +54,12 @@ const iconExtension: ThemeExtension = (theme) => ({
 	}
 });
 
-interface GlobalStyledProps {
-	baseFontSize: number;
-}
-
-const GlobalStyle = createGlobalStyle<GlobalStyledProps>`
-  html {
-    font-size: ${({ baseFontSize }): string => `${baseFontSize}%`};
-  }
-`;
-
 const themeSizes = (
 	size: 'small' | 'normal' | 'large' | 'larger' | 'default' | string
 ): ThemeExtension => {
 	switch (size) {
 		case 'small': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '10px',
 					small: '12px',
@@ -102,7 +71,6 @@ const themeSizes = (
 		}
 		case 'large': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '14px',
 					small: '16px',
@@ -114,7 +82,6 @@ const themeSizes = (
 		}
 		case 'larger': {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '16px',
 					small: '18px',
@@ -128,7 +95,6 @@ const themeSizes = (
 		case 'normal':
 		default: {
 			return (t: any): any => {
-				// eslint-disable-next-line no-param-reassign
 				t.sizes.font = {
 					extrasmall: '12px',
 					small: '14px',
@@ -143,12 +109,12 @@ const themeSizes = (
 interface ThemeProviderProps {
 	children?: React.ReactNode | React.ReactNode[];
 }
-export const ThemeProvider = ({ children }: ThemeProviderProps): JSX.Element => {
-	const zimbraPrefFontSize = useAccountStore((s) => s.settings.prefs?.zimbraPrefFontSize as string);
+export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
+	const settings = useUserSettings();
+	const zimbraPrefFontSize = settings?.prefs?.zimbraPrefFontSize as string;
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {
-				// eslint-disable-next-line no-param-reassign
 				theme.sizes.font = {
 					extrasmall: '0.75rem',
 					small: '0.875rem',
@@ -167,12 +133,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): JSX.Element => 
 		}));
 	}, [zimbraPrefFontSize]);
 
-	const primaryColor = useGetPrimaryColor();
-
 	useLayoutEffect(() => {
-		const customThemePalette: Partial<DefaultTheme['palette']> = primaryColor
-			? { primary: generateColorSet({ regular: primaryColor }) }
-			: {};
+		const customThemePalette: Partial<DefaultTheme['palette']> = {
+			primary: generateColorSet({ regular: '#2b73d2' })
+		};
 		setExtensions((extension) => ({
 			...extension,
 			palette: paletteExtension({
@@ -180,36 +144,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): JSX.Element => 
 			}),
 			icons: iconExtension
 		}));
-	}, [primaryColor]);
-
-	const [darkReaderState, setDarkReaderState] = useState<DarkReaderPropValues>('disabled');
-
-	useEffect(() => {
-		switch (darkReaderState) {
-			case 'disabled':
-				auto(false);
-				disable();
-				break;
-			case 'enabled':
-				auto(false);
-				enable(
-					{
-						sepia: -50
-					},
-					darkReaderDynamicThemeFixes
-				);
-				break;
-			case 'auto':
-			default:
-				auto(
-					{
-						sepia: -50
-					},
-					darkReaderDynamicThemeFixes
-				);
-				break;
-		}
-	}, [darkReaderState]);
+	}, []);
 
 	const aggregatedExtensions = useCallback<NonNullable<(typeof UIThemeProviderProps)['extension']>>(
 		(theme: any) =>
@@ -226,24 +161,5 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): JSX.Element => 
 		[extensions]
 	);
 
-	const addExtension = useCallback<ThemeCallbacks['addExtension']>((newExtension, id) => {
-		setExtensions((ext) => ({ ...ext, [id]: newExtension }));
-	}, []);
-
-	/* In future we need to do admin UI's font support auto scalling feature */
-	// const baseFontSize = useMemo<GlobalStyledProps['baseFontSize']>(
-	// 	() => getAutoScalingFontSize(),
-	// 	[]
-	// );
-
-	return (
-		<UIThemeProvider extension={aggregatedExtensions}>
-			<ThemeCallbacksContext.Provider value={{ addExtension, setDarkReaderState }}>
-				{/* Just commented for now in future if apply font size via settings
-				<GlobalStyle baseFontSize={baseFontSize} />
-				*/}
-				{children}
-			</ThemeCallbacksContext.Provider>
-		</UIThemeProvider>
-	);
+	return <UIThemeProvider extension={aggregatedExtensions}>{children}</UIThemeProvider>;
 };

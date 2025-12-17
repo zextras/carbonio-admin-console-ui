@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { IconCheckbox, Input, Padding,Row, Text, Tooltip } from '@zextras/carbonio-design-system';
 import React, { FC, useEffect, useState } from 'react';
-
-import { Input, Tooltip, IconCheckbox, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-export interface InheritedInputProps {
+interface InheritedInputProps {
 	label: any;
 	subValue: any;
 	inheritedValue: any;
@@ -59,12 +58,10 @@ const InheritedInput: FC<InheritedInputProps> = ({
 	// Effect to reset the highlight after a transition
 	useEffect(() => {
 		if (highlight) {
-			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 			const transitionEndHandler = () => {
 				setHighlight(false);
 			};
 
-			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 			const handleTransitionEnd = () => {
 				document.removeEventListener('transitionend', transitionEndHandler);
 				transitionEndHandler();

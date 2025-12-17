@@ -5,12 +5,11 @@
  */
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
-import React, { FC, Suspense } from 'react';
+import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { COS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
-
 import { BreadCrumb } from './breadcrumb/breadcrumb-view';
 import { Spinner } from './components/spinner';
 import { CosDetailPanel } from './cos/cos-detail-panel';

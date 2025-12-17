@@ -4,27 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
-html, body {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  
+html,
+body {
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
 }
 
 body {
-  margin: 0;
-  font-family: "Roboto", sans-serif;
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
 }
 
 #app {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100%;
-  min-height: 100%;
-  max-height: 100%;
+	display: flex;
+	flex-direction: column;
+	width: 100vw;
+	max-width: 100vw;
+	height: 100%;
+	min-height: 100%;
+	max-height: 100%;
 }
 
 .tox.tox-tinymce {
@@ -35,7 +34,7 @@ body {
 
 @media (prefers-color-scheme: dark) {
 	html {
-		background: #00506D;
+		background: #00506d;
 	}
 }
 
@@ -45,17 +44,16 @@ body {
 	}
 }
 
-@media screen and (max-width: 767px) and (orientation:portrait)  {
-  #app { 
-   width: 100vh;
-   max-width: 100vh;
- }
- body {
-   transform: rotate(-90deg);
-   position: fixed;
-   left: 0;
-   top:0;
-   width: 100vh;
-   max-width: 100vh;
- }
- }
+@media screen and (max-width: 767px) and (orientation: portrait) {
+	#app {
+		width: 100vh;
+		max-width: 100vh;
+	}
+	body {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100vh;
+		max-width: 100vh;
+	}
+}

@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useLicenseInfo } from '@zextras/admin-ui-bootstrap';
 import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
-import React, { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
@@ -13,8 +13,6 @@ import { BoxLayout, SettingLayout } from '../views/page-layout';
 import InheritedInput from '../views/utility/inherited-components/inherited-input';
 import InheritedSelect from '../views/utility/inherited-components/inherited-select';
 import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
-
-import { useWscLicense } from './hooks/useWscLicense';
 
 export const WscSettings: FC<{
 	featuresDetail: AccountType;
@@ -34,7 +32,14 @@ export const WscSettings: FC<{
 	const [t] = useTranslation();
 
 	const isAdvanced = useIsAdvanced();
-	const { isLicensed, isLoading, error, requiresLicenseCheck } = useWscLicense();
+	const { data: licenseData, isLoading, error } = useLicenseInfo();
+
+	// Extract wsc_basic feature from license data
+	const wscFeature = licenseData?.response?.features?.find(
+		(feature) => feature.name === 'wsc_basic'
+	);
+	const isLicensed = !!wscFeature?.enabled;
+	const requiresLicenseCheck = isAdvanced;
 
 	const wscLicenseDisabledWarningLabel = t(
 		'wsc.section.license.warning',

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultBodyType, http, StrictRequest, HttpResponse, HttpResponseResolver } from 'msw';
+import { DefaultBodyType, http, HttpResponse, HttpResponseResolver,StrictRequest } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { test } from 'vitest';
 
@@ -37,13 +37,13 @@ type HandlerRequest<T> = DefaultBodyType & {
 	Body: Record<string, T>;
 };
 
-export type APIInterceptorForBrowser = {
+export type BrowserAPIInterceptor = {
 	getLastRequest: () => StrictRequest<DefaultBodyType>;
 	getCalledTimes: () => number;
 };
 
 export const startMockWorker = async () => {
-	await worker.start({ onUnhandledRequest: 'bypass' });
+	await worker.start({ onUnhandledRequest: 'warn' });
 };
 
 export const stopMockWorker = () => {
@@ -54,11 +54,11 @@ export const resetMockWorker = () => {
 	worker.resetHandlers(...defaultHandlers);
 };
 
-export const createAPIInterceptorForBrowser = async (
+export const createBrowserAPIInterceptor = async (
 	method: 'get' | 'post',
 	url: string,
 	response: () => HttpResponse<DefaultBodyType>
-): Promise<APIInterceptorForBrowser> => {
+): Promise<BrowserAPIInterceptor> => {
 	let calledTimes = 0;
 	const requests: Array<StrictRequest<DefaultBodyType>> = [];
 
@@ -76,7 +76,7 @@ export const createAPIInterceptorForBrowser = async (
 	};
 };
 
-export const createSoapAPIInterceptor = <RequestParamsType, ResponseType = never>(
+export const createBrowserSoapAPIInterceptor = <RequestParamsType, ResponseType = never>(
 	apiAction: string,
 	response?: ResponseType
 ): Promise<RequestParamsType> =>
@@ -113,34 +113,34 @@ export const createSoapAPIInterceptor = <RequestParamsType, ResponseType = never
 
 const advancedSupportedURL = '/services/catalog/services';
 export const advancedSupportedApiForBrowser = {
-	withError: async (): Promise<APIInterceptorForBrowser> =>
-		await createAPIInterceptorForBrowser('get', advancedSupportedURL, HttpResponse.error),
-	withAdvancedSupported: async (): Promise<APIInterceptorForBrowser> =>
-		await createAPIInterceptorForBrowser('get', advancedSupportedURL, () =>
+	withError: async (): Promise<BrowserAPIInterceptor> =>
+		await createBrowserAPIInterceptor('get', advancedSupportedURL, HttpResponse.error),
+	withAdvancedSupported: async (): Promise<BrowserAPIInterceptor> =>
+		await createBrowserAPIInterceptor('get', advancedSupportedURL, () =>
 			HttpResponse.json({ items: ['carbonio-advanced'] }, { status: 200 })
 		),
-	withAdvancedNotSupported: async (): Promise<APIInterceptorForBrowser> =>
-		await createAPIInterceptorForBrowser('get', advancedSupportedURL, () =>
+	withAdvancedNotSupported: async (): Promise<BrowserAPIInterceptor> =>
+		await createBrowserAPIInterceptor('get', advancedSupportedURL, () =>
 			HttpResponse.json({ items: ['carbonio-preview', 'carbonio-mailbox'] }, { status: 200 })
 		)
 };
 
 export const minMaxVersionApiForBrowser = async (
 	supplier: () => HttpResponse<DefaultBodyType>
-): Promise<APIInterceptorForBrowser> =>
-	await createAPIInterceptorForBrowser('get', '/zx/auth/supported', supplier);
+): Promise<BrowserAPIInterceptor> =>
+	await createBrowserAPIInterceptor('get', '/zx/auth/supported', supplier);
 
 export const loginConfigApiForBrowser = async (
 	supplier: () => HttpResponse<DefaultBodyType>
-): Promise<APIInterceptorForBrowser> =>
-	await createAPIInterceptorForBrowser('get', '/zx/login/v3/config', supplier);
+): Promise<BrowserAPIInterceptor> =>
+	await createBrowserAPIInterceptor('get', '/zx/login/v3/config', supplier);
 
 export const getInfoRequestApiForBrowser = async (
 	supplier: () => HttpResponse<DefaultBodyType>
-): Promise<APIInterceptorForBrowser> =>
-	await createAPIInterceptorForBrowser('post', '/service/admin/soap/GetInfoRequest', supplier);
+): Promise<BrowserAPIInterceptor> =>
+	await createBrowserAPIInterceptor('post', '/service/admin/soap/GetInfoRequest', supplier);
 
 export const getAllConfigRequestApiForBrowser = async (
 	supplier: () => HttpResponse<DefaultBodyType>
-): Promise<APIInterceptorForBrowser> =>
-	await createAPIInterceptorForBrowser('post', '/service/admin/soap/GetAllConfigRequest', supplier);
+): Promise<BrowserAPIInterceptor> =>
+	await createBrowserAPIInterceptor('post', '/service/admin/soap/GetAllConfigRequest', supplier);

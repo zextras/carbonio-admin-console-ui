@@ -5,24 +5,25 @@
  */
 
 import './index.css';
-import React, { Suspense, lazy } from 'react';
-import ReactDOM from 'react-dom/client';
-
-import LoadingView from './boot/splash';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+import { lazy,Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+
+import LoadingView from './boot/splash';
+
 window.addEventListener('contextmenu', (ev) => {
 	if (
 		!(
 			['IMG', 'A'].find(
-				// @ts-ignore
+				// @ts-expect-error - needs a fix
 				(name) => ev?.target?.tagName === name
 			) ||
 			ev.view?.getSelection?.()?.type === 'Range' ||
-			// @ts-ignore
+			// @ts-expect-error - needs a fix
 			ev.path?.find((element) =>
 				element.classList?.find?.((cl: string) => cl === 'carbonio-bypass-context-menu')
 			)
@@ -31,7 +32,7 @@ window.addEventListener('contextmenu', (ev) => {
 		ev.preventDefault();
 });
 
-// @ts-ignore works as intended, but it's tampering with the window
+// @ts-expect-error - needs a fix works as intended, but it's tampering with the window
 window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
 const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
 

@@ -13,7 +13,7 @@ import {
 	Switch,
 	Text
 } from '@zextras/carbonio-design-system';
-import React, { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

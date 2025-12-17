@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
 	Button,
 	Container,
@@ -16,8 +17,8 @@ import {
 	Text,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { debounce, find } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { debounce, find } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -26,8 +27,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { Right, Rights, useRightsStore } from '../../store/rights/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -47,11 +46,11 @@ const CosServerPools: FC = () => {
 	const createSnackbar = useSnackbar();
 	const setCos = useCosStore((state) => state.setCos);
 	const [searchServer, setSearchServer] = useState<string>('');
-	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
-	const rights: Rights = useRightsStore((state) => state.rights);
+	const { data: allMailStoreList = [] } = useMailstoreServers();
+	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
@@ -94,7 +93,7 @@ const CosServerPools: FC = () => {
 							{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
 								<Text size="small" weight="light">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.enabled',
 										'Enabled'
 									)}
@@ -102,7 +101,7 @@ const CosServerPools: FC = () => {
 							) : (
 								<Text size="small" weight="light" color="error">
 									{t(
-										// eslint-disable-next-line sonarjs/no-duplicate-string
+										
 										'cos.disabled',
 										'Disabled'
 									)}
@@ -420,7 +419,6 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
-		 
 		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
@@ -480,7 +478,6 @@ const CosServerPools: FC = () => {
 											<Input
 												value={searchServer}
 												disabled={
-													 
 													(serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
 												}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}

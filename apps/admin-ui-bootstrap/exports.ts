@@ -5,22 +5,44 @@
  */
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
-	getSoapFetch,
-	getSoapFetchRequest as getSoapFetchRequestFn,
-	postSoapFetchRequest as postSoapFetchRequestFn,
-	fetchExternalSoap as fetchExternalSoapFn
-} from './src/network/fetch';
+	fetchExternalSoap,
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	soapFetch} from './src/network/fetch';
+import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
+import { useBackupServers } from './src/react-query/use-backup-servers';
+import { useAllConfig } from './src/react-query/use-config';
+import { useDomainInformation } from './src/react-query/use-domain-information';
+import {
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
+	useGlobalConfigValue,
+	useGlobalSettings} from './src/react-query/use-global-settings';
+import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
+import { useLastLoginTimestamp } from './src/react-query/use-last-login';
+import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
+import {
+	getAllRights,
+	getRights,
+	useCurrentUserRights,
+	useHasAllRights,
+	useHasRight,
+	useRightsByType} from './src/react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
+import {
+	useActivateLicense,
+	useLicenseInfo,
+	useModuleLicenseInfo,
+	useRemoveLicense,
+	useVersion} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
-import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
-import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
-import { useAllConfig } from './src/store/config';
-import { useDomainInformation } from './src/store/domain-information';
-import { getIntegratedFunction } from './src/store/integrations/getters';
-import { useIntegratedComponent } from './src/store/integrations/hooks';
+import { getLocale } from './src/store/i18n/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
-import { getTags } from './src/store/tags';
+import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
+import { useDomainStore } from './src/store/shared/domains';
+import { useStickyBarStore } from './src/store/shared/sticky-bar';
 import { AppRouteDescriptor } from './types/apps';
 
 // NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
@@ -29,33 +51,51 @@ import { AppRouteDescriptor } from './types/apps';
 // to make the admin panel a micro-frontend
 const pkg = { name: 'admin-ui-console', priority: 3, icon: 'List' };
 
-const soapFetch = getSoapFetch(pkg.name);
-const getSoapFetchRequest = getSoapFetchRequestFn(pkg.name);
-const postSoapFetchRequest = postSoapFetchRequestFn(pkg.name);
-const fetchExternalSoap = fetchExternalSoapFn(pkg.name);
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
 	useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);
 const registerActions = useIntegrationsStore.getState().registerActions;
 
 export {
-	soapFetch,
+	addRoute,
+	fetchExternalSoap,
+	getAllRights,
+	getLocale,
+	getRights,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap,
-	addRoute,
-	removeRoute,
+	pushHistory,
 	registerActions,
+	removeRoute,
+	replaceHistory,
+	soapFetch,
+	useActivateLicense,
+	useAllConfig,
+	useAllServers,
+	useAppConfigStore,
+	useBackupServers,
+	useConfigurationAttribute,
+	useCurrentUserRights,
+	useDomainInformation,
+	useDomainStore,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
+	useGlobalConfigValue,
+	useGlobalSettings,
+	useHasAllRights,
+	useHasRight,
+	useIsAdvanced,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useMailstoreServers,
+	useModuleLicenseInfo,
+	useMtaServers,
+	usePrimaryBarState,
+	useRemoveLicense,
+	useRightsByType,
+	useServersByService,
+	useStickyBarStore,
 	useUserAccount,
 	useUserAccounts,
-	getIntegratedFunction,
 	useUserSettings,
-	getTags,
-	replaceHistory,
-	usePrimaryBarState,
-	useAllConfig,
-	useDomainInformation,
-	useIsAdvanced,
-	useIntegratedComponent,
-	pushHistory
-};
+	useVersion};

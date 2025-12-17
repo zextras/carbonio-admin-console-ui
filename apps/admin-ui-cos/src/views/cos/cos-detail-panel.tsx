@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
-
 import CosOperations from './cos-detail-operation';
 import CosList from './cos-list';
 import CreateCos from './create-new-cos';

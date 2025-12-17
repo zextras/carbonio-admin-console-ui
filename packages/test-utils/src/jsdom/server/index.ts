@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultBodyType, http, StrictRequest, HttpResponse } from 'msw';
+import { DefaultBodyType, http, HttpResponse,StrictRequest } from 'msw';
 import { SetupServer } from 'msw/node';
 
-import server from '../mocks/msw-server';
+import { server } from '../mocks/msw-server';
 
 export type APIInterceptor = {
 	getLastRequest: () => StrictRequest<DefaultBodyType>;

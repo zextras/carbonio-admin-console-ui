@@ -3,17 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect } from 'react';
-
 import { useSnackbar } from '@zextras/carbonio-design-system';
+import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import CosAdvanced from './cos-advanced';
-import CosFeatures from './cos-features';
-import CosGeneralInformation from './cos-general-information';
-import CosServerPools from './cos-server-pools';
-import { COSPreferences } from './preferences/COSPreferences';
 import {
 	ADVANCED,
 	FEATURES,
@@ -26,6 +20,11 @@ import { getCosGeneralInformation } from '../../services/cos-general-information
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
 import WscCosSettings from '../../wsc/wsc-cos-settings';
+import CosAdvanced from './cos-advanced';
+import CosFeatures from './cos-features';
+import CosGeneralInformation from './cos-general-information';
+import CosServerPools from './cos-server-pools';
+import { COSPreferences } from './preferences/COSPreferences';
 
 const CosDetailOperation: FC = () => {
 	const { operation, cosId }: { operation: string; cosId: string } = useParams();
