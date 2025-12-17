@@ -306,7 +306,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -439,7 +439,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.0
       react:
         specifier: ^19.1.0
         version: 19.2.3
@@ -5398,8 +5398,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.308.0:
-    resolution: {integrity: sha512-6zlYlltfEV8GTSJMbb6+TEIon6fTY/pO0G6HATWnUmBQ06oY9F8PCtGdWQrYgFtJKuXby5Quzz9caN/V8D35XQ==}
+  posthog-js@1.309.0:
+    resolution: {integrity: sha512-SmFF0uKX3tNTgQOW4mR4shGLQ0YYG0FXyKTz13SbIH83/FtAJedppOIL7s0y9e7rjogBh6LsPekphhchs9Kh1Q==}
 
   preact@10.28.0:
     resolution: {integrity: sha512-rytDAoiXr3+t6OIP3WGlDd0ouCUG1iCWzkcY3++Nreuoi17y6T5i/zRhe6uYfoVcxq6YU+sBtJouuRDsq8vvqA==}
@@ -12373,7 +12373,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.308.0:
+  posthog-js@1.309.0:
     dependencies:
       '@posthog/core': 1.8.0
       core-js: 3.47.0
