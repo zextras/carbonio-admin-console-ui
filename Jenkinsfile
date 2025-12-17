@@ -13,6 +13,8 @@ library(
     ])
 )
 
+properties(defaultPipelineProperties())
+
 pipeline {
     agent {
         node {
@@ -47,7 +49,6 @@ pipeline {
             steps {
                 script {
                     gitMetadata()
-                    properties(defaultPipelineProperties())
 
                     isReleaseBranch = "${BRANCH_NAME}" ==~ /release/
                     echo "isReleaseBranch: ${isReleaseBranch}"
