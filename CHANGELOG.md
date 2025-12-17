@@ -1,3 +1,9 @@
+## [0.11.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.2...v0.11.3) (2025-12-17)
+
+### Bug Fixes
+
+* bump version and update lock file ([367e7ad](https://github.com/zextras/carbonio-admin-console-ui/commit/367e7ad46d5ef79396f5bb921e90fe6bcfadcca1))
+
 ## [0.11.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1...v0.11.2) (2025-12-16)
 
 ### Bug Fixes
