@@ -13,7 +13,7 @@ import { render, type RenderResult } from 'vitest-browser-react';
 import { allConfigBaseResponseMock } from '../../api-mocks/get-all-config-response-mock';
 import { getAllConfigRightsBaseResponseMock } from '../../api-mocks/get-all-config-rights-response';
 import { getInfoResponseBaseMock } from '../../api-mocks/get-info-response-mock';
-import { Wrapper, WrapperProps } from './wrapper';
+import { getQueryClient, Wrapper, WrapperProps } from './wrapper';
 
 export const setupBrowserTest = (
   ui: ReactElement,
@@ -23,8 +23,18 @@ export const setupBrowserTest = (
     window.history.replaceState({}, '', options.initialRouterEntry);
   }
 
-  // Use the shared queryClient by default if not provided
-  const effectiveQueryClient = options?.queryClient ?? queryClient;
+  // Always create a fresh QueryClient unless explicitly provided
+  const effectiveQueryClient = options?.queryClient ?? getQueryClient();
+
+  // Copy essential data from global queryClient to maintain compatibility
+  if (!options?.queryClient) {
+    const globalCache = queryClient.getQueryCache().getAll();
+    globalCache.forEach((query) => {
+      if (query.queryKey[0] === 'account') {
+        effectiveQueryClient.setQueryData(query.queryKey, query.state.data);
+      }
+    });
+  }
 
   return render(ui, {
     wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
