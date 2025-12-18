@@ -312,7 +312,8 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	useEffect(() => {
 		if (isAdvanced) {
 			getInitializedDomainLists('');
-		} getAccountDistributionList();
+		}
+		getAccountDistributionList();
 	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name, isAdvanced]);
 
 	return (
