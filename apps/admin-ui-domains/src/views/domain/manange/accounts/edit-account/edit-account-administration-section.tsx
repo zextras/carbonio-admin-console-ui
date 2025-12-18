@@ -304,16 +304,16 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	);
 
 	useEffect(() => {
-		if (!isDomainSelect) {
+		if (!isDomainSelect && isAdvanced) {
 			searchDomainCall(searchDomainName);
 		}
-	}, [searchDomainName, isDomainSelect, searchDomainCall]);
+	}, [searchDomainName, isDomainSelect, searchDomainCall, isAdvanced]);
 
 	useEffect(() => {
 		if (isAdvanced) {
 			getInitializedDomainLists('');
 		} getAccountDistributionList();
-	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name]);
+	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name, isAdvanced]);
 
 	return (
 		<Container
