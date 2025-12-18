@@ -22,12 +22,7 @@ import {
   POSTSCREEN_TUNING,
   QUEUE,
 } from '../../constants';
-import type {
-  DropdownItem,
-  MailTransferAgentOption,
-  MtaServer,
-  ServerOption,
-} from '../../types/mta';
+import type { DropdownItem, MtaServer } from '../../types/mta';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
@@ -50,35 +45,38 @@ const MTAListPanel: FC = () => {
   const { data: mtaServerList = [] } = useMtaServers();
   const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 
-  const filteredServers = useMemo(() => {
-    return mtaServerList.filter((item: MtaServer) => item.name?.includes(searchServer));
-  }, [mtaServerList, searchServer]);
+  const filteredServers = useMemo(
+    () => mtaServerList.filter((item: MtaServer) => item.name?.includes(searchServer)),
+    [mtaServerList, searchServer],
+  );
 
-  const serverDropdownItems = useMemo(() => {
-    return filteredServers.map((serverItem: MtaServer) => ({
-      id: serverItem.id || '',
-      label: serverItem.name || '',
-      customComponent: (
-        <Row
-          style={{
-            display: 'block',
-            textAlign: 'left',
-            height: 'inherit',
-            padding: '0.18rem',
-            width: 'inherit',
-          }}
-          onClick={(): void => {
-            setSelectedServer(serverItem.name || '');
-            setSearchServer(serverItem.name || '');
-            setSelectedOperationItem(MTA_SERVER_GENERAL);
-            setIsServerSelect(true);
-          }}
-        >
-          {serverItem.name}
-        </Row>
-      ),
-    })) as Array<DropdownItem>;
-  }, [filteredServers]);
+  const serverDropdownItems = useMemo(
+    () =>
+      filteredServers.map((serverItem: MtaServer) => ({
+        id: serverItem.id || '',
+        label: serverItem.name || '',
+        customComponent: (
+          <Row
+            style={{
+              display: 'block',
+              textAlign: 'left',
+              height: 'inherit',
+              padding: '0.18rem',
+              width: 'inherit',
+            }}
+            onClick={(): void => {
+              setSelectedServer(serverItem.name || '');
+              setSearchServer(serverItem.name || '');
+              setSelectedOperationItem(MTA_SERVER_GENERAL);
+              setIsServerSelect(true);
+            }}
+          >
+            {serverItem.name}
+          </Row>
+        ),
+      })) as Array<DropdownItem>,
+    [filteredServers],
+  );
 
   useEffect(() => {
     if (mtaServerList.length > 0 && filteredServers.length === 0 && searchServer !== '') {
@@ -89,7 +87,7 @@ const MTAListPanel: FC = () => {
   }, [mtaServerList.length, filteredServers.length, searchServer]);
 
   const mailTransferAgentOptions = useMemo(
-    (): Array<MailTransferAgentOption> => [
+    () => [
       {
         id: GENERAL,
         name: t('mta.inbound_flow_and_security', 'Inbound Flow & Security'),
@@ -125,7 +123,7 @@ const MTAListPanel: FC = () => {
   );
 
   const serverOptions = useMemo(
-    (): Array<ServerOption> => [
+    () => [
       {
         id: MTA_SERVER_GENERAL,
         name: t('label.mta_server_general', 'General'),
