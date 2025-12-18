@@ -140,7 +140,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -427,7 +427,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       react:
         specifier: ^19.1.0
         version: 19.2.3
@@ -563,7 +563,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -711,7 +711,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -859,7 +859,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1004,7 +1004,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1146,7 +1146,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1291,7 +1291,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1436,7 +1436,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1578,7 +1578,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1723,7 +1723,7 @@ importers:
         version: 10.26.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.308.0
+        version: 1.309.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -3092,8 +3092,8 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@posthog/core@1.8.0':
-    resolution: {integrity: sha512-SfmG1EdbR+2zpQccgBUxM/snCROB9WGkY7VH1r9iaoTNqoaN9IkmIEA/07cZLY4DxVP8jt6Vdfe3s84xksac1g==}
+  '@posthog/core@1.8.1':
+    resolution: {integrity: sha512-jfzBtQIk9auRi/biO+G/gumK5KxqsD5wOr7XpYMROE/I3pazjP4zIziinp21iQuIQJMXrDvwt9Af3njgOGwtew==}
 
   '@rolldown/pluginutils@1.0.0-beta.53':
     resolution: {integrity: sha512-vENRlFU4YbrwVqNDZ7fLvy+JR1CRkyr01jhSiDpE1u6py3OMzQfztQU2jxykW3ALNxO4kSlqIDeYyD0Y9RcQeQ==}
@@ -4012,8 +4012,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.9.8:
-    resolution: {integrity: sha512-Y1fOuNDowLfgKOypdc9SPABfoWXuZHBOyCS4cD52IeZBhr4Md6CLLs6atcxVrzRmQ06E7hSlm5bHHApPKR/byA==}
+  baseline-browser-mapping@2.9.9:
+    resolution: {integrity: sha512-V8fbOCSeOFvlDj7LLChUcqbZrdKD9RU/VR260piF1790vT0mfLSwGc/Qzxv3IqiTukOpNtItePa0HBpMAj7MDg==}
     hasBin: true
 
   batch@0.6.1:
@@ -6420,8 +6420,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.308.0:
-    resolution: {integrity: sha512-6zlYlltfEV8GTSJMbb6+TEIon6fTY/pO0G6HATWnUmBQ06oY9F8PCtGdWQrYgFtJKuXby5Quzz9caN/V8D35XQ==}
+  posthog-js@1.309.1:
+    resolution: {integrity: sha512-JUJcQhYzNNKO0cgnSbowCsVi2RTu75XGZ2EmnTQti4tMGRCTOv/HCnZasdFniBGZ0rLugQkaScYca/84Ta2u5Q==}
 
   preact@10.28.0:
     resolution: {integrity: sha512-rytDAoiXr3+t6OIP3WGlDd0ouCUG1iCWzkcY3++Nreuoi17y6T5i/zRhe6uYfoVcxq6YU+sBtJouuRDsq8vvqA==}
@@ -9014,7 +9014,7 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@posthog/core@1.8.0':
+  '@posthog/core@1.8.1':
     dependencies:
       cross-spawn: 7.0.6
 
@@ -10138,7 +10138,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.9.8: {}
+  baseline-browser-mapping@2.9.9: {}
 
   batch@0.6.1: {}
 
@@ -10189,7 +10189,7 @@ snapshots:
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.9.8
+      baseline-browser-mapping: 2.9.9
       caniuse-lite: 1.0.30001760
       electron-to-chromium: 1.5.267
       node-releases: 2.0.27
@@ -12696,9 +12696,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.308.0:
+  posthog-js@1.309.1:
     dependencies:
-      '@posthog/core': 1.8.0
+      '@posthog/core': 1.8.1
       core-js: 3.47.0
       fflate: 0.4.8
       preact: 10.28.0
