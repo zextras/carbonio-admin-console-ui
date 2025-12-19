@@ -1,3 +1,12 @@
+## [0.12.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.5...v0.12.0-devel.6) (2025-12-19)
+
+### Bug Fixes
+
+* added check for advanced ([6cd624f](https://github.com/zextras/carbonio-admin-console-ui/commit/6cd624f0843f7f228a09c48cde87fb7a96dba271))
+* added check for advanced ([3703443](https://github.com/zextras/carbonio-admin-console-ui/commit/3703443d3bebc4da80d2dd35ecc7327f85529932))
+* added check for advanced refs: CO-2975 ([f1ae3d5](https://github.com/zextras/carbonio-admin-console-ui/commit/f1ae3d5b006d8e19fc78c22cde9452c050abdf51))
+* fix indentation ([eb8611e](https://github.com/zextras/carbonio-admin-console-ui/commit/eb8611e5c2c6d6dbef23dc1b46a9bba266e24d94))
+
 ## [0.11.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1...v0.11.2) (2025-12-16)
 
 ### Bug Fixes
