@@ -114,16 +114,14 @@ const App: FC = () => {
         onClick: (): void => {
           history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
           setDomain({});
-          setTimeout(() => {
-            setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
-          }, 100);
+          setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
         },
         disabled: !createDomainRight,
         group: APP_ID,
         primary: false,
       }),
       id: 'new-domain',
-      type: 'new' as const,
+      type: 'new',
     };
     registerActions(actionConfig);
   }, [createDomainRight, history, setDomain, setDomainView, t]);
