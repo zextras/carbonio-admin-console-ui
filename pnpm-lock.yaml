@@ -188,7 +188,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -324,7 +324,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -466,7 +466,7 @@ importers:
         specifier: ^7.28.5
         version: 7.28.5(@babel/core@7.28.5)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.17.12
@@ -611,7 +611,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -762,7 +762,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.17.12
@@ -907,7 +907,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -1052,7 +1052,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -1194,7 +1194,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.17.12
@@ -1339,7 +1339,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -1484,7 +1484,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -1626,7 +1626,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
@@ -1771,7 +1771,7 @@ importers:
         specifier: ^5.90.2
         version: 5.91.1(@tanstack/react-query@5.90.12(react@19.2.3))(react@19.2.3)
       '@testing-library/react':
-        specifier: ^16.3.0
+        specifier: ^16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/lodash-es':
         specifier: ^4.14.197
