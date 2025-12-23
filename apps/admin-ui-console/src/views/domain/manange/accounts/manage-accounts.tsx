@@ -286,6 +286,7 @@ const ManageAccounts: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalAccount, setTotalAccount] = useState<number>(0);
+	const [totalAccountCreated, setTotalAccountCreated] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
@@ -804,29 +805,27 @@ const ManageAccounts: FC = () => {
 	};
 
 	const getTotalFilteredUser = useCallback ((): void => {
-		const type = 'accounts';
-		const attrs ='zimbraId';
-		const offsetParam = 0;
-		const userSearchQuery = '(&(objectClass=zimbraAccount)(!(zimbraIsSystemAccount=TRUE)))';
-		const sortedC = '';
-		const sortedOrd = '';
-		const localLimit = 0;
-		accountListDirectory(
-			attrs,
-			type,
-			domainName,
-			userSearchQuery,
-			offsetParam,
-			localLimit,
-			sortedC,
-			sortedOrd
-		).then((data) => {
-			setTotalAccountCreated(data.searchTotal || 0);
+		fetchSoapData('CountAccountRequest', {
+			domain: {
+				_content: domainName,
+                by: 'name'
+			},
+			_jsns: 'urn:zimbraAdmin'
+		}).then((res) => {
+			if (res?.Body) {
+				const coses = res?.Body?.CountAccountResponse?.cos;
+				let counter = 0;
+				for (const cos in coses) {
+					if (coses[cos].name != "defaultExternal"){
+						counter = counter + Number(coses[cos]._content);
+					}				}
+				setTotalAccountCreated(counter);
+			}
 		}).catch((error) => {
 			const snackbarConfig = generateSnackbarFromError(error, t);
 			createSnackbar(snackbarConfig);
 			setHasError(true);
-		});
+		})
 	},[domainName,t,createSnackbar]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -1027,7 +1026,7 @@ const ManageAccounts: FC = () => {
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	/*const searchAccountList = useCallback(
+	const searchAccountList = useCallback(
 		debounce((searchStr: string, sfilter: string, tfilter: string) => {
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
@@ -1220,12 +1219,17 @@ const ManageAccounts: FC = () => {
 					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
 								{t('domain.account_list', 'Accounts List')}
 							</Text>
 						</Row>
-						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
+							<Text size="medium" overflow="break-word">
+								Totale Account : {totalAccountCreated}
+							</Text>
+						</Row>
+						<Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding all={'0'}>
 								<Button
 									color="primary"
