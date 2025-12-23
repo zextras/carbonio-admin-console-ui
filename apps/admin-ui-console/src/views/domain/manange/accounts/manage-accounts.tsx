@@ -290,6 +290,8 @@ const ManageAccounts: FC = () => {
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
+	const [isAccountDeleted, setIsDeletedAccount] = useState<boolean>(false);
+	const [isAccountCreated, setIsCreatedAccount] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
 		getGlobalConfig: false
@@ -1053,13 +1055,22 @@ const ManageAccounts: FC = () => {
 		if (domainName) {
 			if (
 				totalAccountCreated == 0 ||
-				showCreateAccountView === false ||
-				showEditAccountView === false
+				isAccountCreated === true ||
+				isAccountDeleted === true
 			) {
 				getTotalFilteredUser();
+				setIsCreatedAccount(false);
+				setIsDeletedAccount(false);
 			}
 		}
-	},[showCreateAccountView,domainName,showCreateAccountView,showEditAccountView]);
+	},[
+		showCreateAccountView,
+		domainName,
+		setIsCreatedAccount,
+		setIsDeletedAccount,
+		isAccountDeleted,
+		isAccountCreated
+	]);
 
 	const closeAccountDetailDialog = useCallback(() => {
 		if (showAccountDetailView) {
@@ -1393,6 +1404,7 @@ const ManageAccounts: FC = () => {
 									>
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
+											setIsDeletedAccount={setIsDeletedAccount}
 											selectedAccount={selectedAccount}
 											getAccountList={getAccountList}
 											signatureList={signatureList}
@@ -1417,6 +1429,7 @@ const ManageAccounts: FC = () => {
 				<ModalOverlay open={showCreateAccountView}>
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
+						setIsCreatedAccount={setIsCreatedAccount}
 						getAccountList={getAccountList}
 						setShowEditAccountView={setShowEditAccountView}
 						openDetailView={openDetailView}

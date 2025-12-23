@@ -114,6 +114,7 @@ const CreateAccount: FC<{
 	setShowEditAccountView: any;
 	openDetailView: any;
 	setShowAccountDetailView: any;
+	setIsCreatedAccount: any;
 	setDefaultTab: any;
 }> = ({
 	setShowCreateAccountView,
@@ -121,6 +122,7 @@ const CreateAccount: FC<{
 	setShowEditAccountView,
 	openDetailView,
 	setShowAccountDetailView,
+	setIsCreatedAccount,
 	setDefaultTab
 }) => {
 	const { t } = useTranslation();
@@ -210,6 +212,7 @@ const CreateAccount: FC<{
 						setActiveStep('otp');
 					} else {
 						setShowCreateAccountView(false);
+						setIsCreatedAccount(true);
 					}
 					setAccountDetail((prev) => ({
 						...prev,
@@ -252,6 +255,7 @@ const CreateAccount: FC<{
 		getAccountList,
 		isAdvanced,
 		setShowCreateAccountView,
+		setIsCreatedAccount,
 		t
 	]);
 
@@ -335,6 +339,7 @@ const CreateAccount: FC<{
 			setDefaultTab('administration');
 		} else {
 			setShowCreateAccountView(false);
+			setIsCreatedAccount(true);
 		}
 	}, [
 		accountDetail,
@@ -343,6 +348,7 @@ const CreateAccount: FC<{
 		openDetailView,
 		setShowAccountDetailView,
 		setShowEditAccountView,
+		setIsCreatedAccount,
 		setDefaultTab
 	]);
 
@@ -462,7 +468,8 @@ const CreateAccount: FC<{
 
 	const onComplete = useCallback(() => {
 		setShowCreateAccountView(false);
-	}, [setShowCreateAccountView]);
+		setIsCreatedAccount(true);
+	}, [setShowCreateAccountView,setIsCreatedAccount]);
 
 	const wizardStepItems = useMemo(
 		() => (!isAdvanced ? wizardSteps.filter((item: any) => item?.name !== 'otp') : wizardSteps),
