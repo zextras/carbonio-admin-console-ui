@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ChangeEvent } from 'react';
 
 import {
 	Container,
@@ -84,9 +84,12 @@ type CheckRightResponse = {
 	_jsns: string;
 };
 
+type Timer = ReturnType<typeof setTimeout>;
+
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const timer = useRef<Timer>();
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
@@ -1186,6 +1189,23 @@ const ManageAccounts: FC = () => {
 		]
 	);
 
+	const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+			const value = e.target.value;
+			if (timer.current) {
+				clearTimeout(timer.current);
+			}
+			if ( value != "" ){
+				setSearchString(value);
+				const newTimer = setTimeout(() => {
+					setSearchQuery(generateSearchFilterQuery(value, statusFilter, typeFilter));
+				}, 600);
+				timer.current = newTimer;
+			} else {
+				setSearchString("");
+				setSearchQuery(generateSearchFilterQuery(value, statusFilter, typeFilter));
+			}
+	}
+
 	return (
 		<Container
 			padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -1247,9 +1267,7 @@ const ManageAccounts: FC = () => {
 									disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
-									onChange={(e: any): any => {
-										setSearchString(e.target.value);
-									}}
+									onChange={handleInputChange}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								/>
 							</Container>
