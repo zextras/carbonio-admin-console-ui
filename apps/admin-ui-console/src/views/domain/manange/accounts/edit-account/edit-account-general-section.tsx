@@ -171,6 +171,21 @@ const EditAccountGeneralSection: FC<{
 		return false;
 	}, [domainInformation]);
 
+	const extLdapAuth = useMemo(() => {
+		if (!!domainInformation && domainInformation?.length > 0) {
+			const obj: objectType = {};
+			domainInformation?.forEach((item: Attribute) => {
+				obj[item?.n] = item._content;
+			});
+			if (
+				obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== "" 
+			) {
+				return true;
+			}
+		}
+		return false;
+	}, [domainInformation]);
+
 	const getDomainLists = useCallback(
 		(domain: string | undefined): void => {
 			getDomainList(domain, 0)
@@ -1208,28 +1223,31 @@ const EditAccountGeneralSection: FC<{
 					)}
 				</Row>
 			)}
-			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
-			</Row>
 
-			{renderRowHeader({
-				label: t('domain.accounts.editAccount.externalldap', 'External LDAP')
-			})}
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="100%" mainAlignment="space-between">
-					{renderInputRow({
-						id: 'zimbraAuthLdapExternalDn',
-						label: t(
-							'domain.accounts.editAccount.externalldapReferenceForAuthentication',
-							'External LDAP Reference for Authentication'
-						),
-						inputName: 'zimbraAuthLdapExternalDn',
-						value: accountDetail?.zimbraAuthLdapExternalDn,
-						width: '100%',
-						onChange: changeAccDetail
-					})}
+			{extLdapAuth && (
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('domain.accounts.editAccount.externalldap', 'External LDAP')}
+					</Text>
 				</Row>
-			</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="100%" mainAlignment="space-between">
+						<Input
+							data-testid="zimbraAuthLdapExternalDn"
+							label={t(
+								'domain.accounts.editAccount.externalldapReferenceForAuthentication',
+								'External LDAP Reference for Authentication'
+							)}
+							backgroundColor="gray5"
+							onChange={changeAccDetail}
+							inputName="zimbraAuthLdapExternalDn"
+							value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+						/>
+					</Row>
+				</Row>
+			</Row> )}
+
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
