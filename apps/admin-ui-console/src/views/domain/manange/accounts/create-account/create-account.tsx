@@ -74,6 +74,7 @@ interface AccountDetailObj {
 	initials: string;
 	sn: string;
 	zimbraPasswordMustChange: boolean;
+	zimbraAuthLdapExternalDn: string;
 	generateFirst2FAToken: boolean;
 	defaultCOS: boolean;
 	zimbraAccountStatus: string;
@@ -135,6 +136,7 @@ const CreateAccount: FC<{
 		initials: '',
 		sn: '',
 		zimbraPasswordMustChange: false,
+		zimbraAuthLdapExternalDn: '',
 		generateFirst2FAToken: true,
 		defaultCOS: true,
 		zimbraAccountStatus: '',
@@ -182,6 +184,7 @@ const CreateAccount: FC<{
 				initials: accountDetail?.initials,
 				sn: accountDetail?.sn,
 				zimbraPasswordMustChange: accountDetail?.zimbraPasswordMustChange ? 'TRUE' : 'FALSE',
+				zimbraAuthLdapExternalDn: accountDetail?.zimbraAuthLdapExternalDn,
 				zimbraAccountStatus: accountDetail?.zimbraAccountStatus,
 				zimbraPrefLocale: accountDetail?.zimbraPrefLocale,
 				zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
@@ -273,6 +276,7 @@ const CreateAccount: FC<{
 			zimbraPrefTimeZoneId: '',
 			zimbraNotes: '',
 			password: '',
+			zimbraAuthLdapExternalDn: '',
 			repeatPassword: '',
 			displayName: '',
 			zimbraCOSId: '',

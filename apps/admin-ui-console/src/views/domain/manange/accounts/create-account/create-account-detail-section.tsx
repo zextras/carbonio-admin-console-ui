@@ -22,7 +22,8 @@ import {
 	Text,
 	Icon,
 	Switch,
-	Tooltip
+	Tooltip,
+	Divider
 } from '@zextras/carbonio-design-system';
 import { find, head } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +39,7 @@ import {
 	isValidPhoneNumber
 } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
+import { Attribute, objectType } from '../../../../../../types';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -63,6 +65,21 @@ const CreateAccountDetailSection: FC = () => {
 	);
 
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+
+	const extLdapAuth = useMemo(() => {
+		if (!!domain.a && domain.a?.length > 0) {
+			const obj: objectType = {};
+			domain.a?.forEach((item: Attribute) => {
+				obj[item?.n] = item._content;
+			});
+			if (
+				obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== "" 
+			) {
+				return true;
+			}
+		}
+		return false;
+	}, [domain]);
 
 	const domainStatus = useMemo(() => {
 		const status = find(domain?.a, { n: 'zimbraDomainStatus' });
@@ -290,6 +307,34 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 				</Row>
 			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
+				<Divider color="gray2" />
+			</Row>
+
+			{extLdapAuth && (
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('domain.accounts.editAccount.externalldap', 'External LDAP')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="100%" mainAlignment="space-between">
+						<Input
+							data-testid="zimbraAuthLdapExternalDn"
+							label={t(
+								'domain.accounts.editAccount.externalldapReferenceForAuthentication',
+								'External LDAP Reference for Authentication'
+							)}
+							backgroundColor="gray5"
+							onChange={changeAccDetail}
+							inputName="zimbraAuthLdapExternalDn"
+							value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+						/>
+					</Row>
+				</Row>
+			</Row> )}
+
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
