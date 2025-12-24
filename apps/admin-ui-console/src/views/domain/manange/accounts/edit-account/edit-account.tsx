@@ -161,7 +161,6 @@ const EditAccount: FC<{
 		const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 		const userSetting = useUserSettings();
 		const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-		const { isSticky, setIsSticky } = useStickyBarStore();
 		const { userType } = useRightsStore((state) => state);
 		const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 		const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
@@ -903,27 +902,6 @@ const EditAccount: FC<{
 				)
 			);
 		}, [rights]);
-		const buttons = [
-			allowSetPrivacy && {
-				align: 'right',
-				label: t('label.view_mail', 'VIEW MAIL'),
-				color: 'primary',
-				onClick: onViewMail
-			},
-			{
-				align: 'right',
-				color: 'error',
-				label: t('label.delete', 'delete'),
-				type: 'ghost',
-				disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id,
-				onClick: onDeleteAccount
-			},
-			{
-				align: 'left',
-				icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-				onClick: (): void => setIsSticky(!isSticky)
-			}
-		];
 		const closeHandler = useCallback(() => {
 			setIsOpenDeleteDialog(false);
 		}, []);
@@ -1034,33 +1012,62 @@ const EditAccount: FC<{
 						height="56px"
 					>
 						<Row padding={{ horizontal: 'small' }}></Row>
+
 						<Row takeAvailableSpace mainAlignment="flex-start">
 							<Text size="medium" overflow="ellipsis" weight="bold">
-								{`${selectedAccount?.name} ${t('label.detail', 'Detail')}`}
+								{`${selectedAccount?.name}`}
 							</Text>
 						</Row>
-						<Row>
-							{isDirty && (
-								<Container
-									orientation="horizontal"
-									mainAlignment="flex-end"
-									crossAlignment="flex-end"
-									background="gray6"
-								>
-									<Padding right="small">
-										<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
-									</Padding>
-									<Padding right="small">
-										<Button
-											label={t('label.save', 'Save')}
-											color="primary"
-											onClick={modifyAccountReq}
-										/>
-									</Padding>
-								</Container>
-							)}
-						</Row>
-						<Row padding={{ right: 'extrasmall' }}>
+
+						{isDirty && (
+							<Row>
+							<Container
+								orientation="horizontal"
+								mainAlignment="center"
+								crossAlignment="center"
+								background="gray6"
+							>
+								<Padding right="small">
+									<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+								</Padding>
+								<Padding right="small">
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										onClick={modifyAccountReq}
+									/>
+								</Padding>
+							</Container>
+							</Row>
+						)}
+
+						{!isDirty && (
+							<Row padding={{ right: 'medium' }}>
+								<Button
+									size="medium"
+									type="outlined"
+									color="error"
+									onClick={onDeleteAccount}
+									icon="TrashOutline"
+									disabled={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+									label={t('label.delete', 'delete')}
+								/>
+							</Row>
+						)}
+						{!isDirty && (
+							<Row padding={{ right: 'medium' }}>
+								<Button
+									size="medium"
+									type="outlined"
+									color="primary"
+									onClick={onViewMail}
+									icon="EmailOutline"
+									disabled={!allowSetPrivacy}
+									label={t('label.view_mail', 'VIEW MAIL')}
+								/>
+							</Row>
+						)}
+						<Row padding={{ right: 'large' }}>
 							<Button
 								size="medium"
 								type="ghost"
@@ -1100,7 +1107,6 @@ const EditAccount: FC<{
 						style={{ overflow: 'auto' }}
 					>
 						{/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
-						<Displayer buttons={buttons} pinIcon={isSticky} />
 						{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
 						{change === PROFILE && <EditAccountContactsSection />}
 						{change === CONFIGURATION && <EditAccountConfigurationSection />}

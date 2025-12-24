@@ -1426,7 +1426,7 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<ModalOverlay open={showCreateAccountView}>
+				<ModalOverlay open={showCreateAccountView} maxWidth="58.75rem">
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
 						setIsCreatedAccount={setIsCreatedAccount}
