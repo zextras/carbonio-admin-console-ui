@@ -99,7 +99,7 @@ fn get_cache_dir() -> PathBuf {
 
 fn get_git_index_hash(repo_dir: &Path) -> Option<String> {
     Command::new("git")
-        .args(["rev-parse", ":.gitindex"])
+        .args(["write-tree"])
         .current_dir(repo_dir)
         .output()
         .ok()
