@@ -222,7 +222,23 @@ async function main() {
 
   // Create PKGBUILD (same as original)
   log('\n📝 Creating PKGBUILD...', 'blue');
-  const componentList = components.map((c) => c.target).join(' ');
+  // Use fixed order matching the reference PKGBUILD
+  const referenceOrder = [
+    'carbonio-admin-ui-backup',
+    'carbonio-admin-ui',
+    'carbonio-admin-ui-cos',
+    'carbonio-admin-ui-dashboard',
+    'carbonio-admin-ui-domains',
+    'carbonio-admin-ui-legalhold',
+    'carbonio-admin-ui-mta',
+    'carbonio-admin-ui-notifications',
+    'carbonio-admin-ui-operations',
+    'carbonio-admin-ui-privacy',
+    'carbonio-admin-ui-storage',
+    'carbonio-admin-ui-subscription',
+  ];
+  const componentTargets = new Set(components.map((c) => c.target));
+  const componentList = referenceOrder.filter((c) => componentTargets.has(c)).join(' ');
 
   const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
@@ -251,54 +267,59 @@ package() {
   mkdir -p "\${pkgdir}/opt/zextras/admin/iris"
   cp -a opt/zextras/admin/iris/* "\${pkgdir}/opt/zextras/admin/iris/"
 
-  # Set permissions for each component
+  # Set permissions for each component - files and directories only, symlinks are left as-is
   for component in ${componentList}; do
     if [ -d "\${pkgdir}/opt/zextras/admin/iris/\${component}" ]; then
       chown -h root:root -R "\${pkgdir}/opt/zextras/admin/iris/\${component}"
+      # Only chmod regular files, not symlinks
       find "\${pkgdir}/opt/zextras/admin/iris/\${component}" -type f -exec chmod 644 {} \\;
+      # Make directories executable
       find "\${pkgdir}/opt/zextras/admin/iris/\${component}" -type d -exec chmod 755 {} \\;
     fi
   done
 }
 
 preinst() {
-  # Remove existing installations
-  for dir in carbonio-admin-ui carbonio-admin-console-ui; do
-    if [ -d "/opt/zextras/admin/iris/\$dir" ]; then
-      rm -rf "/opt/zextras/admin/iris/\$dir"
-    fi
-  done
+  # Remove existing installations before installing new package
+  if [ -d "/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
+    rm -rf "/opt/zextras/admin/iris/carbonio-admin-ui"
+  fi
+  if [ -d "/opt/zextras/admin/iris/carbonio-admin-console-ui" ]; then
+    rm -rf "/opt/zextras/admin/iris/carbonio-admin-console-ui"
+  fi
 }
 
 postinst() {
+  # Define commit hash (injected at build time)
   commitHash="${commitHash}"
 
-  # Copy index.html files for carbonio-admin-ui
+  # Copy index.html files to current directory for carbonio-admin-ui
   if [ -d "/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
     mkdir -p "/opt/zextras/admin/iris/carbonio-admin-ui/current"
     for commit_dir in /opt/zextras/admin/iris/carbonio-admin-ui/*; do
-      if [ -d "\${commit_dir}" ] && [ "\$(basename "\${commit_dir}")" != "current" ]; then
+      if [ -d "\${commit_dir}" ] && [ "\\$(basename "\${commit_dir}")" != "current" ]; then
         cd "\${commit_dir}"
         find . -name "*.html" -exec cp --parents {} /opt/zextras/admin/iris/carbonio-admin-ui/current/ \\; 2>/dev/null || true
-        break
+        break  # Only process the first (most recent) commit
       fi
     done
   fi
 
-  # Create i18n symlinks
+  # Create i18n symlinks for all components with specific commit hash
+  # Using POSIX-compatible loop (no bash arrays)
   for component in ${componentList}; do
     if [ -d "/opt/zextras/admin/iris/\${component}/\${commitHash}" ]; then
       ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/\${commitHash}/i18n"
     fi
   done
 
-  # Generate components.json
+  # Re-generate the component list for all components
   find /opt/zextras/admin/iris/ \\
     -maxdepth 3 \\
     -mindepth 3 \\
     -type f \\
     -name component.json \\
-    -printf '%T@ %p\\\\n' \\
+    -printf '%T@ %p\\n' \\
     | sort -rn \\
     | awk '{
         n = split($2, path, "/")
