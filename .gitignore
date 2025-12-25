@@ -67,3 +67,4 @@ CLAUDE.md
 .mcp.json
 tmp
 **/.eslintcache
+tools/build-optimizer/target
