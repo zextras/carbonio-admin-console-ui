@@ -7,7 +7,6 @@ import { execSync, spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { cpus } from 'os';
 
-// Helper function to spawn command asynchronously
 function spawnCommand(command: string, args: string[], cwd?: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const proc = spawn(command, args, { cwd, stdio: 'pipe' });
@@ -77,12 +76,9 @@ function getDefaultJobCount(): number {
 }
 
 async function main() {
-  // Check if Rust is installed
   if (!isRustInstalled()) {
-    log('⚠️  Rust not installed, falling back to Node script...', 'yellow');
-    const { default: buildUnified } = await import('./build_unified.js');
+    log('❌ Rust not installed', 'red');
     process.argv.push('--dev');
-    buildUnified();
     return;
   }
 
@@ -98,10 +94,8 @@ async function main() {
       log('✓ Rust binary built successfully', 'green');
       rustBinary = useRustOptimizer();
     } catch (error) {
-      log('⚠️  Failed to build Rust binary. Falling back to Node script...', 'yellow');
-      const { default: buildUnified } = await import('./build_unified.js');
+      log('❌ Failed to build Rust binary', 'red');
       process.argv.push('--dev');
-      buildUnified();
       return;
     }
   }
@@ -109,15 +103,16 @@ async function main() {
   // Parse arguments
   const args = process.argv.slice(2);
   const jobsFlag = args.find((arg) => arg.startsWith('--jobs='));
-  const parallelJobs = jobsFlag
-    ? parseInt(jobsFlag.split('=')[1])
-    : getDefaultJobCount();
+  const parallelJobs = jobsFlag ? parseInt(jobsFlag.split('=')[1]) : getDefaultJobCount();
   const isAutoDetected = !jobsFlag;
 
   log('\n🚀 Carbonio Admin Console Build (OPTIMIZED)', 'cyan');
   log('==========================================', 'cyan');
   if (isAutoDetected) {
-    log(`📦 Parallel jobs: ${parallelJobs} (auto-detected from ${cpus().length} CPU cores)`, 'blue');
+    log(
+      `📦 Parallel jobs: ${parallelJobs} (auto-detected from ${cpus().length} CPU cores)`,
+      'blue',
+    );
   } else {
     log(`📦 Parallel jobs: ${parallelJobs}`, 'blue');
   }
@@ -211,8 +206,13 @@ async function main() {
 
     mkdirSync(targetDir, { recursive: true });
 
-    // Use async spawn for true parallel execution
-    await spawnCommand(rustBinary, ['parallel-copy', sourceDir, targetDir, '--jobs', '8']);
+    await spawnCommand(rustBinary as string, [
+      'parallel-copy',
+      sourceDir,
+      targetDir,
+      '--jobs',
+      String(parallelJobs),
+    ]);
   });
 
   await Promise.all(copyPromises);
