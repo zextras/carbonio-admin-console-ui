@@ -76,6 +76,8 @@ function getDefaultJobCount(): number {
 }
 
 async function main() {
+  const startTime = Date.now();
+
   if (!isRustInstalled()) {
     log('❌ Rust not installed', 'red');
     process.argv.push('--dev');
@@ -317,6 +319,11 @@ postinst() {
   log(`Total components: ${components.length}`, 'blue');
   log(`Components built: ${componentsToBuild.length}`, 'green');
   log(`Components skipped: ${components.length - componentsToBuild.length}`, 'yellow');
+
+  const endTime = Date.now();
+  const duration = endTime - startTime;
+  const seconds = (duration / 1000).toFixed(2);
+  log(`\n⏱️  Total build time: ${seconds}s`, 'cyan');
   log('\n=== Build complete! ===', 'green');
 }
 
