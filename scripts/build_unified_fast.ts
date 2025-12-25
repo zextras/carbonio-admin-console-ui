@@ -199,7 +199,7 @@ async function main() {
   const installDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
 
   const copyPromises = components.map(async (component) => {
-    const sourceDir = join(dirName, '..', 'apps', component.name, 'dist', 'source', commitHash);
+    const sourceDir = join(dirName, '..', 'apps', component.name, 'dist', 'source');
     const targetDir = join(installDir, component.target);
 
     if (!existsSync(sourceDir)) {
