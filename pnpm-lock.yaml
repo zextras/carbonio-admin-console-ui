@@ -24,9 +24,9 @@ importers:
       '@semantic-release/github':
         specifier: ^12.0.2
         version: 12.0.2(semantic-release@25.0.2(typescript@5.9.3))
-      '@tsconfig/node12':
-        specifier: ^12.1.4
-        version: 12.1.7
+      '@tsconfig/node14':
+        specifier: ^14.1.0
+        version: 14.1.8
       '@vitejs/plugin-react':
         specifier: ^5.0.2
         version: 5.1.2(vite@7.3.0(@types/node@20.19.27)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
@@ -3450,8 +3450,8 @@ packages:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
 
-  '@tsconfig/node12@12.1.7':
-    resolution: {integrity: sha512-xV9L85NANUIgJotIT7VJMSh8HaQPJF4cgr72bzgHS2xRcRBp9RCGyZvk7MOefH+lVnm+/lH7Vc6AefeF5IuOAQ==}
+  '@tsconfig/node14@14.1.8':
+    resolution: {integrity: sha512-SjGT+qPvh8Uhc849yNMD0ZIPr69AyB7Z46nMqhrI3gCVocd6mhI0jP4YE4onO/ufpmengRfTxNMpdpKEp2xRIg==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -9396,7 +9396,7 @@ snapshots:
 
   '@trysound/sax@0.2.0': {}
 
-  '@tsconfig/node12@12.1.7': {}
+  '@tsconfig/node14@14.1.8': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
