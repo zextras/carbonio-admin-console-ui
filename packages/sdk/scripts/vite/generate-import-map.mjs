@@ -9,6 +9,8 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { getSharedDependencyCdnUrls } from '../../../shared-deps/config.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '../../../..');
@@ -26,19 +28,8 @@ export function generateImportMap(commitHash) {
 
   const imports = {};
 
-  // Add shared dependencies (using CDN for development)
-  const sharedLibs = {
-    react: 'https://esm.sh/react@19.3.0',
-    'react-dom': 'https://esm.sh/react-dom@19.1.0/client',
-    'react-i18next': 'https://esm.sh/react-i18next@14.1.3',
-    'lodash-es': 'https://esm.sh/lodash-es@4.17.21',
-    'react-router-dom': 'https://esm.sh/react-router-dom@6.28.1',
-    'styled-components': 'https://esm.sh/styled-components@6.1.15',
-    '@emotion/react': 'https://esm.sh/@emotion/react@11.14.0',
-    '@emotion/styled': 'https://esm.sh/@emotion/styled@11.14.0',
-    i18next: 'https://esm.sh/i18next@24.2.0',
-    '@zextras/carbonio-design-system': 'https://esm.sh/@zextras/carbonio-design-system',
-  };
+  // Get shared dependency CDN URLs from package.json versions
+  const sharedLibs = getSharedDependencyCdnUrls();
 
   for (const dir of adminUiDirs) {
     const packageJsonPath = join(appsDir, dir, 'package.json');
