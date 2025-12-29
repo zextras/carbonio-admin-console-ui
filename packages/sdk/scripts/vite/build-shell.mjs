@@ -25,14 +25,14 @@ console.log(`Commit hash: ${commitHash}`);
 // Clean dist directory
 const distPath = path.resolve(cwd, 'dist');
 if (fs.existsSync(distPath)) {
-	fs.rmSync(distPath, { recursive: true, force: true });
-	console.log('Cleaned dist directory');
+  fs.rmSync(distPath, { recursive: true, force: true });
+  console.log('Cleaned dist directory');
 }
 
 // Build with Vite
 await build({
-	configFile: path.resolve(cwd, 'vite.config.ts'),
-	mode
+  configFile: path.resolve(cwd, 'vite.config.ts'),
+  mode,
 });
 
 console.log('\nRunning post-build tasks...');
@@ -42,15 +42,33 @@ const currentDir = path.resolve(cwd, 'dist', 'source', 'current');
 
 // Create current directory
 if (!fs.existsSync(currentDir)) {
-	fs.mkdirSync(currentDir, { recursive: true });
+  fs.mkdirSync(currentDir, { recursive: true });
 }
 
-// Copy index.html to current/
-const indexHtmlSource = path.resolve(distDir, 'index.html');
-const indexHtmlDest = path.resolve(currentDir, 'index.html');
-if (fs.existsSync(indexHtmlSource)) {
-	fs.copyFileSync(indexHtmlSource, indexHtmlDest);
-	console.log('Copied index.html to current/');
+// Generate import map
+console.log('Generating import map...');
+const { generateImportMap } = await import('./generate-import-map.mjs');
+const importMap = generateImportMap(commitHash);
+
+// Write import map to dist
+const importMapPath = path.resolve(distDir, 'import-map.json');
+fs.writeFileSync(importMapPath, JSON.stringify(importMap, null, 2));
+console.log('Generated import-map.json');
+
+// Inject import map into index.html (both dist and current/)
+const indexHtmlPath = path.resolve(distDir, 'index.html');
+const indexHtmlCurrentDest = path.resolve(currentDir, 'index.html');
+if (fs.existsSync(indexHtmlPath)) {
+  let indexHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
+  const importMapScript = `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
+
+  // Inject import map before the closing </head> tag
+  indexHtml = indexHtml.replace(/(<\/head>)/, `${importMapScript}\n  $1`);
+
+  // Write to both dist and current directories
+  fs.writeFileSync(indexHtmlPath, indexHtml);
+  fs.writeFileSync(indexHtmlCurrentDest, indexHtml);
+  console.log('Injected import map into index.html');
 }
 
 // Generate commit file
@@ -61,26 +79,26 @@ console.log('Generated commit file');
 // Generate component.json
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
 
-// Use different bundle names for dev vs production
-const bundleName = isDev ? 'zapp-shell.bundle.js' : 'zapp-admin-ui.bundle.js';
+// Use different bundle names for dev vs production (ESM uses .mjs)
+const bundleName = isDev ? 'shell.mjs' : `shell.${commitHash.substring(0, 8)}.mjs`;
 
 const componentJson = {
-	name: 'carbonio-admin-ui',
-	js_entrypoint: `/static/iris/carbonio-admin-ui/${commitHash}/${bundleName}`,
-	description: packageJson.description || '',
-	version: packageJson.version,
-	commit: commitHash,
-	priority: -1,
-	type: 'shell',
-	attrKey: '',
-	icon: 'CubeOutline',
-	display: 'Admin Shell',
-	sentryDsn: ''
+  name: 'carbonio-admin-ui',
+  js_entrypoint: `/static/iris/carbonio-admin-ui/${commitHash}/${bundleName}`,
+  description: packageJson.description || '',
+  version: packageJson.version,
+  commit: commitHash,
+  priority: -1,
+  type: 'shell',
+  attrKey: '',
+  icon: 'CubeOutline',
+  display: 'Admin Shell',
+  sentryDsn: '',
 };
 
 fs.writeFileSync(
-	path.resolve(distDir, 'component.json'),
-	JSON.stringify(componentJson, null, '\t')
+  path.resolve(distDir, 'component.json'),
+  JSON.stringify(componentJson, null, '\t'),
 );
 console.log('Generated component.json');
 

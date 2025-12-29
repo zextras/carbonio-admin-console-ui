@@ -12,7 +12,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from '../../vite.rollup.config';
+import { createESMBootstrapRollupOptions } from '../../vite.esm.config';
 
 type AppManifest = {
 	readonly name: string;
@@ -71,7 +71,7 @@ const appRegistryPlugin = (): Plugin => {
 									icon: carbonio.icon,
 									attrKey: carbonio.attrKey ?? '',
 									version: packageJson.version,
-									entryPoint: `../../../../../apps/${dir}/src/app.tsx`,
+									entryPoint: `@zextras/${packageJson.name}`,
 								};
 							}
 						} catch {
@@ -133,12 +133,12 @@ export default defineConfig(({ mode }) => {
 			},
 			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
 		},
-			build: {
-				outDir: `dist/source/${commitHash}`,
-				emptyOutDir: true,
-				sourcemap: isDev, // Disable sourcemap in production for optimized build
-				rollupOptions: createBootstrapRollupOptions(isDev)
-			},
+		build: {
+			outDir: `dist/source/${commitHash}`,
+			emptyOutDir: true,
+			sourcemap: isDev,
+			rollupOptions: createESMBootstrapRollupOptions(isDev)
+		},
 		base: basePath,
 		publicDir: 'assets',
 		server: {
