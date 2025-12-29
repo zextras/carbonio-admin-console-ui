@@ -50,21 +50,5 @@ vite.on('close', (code) => {
 		console.error(`Vite build failed with code ${code}`);
 		process.exit(code || 1);
 	}
-
-	console.log('\nRunning post-build tasks...');
-
-	const postbuild = spawn('node', [join(__dirname, 'postbuild.mjs')], {
-		cwd: projectRoot,
-		env,
-		stdio: 'inherit',
-		shell: true
-	});
-
-	postbuild.on('close', (code) => {
-		if (code !== 0) {
-			console.error(`Post-build failed with code ${code}`);
-			process.exit(code || 1);
-		}
-		console.log('\nBuild completed successfully!');
-	});
+	console.log('\nBuild completed successfully!');
 });
