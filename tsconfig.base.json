@@ -15,12 +15,15 @@
 		"strict": true,
 		"noImplicitOverride": true,
 		"moduleResolution": "bundler",
+		"paths": {
+			"virtual:app-registry": ["./apps/admin-ui-bootstrap/src/app-registry.d.ts"]
+		},
 		"lib": ["esnext", "dom", "dom.iterable"],
 		"allowSyntheticDefaultImports": true,
 		"preserveConstEnums": true,
 		"noUncheckedIndexedAccess": false,
 		"types": ["@vitest/browser/matchers", "vitest/globals"]
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "*.d.ts"],
 	"exclude": ["**/*.spec.ts"]
 }
