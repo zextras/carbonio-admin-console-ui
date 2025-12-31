@@ -75,6 +75,56 @@ export function generateImportMap(commitHash) {
     }
   }
 
+  // Special handling for admin-ui-bootstrap
+  const bootstrapDir = join(appsDir, 'admin-ui-bootstrap');
+  const bootstrapPackageJsonPath = join(bootstrapDir, 'package.json');
+
+  try {
+    const bootstrapPackageJson = JSON.parse(readFileSync(bootstrapPackageJsonPath, 'utf8'));
+    const bootstrapCarbonio = bootstrapPackageJson.carbonio;
+
+    if (bootstrapCarbonio && bootstrapCarbonio.type === 'shell') {
+      const bootstrapPackageName = bootstrapPackageJson.name;
+      let shellFile = null;
+
+      // Try unified package directory first (for unified builds)
+      const unifiedDistDir = join(packageDir, bootstrapCarbonio.name, commitHash);
+      try {
+        const shellFiles = readdirSync(unifiedDistDir).filter(
+          (f) => f.startsWith('shell.') && f.endsWith('.mjs'),
+        );
+        // Prefer hashed filenames (shell.[hash].mjs) over unhashed (shell.mjs)
+        const hashedFiles = shellFiles.filter((f) => f !== 'shell.mjs');
+        const files = hashedFiles.length > 0 ? hashedFiles : shellFiles;
+        if (files.length > 0) {
+          shellFile = `/static/iris/${bootstrapCarbonio.name}/${commitHash}/${files[0]}`;
+        }
+      } catch {
+        // Unified package directory doesn't exist, try individual app dist
+        const appDistDir = join(appsDir, 'admin-ui-bootstrap', 'dist/source', commitHash);
+        try {
+          const shellFiles = readdirSync(appDistDir).filter(
+            (f) => f.startsWith('shell.') && f.endsWith('.mjs'),
+          );
+          // Prefer hashed filenames (shell.[hash].mjs) over unhashed (shell.mjs)
+          const hashedFiles = shellFiles.filter((f) => f !== 'shell.mjs');
+          const files = hashedFiles.length > 0 ? hashedFiles : shellFiles;
+          if (files.length > 0) {
+            shellFile = `/static/iris/${bootstrapCarbonio.name}/${commitHash}/${files[0]}`;
+          }
+        } catch {
+          // Bootstrap dist doesn't exist, skip
+        }
+      }
+
+      if (shellFile) {
+        imports[bootstrapPackageName] = shellFile;
+      }
+    }
+  } catch (error) {
+    console.warn(`Warning: Could not process admin-ui-bootstrap:`, error.message);
+  }
+
   return {
     imports: {
       ...sharedLibs,
