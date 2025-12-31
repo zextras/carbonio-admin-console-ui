@@ -48,7 +48,7 @@ export function generateImportMap(commitHash) {
             (f) => f.startsWith('app.') && f.endsWith('.mjs') && !f.includes('.chunk.'),
           );
           if (files.length > 0) {
-            mainFile = `../${carbonio.name}/${commitHash}/${files[0]}`;
+            mainFile = `/static/iris/${carbonio.name}/${commitHash}/${files[0]}`;
           }
         } catch {
           // Unified package directory doesn't exist, try individual app dist
