@@ -71,7 +71,7 @@ const appRegistryPlugin = (): Plugin => {
 									icon: carbonio.icon,
 									attrKey: carbonio.attrKey ?? '',
 									version: packageJson.version,
-									entryPoint: `@zextras/${packageJson.name}`,
+									entryPoint: packageJson.name,
 								};
 							}
 						} catch {
