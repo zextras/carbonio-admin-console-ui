@@ -312,23 +312,6 @@ postinst() {
       ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/\${commitHash}/i18n"
     fi
   done
-
-  # Re-generate the component list for all components
-  find /opt/zextras/admin/iris/ \\
-    -maxdepth 3 \\
-    -mindepth 3 \\
-    -type f \\
-    -name component.json \\
-    -printf '%T@ %p\\n' \\
-    | sort -rn \\
-    | awk '{
-        n = split($2, path, "/")
-        component = path[6]
-        if (!seen[component]++) {
-            print $2
-        }
-    }' \\
-    | xargs jq -s '{"components":.}' > /opt/zextras/admin/iris/components.json
 }
 `;
 
