@@ -22,6 +22,40 @@ function extractVersion(range) {
 }
 
 /**
+ * Returns local paths for shared dependencies (offline-first)
+ * Only includes dependencies that can be successfully vendored
+ */
+export function getSharedDependencyPaths(commitHash) {
+	const deps = {
+		...bootstrapPkg.dependencies,
+		...bootstrapPkg.devDependencies,
+	};
+
+	const paths = {};
+
+	// Only include dependencies we can successfully vendor as ESM
+	// These are the packages that have been tested and work with offline vendoring
+	// Note: Filenames match what Vite's lib mode outputs
+	const vendorableDeps = [
+		{ name: 'react', file: 'index.mjs' },
+		{ name: 'react-dom', file: 'client.mjs' },
+		{ name: 'lodash-es', file: 'lodash.mjs' },
+		{ name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
+		{ name: 'i18next', file: 'i18next.mjs' },
+	];
+
+	for (const depConfig of vendorableDeps) {
+		const version = extractVersion(deps[depConfig.name]);
+		if (version) {
+			paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
+		}
+	}
+
+	return paths;
+}
+
+/**
+ * @deprecated Use getSharedDependencyPaths(commitHash) instead for offline support
  * Returns CDN URLs for shared dependencies based on installed versions
  */
 export function getSharedDependencyCdnUrls() {

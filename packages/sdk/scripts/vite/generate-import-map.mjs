@@ -9,7 +9,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { getSharedDependencyCdnUrls } from '../../../shared-deps/config.mjs';
+import { getSharedDependencyPaths } from '../../../shared-deps/config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,8 +28,8 @@ export function generateImportMap(commitHash) {
 
   const imports = {};
 
-  // Get shared dependency CDN URLs from package.json versions
-  const sharedLibs = getSharedDependencyCdnUrls();
+  // Get shared dependency local paths from package.json versions
+  const sharedLibs = getSharedDependencyPaths(commitHash);
 
   for (const dir of adminUiDirs) {
     const packageJsonPath = join(appsDir, dir, 'package.json');

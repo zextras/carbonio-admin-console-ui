@@ -9,21 +9,18 @@ import type { OutputOptions, RollupOptions } from "rollup";
 /**
  * Shared external dependencies for ESM modules
  * These will be resolved via import maps
+ * Only include packages that can be successfully vendored for offline use
  */
 export const SHARED_EXTERNALS = [
 	"react",
 	"react-dom",
-	"react-i18next",
 	"lodash-es",
-	"react-router-dom",
 	"styled-components",
-	"@emotion/react",
-	"@emotion/styled",
+	"i18next",
 	"@zextras/carbonio-ui-preview",
 	"@zextras/admin-ui-bootstrap",
 	"@zextras/carbonio-design-system",
 	"msw",
-	"i18next",
 ] as const;
 
 /**

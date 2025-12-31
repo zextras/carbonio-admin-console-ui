@@ -35,6 +35,11 @@ await build({
   mode,
 });
 
+// Build shared dependencies (for offline support) - must be after Vite build
+console.log('\nBuilding shared dependencies...');
+const { buildSharedDeps } = await import('./build-shared-deps.mjs');
+await buildSharedDeps(commitHash);
+
 console.log('\nRunning post-build tasks...');
 
 const distDir = path.resolve(cwd, 'dist', 'source', commitHash);
