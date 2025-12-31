@@ -242,8 +242,8 @@ const DomainMailingList: FC = () => {
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-											? t('label.can_receive', 'Can Receive')
-											: t('label.can_not_receiver', "Can't Receive")}
+											? t('label.can_send_receiver', 'Can Receive')
+											: t('label.cant_send_receiver', "Can't Receive")}
 									</Text>
 								</Container>,
 								<Container
