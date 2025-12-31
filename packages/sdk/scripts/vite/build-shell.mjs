@@ -62,8 +62,8 @@ if (fs.existsSync(indexHtmlPath)) {
   let indexHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
   const importMapScript = `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
 
-  // Inject import map before the closing </head> tag
-  indexHtml = indexHtml.replace(/(<\/head>)/, `${importMapScript}\n  $1`);
+  // Inject import map BEFORE the shell.mjs script tag
+  indexHtml = indexHtml.replace(/(<script type="module"[^>]*shell\.mjs")/, `${importMapScript}\n  $1`);
 
   // Write to both dist and current directories
   fs.writeFileSync(indexHtmlPath, indexHtml);
