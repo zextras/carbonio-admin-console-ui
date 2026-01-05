@@ -207,6 +207,31 @@ function main() {
     builtPackages: [] as Array<string>,
   };
 
+  // Ensure bootstrap is built with import map before processing other components
+  log('\n=== Ensuring bootstrap is built with import map ===', 'blue');
+  const bootstrapDistDir = join(appsDir, 'admin-ui-bootstrap', 'dist', 'source', commitHash);
+  const bootstrapIndexHtml = join(bootstrapDistDir, 'index.html');
+
+  // Check if bootstrap needs building (index.html doesn't exist or doesn't have import map)
+  let bootstrapNeedsBuild = !existsSync(bootstrapIndexHtml);
+  if (!bootstrapNeedsBuild) {
+    const indexHtmlContent = readFileSync(bootstrapIndexHtml, 'utf-8');
+    if (!indexHtmlContent.includes('importmap')) {
+      bootstrapNeedsBuild = true;
+    }
+  }
+
+  if (bootstrapNeedsBuild) {
+    log('Building bootstrap to generate import map...', 'cyan');
+    const bootstrapDir = join(appsDir, 'admin-ui-bootstrap');
+    process.chdir(bootstrapDir);
+    execCommand(isDevMode ? 'pnpm build:dev' : 'pnpm build');
+    process.chdir(rootDir);
+    log('✓ Bootstrap built successfully', 'green');
+  } else {
+    log('✓ Bootstrap already built with import map', 'green');
+  }
+
   // Build and copy each component
   components.forEach((component) => {
     log(`=== Processing ${component.name} ===`, 'blue');
@@ -259,6 +284,35 @@ function main() {
   });
 
   process.chdir(rootDir);
+
+  // Copy shared dependencies from bootstrap
+  log('\n=== Copying shared dependencies ===', 'blue');
+  const bootstrapSourceDir = join(appsDir, 'admin-ui-bootstrap', 'dist', 'source');
+  const sharedDepsSource = join(bootstrapSourceDir, commitHash, 'shared-dependencies');
+  const sharedDepsTarget = join(installDir, 'shared-dependencies', commitHash);
+
+  if (existsSync(sharedDepsSource)) {
+    mkdirSync(sharedDepsTarget, { recursive: true });
+    copyRecursive(sharedDepsSource, sharedDepsTarget);
+    log('✓ Copied shared dependencies', 'green');
+  } else {
+    log('⚠️  Shared dependencies not found - skipping', 'yellow');
+  }
+
+  // Copy bootstrap index.html to current directory (for container/development use)
+  log('\n=== Copying bootstrap index.html to current directory ===', 'blue');
+  const bootstrapCurrentDir = join(installDir, 'carbonio-admin-ui', 'current');
+  const bootstrapVersionedDir = join(installDir, 'carbonio-admin-ui', commitHash);
+
+  if (existsSync(bootstrapVersionedDir)) {
+    mkdirSync(bootstrapCurrentDir, { recursive: true });
+    const indexHtmlSource = join(bootstrapVersionedDir, 'index.html');
+    if (existsSync(indexHtmlSource)) {
+      const indexHtmlDest = join(bootstrapCurrentDir, 'index.html');
+      copyFileSync(indexHtmlSource, indexHtmlDest);
+      log('✓ Copied index.html to current directory', 'green');
+    }
+  }
 
   // Create PKGBUILD file
   log('Creating PKGBUILD...', 'blue');

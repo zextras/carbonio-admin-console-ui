@@ -6,7 +6,7 @@
  */
 
 import { build } from 'vite';
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, copyFileSync, statSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,27 +22,38 @@ const sharedDepsConfig = [
 	{
 		name: 'react',
 		entry: resolve(nodeModulesDir, 'react/index.js'),
-		outputName: 'react.mjs'
+		outputName: 'react.mjs',
+		type: 'build'
 	},
 	{
 		name: 'react-dom',
 		entry: resolve(nodeModulesDir, 'react-dom/client.js'),
-		outputName: 'react-dom-client.mjs'
+		outputName: 'react-dom-client.mjs',
+		type: 'build'
 	},
 	{
 		name: 'lodash-es',
 		entry: resolve(nodeModulesDir, 'lodash-es/lodash.js'),
-		outputName: 'lodash-es.mjs'
+		outputName: 'lodash-es.mjs',
+		type: 'build'
 	},
 	{
 		name: 'styled-components',
 		entry: resolve(nodeModulesDir, 'styled-components/dist/styled-components.browser.esm.js'),
-		outputName: 'styled-components.mjs'
+		outputName: 'styled-components.mjs',
+		type: 'build'
 	},
 	{
 		name: 'i18next',
 		entry: resolve(nodeModulesDir, 'i18next/i18next.js'),
-		outputName: 'i18next.mjs'
+		outputName: 'i18next.mjs',
+		type: 'build'
+	},
+	{
+		name: '@zextras/carbonio-design-system',
+		entry: resolve(nodeModulesDir, '@zextras/carbonio-design-system/dist/zapp-ui.bundle.mjs'),
+		outputName: 'carbonio-design-system.mjs',
+		type: 'copy' // Just copy, already bundled ESM
 	},
 ];
 
@@ -62,6 +73,15 @@ export async function buildSharedDeps(commitHash) {
 		console.log(`Building ${depConfig.name}...`);
 
 		try {
+			// For pre-bundled packages, just copy the file
+			if (depConfig.type === 'copy') {
+				const outputPath = join(outputDir, depConfig.outputName);
+				copyFileSync(depConfig.entry, outputPath);
+				console.log(`  ✓ Copied ${depConfig.name}`);
+				continue;
+			}
+
+			// For packages that need building, use Vite
 			await build({
 				entry: depConfig.entry,
 				configFile: false,

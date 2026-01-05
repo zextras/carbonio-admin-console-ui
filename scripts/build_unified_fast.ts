@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { execSync, spawn } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -193,7 +193,37 @@ async function main() {
     }
   }
 
-  // Copy components
+  // Ensure bootstrap is built with import map BEFORE copying
+  log('\n🔨 Ensuring bootstrap is built with import map...', 'blue');
+  const bootstrapDistDir = join(dirName, '..', 'apps', 'admin-ui-bootstrap', 'dist', 'source', commitHash);
+  const bootstrapIndexHtml = join(bootstrapDistDir, 'index.html');
+
+  // Check if bootstrap needs building (index.html doesn't exist or doesn't have import map)
+  let bootstrapNeedsBuild = !existsSync(bootstrapIndexHtml);
+  if (!bootstrapNeedsBuild) {
+    const indexHtmlContent = readFileSync(bootstrapIndexHtml, 'utf-8');
+    if (!indexHtmlContent.includes('importmap')) {
+      bootstrapNeedsBuild = true;
+    }
+  }
+
+  if (bootstrapNeedsBuild) {
+    log('  Building bootstrap to generate import map...', 'cyan');
+    try {
+      execSync('pnpm --filter @zextras/admin-ui-bootstrap run build', {
+        cwd: join(dirName, '..'),
+        stdio: 'inherit',
+      });
+      log('  ✓ Bootstrap built successfully', 'green');
+    } catch (error) {
+      log('  ✗ Failed to build bootstrap', 'red');
+      throw error;
+    }
+  } else {
+    log('  ✓ Bootstrap already built with import map', 'green');
+  }
+
+  // Copy components (AFTER bootstrap is built with import map)
   log('\n📋 Copying components to package...', 'blue');
   const packageDir = join(dirName, '..', 'package');
   const installDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
@@ -219,6 +249,41 @@ async function main() {
 
   await Promise.all(copyPromises);
   log(`✓ Copied ${components.length} components`, 'green');
+
+  // Copy shared dependencies from bootstrap
+  log('\n📦 Copying shared dependencies...', 'blue');
+  const bootstrapDir = join(dirName, '..', 'apps', 'admin-ui-bootstrap', 'dist', 'source');
+  const sharedDepsSource = join(bootstrapDir, commitHash, 'shared-dependencies');
+  const sharedDepsTarget = join(installDir, 'shared-dependencies', commitHash);
+
+  if (existsSync(sharedDepsSource)) {
+    mkdirSync(sharedDepsTarget, { recursive: true });
+    await spawnCommand(rustBinary as string, [
+      'parallel-copy',
+      sharedDepsSource,
+      sharedDepsTarget,
+      '--jobs',
+      String(parallelJobs),
+    ]);
+    log('✓ Copied shared dependencies', 'green');
+  } else {
+    log('⚠️  Shared dependencies not found - bootstrap may not have been built', 'yellow');
+  }
+
+  // Copy bootstrap index.html to current directory (for container/development use)
+  log('\n📄 Copying bootstrap index.html to current directory...', 'blue');
+  const bootstrapCurrentDir = join(installDir, 'carbonio-admin-ui', 'current');
+  const bootstrapVersionedDir = join(installDir, 'carbonio-admin-ui', commitHash);
+
+  if (existsSync(bootstrapVersionedDir)) {
+    mkdirSync(bootstrapCurrentDir, { recursive: true });
+    const indexHtmlSource = join(bootstrapVersionedDir, 'index.html');
+    if (existsSync(indexHtmlSource)) {
+      const indexHtmlDest = join(bootstrapCurrentDir, 'index.html');
+      copyFileSync(indexHtmlSource, indexHtmlDest);
+      log('✓ Copied index.html to current directory', 'green');
+    }
+  }
 
   // Create PKGBUILD (same as original)
   log('\n📝 Creating PKGBUILD...', 'blue');
