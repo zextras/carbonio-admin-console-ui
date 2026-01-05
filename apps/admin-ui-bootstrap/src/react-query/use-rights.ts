@@ -39,7 +39,7 @@ type RightsOptions = {
 };
 
 // Query function to fetch effective rights for a user
-const queryFn = async (userName: string): Promise<Array<Right>> => {
+const getAllEffectiveRightsQueryFn = async (userName: string): Promise<Array<Right>> => {
   const request: any = {
     _jsns: 'urn:zimbraAdmin',
     grantee: {
@@ -58,7 +58,7 @@ const queryFn = async (userName: string): Promise<Array<Right>> => {
 const useRights = ({ enabled = true, userName }: RightsOptions = {}) => {
   return useQuery({
     queryKey: ['effective-rights', userName],
-    queryFn: () => queryFn(userName || ''),
+    queryFn: () => getAllEffectiveRightsQueryFn(userName || ''),
     enabled: enabled && Boolean(userName),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -140,7 +140,7 @@ export const getAllRights = (rights: Right[], type: string): Right[] =>
 
 export const useCurrentUserRights = () => {
   const accounts = useUserAccounts();
-  const userName = accounts?.[0]?.name || '';
+  const userName = accounts?.[0]?.name;
 
   const result = useRights({
     userName,

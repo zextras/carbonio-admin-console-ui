@@ -82,11 +82,11 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const options =
 		distributionList?.length > 0
 			? distributionList?.map((group: any) => ({
-					label:
-						group?.a?.find((item: Record<string, string>) => item?.n === DISPLAYNAME)?._content ||
-						group.name,
-					value: group.id
-				}))
+				label:
+					group?.a?.find((item: Record<string, string>) => item?.n === DISPLAYNAME)?._content ||
+					group.name,
+				value: group.id
+			}))
 			: [];
 
 	const onOptionChange = (v: any): any => {
@@ -304,15 +304,17 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	);
 
 	useEffect(() => {
-		if (!isDomainSelect) {
+		if (!isDomainSelect && isAdvanced) {
 			searchDomainCall(searchDomainName);
 		}
-	}, [searchDomainName, isDomainSelect, searchDomainCall]);
+	}, [searchDomainName, isDomainSelect, searchDomainCall, isAdvanced]);
 
 	useEffect(() => {
-		getInitializedDomainLists('');
+		if (isAdvanced) {
+			getInitializedDomainLists('');
+		}
 		getAccountDistributionList();
-	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name]);
+	}, [getInitializedDomainLists, getAccountDistributionList, accountDetail?.name, isAdvanced]);
 
 	return (
 		<Container

@@ -97,7 +97,6 @@ const NotificationView: FC<{
 }> = ({ isShowTitle, isAddPadding = false }) => {
   const [t] = useTranslation();
   const [change, setChange] = useState(NOTIFICATION_ALL);
-  const [setClick] = useState('');
   const createSnackbar = useSnackbar();
   const [notificationList, setNotificationList] = useState<Array<Notification>>([]);
   const [filterdNotification, setFilterdNotification] = useState<Array<Notification>>([]);
@@ -452,13 +451,12 @@ const NotificationView: FC<{
         </Container>
         <Container mainAlignment="flex-end" crossAlignment="flex-end">
           <TabBar
-            // @ts-expect-error - fix this later
+            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
             items={items}
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
               setChange(selectedId);
             }}
-            onItemClick={setClick}
             underlineColor="primary"
           />
         </Container>

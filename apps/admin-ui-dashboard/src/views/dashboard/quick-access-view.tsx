@@ -82,74 +82,72 @@ const QuickAccess: FC<{
 				padding={{ bottom: 'large', right: 'medium', left: 'medium', top: 'large' }}
 			>
 				{quickAccessItems.map((item) => (
-					<>
-						<Container
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ left: 'extralarge' }}
+						key={item?.operation}
+					>
+						<ActionContainer
+							height={'8.75rem'}
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
-							padding={{ left: 'extralarge' }}
-							key={item?.bgColor}
+							width={'21.75rem'}
+							bgColor={item?.bgColor}
+							style={{ borderRadius: '0.5rem' }}
 						>
-							<ActionContainer
-								height={'8.75rem'}
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								width={'21.75rem'}
-								bgColor={item?.bgColor}
-								style={{ borderRadius: '0.5rem' }}
-							>
-								<ListRow>
-									<Container padding={{ all: 'large' }}>
-										<Container mainAlignment="flex-start" crossAlignment="flex-start">
-											<Text color="gray6" overflow="break-word" weight="light" size="medium">
-												{item?.upperText}
-											</Text>
-										</Container>
-										<Container
-											mainAlignment="flex-start"
-											crossAlignment="flex-start"
-											padding={{ top: 'extrasmall' }}
-										>
-											<Text color="gray6" overflow="break-word" weight="bold" size="large">
-												{item?.operationText}
-											</Text>
-										</Container>
+							<ListRow>
+								<Container padding={{ all: 'large' }}>
+									<Container mainAlignment="flex-start" crossAlignment="flex-start">
+										<Text color="gray6" overflow="break-word" weight="light" size="medium">
+											{item?.upperText}
+										</Text>
 									</Container>
-									<Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-										<Icon color="gray6" icon={item?.operationIcon} size="large" />
-									</Container>
-								</ListRow>
-								<ListRow>
-									<Container padding={{ left: 'large', right: 'large' }}>
-										<Divider />
-									</Container>
-								</ListRow>
-								<ListRow>
-									<OperationContainer
+									<Container
 										mainAlignment="flex-start"
 										crossAlignment="flex-start"
-										padding={{ all: 'large' }}
-										onClick={(): void => {
-											handleClickedQuickAccess(item?.operation);
-										}}
+										padding={{ top: 'extrasmall' }}
 									>
-										<Text color="gray6" overflow="break-word" weight="light" size="medium">
-											{item?.bottomText}
+										<Text color="gray6" overflow="break-word" weight="bold" size="large">
+											{item?.operationText}
 										</Text>
-									</OperationContainer>
-									<OperationContainer
-										mainAlignment="flex-end"
-										crossAlignment="flex-end"
-										padding={{ all: 'large' }}
-										onClick={(): void => {
-											handleClickedQuickAccess(item?.operation);
-										}}
-									>
-										<Icon icon={item?.bottomIcon} size="medium" color="gray6" />
-									</OperationContainer>
-								</ListRow>
-							</ActionContainer>
-						</Container>
-					</>
+									</Container>
+								</Container>
+								<Container crossAlignment="flex-end" padding={{ right: 'large' }}>
+									<Icon color="gray6" icon={item?.operationIcon} size="large" />
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ left: 'large', right: 'large' }}>
+									<Divider />
+								</Container>
+							</ListRow>
+							<ListRow>
+								<OperationContainer
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'large' }}
+									onClick={(): void => {
+										handleClickedQuickAccess(item?.operation);
+									}}
+								>
+									<Text color="gray6" overflow="break-word" weight="light" size="medium">
+										{item?.bottomText}
+									</Text>
+								</OperationContainer>
+								<OperationContainer
+									mainAlignment="flex-end"
+									crossAlignment="flex-end"
+									padding={{ all: 'large' }}
+									onClick={(): void => {
+										handleClickedQuickAccess(item?.operation);
+									}}
+								>
+									<Icon icon={item?.bottomIcon} size="medium" color="gray6" />
+								</OperationContainer>
+							</ListRow>
+						</ActionContainer>
+					</Container>
 				))}
 			</Container>
 		</Container>
