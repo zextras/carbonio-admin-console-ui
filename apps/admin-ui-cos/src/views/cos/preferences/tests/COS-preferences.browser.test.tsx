@@ -4,11 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  grantUserCosRights,
-  resetMockWorker,
-  setupBrowserTest,
-} from 'admin-ui-test-utils';
+import { grantUserCosRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 

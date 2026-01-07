@@ -30,7 +30,7 @@ export const setupBrowserTest = (
   if (!options?.queryClient) {
     const globalCache = queryClient.getQueryCache().getAll();
     globalCache.forEach((query) => {
-      if (query.queryKey[0] === 'account') {
+      if (query.queryKey[0] === 'account' || query.queryKey[0] === 'effective-rights') {
         effectiveQueryClient.setQueryData(query.queryKey, query.state.data);
       }
     });
@@ -43,9 +43,12 @@ export const setupBrowserTest = (
   });
 };
 
-function setupAccount() {
+export async function setupAccount(queryClientParam?: QueryClient): Promise<void> {
+  // Use provided queryClient or fall back to global one
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
   // Populate React Query cache with test data
-  queryClient.setQueryData(['account', 'info'], {
+  effectiveQueryClient.setQueryData(['account', 'info'], {
     id: 'test-user-id',
     name: 'test@example.com',
     displayName: '',
@@ -56,17 +59,19 @@ function setupAccount() {
     rights: { targets: [] },
   });
 
-  queryClient.setQueryData(['account', 'settings'], {
+  effectiveQueryClient.setQueryData(['account', 'settings'], {
     prefs: {},
     attrs: {},
     props: [],
   });
 
-  queryClient.setQueryData(['account', 'version'], '1.0.0');
+  effectiveQueryClient.setQueryData(['account', 'version'], '1.0.0');
 }
 
-export async function grantUserConfigRights() {
-  setupAccount();
+export async function grantUserConfigRights(queryClientParam?: QueryClient): Promise<void> {
+  await setupAccount(queryClientParam);
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
   const mockConfigRightsData = [
     {
       type: 'config',
@@ -78,11 +83,13 @@ export async function grantUserConfigRights() {
       ],
     },
   ];
-  queryClient.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
+  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
 }
 
-export async function grantUserCosRights() {
-  setupAccount();
+export async function grantUserCosRights(queryClientParam?: QueryClient): Promise<void> {
+  await setupAccount(queryClientParam);
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
   const mockCosRightsData = [
     {
       type: 'cos',
@@ -101,7 +108,7 @@ export async function grantUserCosRights() {
       ],
     },
   ];
-  queryClient.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
+  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
 }
 type GetGetInfoResponseMockOptions = {
   prefs?: typeof getInfoResponseBaseMock.prefs._attrs;
