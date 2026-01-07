@@ -27,6 +27,7 @@
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar:generate": "node scripts/generate-sonar-config.js",
+    "sonar": "npx sonarqube-scanner",
     "reset": "node scripts/reset.js"
   },
   "dependencies": {

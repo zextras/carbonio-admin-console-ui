@@ -45,18 +45,18 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	);
 	const bannerInvalidDescription = t(
 		'banner.maintenance-invalid-description',
-		'Your license is invalid.'
+		'License is invalid.'
 	);
 	const bannerExpiringLabel = t(
 		'banner.maintenance-expiring-label',
-		'Your maintenance has expired. Renew to receive updates. Your license supports versions up to {{maxCarbonioVersion}}. Your current version is {{carbonioVersion}}. Do not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption. – Last subscription update {{updateTime}}',
+		'Your maintenance expires on {{maintenanceEndDate}}. Renew to continue receiving updates. Your license supports upgrades up to Carbonio {{maxCarbonioVersion}}. – Last subscription update {{updateTime}}',
 		{ maxCarbonioVersion: maxCarbonioVersion,
 			carbonioVersion: carbonioVersion,
 			updateTime: updateTimeFormatted }
 	);
 	const bannerExpiredLabel = t(
 		'banner.maintenance-expired-label',
-		'"Your maintenance expires on {{maintenanceEndDate}}. Renew to continue receiving updates. Your license supports upgrades up to Carbonio {{maxCarbonioVersion}}. – Last subscription update {{updateTime}}',
+		'Your maintenance has expired. Renew to receive updates. Your license supports versions up to {{maxCarbonioVersion}}. Your current version is {{carbonioVersion}}. Do not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption. – Last subscription update {{updateTime}}',
 		{ maintenanceEndDate: maintenanceEndDateFormatted,
 			carbonioVersion: carbonioVersion,
 			updateTime: updateTimeFormatted }

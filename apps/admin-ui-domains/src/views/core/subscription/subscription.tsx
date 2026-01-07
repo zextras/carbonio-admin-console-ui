@@ -498,7 +498,8 @@ export const Subscription = (): React.JSX.Element => {
 								/>
 							</Row>
 						</Row>
-						{services.response.maxCarbonioVersion && (
+						{services.response.subType === 'PERPETUAL' &&
+							services.response.maxCarbonioVersion && (
 							<Row
 								width="49.5%"
 								mainAlignment="flex-start"
