@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.5",
+    "@tinymce/tinymce-react": "^4.3.2",
     "@types/react-csv": "^1.1.10",
     "@vitest/browser-preview": "^4.0.14",
     "@zextras/admin-ui-bootstrap": "workspace:*",
     "@zextras/carbonio-design-system": "^8.1.0",
+    "date-fns": "^4.1.0",
     "history": "^5.3.0",
     "html-entities": "^2.6.0",
     "i18next": "^22.5.1",
@@ -31,15 +33,13 @@
     "lodash-es": "^4.17.21",
     "pnpm": "^10.15.1",
     "posthog-js": "^1.261.0",
-    "tinymce": "^6.8.4",
-    "@tinymce/tinymce-react": "^4.3.2",
-    "date-fns": "^4.1.0",
     "qrcode.react": "^3.1.0",
     "react": "^19.1.0",
     "react-csv": "^2.2.2",
     "react-i18next": "^12.3.1",
     "react-router-dom": "^5.3.4",
     "styled-components": "^5.3.11",
+    "tinymce": "^6.8.4",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
@@ -67,6 +67,7 @@
     "msw": "^2.12.2",
     "playwright": "^1.55.0",
     "react-dom": "^19.1.0",
+    "sonarqube-scanner": "^4.3.3",
     "typescript": "^5.7.2",
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"
