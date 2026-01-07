@@ -24,7 +24,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useMemo,useState } from 'react';
+import React, { useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
@@ -107,7 +107,7 @@ export const Subscription = (): React.JSX.Element => {
 
 	const { data: version } = useVersion();
 	const { data: licenseData } = useLicenseInfo();
-	const [licenseKey, setLicenseKey] = useState(licenseData?.response?.authenticationToken ?? '');
+	const [licenseKey, setLicenseKey] = useState('');
 	const { data: rights } = useCurrentUserRights();
 	const { t } = useTranslation();
 
@@ -123,6 +123,12 @@ export const Subscription = (): React.JSX.Element => {
 		if (!licenseData) return null;
 		return licenseData;
 	}, [licenseData]);
+
+	useEffect(() => {
+		if (licenseData?.response?.authenticationToken) {
+			setLicenseKey(licenseData.response.authenticationToken);
+		}
+	}, [licenseData?.response?.authenticationToken]);
 
 	const modules: Array<AllModuleConfig> = useMemo(() => {
 		if (!licenseData?.response?.features) return [];
@@ -172,6 +178,7 @@ export const Subscription = (): React.JSX.Element => {
 		removeLicenseMutation.mutate(undefined, {
 			onSuccess: () => {
 				setOpen(false);
+				setLicenseKey('');
 			}
 		});
 	};

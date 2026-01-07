@@ -1,3 +1,9 @@
+## [0.12.0-devel.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.6...v0.12.0-devel.7) (2025-12-31)
+
+### Bug Fixes
+
+* license token field shows blank on initial page load ([#1020](https://github.com/zextras/carbonio-admin-console-ui/issues/1020)) ([dd25e08](https://github.com/zextras/carbonio-admin-console-ui/commit/dd25e082fe6109e9f4acee622e8771f0e460a900))
+
 ## [0.12.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.5...v0.12.0-devel.6) (2025-12-19)
 
 ### Bug Fixes

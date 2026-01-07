@@ -1,36 +1,70 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "package/**"],
+      "env": ["NODE_ENV"],
+      "cache": true,
+      "passThroughEnv": ["NODE_ENV"]
     },
     "build:dev": {
       "dependsOn": ["^build:dev"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "cache": false,
+      "passThroughEnv": ["NODE_ENV"]
+    },
+    "build:unified": {
+      "dependsOn": [],
+      "inputs": ["apps/**", "scripts/**", "package.json"],
+      "outputs": ["package/**"],
+      "cache": true,
+      "passThroughEnv": ["NODE_ENV"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [],
+      "cache": true
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": ["^lint:fix"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [],
+      "cache": false
     },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "dependsOn": ["^type-check"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": [],
+      "cache": true
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["^test"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "passThroughEnv": ["CI"]
     },
     "test:ci": {
-      "dependsOn": ["^test:ci"]
+      "dependsOn": ["^test:ci"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "passThroughEnv": ["CI"]
     },
-
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false,
+      "outputs": ["dist/**"]
     }
-  }
+  },
+  "globalEnv": ["NODE_ENV", "CI", "SKIP_ENV_VALIDATION"]
 }
