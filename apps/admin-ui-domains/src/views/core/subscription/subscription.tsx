@@ -498,6 +498,16 @@ export const Subscription = (): React.JSX.Element => {
 								/>
 							</Row>
 						</Row>
+						{services.response.maxCarbonioVersion && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input label={t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version')} value={services.response.maxCarbonioVersion} />
+							</Row>
+						)}
 					</Container>
 				)}
 				<Row
