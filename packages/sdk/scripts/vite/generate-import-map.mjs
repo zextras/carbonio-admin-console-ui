@@ -89,26 +89,33 @@ export function generateImportMap(commitHash) {
 
       // Try unified package directory first (for unified builds)
       const unifiedDistDir = join(packageDir, bootstrapCarbonio.name, commitHash);
+      let found = false;
+
       try {
-        const shellFiles = readdirSync(unifiedDistDir).filter(
-          (f) => f.startsWith('shell.') && f.endsWith('.mjs'),
+        const bootstrapFiles = readdirSync(unifiedDistDir).filter(
+          (f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'),
         );
-        // Prefer hashed filenames (shell.[hash].mjs) over unhashed (shell.mjs)
-        const hashedFiles = shellFiles.filter((f) => f !== 'shell.mjs');
-        const files = hashedFiles.length > 0 ? hashedFiles : shellFiles;
+        // Prefer hashed filenames (bootstrap-exports.[hash].mjs) over unhashed (bootstrap-exports.mjs)
+        const hashedFiles = bootstrapFiles.filter((f) => f !== 'bootstrap-exports.mjs');
+        const files = hashedFiles.length > 0 ? hashedFiles : bootstrapFiles;
         if (files.length > 0) {
           shellFile = `/static/iris/${bootstrapCarbonio.name}/${commitHash}/${files[0]}`;
+          found = true;
         }
       } catch {
-        // Unified package directory doesn't exist, try individual app dist
+        // Unified package directory doesn't exist, continue to individual app dist
+      }
+
+      // If not found in unified directory, try individual app dist
+      if (!found) {
         const appDistDir = join(appsDir, 'admin-ui-bootstrap', 'dist/source', commitHash);
         try {
-          const shellFiles = readdirSync(appDistDir).filter(
-            (f) => f.startsWith('shell.') && f.endsWith('.mjs'),
+          const bootstrapFiles = readdirSync(appDistDir).filter(
+            (f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'),
           );
-          // Prefer hashed filenames (shell.[hash].mjs) over unhashed (shell.mjs)
-          const hashedFiles = shellFiles.filter((f) => f !== 'shell.mjs');
-          const files = hashedFiles.length > 0 ? hashedFiles : shellFiles;
+          // Prefer hashed filenames (bootstrap-exports.[hash].mjs) over unhashed (bootstrap-exports.mjs)
+          const hashedFiles = bootstrapFiles.filter((f) => f !== 'bootstrap-exports.mjs');
+          const files = hashedFiles.length > 0 ? hashedFiles : bootstrapFiles;
           if (files.length > 0) {
             shellFile = `/static/iris/${bootstrapCarbonio.name}/${commitHash}/${files[0]}`;
           }

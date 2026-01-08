@@ -29,10 +29,42 @@ if (fs.existsSync(distPath)) {
   console.log('Cleaned dist directory');
 }
 
-// Build with Vite
+// Build runtime shell with Vite
+console.log('\nBuilding runtime shell...');
 await build({
   configFile: path.resolve(cwd, 'vite.config.ts'),
   mode,
+});
+
+// Build library exports separately
+console.log('\nBuilding library exports...');
+await build({
+  configFile: path.resolve(cwd, 'vite.config.ts'),
+  mode,
+  build: {
+    outDir: path.resolve(cwd, 'dist', 'source', commitHash),
+    emptyOutDir: false, // Don't delete the runtime shell
+    lib: {
+      entry: path.resolve(cwd, 'exports.ts'),
+      name: 'CarbonioAdminUIBootstrap',
+      fileName: (format) => `bootstrap-exports.${format === 'es' ? 'mjs' : 'cjs'}`,
+      formats: ['es'],
+    },
+    sourcemap: isDev,
+    rollupOptions: {
+      external: [
+        'react',
+        'react-dom',
+        'lodash-es',
+        'styled-components',
+        'i18next',
+        '@zextras/carbonio-design-system',
+      ],
+      output: {
+        entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
+      },
+    },
+  },
 });
 
 // Build shared dependencies (for offline support) - must be after Vite build
@@ -84,8 +116,23 @@ console.log('Generated commit file');
 // Generate component.json
 const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
 
+// Determine the library exports file name
+let exportsFileName;
+try {
+  const distFiles = fs.readdirSync(distDir);
+  const exportsFiles = distFiles.filter((f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'));
+  if (exportsFiles.length > 0) {
+    // Prefer hashed filenames
+    const hashedFiles = exportsFiles.filter((f) => f !== 'bootstrap-exports.mjs');
+    exportsFileName = hashedFiles.length > 0 ? hashedFiles[0] : exportsFiles[0];
+  }
+} catch {
+  // Fallback to default naming
+  exportsFileName = isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.${commitHash.substring(0, 8)}.mjs`;
+}
+
 // Use different bundle names for dev vs production (ESM uses .mjs)
-const bundleName = isDev ? 'shell.mjs' : `shell.${commitHash.substring(0, 8)}.mjs`;
+const bundleName = exportsFileName;
 
 const componentJson = {
   name: 'carbonio-admin-ui',

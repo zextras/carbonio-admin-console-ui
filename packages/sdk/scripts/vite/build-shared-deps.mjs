@@ -118,9 +118,22 @@ export async function buildSharedDeps(commitHash) {
 				if (defaultVar) {
 					// Append manual named exports before the default export
 					let namedExports = '\n// Named exports for compatibility\n';
-					reactExports.forEach(exp => {
-						namedExports += `export const ${exp} = ${defaultVar}.${exp};\n`;
-					});
+
+					if (depConfig.name === 'react') {
+						reactExports.forEach(exp => {
+							namedExports += `export const ${exp} = ${defaultVar}.${exp};\n`;
+						});
+					} else {
+						// react-dom exports - need all the methods from the full react-dom package
+						const reactDOMExports = [
+							'unstable_batchedUpdates', 'version', 'createPortal', 'flushSync',
+							'findDOMNode', 'render', 'hydrate', 'unstable_renderSubtreeIntoContainer',
+							'unstable_flushDiscreteUpdates', 'unstable_runWithPriority'
+						];
+						reactDOMExports.forEach(exp => {
+							namedExports += `export const ${exp} = ${defaultVar}.${exp};\n`;
+						});
+					}
 
 					// Replace the default export line with named exports + default export
 					const modifiedCode = esmCode.replace(
