@@ -142,7 +142,7 @@ pipeline {
                         script {
                             sh '''
                                 npm install -g sonarqube-scanner
-                                npx sonarqube-scanner \
+                                npx sonar-scanner \
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
