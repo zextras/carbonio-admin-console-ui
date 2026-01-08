@@ -27,7 +27,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	const [t] = useTranslation();
 	const maintenanceEndDateFormatted = format(maintenanceEndDate, 'dd MMM yyyy');
 	const carbonioVersion = moduleLicenseInfo?.carbonioVersion;
-	const maxCarbonioVersion = moduleLicenseInfo?.maxCarbonioVersion;
+	const maxCarbonioVersion = moduleLicenseInfo?.maxCarbonioVersion ?? '';
 	const updateTime = moduleLicenseInfo?.updateTime ?? 0;
 	const updateTimeFormatted = format(updateTime ?? 0, 'dd MMM yyyy HH:mm');
 
@@ -48,14 +48,15 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	const bannerExpiringLabel = t(
 		'banner.maintenance-expiring-label',
 		'Your maintenance expires on {{maintenanceEndDate}}. Renew to continue receiving updates. Your license supports upgrades up to Carbonio {{maxCarbonioVersion}}. – Last subscription update {{updateTime}}',
-		{ maxCarbonioVersion: maxCarbonioVersion,
-			carbonioVersion: carbonioVersion,
+		{ maintenanceEndDate: maintenanceEndDateFormatted,
+			maxCarbonioVersion: maxCarbonioVersion,
 			updateTime: updateTimeFormatted }
 	);
 	const bannerExpiredLabel = t(
 		'banner.maintenance-expired-label',
 		'Your maintenance has expired. Renew to receive updates. Your license supports versions up to {{maxCarbonioVersion}}. Your current version is {{carbonioVersion}}. Do not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption. – Last subscription update {{updateTime}}',
 		{ maintenanceEndDate: maintenanceEndDateFormatted,
+			maxCarbonioVersion: maxCarbonioVersion,
 			carbonioVersion: carbonioVersion,
 			updateTime: updateTimeFormatted }
 	);
