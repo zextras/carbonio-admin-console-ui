@@ -141,8 +141,7 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh '''
-                                npm install -g sonarqube-scanner
-                                npx sonar-scanner \
+                                pnpm sonar \
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
