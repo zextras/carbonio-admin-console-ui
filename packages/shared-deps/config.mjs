@@ -40,6 +40,7 @@ export function getSharedDependencyPaths(commitHash) {
 		{ name: 'react', file: 'index.mjs' },
 		{ name: 'react-dom', file: 'client.mjs' },
 		{ name: 'lodash-es', file: 'lodash.mjs' },
+		{ name: 'lodash', file: 'lodash.mjs' },  // Alias for carbonio-design-system compatibility
 		{ name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
 		{ name: 'i18next', file: 'i18next.mjs' },
 		{ name: '@zextras/carbonio-design-system', file: 'carbonio-design-system.mjs' },
@@ -48,6 +49,9 @@ export function getSharedDependencyPaths(commitHash) {
 	for (const depConfig of vendorableDeps) {
 		const version = extractVersion(deps[depConfig.name]);
 		if (version) {
+			paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
+		} else if (depConfig.name === 'lodash') {
+			// Special case: 'lodash' is an alias to 'lodash-es' for carbonio-design-system compatibility
 			paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
 		}
 	}
