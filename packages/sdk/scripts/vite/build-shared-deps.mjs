@@ -92,7 +92,7 @@ export async function buildSharedDeps(commitHash) {
 					format: 'esm',
 					outfile: esmPath,
 					target: 'esnext',
-					minify: true,
+					minify: false, // Don't minify - we need to access properties for named exports
 					platform: 'browser',
 				});
 
@@ -118,10 +118,12 @@ export async function buildSharedDeps(commitHash) {
 				if (defaultVar) {
 					// Append manual named exports before the default export
 					let namedExports = '\n// Named exports for compatibility\n';
+					// Call the function once and store result for all named exports
+					namedExports += `const _exports = ${defaultVar}();\n`;
 
 					if (depConfig.name === 'react') {
 						reactExports.forEach(exp => {
-							namedExports += `export const ${exp} = ${defaultVar}.${exp};\n`;
+							namedExports += `export const ${exp} = _exports.${exp};\n`;
 						});
 					} else {
 						// react-dom exports - need all the methods from the full react-dom package
@@ -131,7 +133,7 @@ export async function buildSharedDeps(commitHash) {
 							'unstable_flushDiscreteUpdates', 'unstable_runWithPriority'
 						];
 						reactDOMExports.forEach(exp => {
-							namedExports += `export const ${exp} = ${defaultVar}.${exp};\n`;
+							namedExports += `export const ${exp} = _exports.${exp};\n`;
 						});
 					}
 
