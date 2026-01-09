@@ -119,6 +119,25 @@ describe('Subscription - License Banner', () => {
 			.toBeVisible();
 	});
 
+	it('should display license banner when maintenance status is invalid and subType is PERPETUAL', async () => {
+		const invalidLicenseData = {
+			...mockLicenseData,
+			response: {
+				...mockLicenseData.response,
+				maintenanceStatus: 'invalid' as const
+			}
+		};
+
+		setupSubscriptionTest(<Subscription />, {
+			licenseData: invalidLicenseData,
+			versionData: mockVersionData
+		});
+
+		await expect
+			.element(page.getByText(/invalid/i))
+			.toBeVisible();
+	});
+
 	it('should not display license banner when maintenance status is active', async () => {
 		const activeLicenseData = {
 			...mockLicenseData,
