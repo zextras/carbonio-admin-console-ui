@@ -26,7 +26,6 @@ import {
 	getRights,
 	useCurrentUserRights,
 	useHasAllRights,
-	useHasRight,
 	useRightsByType} from './src/react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
 import {
@@ -83,7 +82,6 @@ export {
 	useGlobalConfigValue,
 	useGlobalSettings,
 	useHasAllRights,
-	useHasRight,
 	useIsAdvanced,
 	useLastLoginTimestamp,
 	useLicenseInfo,

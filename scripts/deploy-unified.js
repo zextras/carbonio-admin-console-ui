@@ -94,7 +94,7 @@ const main = () => {
   console.log("🛠️ Installing on remote...");
   const remotePath = `${CONFIG.remoteDest}/${debFile}`;
   run(
-    `ssh ${CONFIG.remoteUser}@${CONFIG.remoteHost} "apt install ${remotePath} --reinstall -y"`,
+    `ssh ${CONFIG.remoteUser}@${CONFIG.remoteHost} "apt install ${remotePath} --reinstall -y --allow-downgrades"`,
   );
 
   console.log("\n✨ Deployment Complete!");
