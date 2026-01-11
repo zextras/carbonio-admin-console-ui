@@ -97,4 +97,5 @@ const RadioGroupComponent = React.forwardRef(function RadioGroupFn<
 
 const RadioGroup = RadioGroupComponent as RadioGroupType;
 
-export { RadioGroupComponent, RadioGroup, RadioGroupProps };
+export { RadioGroupComponent, RadioGroup };
+export type { RadioGroupProps };

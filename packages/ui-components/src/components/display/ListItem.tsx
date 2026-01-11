@@ -90,4 +90,5 @@ function ListItemFn(
 
 const ListItem = React.forwardRef(ListItemFn);
 
-export { ListItem, ListItemProps, ListItemWrapperProps };
+export type { ListItemProps, ListItemWrapperProps };
+export { ListItem };

@@ -11,6 +11,7 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { useKeyboard, getKeyboardPreset } from '../../hooks/useKeyboard';
 import { getPadding, isThemeSize, useTheme } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
 import { Button, ButtonProps } from '../basic/button/Button';
 
 const StyledIconButton = styled(Button)<{
@@ -37,9 +38,9 @@ const StyledIconButton = styled(Button)<{
 
 type IconButtonProps = ButtonProps & {
 	/** Color of the icon */
-	iconColor?: string | keyof DefaultTheme['palette'];
+	iconColor?: AnyColor;
 	/** Color of the button */
-	backgroundColor?: string | keyof DefaultTheme['palette'];
+	backgroundColor?: AnyColor;
 	/** whether to disable the IconButton or not */
 	disabled?: boolean;
 	/** button size */
@@ -87,10 +88,14 @@ const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(function Ic
 		() =>
 			customSize
 				? {
-						iconSize: isThemeSize(customSize.iconSize, theme.sizes.icon)
-							? theme.sizes.icon[customSize.iconSize]
-							: customSize.iconSize,
-						paddingSize: getPadding(customSize.paddingSize.toString(), theme)
+						iconSize: isThemeSize(String(customSize.iconSize), theme.sizes.icon)
+							? String(
+									theme.sizes.icon[
+										customSize.iconSize as keyof typeof theme.sizes.icon
+									]
+							  )
+							: String(customSize.iconSize),
+						paddingSize: getPadding(String(customSize.paddingSize), theme)
 					}
 				: {},
 		[customSize, theme]
@@ -121,4 +126,5 @@ const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(function Ic
 	);
 });
 
-export { IconButton, IconButtonProps };
+export type { IconButtonProps };
+export { IconButton };

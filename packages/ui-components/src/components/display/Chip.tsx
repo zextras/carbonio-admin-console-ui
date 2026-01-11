@@ -9,6 +9,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
+import { AnyColor } from '../../types/utils';
 import { pseudoClasses, useTheme } from '../../theme/theme-utils';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Icon, IconProps } from '../basic/icon/Icon';
@@ -20,7 +21,7 @@ import { Tooltip } from './Tooltip';
 
 type ChipAction = {
 	/** Chip action icon color */
-	color?: keyof DefaultTheme['palette'];
+	color?: AnyColor;
 	/** Chip action disabled status */
 	disabled?: boolean;
 	/** Chip action icon */
@@ -37,7 +38,7 @@ type ChipAction = {
 			/** Chip action click callback (button type only). NB: onClick event IS propagated. It's up to the dev to eventually stop the propagation */
 			onClick: IconButtonProps['onClick'];
 			/** Chip action background (button type only) */
-			background?: keyof DefaultTheme['palette'];
+			background?: AnyColor;
 	  }
 	| {
 			/** Chip action type */
@@ -61,13 +62,13 @@ interface ChipProps extends Omit<RowProps, 'children'> {
 	/** Chip avatar picture */
 	avatarPicture?: AvatarPropTypes['picture'];
 	/** Chip background color */
-	background?: keyof DefaultTheme['palette'];
+	background?: AnyColor;
 	/** Chip shape  */
 	shape?: 'regular' | 'round';
 	/** If an onClose callback is provided, this prop defines if the close action should be active or disabled */
 	closable?: boolean;
 	/** Chip text color */
-	color?: keyof DefaultTheme['palette'];
+	color?: AnyColor;
 	/** Chip disabled status. If a string is provided it is shown in a tooltip */
 	disabled?: boolean | string;
 	/** Chip error. If a string is provided it is shown in a tooltip */
@@ -443,4 +444,5 @@ const Chip = React.forwardRef<HTMLDivElement, ChipProps>(function ChipFn(
 	);
 });
 
-export { Chip, ChipAction, ChipProps };
+export type { ChipAction, ChipProps };
+export { Chip };

@@ -56,4 +56,5 @@ const Padding = React.forwardRef<HTMLDivElement, PaddingProps>(function PaddingF
 	);
 });
 
-export { Padding, PaddingProps };
+export { Padding };
+export type { PaddingProps };

@@ -205,4 +205,5 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarPropTypes>(function Avatar
 	);
 });
 
-export { Avatar,AvatarPropTypes };
+export type { AvatarPropTypes };
+export { Avatar };

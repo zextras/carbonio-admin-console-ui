@@ -448,4 +448,5 @@ const Button = React.forwardRef<HTMLDivElement, ButtonProps>(function ButtonFn(
 	);
 });
 
-export { Button, ButtonProps, ButtonSecondaryAction };
+export type { ButtonProps, ButtonSecondaryAction };
+export { Button };

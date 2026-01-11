@@ -23,7 +23,7 @@ import DatePicker, {
 } from 'react-datepicker';
 import styled from 'styled-components';
 
-import { LiteralUnion, PaletteColor, SingleItemArray } from '../../types/utils';
+import { AnyColor, LiteralUnion, PaletteColor, SingleItemArray } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
 import { ChipProps } from '../display/Chip';
 import { Container, ContainerProps } from '../layout/Container';
@@ -909,7 +909,7 @@ const CustomIconButton = styled(IconButton)`
 
 interface DateTimePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'placeholderText'> {
 	/** Input's background color */
-	backgroundColor?: PaletteColor;
+	backgroundColor?: AnyColor;
 	/** Close icon to clear the Input */
 	isClearable?: boolean;
 	/** Label for input */
@@ -1302,4 +1302,5 @@ const DateTimePicker = React.forwardRef<ReactDatePicker, DateTimePickerProps>(
 	}
 );
 
-export { DateTimePicker, DateTimePickerProps, getDefaultLocale, registerLocale,setDefaultLocale };
+export type { DateTimePickerProps };
+export { DateTimePicker, getDefaultLocale, registerLocale, setDefaultLocale };

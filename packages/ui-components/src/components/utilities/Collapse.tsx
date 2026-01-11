@@ -131,4 +131,5 @@ const Collapser = React.forwardRef<HTMLDivElement, CollapserProps>(function Coll
 	);
 });
 
-export { Collapse, CollapseProps, Collapser, CollapserProps };
+export { Collapse, Collapser };
+export type { CollapseProps, CollapserProps };

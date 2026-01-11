@@ -161,4 +161,5 @@ const Drop = React.forwardRef<HTMLDivElement, DropProps>(function DropFn(
 	);
 });
 
-export { Drop, DropProps, DragObj };
+export { Drop };
+export type { DragObj, DropProps };

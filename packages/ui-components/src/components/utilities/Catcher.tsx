@@ -29,7 +29,7 @@ class Catcher extends React.Component<CatcherProps, CatcherState> {
 		};
 	}
 
-	componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+	override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
 		// You can also log the error to an error reporting service
 		// eslint-disable-next-line no-console
 		const { onError = console.error } = this.props;
@@ -42,7 +42,7 @@ class Catcher extends React.Component<CatcherProps, CatcherState> {
 		});
 	}
 
-	render(): React.ReactNode {
+	override render(): React.ReactNode {
 		const { children } = this.props;
 		const { hasError, error } = this.state;
 		if (hasError) {
@@ -60,4 +60,5 @@ class Catcher extends React.Component<CatcherProps, CatcherState> {
 	}
 }
 
-export { Catcher, CatcherProps };
+export { Catcher };
+export type { CatcherProps };

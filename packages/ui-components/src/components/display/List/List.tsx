@@ -10,6 +10,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver/useIntersectionObserver';
 import { getKeyboardPreset, KeyboardPresetObj, useKeyboard } from '../../../hooks/useKeyboard';
+import { AnyColor } from '../../../types/utils';
 import { Container, ContainerProps } from '../../layout/Container';
 import { ListItemProps } from '../ListItem';
 
@@ -41,11 +42,11 @@ interface ListProps extends ContainerProps {
 	/** callback to be executed when the bottom element is rendered */
 	onListBottom?: () => void;
 	/** List background color */
-	background?: keyof DefaultTheme['palette'];
+	background?: AnyColor;
 	/** Selected list item background color */
-	selectedBackground?: keyof DefaultTheme['palette'];
+	selectedBackground?: AnyColor;
 	/** Active List item background color */
-	activeBackground?: keyof DefaultTheme['palette'];
+	activeBackground?: AnyColor;
 	/** Disable keyboard shortcuts */
 	keyboardShortcutsIsDisabled?: boolean;
 	/** List items */

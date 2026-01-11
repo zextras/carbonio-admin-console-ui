@@ -39,4 +39,5 @@ const ThemeProvider = ({
 	);
 };
 
-export { ThemeContext, ThemeProvider, ThemeProviderProps };
+export type { ThemeProviderProps };
+export { ThemeContext, ThemeProvider };

@@ -37,7 +37,7 @@ import { InputLabel } from '../commons/InputLabel';
 import { IconButton } from '../IconButton';
 
 const ContainerEl = styled(InputContainer)<{
-	background: PaletteColor;
+	background?: AnyColor;
 	$inputDisabled: boolean;
 	$dropdownDisabled: boolean;
 }>`
@@ -69,7 +69,7 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
+const InputEl = styled.input<{ $color: AnyColor }>`
 	border: none !important;
 	height: auto !important;
 	width: 1em;
@@ -78,10 +78,10 @@ const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
 	font-size: ${({ theme }): string => theme.sizes.font.medium};
 	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
 	font-family: ${({ theme }): string => theme.fonts.default};
-	color: ${({ theme, $color }): string => getColor($color, theme)};
+	color: ${({ theme, $color }): string => getColor(String($color), theme)};
 
 	&:disabled {
-		color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
+		color: ${({ theme, $color }): string => getColor(`${String($color)}.disabled`, theme)};
 		pointer-events: none;
 	}
 
@@ -289,13 +289,13 @@ interface ChipInputProps<TValue = unknown> extends Omit<
 	/** Set the current input text as a Chip when it loses focus */
 	confirmChipOnBlur?: boolean;
 	/** ChipInput backgroundColor */
-	background?: keyof DefaultTheme['palette'];
+	background?: AnyColor;
 	/** Chip generation triggers */
 	separators?: KeyboardPresetKey[];
 	/** Show the error  */
 	hasError?: boolean;
 	/** Background color for the error status */
-	errorBackgroundColor?: keyof DefaultTheme['palette'];
+	errorBackgroundColor?: AnyColor;
 	/** Set the limit for chip inputs <br />
 	 * <strong>Warning</strong>: be aware that this check is performed only on internal changes on items.
 	 * If you change the value from outside, you are in charge of apply this check on the new value itself.
@@ -752,7 +752,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 					padding={{ horizontal: '0.75rem' }}
 					gap={'0.5rem'}
 					borderRadius="half"
-					background={background}
+					background={String(background)}
 					$disabled={(disabled || isInputDisabled) && isDropdownDisabled}
 					$inputDisabled={disabled || isInputDisabled}
 					$dropdownDisabled={isDropdownDisabled}
@@ -841,7 +841,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 				<CustomInputDescription
 					color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
 					disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
-					$backgroundColor={errorBackgroundColor}
+					$backgroundColor={String(errorBackgroundColor)}
 				>
 					{description}
 				</CustomInputDescription>

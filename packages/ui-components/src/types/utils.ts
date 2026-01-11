@@ -18,7 +18,7 @@ export type LiteralUnion<TSub, TBase> = TSub | (TBase & Record<never, never>);
 
 export type PaletteColor = keyof DefaultTheme['palette'];
 
-export type AnyColor = LiteralUnion<PaletteColor, string>;
+export type AnyColor = string;
 
 export type WithPrefix<TString extends string, TPrefix extends string> = `${TPrefix}${TString}`;
 

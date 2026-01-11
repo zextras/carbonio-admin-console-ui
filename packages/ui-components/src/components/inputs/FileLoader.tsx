@@ -58,4 +58,5 @@ const FileLoader = React.forwardRef<HTMLDivElement, FileLoaderProps>(function Fi
 	);
 });
 
-export { FileLoader, FileLoaderProps };
+export type { FileLoaderProps };
+export { FileLoader };

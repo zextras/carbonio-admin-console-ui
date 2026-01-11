@@ -199,4 +199,5 @@ const TabBar = React.forwardRef<HTMLDivElement, TabBarProps>(function TabBarFn(
 	);
 });
 
-export { TabBar, DefaultTabBarItem, TabBarProps, DefaultTabBarItemProps };
+export { TabBar, DefaultTabBarItem };
+export type { TabBarProps, DefaultTabBarItemProps };

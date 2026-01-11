@@ -251,7 +251,7 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 
 	const dividerColor = useMemo<DividerProps['color']>(
 		() =>
-			`${(hasError && 'error') || (hasFocus && 'primary') || borderColor}${
+			`${(hasError && 'error') || (hasFocus && 'primary') || String(borderColor)}${
 				disabled ? '.disabled' : ''
 			}`,
 		[borderColor, disabled, hasError, hasFocus]
@@ -270,7 +270,7 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 				height="fit"
 				crossAlignment={label ? 'flex-end' : 'center'}
 				borderRadius="half"
-				background={backgroundColor}
+				background={String(backgroundColor)}
 				onClick={forceFocusOnTextArea}
 				$disabled={disabled}
 				padding={{ horizontal: '0.75rem' }}
@@ -318,4 +318,5 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 	);
 });
 
-export { TextArea, TextAreaProps };
+export { TextArea };
+export type { TextAreaProps };

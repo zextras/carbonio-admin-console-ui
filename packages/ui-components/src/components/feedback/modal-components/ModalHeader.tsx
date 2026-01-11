@@ -60,4 +60,5 @@ const ModalHeader = ({
 	</Row>
 );
 
-export { ModalHeader, ModalHeaderProps };
+export type { ModalHeaderProps };
+export { ModalHeader };

@@ -19,6 +19,7 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getColor, pseudoClasses } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
 import { Text, TextProps } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 
@@ -137,7 +138,7 @@ interface RadioComponentProps<T extends RadioInputHTMLAttributes['value']> {
 	/** available sizes */
 	size?: keyof typeof RADIO_SIZE;
 	/** icon color */
-	iconColor?: keyof DefaultTheme['palette'] | CSSProperties['color'];
+	iconColor?: AnyColor;
 	/** Ref for the input element */
 	inputRef?: React.Ref<HTMLInputElement>;
 	/** Value of the radio input */
@@ -268,4 +269,5 @@ const RadioComponent = React.forwardRef(function RadioFn<
 
 const Radio = RadioComponent as RadioType;
 
-export { RadioComponent, Radio, RadioProps };
+export { RadioComponent, Radio };
+export type { RadioProps };

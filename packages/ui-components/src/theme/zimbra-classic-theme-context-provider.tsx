@@ -36,4 +36,5 @@ function ZimbraClassicThemeContextProvider({
 	);
 }
 
-export { ZimbraClassicThemeContextProvider, ZimbraClassicThemeContextProviderProps };
+export type { ZimbraClassicThemeContextProviderProps };
+export { ZimbraClassicThemeContextProvider };

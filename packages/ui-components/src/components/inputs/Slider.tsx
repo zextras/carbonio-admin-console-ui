@@ -21,7 +21,7 @@ const SLIDER_SIZES = {
 
 const SLIDER_COLORS: Record<
 	'THUMB' | 'TRACK' | 'TICK' | 'THUMB_SHADOW',
-	keyof DefaultTheme['palette']
+	string
 > = {
 	TRACK: 'gray5',
 	THUMB: 'primary',
@@ -34,10 +34,10 @@ const SliderInput = styled.input.attrs({
 })`
 	--thumb-radius: calc(${SLIDER_SIZES.THUMB_DIAMETER} / 2);
 	--track-half-height: calc(${SLIDER_SIZES.TRACK_HEIGHT} / 2);
-	--color-thumb-regular: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB].regular};
-	--color-thumb-disabled: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB].disabled};
-	--color-thumb-focus: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB].focus};
-	--color-thumb-hover: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB].hover};
+	--color-thumb-regular: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB as keyof typeof theme.palette].regular};
+	--color-thumb-disabled: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB as keyof typeof theme.palette].disabled};
+	--color-thumb-focus: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB as keyof typeof theme.palette].focus};
+	--color-thumb-hover: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB as keyof typeof theme.palette].hover};
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	width: 100%;
@@ -75,7 +75,7 @@ const SliderInput = styled.input.attrs({
 		width: ${SLIDER_SIZES.THUMB_DIAMETER};
 		background-color: var(--color-thumb-regular);
 		cursor: grab;
-		box-shadow: 0 0.0625rem 0.5rem ${rgba(SLIDER_COLORS.THUMB_SHADOW, 0.17)};
+		box-shadow: 0 0.0625rem 0.5rem ${props => rgba(props.theme.palette[SLIDER_COLORS.THUMB_SHADOW as keyof typeof props.theme.palette].regular, 0.17)};
 		transform: translateY(calc((var(--thumb-radius) - var(--track-half-height)) * -1));
 	}
 
@@ -87,7 +87,7 @@ const SliderInput = styled.input.attrs({
 		width: ${SLIDER_SIZES.THUMB_DIAMETER};
 		background-color: var(--color-thumb-regular);
 		cursor: grab;
-		box-shadow: 0 0.0625rem 0.5rem ${rgba(SLIDER_COLORS.THUMB_SHADOW, 0.17)};
+		box-shadow: 0 0.0625rem 0.5rem ${props => rgba(props.theme.palette[SLIDER_COLORS.THUMB_SHADOW as keyof typeof props.theme.palette].regular, 0.17)};
 		transform: translateY(var(--track-half-height));
 	}
 
@@ -153,11 +153,11 @@ const SliderDataList = styled.datalist`
 	justify-content: space-between;
 	font-size: 0;
 	background-clip: content-box;
-	background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TRACK].regular};
+	background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TRACK as keyof typeof theme.palette].regular};
 	height: ${SLIDER_SIZES.TRACK_HEIGHT};
 
 	&:disabled {
-		background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TRACK].disabled};
+		background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TRACK as keyof typeof theme.palette].disabled};
 	}
 
 	option {
@@ -170,16 +170,16 @@ const SliderDataList = styled.datalist`
 			)
 			calc(var(--thumb-radius) * -1);
 		cursor: pointer;
-		background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TICK].regular};
+		background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TICK as keyof typeof theme.palette].regular};
 		background-clip: content-box;
 
 		&:disabled {
 			cursor: default;
-			background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TICK].disabled};
+			background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.TICK as keyof typeof theme.palette].disabled};
 		}
 
 		&:not(:disabled):hover {
-			background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB].disabled};
+			background-color: ${({ theme }): string => theme.palette[SLIDER_COLORS.THUMB as keyof typeof theme.palette].disabled};
 		}
 	}
 `;
@@ -314,4 +314,5 @@ const Slider: Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sl
 	);
 });
 
-export { Slider, SliderProps };
+export { Slider };
+export type { SliderProps };

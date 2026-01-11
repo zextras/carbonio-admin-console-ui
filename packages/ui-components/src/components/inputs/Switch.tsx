@@ -10,6 +10,7 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
+import { AnyColor } from '../../types/utils';
 import { Icon } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
@@ -21,7 +22,7 @@ const CustomIcon = styled(Icon)``;
 
 const IconWrapper = styled.div<{
 	$disabled: boolean;
-	$iconColor: keyof DefaultTheme['palette'];
+	$iconColor: AnyColor;
 }>`
 	position: relative;
 	display: flex;
@@ -32,19 +33,19 @@ const IconWrapper = styled.div<{
 			&:focus {
 				outline: none;
 				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor].focus};
+					color: ${theme.palette[$iconColor as keyof typeof theme.palette].focus};
 				}
 			}
 			&:hover {
 				outline: none;
 				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor].hover};
+					color: ${theme.palette[$iconColor as keyof typeof theme.palette].hover};
 				}
 			}
 			&:active {
 				outline: none;
 				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor].active};
+					color: ${theme.palette[$iconColor as keyof typeof theme.palette].active};
 				}
 			}
 		`};
@@ -113,11 +114,11 @@ const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(function SwitchFn(
 			crossAlignment="center"
 			{...rest}
 		>
-			<IconWrapper $disabled={disabled} tabIndex={disabled ? -1 : 0} $iconColor={iconColor}>
+			<IconWrapper $disabled={disabled} tabIndex={disabled ? -1 : 0} $iconColor={String(iconColor)}>
 				<Icon
 					icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
 					size={size === 'medium' ? 'large' : 'medium'}
-					color={iconColor}
+					color={String(iconColor)}
 					disabled={disabled}
 				/>
 			</IconWrapper>
@@ -138,4 +139,5 @@ const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(function SwitchFn(
 	);
 });
 
-export { Switch, SwitchProps };
+export { Switch };
+export type { SwitchProps };

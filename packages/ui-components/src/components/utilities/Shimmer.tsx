@@ -918,4 +918,5 @@ Shimmer.Stepper.displayName = 'Shimmer.Stepper';
 Shimmer.TableListItem.displayName = 'Shimmer.TableListItem';
 Shimmer.Text.displayName = 'Shimmer.Text';
 
-export { Shimmer, SkeletonProps };
+export { Shimmer };
+export type { SkeletonProps };

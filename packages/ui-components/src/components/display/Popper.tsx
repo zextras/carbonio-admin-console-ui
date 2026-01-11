@@ -190,4 +190,5 @@ const Popper = React.forwardRef<HTMLDivElement, PopperProps>(function PopperFn(
 	);
 });
 
-export { Popper, PopperProps };
+export type { PopperProps };
+export { Popper };

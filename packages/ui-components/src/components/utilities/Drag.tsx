@@ -71,4 +71,5 @@ const Drag = React.forwardRef<HTMLDivElement, DragProps>(function DragFn(
 	);
 });
 
-export { Drag, DragProps };
+export { Drag };
+export type { DragProps };

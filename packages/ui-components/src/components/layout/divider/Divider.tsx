@@ -32,4 +32,5 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(function DividerF
 	return <DividerEl ref={ref} $color={color} data-testid={'divider'} {...rest} />;
 });
 
-export { Divider, DividerProps };
+export { Divider };
+export type { DividerProps };

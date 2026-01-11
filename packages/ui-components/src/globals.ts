@@ -18,4 +18,4 @@ declare global {
 	interface Window extends DSWindow {}
 }
 
-export { DSWindow };
+export type { DSWindow };

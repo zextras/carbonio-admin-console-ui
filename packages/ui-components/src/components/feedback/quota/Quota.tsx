@@ -39,4 +39,5 @@ const Quota = React.forwardRef<HTMLDivElement, QuotaProps>(function QuotaFn(
 	);
 });
 
-export { Quota, QuotaProps };
+export type { QuotaProps };
+export { Quota };

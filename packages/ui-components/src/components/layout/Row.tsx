@@ -70,4 +70,5 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>(function RowFn(
 	);
 });
 
-export { Row, RowProps };
+export { Row };
+export type { RowProps };

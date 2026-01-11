@@ -107,4 +107,5 @@ const MultiButton = React.forwardRef<HTMLButtonElement, MultiButtonProps>(functi
 	);
 });
 
-export { MultiButton, MultiButtonProps };
+export { MultiButton };
+export type { MultiButtonProps };

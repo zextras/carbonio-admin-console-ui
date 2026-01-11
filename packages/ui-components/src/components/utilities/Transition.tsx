@@ -265,4 +265,5 @@ const Transition: ForwardRefExoticComponent<
 
 Transition.types = Object.keys(STYLES);
 
-export { Transition, TransitionProps };
+export { Transition };
+export type { TransitionProps };

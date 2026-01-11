@@ -180,4 +180,5 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function TooltipF
 	);
 });
 
-export { Tooltip, TooltipProps };
+export type { TooltipProps };
+export { Tooltip };

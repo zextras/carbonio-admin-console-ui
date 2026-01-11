@@ -29,6 +29,7 @@ import {
 	useKeyboard
 } from '../../hooks/useKeyboard';
 import { pseudoClasses } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { Icon } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
@@ -40,13 +41,13 @@ import { Portal } from '../utilities/Portal';
 import { Tooltip } from './Tooltip';
 
 const ContainerEl = styled(Container)<{
-	$selectedBackgroundColor?: keyof DefaultTheme['palette'];
+	$selectedBackgroundColor?: AnyColor;
 	$disabled: boolean;
 }>`
 	user-select: none;
 	outline: none;
 	${({ theme, $disabled, $selectedBackgroundColor }): SimpleInterpolation =>
-		!$disabled && pseudoClasses(theme, $selectedBackgroundColor ?? 'gray5')};
+		!$disabled && pseudoClasses(theme, String($selectedBackgroundColor ?? 'gray5'))};
 `;
 
 interface ListItemContentProps {
@@ -99,7 +100,7 @@ function ListItemContent({
 interface PopperListItemProps extends ListItemContentProps, HTMLAttributes<HTMLDivElement> {
 	onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
 	customComponent?: React.ReactNode;
-	selectedBackgroundColor?: keyof DefaultTheme['palette'];
+	selectedBackgroundColor?: AnyColor;
 	keepOpen?: boolean;
 }
 
@@ -446,7 +447,7 @@ interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'contextMen
 	/** Whether to preventDefault on Dropdown click */
 	preventDefault?: boolean;
 	/** Customize selected background color */
-	selectedBackgroundColor?: keyof DefaultTheme['palette'];
+	selectedBackgroundColor?: AnyColor;
 	/** Item Icon size */
 	itemIconSize?: React.ComponentPropsWithRef<typeof Icon>['size'];
 	/** Item Text size */

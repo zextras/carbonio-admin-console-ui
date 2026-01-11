@@ -26,12 +26,12 @@ type ThemePaletteColorKey = keyof ThemePaletteObj;
 function isThemeVariant(
 	variant: string,
 	theme: DefaultTheme,
-	color: ThemePaletteColorKey = 'primary'
+	color: string = 'primary'
 ): variant is keyof ThemeColorObj {
-	return variant in theme.palette[color];
+	return variant in theme.palette[color as keyof typeof theme.palette];
 }
 
-export function isThemeColor(color: string, theme: DefaultTheme): color is ThemePaletteColorKey {
+export function isThemeColor(color: string, theme: DefaultTheme): color is string {
 	return color in theme.palette;
 }
 
@@ -117,7 +117,7 @@ function getColorValue(color: string, theme: DefaultTheme): string {
 	return (
 		(isThemeColor(iColor, theme) &&
 			isThemeVariant(iVariant, theme, iColor) &&
-			theme.palette[iColor][iVariant]) ||
+			theme.palette[iColor as keyof typeof theme.palette][iVariant]) ||
 		(isThemeVariant(iVariant, theme) && getVariantColor(iColor, iVariant)) ||
 		iColor
 	);
@@ -168,7 +168,7 @@ function getColor(
 	return getColorValue(color, theme);
 }
 
-type PaddingString = `${string | keyof DefaultTheme['sizes']['padding']}`;
+type PaddingString = `${string | string}`;
 type PaddingStringComposition =
 	| PaddingString // all
 	| `${PaddingString} | ${PaddingString}` // vertical horizontal
@@ -227,31 +227,31 @@ function getPadding(
 		return simpleParsePadding(padding, theme);
 	}
 	if ('value' in padding && padding.value) {
-		return getPadding(padding.value, theme);
+		return getPadding(String(padding.value), theme);
 	}
 	if ('all' in padding && padding.all) {
-		return getPadding(padding.all, theme);
+		return getPadding(String(padding.all), theme);
 	}
 	const p = ['0', '0', '0', '0'];
 	if ('vertical' in padding && padding.vertical) {
-		p[0] = padding.vertical;
-		p[2] = padding.vertical;
+		p[0] = String(padding.vertical);
+		p[2] = String(padding.vertical);
 	}
 	if ('horizontal' in padding && padding.horizontal) {
-		p[1] = padding.horizontal;
-		p[3] = padding.horizontal;
+		p[1] = String(padding.horizontal);
+		p[3] = String(padding.horizontal);
 	}
 	if ('top' in padding && padding.top) {
-		p[0] = padding.top;
+		p[0] = String(padding.top);
 	}
 	if ('right' in padding && padding.right) {
-		p[1] = padding.right;
+		p[1] = String(padding.right);
 	}
 	if ('bottom' in padding && padding.bottom) {
-		p[2] = padding.bottom;
+		p[2] = String(padding.bottom);
 	}
 	if ('left' in padding && padding.left) {
-		p[3] = padding.left;
+		p[3] = String(padding.left);
 	}
 	return getPadding(p.join(' '), theme);
 }
@@ -297,6 +297,7 @@ function pseudoClasses(
 
 const useTheme = (): DefaultTheme => useContext(ThemeContext);
 
+export type { PaddingObj };
 export {
 	generateColorSet,
 	calcHighlight,
@@ -305,6 +306,5 @@ export {
 	getPadding,
 	getPadding as parsePadding,
 	useTheme,
-	PaddingObj,
 	pseudoClasses
 };

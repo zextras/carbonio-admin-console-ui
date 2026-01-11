@@ -113,4 +113,5 @@ const FormRow = React.forwardRef<HTMLDivElement, FormElementProps>(function Form
 	);
 });
 
-export { FormElementProps,FormRow, FormSection, FormSubSection };
+export type { FormElementProps };
+export { FormRow, FormSection, FormSubSection };

@@ -87,4 +87,5 @@ interface BadgeProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
 	color?: AnyColor;
 }
 
-export { Badge, BadgeProps };
+export { Badge };
+export type { BadgeProps };

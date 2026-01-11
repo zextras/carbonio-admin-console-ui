@@ -6,6 +6,7 @@
 import React, { useMemo } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
+import { AnyColor } from '../../../types/utils';
 import { Button } from '../../basic/button/Button';
 import { Tooltip } from '../../display/Tooltip';
 import { Container } from '../../layout/Container';
@@ -58,7 +59,7 @@ interface ModalFooterProps {
 	/** Confirm tooltip label */
 	confirmTooltip?: string;
 	/** BackgroundColor for the Main action Button */
-	confirmColor?: string | keyof DefaultTheme['palette'];
+	confirmColor?: AnyColor;
 	/** Callback for secondary action */
 	onSecondaryAction?: (event: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
 	/** Label for the Secondary action Button */
@@ -183,4 +184,5 @@ const ModalFooter = ({
 	</Container>
 );
 
-export { ModalFooter, ModalFooterContent, ModalFooterContentProps, ModalFooterProps };
+export type { ModalFooterContentProps, ModalFooterProps };
+export { ModalFooter, ModalFooterContent };

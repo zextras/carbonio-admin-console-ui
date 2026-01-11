@@ -209,4 +209,5 @@ const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(function Snackb
 	);
 });
 
-export { Snackbar, SnackbarProps };
+export type { SnackbarProps };
+export { Snackbar };

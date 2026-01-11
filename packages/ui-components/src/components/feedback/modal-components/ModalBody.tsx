@@ -54,4 +54,5 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(function Moda
 	);
 });
 
-export { ModalBody, ModalBodyProps };
+export type { ModalBodyProps };
+export { ModalBody };

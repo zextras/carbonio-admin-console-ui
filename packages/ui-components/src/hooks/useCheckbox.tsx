@@ -66,4 +66,5 @@ function useCheckbox({
 	return checked;
 }
 
-export { useCheckbox, UseCheckboxArgs };
+export { useCheckbox };
+export type { UseCheckboxArgs };

@@ -159,4 +159,5 @@ const IconCheckbox = React.forwardRef<HTMLDivElement, IconCheckboxProps>(functio
 	);
 });
 
-export { IconCheckbox, IconCheckboxProps };
+export type { IconCheckboxProps };
+export { IconCheckbox };

@@ -14,11 +14,12 @@ import { InputLabel } from './commons/InputLabel';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
 import { getColor } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
 import { Divider, DividerProps } from '../layout/divider/Divider';
 
-const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
+const InputEl = styled.input<{ $color: AnyColor }>`
 	border: none !important;
 	height: auto !important;
 	width: 100%;
@@ -27,10 +28,10 @@ const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
 	font-size: ${({ theme }): string => theme.sizes.font.medium};
 	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
 	font-family: ${({ theme }): string => theme.fonts.default};
-	color: ${({ theme, $color }): string => getColor($color, theme)};
+	color: ${({ theme, $color }): string => getColor(String($color), theme)};
 
 	&:disabled {
-		color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
+		color: ${({ theme, $color }): string => getColor(`${String($color)}.disabled`, theme)};
 	}
 
 	transition: background 0.2s ease-out;
@@ -59,13 +60,13 @@ const RelativeContainer = styled(Container)`
 
 interface InputProps extends ContainerProps {
 	/** Input's background color */
-	backgroundColor?: keyof DefaultTheme['palette'];
+	backgroundColor?: AnyColor;
 	/** whether to disable the Input or not */
 	disabled?: boolean;
 	/** Input's text color */
-	textColor?: keyof DefaultTheme['palette'];
+	textColor?: AnyColor;
 	/** Input's bottom border color */
-	borderColor?: keyof DefaultTheme['palette'];
+	borderColor?: AnyColor;
 	/** Label of the input, will act (graphically) as placeholder when the input is not focused */
 	label?: string;
 	/** input change callback */
@@ -238,4 +239,5 @@ const Input: Input = React.forwardRef<HTMLDivElement, InputProps>(function Input
 
 Input._newId = 0;
 
-export { Input, InputProps };
+export { Input };
+export type { InputProps };

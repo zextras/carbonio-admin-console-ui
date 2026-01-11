@@ -102,4 +102,5 @@ const SearchInput = React.forwardRef<HTMLDivElement, SearchInputProps>(function 
 	);
 });
 
-export { SearchInput, SearchInputProps };
+export { SearchInput };
+export type { SearchInputProps };

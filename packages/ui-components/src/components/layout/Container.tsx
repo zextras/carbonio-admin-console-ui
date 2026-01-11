@@ -262,4 +262,5 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
 	);
 });
 
-export { Container, ContainerProps };
+export { Container };
+export type { ContainerProps };

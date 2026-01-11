@@ -40,4 +40,5 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(function SpinnerF
 	return <StyledSpinner data-testid="spinner" $color={color} ref={ref} {...rest} />;
 });
 
-export { Spinner, SpinnerProps };
+export type { SpinnerProps };
+export { Spinner };

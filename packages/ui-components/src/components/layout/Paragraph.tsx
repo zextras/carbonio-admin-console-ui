@@ -32,4 +32,5 @@ const Paragraph = React.forwardRef<HTMLDivElement, ParagraphProps>(function Para
 	);
 });
 
-export { Paragraph, ParagraphProps };
+export { Paragraph };
+export type { ParagraphProps };

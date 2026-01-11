@@ -51,4 +51,5 @@ const Link = React.forwardRef<HTMLDivElement, LinkProps>(function LinkFn(
 	);
 });
 
-export { Link, LinkProps };
+export type { LinkProps };
+export { Link };
