@@ -192,7 +192,7 @@ function NestListItem({
 		},
 		[dropdownListRef]
 	);
-	const closeNestedDropdownTimeoutRef = useRef<NodeJS.Timeout>(null);
+	const closeNestedDropdownTimeoutRef = useRef<NodeJS.Timeout>(undefined);
 
 	useEffect(
 		() => () => {
@@ -255,7 +255,7 @@ function NestListItem({
 		[closeNestedDropdown]
 	);
 
-	useKeyboard(innerDropdownListElement, dropdownKeyEvents, open);
+	useKeyboard(itemRef, dropdownKeyEvents, open);
 
 	const closeOnMouseLeave = useCallback(
 		(event: Event) => {
@@ -348,7 +348,7 @@ const PopperList = styled.div<{
 	$width: string;
 	$maxWidth: string;
 	$maxHeight: string;
-	$triggerRef: React.RefObject<HTMLElement>;
+	$triggerRef: React.RefObject<HTMLElement | null>;
 	$open: boolean;
 }>`
 	position: fixed;
@@ -462,7 +462,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 		forceOpen = false,
 		disabled = false,
 		items,
-		placement = 'bottom-start',
+		placement = 'bottom-start' as const,
 		display = 'inline-block',
 		width = 'auto',
 		maxWidth = '18.75rem',
@@ -496,7 +496,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 	const startSentinelRef = useRef<HTMLDivElement | null>(null);
 	const endSentinelRef = useRef<HTMLDivElement | null>(null);
 	const [position, setPosition] = useState<VirtualElement | null>(null);
-	const nestedDropdownsRef = useRef<React.RefObject<HTMLDivElement>[]>([]);
+	const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
 	useEffect(() => {
 		setOpen(forceOpen);
@@ -544,10 +544,12 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 
 	const triggerComponentLeftClickHandler = useCallback<React.ReactEventHandler>(
 		(e) => {
-			children.props.onClick?.(e);
+			if (React.isValidElement(children)) {
+				(children.props as { onClick?: (e: React.SyntheticEvent) => void }).onClick?.(e);
+			}
 			toggleOpen(e);
 		},
-		[children.props, toggleOpen]
+		[children, toggleOpen]
 	);
 
 	const triggerComponentRightClickHandler = useCallback<React.MouseEventHandler<HTMLElement>>(
@@ -863,7 +865,10 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 		const props = contextMenu
 			? { onContextMenu: triggerComponentRightClickHandler }
 			: { onClick: triggerComponentLeftClickHandler };
-		return React.cloneElement(children, { ref: innerTriggerRef, ...props });
+		return React.cloneElement(children, {
+			ref: innerTriggerRef,
+			...props
+		} as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
 	}, [
 		children,
 		innerTriggerRef,
