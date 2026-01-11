@@ -1,15 +1,15 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes, useMemo } from 'react';
 
+import React, { HTMLAttributes, useMemo } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
-import { Icon } from './icon/Icon';
 import { getColor } from '../../theme/theme-utils';
+import { Icon } from './icon/Icon';
 
 type ShapeType = 'round' | 'square';
 
@@ -108,7 +108,7 @@ const WHITESPACE_REGEX_2 = / /;
 function calcCapitals(label: string): string | null {
 	const noSpecString = label.replace(SPECIAL_CHARS_REGEX, '');
 	if (noSpecString.replace(WHITESPACE_REGEX, '').length !== 0) {
-		// eslint-disable-next-line no-param-reassign
+		 
 		label = noSpecString;
 	} else {
 		return null;
@@ -205,4 +205,4 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarPropTypes>(function Avatar
 	);
 });
 
-export { AvatarPropTypes, Avatar };
+export { Avatar,AvatarPropTypes };

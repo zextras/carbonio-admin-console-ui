@@ -5,7 +5,6 @@
  */
 
 import React, { SVGAttributes, useContext, useMemo } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { IconComponent } from '../../../theme/theme';
@@ -61,4 +60,4 @@ const Icon = React.forwardRef<SVGSVGElement, IconProps>(function IconFn(
 	return <StyledIcon $color={color} $size={size} $disabled={disabled} ref={ref} {...rest} />;
 });
 
-export { Icon, IconProps, IconComponentProps, StyledIconProps };
+export { Icon, IconComponentProps, IconProps, StyledIconProps };

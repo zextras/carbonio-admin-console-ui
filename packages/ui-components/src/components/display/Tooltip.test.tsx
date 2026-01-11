@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { screen } from '@testing-library/react';
-
-import { Tooltip } from './Tooltip';
 import { setup } from '../../test-utils';
 import { Button } from '../basic/button/Button';
 import { TIMERS } from '../constants';
 import { Container } from '../layout/Container';
+import { Tooltip } from './Tooltip';
 
 describe('Tooltip', () => {
 	test('Render Tooltip', async () => {

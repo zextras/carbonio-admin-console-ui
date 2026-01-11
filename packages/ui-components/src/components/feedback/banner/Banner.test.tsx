@@ -3,20 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
+
+import 'jest-styled-components';
 
 import { faker } from '@faker-js/faker';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import { DefaultTheme } from 'styled-components';
-import 'jest-styled-components';
 import { find as findStyled } from 'styled-components/test-utils';
 
-import { Banner, BannerProps, InfoContainer } from './Banner';
 import { setup, UserEvent } from '../../../test-utils';
 import { ICONS } from '../../../testUtils/constants';
 import { Theme } from '../../../theme/theme';
 import { TIMERS } from '../../constants';
 import { ModalManager } from '../../utilities/ModalManager';
+import { Banner, BannerProps, InfoContainer } from './Banner';
 
 describe('Banner', () => {
 	function makeTextCropped(

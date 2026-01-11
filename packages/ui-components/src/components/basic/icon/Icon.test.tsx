@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import { Icon } from './Icon';
 import { setup } from '../../../test-utils';
+import { Icon } from './Icon';
 
 describe('Icon', () => {
 	test('Render an icon', () => {

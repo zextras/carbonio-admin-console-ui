@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import { Snackbar, SnackbarProps } from './Snackbar';
 import { setup, within } from '../../../test-utils';
 import { ICONS, SELECTORS } from '../../../testUtils/constants';
+import { Snackbar, SnackbarProps } from './Snackbar';
 
 describe('Snackbar', () => {
 	it('should be hidden by default', () => {

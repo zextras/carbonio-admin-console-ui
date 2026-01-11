@@ -1,15 +1,14 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import { Link } from './Link';
 import { setup } from '../../test-utils';
+import { Link } from './Link';
 
 describe('Link', () => {
 	test('Render a Link', () => {

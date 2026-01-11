@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
-
 import { faker } from '@faker-js/faker';
 import { act, screen, waitFor, within } from '@testing-library/react';
+import React from 'react';
 
-import { Chip } from './Chip';
 import { Text } from '../../index';
 import { setup } from '../../test-utils';
 import { ICONS } from '../../testUtils/constants';
 import { TIMERS } from '../constants';
+import { Chip } from './Chip';
 
 describe('Chip', () => {
 	test('Render Chip with capitals', () => {

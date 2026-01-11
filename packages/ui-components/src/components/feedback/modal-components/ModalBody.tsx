@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { HTMLAttributes } from 'react';
-
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { With$Prefix } from '../../../types/utils';

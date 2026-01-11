@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { screen } from '@testing-library/react';
 
-import { ModalFooter } from './ModalFooter';
 import { setup, within } from '../../../test-utils';
 import { SELECTORS } from '../../../testUtils/constants';
 import { TIMERS } from '../../constants';
+import { ModalFooter } from './ModalFooter';
 
 describe('Modal footer', () => {
 	it('displays a disabled primary button if the "confirmDisabled" is set to true', async () => {

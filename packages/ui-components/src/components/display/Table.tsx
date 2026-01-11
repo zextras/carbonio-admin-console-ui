@@ -5,15 +5,13 @@
  */
 
 import React, {
-	useEffect,
-	useRef,
-	useReducer,
-	useCallback,
-	useMemo,
+	HTMLAttributes,
 	Reducer,
-	HTMLAttributes
-} from 'react';
-
+	useCallback,
+	useEffect,
+	useMemo,
+	useReducer,
+	useRef} from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
@@ -546,14 +544,13 @@ const Table = React.forwardRef<HTMLDivElement, TableProps>(function TableFn(
 });
 
 export {
+	DefaultHeaderFactory,
+	DefaultRowFactory,
+	// for test purpose only
+	StyledCheckbox,
 	Table,
 	type TableProps,
 	type THeader,
-	type TRow,
 	type THeaderProps,
-	type TRowProps,
-	DefaultRowFactory,
-	DefaultHeaderFactory,
-	// for test purpose only
-	StyledCheckbox
-};
+	type TRow,
+	type TRowProps};

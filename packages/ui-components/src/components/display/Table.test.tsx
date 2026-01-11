@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
+import 'jest-styled-components';
 
 import { faker } from '@faker-js/faker';
 import { act, screen, within } from '@testing-library/react';
-import 'jest-styled-components';
 
-import { THeader, Table, TRow, StyledCheckbox } from './Table';
 import { setup } from '../../test-utils';
 import { ICONS, SELECTORS } from '../../testUtils/constants';
 import { Icon } from '../basic/icon/Icon';
 import { Container } from '../layout/Container';
+import { StyledCheckbox, Table, THeader, TRow } from './Table';
 
 describe('Table', () => {
 	function getRowByColumnLabel(label: string): HTMLElement {

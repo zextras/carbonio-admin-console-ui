@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React from 'react';
-
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { Text } from '../../basic/text/Text';

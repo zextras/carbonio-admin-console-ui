@@ -5,17 +5,15 @@
  */
 
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+import { flip, limitShift,offset, Placement, shift, VirtualElement } from '@floating-ui/dom';
 import React, {
-	useLayoutEffect,
-	useEffect,
-	useRef,
+	HTMLAttributes,
 	useCallback,
-	useMemo,
 	useContext,
-	HTMLAttributes
-} from 'react';
-
-import { flip, Placement, VirtualElement, offset, shift, limitShift } from '@floating-ui/dom';
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef} from 'react';
 import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';

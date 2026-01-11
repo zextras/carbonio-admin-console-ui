@@ -6,10 +6,10 @@
 
 import React from 'react';
 
-import { Text, TextProps } from './text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Divider } from '../layout/divider/Divider';
 import { Padding } from '../layout/Padding';
+import { Text, TextProps } from './text/Text';
 
 interface FormElementProps extends ContainerProps {
 	label?: TextProps['children'];
@@ -113,4 +113,4 @@ const FormRow = React.forwardRef<HTMLDivElement, FormElementProps>(function Form
 	);
 });
 
-export { FormSection, FormSubSection, FormRow, FormElementProps };
+export { FormElementProps,FormRow, FormSection, FormSubSection };

@@ -5,7 +5,6 @@
  */
 
 import React, { HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';

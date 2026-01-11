@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash';
 import React, {
 	InputHTMLAttributes,
 	useCallback,
@@ -13,17 +14,14 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-
-import { filter, slice, isEmpty, debounce, trim, uniq } from 'lodash';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import {
-	useKeyboard,
 	getKeyboardPreset,
 	KeyboardPresetKey,
-	KeyboardPresetObj
-} from '../../../hooks/useKeyboard';
+	KeyboardPresetObj,
+	useKeyboard} from '../../../hooks/useKeyboard';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, PaletteColor } from '../../../types/utils';
@@ -254,8 +252,10 @@ type ChipItem<TValue = unknown> = { label?: string } & ChipProps & {
 		value?: TValue;
 	};
 
-interface ChipInputProps<TValue = unknown>
-	extends Omit<ContainerProps, 'defaultValue' | 'onChange'> {
+interface ChipInputProps<TValue = unknown> extends Omit<
+	ContainerProps,
+	'defaultValue' | 'onChange'
+> {
 	/** ref to the input element */
 	inputRef?: React.ForwardedRef<HTMLInputElement> | null;
 	/** HTML input name */
@@ -854,10 +854,10 @@ const ChipInput = ChipInputComponent as ChipInputType;
 ChipInput._newId = 0;
 
 export {
-	ChipInputComponent,
 	ChipInput,
-	type ChipInputType,
+	ChipInputComponent,
 	type ChipInputProps,
+	type ChipInputType,
 	type ChipItem,
 	DefaultOnAdd
 };

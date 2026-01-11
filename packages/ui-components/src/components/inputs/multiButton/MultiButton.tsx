@@ -5,7 +5,6 @@
  */
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-
 import styled, { DefaultTheme } from 'styled-components';
 
 import { AnyColor } from '../../../types/utils';

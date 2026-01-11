@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
-
 import { rgba } from 'polished';
+import React from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { Container } from '../../layout/Container';
@@ -111,4 +110,4 @@ const ModalContent = styled(Container).attrs<{
 	pointer-events: auto;
 `;
 
-export { ModalContent, ModalWrapper, ModalContainer, getScrollbarSize, isBodyOverflowing };
+export { getScrollbarSize, isBodyOverflowing,ModalContainer, ModalContent, ModalWrapper };

@@ -5,7 +5,6 @@
  */
 
 import React, { useCallback, useEffect } from 'react';
-
 import styled, { css, DefaultTheme, keyframes, SimpleInterpolation } from 'styled-components';
 
 import { ScreenMode, useScreenMode } from '../../../hooks/useScreenMode';

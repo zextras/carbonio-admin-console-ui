@@ -3,11 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
-import { Quota } from './Quota';
 import { screen, setup } from '../../../test-utils';
 import { SELECTORS } from '../../../testUtils/constants';
+import { Quota } from './Quota';
 
 describe('Quota', () => {
 	it('should render correctly', () => {

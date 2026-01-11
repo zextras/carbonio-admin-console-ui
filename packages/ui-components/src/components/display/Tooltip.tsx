@@ -4,18 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { flip, limitShift,offset, Placement, shift } from '@floating-ui/dom';
+import { rgba } from 'polished';
 import React, {
-	useState,
+	cloneElement,
+	createRef,
+	useCallback,
 	useEffect,
 	useLayoutEffect,
-	useCallback,
 	useRef,
-	cloneElement,
-	createRef
-} from 'react';
-
-import { flip, Placement, offset, shift, limitShift } from '@floating-ui/dom';
-import { rgba } from 'polished';
+	useState} from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';

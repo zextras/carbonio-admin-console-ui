@@ -4,20 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-
 import { map } from 'lodash';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
-import { Tooltip } from './Tooltip';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { useTheme, pseudoClasses } from '../../theme/theme-utils';
+import { pseudoClasses, useTheme } from '../../theme/theme-utils';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Icon, IconProps } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { IconButton, IconButtonProps } from '../inputs/IconButton';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
+import { Tooltip } from './Tooltip';
 
 type ChipAction = {
 	/** Chip action icon color */
@@ -444,4 +443,4 @@ const Chip = React.forwardRef<HTMLDivElement, ChipProps>(function ChipFn(
 	);
 });
 
-export { Chip, ChipProps, ChipAction };
+export { Chip, ChipAction, ChipProps };

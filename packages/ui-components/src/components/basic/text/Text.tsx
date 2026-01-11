@@ -5,7 +5,6 @@
  */
 
 import React, { HTMLAttributes } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { getColor } from '../../../theme/theme-utils';

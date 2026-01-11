@@ -4,19 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React, {
+	HTMLAttributes,
+	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
-	useCallback,
 	useRef,
-	useContext,
-	HTMLAttributes,
 	useState
 } from 'react';
-
 import { ThemeContext } from 'styled-components';
 
+import { useCombinedRefs } from '../../hooks/useCombinedRefs';
+import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
+import { AnyColor } from '../../types/utils';
+import { TIMERS } from '../constants';
+import { Portal } from '../utilities/Portal';
+import { Transition } from '../utilities/Transition';
 import {
 	getScrollbarSize,
 	isBodyOverflowing,
@@ -24,12 +28,6 @@ import {
 	ModalContent,
 	ModalWrapper
 } from './modal-components/ModalComponents';
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
-import { AnyColor } from '../../types/utils';
-import { TIMERS } from '../constants';
-import { Portal } from '../utilities/Portal';
-import { Transition } from '../utilities/Transition';
 
 type BareModalProps = {
 	/** Modal background */

@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { screen, waitFor } from '@testing-library/react';
 import React, { useState } from 'react';
 
-import { screen, waitFor } from '@testing-library/react';
-
-import { CustomModal, CustomModalProps } from './CustomModal';
 import { setup } from '../../test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
+import { CustomModal, CustomModalProps } from './CustomModal';
 
 const ModalTester = ({ children, ...props }: CustomModalProps): React.JSX.Element => {
 	const [open, setOpen] = useState(false);

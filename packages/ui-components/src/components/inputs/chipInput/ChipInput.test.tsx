@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
 import { act, screen, waitFor } from '@testing-library/react';
 import reduce from 'lodash/reduce';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ChipInput, ChipInputProps, ChipItem } from './ChipInput';
 import { KeyboardPresetKey } from '../../../hooks/useKeyboard';
 import { setup } from '../../../test-utils';
 import { ICONS, SELECTORS } from '../../../testUtils/constants';
+import { ChipInput, ChipInputProps, ChipItem } from './ChipInput';
 
 describe('ChipInput', () => {
 	test('render a chip input with a placeholder, two chips, an icon and a description', () => {
@@ -839,9 +838,9 @@ describe('ChipInput', () => {
 		const inputElement = screen.getByRole('textbox');
 		const prevLimitMaxPlusOne = 21;
 		for (let i = 0; i < prevLimitMaxPlusOne; i += 1) {
-			// eslint-disable-next-line no-await-in-loop
+			 
 			await user.type(inputElement, `chip${i}`);
-			// eslint-disable-next-line no-await-in-loop
+			 
 			await act(async () => {
 				await user.keyboard('[Space]');
 			});

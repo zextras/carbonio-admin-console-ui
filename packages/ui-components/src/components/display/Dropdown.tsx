@@ -3,33 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-
-import React, {
-	useState,
-	useRef,
-	useEffect,
-	useLayoutEffect,
-	useCallback,
-	useMemo,
-	useContext,
-	HTMLAttributes
-} from 'react';
 
 import { flip, limitShift, Placement, shift, VirtualElement } from '@floating-ui/dom';
+import React, {
+	HTMLAttributes,
+	useCallback,
+	useContext,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState
+} from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation, ThemeContext } from 'styled-components';
 
-import { Tooltip } from './Tooltip';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import {
-	useKeyboard,
-	getKeyboardPreset,
-	KeyboardPresetObj,
-	focusOnNextNode,
-	focusOnPreviousNode,
+	clickNodeWithFocus,
 	focusOnFirstNode,
 	focusOnLastNode,
-	clickNodeWithFocus
+	focusOnNextNode,
+	focusOnPreviousNode,
+	getKeyboardPreset,
+	KeyboardPresetObj,
+	useKeyboard
 } from '../../hooks/useKeyboard';
 import { pseudoClasses } from '../../theme/theme-utils';
 import { setupFloating } from '../../utils/floating-ui';
@@ -40,6 +37,7 @@ import { Container } from '../layout/Container';
 import { Divider } from '../layout/divider/Divider';
 import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
+import { Tooltip } from './Tooltip';
 
 const ContainerEl = styled(Container)<{
 	$selectedBackgroundColor?: keyof DefaultTheme['palette'];
@@ -153,7 +151,8 @@ function PopperListItem({
 }
 
 interface NestListItemProps
-	extends PopperListItemProps,
+	extends
+		PopperListItemProps,
 		Pick<DropdownProps, 'onOpen' | 'onClose' | 'dropdownListRef' | 'items'> {}
 
 function NestListItem({
@@ -187,14 +186,13 @@ function NestListItem({
 				if (typeof dropdownListRef === 'function') {
 					dropdownListRef(node);
 				} else {
-					// eslint-disable-next-line no-param-reassign
 					dropdownListRef.current = node;
 				}
 			}
 		},
 		[dropdownListRef]
 	);
-	const closeNestedDropdownTimeoutRef = useRef<NodeJS.Timeout>();
+	const closeNestedDropdownTimeoutRef = useRef<NodeJS.Timeout>(null);
 
 	useEffect(
 		() => () => {
@@ -304,7 +302,7 @@ function NestListItem({
 			onMouseEnter={openNestedDropdown}
 			{...rest}
 		>
-			{/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
+			{}
 			<Dropdown
 				display="block"
 				items={items}
@@ -905,4 +903,4 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 	);
 });
 
-export { Dropdown, type DropdownProps, type DropdownItem };
+export { Dropdown, type DropdownItem, type DropdownProps };

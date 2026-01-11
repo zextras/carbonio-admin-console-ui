@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useMemo, useCallback } from 'react';
-
+import React, { useCallback,useMemo } from 'react';
 import styled from 'styled-components';
 
-import { Text, TextProps } from './text/Text';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { useKeyboard, getKeyboardPreset } from '../../hooks/useKeyboard';
+import { getKeyboardPreset,useKeyboard } from '../../hooks/useKeyboard';
 import { getColor } from '../../theme/theme-utils';
+import { Text, TextProps } from './text/Text';
 
 const StyledLink = styled(Text).attrs(() => ({
 	forwardedAs: 'a'

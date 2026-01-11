@@ -4,18 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-
-import React, { HTMLAttributes, useCallback, useContext, useRef } from 'react';
-
 import { noop } from 'lodash';
+import React, { HTMLAttributes, useCallback, useContext, useRef } from 'react';
 import { ThemeContext } from 'styled-components';
 
+import { Divider } from '../layout/divider/Divider';
 import { CustomModal, CustomModalProps } from './CustomModal';
 import { ModalBody } from './modal-components/ModalBody';
 import { ModalFooter, ModalFooterProps } from './modal-components/ModalFooter';
 import { ModalHeader } from './modal-components/ModalHeader';
-import { Divider } from '../layout/divider/Divider';
 
 function copyToClipboard(node: HTMLDivElement | null, windowObj: Window): void {
 	const el = windowObj.document.createElement('textarea');

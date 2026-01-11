@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { act } from '@testing-library/react';
 
-import { Dropdown, DropdownItem } from './Dropdown';
-import { setup, within, screen, UserEvent } from '../../test-utils';
+import { screen, setup, UserEvent,within } from '../../test-utils';
 import { SELECTORS } from '../../testUtils/constants';
 import { Button } from '../basic/button/Button';
 import { TIMERS } from '../constants';
 import { Modal } from '../feedback/Modal';
+import { Dropdown, DropdownItem } from './Dropdown';
 
 function findDropdownItem(label: string, container: HTMLElement = document.body): HTMLElement {
 	function findNested(fromElement: HTMLElement): HTMLElement | undefined {

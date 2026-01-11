@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React from 'react';
-
 import styled, { SimpleInterpolation } from 'styled-components';
 
 import { useIsVisible } from '../../hooks/useIsVisible/useIsVisible';
