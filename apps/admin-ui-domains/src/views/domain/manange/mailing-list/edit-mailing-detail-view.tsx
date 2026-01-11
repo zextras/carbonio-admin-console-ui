@@ -54,10 +54,10 @@ import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
 
-enum TRUE_FALSE {
-	TRUE = 'TRUE',
-	FALSE = 'FALSE'
-}
+const TRUE_FALSE = {
+	TRUE: 'TRUE',
+	FALSE: 'FALSE'
+} as const;
 
 const ovelayStyle = styled(Container)`
 	position: fixed;

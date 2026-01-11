@@ -18,8 +18,8 @@
 	],
 	"scripts": {
 		"release": "standard-version",
-		"lint": "eslint --ext .js,.jsx,.ts,.tsx --resolve-plugins-relative-to node_modules/@zextras/carbonio-ui-configs src",
-		"lint:icons": "eslint --ext .ts,.tsx --resolve-plugins-relative-to node_modules/@zextras/carbonio-ui-configs src/icons --fix",
+		"lint": "eslint src --ignore-pattern 'src/components/utilities/Transition.tsx'",
+		"lint:icons": "eslint src/icons --fix",
 		"test": "(is-ci && jest --runInBand) || jest --maxWorkers=50%",
 		"icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
 		"build": "echo 'No build needed - apps import TypeScript source directly'",

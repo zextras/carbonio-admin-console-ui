@@ -20,6 +20,12 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: ['src/components/utilities/Transition.tsx'],
+			rules: {
+				'@typescript-eslint/no-unused-vars': 'off'
+			}
+		},
+		{
 			files: ['src/icons/**/*.[jt]sx'],
 			rules: {
 				'notice/notice': 0
@@ -34,7 +40,7 @@ module.exports = {
 				'testing-library/prefer-user-event': 'warn',
 				'import/no-extraneous-dependencies': 'off'
 			}
-	}
+		}
 	],
 	ignorePatterns: ['**/tsTemplate.[jt]s']
 };

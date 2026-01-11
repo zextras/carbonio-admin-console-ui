@@ -42,6 +42,10 @@ export {
 	type SingleSelectionOnChange
 } from './components/inputs/Select';
 export * from './components/inputs/Switch';
+export * from './components/inputs/TextArea';
+
+/** navigation components */
+export * from './components/navigation/TabBar';
 
 /** display components */
 export * from './components/display/Chip';
@@ -59,6 +63,7 @@ export {
 	type TRowProps
 } from './components/display/Table';
 export * from './components/display/Tooltip';
+export * from './components/display/Popper';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';

@@ -35,27 +35,27 @@ import ListRow from "../../../list/list-row";
 import { RouteLeavingGuard } from "../../../ui-extras/nav-guard";
 import { SendInviteAccounts } from "./send-invite-accounts";
 
-export enum RESOURCE_TYPE {
-  LOCATION = "Location",
-  EQUIPMENT = "Equipment",
-}
+export const RESOURCE_TYPE = {
+  LOCATION: "Location",
+  EQUIPMENT: "Equipment",
+} as const;
 
-export enum TRUE_FALSE {
-  TRUE = "TRUE",
-  FALSE = "FALSE",
-}
+export const TRUE_FALSE = {
+  TRUE: "TRUE",
+  FALSE: "FALSE",
+} as const;
 
-export enum STATUS {
-  ACTIVE = "active",
-  CLOSED = "closed",
-}
+export const STATUS = {
+  ACTIVE: "active",
+  CLOSED: "closed",
+} as const;
 
-export enum SCHEDULE_POLITY_TYPE {
-  AUTO_ACCEPT = 1,
-  MANUAL_ACCEPT = 2,
-  AUTO_ACCEPT_ALWAYS = 3,
-  NO_AUTO_ACCEPT = 4,
-}
+export const SCHEDULE_POLITY_TYPE = {
+  AUTO_ACCEPT: 1,
+  MANUAL_ACCEPT: 2,
+  AUTO_ACCEPT_ALWAYS: 3,
+  NO_AUTO_ACCEPT: 4,
+} as const;
 
 const ResourceEditDetailView: FC<any> = ({
   selectedResourceList,

@@ -61,12 +61,12 @@ import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
-enum RANGE {
-	DAYS = 'd',
-	HOURS = 'h',
-	MINUTES = 'm',
-	SECONDS = 's'
-}
+const RANGE = {
+	DAYS: 'd',
+	HOURS: 'h',
+	MINUTES: 'm',
+	SECONDS: 's'
+} as const;
 
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;

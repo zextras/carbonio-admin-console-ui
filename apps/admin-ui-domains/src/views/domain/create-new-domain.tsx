@@ -61,11 +61,11 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
-enum GAL_MODE {
-	INTERNAL = 'zimbra',
-	EXTERNAL = 'external',
-	BOTH = 'both'
-}
+const GAL_MODE = {
+	INTERNAL: 'zimbra',
+	EXTERNAL: 'external',
+	BOTH: 'both'
+} as const;
 
 const CreateDomain: FC = () => {
 	const [t] = useTranslation();
