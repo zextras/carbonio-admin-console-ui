@@ -14,7 +14,7 @@ import { LicenseBanner } from '../license-banner';
 describe('LicenseBanner', () => {
 	const maintenanceEndDate = 1750272000000;
 
-	function createLicenseData(maintenanceStatus: 'expiring' | 'expired') {
+	function createLicenseData(maintenanceStatus: 'expiring' | 'expired' | 'invalid') {
 		return {
 			response: {
 				type: 'REGULAR',
@@ -29,7 +29,7 @@ describe('LicenseBanner', () => {
 
 	function setupLicenseBannerTest(
 		component: React.ReactElement,
-		maintenanceStatus: 'expiring' | 'expired'
+		maintenanceStatus: 'expiring' | 'expired' | 'invalid'
 	) {
 		const queryClient = getQueryClient();
 		queryClient.setQueryData(['subscription', 'license'], createLicenseData(maintenanceStatus));
@@ -45,13 +45,20 @@ describe('LicenseBanner', () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expiring');
 
 		// Check if any text appears first
-		await expect.element(page.getByText(/expire/i)).toBeVisible();
+		await expect.element(page.getByText(/Your maintenance expires on/i)).toBeVisible();
 	});
 
 	it('renders expired message', async () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expired');
 		// Match either 18 or 19 Jun 2025 depending on timezone
-		await expect.element(page.getByText(/expired on (18|19) Jun 2025/i)).toBeVisible();
+		await expect.element(page.getByText(/Your maintenance has expired/i)).toBeVisible();
+	});
+
+	it('renders invalid message', async () => {
+		setupLicenseBannerTest(<LicenseBanner />, 'invalid');
+
+		// Check if any text appears first
+		await expect.element(page.getByText(/Your subscription does not support Carbonio version/i)).toBeVisible();
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {
@@ -64,8 +71,19 @@ describe('LicenseBanner', () => {
 		expect(page.getByText('View Subscription Details').elements()).toHaveLength(0);
 	});
 
+
 	it('closes the banner when close button is clicked', async () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expired');
+
+		await expect.element(page.getByTestId('license-banner-close-button')).toBeVisible();
+		await page.getByTestId('license-banner-close-button').click();
+
+		// After clicking close, the banner should not be visible
+		expect(page.getByTestId('license-banner-close-button').elements()).toHaveLength(0);
+	});
+
+	it('closes the banner when close button is clicked invalid', async () => {
+		setupLicenseBannerTest(<LicenseBanner />, 'invalid');
 
 		await expect.element(page.getByTestId('license-banner-close-button')).toBeVisible();
 		await page.getByTestId('license-banner-close-button').click();

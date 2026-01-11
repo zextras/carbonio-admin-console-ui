@@ -1,3 +1,15 @@
+## [0.12.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.7...v0.12.0-devel.8) (2026-01-08)
+
+### Bug Fixes
+
+* **sonar:** fix SonarQube scanner execution in Jenkins pipeline ([#1024](https://github.com/zextras/carbonio-admin-console-ui/issues/1024)) ([1452e24](https://github.com/zextras/carbonio-admin-console-ui/commit/1452e241141ef167e8689e1286351df851900c5e))
+
+## [0.12.0-devel.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.6...v0.12.0-devel.7) (2025-12-31)
+
+### Bug Fixes
+
+* license token field shows blank on initial page load ([#1020](https://github.com/zextras/carbonio-admin-console-ui/issues/1020)) ([dd25e08](https://github.com/zextras/carbonio-admin-console-ui/commit/dd25e082fe6109e9f4acee622e8771f0e460a900))
+
 ## [0.12.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.5...v0.12.0-devel.6) (2025-12-19)
 
 ### Bug Fixes
