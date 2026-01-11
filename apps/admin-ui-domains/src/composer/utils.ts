@@ -27,7 +27,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 			key: 'zh-CN',
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "zh-CN" */ import('date-fns/locale/zh-CN').then(
-					({ zhCN }) => zhCN
+					(mod) => (mod as unknown as Record<string, Locale>).zhCN ?? mod.default ?? (mod as unknown as Locale)
 				)
 		},
 		tinymceLocale: 'zh-Hans'
@@ -38,7 +38,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "nl" */ import('date-fns/locale/nl').then(
-					({ nl }) => nl
+					(mod) => (mod as unknown as Record<string, Locale>).nl ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -49,7 +49,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 			key: 'en-US',
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "en-US" */ import('date-fns/locale/en-US').then(
-					({ enUS }) => enUS
+					(mod) => (mod as unknown as Record<string, Locale>).enUS ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -59,7 +59,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "de" */ import('date-fns/locale/de').then(
-					({ de }) => de
+					(mod) => (mod as unknown as Record<string, Locale>).de ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -69,7 +69,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "hi" */ import('date-fns/locale/hi').then(
-					({ hi }) => hi
+					(mod) => (mod as unknown as Record<string, Locale>).hi ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -80,7 +80,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "hu" */ import('date-fns/locale/hu').then(
-					({ hu }) => hu
+					(mod) => (mod as unknown as Record<string, Locale>).hu ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -90,7 +90,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "it" */ import('date-fns/locale/it').then(
-					({ it }) => it
+					(mod) => (mod as unknown as Record<string, Locale>).it ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -100,7 +100,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "ja" */ import('date-fns/locale/ja').then(
-					({ ja }) => ja
+					(mod) => (mod as unknown as Record<string, Locale>).ja ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -112,7 +112,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "pt" */ import('date-fns/locale/pt').then(
-					({ pt }) => pt
+					(mod) => (mod as unknown as Record<string, Locale>).pt ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -122,7 +122,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "pl" */ import('date-fns/locale/pl').then(
-					({ pl }) => pl
+					(mod) => (mod as unknown as Record<string, Locale>).pl ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -133,7 +133,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "ro" */ import('date-fns/locale/ro').then(
-					({ ro }) => ro
+					(mod) => (mod as unknown as Record<string, Locale>).ro ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -143,7 +143,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "ru" */ import('date-fns/locale/ru').then(
-					({ ru }) => ru
+					(mod) => (mod as unknown as Record<string, Locale>).ru ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -153,7 +153,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "es" */ import('date-fns/locale/es').then(
-					({ es }) => es
+					(mod) => (mod as unknown as Record<string, Locale>).es ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -164,7 +164,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "th" */ import('date-fns/locale/th').then(
-					({ th }) => th
+					(mod) => (mod as unknown as Record<string, Locale>).th ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -174,7 +174,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "tr" */ import('date-fns/locale/tr').then(
-					({ tr }) => tr
+					(mod) => (mod as unknown as Record<string, Locale>).tr ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -185,7 +185,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "fr" */ import('date-fns/locale/fr').then(
-					({ fr }) => fr
+					(mod) => (mod as unknown as Record<string, Locale>).fr ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -195,7 +195,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "vi" */ import('date-fns/locale/vi').then(
-					({ vi }) => vi
+					(mod) => (mod as unknown as Record<string, Locale>).vi ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -210,7 +210,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "bs" */ import('date-fns/locale/bs').then(
-					({ bs }) => bs
+					(mod) => (mod as unknown as Record<string, Locale>).bs ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	},
@@ -221,7 +221,7 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
 		dateFnsLocale: {
 			localeImportPath: () =>
 				/* webpackMode: "lazy", webpackChunkName: "sl" */ import('date-fns/locale/sl').then(
-					({ sl }) => sl
+					(mod) => (mod as unknown as Record<string, Locale>).sl ?? mod.default ?? (mod as unknown as Locale)
 				)
 		}
 	}

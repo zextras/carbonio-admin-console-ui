@@ -38,7 +38,7 @@ const COSGeneralOptions: FC<{
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+			<Text size="extralarge" weight="bold">
 				{labels.generalOptions}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

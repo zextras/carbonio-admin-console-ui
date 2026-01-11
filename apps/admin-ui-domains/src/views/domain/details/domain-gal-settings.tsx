@@ -128,7 +128,7 @@ const ServerListTable: FC<{
 						<Text
 							color="gray0"
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Row, Select,Text } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import { Container, Row, Select, Text } from '@zextras/carbonio-design-system';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { paginationItems } from '../../../constants';
@@ -28,16 +28,13 @@ const TrackNumberPerPage: FC<{
 			</Row>
 			<Row padding={{ right: 'small' }}>
 				<Select
-					// @ts-expect-error - needs a fix
 					items={paginationItems}
 					data-testid="pagination-select"
 					background="gray5"
-					// @ts-expect-error - needs a fix
 					defaultSelection={paginationItems[1]}
-					// @ts-expect-error - needs a fix
-					onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setPageSize(e)}
+					onChange={(value): void => setPageSize(value ?? 5)}
 					showCheckbox={false}
-					itemTextSize="1rem"
+					itemTextSize="medium"
 					style={{ minWidth: '4rem' }}
 				/>
 			</Row>

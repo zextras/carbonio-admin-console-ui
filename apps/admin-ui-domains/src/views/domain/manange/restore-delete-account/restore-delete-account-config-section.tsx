@@ -241,7 +241,6 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										minDate={new Date(restoreAccountDetail?.createDate ?? '')}
 										maxDate={new Date()}
 										dateFormat="dd/MM/yyyy hh:mm a"
-										style={{ background: 'green' }}
 									/>
 								</DatePickerContainer>
 							</Container>

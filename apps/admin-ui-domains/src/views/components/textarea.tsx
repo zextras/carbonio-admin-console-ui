@@ -26,15 +26,15 @@ const ContainerEl = styled(Container)<ContainerExtendProps>`
 				transition: background 0.2s ease-out;
 				&:focus {
 					outline: none;
-					background: ${theme.palette[background].focus};
+					background: ${theme.palette[background as keyof typeof theme.palette].focus};
 				}
 				&:hover {
 					outline: none;
-					background: ${theme.palette[background].hover};
+					background: ${theme.palette[background as keyof typeof theme.palette].hover};
 				}
 				&:active {
 					outline: none;
-					background: ${theme.palette[background].active};
+					background: ${theme.palette[background as keyof typeof theme.palette].active};
 				}
 			`) ||
 		''};

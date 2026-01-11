@@ -50,7 +50,7 @@ const InheritedSwitch: FC<{
 					value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
 					onClick={(): void => onChange(inputName)}
 					label={label}
-					iconColor={iconColor}
+					iconColor={iconColor as 'primary' | 'text' | 'gray0' | 'error' | 'warning' | 'success'}
 					disabled={disabled}
 					onFocus={onFocus}
 				/>

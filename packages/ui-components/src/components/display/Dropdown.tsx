@@ -193,7 +193,7 @@ function NestListItem({
 		},
 		[dropdownListRef]
 	);
-	const closeNestedDropdownTimeoutRef = useRef<NodeJS.Timeout>(undefined);
+	const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
 
 	useEffect(
 		() => () => {
@@ -267,7 +267,7 @@ function NestListItem({
 					if (closeNestedDropdownTimeoutRef.current === undefined) {
 						closeNestedDropdownTimeoutRef.current = setTimeout(() => {
 							closeNestedDropdown();
-						}, TIMERS.DROPDOWN.CLOSE_NESTED);
+						}, TIMERS.DROPDOWN.CLOSE_NESTED) as unknown as number;
 					}
 				} else if (closeNestedDropdownTimeoutRef.current !== undefined) {
 					clearTimeout(closeNestedDropdownTimeoutRef.current);

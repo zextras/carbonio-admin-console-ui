@@ -117,11 +117,11 @@ const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(function Snackb
 	const enableTimeout = open && !disableAutoHide && onClose !== undefined;
 
 	useEffect(() => {
-		let timeout: NodeJS.Timeout;
+		let timeout: number;
 		if (enableTimeout) {
 			timeout = setTimeout(() => {
 				onClose();
-			}, autoHideTimeout);
+			}, autoHideTimeout) as unknown as number;
 		}
 		return (): void => {
 			clearTimeout(timeout);

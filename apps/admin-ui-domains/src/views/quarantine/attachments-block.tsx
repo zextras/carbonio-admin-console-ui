@@ -212,8 +212,7 @@ const calcColor = (label: string, theme: DefaultTheme): string => {
 		sum += label.charCodeAt(i);
 	}
 
-	// @ts-expect-error - needs a fix
-	return theme.avatarColors[`avatar_${(sum % 50) + 1}`];
+	return theme.avatarColors[`avatar_${(sum % 50) + 1}` as keyof typeof theme.avatarColors];
 };
 const getLocationOrigin = (): string => window.location.origin;
 const getAttachmentsLink = ({
