@@ -213,7 +213,7 @@ describe('useSnackbar', () => {
 	it('should hide snackbar when callback returned by create is invoked', async () => {
 		const TestCloseComponent = (): React.JSX.Element => {
 			const createSnackbar = useSnackbar();
-			const closeSnackbarRef = useRef<CloseSnackbarFn>();
+				const closeSnackbarRef = useRef<CloseSnackbarFn | undefined>(undefined);
 			return (
 				<>
 					<Button

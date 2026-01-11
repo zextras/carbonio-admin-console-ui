@@ -142,7 +142,7 @@ const Banner = React.forwardRef<HTMLDivElement, BannerProps>(function BannerFn(
 		}
 	}, []);
 
-	const resizeObserverRef = useRef<ResizeObserver>();
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	useEffect(() => {
 		if (bannerRef.current) {

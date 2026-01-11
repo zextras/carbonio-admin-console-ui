@@ -403,7 +403,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 	}: ChipInputProps<TValue>,
 	ref: React.ForwardedRef<HTMLDivElement>
 ) {
-	const [items, dispatch] = useReducer<React.Reducer<ChipItem<TValue>[], ReducerAction<TValue>>>(
+	const [items, dispatch] = useReducer(
 		reducer,
 		defaultValue || value || []
 	);

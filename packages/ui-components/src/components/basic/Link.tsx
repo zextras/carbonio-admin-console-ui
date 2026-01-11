@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback,useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getKeyboardPreset,useKeyboard } from '../../hooks/useKeyboard';
+import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
 import { getColor } from '../../theme/theme-utils';
 import { Text, TextProps } from './text/Text';
 

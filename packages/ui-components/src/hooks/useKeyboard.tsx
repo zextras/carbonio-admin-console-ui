@@ -41,7 +41,7 @@ function getFocusableElement(
 	return getFocusableElement(siblingElement, direction);
 }
 
-export function focusOnPreviousNode(ref: React.RefObject<HTMLElement> | undefined): void {
+export function focusOnPreviousNode(ref: React.RefObject<HTMLElement | null> | undefined): void {
 	if (ref?.current) {
 		const focusedElement = ref.current.querySelector<HTMLElement>('[tabindex]:focus');
 		if (focusedElement) {
@@ -59,7 +59,7 @@ export function focusOnPreviousNode(ref: React.RefObject<HTMLElement> | undefine
 	}
 }
 
-export function focusOnNextNode(ref: React.RefObject<HTMLElement> | undefined): void {
+export function focusOnNextNode(ref: React.RefObject<HTMLElement | null> | undefined): void {
 	if (ref?.current) {
 		const focusedElement = ref.current.querySelector<HTMLElement>('[tabindex]:focus');
 		if (focusedElement) {
@@ -77,7 +77,7 @@ export function focusOnNextNode(ref: React.RefObject<HTMLElement> | undefined): 
 	}
 }
 
-export function blurNodeWithFocus(ref: React.RefObject<HTMLElement> | undefined): void {
+export function blurNodeWithFocus(ref: React.RefObject<HTMLElement | null> | undefined): void {
 	if (ref?.current) {
 		const focusedElement = ref.current.querySelector<HTMLElement>('[tabindex]:focus');
 		if (focusedElement) {
@@ -94,7 +94,7 @@ const findFirstChildWithClick = (element: HTMLElement): HTMLElement => {
 	return result;
 };
 
-export const clickNodeWithFocus = (ref: React.RefObject<HTMLElement> | undefined): void => {
+export const clickNodeWithFocus = (ref: React.RefObject<HTMLElement | null> | undefined): void => {
 	if (ref?.current) {
 		const focusedElement = ref.current.querySelector<HTMLElement>('[tabindex]:focus');
 		if (focusedElement) {
@@ -106,14 +106,14 @@ export const clickNodeWithFocus = (ref: React.RefObject<HTMLElement> | undefined
 	}
 };
 
-export function focusOnFirstNode(ref: React.RefObject<HTMLElement> | undefined): void {
+export function focusOnFirstNode(ref: React.RefObject<HTMLElement | null> | undefined): void {
 	if (ref?.current) {
 		const firstChild = ref.current.querySelector<HTMLElement>('[tabindex]:first-child');
 		firstChild?.focus();
 	}
 }
 
-export function focusOnLastNode(ref: React.RefObject<HTMLElement> | undefined): void {
+export function focusOnLastNode(ref: React.RefObject<HTMLElement | null> | undefined): void {
 	if (ref?.current) {
 		const lastChild = ref.current.querySelector<HTMLElement>('[tabindex]:last-child');
 		lastChild?.focus();
@@ -146,7 +146,7 @@ function getButtonKeyboardPreset(callback: NativeKeyboardEventHandler): Keyboard
 	];
 }
 
-function getListKeyboardPreset(ref: React.RefObject<HTMLElement> | undefined): KeyboardPresetObj[] {
+function getListKeyboardPreset(ref: React.RefObject<HTMLElement | null> | undefined): KeyboardPresetObj[] {
 	return [
 		{
 			type: 'keydown',
@@ -196,7 +196,7 @@ function getKeyboardPreset(
 function getKeyboardPreset(
 	type: 'list',
 	callback: undefined,
-	ref: React.RefObject<HTMLElement>,
+	ref: React.RefObject<HTMLElement | null> | undefined,
 	keys?: undefined
 ): KeyboardPresetObj[];
 function getKeyboardPreset(
@@ -208,7 +208,7 @@ function getKeyboardPreset(
 function getKeyboardPreset(
 	type: ElementType,
 	callback: NativeKeyboardEventHandler | undefined = (): void => undefined,
-	ref: React.RefObject<HTMLElement> | undefined = undefined,
+	ref: React.RefObject<HTMLElement | null> | undefined = undefined,
 	keys: KeyboardPresetObj['keys'] = []
 ): KeyboardPresetObj[] {
 	switch (type) {
@@ -233,7 +233,7 @@ function getKeyboardPreset(
  * To avoid having listeners registered on the keyboard events, provide an empty presets array.
  */
 function useKeyboard(
-	ref: React.RefObject<HTMLElement> | HTMLElement | null,
+	ref: React.RefObject<HTMLElement | null>,
 	presets: KeyboardPresetObj[],
 	registerListener = true
 ): void {

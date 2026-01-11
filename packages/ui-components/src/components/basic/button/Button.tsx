@@ -50,7 +50,7 @@ interface ButtonSecondaryAction {
 	/** forceActive status for the secondary action */
 	forceActive?: boolean;
 	/** Ref object to assign to secondary button */
-	ref?: React.RefObject<HTMLButtonElement>;
+	ref?: React.RefObject<HTMLButtonElement | null>;
 }
 
 type ButtonPropsInternal = {

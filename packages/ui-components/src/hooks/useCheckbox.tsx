@@ -9,7 +9,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { getKeyboardPreset, useKeyboard } from './useKeyboard';
 
 type UseCheckboxArgs = {
-	ref: React.RefObject<HTMLElement>;
+	ref: React.RefObject<HTMLElement | null>;
 	value?: boolean;
 	defaultChecked?: boolean;
 	disabled?: boolean;

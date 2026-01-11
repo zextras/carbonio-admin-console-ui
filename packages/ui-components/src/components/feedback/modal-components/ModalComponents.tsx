@@ -22,7 +22,7 @@ const modalWidth = {
 	large: '50rem'
 };
 
-function isBodyOverflowing(modalRef: React.RefObject<HTMLDivElement>, windowObj: Window): boolean {
+function isBodyOverflowing(modalRef: React.RefObject<HTMLDivElement | null>, windowObj: Window): boolean {
 	if (windowObj) {
 		return (
 			windowObj.document.body.scrollHeight > (modalRef.current as HTMLDivElement).clientHeight ||

@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, {
-	HTMLAttributes,
-	Reducer,
-	useCallback,
-	useEffect,
-	useMemo,
-	useReducer,
-	useRef} from 'react';
+import React, { HTMLAttributes, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
@@ -447,7 +440,7 @@ const Table = React.forwardRef<HTMLDivElement, TableProps>(function TableFn(
 	},
 	ref
 ) {
-	const [selected, dispatchSelected] = useReducer<Reducer<string[], SelectReducerAction>>(
+	const [selected, dispatchSelected] = useReducer(
 		selectedReducer,
 		defaultSelection || selectedRows || []
 	);
@@ -553,4 +546,5 @@ export {
 	type THeader,
 	type THeaderProps,
 	type TRow,
-	type TRowProps};
+	type TRowProps
+};

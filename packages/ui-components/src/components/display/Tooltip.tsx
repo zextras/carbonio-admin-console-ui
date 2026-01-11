@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { flip, limitShift,offset, Placement, shift } from '@floating-ui/dom';
+import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import { rgba } from 'polished';
 import React, {
 	cloneElement,
@@ -13,7 +13,8 @@ import React, {
 	useEffect,
 	useLayoutEffect,
 	useRef,
-	useState} from 'react';
+	useState
+} from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -167,7 +168,9 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function TooltipF
 
 	return (
 		<>
-			{cloneElement(children, { ref: combinedTriggerRef })}
+			{cloneElement(children, {
+				ref: combinedTriggerRef as React.RefObject<HTMLElement>
+			} as Partial<React.HTMLAttributes<HTMLElement>>)}
 			<Portal show={open && !disabled} disablePortal={disablePortal}>
 				<TooltipWrapperWithCss ref={tooltipRef} open={open} $maxWidth={maxWidth} {...rest}>
 					{label}

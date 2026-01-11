@@ -79,7 +79,7 @@ const List = React.forwardRef(function ListFn(
 		() =>
 			children.map((child) =>
 				React.cloneElement(child, {
-					listRef,
+					listRef: listRef as React.RefObject<HTMLDivElement>,
 					selectedBackground: child.props.selectedBackground ?? selectedBackground,
 					activeBackground: child.props.activeBackground ?? activeBackground,
 					background: child.props.background ?? background

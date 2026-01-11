@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect,useState } from 'react';
 
 import { useCombinedRefs } from '../useCombinedRefs';
 import { useIntersectionObserver } from '../useIntersectionObserver/useIntersectionObserver';
 
 const useIsVisible = <T extends HTMLElement>(
-	containerRef?: React.RefObject<HTMLDivElement | Document>,
+	containerRef?: React.RefObject<HTMLDivElement | Document | null>,
 	itemRef?: React.Ref<T>,
 	intersectionObserverInitOptions?: IntersectionObserverInit
-): [boolean, React.RefObject<T>] => {
+): [boolean, React.RefObject<T | null>] => {
 	const [visible, setVisible] = useState(false);
 	const ref = useCombinedRefs(itemRef ?? null);
 

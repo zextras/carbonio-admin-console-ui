@@ -17,7 +17,7 @@ function useSplitVisibility<T, R extends HTMLElement = HTMLElement>(
 	items: T[],
 	// TODO(BREAKING CHANGE): remove string types and keep only Option type and rename to "options"
 	optionsWithRetroCompatibility: Options | 'end' | 'start' = { removeFrom: 'end' }
-): [T[], T[], React.RefObject<R>] {
+): [T[], T[], React.RefObject<R | null>] {
 	const [visibleItems, setVisibleItems] = useState<T[]>(items);
 	const [hiddenItems, setHiddenItems] = useState<T[]>([]);
 

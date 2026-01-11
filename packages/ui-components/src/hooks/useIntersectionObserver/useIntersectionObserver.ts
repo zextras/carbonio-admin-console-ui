@@ -6,7 +6,7 @@
 import { RefObject, useCallback, useEffect, useRef } from 'react';
 
 export const useIntersectionObserver = (
-	containerRef: RefObject<Element | Document> | undefined,
+	containerRef: RefObject<Element | Document | null> | undefined,
 	onIntersect: (entry: IntersectionObserverEntry) => void,
 	{ rootMargin, threshold }: Omit<IntersectionObserverInit, 'root'> = {}
 ): {

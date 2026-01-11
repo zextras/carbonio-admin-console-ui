@@ -62,7 +62,7 @@ function isStandardModal(
 }
 
 function ModalManager({ children }: ModalManagerProps): React.JSX.Element {
-	const [modals, dispatchModal] = useReducer<Reducer<ModalState[], ModalsReducerAction>>(
+	const [modals, dispatchModal] = useReducer(
 		modalsReducer,
 		[]
 	);
