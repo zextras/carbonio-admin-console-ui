@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Responsive } from "@zextras/carbonio-design-system";
+import { Container } from '@zextras/carbonio-design-system';
 
-import ShellMobileNav from "./shell-mobile-nav";
-import ShellPrimaryBar from "./shell-primary-bar";
+import ShellPrimaryBar from './shell-primary-bar';
 
-export default function ShellNavigationBar({ mobileNavIsOpen, activeRoute }) {
+export default function ShellNavigationBar({ activeRoute }) {
   return (
     <Container
       orientation="horizontal"
@@ -19,15 +18,7 @@ export default function ShellNavigationBar({ mobileNavIsOpen, activeRoute }) {
       mainAlignment="flex-start"
       crossAlignment="flex-start"
     >
-      <Responsive mode="desktop">
-        <ShellPrimaryBar activeRoute={activeRoute} />
-      </Responsive>
-      <Responsive mode="mobile">
-        <ShellMobileNav
-          mobileNavIsOpen={mobileNavIsOpen}
-          activeRoute={activeRoute}
-        />
-      </Responsive>
+      <ShellPrimaryBar activeRoute={activeRoute} />
     </Container>
   );
 }
