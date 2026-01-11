@@ -6,16 +6,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { rgba } from 'polished';
 import React, {
+	InputHTMLAttributes,
 	useCallback,
-	useState,
 	useEffect,
 	useMemo,
-	InputHTMLAttributes,
-	useRef
-} from 'react';
-
-import { rgba } from 'polished';
+	useRef,
+	useState} from 'react';
 import DatePicker, {
 	getDefaultLocale,
 	ReactDatePicker,
@@ -25,13 +23,13 @@ import DatePicker, {
 } from 'react-datepicker';
 import styled from 'styled-components';
 
-import { ChipInput, ChipInputProps, ChipItem } from './chipInput/ChipInput';
-import { IconButton, IconButtonProps } from './IconButton';
-import { Input, InputProps } from './Input';
 import { LiteralUnion, PaletteColor, SingleItemArray } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
 import { ChipProps } from '../display/Chip';
 import { Container, ContainerProps } from '../layout/Container';
+import { ChipInput, ChipInputProps, ChipItem } from './chipInput/ChipInput';
+import { IconButton, IconButtonProps } from './IconButton';
+import { Input, InputProps } from './Input';
 
 const COLORS = {
 	NAVIGATION_ICON_BORDER: '#CCCCCC',
@@ -252,8 +250,8 @@ const Styler = styled(Container)`
 		right: 0.125rem;
 	}
 	.react-datepicker__navigation--next--with-time:not(
-			.react-datepicker__navigation--next--with-today-button
-		) {
+		.react-datepicker__navigation--next--with-today-button
+	) {
 		right: 5.3125rem;
 	}
 	.react-datepicker__navigation--years {
@@ -615,29 +613,29 @@ const Styler = styled(Container)`
 		background-color: ${({ theme }): string => theme.palette.primary.hover};
 	}
 	.react-datepicker__day--in-selecting-range:not(
-			.react-datepicker__day--in-range,
-			.react-datepicker__month-text--in-range,
-			.react-datepicker__quarter-text--in-range,
-			.react-datepicker__year-text--in-range
-		),
+		.react-datepicker__day--in-range,
+		.react-datepicker__month-text--in-range,
+		.react-datepicker__quarter-text--in-range,
+		.react-datepicker__year-text--in-range
+	),
 	.react-datepicker__month-text--in-selecting-range:not(
-			.react-datepicker__day--in-range,
-			.react-datepicker__month-text--in-range,
-			.react-datepicker__quarter-text--in-range,
-			.react-datepicker__year-text--in-range
-		),
+		.react-datepicker__day--in-range,
+		.react-datepicker__month-text--in-range,
+		.react-datepicker__quarter-text--in-range,
+		.react-datepicker__year-text--in-range
+	),
 	.react-datepicker__quarter-text--in-selecting-range:not(
-			.react-datepicker__day--in-range,
-			.react-datepicker__month-text--in-range,
-			.react-datepicker__quarter-text--in-range,
-			.react-datepicker__year-text--in-range
-		),
+		.react-datepicker__day--in-range,
+		.react-datepicker__month-text--in-range,
+		.react-datepicker__quarter-text--in-range,
+		.react-datepicker__year-text--in-range
+	),
 	.react-datepicker__year-text--in-selecting-range:not(
-			.react-datepicker__day--in-range,
-			.react-datepicker__month-text--in-range,
-			.react-datepicker__quarter-text--in-range,
-			.react-datepicker__year-text--in-range
-		) {
+		.react-datepicker__day--in-range,
+		.react-datepicker__month-text--in-range,
+		.react-datepicker__quarter-text--in-range,
+		.react-datepicker__year-text--in-range
+	) {
 		background-color: ${({ theme }): string => rgba(theme.palette.primary.active, 0.5)};
 	}
 	.react-datepicker__month--selecting-range
@@ -959,32 +957,31 @@ interface DateTimePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'p
 	disabled?: boolean;
 }
 
-interface ReactDatePickerCustomInputProps
-	extends Pick<
-		InputHTMLAttributes<HTMLInputElement>,
-		| 'value'
-		| 'onBlur'
-		| 'onChange'
-		| 'onClick'
-		| 'onFocus'
-		| 'onKeyDown'
-		| 'id'
-		| 'name'
-		| 'form'
-		| 'autoFocus'
-		| 'placeholder'
-		| 'disabled'
-		| 'autoComplete'
-		| 'className'
-		| 'title'
-		| 'readOnly'
-		| 'required'
-		| 'tabIndex'
-		| 'aria-describedby'
-		| 'aria-invalid'
-		| 'aria-labelledby'
-		| 'aria-required'
-	> {
+interface ReactDatePickerCustomInputProps extends Pick<
+	InputHTMLAttributes<HTMLInputElement>,
+	| 'value'
+	| 'onBlur'
+	| 'onChange'
+	| 'onClick'
+	| 'onFocus'
+	| 'onKeyDown'
+	| 'id'
+	| 'name'
+	| 'form'
+	| 'autoFocus'
+	| 'placeholder'
+	| 'disabled'
+	| 'autoComplete'
+	| 'className'
+	| 'title'
+	| 'readOnly'
+	| 'required'
+	| 'tabIndex'
+	| 'aria-describedby'
+	| 'aria-invalid'
+	| 'aria-labelledby'
+	| 'aria-required'
+> {
 	value?: string;
 	onClick?: (e: React.SyntheticEvent | KeyboardEvent) => void;
 }
@@ -1305,4 +1302,4 @@ const DateTimePicker = React.forwardRef<ReactDatePicker, DateTimePickerProps>(
 	}
 );
 
-export { DateTimePicker, DateTimePickerProps, getDefaultLocale, setDefaultLocale, registerLocale };
+export { DateTimePicker, DateTimePickerProps, getDefaultLocale, registerLocale,setDefaultLocale };

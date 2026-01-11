@@ -59,6 +59,7 @@ export * from './components/navigation/TabBar';
 /** display components */
 export * from './components/display/Chip';
 export * from './components/display/Dropdown';
+export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';
 export {
