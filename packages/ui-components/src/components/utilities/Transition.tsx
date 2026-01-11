@@ -241,11 +241,22 @@ interface TransitionProps extends TransitionOnProps {
 const Transition: ForwardRefExoticComponent<
 	PropsWithoutRef<TransitionProps> & RefAttributes<HTMLElement>
 > & { types?: Array<keyof typeof STYLES> } = React.forwardRef<HTMLElement, TransitionProps>(
-	function TransitionFn({ disabled, children, ...rest }, ref) {
+	function TransitionFn(
+		{
+			type = 'fade',
+			apply = true,
+			transitionTarget = 'all',
+			transitionDelay = 0,
+			disabled = false,
+			children,
+			...rest
+		},
+		ref
+	) {
 		if (disabled) return React.cloneElement(children, { ref });
 
 		return (
-			<TransitionOn ref={ref} {...rest}>
+			<TransitionOn ref={ref} type={type} apply={apply} transitionTarget={transitionTarget} transitionDelay={transitionDelay} {...rest}>
 				{children}
 			</TransitionOn>
 		);
@@ -253,13 +264,5 @@ const Transition: ForwardRefExoticComponent<
 );
 
 Transition.types = Object.keys(STYLES);
-
-Transition.defaultProps = {
-	type: 'fade',
-	apply: true,
-	transitionTarget: 'all',
-	transitionDelay: 0,
-	disabled: false
-};
 
 export { Transition, TransitionProps };

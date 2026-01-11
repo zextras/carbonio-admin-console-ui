@@ -22,18 +22,14 @@ const P = styled(Text)`
 type ParagraphProps = TextProps;
 
 const Paragraph = React.forwardRef<HTMLDivElement, ParagraphProps>(function ParagraphFn(
-	{ children, ...rest },
+	{ children, overflow = 'break-word', ...rest },
 	ref
 ) {
 	return (
-		<P ref={ref} {...rest}>
+		<P ref={ref} overflow={overflow} {...rest}>
 			{children}
 		</P>
 	);
 });
-
-Paragraph.defaultProps = {
-	overflow: 'break-word'
-};
 
 export { Paragraph, ParagraphProps };
