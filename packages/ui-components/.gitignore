@@ -1,0 +1,15 @@
+/dist/
+/node_modules/
+/svg/
+/styleguide/
+/*.tgz
+/junit.xml
+/coverage
+/types
+/.idea
+tsTemplate.js
+/storybook-static
+*storybook.log
+*.zip
+.tool-versions
+.DS_Store
