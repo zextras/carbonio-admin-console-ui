@@ -11,7 +11,7 @@ import {
 	DropdownItem,
 	Row,
 	Tooltip
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

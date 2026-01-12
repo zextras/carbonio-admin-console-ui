@@ -12,7 +12,7 @@ import {
 	Text,
 	Tooltip,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

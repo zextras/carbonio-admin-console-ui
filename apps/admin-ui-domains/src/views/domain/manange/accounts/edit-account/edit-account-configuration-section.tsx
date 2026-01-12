@@ -14,7 +14,7 @@ import {
 	Row,
 	Text,
 	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import React, { ChangeEvent,FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

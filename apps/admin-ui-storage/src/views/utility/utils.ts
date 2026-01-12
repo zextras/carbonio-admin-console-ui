@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { type THeader } from '@zextras/carbonio-design-system';
+import { type THeader } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 
 export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [

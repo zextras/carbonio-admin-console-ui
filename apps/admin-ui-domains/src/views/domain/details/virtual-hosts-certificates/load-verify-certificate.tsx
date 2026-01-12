@@ -14,7 +14,7 @@ import {
   Text,
   Tooltip,
   useSnackbar,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

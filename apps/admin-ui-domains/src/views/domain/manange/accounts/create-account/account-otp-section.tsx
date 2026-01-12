@@ -12,7 +12,7 @@ import {
 	Padding,
 	Row,
 	Switch,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import { FC, useContext, useEffect,useState } from 'react';

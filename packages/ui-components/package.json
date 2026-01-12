@@ -1,5 +1,5 @@
 {
-	"name": "@zextras/carbonio-design-system",
+	"name": "@zextras/ui-components",
 	"description": "UI Components for Carbonio Admin Panel",
 	"main": "./src/index.ts",
 	"module": "./src/index.ts",

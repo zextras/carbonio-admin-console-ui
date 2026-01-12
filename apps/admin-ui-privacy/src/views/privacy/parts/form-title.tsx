@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Text } from '@zextras/carbonio-design-system';
+import { Container, Padding, Text } from '@zextras/ui-components';
 
 import ListRow from '../../list/list-row';
 

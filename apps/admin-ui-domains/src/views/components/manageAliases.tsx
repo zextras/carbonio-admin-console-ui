@@ -13,7 +13,7 @@ import {
 	Modal,
 	Row,
 	Select,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { cloneDeep, uniqBy } from 'lodash-es';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';

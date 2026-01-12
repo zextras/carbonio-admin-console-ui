@@ -5,7 +5,7 @@
  */
 
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Padding, Text } from '@zextras/carbonio-design-system';
+import { Container, Padding, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

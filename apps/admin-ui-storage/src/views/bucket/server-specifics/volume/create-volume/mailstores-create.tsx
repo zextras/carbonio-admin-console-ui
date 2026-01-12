@@ -13,7 +13,7 @@ import {
 	Row,
 	Select,
 	Switch,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import {
 	ChangeEvent,
 	FC,

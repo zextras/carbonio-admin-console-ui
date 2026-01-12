@@ -14,7 +14,7 @@ import {
   Select,
   Switch,
   Text,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { find, head } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

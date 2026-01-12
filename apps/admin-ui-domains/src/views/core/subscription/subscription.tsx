@@ -21,7 +21,7 @@ import {
 	Row,
 	Text,
 	Tooltip
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
 import React, { useMemo,useState } from 'react';

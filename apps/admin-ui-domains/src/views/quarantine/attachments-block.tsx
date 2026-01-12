@@ -16,7 +16,7 @@ import {
 	Tooltip,
 	useSnackbar,
 	useTheme
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
 import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

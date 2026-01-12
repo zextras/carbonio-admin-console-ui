@@ -12,7 +12,7 @@ import {
   Row,
   Select,
   Text,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { map, some } from "lodash-es";
 import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

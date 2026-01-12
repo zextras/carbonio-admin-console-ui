@@ -18,7 +18,7 @@ import {
   Select,
   Text,
   useSnackbar,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format, parse } from 'date-fns';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';

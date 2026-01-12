@@ -16,7 +16,7 @@ import {
 	Table,
 	Text,
 	THeader,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash-es';
 import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';

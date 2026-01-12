@@ -10,7 +10,7 @@ import {
 	Modal,
 	Padding,
 	Row,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

@@ -35,7 +35,7 @@ import 'tinymce/plugins/wordcount';
 
 import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
 import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/ui-components';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

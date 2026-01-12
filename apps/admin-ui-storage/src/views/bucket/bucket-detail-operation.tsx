@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';

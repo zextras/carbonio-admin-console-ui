@@ -14,7 +14,7 @@ import {
 	useUserAccounts,
 	useVersion
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider } from '@zextras/carbonio-design-system';
+import { Container, Divider } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 

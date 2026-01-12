@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row, Text } from '@zextras/carbonio-design-system';
+import { Row, Text } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';

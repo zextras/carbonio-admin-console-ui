@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, Input,Padding, Text, Tooltip } from '@zextras/carbonio-design-system';
+import { Container, Divider, Input,Padding, Text, Tooltip } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

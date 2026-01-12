@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, SnackbarManager } from '@zextras/carbonio-design-system';
+import { ModalManager, SnackbarManager } from '@zextras/ui-components';
 import React, { FC, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 

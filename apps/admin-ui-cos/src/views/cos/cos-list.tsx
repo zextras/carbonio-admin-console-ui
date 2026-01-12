@@ -13,7 +13,7 @@ import {
 	Row,
 	Table,
 	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, ReactElement,useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

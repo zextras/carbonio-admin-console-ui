@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, Row } from '@zextras/carbonio-design-system';
+import { Container, Divider, Row } from '@zextras/ui-components';
 import React, { ReactNode } from 'react';
 
 export const SectionFooter = ({

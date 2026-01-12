@@ -10,7 +10,7 @@ import {
 	Padding,
 	Row,
 	Text,
-	Tooltip} from '@zextras/carbonio-design-system';
+	Tooltip} from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';

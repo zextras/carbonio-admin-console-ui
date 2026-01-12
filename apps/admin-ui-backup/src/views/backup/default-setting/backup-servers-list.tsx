@@ -17,7 +17,7 @@ import {
   Table,
   Text,
   Tooltip,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { isEmpty } from "lodash-es";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

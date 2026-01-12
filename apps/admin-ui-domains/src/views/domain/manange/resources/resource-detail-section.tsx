@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   Text,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

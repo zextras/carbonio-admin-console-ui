@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { SelectItem } from '@zextras/carbonio-design-system';
+import { SelectItem } from '@zextras/ui-components';
 import { format, parse } from 'date-fns';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';

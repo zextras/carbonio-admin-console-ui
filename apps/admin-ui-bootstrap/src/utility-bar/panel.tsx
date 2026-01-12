@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, useEffect, useMemo } from 'react';
 import styled from 'styled-components';

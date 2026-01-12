@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Icon } from '@zextras/carbonio-design-system';
+import { Icon } from '@zextras/ui-components';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 

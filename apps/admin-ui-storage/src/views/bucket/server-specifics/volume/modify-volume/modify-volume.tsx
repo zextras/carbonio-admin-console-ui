@@ -24,7 +24,7 @@ import {
   Text,
   Tooltip,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { isEmpty } from "lodash-es";
 import React, {
   FC,

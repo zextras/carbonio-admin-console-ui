@@ -16,7 +16,7 @@ import {
 	Row,
 	Table,
 	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
 import {
 	FC,

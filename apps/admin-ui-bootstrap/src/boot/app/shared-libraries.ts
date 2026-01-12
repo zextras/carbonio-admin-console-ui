@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as ZappUI from '@zextras/carbonio-design-system';
+import * as ZappUI from '@zextras/ui-components';
 import * as Lodash from 'lodash-es';
 import * as PropTypes from 'prop-types';
 import React from 'react';
@@ -33,7 +33,7 @@ export function injectSharedLibraries(): void {
 		'styled-components': StyledComponents,
 		// DO NOT RENAME THIS
 		'@zextras/admin-ui-bootstrap': { ...BootstrapExports },
-		'@zextras/carbonio-design-system': ZappUI
+		'@zextras/ui-components': ZappUI
 	};
 	wnd.__ZAPP_HMR_EXPORT__ = {};
 }

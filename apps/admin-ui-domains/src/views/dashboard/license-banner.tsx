@@ -5,7 +5,7 @@
  */
 
 import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Row, Text } from '@zextras/carbonio-design-system';
+import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

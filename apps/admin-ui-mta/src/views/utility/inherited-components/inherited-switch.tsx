@@ -10,7 +10,7 @@ import {
 	Row,
 	Switch,
 	Text,
-	Tooltip} from '@zextras/carbonio-design-system';
+	Tooltip} from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

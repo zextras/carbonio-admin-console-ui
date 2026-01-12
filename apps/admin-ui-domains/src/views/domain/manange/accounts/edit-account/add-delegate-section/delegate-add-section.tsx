@@ -9,7 +9,7 @@ import {
   Input,
   Row,
   Text,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { FC, useContext, useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 

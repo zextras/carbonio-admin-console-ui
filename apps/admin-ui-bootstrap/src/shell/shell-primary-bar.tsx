@@ -11,7 +11,7 @@ import {
 	Padding,
 	Popper,
 	Row,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { map, sortBy,trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef,useState } from 'react';
 import { useHistory } from 'react-router-dom';

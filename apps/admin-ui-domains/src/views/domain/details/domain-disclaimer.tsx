@@ -14,7 +14,7 @@ import {
 	Switch,
 	Text,
 	TextArea,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { encode } from 'html-entities';
 import { isEqual } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';

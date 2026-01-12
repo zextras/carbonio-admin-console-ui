@@ -5,7 +5,7 @@
  */
 
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button, Container } from '@zextras/carbonio-design-system';
+import { Button, Container } from '@zextras/ui-components';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -5,7 +5,7 @@
  */
 
 import { useIsAdvanced, useLicenseInfo } from '@zextras/admin-ui-bootstrap';
-import { Banner, Container, Padding, Spinner } from '@zextras/carbonio-design-system';
+import { Banner, Container, Padding, Spinner } from '@zextras/ui-components';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

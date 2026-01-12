@@ -13,7 +13,7 @@ import {
   Select,
   SingleSelectionOnChange,
   Text,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

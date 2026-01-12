@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useScreenMode } from "@zextras/carbonio-design-system";
+import { useScreenMode } from "@zextras/ui-components";
 import { useMemo } from "react";
 
 import ShellContext from "./shell-context";

@@ -12,7 +12,7 @@ import {
   Row,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { isEqual } from "lodash-es";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
