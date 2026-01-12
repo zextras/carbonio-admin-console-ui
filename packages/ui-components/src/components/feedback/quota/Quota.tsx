@@ -21,10 +21,10 @@ interface QuotaProps extends ContainerProps {
 	fillBackground?: AnyColor;
 }
 
-const Quota = React.forwardRef<HTMLDivElement, QuotaProps>(function QuotaFn(
+const Quota = (
 	{ background = 'gray6', fill, fillBackground = 'info', height = '0.5rem', ...rest }: QuotaProps,
-	ref
-) {
+	ref?: React.Ref<HTMLDivElement>
+) => {
 	return (
 		<QuotaBar
 			ref={ref}
@@ -37,7 +37,7 @@ const Quota = React.forwardRef<HTMLDivElement, QuotaProps>(function QuotaFn(
 			<Container background={fillBackground} width={`${fill > 100 ? 100 : fill}%`} height="100%" />
 		</QuotaBar>
 	);
-});
+};
 
 export type { QuotaProps };
 export { Quota };

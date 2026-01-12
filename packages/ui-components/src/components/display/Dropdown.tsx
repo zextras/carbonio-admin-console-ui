@@ -303,7 +303,6 @@ function NestListItem({
 			onMouseEnter={openNestedDropdown}
 			{...rest}
 		>
-			{}
 			<Dropdown
 				display="block"
 				items={items}
@@ -458,36 +457,33 @@ interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'contextMen
 	dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 }
 
-const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function DropdownFn(
-	{
-		forceOpen = false,
-		disabled = false,
-		items,
-		placement = 'bottom-start' as const,
-		display = 'inline-block',
-		width = 'auto',
-		maxWidth = '18.75rem',
-		maxHeight = '50vh',
-		handleTriggerEvents = false,
-		disableRestoreFocus = false,
-		disableAutoFocus = false,
-		multiple = false,
-		contextMenu = false,
-		onOpen,
-		onClose,
-		children,
-		triggerRef = null,
-		disablePortal = false,
-		preventDefault = true,
-		selectedBackgroundColor,
-		itemIconSize = 'medium',
-		itemTextSize = 'medium',
-		itemPaddingBetween = 'small',
-		dropdownListRef = null,
-		...rest
-	},
-	ref
-) {
+const Dropdown = ({
+	forceOpen = false,
+	disabled = false,
+	items,
+	placement = 'bottom-start' as const,
+	display = 'inline-block',
+	width = 'auto',
+	maxWidth = '18.75rem',
+	maxHeight = '50vh',
+	handleTriggerEvents = false,
+	disableRestoreFocus = false,
+	disableAutoFocus = false,
+	multiple = false,
+	contextMenu = false,
+	onOpen,
+	onClose,
+	children,
+	triggerRef = null,
+	disablePortal = false,
+	preventDefault = true,
+	selectedBackgroundColor,
+	itemIconSize = 'medium',
+	itemTextSize = 'medium',
+	itemPaddingBetween = 'small',
+	dropdownListRef = null,
+	...rest
+}: DropdownProps) => {
 	const { windowObj } = useContext(ThemeContext);
 	const [open, setOpen] = useState<boolean>(forceOpen);
 	const openRef = useRef<boolean>(open);
@@ -887,7 +883,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 	);
 
 	return (
-		<PopperDropdownWrapper ref={ref} $display={display} {...rest}>
+		<PopperDropdownWrapper $display={display} {...rest}>
 			{triggerComponent}
 			<Portal show={open} disablePortal={disablePortal}>
 				<PopperList
@@ -907,6 +903,6 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(function Dropdo
 			</Portal>
 		</PopperDropdownWrapper>
 	);
-});
+};
 
 export { Dropdown, type DropdownItem, type DropdownProps };

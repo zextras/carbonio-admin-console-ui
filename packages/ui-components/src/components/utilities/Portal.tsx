@@ -5,7 +5,6 @@
  */
 
 import React, { useContext } from 'react';
-
 import ReactDOM from 'react-dom';
 import { ThemeContext } from 'styled-components';
 
@@ -23,11 +22,7 @@ interface PortalProps {
 	disablePortal?: boolean;
 }
 
-const Portal = React.forwardRef<React.ReactPortal, PortalProps>(function PortalFn(
-	{ children, container, show = false, disablePortal = false },
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_ref
-): React.ReactElement | null {
+const Portal = ({ children, container, show = false, disablePortal = false }: PortalProps) => {
 	const { windowObj } = useContext(ThemeContext);
 
 	if (!show) return null;
@@ -35,7 +30,7 @@ const Portal = React.forwardRef<React.ReactPortal, PortalProps>(function PortalF
 	if (disablePortal) return children;
 
 	return ReactDOM.createPortal(children, container ?? windowObj.document.body);
-});
+};
 
 export { Portal };
 export type { PortalProps };

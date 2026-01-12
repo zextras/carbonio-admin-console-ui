@@ -5,7 +5,6 @@
  */
 
 import React, { useMemo, useRef } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
@@ -58,7 +57,7 @@ const CustomText = styled(Text)`
 	line-height: 1.5;
 `;
 
-interface CheckboxProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
+export interface CheckboxProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
 	/** status of the Checkbox */
 	defaultChecked?: boolean;
 	/** Checkbox value */
@@ -81,24 +80,23 @@ interface CheckboxProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
 	onChange?: (checked: boolean) => void;
 	/** available sizes */
 	size?: CheckboxSize;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-const Checkbox = React.forwardRef<HTMLDivElement, CheckboxProps>(function CheckboxFn(
-	{
-		defaultChecked = false,
-		value,
-		label,
-		iconSize,
-		iconColor = 'gray0',
-		padding,
-		disabled = false,
-		onClick,
-		onChange,
-		size = 'medium',
-		...rest
-	},
-	ref
-) {
+export const Checkbox = ({
+	defaultChecked = false,
+	value,
+	label,
+	iconSize,
+	iconColor = 'gray0',
+	padding,
+	disabled = false,
+	onClick,
+	onChange,
+	size = 'medium',
+	ref,
+	...rest
+}: CheckboxProps) => {
 	const innerRef = useRef<HTMLDivElement>(null);
 	const ckbRef = useCombinedRefs(ref, innerRef);
 	const checked = useCheckbox({
@@ -157,7 +155,4 @@ const Checkbox = React.forwardRef<HTMLDivElement, CheckboxProps>(function Checkb
 			)}
 		</Container>
 	);
-});
-
-export type { CheckboxProps };
-export { Checkbox };
+};

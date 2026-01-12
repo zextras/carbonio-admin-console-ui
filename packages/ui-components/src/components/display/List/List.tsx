@@ -5,7 +5,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import styled, { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver/useIntersectionObserver';
@@ -53,19 +53,17 @@ interface ListProps extends ContainerProps {
 	children: React.ReactElement<ListItemProps>[];
 }
 
-const List = React.forwardRef(function ListFn(
-	{
-		onListBottom,
-		keyboardShortcutsIsDisabled,
-		children,
-		background = 'transparent',
-		selectedBackground = 'gray5',
-		activeBackground = 'highlight',
-		intersectionObserverInitOptions,
-		...rest
-	}: ListProps,
-	ref: React.ForwardedRef<HTMLDivElement>
-) {
+const List = ({
+	onListBottom,
+	keyboardShortcutsIsDisabled,
+	children,
+	background = 'transparent',
+	selectedBackground = 'gray5',
+	activeBackground = 'highlight',
+	intersectionObserverInitOptions,
+	ref,
+	...rest
+}: ListProps) => {
 	const listRef = useCombinedRefs(ref);
 
 	const keyEvents = useMemo<KeyboardPresetObj[]>(
@@ -134,7 +132,7 @@ const List = React.forwardRef(function ListFn(
 			</StyledList>
 		</ExternalContainer>
 	);
-});
+};
 
 /**
  * @deprecated ListV2 has been renamed to List

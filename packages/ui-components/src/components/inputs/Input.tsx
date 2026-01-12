@@ -5,12 +5,8 @@
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
+import styled from 'styled-components';
 
-import styled, { DefaultTheme } from 'styled-components';
-
-import { InputContainer } from './commons/InputContainer';
-import { InputDescription } from './commons/InputDescription';
-import { InputLabel } from './commons/InputLabel';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
 import { getColor } from '../../theme/theme-utils';
@@ -18,6 +14,9 @@ import { AnyColor } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
 import { Divider, DividerProps } from '../layout/divider/Divider';
+import { InputContainer } from './commons/InputContainer';
+import { InputDescription } from './commons/InputDescription';
+import { InputLabel } from './commons/InputLabel';
 
 const InputEl = styled.input<{ $color: AnyColor }>`
 	border: none !important;
@@ -72,7 +71,7 @@ interface InputProps extends ContainerProps {
 	/** input change callback */
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	/** ref to the input element */
-	inputRef?: React.RefObject<HTMLInputElement>;
+	inputRef?: React.RefObject<HTMLInputElement> | null;
 	/** value of the input */
 	value?: string | number;
 	/** default value of the input */
@@ -95,43 +94,42 @@ interface InputProps extends ContainerProps {
 	onEnter?: (e: KeyboardEvent) => void;
 	/** Description of the input */
 	description?: string;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-type Input = React.ForwardRefExoticComponent<InputProps & React.RefAttributes<HTMLDivElement>> & {
+type Input = React.Ref<InputProps & React.RefAttributes<HTMLDivElement>> & {
 	_newId?: number;
 };
 
-const Input: Input = React.forwardRef<HTMLDivElement, InputProps>(function InputFn(
-	{
-		autoFocus = false,
-		autoComplete = 'off',
-		borderColor = INPUT_DIVIDER_COLOR,
-		backgroundColor = INPUT_BACKGROUND_COLOR,
-		defaultValue,
-		disabled = false,
-		textColor = 'text',
-		label,
-		inputRef = null,
-		value,
-		CustomIcon,
-		onChange,
-		hasError = false,
-		inputName,
-		type = 'text',
-		hideBorder = false,
-		onEnter,
-		description,
-		...rest
-	},
-	ref
-) {
+const Input = ({
+	autoFocus = false,
+	autoComplete = 'off',
+	borderColor = INPUT_DIVIDER_COLOR,
+	backgroundColor = INPUT_BACKGROUND_COLOR,
+	defaultValue,
+	disabled = false,
+	textColor = 'text',
+	label,
+	inputRef = null,
+	value,
+	CustomIcon,
+	onChange,
+	hasError = false,
+	inputName,
+	type = 'text',
+	hideBorder = false,
+	onEnter,
+	description,
+	ref,
+	...rest
+}: InputProps) => {
 	const [hasFocus, setHasFocus] = useState(false);
 	const innerRef = useCombinedRefs<HTMLInputElement>(inputRef);
 	const [id] = useState(() => {
 		if (!Input._newId) {
 			Input._newId = 0;
 		}
-		// eslint-disable-next-line no-plusplus
+
 		return `input-${Input._newId++}`;
 	});
 
@@ -196,7 +194,6 @@ const Input: Input = React.forwardRef<HTMLDivElement, InputProps>(function Input
 					minHeight={'inherit'}
 				>
 					<InputEl
-						// eslint-disable-next-line jsx-a11y/no-autofocus
 						autoFocus={autoFocus || undefined}
 						autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
 						$color={textColor}
@@ -235,7 +232,7 @@ const Input: Input = React.forwardRef<HTMLDivElement, InputProps>(function Input
 			)}
 		</Container>
 	);
-});
+};
 
 Input._newId = 0;
 

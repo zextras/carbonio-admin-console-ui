@@ -4,24 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  soapFetch,
-  useDomainStore,
-  useUserSettings,
-} from "@zextras/admin-ui-bootstrap";
+import { soapFetch, useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomTextArea,
   Icon,
   Padding,
   Text,
   Tooltip,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+} from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { ICertificateContent } from "../../../../../types";
+import { ICertificateContent } from '../../../../../types';
 import {
   DOMAIN_CERTIFICATE,
   DOMAIN_CERTIFICATE_CA_CHAIN,
@@ -30,10 +27,9 @@ import {
   TRUE,
   ZIMBRA_ADMIN_URN,
   ZIMBRA_ID,
-} from "../../../../constants";
-import { flushCache } from "../../../../services/flush-cache-service";
-import { modifyDomain } from "../../../../services/modify-domain-service";
-import Textarea from "../../../components/textarea";
+} from '../../../../constants';
+import { flushCache } from '../../../../services/flush-cache-service';
+import { modifyDomain } from '../../../../services/modify-domain-service';
 
 export const LoadAndVerifyCert: FC<{
   setToggleWizardSection: any;
@@ -48,24 +44,21 @@ export const LoadAndVerifyCert: FC<{
   const [domainCertiErr, setDomainCertiErr] = useState(true);
   const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
   const [privateKeyErr, setPrivateKeyErr] = useState(true);
-  const isCertificateAvailbale = useDomainStore(
-    (state) => state.isCertificateAvailbale,
-  );
-  const [objDomainCertificate, setObjDomainCertificate] =
-    useState<ICertificateContent>({
-      fileName: "",
-      content: "",
-    });
+  const isCertificateAvailbale = useDomainStore((state) => state.isCertificateAvailbale);
+  const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
+    fileName: '',
+    content: '',
+  });
   const [objDomainCertificateCaChain, setObjDomainCertificateCaChain] =
     useState<ICertificateContent>({
-      fileName: "",
-      content: "",
+      fileName: '',
+      content: '',
     });
 
   const [objDomainCertificatePrivateKey, setObjDomainCertificatePrivateKey] =
     useState<ICertificateContent>({
-      fileName: "",
-      content: "",
+      fileName: '',
+      content: '',
     });
 
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -79,11 +72,7 @@ export const LoadAndVerifyCert: FC<{
     }
   }, [userSetting?.attrs]);
 
-  const setStatesForFileContent = (
-    fieldName: string,
-    fileName: string,
-    content: any,
-  ): void => {
+  const setStatesForFileContent = (fieldName: string, fileName: string, content: any): void => {
     switch (fieldName) {
       case DOMAIN_CERTIFICATE:
         setObjDomainCertificate({
@@ -122,57 +111,46 @@ export const LoadAndVerifyCert: FC<{
   };
 
   const uploadClickHandler = useCallback((): any => {
-    const zimbraId = domainInformation?.find(
-      (item: any) => item.n === ZIMBRA_ID,
-    )?._content;
+    const zimbraId = domainInformation?.find((item: any) => item.n === ZIMBRA_ID)?._content;
     const concatedCertiFile = objDomainCertificate?.content
-      ? objDomainCertificate?.content.concat(
-          "\n",
-          objDomainCertificateCaChain.content,
-        )
+      ? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
       : objDomainCertificateCaChain.content;
     const body: any = {};
     const attributes: any[] = [];
     body.id = zimbraId;
     body._jsns = ZIMBRA_ADMIN_URN;
     attributes.push({
-      n: "zimbraSSLCertificate",
+      n: 'zimbraSSLCertificate',
       _content: concatedCertiFile,
     });
     attributes.push({
-      n: "zimbraSSLPrivateKey",
+      n: 'zimbraSSLPrivateKey',
       _content: objDomainCertificatePrivateKey?.content,
     });
     body.a = attributes;
     modifyDomain(body)
       .then(() => {
         createSnackbar({
-          key: "success",
-          severity: "success",
-          label: t(
-            "domain.certificate_saved",
-            `The certificates have been saved`,
-          ),
+          key: 'success',
+          severity: 'success',
+          label: t('domain.certificate_saved', `The certificates have been saved`),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
         if (isGlobalAdmin) {
-          flushCache("domain", "id", zimbraId);
+          flushCache('domain', 'id', zimbraId);
         }
         externalData(true);
         setToggleWizardSection(false);
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -191,30 +169,29 @@ export const LoadAndVerifyCert: FC<{
   ]);
 
   const verifyCertificateHandler = useCallback((): void => {
-    if (objDomainCertificate.content === "") {
+    if (objDomainCertificate.content === '') {
       setDomainCertiErr(false);
     }
 
     if (!isCertificateAvailbale) {
-      if (objDomainCertificateCaChain.content === "") {
+      if (objDomainCertificateCaChain.content === '') {
         setDomainCertiCaChainErr(false);
       }
     }
-    if (objDomainCertificatePrivateKey.content === "") {
+    if (objDomainCertificatePrivateKey.content === '') {
       setPrivateKeyErr(false);
     }
     setVerifyBtnLoading(true);
     if (
-      (objDomainCertificate.content === "" ||
-        objDomainCertificatePrivateKey.content === "") &&
+      (objDomainCertificate.content === '' || objDomainCertificatePrivateKey.content === '') &&
       isCertificateAvailbale
     ) {
       createSnackbar({
-        key: "error",
-        severity: "error",
+        key: 'error',
+        severity: 'error',
         label: t(
-          "domain.certificate_content_error_without_ca_chain",
-          "Domain certificate , Private key is invalid",
+          'domain.certificate_content_error_without_ca_chain',
+          'Domain certificate , Private key is invalid',
         ),
         autoHideTimeout: 3000,
         hideButton: true,
@@ -222,16 +199,16 @@ export const LoadAndVerifyCert: FC<{
       });
       setVerifyBtnLoading(false);
     } else if (
-      (!isCertificateAvailbale && objDomainCertificateCaChain.content === "") ||
-      objDomainCertificate.content === "" ||
-      objDomainCertificatePrivateKey.content === ""
+      (!isCertificateAvailbale && objDomainCertificateCaChain.content === '') ||
+      objDomainCertificate.content === '' ||
+      objDomainCertificatePrivateKey.content === ''
     ) {
       createSnackbar({
-        key: "error",
-        severity: "error",
+        key: 'error',
+        severity: 'error',
         label: t(
-          "domain.certificate_content_error",
-          "Domain certificate , CA Chain or Private key is invalid",
+          'domain.certificate_content_error',
+          'Domain certificate , CA Chain or Private key is invalid',
         ),
         autoHideTimeout: 3000,
         hideButton: true,
@@ -241,15 +218,15 @@ export const LoadAndVerifyCert: FC<{
     } else {
       soapFetch(`VerifyCertKey`, {
         _jsns: ZIMBRA_ADMIN_URN,
-        ca: objDomainCertificateCaChain.content.replaceAll("\r", ""),
-        cert: objDomainCertificate.content.replaceAll("\r", ""),
-        privkey: objDomainCertificatePrivateKey.content.replaceAll("\r", ""),
+        ca: objDomainCertificateCaChain.content.replaceAll('\r', ''),
+        cert: objDomainCertificate.content.replaceAll('\r', ''),
+        privkey: objDomainCertificatePrivateKey.content.replaceAll('\r', ''),
       }).then((data: any) => {
         if (data?.verifyResult) {
           createSnackbar({
-            key: "success",
-            severity: "success",
-            label: t("domain.certificate_valid", `The certificate is valid`),
+            key: 'success',
+            severity: 'success',
+            label: t('domain.certificate_valid', `The certificate is valid`),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -260,10 +237,10 @@ export const LoadAndVerifyCert: FC<{
           uploadClickHandler();
         } else if (!data?.verifyResult) {
           createSnackbar({
-            key: "warning",
-            severity: "warning",
+            key: 'warning',
+            severity: 'warning',
             label: t(
-              "domain.certificate_valid_but_either_expired_or_exists_non_trusted_CA",
+              'domain.certificate_valid_but_either_expired_or_exists_non_trusted_CA',
               `The certificate is valid but it's either expired or exists a non trusted CA`,
             ),
             autoHideTimeout: 6000,
@@ -274,10 +251,10 @@ export const LoadAndVerifyCert: FC<{
           setVerifyBtnLoading(false);
         } else if (data?.verifyResult === INVALID) {
           createSnackbar({
-            key: "error",
-            severity: "error",
+            key: 'error',
+            severity: 'error',
             label: t(
-              "domain.certificate_invalid_error",
+              'domain.certificate_invalid_error',
               `The certificate is invalid , please try with other certificate`,
             ),
             autoHideTimeout: 6000,
@@ -299,17 +276,17 @@ export const LoadAndVerifyCert: FC<{
   ]);
 
   useEffect(() => {
-    if (objDomainCertificate.content !== "") {
+    if (objDomainCertificate.content !== '') {
       setDomainCertiErr(true);
     }
     if (!isCertificateAvailbale) {
-      if (objDomainCertificateCaChain.content !== "") {
+      if (objDomainCertificateCaChain.content !== '') {
         setDomainCertiCaChainErr(true);
       }
     } else {
       setDomainCertiCaChainErr(true);
     }
-    if (objDomainCertificatePrivateKey.content !== "") {
+    if (objDomainCertificatePrivateKey.content !== '') {
       setPrivateKeyErr(true);
     }
   }, [
@@ -321,14 +298,14 @@ export const LoadAndVerifyCert: FC<{
 
   return (
     <Container
-      padding={{ all: "large" }}
+      padding={{ all: 'large' }}
       gap="1.5rem"
       width="fill"
       mainAlignment="flex-start"
       crossAlignment="flex-start"
     >
       <Text size="large" weight="bold">
-        {t("label.upload_verify_certificate", "Upload and Verify Certificate")}
+        {t('label.upload_verify_certificate', 'Upload and Verify Certificate')}
       </Text>
       <Container
         orientation="horizontal"
@@ -336,33 +313,24 @@ export const LoadAndVerifyCert: FC<{
         crossAlignment="flex-start"
         width="fill"
       >
-        <Container padding={{ right: "0.25rem" }} width="fit">
+        <Container padding={{ right: '0.25rem' }} width="fit">
           <Icon icon="InfoOutline" color="secondary" />
         </Container>
         <Text color="secondary">
           {t(
-            "label.certificate_alert_helperText",
-            "The certificate will be available once the Proxy is restarted",
+            'label.certificate_alert_helperText',
+            'The certificate will be available once the Proxy is restarted',
           )}
         </Text>
       </Container>
 
-      <Container
-        width="fill"
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-      >
-        <Text weight="bold">
-          {t("label.domain_certificate", "Domain Certificate")}
-        </Text>
+      <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
+        <Text weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</Text>
         <Padding bottom="small" />
-        <Textarea
-          label={t(
-            "label.upload_paste_certificate",
-            "Upload or paste your Certificate",
-          )}
+        <CustomTextArea
+          label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
           backgroundColor="gray5"
-          value={objDomainCertificate.content || ""}
+          value={objDomainCertificate.content || ''}
           inputName="domainCertificate"
           onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
             setStatesForFileContent(
@@ -376,11 +344,11 @@ export const LoadAndVerifyCert: FC<{
         <Padding bottom="large" />
         <Button
           type="outlined"
-          label={t("label.upload", "UPLOAD")}
+          label={t('label.upload', 'UPLOAD')}
           color="primary"
           onClick={(): void => {
-            const input = document.createElement("input");
-            input.type = "file";
+            const input = document.createElement('input');
+            input.type = 'file';
             input.onchange = (e: any): void => {
               if (e?.target?.files) {
                 readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
@@ -391,26 +359,19 @@ export const LoadAndVerifyCert: FC<{
         />
       </Container>
 
-      <Container
-        width="fill"
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-      >
+      <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
         <Text weight="bold">
-          {t(
-            "label.domain_certificate_ca_chain",
-            "Domain Certificate CA Chain",
-          )}
+          {t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
         </Text>
         <Padding bottom="small" />
-        <Textarea
+        <CustomTextArea
           label={t(
-            "label.upload_paste_certificate_ca_chain",
-            "Upload or paste your Certificate CA Chain",
+            'label.upload_paste_certificate_ca_chain',
+            'Upload or paste your Certificate CA Chain',
           )}
           backgroundColor="gray5"
-          value={objDomainCertificateCaChain.content || ""}
+          value={objDomainCertificateCaChain.content || ''}
           inputName="domainCertificateCaChain"
           onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
             setStatesForFileContent(
@@ -424,17 +385,14 @@ export const LoadAndVerifyCert: FC<{
         <Padding bottom="large" />
         <Button
           type="outlined"
-          label={t("label.upload", "UPLOAD")}
+          label={t('label.upload', 'UPLOAD')}
           color="primary"
           onClick={(): void => {
-            const input = document.createElement("input");
-            input.type = "file";
+            const input = document.createElement('input');
+            input.type = 'file';
             input.onchange = (e: any): void => {
               if (e?.target?.files) {
-                readFileContentHandler(
-                  e.target.files[0],
-                  DOMAIN_CERTIFICATE_CA_CHAIN,
-                );
+                readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
               }
             };
             input.click();
@@ -442,23 +400,14 @@ export const LoadAndVerifyCert: FC<{
         />
       </Container>
 
-      <Container
-        width="fill"
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-      >
+      <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <Text weight="bold">
-          {t("label.domain_certificate_private_key", "Domain Private Key")}
-        </Text>
+        <Text weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</Text>
         <Padding bottom="small" />
-        <Textarea
-          label={t(
-            "label.upload_paste_private_key",
-            "Upload or paste your Private Key",
-          )}
+        <CustomTextArea
+          label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
           backgroundColor="gray5"
-          value={objDomainCertificatePrivateKey.content || ""}
+          value={objDomainCertificatePrivateKey.content || ''}
           inputName="domainPrivateKey"
           onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
             setStatesForFileContent(
@@ -472,17 +421,14 @@ export const LoadAndVerifyCert: FC<{
         <Padding bottom="large" />
         <Button
           type="outlined"
-          label={t("label.upload", "UPLOAD")}
+          label={t('label.upload', 'UPLOAD')}
           color="primary"
           onClick={(): void => {
-            const input = document.createElement("input");
-            input.type = "file";
+            const input = document.createElement('input');
+            input.type = 'file';
             input.onchange = (e: any): void => {
               if (e?.target?.files) {
-                readFileContentHandler(
-                  e.target.files[0],
-                  DOMAIN_CERTIFICATE_PRIVATE_KEY,
-                );
+                readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
               }
             };
             input.click();
@@ -490,18 +436,18 @@ export const LoadAndVerifyCert: FC<{
         />
       </Container>
 
-      <Container padding={{ top: "medium" }} width="fill">
+      <Container padding={{ top: 'medium' }} width="fill">
         <Tooltip
           disabled={!uploadBtnTgl}
           label={t(
-            "label.fill_all_required_fields",
-            "Please fill in all required fields correctly",
+            'label.fill_all_required_fields',
+            'Please fill in all required fields correctly',
           )}
         >
           <Button
             width="fill"
             size="large"
-            label={t("label.verify", "VERIFY")}
+            label={t('label.verify', 'VERIFY')}
             onClick={verifyCertificateHandler}
             loading={verifyBtnLoading}
             disabled={

@@ -5,7 +5,6 @@
  */
 
 import React, {
-	CSSProperties,
 	InputHTMLAttributes,
 	LabelHTMLAttributes,
 	useCallback,
@@ -14,7 +13,6 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -154,9 +152,7 @@ type RadioType = (<T extends RadioInputHTMLAttributes['value'] = string>(
 	_id?: number;
 };
 
-const RadioComponent = React.forwardRef(function RadioFn<
-	T extends RadioInputHTMLAttributes['value'] = string
->(
+const RadioComponent = (
 	{
 		defaultChecked,
 		checked,
@@ -169,9 +165,9 @@ const RadioComponent = React.forwardRef(function RadioFn<
 		iconColor = 'gray0',
 		inputRef = null,
 		...rest
-	}: RadioProps<T>,
-	ref: React.ForwardedRef<HTMLDivElement>
-) {
+	}: RadioProps,
+	ref: React.Ref<HTMLDivElement>
+) => {
 	const containerRef = useCombinedRefs<HTMLDivElement>(ref);
 	const radioInputRef = useCombinedRefs<HTMLInputElement>(inputRef);
 	const labelRef = useRef<HTMLDivElement>(null);
@@ -220,7 +216,7 @@ const RadioComponent = React.forwardRef(function RadioFn<
 	const labelWithClick = useMemo(
 		() =>
 			(typeof label === 'string' && (
-				<Label disabled={disabled} size={RADIO_SIZE[size].label} htmlFor={id} ref={labelRef}>
+				<Label disabled={disabled} size={RADIO_SIZE[size].label} htmlFor={id}>
 					{label}
 				</Label>
 			)) ||
@@ -265,9 +261,9 @@ const RadioComponent = React.forwardRef(function RadioFn<
 			{labelWithClick}
 		</RadioContainer>
 	);
-});
+};
 
 const Radio = RadioComponent as RadioType;
 
-export { RadioComponent, Radio };
+export { Radio, RadioComponent };
 export type { RadioProps };

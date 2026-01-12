@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes } from 'react';
-
 import { omit } from 'lodash';
+import React, { HTMLAttributes } from 'react';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { getPadding, PaddingObj } from '../../theme/theme-utils';
@@ -16,6 +15,7 @@ type PaddingComponentProps = {
 	width?: string;
 	height?: string;
 	children?: React.ReactNode | React.ReactNode[];
+	ref?: React.Ref<HTMLDivElement>;
 } & PaddingObj;
 
 type PaddingProps = PaddingComponentProps &
@@ -42,10 +42,13 @@ const paddingObjKeys = Object.keys({
 	vertical: undefined
 } satisfies Record<AllKeys<PaddingObj>, undefined>);
 
-const Padding = React.forwardRef<HTMLDivElement, PaddingProps>(function PaddingFn(
-	{ children, width = 'fit-content', height = 'fit-content', ...props },
-	ref
-) {
+const Padding = ({
+	children,
+	width = 'fit-content',
+	height = 'fit-content',
+	ref,
+	...props
+}: PaddingProps) => {
 	// omit the padding obj properties from the props, in order to pass down to the styled components only the valid html props
 	const rest = omit(props, paddingObjKeys);
 
@@ -54,7 +57,7 @@ const Padding = React.forwardRef<HTMLDivElement, PaddingProps>(function PaddingF
 			{children}
 		</Comp>
 	);
-});
+};
 
 export { Padding };
 export type { PaddingProps };

@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { type ReactElement } from 'react';
-
 import {
 	act,
 	ByRoleMatcher,
@@ -22,6 +20,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { defaultKeyMap } from '@testing-library/user-event/dist/cjs/keyboard/keyMap';
+import React, { type ReactElement } from 'react';
 
 import { ThemeProvider } from './theme/theme-context-provider';
 

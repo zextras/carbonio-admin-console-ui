@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { addMonths, format, startOfMonth } from 'date-fns';
 import React from 'react';
 
-import { format, addMonths, startOfMonth } from 'date-fns';
-
-import { DateTimePicker, DateTimePickerProps } from './DateTimePicker';
-import { setup, screen, within } from '../../test-utils';
+import { screen, setup, within } from '../../test-utils';
 import { ICONS, SELECTORS } from '../../testUtils/constants';
 import { Button } from '../basic/button/Button';
+import { DateTimePicker, DateTimePickerProps } from './DateTimePicker';
 
 const DEFAULT_DATE_FORMAT = 'MMMM d, yyyy h:mm aa';
 
@@ -312,20 +311,19 @@ describe('DateTimePicker', () => {
 	});
 
 	describe('With custom input component', () => {
-		const CustomComponent = React.forwardRef<
-			HTMLDivElement,
-			React.ComponentProps<NonNullable<DateTimePickerProps['CustomComponent']>>
-		>(function CustomComponentFn({ value, onClick }, ref) {
+		const CustomComponent = ({
+			value,
+			onClick
+		}: React.ComponentProps<NonNullable<DateTimePickerProps['CustomComponent']>>) => {
 			return (
 				<Button
 					onClick={(e) => {
 						onClick?.(e);
 					}}
-					ref={ref}
 					label={value || 'no value'}
 				/>
 			);
-		});
+		};
 
 		test('Custom component is rendered', () => {
 			setup(

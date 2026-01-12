@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import React, { useCallback, useState } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+
+import { Container, ContainerProps } from '../layout/Container';
 
 interface ContainerExtendProps extends ContainerProps {
 	disabled: boolean;
@@ -114,79 +115,77 @@ interface TextareaProps {
 	rows?: number;
 }
 
-const Textarea: any = React.forwardRef<HTMLDivElement, TextareaProps>(function TextareaFn(
-	{
-		autoFocus = false,
-		autoComplete = 'off',
-		backgroundColor = 'gray6',
-		defaultValue,
-		disabled = false,
-		label,
-		value,
-		onChange,
-		hasError = false,
-		inputName,
-		onEnter,
-		rows = 3,
-		...rest
-	},
-	ref
-) {
-	const [hasFocus, setHasFocus] = useState(false);
-	const [id] = useState(() => {
-		if (!Textarea._newId) {
-			Textarea._newId = 0;
-		}
-		 
-		return `textarea-${Textarea._newId++}`;
-	});
+export const CustomTextArea: any = React.forwardRef<HTMLDivElement, TextareaProps>(
+	function TextareaFn(
+		{
+			autoFocus = false,
+			autoComplete = 'off',
+			backgroundColor = 'gray6',
+			defaultValue,
+			disabled = false,
+			label,
+			value,
+			onChange,
+			hasError = false,
+			inputName,
+			rows = 3,
+			...rest
+		},
+		ref
+	) {
+		const [hasFocus, setHasFocus] = useState(false);
+		const [id] = useState(() => {
+			if (!CustomTextArea._newId) {
+				CustomTextArea._newId = 0;
+			}
 
-	const onTextAreaFocus = useCallback(() => {
-		if (!disabled) {
-			setHasFocus(true);
-		}
-	}, [setHasFocus, disabled]);
+			return `textarea-${CustomTextArea._newId++}`;
+		});
 
-	const onTextAreaBlur = useCallback(() => setHasFocus(false), [setHasFocus]);
+		const onTextAreaFocus = useCallback(() => {
+			if (!disabled) {
+				setHasFocus(true);
+			}
+		}, [setHasFocus, disabled]);
 
-	return (
-		<ContainerEl
-			ref={ref}
-			orientation="horizontal"
-			width="fill"
-			height="fit"
-			borderRadius="half"
-			background={backgroundColor}
-			style={{
-				cursor: 'text',
-				position: 'relative'
-			}}
-			onClick={onTextAreaFocus}
-			disabled={disabled}
-			{...rest}
-		>
-			<TextAreaEl
-				 
-				autoFocus={autoFocus || undefined}
-				autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
-				onFocus={onTextAreaFocus}
-				onBlur={onTextAreaBlur}
-				id={id}
-				name={inputName || label}
-				defaultValue={defaultValue}
-				value={value}
-				onChange={onChange}
+		const onTextAreaBlur = useCallback(() => setHasFocus(false), [setHasFocus]);
+
+		return (
+			<ContainerEl
+				ref={ref}
+				orientation="horizontal"
+				width="fill"
+				height="fit"
+				borderRadius="half"
+				background={backgroundColor}
+				style={{
+					cursor: 'text',
+					position: 'relative'
+				}}
+				onClick={onTextAreaFocus}
 				disabled={disabled}
-				placeholder={label}
-				rows={rows}
-			/>
-			<Label htmlFor={id} hasFocus={hasFocus} hasError={hasError}>
-				{label}
-			</Label>
-		</ContainerEl>
-	);
-});
+				{...rest}
+			>
+				<TextAreaEl
+					autoFocus={autoFocus || undefined}
+					autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
+					onFocus={onTextAreaFocus}
+					onBlur={onTextAreaBlur}
+					id={id}
+					name={inputName || label}
+					defaultValue={defaultValue}
+					value={value}
+					onChange={onChange}
+					disabled={disabled}
+					placeholder={label}
+					rows={rows}
+				/>
+				<Label htmlFor={id} hasFocus={hasFocus} hasError={hasError}>
+					{label}
+				</Label>
+			</ContainerEl>
+		);
+	}
+);
 
-Textarea._newId = 0;
-
-export default Textarea;
+CustomTextArea._newId = 0;

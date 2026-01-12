@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, HTMLAttributes, useMemo } from 'react';
-
 import { map } from 'lodash';
+import React, { HTMLAttributes, useCallback, useMemo } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -85,74 +84,70 @@ interface DefaultTabBarItemProps extends ContainerProps {
 	forceWidthEquallyDistributed: boolean;
 }
 
-const DefaultTabBarItem = React.forwardRef<HTMLDivElement, DefaultTabBarItemProps>(
-	function DefaultTabBarItemFn(
-		{
-			item,
-			selected,
-			background,
-			onClick,
-			underlineColor = 'primary',
-			forceWidthEquallyDistributed = false,
-			children,
-			...rest
-		},
-		ref
-	) {
-		const activationCb = useCallback(
-			(ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
-				if (!item.disabled) {
-					onClick(ev);
-				}
-			},
-			[item.disabled, onClick]
-		);
-
-		const combinedRef = useCombinedRefs<HTMLDivElement>(ref);
-
-		const keyEvents = useMemo(() => getKeyboardPreset('button', activationCb), [activationCb]);
-		useKeyboard(combinedRef, keyEvents);
-
-		return (
-			<DefaultTabBarItemContainer
-				padding={{ horizontal: 'small' }}
-				onClick={activationCb}
-				$selected={selected}
-				background={background}
-				borderRadius="none"
-				$disabled={item.disabled}
-				$underlineColor={underlineColor}
-				ref={combinedRef}
-				$forceWidthEquallyDistributed={forceWidthEquallyDistributed}
-				{...rest}
-			>
-				{children || (
-					<CustomText
-						overflow="ellipsis"
-						size="small"
-						color={selected ? 'text' : 'secondary'}
-						disabled={item.disabled}
-					>
-						{item.label}
-					</CustomText>
-				)}
-			</DefaultTabBarItemContainer>
-		);
-	}
-);
-
-const TabBar = React.forwardRef<HTMLDivElement, TabBarProps>(function TabBarFn(
+const DefaultTabBarItem = (
 	{
-		items,
+		item,
 		selected,
-		onChange,
 		background,
+		onClick,
 		underlineColor = 'primary',
 		forceWidthEquallyDistributed = false,
+		children,
 		...rest
-	},
-	ref
-) {
+	}: DefaultTabBarItemProps,
+	ref?: React.Ref<HTMLDivElement>
+) => {
+	const activationCb = useCallback(
+		(ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
+			if (!item.disabled) {
+				onClick(ev);
+			}
+		},
+		[item.disabled, onClick]
+	);
+
+	const combinedRef = useCombinedRefs<HTMLDivElement>(ref);
+
+	const keyEvents = useMemo(() => getKeyboardPreset('button', activationCb), [activationCb]);
+	useKeyboard(combinedRef, keyEvents);
+
+	return (
+		<DefaultTabBarItemContainer
+			padding={{ horizontal: 'small' }}
+			onClick={activationCb}
+			$selected={selected}
+			background={background}
+			borderRadius="none"
+			$disabled={item.disabled}
+			$underlineColor={underlineColor}
+			ref={combinedRef}
+			$forceWidthEquallyDistributed={forceWidthEquallyDistributed}
+			{...rest}
+		>
+			{children || (
+				<CustomText
+					overflow="ellipsis"
+					size="small"
+					color={selected ? 'text' : 'secondary'}
+					disabled={item.disabled}
+				>
+					{item.label}
+				</CustomText>
+			)}
+		</DefaultTabBarItemContainer>
+	);
+};
+
+const TabBar = ({
+	items,
+	selected,
+	onChange,
+	background,
+	underlineColor = 'primary',
+	forceWidthEquallyDistributed = false,
+	ref,
+	...rest
+}: TabBarProps) => {
 	const onItemClickCb = useCallback(
 		(id: string) =>
 			(ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent): void => {
@@ -197,7 +192,7 @@ const TabBar = React.forwardRef<HTMLDivElement, TabBarProps>(function TabBarFn(
 			)}
 		</Container>
 	);
-});
+};
 
-export { TabBar, DefaultTabBarItem };
-export type { TabBarProps, DefaultTabBarItemProps };
+export { DefaultTabBarItem, TabBar };
+export type { DefaultTabBarItemProps, TabBarProps };

@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
-
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
-import { Container, ContainerProps } from './Container';
 import { With$Prefix } from '../../types/utils';
+import { Container, ContainerProps } from './Container';
 
 interface RowProps extends ContainerProps {
 	display?: string;
 	order?: 'unset' | number;
 	takeAvailableSpace?: boolean;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
 const ContainerEl = styled(Container)<With$Prefix<RowProps>>`
@@ -29,25 +28,23 @@ const ContainerEl = styled(Container)<With$Prefix<RowProps>>`
 		`};
 `;
 
-const Row = React.forwardRef<HTMLDivElement, RowProps>(function RowFn(
-	{
-		display = 'flex',
-		orientation = 'horizontal',
-		borderRadius = 'none',
-		height = 'auto',
-		width = 'auto',
-		wrap = 'wrap',
-		flexBasis = 'unset',
-		flexGrow = 'unset',
-		flexShrink = 1,
-		order = 'unset',
-		takeAvailableSpace = false,
-		maxWidth = '100%',
-		children,
-		...rest
-	},
-	ref
-) {
+const Row = ({
+	display = 'flex',
+	orientation = 'horizontal',
+	borderRadius = 'none',
+	height = 'auto',
+	width = 'auto',
+	wrap = 'wrap',
+	flexBasis = 'unset',
+	flexGrow = 'unset',
+	flexShrink = 1,
+	order = 'unset',
+	takeAvailableSpace = false,
+	maxWidth = '100%',
+	children,
+	ref,
+	...rest
+}: RowProps) => {
 	return (
 		<ContainerEl
 			ref={ref}
@@ -68,7 +65,7 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>(function RowFn(
 			{children}
 		</ContainerEl>
 	);
-});
+};
 
 export { Row };
 export type { RowProps };

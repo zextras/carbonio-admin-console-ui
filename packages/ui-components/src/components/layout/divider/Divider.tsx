@@ -5,7 +5,6 @@
  */
 
 import React, { HTMLAttributes } from 'react';
-
 import styled from 'styled-components';
 
 import { getColor } from '../../../theme/theme-utils';
@@ -13,6 +12,7 @@ import { AnyColor, MakeRequired, With$Prefix } from '../../../types/utils';
 
 interface DividerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
 	/** Divider color */
+	ref?: React.Ref<HTMLDivElement>;
 	color?: AnyColor;
 }
 
@@ -25,12 +25,9 @@ const DividerEl = styled.div<With$Prefix<MakeRequired<DividerProps, 'color'>>>`
 	width: 100%;
 `;
 
-const Divider = React.forwardRef<HTMLDivElement, DividerProps>(function DividerFn(
-	{ color = 'gray2', ...rest },
-	ref
-) {
-	return <DividerEl ref={ref} $color={color} data-testid={'divider'} {...rest} />;
-});
+const Divider = ({ color = 'gray2', ref, ...rest }: DividerProps) => {
+	return <DividerEl $ref={ref} $color={color} data-testid={'divider'} {...rest} />;
+};
 
 export { Divider };
 export type { DividerProps };

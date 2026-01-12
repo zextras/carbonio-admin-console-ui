@@ -37,36 +37,35 @@ type ModalProps = CustomModalProps &
 		copyLabel?: ModalFooterProps['errorActionLabel'];
 		/** Close icon tooltip label */
 		closeIconTooltip?: string;
+		ref?: React.Ref<HTMLDivElement>;
 	} & Omit<HTMLAttributes<HTMLDivElement>, 'title'>;
 
-const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function ModalFn(
-	{
-		type = 'default',
-		title: Title,
-		centered = false,
-		onConfirm,
-		confirmLabel = 'OK',
-		confirmDisabled,
-		confirmTooltip,
-		confirmColor = 'primary',
-		onSecondaryAction,
-		secondaryActionLabel,
-		secondaryActionDisabled,
-		secondaryActionTooltip,
-		onClose = noop,
-		dismissLabel,
-		optionalFooter,
-		customFooter,
-		copyLabel = 'Copy',
-		hideFooter = false,
-		showCloseIcon = true,
-		children,
-		containerWindow,
-		closeIconTooltip,
-		...rest
-	},
-	ref
-) {
+const Modal = ({
+	type = 'default',
+	title: Title,
+	centered = false,
+	onConfirm,
+	confirmLabel = 'OK',
+	confirmDisabled,
+	confirmTooltip,
+	confirmColor = 'primary',
+	onSecondaryAction,
+	secondaryActionLabel,
+	secondaryActionDisabled,
+	secondaryActionTooltip,
+	onClose = noop,
+	dismissLabel,
+	optionalFooter,
+	customFooter,
+	copyLabel = 'Copy',
+	hideFooter = false,
+	showCloseIcon = true,
+	children,
+	containerWindow,
+	closeIconTooltip,
+	ref,
+	...rest
+}: ModalProps) => {
 	const { windowObj: themeWindowObj } = useContext(ThemeContext);
 	const windowObj = containerWindow ?? themeWindowObj;
 
@@ -117,7 +116,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function ModalFn(
 			)}
 		</CustomModal>
 	);
-});
+};
 
 export type { ModalProps };
 export { Modal };

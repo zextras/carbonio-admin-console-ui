@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, createContext, useReducer, Reducer, useContext, useMemo } from 'react';
-
+import React, { createContext, useCallback, useContext, useMemo,useReducer } from 'react';
 import { ThemeContext } from 'styled-components';
 
 import { CustomModal, CustomModalProps } from '../feedback/CustomModal';
@@ -62,10 +61,7 @@ function isStandardModal(
 }
 
 function ModalManager({ children }: ModalManagerProps): React.JSX.Element {
-	const [modals, dispatchModal] = useReducer(
-		modalsReducer,
-		[]
-	);
+	const [modals, dispatchModal] = useReducer(modalsReducer, []);
 	const { windowObj } = useContext(ThemeContext);
 
 	const createModal = useCallback<CreateModalFn>(
@@ -139,10 +135,9 @@ function ModalManager({ children }: ModalManagerProps): React.JSX.Element {
 }
 
 export {
-	ModalManagerContext,
-	ModalManager,
-	type ModalManagerProps,
-	type CreateModalFn,
 	type CloseModalFn,
-	type CreateModalArgs
-};
+	type CreateModalArgs,
+	type CreateModalFn,
+	ModalManager,
+	ModalManagerContext,
+	type ModalManagerProps};

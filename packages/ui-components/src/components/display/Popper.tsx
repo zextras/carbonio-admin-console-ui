@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import { flip, limitShift,offset, Placement, shift, VirtualElement } from '@floating-ui/dom';
+import { flip, limitShift, offset, Placement, shift, VirtualElement } from '@floating-ui/dom';
 import React, {
 	HTMLAttributes,
 	useCallback,
@@ -13,7 +12,8 @@ import React, {
 	useEffect,
 	useLayoutEffect,
 	useMemo,
-	useRef} from 'react';
+	useRef
+} from 'react';
 import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -53,22 +53,21 @@ interface PopperProps extends HTMLAttributes<HTMLDivElement> {
 	disablePortal?: boolean;
 	/** Popper content */
 	children: React.ReactNode | React.ReactNode[];
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-const Popper = React.forwardRef<HTMLDivElement, PopperProps>(function PopperFn(
-	{
-		open = false,
-		anchorEl,
-		virtualElement,
-		disableRestoreFocus = false,
-		placement = 'bottom-end',
-		onClose,
-		children,
-		disablePortal = false,
-		...rest
-	},
-	ref
-) {
+const Popper = ({
+	open = false,
+	anchorEl,
+	virtualElement,
+	disableRestoreFocus = false,
+	placement = 'bottom-end',
+	onClose,
+	children,
+	disablePortal = false,
+	ref,
+	...rest
+}: PopperProps) => {
 	const { windowObj } = useContext(ThemeContext);
 	const popperRef = useCombinedRefs<HTMLDivElement>(ref);
 	const wrapperRef = useRef<HTMLDivElement>(null);
@@ -188,7 +187,7 @@ const Popper = React.forwardRef<HTMLDivElement, PopperProps>(function PopperFn(
 			</PopperContainer>
 		</Portal>
 	);
-});
+};
 
 export type { PopperProps };
 export { Popper };

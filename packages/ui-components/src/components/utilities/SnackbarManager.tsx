@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useReducer, createContext } from 'react';
+import React, { createContext,useCallback, useReducer } from 'react';
 
 import { Snackbar, SnackbarProps } from '../feedback/snackbar/Snackbar';
 
@@ -122,10 +122,9 @@ function SnackbarManager({
 	);
 }
 export {
-	SnackbarManagerContext,
-	SnackbarManager,
-	type SnackbarManagerProps,
+	type CloseSnackbarFn,
 	type CreateSnackbarFn,
 	type CreateSnackbarFnArgs,
-	type CloseSnackbarFn
-};
+	SnackbarManager,
+	SnackbarManagerContext,
+	type SnackbarManagerProps};

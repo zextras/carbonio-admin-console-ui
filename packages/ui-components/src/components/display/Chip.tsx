@@ -9,8 +9,8 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { AnyColor } from '../../types/utils';
 import { pseudoClasses, useTheme } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Icon, IconProps } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
@@ -92,6 +92,7 @@ interface ChipProps extends Omit<RowProps, 'children'> {
 	size?: 'small' | 'medium' | 'large';
 	/** Tooltip placement */
 	tooltipPlacement?: React.ComponentPropsWithoutRef<typeof Tooltip>['placement'];
+	ref?: React.Ref<HTMLDivElement>;
 }
 
 const ActionIcon = styled(Icon)``;
@@ -167,33 +168,31 @@ const SIZES = {
 	}
 >;
 
-const Chip = React.forwardRef<HTMLDivElement, ChipProps>(function ChipFn(
-	{
-		actions = [],
-		avatarIcon,
-		avatarBackground,
-		avatarColor,
-		avatarLabel,
-		avatarPicture,
-		background = 'gray3',
-		shape = 'round',
-		closable = true,
-		color,
-		disabled,
-		error,
-		hasAvatar = true,
-		keyLabel,
-		label,
-		maxWidth,
-		onClick,
-		onClose,
-		onDoubleClick,
-		size = 'small',
-		tooltipPlacement,
-		...rest
-	},
-	ref
-) {
+const Chip = ({
+	actions = [],
+	avatarIcon,
+	avatarBackground,
+	avatarColor,
+	avatarLabel,
+	avatarPicture,
+	background = 'gray3',
+	shape = 'round',
+	closable = true,
+	color,
+	disabled,
+	error,
+	hasAvatar = true,
+	keyLabel,
+	label,
+	maxWidth,
+	onClick,
+	onClose,
+	onDoubleClick,
+	size = 'small',
+	tooltipPlacement,
+	ref,
+	...rest
+}: ChipProps) => {
 	const innerRef = useRef<HTMLDivElement | null>(null);
 	const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
 	const theme = useTheme();
@@ -442,7 +441,7 @@ const Chip = React.forwardRef<HTMLDivElement, ChipProps>(function ChipFn(
 			</ChipContainer>
 		</Tooltip>
 	);
-});
+};
 
 export type { ChipAction, ChipProps };
 export { Chip };

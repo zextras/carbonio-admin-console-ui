@@ -36,25 +36,24 @@ type MultiButtonProps = {
 	size?: Extract<ButtonProps['size'], 'medium' | 'large' | 'extralarge'>;
 	/** Dropdown properties */
 	dropdownProps?: Omit<DropdownProps, 'children'>;
+	ref?: React.Ref<HTMLButtonElement>;
 } & Omit<ButtonProps, 'secondaryAction' | 'icon' | 'disabled'>;
 
-const MultiButton = React.forwardRef<HTMLButtonElement, MultiButtonProps>(function MultiButtonFn(
-	{
-		background,
-		color,
-		label,
-		disabledPrimary,
-		disabledSecondary,
-		icon = 'ChevronDownOutline',
-		items,
-		onClick,
-		primaryIcon,
-		width,
-		dropdownProps,
-		...rest
-	},
-	ref
-) {
+const MultiButton = ({
+	background,
+	color,
+	label,
+	disabledPrimary,
+	disabledSecondary,
+	icon = 'ChevronDownOutline',
+	items,
+	onClick,
+	primaryIcon,
+	width,
+	dropdownProps,
+	ref,
+	...rest
+}: MultiButtonProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const secondaryButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -105,7 +104,7 @@ const MultiButton = React.forwardRef<HTMLButtonElement, MultiButtonProps>(functi
 			/>
 		</StyledDropdown>
 	);
-});
+};
 
 export { MultiButton };
 export type { MultiButtonProps };

@@ -5,15 +5,16 @@
  */
 
 import React, { FieldsetHTMLAttributes, useCallback, useEffect, useMemo, useState } from 'react';
-
 import styled from 'styled-components';
 
 import { type RadioProps } from './Radio';
 
 type RadioValue<T extends RadioProps['value']> = RadioProps<T>['value'];
 
-interface RadioGroupProps<T extends RadioProps['value']>
-	extends Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> {
+interface RadioGroupProps<T extends RadioProps['value']> extends Omit<
+	FieldsetHTMLAttributes<HTMLFieldSetElement>,
+	'onChange'
+> {
 	/** Default value for the radio group */
 	defaultValue?: RadioValue<T>;
 	/** Radio group value */
@@ -36,12 +37,10 @@ const Fieldset = styled.fieldset`
 	width: 100%;
 `;
 
-const RadioGroupComponent = React.forwardRef(function RadioGroupFn<
-	T extends RadioProps['value'] = string
->(
+const RadioGroupComponent = <T extends RadioProps['value'] = string>(
 	{ children, value, defaultValue, onChange, ...fieldsetProps }: RadioGroupProps<T>,
-	ref: React.ForwardedRef<HTMLFieldSetElement>
-) {
+	ref: React.Ref<HTMLFieldSetElement>
+) => {
 	const [currentValue, setCurrentValue] = useState<RadioValue<T> | undefined>(
 		value ?? defaultValue
 	);
@@ -93,9 +92,9 @@ const RadioGroupComponent = React.forwardRef(function RadioGroupFn<
 			{items}
 		</Fieldset>
 	);
-});
+};
 
 const RadioGroup = RadioGroupComponent as RadioGroupType;
 
-export { RadioGroupComponent, RadioGroup };
+export { RadioGroup, RadioGroupComponent };
 export type { RadioGroupProps };

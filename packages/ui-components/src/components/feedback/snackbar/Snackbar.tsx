@@ -87,27 +87,26 @@ interface SnackbarProps extends Omit<ContainerProps, 'children'> {
 	 * Be sure to have uniq keys when showing the progress bar on multiple snackbars.
 	 */
 	progressBar?: boolean;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(function SnackbarFn(
-	{
-		open = false,
-		severity = 'info',
-		label,
-		disableAutoHide = false,
-		hideButton = false,
-		actionLabel = 'Ok',
-		onActionClick,
-		onClose,
-		zIndex = 1000,
-		autoHideTimeout = TIMERS.SNACKBAR.DEFAULT_HIDE_TIMEOUT,
-		target = window,
-		disablePortal = false,
-		progressBar = true,
-		...rest
-	}: SnackbarProps,
-	ref
-) {
+const Snackbar = ({
+	open = false,
+	severity = 'info',
+	label,
+	disableAutoHide = false,
+	hideButton = false,
+	actionLabel = 'Ok',
+	onActionClick,
+	onClose,
+	zIndex = 1000,
+	autoHideTimeout = TIMERS.SNACKBAR.DEFAULT_HIDE_TIMEOUT,
+	target = window,
+	disablePortal = false,
+	progressBar = true,
+	ref,
+	...rest
+}: SnackbarProps) => {
 	const screenMode = useScreenMode(target);
 
 	const handleClick = useCallback(() => {
@@ -207,7 +206,7 @@ const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(function Snackb
 			</Transition>
 		</Portal>
 	);
-});
+};
 
 export type { SnackbarProps };
 export { Snackbar };

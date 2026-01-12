@@ -423,23 +423,23 @@ type TableProps = HTMLAttributes<HTMLDivElement> & {
 	HeaderFactory?: React.ComponentType<THeaderProps>;
 	/** Callback function, called when user changes selection of rows in table (in both controlled and uncontrolled mode). */
 	onSelectionChange?: (ids: string[]) => void;
+
+	ref?: React.Ref<HTMLDivElement>;
 } & (ControlledTableProps | UncontrolledTableProps);
 
-const Table = React.forwardRef<HTMLDivElement, TableProps>(function TableFn(
-	{
-		rows = [],
-		headers = [],
-		showCheckbox = true,
-		RowFactory = DefaultRowFactory,
-		HeaderFactory = DefaultHeaderFactory,
-		onSelectionChange,
-		defaultSelection,
-		selectedRows,
-		multiSelect = true,
-		...rest
-	},
-	ref
-) {
+const Table = ({
+	rows = [],
+	headers = [],
+	showCheckbox = true,
+	RowFactory = DefaultRowFactory,
+	HeaderFactory = DefaultHeaderFactory,
+	onSelectionChange,
+	defaultSelection,
+	selectedRows,
+	multiSelect = true,
+	ref,
+	...rest
+}: TableProps) => {
 	const [selected, dispatchSelected] = useReducer(
 		selectedReducer,
 		defaultSelection || selectedRows || []
@@ -534,7 +534,7 @@ const Table = React.forwardRef<HTMLDivElement, TableProps>(function TableFn(
 			</StyledTable>
 		</TableContainer>
 	);
-});
+};
 
 export {
 	DefaultHeaderFactory,

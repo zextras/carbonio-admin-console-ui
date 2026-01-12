@@ -57,21 +57,20 @@ interface ListItemProps {
 	 */
 	children: (visible: boolean) => React.ReactElement;
 	key: NonNullable<React.HTMLProps<HTMLDivElement>['key']>;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-function ListItemFn(
-	{
-		listRef,
-		children,
-		active,
-		activeBackground,
-		selected,
-		selectedBackground,
-		background,
-		...rest
-	}: ListItemProps,
-	ref: React.ForwardedRef<HTMLDivElement>
-): React.JSX.Element {
+const ListItem = ({
+	listRef,
+	children,
+	active,
+	activeBackground,
+	selected,
+	selectedBackground,
+	background,
+	ref,
+	...rest
+}: ListItemProps) => {
 	const [inView, itemRef] = useIsVisible<HTMLDivElement>(listRef, ref);
 
 	return (
@@ -86,9 +85,7 @@ function ListItemFn(
 			{children(inView)}
 		</ListItemWrapper>
 	);
-}
-
-const ListItem = React.forwardRef(ListItemFn);
+};
 
 export type { ListItemProps, ListItemWrapperProps };
 export { ListItem };

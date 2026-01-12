@@ -5,14 +5,7 @@
  */
 
 /* eslint-disable */
-import React, {
-	CSSProperties,
-	ForwardRefExoticComponent,
-	PropsWithoutRef,
-	RefAttributes,
-	useEffect,
-	useMemo
-} from 'react';
+import React, { CSSProperties, PropsWithoutRef, RefAttributes, useEffect, useMemo } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 
@@ -145,23 +138,22 @@ interface TransitionOnProps {
 	transitionDelay?: CSSStyleDeclaration['transitionDelay'] | number;
 	/** Children */
 	children: React.JSX.Element;
+	ref?: React.Ref<HTMLElement>;
 }
 
-const TransitionOn = React.forwardRef<HTMLElement, TransitionOnProps>(function TransitionOnFn(
-	{
-		type = 'fade',
-		from,
-		to,
-		end,
-		apply = true,
-		transitionTarget = 'all',
-		transitionTiming,
-		transitionDuration,
-		transitionDelay = 0,
-		children
-	},
-	ref
-) {
+const TransitionOn = ({
+	type = 'fade',
+	from,
+	to,
+	end,
+	apply = true,
+	transitionTarget = 'all',
+	transitionTiming,
+	transitionDuration,
+	transitionDelay = 0,
+	ref,
+	children
+}: TransitionOnProps): React.JSX.Element => {
 	const childRef = useCombinedRefs<HTMLElement>(ref);
 
 	const duration = useMemo(
@@ -232,37 +224,39 @@ const TransitionOn = React.forwardRef<HTMLElement, TransitionOnProps>(function T
 		ref: childRef,
 		style: { ...(from || STYLES[type].from) }
 	});
-});
+};
 
 interface TransitionProps extends TransitionOnProps {
 	/** Turn off the Transition */
 	disabled?: boolean;
+	ref?: React.Ref<HTMLElement>;
 }
 
-const Transition: ForwardRefExoticComponent<
-	PropsWithoutRef<TransitionProps> & RefAttributes<HTMLElement>
-> & { types?: Array<keyof typeof STYLES> } = React.forwardRef<HTMLElement, TransitionProps>(
-	function TransitionFn(
-		{
-			type = 'fade',
-			apply = true,
-			transitionTarget = 'all',
-			transitionDelay = 0,
-			disabled = false,
-			children,
-			...rest
-		},
-		ref
-	) {
-		if (disabled) return React.cloneElement(children, { ref });
+const Transition = ({
+	type = 'fade',
+	apply = true,
+	transitionTarget = 'all',
+	transitionDelay = 0,
+	disabled = false,
+	children,
+	ref,
+	...rest
+}: TransitionProps) => {
+	if (disabled) return React.cloneElement(children, { ref });
 
-		return (
-			<TransitionOn ref={ref} type={type} apply={apply} transitionTarget={transitionTarget} transitionDelay={transitionDelay} {...rest}>
-				{children}
-			</TransitionOn>
-		);
-	}
-);
+	return (
+		<TransitionOn
+			ref={ref}
+			type={type}
+			apply={apply}
+			transitionTarget={transitionTarget}
+			transitionDelay={transitionDelay}
+			{...rest}
+		>
+			{children}
+		</TransitionOn>
+	);
+};
 
 Transition.types = Object.keys(STYLES);
 

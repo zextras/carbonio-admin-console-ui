@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useRef, useCallback, useMemo } from 'react';
-
+import React, { useCallback, useMemo,useRef } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
@@ -94,7 +93,7 @@ interface IconCheckboxProps extends Omit<ContainerProps, 'margin'> {
 	onChange: () => void;
 }
 
-const IconCheckbox = React.forwardRef<HTMLDivElement, IconCheckboxProps>(function IconCheckboxFn(
+const IconCheckbox = (
 	{
 		defaultChecked = false,
 		label,
@@ -106,9 +105,9 @@ const IconCheckbox = React.forwardRef<HTMLDivElement, IconCheckboxProps>(functio
 		value,
 		onChange,
 		...rest
-	},
-	ref
-) {
+	}: IconCheckboxProps,
+	ref: React.Ref<HTMLDivElement>
+) => {
 	const iconCheckboxRef = useCombinedRefs<HTMLDivElement>(ref);
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -157,7 +156,7 @@ const IconCheckbox = React.forwardRef<HTMLDivElement, IconCheckboxProps>(functio
 			)}
 		</Container>
 	);
-});
+};
 
 export type { IconCheckboxProps };
 export { IconCheckbox };

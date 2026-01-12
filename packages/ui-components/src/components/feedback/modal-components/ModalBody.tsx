@@ -13,6 +13,7 @@ interface ModalBodyProps extends HTMLAttributes<HTMLDivElement> {
 	maxHeight?: string;
 	/** Align text to the center */
 	centered?: boolean;
+	ref?: React.Ref<HTMLDivElement>;
 }
 
 const ModalBodyComponent = styled.div<With$Prefix<ModalBodyProps>>`
@@ -43,16 +44,13 @@ const ModalBodyComponent = styled.div<With$Prefix<ModalBodyProps>>`
 	flex-grow: 1;
 `;
 
-const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(function ModalBodyFn(
-	{ maxHeight, centered, children, ...rest },
-	ref
-) {
+const ModalBody = ({ maxHeight, centered, children, ref, ...rest }: ModalBodyProps) => {
 	return (
 		<ModalBodyComponent $centered={centered} $maxHeight={maxHeight} ref={ref} {...rest}>
 			{children}
 		</ModalBodyComponent>
 	);
-});
+};
 
 export type { ModalBodyProps };
 export { ModalBody };

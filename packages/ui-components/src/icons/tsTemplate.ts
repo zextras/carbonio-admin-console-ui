@@ -69,4 +69,4 @@ const ${componentName} = (${props}): React.JSX.Element => (
 ${exports};
 `;
 
-export = tsTemplate;
+export default tsTemplate;

@@ -53,28 +53,28 @@ type BareModalProps = {
 	 * The default value is 'windowObj' obtained from the ThemContext.
 	 * */
 	containerWindow?: Window;
+
+	ref?: React.Ref<HTMLDivElement>;
 };
 
 type CustomModalProps = BareModalProps &
 	Omit<HTMLAttributes<HTMLDivElement>, keyof BareModalProps | 'title'>;
 
-const CustomModal = React.forwardRef<HTMLDivElement, CustomModalProps>(function ModalFn(
-	{
-		background = 'gray6',
-		size = 'small',
-		open = false,
-		onClose,
-		children,
-		disablePortal = false,
-		minHeight,
-		maxHeight,
-		zIndex = 999,
-		onClick,
-		containerWindow,
-		...rest
-	},
-	ref
-) {
+const CustomModal = ({
+	background = 'gray6',
+	size = 'small',
+	open = false,
+	onClose,
+	children,
+	disablePortal = false,
+	minHeight,
+	maxHeight,
+	zIndex = 999,
+	onClick,
+	containerWindow,
+	ref,
+	...rest
+}: CustomModalProps) => {
 	const [delayedOpen, setDelayedOpen] = useState(false);
 	const { windowObj: themeWindowObj } = useContext(ThemeContext);
 	const windowObj = containerWindow ?? themeWindowObj;
@@ -201,7 +201,7 @@ const CustomModal = React.forwardRef<HTMLDivElement, CustomModalProps>(function 
 			</ModalContainer>
 		</Portal>
 	);
-});
+};
 
 export type { CustomModalProps };
 export { CustomModal };

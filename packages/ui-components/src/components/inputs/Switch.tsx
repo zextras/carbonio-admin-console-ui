@@ -5,7 +5,6 @@
  */
 
 import React, { useRef } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
@@ -75,23 +74,22 @@ interface SwitchProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
 	size?: SwitchSize;
 	/** icon color */
 	iconColor?: keyof DefaultTheme['palette'];
+	ref?: React.Ref<HTMLDivElement>;
 }
 
-const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(function SwitchFn(
-	{
-		defaultChecked = false,
-		value,
-		label,
-		padding,
-		disabled = false,
-		onClick,
-		onChange,
-		size = 'medium',
-		iconColor = 'gray0',
-		...rest
-	},
-	ref
-) {
+const Switch = ({
+	defaultChecked = false,
+	value,
+	label,
+	padding,
+	disabled = false,
+	onClick,
+	onChange,
+	size = 'medium',
+	iconColor = 'gray0',
+	ref,
+	...rest
+}: SwitchProps) => {
 	const innerRef = useRef<HTMLDivElement>(null);
 	const ckbRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
 	const checked = useCheckbox({
@@ -137,7 +135,7 @@ const Switch = React.forwardRef<HTMLDivElement, SwitchProps>(function SwitchFn(
 			)}
 		</Container>
 	);
-});
+};
 
 export { Switch };
 export type { SwitchProps };

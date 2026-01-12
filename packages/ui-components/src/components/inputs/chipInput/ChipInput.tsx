@@ -21,7 +21,8 @@ import {
 	getKeyboardPreset,
 	KeyboardPresetKey,
 	KeyboardPresetObj,
-	useKeyboard} from '../../../hooks/useKeyboard';
+	useKeyboard
+} from '../../../hooks/useKeyboard';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, PaletteColor } from '../../../types/utils';
@@ -37,7 +38,7 @@ import { InputLabel } from '../commons/InputLabel';
 import { IconButton } from '../IconButton';
 
 const ContainerEl = styled(InputContainer)<{
-	background?: AnyColor;
+	background: PaletteColor;
 	$inputDisabled: boolean;
 	$dropdownDisabled: boolean;
 }>`
@@ -69,7 +70,7 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const InputEl = styled.input<{ $color: AnyColor }>`
+const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
 	border: none !important;
 	height: auto !important;
 	width: 1em;
@@ -78,10 +79,10 @@ const InputEl = styled.input<{ $color: AnyColor }>`
 	font-size: ${({ theme }): string => theme.sizes.font.medium};
 	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
 	font-family: ${({ theme }): string => theme.fonts.default};
-	color: ${({ theme, $color }): string => getColor(String($color), theme)};
+	color: ${({ theme, $color }): string => getColor($color, theme)};
 
 	&:disabled {
-		color: ${({ theme, $color }): string => getColor(`${String($color)}.disabled`, theme)};
+		color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
 		pointer-events: none;
 	}
 
@@ -289,13 +290,13 @@ interface ChipInputProps<TValue = unknown> extends Omit<
 	/** Set the current input text as a Chip when it loses focus */
 	confirmChipOnBlur?: boolean;
 	/** ChipInput backgroundColor */
-	background?: AnyColor;
+	background?: keyof DefaultTheme['palette'];
 	/** Chip generation triggers */
 	separators?: KeyboardPresetKey[];
 	/** Show the error  */
 	hasError?: boolean;
 	/** Background color for the error status */
-	errorBackgroundColor?: AnyColor;
+	errorBackgroundColor?: keyof DefaultTheme['palette'];
 	/** Set the limit for chip inputs <br />
 	 * <strong>Warning</strong>: be aware that this check is performed only on internal changes on items.
 	 * If you change the value from outside, you are in charge of apply this check on the new value itself.
@@ -357,56 +358,51 @@ type ChipInputType = (<TValue = unknown>(
 	_newId?: number;
 };
 
-const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknown>(
-	{
-		inputRef = null,
-		inputName,
-		placeholder,
-		value,
-		defaultValue,
-		onChange,
-		options = [],
-		onInputType,
-		onInputTypeDebounce = 300,
-		onAdd = DefaultOnAdd<TValue>,
-		background = INPUT_BACKGROUND_COLOR,
-		confirmChipOnBlur = true,
-		separators = [
-			{ key: 'Enter', ctrlKey: false },
-			{ key: ',', ctrlKey: false },
-			{ key: ' ', ctrlKey: false }
-		],
-		icon,
-		iconAction,
-		iconDisabled = false,
-		iconColor,
-		disabled = false,
-		requireUniqueChips = false,
-		createChipOnPaste = false,
-		pasteSeparators = [','],
-		maxChips = null,
-		hasError = false,
-		hideBorder = false,
-		errorBackgroundColor,
-		disableOptions = true,
-		singleSelection = false,
-		bottomBorderColor = INPUT_DIVIDER_COLOR,
-		dropdownMaxHeight,
-		dropdownWidth = '100%',
-		dropdownMaxWidth,
-		description,
-		ChipComponent,
-		wrap = 'wrap',
-		maxHeight = '8.125rem',
-		onOptionsDisplayChange,
-		...rest
-	}: ChipInputProps<TValue>,
-	ref: React.ForwardedRef<HTMLDivElement>
-) {
-	const [items, dispatch] = useReducer(
-		reducer,
-		defaultValue || value || []
-	);
+const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknown>({
+	inputRef = null,
+	inputName,
+	placeholder,
+	value,
+	defaultValue,
+	onChange,
+	options = [],
+	onInputType,
+	onInputTypeDebounce = 300,
+	onAdd = DefaultOnAdd<TValue>,
+	background = INPUT_BACKGROUND_COLOR,
+	confirmChipOnBlur = true,
+	separators = [
+		{ key: 'Enter', ctrlKey: false },
+		{ key: ',', ctrlKey: false },
+		{ key: ' ', ctrlKey: false }
+	],
+	icon,
+	iconAction,
+	iconDisabled = false,
+	iconColor,
+	disabled = false,
+	requireUniqueChips = false,
+	createChipOnPaste = false,
+	pasteSeparators = [','],
+	maxChips = null,
+	hasError = false,
+	hideBorder = false,
+	errorBackgroundColor,
+	disableOptions = true,
+	singleSelection = false,
+	bottomBorderColor = INPUT_DIVIDER_COLOR,
+	dropdownMaxHeight,
+	dropdownWidth = '100%',
+	dropdownMaxWidth,
+	description,
+	ChipComponent,
+	wrap = 'wrap',
+	maxHeight = '8.125rem',
+	onOptionsDisplayChange,
+	ref,
+	...rest
+}: ChipInputProps<TValue>) {
+	const [items, dispatch] = useReducer(reducer, defaultValue || value || []);
 	const [isActive, setIsActive] = useState(false);
 	const inputElRef = useCombinedRefs<HTMLInputElement>(inputRef);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -752,7 +748,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 					padding={{ horizontal: '0.75rem' }}
 					gap={'0.5rem'}
 					borderRadius="half"
-					background={String(background)}
+					background={background}
 					$disabled={(disabled || isInputDisabled) && isDropdownDisabled}
 					$inputDisabled={disabled || isInputDisabled}
 					$dropdownDisabled={isDropdownDisabled}
@@ -841,7 +837,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 				<CustomInputDescription
 					color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
 					disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
-					$backgroundColor={String(errorBackgroundColor)}
+					$backgroundColor={errorBackgroundColor}
 				>
 					{description}
 				</CustomInputDescription>

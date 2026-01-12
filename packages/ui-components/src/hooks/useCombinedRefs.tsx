@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-function useCombinedRefs<T>(...refs: React.ForwardedRef<T>[]): React.MutableRefObject<T | null> {
+function useCombinedRefs<T>(...refs: Array<React.Ref<T> | undefined>): React.RefObject<T | null> {
 	const targetRef = useRef<T>(null);
 	useEffect(() => {
 		refs.forEach((ref) => {
@@ -15,7 +15,6 @@ function useCombinedRefs<T>(...refs: React.ForwardedRef<T>[]): React.MutableRefO
 			if (typeof ref === 'function') {
 				ref(targetRef.current);
 			} else {
-				// eslint-disable-next-line no-param-reassign
 				ref.current = targetRef.current;
 			}
 		});

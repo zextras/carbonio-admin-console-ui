@@ -146,7 +146,9 @@ function getButtonKeyboardPreset(callback: NativeKeyboardEventHandler): Keyboard
 	];
 }
 
-function getListKeyboardPreset(ref: React.RefObject<HTMLElement | null> | undefined): KeyboardPresetObj[] {
+function getListKeyboardPreset(
+	ref: React.RefObject<HTMLElement | null> | undefined
+): KeyboardPresetObj[] {
 	return [
 		{
 			type: 'keydown',
@@ -233,7 +235,7 @@ function getKeyboardPreset(
  * To avoid having listeners registered on the keyboard events, provide an empty presets array.
  */
 function useKeyboard(
-	ref: React.RefObject<HTMLElement | null>,
+	ref: React.RefObject<HTMLElement | null> | undefined,
 	presets: KeyboardPresetObj[],
 	registerListener = true
 ): void {

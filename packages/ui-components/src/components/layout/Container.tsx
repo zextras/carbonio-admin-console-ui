@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes, useMemo } from 'react';
-
 import { map } from 'lodash';
+import React, { HTMLAttributes, useMemo } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { getColor, getPadding, PaddingObj } from '../../theme/theme-utils';
@@ -89,6 +88,7 @@ interface ContainerElProps {
 	flexBasis?: string;
 	/** Margin css property */
 	margin?: { left?: string; right?: string };
+	ref?: React.Ref<HTMLDivElement>;
 }
 
 const ContainerEl = styled.div<With$Prefix<ContainerElProps>>`
@@ -194,38 +194,37 @@ const ContainerEl = styled.div<With$Prefix<ContainerElProps>>`
 `;
 
 interface ContainerProps
-	extends Omit<ContainerElProps, 'orientation'>,
+	extends
+		Omit<ContainerElProps, 'orientation'>,
 		Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> {
 	orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
 	children?: React.ReactNode | React.ReactNode[];
 }
 
-const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function ContainerFn(
-	{
-		orientation = 'vertical',
-		borderRadius = 'regular',
-		borderColor,
-		background,
-		height = 'fill',
-		minHeight = 'unset',
-		maxHeight = 'unset',
-		width = 'fill',
-		minWidth = 'unset',
-		maxWidth = 'unset',
-		mainAlignment = 'center',
-		crossAlignment = 'center',
-		wrap = 'nowrap',
-		padding,
-		gap,
-		flexGrow,
-		flexShrink,
-		flexBasis,
-		margin,
-		children,
-		...rest
-	},
-	ref
-) {
+const Container = ({
+	orientation = 'vertical',
+	borderRadius = 'regular',
+	borderColor,
+	background,
+	height = 'fill',
+	minHeight = 'unset',
+	maxHeight = 'unset',
+	width = 'fill',
+	minWidth = 'unset',
+	maxWidth = 'unset',
+	mainAlignment = 'center',
+	crossAlignment = 'center',
+	wrap = 'nowrap',
+	padding,
+	gap,
+	flexGrow,
+	flexShrink,
+	flexBasis,
+	margin,
+	children,
+	ref,
+	...rest
+}: ContainerProps) => {
 	const direction = useMemo<ContainerElProps['orientation']>(
 		() =>
 			orientation
@@ -260,7 +259,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
 			{children}
 		</ContainerEl>
 	);
-});
+};
 
 export { Container };
 export type { ContainerProps };

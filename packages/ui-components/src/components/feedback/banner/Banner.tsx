@@ -26,6 +26,7 @@ type BannerProps = HTMLAttributes<HTMLDivElement> & {
 	secondaryAction?: ActionButton;
 	moreInfoLabel?: string;
 	closeLabel?: string;
+	ref?: React.Ref<HTMLDivElement>;
 	children?: never;
 } & (
 		| {
@@ -98,22 +99,20 @@ const BannerContainer = styled(Container)<{ $isMultiline: boolean }>`
 				`};
 `;
 
-const Banner = React.forwardRef<HTMLDivElement, BannerProps>(function BannerFn(
-	{
-		severity = 'success',
-		type = 'fill',
-		title,
-		description,
-		primaryAction,
-		secondaryAction,
-		showClose = false,
-		onClose,
-		moreInfoLabel = 'More info',
-		closeLabel = 'Close',
-		...rest
-	}: BannerProps,
-	ref
-) {
+const Banner = ({
+	severity = 'success',
+	type = 'fill',
+	title,
+	description,
+	primaryAction,
+	secondaryAction,
+	showClose = false,
+	onClose,
+	moreInfoLabel = 'More info',
+	closeLabel = 'Close',
+	ref,
+	...rest
+}: BannerProps) => {
 	const bannerRef = useCombinedRefs(ref);
 	const infoContainerRef = useRef<HTMLDivElement>(null);
 	const actionsContainerRef = useRef<HTMLDivElement>(null);
@@ -305,6 +304,6 @@ const Banner = React.forwardRef<HTMLDivElement, BannerProps>(function BannerFn(
 			)}
 		</BannerContainer>
 	);
-});
+};
 
 export { Banner, type BannerProps, InfoContainer };

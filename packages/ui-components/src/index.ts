@@ -10,9 +10,9 @@ import './styled-components';
 /** Basic components */
 export * from './components/basic/button/Button';
 export { Icon, type IconProps } from './components/basic/icon/Icon';
+export * from './components/basic/Link';
 export * from './components/basic/Spinner';
 export * from './components/basic/text/Text';
-export * from './components/basic/Link';
 /** Layout components */
 export * from './components/layout/Container';
 export * from './components/layout/divider/Divider';
@@ -31,6 +31,7 @@ export * from './components/inputs/DateTimePicker';
 export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
 export * from './components/inputs/multiButton/MultiButton';
+export * from './components/inputs/PasswordInput';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
 export {
@@ -47,11 +48,15 @@ export * from './components/inputs/TextArea';
 /** navigation components */
 export * from './components/navigation/TabBar';
 
+/** custom components */
+export * from './components/custom/custom-text-area';
+
 /** display components */
 export * from './components/display/Chip';
 export * from './components/display/Dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';
+export * from './components/display/Popper';
 export {
 	DefaultHeaderFactory,
 	DefaultRowFactory,
@@ -63,7 +68,6 @@ export {
 	type TRowProps
 } from './components/display/Table';
 export * from './components/display/Tooltip';
-export * from './components/display/Popper';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';

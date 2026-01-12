@@ -43,11 +43,11 @@ import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import CustomTextArea from '../../../../components/custom-text-area';
 import CustomChip from '../../../../components/customChip';
 import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
-import Textarea from '../../../../components/textarea';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
@@ -1365,7 +1365,7 @@ const EditAccountGeneralSection: FC<{
           </Text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Textarea
+          <CustomTextArea
             label={t('label.notes', 'Notes')}
             value={accountDetail?.zimbraNotes || ''}
             backgroundColor="gray5"

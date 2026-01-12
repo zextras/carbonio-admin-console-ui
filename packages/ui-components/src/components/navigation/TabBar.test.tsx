@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { screen, within } from '@testing-library/react';
 import React from 'react';
 
-import { screen, within } from '@testing-library/react';
-
-import { DefaultTabBarItem, DefaultTabBarItemProps, TabBar } from './TabBar';
 import { setup } from '../../test-utils';
 import { Text } from '../basic/text/Text';
+import { DefaultTabBarItem, DefaultTabBarItemProps, TabBar } from './TabBar';
 
 describe('TabBar', () => {
 	test('The visually selected element always reflects the selected TabBar prop', async () => {
