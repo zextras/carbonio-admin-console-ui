@@ -32,6 +32,7 @@ export default tseslint.config(
       '**/*.config.*',
       '**/.prettierrc.js',
       '**/.reuse/template.js',
+      '**/fileTransformer.js',
     ],
   },
   {
