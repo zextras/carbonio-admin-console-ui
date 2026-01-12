@@ -12,7 +12,11 @@ import { noop } from 'lodash';
 
 failOnConsole({
 	shouldFailOnError: true,
-	shouldFailOnWarn: true
+	shouldFailOnWarn: true,
+	// Ignore React 19's concurrent mode warnings in test environment
+	// These are benign warnings about act() usage that don't indicate real problems
+	silenceMessage: (message: string): boolean =>
+		message.includes('The current testing environment is not configured to support act')
 });
 
 beforeAll(() => {
