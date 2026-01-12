@@ -29,6 +29,7 @@ type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 	textAlign?: React.CSSProperties['textAlign'];
 	/** Line Height of the text */
 	lineHeight?: number;
+	ref?: React.Ref<HTMLDivElement>;
 };
 
 const Comp = styled.div<{
@@ -75,10 +76,12 @@ const Text = ({
 	italic = false,
 	textAlign,
 	lineHeight,
+	ref,
 	...rest
 }: TextProps) => {
 	return (
 		<Comp
+			ref={ref}
 			$color={color}
 			$size={size}
 			$weight={weight}

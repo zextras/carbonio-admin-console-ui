@@ -76,6 +76,7 @@ type ButtonPropsInternal = {
 	minWidth?: string;
 	/** Ref for the button element */
 	buttonRef?: React.Ref<HTMLButtonElement> | null;
+	ref?: React.Ref<HTMLButtonElement>;
 } & (
 	| {
 			/** Size variant of the button */
@@ -346,9 +347,10 @@ const Button = ({
 	secondaryAction,
 	minWidth,
 	buttonRef = null,
+	ref,
 	...rest
 }: ButtonProps) => {
-	const innerButtonRef = useCombinedRefs<HTMLButtonElement>(buttonRef);
+	const innerButtonRef = useCombinedRefs<HTMLButtonElement>(buttonRef, ref);
 
 	const clickHandler = useCallback(
 		(e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
