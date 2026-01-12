@@ -331,26 +331,23 @@ function getColors(
 	return colors;
 }
 
-const Button = React.forwardRef<HTMLDivElement, ButtonProps>(function ButtonFn(
-	{
-		type = 'default',
-		disabled = false,
-		label,
-		size = 'medium',
-		width = 'fit',
-		icon,
-		iconPlacement = 'right',
-		onClick,
-		loading = false,
-		forceActive = false,
-		shape = 'regular',
-		secondaryAction,
-		minWidth,
-		buttonRef = null,
-		...rest
-	},
-	ref
-) {
+const Button = ({
+	type = 'default',
+	disabled = false,
+	label,
+	size = 'medium',
+	width = 'fit',
+	icon,
+	iconPlacement = 'right',
+	onClick,
+	loading = false,
+	forceActive = false,
+	shape = 'regular',
+	secondaryAction,
+	minWidth,
+	buttonRef = null,
+	...rest
+}: ButtonProps) => {
 	const innerButtonRef = useCombinedRefs<HTMLButtonElement>(buttonRef);
 
 	const clickHandler = useCallback(
@@ -375,7 +372,7 @@ const Button = React.forwardRef<HTMLDivElement, ButtonProps>(function ButtonFn(
 	const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
 
 	return (
-		<StyledGrid $width={width} $minWidth={minWidth} $padding={SIZES[size].padding} ref={ref}>
+		<StyledGrid $width={width} $minWidth={minWidth} $padding={SIZES[size].padding}>
 			<StyledButton
 				{...rest}
 				$backgroundColor={colors.backgroundColor}
@@ -446,7 +443,7 @@ const Button = React.forwardRef<HTMLDivElement, ButtonProps>(function ButtonFn(
 			)}
 		</StyledGrid>
 	);
-});
+};
 
 export type { ButtonProps, ButtonSecondaryAction };
 export { Button };

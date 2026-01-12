@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { forwardRef, HTMLAttributes,useMemo } from 'react';
+import { HTMLAttributes, useMemo } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 import { AnyColor } from '../../../types/utils';
@@ -21,18 +21,15 @@ const Comp = styled(Container)`
 
 const isNumber = (value?: string | number): value is number => typeof value === 'number';
 
-const Badge = forwardRef<HTMLDivElement, BadgeProps>(function BadgeFn(
-	{
-		type,
-		value,
-		backgroundColor = (type === 'read' && 'gray2') || (type === 'unread' && 'primary') || 'gray2',
-		icon,
-		maxValue = 999,
-		color = (type === 'read' && 'gray0') || (type === 'unread' && 'gray6') || 'gray0',
-		...rest
-	},
-	ref
-) {
+const Badge = ({
+	type,
+	value,
+	backgroundColor = (type === 'read' && 'gray2') || (type === 'unread' && 'primary') || 'gray2',
+	icon,
+	maxValue = 999,
+	color = (type === 'read' && 'gray0') || (type === 'unread' && 'gray6') || 'gray0',
+	...rest
+}: BadgeProps) => {
 	const badgeText = useMemo(
 		() => (isNumber(value) && value > maxValue ? `${maxValue}+` : value),
 		[maxValue, value]
@@ -49,7 +46,6 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(function BadgeFn(
 	return (
 		<Tooltip label={String(value)} disabled={!showTooltip}>
 			<Comp
-				ref={ref}
 				orientation={'column'}
 				padding={isBadgeCircle ? undefined : { vertical: '0.0625rem', horizontal: 'small' }}
 				height={isBadgeCircle ? '1rem' : 'auto'}
@@ -67,7 +63,7 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(function BadgeFn(
 			</Comp>
 		</Tooltip>
 	);
-});
+};
 
 interface BadgeProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
 	/**
