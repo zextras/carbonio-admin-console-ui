@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { useKeyboard, getKeyboardPreset } from '../../hooks/useKeyboard';
 import { getPadding, isThemeSize, useTheme } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { Button, ButtonProps } from '../basic/button/Button';
@@ -65,23 +63,19 @@ type IconButtonProps = ButtonProps & {
 };
 
 /** @deprecated use Button with just the icon instead */
-const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(function IconButtonFn(
-	{
-		iconColor = 'text',
-		backgroundColor = 'transparent',
-		disabled = false,
-		customSize,
-		size = 'medium',
-		icon,
-		borderRadius = 'regular',
-		onClick,
-		customIconColor,
-		type = 'default',
-		...rest
-	},
-	ref
-) {
-	const iconButtonRef = useCombinedRefs<HTMLDivElement>(ref);
+const IconButton = ({
+	iconColor = 'text',
+	backgroundColor = 'transparent',
+	disabled = false,
+	customSize,
+	size = 'medium',
+	icon,
+	borderRadius = 'regular',
+	onClick,
+	customIconColor,
+	type = 'default',
+	...rest
+}: IconButtonProps) => {
 	const theme = useTheme();
 
 	const { iconSize, paddingSize } = useMemo(
@@ -105,8 +99,6 @@ const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(function Ic
 		(e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => !disabled && onClick(e),
 		[disabled, onClick]
 	);
-	const keyEvents = useMemo(() => getKeyboardPreset('button', handleClick), [handleClick]);
-	useKeyboard(iconButtonRef, keyEvents);
 
 	return (
 		<StyledIconButton
@@ -118,13 +110,12 @@ const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(function Ic
 			labelColor={customIconColor || iconColor}
 			shape={borderRadius}
 			size={size}
-			ref={iconButtonRef}
 			disabled={disabled}
 			type={type}
 			{...rest}
 		/>
 	);
-});
+};
 
 export type { IconButtonProps };
 export { IconButton };

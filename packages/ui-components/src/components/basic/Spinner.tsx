@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { getColor } from '../../theme/theme-utils';
@@ -33,12 +33,9 @@ const StyledSpinner = styled.div<{ $color: AnyColor }>`
 	animation: ${rotateKeyframes} 0.75s linear infinite;
 `;
 
-const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(function SpinnerFn(
-	{ color, ...rest },
-	ref
-) {
-	return <StyledSpinner data-testid="spinner" $color={color} ref={ref} {...rest} />;
-});
+const Spinner = ({ color, ...rest }: SpinnerProps) => {
+	return <StyledSpinner data-testid="spinner" $color={color} {...rest} />;
+};
 
 export type { SpinnerProps };
 export { Spinner };

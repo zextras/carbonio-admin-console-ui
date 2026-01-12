@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
@@ -189,10 +189,10 @@ type SelectProps<T = string> = SelectComponentProps<T> &
 	Omit<DropdownProps, keyof SelectComponentProps<T> | 'children'>;
 
 type SelectType = <T = string>(
-	p: SelectProps<T> & React.RefAttributes<HTMLDivElement>
+	p: SelectProps<T>
 ) => React.ReactElement | null;
 
-const SelectComponent = React.forwardRef(function SelectFn<T = string>(
+const SelectComponent = function SelectFn<T = string>(
 	{
 		background = INPUT_BACKGROUND_COLOR,
 		disabled = false,
@@ -211,8 +211,7 @@ const SelectComponent = React.forwardRef(function SelectFn<T = string>(
 		disablePortal = false,
 		showCheckbox = true,
 		...rest
-	}: SelectProps<T>,
-	ref: React.ForwardedRef<HTMLDivElement>
+	}: SelectProps<T>
 ): React.JSX.Element {
 	const initialState = defaultSelection ?? selection ?? [];
 	const [selected, setSelected] = useState<SelectItem<T>[]>(
@@ -340,7 +339,7 @@ const SelectComponent = React.forwardRef(function SelectFn<T = string>(
 			disablePortal={disablePortal}
 			{...rest}
 		>
-			<TabContainer ref={ref} onFocus={onFocus} onBlur={onBlur} tabIndex={0}>
+			<TabContainer onFocus={onFocus} onBlur={onBlur} tabIndex={0}>
 				<LabelFactory
 					label={label}
 					open={open}
@@ -353,7 +352,7 @@ const SelectComponent = React.forwardRef(function SelectFn<T = string>(
 			</TabContainer>
 		</Dropdown>
 	);
-});
+};
 
 const Select = SelectComponent as SelectType;
 

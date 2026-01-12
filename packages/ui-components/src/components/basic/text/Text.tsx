@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { getColor } from '../../../theme/theme-utils';
@@ -65,24 +65,20 @@ const Comp = styled.div<{
 	line-height: ${({ $lineHeight }): SimpleInterpolation => $lineHeight};
 `;
 
-const Text = React.forwardRef<HTMLDivElement, TextProps>(function TextFn(
-	{
-		children,
-		color = 'text',
-		size = 'medium',
-		weight = 'regular',
-		overflow = 'ellipsis',
-		disabled = false,
-		italic = false,
-		textAlign,
-		lineHeight,
-		...rest
-	}: TextProps,
-	ref
-) {
+const Text = ({
+	children,
+	color = 'text',
+	size = 'medium',
+	weight = 'regular',
+	overflow = 'ellipsis',
+	disabled = false,
+	italic = false,
+	textAlign,
+	lineHeight,
+	...rest
+}: TextProps) => {
 	return (
 		<Comp
-			ref={ref}
 			$color={color}
 			$size={size}
 			$weight={weight}
@@ -96,7 +92,7 @@ const Text = React.forwardRef<HTMLDivElement, TextProps>(function TextFn(
 			{children}
 		</Comp>
 	);
-});
+};
 
 export type { TextProps };
 export { Text };

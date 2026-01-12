@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
+import {
 	TextareaHTMLAttributes,
 	useCallback,
 	useEffect,
@@ -51,7 +51,7 @@ interface TextAreaProps extends HTMLTextAreaProps {
 	borderColor?: string | keyof DefaultTheme['palette'];
 }
 
-type TextArea = ReturnType<typeof React.forwardRef<HTMLDivElement, TextAreaProps>> & {
+type TextArea = (props: TextAreaProps) => React.ReactElement & {
 	_newId?: number;
 };
 
@@ -127,44 +127,42 @@ const GrowContainer = styled.div<{ $hasLabel: boolean; $maxHeight?: string }>`
 	}
 `;
 
-const AdjustHeightTextArea = React.forwardRef<HTMLTextAreaElement, AdjustHeightTextAreaProps>(
-	function AdjustTextAreaHeightFn({ hasLabel, onInput, color, ...props }, ref) {
-		const { maxHeight, value, defaultValue } = props;
-		const containerRef = useRef<HTMLDivElement>(null);
-		const textAreaRef = useCombinedRefs<HTMLTextAreaElement>(ref);
+const AdjustHeightTextArea = ({ hasLabel, onInput, color, ...props }: AdjustHeightTextAreaProps) => {
+	const { maxHeight, value, defaultValue } = props;
+	const containerRef = useRef<HTMLDivElement>(null);
+	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-		const resizeTextArea = useCallback(() => {
-			if (containerRef.current) {
-				containerRef.current.dataset.replicatedValue = textAreaRef.current?.value ?? '';
-			}
-		}, [textAreaRef]);
+	const resizeTextArea = useCallback(() => {
+		if (containerRef.current) {
+			containerRef.current.dataset.replicatedValue = textAreaRef.current?.value ?? '';
+		}
+	}, [textAreaRef]);
 
-		useEffect(() => {
-			// resize text area when value or default value change
+	useEffect(() => {
+		// resize text area when value or default value change
+		resizeTextArea();
+	}, [resizeTextArea, value, defaultValue]);
+
+	const onInputHandler = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
+		(event) => {
 			resizeTextArea();
-		}, [resizeTextArea, value, defaultValue]);
+			onInput?.(event);
+		},
+		[resizeTextArea, onInput]
+	);
 
-		const onInputHandler = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
-			(event) => {
-				resizeTextArea();
-				onInput?.(event);
-			},
-			[resizeTextArea, onInput]
-		);
-
-		return (
-			<GrowContainer $hasLabel={hasLabel} $maxHeight={maxHeight} ref={containerRef}>
-				<StyledTextArea
-					{...props}
-					$color={color}
-					onInput={onInputHandler}
-					rows={1}
-					ref={textAreaRef}
-				/>
-			</GrowContainer>
-		);
-	}
-);
+	return (
+		<GrowContainer $hasLabel={hasLabel} $maxHeight={maxHeight} ref={containerRef}>
+			<StyledTextArea
+				{...props}
+				$color={color}
+				onInput={onInputHandler}
+				rows={1}
+				ref={textAreaRef}
+			/>
+		</GrowContainer>
+	);
+};
 
 const Label = styled(InputLabel)<{ $textAreaHasValue: boolean }>`
 	${InputContainer}:focus-within & {
@@ -185,20 +183,17 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(function TextAreaFn(
-	{
-		maxHeight = '10.313rem',
-		hasError,
-		textAreaRef = null,
-		label,
-		description,
-		backgroundColor = INPUT_BACKGROUND_COLOR,
-		textColor = 'text',
-		borderColor = INPUT_DIVIDER_COLOR,
-		...props
-	},
-	ref
-) {
+const TextArea = ({
+	maxHeight = '10.313rem',
+	hasError,
+	textAreaRef = null,
+	label,
+	description,
+	backgroundColor = INPUT_BACKGROUND_COLOR,
+	textColor = 'text',
+	borderColor = INPUT_DIVIDER_COLOR,
+	...props
+}: TextAreaProps) => {
 	const { defaultValue, value, onInput, disabled, onFocus, onBlur } = props;
 	const innerTextAreaRef = useCombinedRefs(textAreaRef);
 	const [hasFocus, setHasFocus] = useState(false);
@@ -263,7 +258,7 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 	);
 
 	return (
-		<Container height="fit" width="fill" crossAlignment="flex-start" ref={ref}>
+		<Container height="fit" width="fill" crossAlignment="flex-start">
 			<InputContainer
 				orientation="horizontal"
 				width="fill"
@@ -289,7 +284,6 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 						color={textColor}
 						{...props}
 						id={id}
-						ref={innerTextAreaRef}
 						onInput={onTextAreaInput}
 						onFocus={onTextAreaFocus}
 						onBlur={onTextAreaBlur}
@@ -316,7 +310,7 @@ const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(funct
 			)}
 		</Container>
 	);
-});
+};
 
 export { TextArea };
 export type { TextAreaProps };

@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
 import { getColor } from '../../theme/theme-utils';
 import { Text, TextProps } from './text/Text';
@@ -34,22 +33,16 @@ type LinkProps = {
 } & React.AnchorHTMLAttributes<HTMLAnchorElement> &
 	TextProps;
 
-const Link = React.forwardRef<HTMLDivElement, LinkProps>(function LinkFn(
-	{ children, underlined = false, color = 'primary', ...rest },
-	ref
-) {
-	const linkRef = useCombinedRefs<HTMLDivElement>(ref);
-
-	const keyPress = useCallback(() => linkRef.current && linkRef.current.click(), [linkRef]);
-	const keyEvents = useMemo(() => getKeyboardPreset('button', keyPress), [keyPress]);
-	useKeyboard(linkRef, keyEvents);
+const Link = ({ children, underlined = false, color = 'primary', ...rest }: LinkProps) => {
+	const keyPress = useCallback(() => null, []);
+	useKeyboard(undefined, getKeyboardPreset('button', keyPress));
 
 	return (
-		<StyledLink ref={linkRef} $underlined={underlined} color={color} tabIndex={0} {...rest}>
+		<StyledLink $underlined={underlined} color={color} tabIndex={0} {...rest}>
 			{children}
 		</StyledLink>
 	);
-});
+};
 
 export type { LinkProps };
 export { Link };

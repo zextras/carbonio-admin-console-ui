@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { SVGAttributes, useContext, useMemo } from 'react';
+import { SVGAttributes, useContext, useMemo } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { IconComponent } from '../../../theme/theme';
@@ -27,10 +27,7 @@ interface StyledIconProps {
 
 type IconProps = IconComponentProps & StyledIconProps;
 
-const IconBase = React.forwardRef<SVGSVGElement, IconComponentProps>(function IconBaseFn(
-	{ icon, ...rest }: IconComponentProps,
-	ref
-) {
+const IconBase = ({ icon, ...rest }: IconComponentProps) => {
 	const theme = useContext(ThemeContext);
 	const IconComp = useMemo(() => {
 		if (typeof icon === 'string') {
@@ -39,8 +36,8 @@ const IconBase = React.forwardRef<SVGSVGElement, IconComponentProps>(function Ic
 		return icon;
 	}, [theme.icons, icon]);
 
-	return <IconComp data-testid={`icon: ${icon}`} ref={ref} viewBox="0 0 24 24" {...rest} />;
-});
+	return <IconComp data-testid={`icon: ${icon}`} viewBox="0 0 24 24" {...rest} />;
+};
 
 const StyledIcon = styled(IconBase)<With$Prefix<MakeRequired<StyledIconProps, 'color' | 'size'>>>`
 	display: block;
@@ -53,12 +50,9 @@ const StyledIcon = styled(IconBase)<With$Prefix<MakeRequired<StyledIconProps, 'c
 	`};
 `;
 
-const Icon = React.forwardRef<SVGSVGElement, IconProps>(function IconFn(
-	{ color = 'text', size = 'medium', disabled, ...rest },
-	ref
-) {
-	return <StyledIcon $color={color} $size={size} $disabled={disabled} ref={ref} {...rest} />;
-});
+const Icon = ({ color = 'text', size = 'medium', disabled, ...rest }: IconProps) => {
+	return <StyledIcon $color={color} $size={size} $disabled={disabled} {...rest} />;
+};
 
 export type { IconComponentProps, IconProps, StyledIconProps };
 export { Icon };

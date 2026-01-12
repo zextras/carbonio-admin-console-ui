@@ -5,7 +5,7 @@
  */
 
 
-import React, { HTMLAttributes, useMemo } from 'react';
+import { HTMLAttributes, useMemo } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { getColor } from '../../theme/theme-utils';
@@ -138,24 +138,21 @@ function calcColor(label: string): keyof DefaultTheme['avatarColors'] {
 	return `avatar_${(sum % 50) + 1}`;
 }
 
-const Avatar = React.forwardRef<HTMLDivElement, AvatarPropTypes>(function AvatarFn(
-	{
-		size = 'medium',
-		label,
-		color,
-		colorLabel,
-		picture,
-		icon,
-		fallbackIcon = 'QuestionMark',
-		background,
-		selecting,
-		selected,
-		shape = 'round',
-		disabled,
-		...rest
-	},
-	ref
-) {
+const Avatar = ({
+	size = 'medium',
+	label,
+	color,
+	colorLabel,
+	picture,
+	icon,
+	fallbackIcon = 'QuestionMark',
+	background,
+	selecting,
+	selected,
+	shape = 'round',
+	disabled,
+	...rest
+}: AvatarPropTypes) => {
 	const calculatedColor = useMemo(() => calcColor(colorLabel ?? label), [colorLabel, label]);
 
 	const capitals = useMemo(() => calcCapitals(label.toUpperCase()), [label]);
@@ -188,7 +185,6 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarPropTypes>(function Avatar
 	}, [selecting, icon, capitals, size, fallbackIcon, selected, color, disabled]);
 	return (
 		<AvatarContainer
-			ref={ref}
 			$size={size}
 			$picture={picture}
 			$selecting={selecting}
@@ -203,7 +199,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarPropTypes>(function Avatar
 			{(!picture || selecting) && symbol}
 		</AvatarContainer>
 	);
-});
+};
 
 export type { AvatarPropTypes };
 export { Avatar };

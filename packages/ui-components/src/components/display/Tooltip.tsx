@@ -6,7 +6,7 @@
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import { rgba } from 'polished';
-import React, {
+import {
 	cloneElement,
 	createRef,
 	useCallback,
@@ -26,20 +26,21 @@ interface TooltipWrapperProps extends TextProps {
 	open: boolean;
 }
 
-const TooltipWrapper = React.forwardRef<HTMLDivElement, TooltipWrapperProps>(
-	function TooltipWrapperFn(
-		{ open, children, size = 'extrasmall', overflow = 'break-word', ...rest },
-		ref
-	) {
-		if (!open) return null;
+const TooltipWrapper = ({
+	open,
+	children,
+	size = 'extrasmall',
+	overflow = 'break-word',
+	...rest
+}: TooltipWrapperProps) => {
+	if (!open) return null;
 
-		return (
-			<Text ref={ref} size={size} overflow={overflow} data-testid={'tooltip'} {...rest}>
-				{children}
-			</Text>
-		);
-	}
-);
+	return (
+		<Text size={size} overflow={overflow} data-testid={'tooltip'} {...rest}>
+			{children}
+		</Text>
+	);
+};
 const TooltipWrapperWithCss = styled(TooltipWrapper)<{ $maxWidth: string }>`
 	display: none;
 	position: absolute;
@@ -84,25 +85,22 @@ interface TooltipProps extends TextProps {
 	triggerRef?: React.Ref<HTMLElement>;
 }
 
-const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function TooltipFn(
-	{
-		label = '',
-		placement = 'bottom',
-		fallbackPlacements = ['bottom', 'top', 'left'],
-		maxWidth = '17.75rem',
-		children,
-		disabled = false,
-		disablePortal = false,
-		overflowTooltip = false,
-		triggerDelay = 500,
-		triggerRef = createRef<HTMLElement>(),
-		...rest
-	},
-	ref
-) {
+const Tooltip = ({
+	label = '',
+	placement = 'bottom',
+	fallbackPlacements = ['bottom', 'top', 'left'],
+	maxWidth = '17.75rem',
+	children,
+	disabled = false,
+	disablePortal = false,
+	overflowTooltip = false,
+	triggerDelay = 500,
+	triggerRef = createRef<HTMLElement>(),
+	...rest
+}: TooltipProps) => {
 	const [open, setOpen] = useState(false);
 	const combinedTriggerRef = useCombinedRefs<HTMLElement>(triggerRef);
-	const tooltipRef = useCombinedRefs<HTMLDivElement>(ref);
+	const tooltipRef = useCombinedRefs<HTMLDivElement>();
 	const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	const showTooltip = useCallback(() => {
@@ -178,7 +176,7 @@ const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function TooltipF
 			</Portal>
 		</>
 	);
-});
+};
 
 export type { TooltipProps };
 export { Tooltip };
