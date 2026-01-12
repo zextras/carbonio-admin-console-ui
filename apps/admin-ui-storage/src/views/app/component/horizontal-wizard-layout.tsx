@@ -97,6 +97,11 @@ const DefaultWrapper: FC<{ wizard: any; wizardFooter: any }> = ({ wizard, wizard
   </>
 );
 
+type Refs = {
+  sectionRef: React.RefObject<HTMLDivElement>;
+  activeRef: React.RefObject<HTMLDivElement>;
+};
+
 type Props = {
   steps: Array<any>;
   onSelection: any;
@@ -119,38 +124,35 @@ type Props = {
   onComplete: any;
   setCompleteLoading: any;
   setToggleWizardSection: (val: boolean) => void;
-  sectionRef: any;
-  activeRef: any;
   externalData: any;
   toggleNextBtn: any;
   setToggleNextBtn: any;
-};
+} & Refs;
 
-export const HorizontalWizardLayout = (
-  {
-    steps,
-    onComplete,
-    onSelection,
-    currentStep,
-    canGoNext,
-    canGoToStep,
-    completeLoading,
-    currentStepIndex,
-    getData,
-    goBack,
-    goNext,
-    goToStep,
-    setCompleteLoading,
-    isFirstStep,
-    Wrapper = DefaultWrapper,
-    title,
-    setToggleWizardSection,
-    externalData,
-    toggleNextBtn,
-    setToggleNextBtn,
-  }: Props,
-  { sectionRef, activeRef }: any,
-): React.ReactElement => {
+export const HorizontalWizardLayout = ({
+  steps,
+  onComplete,
+  onSelection,
+  currentStep,
+  canGoNext,
+  canGoToStep,
+  completeLoading,
+  currentStepIndex,
+  getData,
+  goBack,
+  goNext,
+  goToStep,
+  setCompleteLoading,
+  isFirstStep,
+  Wrapper = DefaultWrapper,
+  title,
+  setToggleWizardSection,
+  externalData,
+  toggleNextBtn,
+  setToggleNextBtn,
+  sectionRef,
+  activeRef,
+}: Props): React.ReactElement => {
   const { t } = useTranslation();
   const stepsToRender = useMemo(
     () =>
