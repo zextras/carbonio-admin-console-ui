@@ -5,13 +5,13 @@
  */
 import React from 'react';
 
-interface DSWindow {
+type DSWindow = {
 	draggedItem?: {
 		event: React.DragEvent<HTMLDivElement>;
 		data: Record<string, unknown>;
 		type: string;
 	};
-}
+};
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/no-empty-interface

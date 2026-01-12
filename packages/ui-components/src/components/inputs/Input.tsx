@@ -57,7 +57,7 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-interface InputProps extends ContainerProps {
+type InputProps = ContainerProps & {
 	/** Input's background color */
 	backgroundColor?: AnyColor;
 	/** whether to disable the Input or not */
@@ -95,7 +95,7 @@ interface InputProps extends ContainerProps {
 	/** Description of the input */
 	description?: string;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 type Input = React.Ref<InputProps & React.RefAttributes<HTMLDivElement>> & {
 	_newId?: number;

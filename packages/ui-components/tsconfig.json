@@ -3,6 +3,7 @@
 	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["node_modules", "dist"],
 	"compilerOptions": {
+		"moduleResolution": "node",
 		"paths": {
 			"@testing-library/user-event/dist/cjs/keyboard/keyMap": [
 				"./node_modules/@testing-library/user-event/dist/types/keyboard/keyMap.d.ts"

@@ -906,7 +906,7 @@ const CustomIconButton = styled(IconButton)`
 	padding: 0.125rem;
 `;
 
-interface DateTimePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'placeholderText'> {
+type DateTimePickerProps = Omit<ReactDatePickerProps, 'onChange' | 'placeholderText'> & {
 	/** Input's background color */
 	backgroundColor?: PaletteColor;
 	/** Close icon to clear the Input */
@@ -954,7 +954,7 @@ interface DateTimePickerProps extends Omit<ReactDatePickerProps, 'onChange' | 'p
 	}>;
 	/** Disable the input */
 	disabled?: boolean;
-}
+};
 
 interface ReactDatePickerCustomInputProps extends Pick<
 	InputHTMLAttributes<HTMLInputElement>,

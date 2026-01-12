@@ -57,7 +57,7 @@ const icons = {
 	error: 'CloseCircleOutline'
 } satisfies Record<string, keyof DefaultTheme['icons']>;
 
-interface SnackbarProps extends Omit<ContainerProps, 'children'> {
+type SnackbarProps = Omit<ContainerProps, 'children'> & {
 	/** Whether to show the Snackbar or not */
 	open?: boolean;
 	/** Snackbar severity */
@@ -88,7 +88,7 @@ interface SnackbarProps extends Omit<ContainerProps, 'children'> {
 	 */
 	progressBar?: boolean;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const Snackbar = ({
 	open = false,

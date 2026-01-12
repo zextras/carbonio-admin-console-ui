@@ -9,7 +9,7 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { AnyColor } from '../../types/utils';
+import { AnyColor, PaletteColor } from '../../types/utils';
 import { Icon } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
@@ -55,7 +55,7 @@ const CustomText = styled(Text)`
 	line-height: 1.5;
 `;
 
-interface SwitchProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
+type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
 	/** status of the Switch */
 	defaultChecked?: boolean;
 	/** Switch value */
@@ -73,9 +73,9 @@ interface SwitchProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
 	/** available sizes */
 	size?: SwitchSize;
 	/** icon color */
-	iconColor?: keyof DefaultTheme['palette'];
+	iconColor?: PaletteColor;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const Switch = ({
 	defaultChecked = false,

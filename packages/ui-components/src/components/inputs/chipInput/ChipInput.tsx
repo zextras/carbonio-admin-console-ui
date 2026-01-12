@@ -70,7 +70,7 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const InputEl = styled.input<{ $color: keyof DefaultTheme['palette'] }>`
+const InputEl = styled.input<{ $color: PaletteColor }>`
 	border: none !important;
 	height: auto !important;
 	width: 1em;
@@ -128,7 +128,7 @@ const AdjustWidthInputContainer = styled.div`
 const AdjustWidthInput = React.forwardRef<
 	HTMLInputElement,
 	{
-		color: keyof DefaultTheme['palette'];
+		color: PaletteColor;
 	} & InputHTMLAttributes<HTMLInputElement>
 >(function AdjustWidthInputFn({ color, ...rest }, ref) {
 	const hiddenSpanRef = useRef<HTMLSpanElement | null>(null);
@@ -253,10 +253,10 @@ type ChipItem<TValue = unknown> = { label?: string } & ChipProps & {
 		value?: TValue;
 	};
 
-interface ChipInputProps<TValue = unknown> extends Omit<
+type ChipInputProps<TValue = unknown> = Omit<
 	ContainerProps,
 	'defaultValue' | 'onChange'
-> {
+> & {
 	/** ref to the input element */
 	inputRef?: React.ForwardedRef<HTMLInputElement> | null;
 	/** HTML input name */
@@ -290,13 +290,13 @@ interface ChipInputProps<TValue = unknown> extends Omit<
 	/** Set the current input text as a Chip when it loses focus */
 	confirmChipOnBlur?: boolean;
 	/** ChipInput backgroundColor */
-	background?: keyof DefaultTheme['palette'];
+	background?: PaletteColor;
 	/** Chip generation triggers */
 	separators?: KeyboardPresetKey[];
 	/** Show the error  */
 	hasError?: boolean;
 	/** Background color for the error status */
-	errorBackgroundColor?: keyof DefaultTheme['palette'];
+	errorBackgroundColor?: PaletteColor;
 	/** Set the limit for chip inputs <br />
 	 * <strong>Warning</strong>: be aware that this check is performed only on internal changes on items.
 	 * If you change the value from outside, you are in charge of apply this check on the new value itself.
@@ -350,7 +350,7 @@ interface ChipInputProps<TValue = unknown> extends Omit<
 	/** maxHeight of Input in case of no horizontal scroll */
 	maxHeight?: string;
 	onOptionsDisplayChange?: (isVisible: boolean) => void;
-}
+};
 
 type ChipInputType = (<TValue = unknown>(
 	p: ChipInputProps<TValue> & React.RefAttributes<HTMLDivElement>

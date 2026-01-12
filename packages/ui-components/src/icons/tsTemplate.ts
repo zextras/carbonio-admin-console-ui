@@ -12,18 +12,18 @@ type Template = (
 	context: TemplateContext
 ) => t.Statement | t.Statement[];
 
-interface JSXRuntimeImport {
+type JSXRuntimeImport = {
 	source: string;
 	namespace?: string;
 	specifiers?: string[];
-}
+};
 
-interface State {
+type State = {
 	componentName: string;
 	caller?: { previousExport?: string | null };
-}
+};
 
-interface Options {
+type Options = {
 	typescript?: boolean;
 	titleProp?: boolean;
 	descProp?: boolean;
@@ -38,21 +38,21 @@ interface Options {
 	jsxRuntime?: 'automatic' | 'classic';
 	jsxRuntimeImport?: JSXRuntimeImport;
 	importSource?: string;
-}
+};
 
-interface TemplateVariables {
+type TemplateVariables = {
 	componentName: string;
 	interfaces: t.TSInterfaceDeclaration[];
 	props: (t.ObjectPattern | t.Identifier)[];
 	imports: t.ImportDeclaration[];
 	exports: (t.VariableDeclaration | t.ExportDeclaration | t.Statement)[];
 	jsx: t.JSXElement;
-}
+};
 
-interface TemplateContext {
+type TemplateContext = {
 	options: Options;
 	tpl: TemplateBuilder<t.Statement | t.Statement[]>['ast'];
-}
+};
 
 const tsTemplate: Template = (
 	{ imports, interfaces, componentName, props, jsx, exports },

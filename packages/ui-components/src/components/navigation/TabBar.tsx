@@ -60,7 +60,7 @@ interface Item {
 	disabled?: boolean;
 }
 
-interface TabBarProps extends Omit<ContainerProps, 'onChange'> {
+type TabBarProps = Omit<ContainerProps, 'onChange'> & {
 	/** List of elements, can have extra attributes to pass down to the CustomComponent */
 	items: Array<Item>;
 	/** id of the selected item */
@@ -73,16 +73,16 @@ interface TabBarProps extends Omit<ContainerProps, 'onChange'> {
 	underlineColor?: AnyColor;
 	/** Force tabs to have all the same width */
 	forceWidthEquallyDistributed?: boolean;
-}
+};
 
-interface DefaultTabBarItemProps extends ContainerProps {
+type DefaultTabBarItemProps = ContainerProps & {
 	item: Item;
 	selected: boolean;
 	background: AnyColor;
 	onClick: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => void;
 	underlineColor: AnyColor;
 	forceWidthEquallyDistributed: boolean;
-}
+};
 
 const DefaultTabBarItem = (
 	{

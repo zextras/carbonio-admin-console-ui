@@ -57,7 +57,7 @@ const CustomText = styled(Text)`
 	line-height: 1.5;
 `;
 
-export interface CheckboxProps extends Omit<ContainerProps, 'onChange' | 'onClick'> {
+export type CheckboxProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
 	/** status of the Checkbox */
 	defaultChecked?: boolean;
 	/** Checkbox value */
@@ -81,7 +81,7 @@ export interface CheckboxProps extends Omit<ContainerProps, 'onChange' | 'onClic
 	/** available sizes */
 	size?: CheckboxSize;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 export const Checkbox = ({
 	defaultChecked = false,

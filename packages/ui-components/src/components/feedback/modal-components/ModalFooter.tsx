@@ -45,7 +45,7 @@ const ConfirmButton = styled(Button)`
 	flex-shrink: 1;
 `;
 
-interface ModalFooterProps {
+type ModalFooterProps = {
 	/** Modal type */
 	type?: 'default' | 'error';
 	/** Centered Modal */
@@ -80,7 +80,7 @@ interface ModalFooterProps {
 	errorActionLabel?: string;
 	/** Action called on error dismiss button */
 	onErrorAction?: () => void;
-}
+};
 
 type ModalFooterContentProps = Omit<ModalFooterProps, 'customFooter'>;
 

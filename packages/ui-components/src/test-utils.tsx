@@ -25,9 +25,9 @@ import React, { type ReactElement } from 'react';
 import { ThemeProvider } from './theme/theme-context-provider';
 
 type User = ReturnType<(typeof userEvent)['setup']>;
-interface KeyboardModifiers {
+type KeyboardModifiers = {
 	ctrl?: boolean;
-}
+};
 type KeyboardEventFn = (modifiers?: KeyboardModifiers) => ReturnType<User['keyboard']>;
 
 export type UserEvent = User & {
@@ -40,9 +40,9 @@ export type UserEvent = User & {
 	readonly rightClick: (target: Element) => Promise<void>;
 };
 
-interface WrapperProps {
+type WrapperProps = {
 	children?: React.ReactNode;
-}
+};
 
 type ByRoleWithIconOptions = ByRoleOptions & {
 	icon: string | RegExp;

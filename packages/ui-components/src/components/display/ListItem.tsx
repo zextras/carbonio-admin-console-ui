@@ -13,7 +13,7 @@ import { AnyColor } from '../../types/utils';
 /**
  * @deprecated Use ListItemProps instead
  */
-interface ListItemWrapperProps {
+type ListItemWrapperProps = {
 	/** Base background color for the item */
 	background?: AnyColor;
 	/** Background color for the selected status */
@@ -24,7 +24,7 @@ interface ListItemWrapperProps {
 	active?: boolean;
 	/** Define if the item is selected in order to show the selectedBackground */
 	selected?: boolean;
-}
+};
 
 const ListItemWrapper = styled.div<{ $backgroundColor?: AnyColor }>`
 	user-select: none;
@@ -33,7 +33,7 @@ const ListItemWrapper = styled.div<{ $backgroundColor?: AnyColor }>`
 		$backgroundColor && pseudoClasses(theme, $backgroundColor)};
 `;
 
-interface ListItemProps {
+type ListItemProps = {
 	/** Base background color for the item */
 	background?: AnyColor;
 	/** Background color for the selected status */
@@ -58,7 +58,7 @@ interface ListItemProps {
 	children: (visible: boolean) => React.ReactElement;
 	key: NonNullable<React.HTMLProps<HTMLDivElement>['key']>;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const ListItem = ({
 	listRef,

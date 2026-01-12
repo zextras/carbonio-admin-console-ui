@@ -50,7 +50,7 @@ const ContainerEl = styled(Container)<{
 		!$disabled && pseudoClasses(theme, String($selectedBackgroundColor ?? 'gray5'))};
 `;
 
-interface ListItemContentProps {
+type ListItemContentProps = {
 	icon?: string;
 	label: string;
 	selected?: boolean;
@@ -59,7 +59,7 @@ interface ListItemContentProps {
 	itemTextSize: React.ComponentProps<typeof Text>['size'];
 	itemPaddingBetween: keyof DefaultTheme['sizes']['padding'];
 	tooltipLabel?: string;
-}
+};
 
 function ListItemContent({
 	icon,
@@ -97,12 +97,12 @@ function ListItemContent({
 	);
 }
 
-interface PopperListItemProps extends ListItemContentProps, HTMLAttributes<HTMLDivElement> {
+type PopperListItemProps = ListItemContentProps & HTMLAttributes<HTMLDivElement> & {
 	onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
 	customComponent?: React.ReactNode;
 	selectedBackgroundColor?: AnyColor;
 	keepOpen?: boolean;
-}
+};
 
 function PopperListItem({
 	icon,
@@ -151,10 +151,8 @@ function PopperListItem({
 	);
 }
 
-interface NestListItemProps
-	extends
-		PopperListItemProps,
-		Pick<DropdownProps, 'onOpen' | 'onClose' | 'dropdownListRef' | 'items'> {}
+type NestListItemProps = PopperListItemProps &
+	Pick<DropdownProps, 'onOpen' | 'onClose' | 'dropdownListRef' | 'items'>;
 
 function NestListItem({
 	icon,
@@ -406,7 +404,7 @@ interface DropdownItem {
 	tooltipLabel?: string;
 }
 
-interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> {
+type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
 	/** Whether to disable the Dropdown or not */
 	disabled?: boolean;
 	/** Array of items to display */
@@ -455,7 +453,7 @@ interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'contextMen
 	itemPaddingBetween?: keyof DefaultTheme['sizes']['padding'];
 	/** Ref assign to the dropdown list popper container */
 	dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
-}
+};
 
 const Dropdown = ({
 	forceOpen = false,

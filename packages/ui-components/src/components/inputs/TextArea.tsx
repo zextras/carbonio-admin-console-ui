@@ -15,6 +15,7 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getColor } from '../../theme/theme-utils';
+import { PaletteColor } from '../../types/utils';
 import { TextProps } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container } from '../layout/Container';
@@ -25,13 +26,13 @@ import { InputLabel } from './commons/InputLabel';
 
 type HTMLTextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-interface AdjustHeightTextAreaProps extends HTMLTextAreaProps {
+type AdjustHeightTextAreaProps = HTMLTextAreaProps & {
 	hasLabel: boolean;
 	maxHeight?: string;
 	color: string;
-}
+};
 
-export interface TextAreaProps extends HTMLTextAreaProps {
+export type TextAreaProps = HTMLTextAreaProps & {
 	/** Description - helper text */
 	description?: string;
 	/** Error state */
@@ -41,14 +42,14 @@ export interface TextAreaProps extends HTMLTextAreaProps {
 	/** Label for the textarea */
 	label?: string;
 	/** Background color for the textarea */
-	backgroundColor?: string | keyof DefaultTheme['palette'];
+	backgroundColor?: string | PaletteColor;
 	/** Color for the text */
 	textColor?: string;
 	/** Max height for the text area, limit beyond which the scroll is enabled */
 	maxHeight?: string;
 	/** Divider color */
-	borderColor?: string | keyof DefaultTheme['palette'];
-}
+	borderColor?: string | PaletteColor;
+};
 
 type TextArea = ReturnType<typeof React.forwardRef<HTMLDivElement, TextAreaProps>> & {
 	_newId?: number;

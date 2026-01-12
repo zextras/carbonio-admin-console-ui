@@ -36,7 +36,7 @@ const StyledList = styled(Container)`
 	}
 `;
 
-interface ListProps extends ContainerProps {
+type ListProps = ContainerProps & {
 	/** intersectionObserverInitOptions of the intersectionObserver inside BottomElement */
 	intersectionObserverInitOptions?: IntersectionObserverInit;
 	/** callback to be executed when the bottom element is rendered */
@@ -51,7 +51,7 @@ interface ListProps extends ContainerProps {
 	keyboardShortcutsIsDisabled?: boolean;
 	/** List items */
 	children: React.ReactElement<ListItemProps>[];
-}
+};
 
 const List = ({
 	onListBottom,

@@ -40,7 +40,7 @@ type ButtonColorsByType =
 	  };
 type ButtonType = NonNullable<ButtonColorsByType['type']>;
 
-interface ButtonSecondaryAction {
+type ButtonSecondaryAction = {
 	/** Icon of the secondary action */
 	icon: IconProps['icon'];
 	/** Callback for the secondary action */
@@ -51,7 +51,7 @@ interface ButtonSecondaryAction {
 	forceActive?: boolean;
 	/** Ref object to assign to secondary button */
 	ref?: React.RefObject<HTMLButtonElement | null>;
-}
+};
 
 type ButtonPropsInternal = {
 	/** Force active status */

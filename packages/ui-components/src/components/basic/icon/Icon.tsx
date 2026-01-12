@@ -11,19 +11,19 @@ import { IconComponent } from '../../../theme/theme';
 import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, MakeRequired, With$Prefix } from '../../../types/utils';
 
-interface IconComponentProps extends SVGAttributes<SVGSVGElement> {
+type IconComponentProps = SVGAttributes<SVGSVGElement> & {
 	/** Icon to show. It can be a string key for the theme icons or a custom icon component */
 	icon: keyof DefaultTheme['icons'] | IconComponent;
-}
+};
 
-interface StyledIconProps {
+type StyledIconProps = {
 	/** Icon Color */
 	color?: AnyColor;
 	/** Icon size */
 	size?: keyof DefaultTheme['sizes']['icon'];
 	/** whether the icon is in a disabled element */
 	disabled?: boolean;
-}
+};
 
 type IconProps = IconComponentProps & StyledIconProps;
 

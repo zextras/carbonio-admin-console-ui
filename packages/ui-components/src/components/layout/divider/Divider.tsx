@@ -10,11 +10,11 @@ import styled from 'styled-components';
 import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, MakeRequired, With$Prefix } from '../../../types/utils';
 
-interface DividerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 	/** Divider color */
 	ref?: React.Ref<HTMLDivElement>;
 	color?: AnyColor;
-}
+};
 
 const DividerEl = styled.div<With$Prefix<MakeRequired<DividerProps, 'color'>>>`
 	box-sizing: border-box;

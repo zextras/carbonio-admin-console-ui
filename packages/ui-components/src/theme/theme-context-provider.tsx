@@ -12,7 +12,7 @@ import DefaultFontStyles from './roboto-global-styles';
 import { Theme as defaultTheme } from './theme';
 import { generateHighlightSet } from './theme-utils';
 
-interface ThemeProviderProps {
+type ThemeProviderProps = {
 	extension?: (theme: DefaultTheme) => DefaultTheme;
 	loadDefaultFont?: boolean;
 }

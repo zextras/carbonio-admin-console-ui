@@ -8,7 +8,7 @@ import React, { createContext,useCallback, useReducer } from 'react';
 
 import { Snackbar, SnackbarProps } from '../feedback/snackbar/Snackbar';
 
-interface CreateSnackbarFnArgs extends Omit<SnackbarProps, 'open'> {
+type CreateSnackbarFnArgs = Omit<SnackbarProps, 'open'> & {
 	/** Component key */
 	key?: string;
 	/**
@@ -17,7 +17,7 @@ interface CreateSnackbarFnArgs extends Omit<SnackbarProps, 'open'> {
 	 * When false, place the snackbar as last of the stack and show it when all the previous disappears.
 	 */
 	replace?: boolean;
-}
+};
 
 type CloseSnackbarFn = () => void;
 type CreateSnackbarFn = (props: CreateSnackbarFnArgs) => CloseSnackbarFn;

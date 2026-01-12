@@ -14,12 +14,12 @@ const QuotaBar = styled(Container)`
 	min-width: 4rem;
 `;
 
-interface QuotaProps extends ContainerProps {
+type QuotaProps = ContainerProps & {
 	/** Quota percentage */
 	fill: number;
 	/** Quota fill background color */
 	fillBackground?: AnyColor;
-}
+};
 
 const Quota = (
 	{ background = 'gray6', fill, fillBackground = 'info', height = '0.5rem', ...rest }: QuotaProps,

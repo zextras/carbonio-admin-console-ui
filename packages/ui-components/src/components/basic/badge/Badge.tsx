@@ -65,7 +65,7 @@ const Badge = ({
 	);
 };
 
-interface BadgeProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+type BadgeProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 	/**
 	 * Badge type
 	 * @deprecated use backgroundColor and color instead
@@ -81,7 +81,7 @@ interface BadgeProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
 	maxValue?: number;
 	/** Badge or Icon color */
 	color?: AnyColor;
-}
+};
 
 export { Badge };
 export type { BadgeProps };

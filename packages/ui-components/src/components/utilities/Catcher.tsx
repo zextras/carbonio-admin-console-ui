@@ -9,16 +9,16 @@ import React, { ErrorInfo } from 'react';
 import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 
-interface CatcherProps {
+type CatcherProps = {
 	/** error callback, use this to perform operations when an error is caught */
 	onError?: (error: Error, errorInfo: ErrorInfo) => void;
 	children?: React.ReactNode;
-}
+};
 
-interface CatcherState {
+type CatcherState = {
 	hasError: boolean;
 	error: Error | null;
-}
+};
 
 class Catcher extends React.Component<CatcherProps, CatcherState> {
 	constructor(props: CatcherProps) {

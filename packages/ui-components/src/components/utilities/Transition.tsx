@@ -117,7 +117,7 @@ function resetStyle(styles: CSSObject, element: HTMLElement): void {
 	});
 }
 
-interface TransitionOnProps {
+type TransitionOnProps = {
 	/** Transition type, one of the default ones. Ignore if is a custom Transition */
 	type?: keyof typeof STYLES;
 	/** Initial styles of the component to which apply the Transition */
@@ -139,7 +139,7 @@ interface TransitionOnProps {
 	/** Children */
 	children: React.JSX.Element;
 	ref?: React.Ref<HTMLElement>;
-}
+};
 
 const TransitionOn = ({
 	type = 'fade',
@@ -226,11 +226,11 @@ const TransitionOn = ({
 	});
 };
 
-interface TransitionProps extends TransitionOnProps {
+type TransitionProps = TransitionOnProps & {
 	/** Turn off the Transition */
 	disabled?: boolean;
 	ref?: React.Ref<HTMLElement>;
-}
+};
 
 const Transition = ({
 	type = 'fade',

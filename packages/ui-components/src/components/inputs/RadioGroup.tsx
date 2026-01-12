@@ -11,10 +11,10 @@ import { type RadioProps } from './Radio';
 
 type RadioValue<T extends RadioProps['value']> = RadioProps<T>['value'];
 
-interface RadioGroupProps<T extends RadioProps['value']> extends Omit<
+type RadioGroupProps<T extends RadioProps['value']> = Omit<
 	FieldsetHTMLAttributes<HTMLFieldSetElement>,
 	'onChange'
-> {
+> & {
 	/** Default value for the radio group */
 	defaultValue?: RadioValue<T>;
 	/** Radio group value */
@@ -23,7 +23,7 @@ interface RadioGroupProps<T extends RadioProps['value']> extends Omit<
 	onChange?: (value: RadioValue<T>) => void;
 	/** children elements of Radio Group */
 	children: React.ReactElement<RadioProps<T>>[];
-}
+};
 
 type RadioGroupType = <T extends RadioProps['value'] = string>(
 	p: RadioGroupProps<T> & React.RefAttributes<HTMLFieldSetElement>

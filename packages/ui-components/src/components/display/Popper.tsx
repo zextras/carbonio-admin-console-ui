@@ -36,7 +36,7 @@ const PopperWrapper = styled.div`
 	outline: 0;
 `;
 
-interface PopperProps extends HTMLAttributes<HTMLDivElement> {
+type PopperProps = HTMLAttributes<HTMLDivElement> & {
 	/** Whether the popper is open or not */
 	open?: boolean;
 	/** Ref to the DOM element triggering the popper */
@@ -54,7 +54,7 @@ interface PopperProps extends HTMLAttributes<HTMLDivElement> {
 	/** Popper content */
 	children: React.ReactNode | React.ReactNode[];
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const Popper = ({
 	open = false,

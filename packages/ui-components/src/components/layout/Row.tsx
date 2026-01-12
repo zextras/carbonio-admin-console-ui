@@ -9,12 +9,12 @@ import styled, { css, SimpleInterpolation } from 'styled-components';
 import { With$Prefix } from '../../types/utils';
 import { Container, ContainerProps } from './Container';
 
-interface RowProps extends ContainerProps {
+type RowProps = ContainerProps & {
 	display?: string;
 	order?: 'unset' | number;
 	takeAvailableSpace?: boolean;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const ContainerEl = styled(Container)<With$Prefix<RowProps>>`
 	display: ${({ $display }): SimpleInterpolation => $display};

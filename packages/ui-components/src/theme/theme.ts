@@ -8,16 +8,16 @@ import React, { SVGProps } from 'react';
 
 import IconData from '../icons';
 
-export interface ThemeSizeObj<T = string> {
+export type ThemeSizeObj<T = string> = {
 	small: T;
 	medium: T;
 	large: T;
-}
+};
 
-export interface ThemeSizeObjExtended<T = string> extends ThemeSizeObj<T> {
+export type ThemeSizeObjExtended<T = string> = ThemeSizeObj<T> & {
 	extrasmall: T;
 	extralarge: T;
-}
+};
 
 export interface ThemeColorObj {
 	regular: string;
@@ -28,6 +28,32 @@ export interface ThemeColorObj {
 }
 
 export type IconComponent = (props: SVGProps<SVGSVGElement>) => React.JSX.Element;
+
+export type PaletteKey =
+	| 'currentColor'
+	| 'transparent'
+	| 'primary'
+	| 'secondary'
+	| 'header'
+	| 'highlight'
+	| 'gray0'
+	| 'gray1'
+	| 'gray2'
+	| 'gray3'
+	| 'gray4'
+	| 'gray5'
+	| 'gray6'
+	| 'warning'
+	| 'error'
+	| 'success'
+	| 'info'
+	| 'text'
+	| 'successBanner'
+	| 'warningBanner'
+	| 'infoBanner'
+	| 'errorBanner'
+	| 'black'
+	| 'white';
 
 // augment this interface to extend theme type
 export interface ThemeObj {
@@ -53,33 +79,7 @@ export interface ThemeObj {
 		svg: IconComponent;
 		size: ThemeSizeObj;
 	};
-	palette: Record<
-		| 'currentColor'
-		| 'transparent'
-		| 'primary'
-		| 'secondary'
-		| 'header'
-		| 'highlight'
-		| 'gray0'
-		| 'gray1'
-		| 'gray2'
-		| 'gray3'
-		| 'gray4'
-		| 'gray5'
-		| 'gray6'
-		| 'warning'
-		| 'error'
-		| 'success'
-		| 'info'
-		| 'text'
-		| 'successBanner'
-		| 'warningBanner'
-		| 'infoBanner'
-		| 'errorBanner'
-		| 'black'
-		| 'white',
-		ThemeColorObj
-	>;
+	palette: Record<PaletteKey, ThemeColorObj>;
 	avatarColors: Record<`avatar_${number}`, string>;
 	shadows: Record<string, string>;
 }

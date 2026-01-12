@@ -112,21 +112,21 @@ const StyledTable = styled.table`
 	}
 `;
 
-interface THeaderProps {
+type THeaderProps = {
 	headers: THeader[];
 	onChange: () => void;
 	allSelected: boolean;
 	selectionMode: boolean;
 	multiSelect: boolean;
 	showCheckbox: boolean;
-}
+};
 
-interface LabelFactoryProps {
+type LabelFactoryProps = {
 	label?: string;
 	open?: boolean;
 	focus?: boolean;
 	bold?: boolean;
-}
+};
 
 const DefaultHeaderFactory = ({
 	headers,
@@ -215,7 +215,7 @@ const DefaultHeaderFactory = ({
 	);
 };
 
-interface TRowProps {
+type TRowProps = {
 	index: number;
 	row: TRow;
 	onChange: (id: string) => void;
@@ -223,7 +223,7 @@ interface TRowProps {
 	selectionMode: boolean;
 	multiSelect: boolean;
 	showCheckbox: boolean;
-}
+};
 
 const DefaultRowFactory = ({
 	index,

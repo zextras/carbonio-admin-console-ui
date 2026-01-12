@@ -8,13 +8,13 @@ import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { With$Prefix } from '../../../types/utils';
 
-interface ModalBodyProps extends HTMLAttributes<HTMLDivElement> {
+type ModalBodyProps = HTMLAttributes<HTMLDivElement> & {
 	/** Max height of the body container */
 	maxHeight?: string;
 	/** Align text to the center */
 	centered?: boolean;
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const ModalBodyComponent = styled.div<With$Prefix<ModalBodyProps>>`
 	overflow-y: auto;

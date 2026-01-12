@@ -29,7 +29,7 @@ type CapitalsPropsType = {
 	$color?: string;
 };
 
-interface AvatarPropTypes extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+type AvatarPropTypes = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 	/** size of the Avatar circle */
 	size?: keyof DefaultTheme['sizes']['avatar'];
 	/** url to the profile picture */
@@ -54,7 +54,7 @@ interface AvatarPropTypes extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> 
 	shape?: ShapeType;
 	/** disabled status */
 	disabled?: boolean;
-}
+};
 
 const AvatarContainer = styled.div<AvatarContainerProps>`
 	box-sizing: border-box;

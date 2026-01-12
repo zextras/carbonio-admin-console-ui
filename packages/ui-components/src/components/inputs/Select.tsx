@@ -48,7 +48,7 @@ const CustomIcon = styled(Icon)`
 	pointer-events: none;
 `;
 
-interface LabelFactoryProps<T = string> {
+type LabelFactoryProps<T = string> = {
 	label: string | undefined;
 	open: boolean;
 	focus: boolean;
@@ -56,7 +56,7 @@ interface LabelFactoryProps<T = string> {
 	multiple: boolean;
 	disabled: boolean;
 	selected: SelectItem<T>[];
-}
+};
 
 const DefaultLabelFactory = <T,>({
 	selected,

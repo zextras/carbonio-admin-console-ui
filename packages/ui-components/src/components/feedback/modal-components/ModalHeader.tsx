@@ -11,14 +11,14 @@ import { Tooltip } from '../../display/Tooltip';
 import { IconButton } from '../../inputs/IconButton';
 import { Row } from '../../layout/Row';
 
-interface ModalHeaderProps {
+type ModalHeaderProps = {
 	centered?: boolean;
 	type?: 'default' | 'error';
 	title?: string | React.ReactElement;
 	showCloseIcon?: boolean;
 	onClose?: (event: React.MouseEvent | KeyboardEvent) => void;
 	closeIconTooltip?: string;
-}
+};
 
 const ModalTitle = styled(Text)<{ $centered: boolean }>`
 	box-sizing: border-box;

@@ -118,7 +118,7 @@ const RadioContainer = styled(Container)<{
 
 type RadioInputHTMLAttributes = InputHTMLAttributes<HTMLInputElement> & { type: 'radio' };
 
-interface RadioComponentProps<T extends RadioInputHTMLAttributes['value']> {
+type RadioComponentProps<T extends RadioInputHTMLAttributes['value']> = {
 	/** status of the Radio */
 	defaultChecked?: boolean;
 	/** Radio checked */
@@ -141,7 +141,7 @@ interface RadioComponentProps<T extends RadioInputHTMLAttributes['value']> {
 	inputRef?: React.Ref<HTMLInputElement>;
 	/** Value of the radio input */
 	value?: T;
-}
+};
 
 type RadioProps<T extends RadioInputHTMLAttributes['value'] = string> = RadioComponentProps<T> &
 	Omit<RadioInputHTMLAttributes, 'type' | 'checked' | 'id' | keyof RadioComponentProps<T>>;

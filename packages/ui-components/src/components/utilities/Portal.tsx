@@ -8,7 +8,7 @@ import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeContext } from 'styled-components';
 
-interface PortalProps {
+type PortalProps = {
 	/** The children to render into the `container` */
 	children: React.ReactElement;
 	/**
@@ -20,7 +20,7 @@ interface PortalProps {
 	show?: boolean;
 	/** Flag to disable the Portal implementation */
 	disablePortal?: boolean;
-}
+};
 
 const Portal = ({ children, container, show = false, disablePortal = false }: PortalProps) => {
 	const { windowObj } = useContext(ThemeContext);

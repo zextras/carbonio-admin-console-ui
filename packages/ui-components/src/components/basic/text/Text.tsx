@@ -12,7 +12,7 @@ import { AnyColor } from '../../../types/utils';
 
 type TextOverflow = 'ellipsis' | 'break-word';
 
-interface TextProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 	/** Text color */
 	color?: AnyColor;
 	/** Text size */
@@ -29,7 +29,7 @@ interface TextProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
 	textAlign?: React.CSSProperties['textAlign'];
 	/** Line Height of the text */
 	lineHeight?: number;
-}
+};
 
 const Comp = styled.div<{
 	$color: AnyColor;

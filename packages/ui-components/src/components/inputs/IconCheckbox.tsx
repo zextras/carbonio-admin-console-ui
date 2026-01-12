@@ -72,7 +72,7 @@ const padding = {
 	large: 'medium'
 };
 
-interface IconCheckboxProps extends Omit<ContainerProps, 'margin'> {
+type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
 	/** Status of the IconCheckbox */
 	defaultChecked?: boolean;
 	/** IconCheckbox text */
@@ -91,7 +91,7 @@ interface IconCheckboxProps extends Omit<ContainerProps, 'margin'> {
 	value?: boolean;
 	/** change callback */
 	onChange: () => void;
-}
+};
 
 const IconCheckbox = (
 	{

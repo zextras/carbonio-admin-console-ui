@@ -5,6 +5,10 @@
  */
 import { DefaultTheme } from 'styled-components';
 
+import { PaletteKey } from '../theme/theme';
+
+export type { PaletteKey } from '../theme/theme';
+
 export type NonEmptyArray<T> = [T, ...T[]];
 
 export type SingleItemArray<T> = [T] | [];
@@ -16,7 +20,7 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
 
 export type LiteralUnion<TSub, TBase> = TSub | (TBase & Record<never, never>);
 
-export type PaletteColor = keyof DefaultTheme['palette'];
+export type PaletteColor = PaletteKey;
 
 export type AnyColor = string;
 

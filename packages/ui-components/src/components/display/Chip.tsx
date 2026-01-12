@@ -46,7 +46,7 @@ type ChipAction = {
 	  }
 );
 
-interface ChipProps extends Omit<RowProps, 'children'> {
+type ChipProps = Omit<RowProps, 'children'> & {
 	/** Chip actions (buttons or icons) */
 	actions?: ChipAction[];
 	/** Chip Avatar Icon */
@@ -93,7 +93,7 @@ interface ChipProps extends Omit<RowProps, 'children'> {
 	/** Tooltip placement */
 	tooltipPlacement?: React.ComponentPropsWithoutRef<typeof Tooltip>['placement'];
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const ActionIcon = styled(Icon)``;
 

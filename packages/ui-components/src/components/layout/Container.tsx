@@ -11,7 +11,7 @@ import styled, { css, SimpleInterpolation } from 'styled-components';
 import { getColor, getPadding, PaddingObj } from '../../theme/theme-utils';
 import { AnyColor, LiteralUnion, With$Prefix } from '../../types/utils';
 
-interface ContainerElProps {
+type ContainerElProps = {
 	/** The Container orientation (css flex-direction prop or 'vertical' or 'horizontal') */
 	orientation?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
 	/** Type of the Container's corners */
@@ -25,42 +25,42 @@ interface ContainerElProps {
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	height?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['height']> | number;
+	height?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container minHeight: <br/>
 	 *  	`fit`: shorthand for fit-content
 	 *  	`fill`: semantic alternative for `100%`
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	minHeight?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['minHeight']> | number;
+	minHeight?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container maxHeight: <br/>
 	 *  	`fit`: shorthand for fit-content
 	 *  	`fill`: semantic alternative for `100%`
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	maxHeight?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['maxHeight']> | number;
+	maxHeight?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container width: <br/>
 	 *  	`fit`: shorthand for fit-content
 	 *  	`fill`: semantic alternative for `100%`
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	width?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['width']> | number;
+	width?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container minWidth: <br/>
 	 *  	`fit`: shorthand for fit-content
 	 *  	`fill`: semantic alternative for `100%`
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	minWidth?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['minWidth']> | number;
+	minWidth?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container maxWidth: <br/>
 	 *  	`fit`: shorthand for fit-content
 	 *  	`fill`: semantic alternative for `100%`
 	 *  	number: measure in px
 	 *  	string: any measure in CSS syntax
 	 */
-	maxWidth?: LiteralUnion<'fit' | 'fill', CSSStyleDeclaration['maxWidth']> | number;
+	maxWidth?: LiteralUnion<'fit' | 'fill', string> | number;
 	/** Container flex alignment along the main axis */
 	mainAlignment?:
 		| 'stretch'
@@ -89,7 +89,7 @@ interface ContainerElProps {
 	/** Margin css property */
 	margin?: { left?: string; right?: string };
 	ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 const ContainerEl = styled.div<With$Prefix<ContainerElProps>>`
 	display: flex;
@@ -193,13 +193,11 @@ const ContainerEl = styled.div<With$Prefix<ContainerElProps>>`
 	}
 `;
 
-interface ContainerProps
-	extends
-		Omit<ContainerElProps, 'orientation'>,
-		Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> {
-	orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
-	children?: React.ReactNode | React.ReactNode[];
-}
+type ContainerProps = Omit<ContainerElProps, 'orientation'> &
+	Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> & {
+		orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
+		children?: React.ReactNode | React.ReactNode[];
+	};
 
 const Container = ({
 	orientation = 'vertical',

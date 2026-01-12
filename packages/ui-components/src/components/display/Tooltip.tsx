@@ -22,9 +22,9 @@ import { setupFloating } from '../../utils/floating-ui';
 import { Text, TextProps } from '../basic/text/Text';
 import { Portal } from '../utilities/Portal';
 
-interface TooltipWrapperProps extends TextProps {
+type TooltipWrapperProps = TextProps & {
 	open: boolean;
-}
+};
 
 const TooltipWrapper = ({
 	open,
@@ -62,7 +62,7 @@ const TooltipWrapperWithCss = styled(TooltipWrapper)<{ $maxWidth: string }>`
 		`};
 `;
 
-interface TooltipProps extends TextProps {
+type TooltipProps = TextProps & {
 	/** Tooltip text */
 	label: string | React.ReactNode | undefined;
 	/** Tooltip placement */
@@ -83,7 +83,7 @@ interface TooltipProps extends TextProps {
 	triggerDelay?: number;
 	/** trigger ref that can be used instead of lost children ref caused by cloneElement */
 	triggerRef?: React.Ref<HTMLElement>;
-}
+};
 
 const Tooltip = ({
 	label = '',
