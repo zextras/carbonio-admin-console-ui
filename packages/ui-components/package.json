@@ -14,7 +14,7 @@
 	],
 	"scripts": {
 		"lint": "eslint --cache --quiet",
-    "lint:fix": "eslint --fix --cache --quiet",
+		"lint:fix": "eslint --fix --cache --quiet",
 		"lint:icons": "eslint src/icons --fix",
 		"test": "jest --maxWorkers=50%",
 		"icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
@@ -26,8 +26,6 @@
 	"license": "AGPL-3.0-only",
 	"sideEffects": false,
 	"devDependencies": {
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0",
 		"@faker-js/faker": "^8.4.0",
 		"@microsoft/api-extractor": "^7.43.0",
 		"@svgr/cli": "^8.0.1",
@@ -52,7 +50,10 @@
 		"jsdom": "^24.0.0",
 		"lodash": "^4.17.21",
 		"process": "0.11.10",
+		"react": "^19.1.0",
 		"react-docgen-typescript": "^2.2.2",
+		"react-dom": "^19.1.0",
+		"ts-jest": "^29.4.6",
 		"ts-node": "^10 >=10.9.2",
 		"typescript": "^5.4.5"
 	},
