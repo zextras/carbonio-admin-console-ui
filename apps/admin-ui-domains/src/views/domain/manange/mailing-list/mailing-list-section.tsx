@@ -9,6 +9,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomTextArea,
   Icon,
   Input,
   Padding,
@@ -39,7 +40,6 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
 import DropDownInput from '../../../components/dropDownInput';
-import CustomTextArea from '../../../components/custom-text-area';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';

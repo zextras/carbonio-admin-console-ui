@@ -22,7 +22,6 @@ import {
   Padding,
   Row,
   Select,
-  Shimmer,
   Text,
   useSnackbar,
 } from '@zextras/carbonio-design-system';
@@ -881,14 +880,7 @@ const DomainGeneralSettings: FC = () => {
         height="calc(100vh - 150px)"
       >
         {loading ? (
-          <Container
-            orientation="horizontal"
-            mainAlignment="flex-start"
-            width="fill"
-            crossAlignment="flex-start"
-          >
-            <Shimmer.FormSubSection variant="dark" />
-          </Container>
+          <></>
         ) : (
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
             <Container

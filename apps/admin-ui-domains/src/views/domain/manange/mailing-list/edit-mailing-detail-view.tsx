@@ -8,6 +8,7 @@ import { useDomainStore, useStickyBarStore, useUserSettings } from '@zextras/adm
 import {
   Button,
   Container,
+  CustomTextArea,
   Divider,
   Input,
   Modal,
@@ -43,7 +44,6 @@ import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import CustomTextArea from '../../../components/custom-text-area';
 import Displayer from '../../../components/displayer';
 import DropDownInput from '../../../components/dropDownInput';
 import ManageAliases from '../../../components/manageAliases';

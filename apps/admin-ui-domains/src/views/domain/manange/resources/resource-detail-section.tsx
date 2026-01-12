@@ -6,6 +6,7 @@
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
+  CustomTextArea,
   Divider,
   Icon,
   Input,
@@ -17,7 +18,6 @@ import {
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CustomTextArea from '../../../components/custom-text-area';
 import ListRow from '../../../list/list-row';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 import { ResourceContext } from './resource-context';
@@ -37,7 +37,6 @@ const ResourceDetailSection: FC = () => {
   const cosList = useDomainStore((state) => state.cosList);
   const [cosItems, setCosItems] = useState<any[]>([]);
   const domainName = useDomainStore((state) => state.domain?.name);
-  const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
   const resourceTypeOptions: Array<{ label: string; value: string }> = useMemo(
     () => [
@@ -184,7 +183,6 @@ const ResourceDetailSection: FC = () => {
 
   const changeResourceName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setShowAutoFillAlert(false);
       setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
       setResourceDetail((prev: any) => ({
         ...prev,
@@ -201,10 +199,8 @@ const ResourceDetailSection: FC = () => {
       const userNameStr = getModifiedName(displayName.trim());
       const asciiValue = convertToAscii(userNameStr);
       if (userNameStr.length === asciiValue.length && checkValidUserName(asciiValue)) {
-        setShowAutoFillAlert(false);
         return asciiValue;
       }
-      setShowAutoFillAlert(true);
       return '';
     }
 

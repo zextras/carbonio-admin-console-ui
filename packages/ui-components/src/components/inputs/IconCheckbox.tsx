@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useMemo,useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
@@ -93,27 +93,25 @@ type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
 	onChange: () => void;
 };
 
-const IconCheckbox = (
-	{
-		defaultChecked = false,
-		label,
-		borderRadius = 'round',
-		disabled = false,
-		icon,
-		size = 'regular',
-		margin = 'extrasmall',
-		value,
-		onChange,
-		...rest
-	}: IconCheckboxProps,
-	ref: React.Ref<HTMLDivElement>
-) => {
+const IconCheckbox = ({
+	defaultChecked = false,
+	label,
+	borderRadius = 'round',
+	disabled = false,
+	icon,
+	size = 'regular',
+	margin = 'extrasmall',
+	value,
+	onChange,
+	ref,
+	...rest
+}: IconCheckboxProps) => {
 	const iconCheckboxRef = useCombinedRefs<HTMLDivElement>(ref);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	const onClick = useCallback(() => {
-		onChange && onChange();
+		onChange?.();
 	}, [onChange]);
 
 	const checked = useCheckbox({

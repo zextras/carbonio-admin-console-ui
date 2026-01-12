@@ -8,6 +8,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomTextArea,
   Divider,
   Icon,
   Input,
@@ -43,7 +44,6 @@ import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import CustomTextArea from '../../../../components/custom-text-area';
 import CustomChip from '../../../../components/customChip';
 import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';

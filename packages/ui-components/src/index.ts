@@ -77,6 +77,7 @@ export * from './components/feedback/snackbar/Snackbar';
 
 /** Utilities components */
 export * from './components/utilities/Catcher';
+export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
 export * from './globals';

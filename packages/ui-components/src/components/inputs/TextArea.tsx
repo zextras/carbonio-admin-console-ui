@@ -11,7 +11,7 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
+import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getColor } from '../../theme/theme-utils';
@@ -30,6 +30,7 @@ type AdjustHeightTextAreaProps = HTMLTextAreaProps & {
 	hasLabel: boolean;
 	maxHeight?: string;
 	color: string;
+	ref?: React.Ref<HTMLTextAreaElement> | null;
 };
 
 export type TextAreaProps = HTMLTextAreaProps & {
@@ -49,9 +50,7 @@ export type TextAreaProps = HTMLTextAreaProps & {
 	maxHeight?: string;
 	/** Divider color */
 	borderColor?: string | PaletteColor;
-};
-
-type TextArea = ReturnType<typeof React.forwardRef<HTMLDivElement, TextAreaProps>> & {
+	ref?: React.Ref<HTMLDivElement> | null;
 	_newId?: number;
 };
 
@@ -127,44 +126,48 @@ const GrowContainer = styled.div<{ $hasLabel: boolean; $maxHeight?: string }>`
 	}
 `;
 
-const AdjustHeightTextArea = React.forwardRef<HTMLTextAreaElement, AdjustHeightTextAreaProps>(
-	function AdjustTextAreaHeightFn({ hasLabel, onInput, color, ...props }, ref) {
-		const { maxHeight, value, defaultValue } = props;
-		const containerRef = useRef<HTMLDivElement>(null);
-		const textAreaRef = useCombinedRefs<HTMLTextAreaElement>(ref);
+const AdjustHeightTextArea = ({
+	hasLabel,
+	onInput,
+	color,
+	ref,
+	...props
+}: AdjustHeightTextAreaProps) => {
+	const { maxHeight, value, defaultValue } = props;
+	const containerRef = useRef<HTMLDivElement>(null);
+	const textAreaRef = useCombinedRefs<HTMLTextAreaElement>(ref);
 
-		const resizeTextArea = useCallback(() => {
-			if (containerRef.current) {
-				containerRef.current.dataset.replicatedValue = textAreaRef.current?.value ?? '';
-			}
-		}, [textAreaRef]);
+	const resizeTextArea = useCallback(() => {
+		if (containerRef.current) {
+			containerRef.current.dataset.replicatedValue = textAreaRef.current?.value ?? '';
+		}
+	}, [textAreaRef]);
 
-		useEffect(() => {
-			// resize text area when value or default value change
+	useEffect(() => {
+		// resize text area when value or default value change
+		resizeTextArea();
+	}, [resizeTextArea, value, defaultValue]);
+
+	const onInputHandler = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
+		(event) => {
 			resizeTextArea();
-		}, [resizeTextArea, value, defaultValue]);
+			onInput?.(event);
+		},
+		[resizeTextArea, onInput]
+	);
 
-		const onInputHandler = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
-			(event) => {
-				resizeTextArea();
-				onInput?.(event);
-			},
-			[resizeTextArea, onInput]
-		);
-
-		return (
-			<GrowContainer $hasLabel={hasLabel} $maxHeight={maxHeight} ref={containerRef}>
-				<StyledTextArea
-					{...props}
-					$color={color}
-					onInput={onInputHandler}
-					rows={1}
-					ref={textAreaRef}
-				/>
-			</GrowContainer>
-		);
-	}
-);
+	return (
+		<GrowContainer $hasLabel={hasLabel} $maxHeight={maxHeight} ref={containerRef}>
+			<StyledTextArea
+				{...props}
+				$color={color}
+				onInput={onInputHandler}
+				rows={1}
+				ref={textAreaRef}
+			/>
+		</GrowContainer>
+	);
+};
 
 const Label = styled(InputLabel)<{ $textAreaHasValue: boolean }>`
 	${InputContainer}:focus-within & {
@@ -185,137 +188,136 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-export const TextArea: TextArea = React.forwardRef<HTMLDivElement, TextAreaProps>(
-	function TextAreaFn(
-		{
-			maxHeight = '10.313rem',
-			hasError,
-			textAreaRef = null,
-			label,
-			description,
-			backgroundColor = INPUT_BACKGROUND_COLOR,
-			textColor = 'text',
-			borderColor = INPUT_DIVIDER_COLOR,
-			...props
-		},
-		ref
-	) {
-		const { defaultValue, value, onInput, disabled, onFocus, onBlur } = props;
-		const innerTextAreaRef = useCombinedRefs(textAreaRef);
-		const [hasFocus, setHasFocus] = useState(false);
-		const [textAreaHasValue, setTextAreaHasValue] = useState(!!defaultValue || !!value);
+export const TextArea = ({
+	maxHeight = '10.313rem',
+	hasError,
+	textAreaRef = null,
+	label,
+	description,
+	backgroundColor = INPUT_BACKGROUND_COLOR,
+	textColor = 'text',
+	borderColor = INPUT_DIVIDER_COLOR,
+	ref,
+	_newId,
+	...props
+}: TextAreaProps) => {
+	const { defaultValue, value, onInput, disabled, onFocus, onBlur } = props;
+	const innerTextAreaRef = useCombinedRefs(textAreaRef);
+	const [hasFocus, setHasFocus] = useState(false);
+	const [textAreaHasValue, setTextAreaHasValue] = useState(!!defaultValue || !!value);
 
-		useEffect(() => {
-			setTextAreaHasValue(!!defaultValue || !!value);
-		}, [defaultValue, value]);
+	useEffect(() => {
+		setTextAreaHasValue(!!defaultValue || !!value);
+	}, [defaultValue, value]);
 
-		const [id] = useState<string>(() => {
-			if (TextArea._newId === undefined) {
-				TextArea._newId = 0;
-			}
-			TextArea._newId += 1;
-			return `textarea-${TextArea._newId}`;
-		});
+	const [id] = useState<string>(() => {
+		if (TextArea._newId === undefined) {
+			TextArea._newId = 0;
+		}
+		TextArea._newId += 1;
+		return `textarea-${TextArea._newId}`;
+	});
 
-		const onTextAreaFocus = useCallback<NonNullable<HTMLTextAreaProps['onFocus']>>(
-			(event) => {
-				if (!disabled && innerTextAreaRef.current) {
-					setHasFocus(true);
-				}
-				onFocus?.(event);
-			},
-			[disabled, innerTextAreaRef, onFocus]
-		);
-
-		const onTextAreaBlur = useCallback<NonNullable<HTMLTextAreaProps['onBlur']>>(
-			(event) => {
-				setHasFocus(false);
-				onBlur?.(event);
-			},
-			[onBlur]
-		);
-
-		const onTextAreaInput = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
-			(event) => {
-				setTextAreaHasValue(!!event.currentTarget.value);
-				onInput?.(event);
-			},
-			[onInput]
-		);
-
-		const forceFocusOnTextArea = useCallback(() => {
+	const onTextAreaFocus = useCallback<NonNullable<HTMLTextAreaProps['onFocus']>>(
+		(event) => {
 			if (!disabled && innerTextAreaRef.current) {
 				setHasFocus(true);
-				innerTextAreaRef.current.focus();
 			}
-		}, [disabled, innerTextAreaRef]);
+			onFocus?.(event);
+		},
+		[disabled, innerTextAreaRef, onFocus]
+	);
 
-		const dividerColor = useMemo<DividerProps['color']>(
-			() =>
-				`${(hasError && 'error') || (hasFocus && 'primary') || borderColor}${
-					disabled ? '.disabled' : ''
-				}`,
-			[borderColor, disabled, hasError, hasFocus]
-		);
+	const onTextAreaBlur = useCallback<NonNullable<HTMLTextAreaProps['onBlur']>>(
+		(event) => {
+			setHasFocus(false);
+			onBlur?.(event);
+		},
+		[onBlur]
+	);
 
-		const descriptionColor = useMemo<TextProps['color']>(
-			() => (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
-			[hasError, hasFocus]
-		);
+	const onTextAreaInput = useCallback<NonNullable<HTMLTextAreaProps['onInput']>>(
+		(event) => {
+			setTextAreaHasValue(!!event.currentTarget.value);
+			onInput?.(event);
+		},
+		[onInput]
+	);
 
-		return (
-			<Container height="fit" width="fill" crossAlignment="flex-start" ref={ref}>
-				<InputContainer
-					orientation="horizontal"
-					width="fill"
-					height="fit"
-					crossAlignment={label ? 'flex-end' : 'center'}
-					borderRadius="half"
-					background={backgroundColor}
-					onClick={forceFocusOnTextArea}
-					$disabled={disabled}
-					padding={{ horizontal: '0.75rem' }}
-					gap={'0.5rem'}
+	const forceFocusOnTextArea = useCallback(() => {
+		if (!disabled && innerTextAreaRef.current) {
+			setHasFocus(true);
+			innerTextAreaRef.current.focus();
+		}
+	}, [disabled, innerTextAreaRef]);
+
+	const dividerColor = useMemo<DividerProps['color']>(
+		() =>
+			`${(hasError && 'error') || (hasFocus && 'primary') || borderColor}${
+				disabled ? '.disabled' : ''
+			}`,
+		[borderColor, disabled, hasError, hasFocus]
+	);
+
+	const descriptionColor = useMemo<TextProps['color']>(
+		() => (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
+		[hasError, hasFocus]
+	);
+
+	return (
+		<Container height="fit" width="fill" crossAlignment="flex-start" ref={ref}>
+			<InputContainer
+				orientation="horizontal"
+				width="fill"
+				height="fit"
+				crossAlignment={label ? 'flex-end' : 'center'}
+				borderRadius="half"
+				background={backgroundColor}
+				onClick={forceFocusOnTextArea}
+				$disabled={disabled}
+				padding={{ horizontal: '0.75rem' }}
+				gap={'0.5rem'}
+			>
+				<RelativeContainer
+					padding={{ vertical: label ? '0.0625rem' : '0.625rem' }}
+					mainAlignment={'flex-end'}
+					height={'fill'}
+					width={'fill'}
+					minHeight={'inherit'}
 				>
-					<RelativeContainer
-						padding={{ vertical: label ? '0.0625rem' : '0.625rem' }}
-						mainAlignment={'flex-end'}
-						height={'fill'}
-						width={'fill'}
-						minHeight={'inherit'}
-					>
-						<AdjustHeightTextArea
-							maxHeight={maxHeight}
-							placeholder={label}
-							color={textColor}
-							{...props}
-							id={id}
-							ref={innerTextAreaRef}
-							onInput={onTextAreaInput}
-							onFocus={onTextAreaFocus}
-							onBlur={onTextAreaBlur}
-							hasLabel={!!label}
-						/>
-						{label && (
-							<Label
-								htmlFor={id}
-								$hasFocus={hasFocus}
-								$hasError={hasError}
-								$disabled={disabled}
-								$textAreaHasValue={textAreaHasValue}
-							>
-								{label}
-							</Label>
-						)}
-					</RelativeContainer>
-				</InputContainer>
-				<Divider color={dividerColor} />
-				{description !== undefined && (
-					<InputDescription color={descriptionColor} disabled={disabled}>
-						{description}
-					</InputDescription>
-				)}
-			</Container>
-		);
-	}
-);
+					<AdjustHeightTextArea
+						maxHeight={maxHeight}
+						placeholder={label}
+						color={textColor}
+						{...props}
+						id={id}
+						ref={innerTextAreaRef}
+						onInput={onTextAreaInput}
+						onFocus={onTextAreaFocus}
+						onBlur={onTextAreaBlur}
+						hasLabel={!!label}
+					/>
+					{label && (
+						<Label
+							htmlFor={id}
+							$hasFocus={hasFocus}
+							$hasError={hasError}
+							$disabled={disabled}
+							$textAreaHasValue={textAreaHasValue}
+						>
+							{label}
+						</Label>
+					)}
+				</RelativeContainer>
+			</InputContainer>
+			<Divider color={dividerColor} />
+			{description !== undefined && (
+				<InputDescription color={descriptionColor} disabled={disabled}>
+					{description}
+				</InputDescription>
+			)}
+		</Container>
+	);
+};
+
+TextArea._newId = 0;

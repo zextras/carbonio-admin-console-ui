@@ -125,12 +125,14 @@ const AdjustWidthInputContainer = styled.div`
  * Then, input receives its scroll width, which contains always the full content.
  *
  */
-const AdjustWidthInput = React.forwardRef<
-	HTMLInputElement,
-	{
-		color: PaletteColor;
-	} & InputHTMLAttributes<HTMLInputElement>
->(function AdjustWidthInputFn({ color, ...rest }, ref) {
+const AdjustWidthInput = ({
+	color,
+	ref,
+	...rest
+}: {
+	color: PaletteColor;
+	ref?: React.Ref<HTMLInputElement>;
+} & InputHTMLAttributes<HTMLInputElement>) => {
 	const hiddenSpanRef = useRef<HTMLSpanElement | null>(null);
 	const inputRef = useCombinedRefs<HTMLInputElement>(ref);
 
@@ -164,7 +166,7 @@ const AdjustWidthInput = React.forwardRef<
 			<InputEl $color={color} {...rest} ref={inputRef} />
 		</AdjustWidthInputContainer>
 	);
-});
+};
 
 const Label = styled(InputLabel)<{
 	$hasItems: boolean;
@@ -253,10 +255,7 @@ type ChipItem<TValue = unknown> = { label?: string } & ChipProps & {
 		value?: TValue;
 	};
 
-type ChipInputProps<TValue = unknown> = Omit<
-	ContainerProps,
-	'defaultValue' | 'onChange'
-> & {
+type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'onChange'> & {
 	/** ref to the input element */
 	inputRef?: React.ForwardedRef<HTMLInputElement> | null;
 	/** HTML input name */
@@ -358,7 +357,7 @@ type ChipInputType = (<TValue = unknown>(
 	_newId?: number;
 };
 
-const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknown>({
+const ChipInputComponent = <TValue = unknown>({
 	inputRef = null,
 	inputName,
 	placeholder,
@@ -401,7 +400,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 	onOptionsDisplayChange,
 	ref,
 	...rest
-}: ChipInputProps<TValue>) {
+}: ChipInputProps<TValue>) => {
 	const [items, dispatch] = useReducer(reducer, defaultValue || value || []);
 	const [isActive, setIsActive] = useState(false);
 	const inputElRef = useCombinedRefs<HTMLInputElement>(inputRef);
@@ -844,7 +843,7 @@ const ChipInputComponent = React.forwardRef(function ChipInputFn<TValue = unknow
 			)}
 		</Container>
 	);
-});
+};
 
 const ChipInput = ChipInputComponent as ChipInputType;
 ChipInput._newId = 0;

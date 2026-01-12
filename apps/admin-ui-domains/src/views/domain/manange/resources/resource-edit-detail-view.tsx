@@ -8,6 +8,7 @@ import { useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomTextArea,
   Divider,
   Icon,
   Input,
@@ -29,7 +30,6 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import CustomTextArea from '../../../components/custom-text-area';
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';

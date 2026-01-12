@@ -9,6 +9,7 @@ import {
   CustomTextArea,
   Icon,
   Input,
+  PasswordInput,
   Row,
   Select,
   Switch,
