@@ -12,7 +12,7 @@ import {
 	Input,
 	Row,
 	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { find, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

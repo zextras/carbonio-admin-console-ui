@@ -10,7 +10,7 @@ import {
 	removeRoute,
 	useCurrentUserRights
 } from '@zextras/admin-ui-bootstrap';
-import { Icon } from '@zextras/carbonio-design-system';
+import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

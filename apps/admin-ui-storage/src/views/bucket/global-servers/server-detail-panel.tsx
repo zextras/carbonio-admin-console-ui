@@ -16,7 +16,7 @@ import {
 	Input,
 	Row,
 	Table,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

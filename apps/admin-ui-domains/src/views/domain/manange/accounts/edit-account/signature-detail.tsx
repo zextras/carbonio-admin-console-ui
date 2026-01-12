@@ -14,7 +14,7 @@ import {
   Table,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import styled from "styled-components";

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';

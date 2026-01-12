@@ -200,8 +200,8 @@ exports.setupWebpackBuildConfig = (
     msw: `__ZAPP_SHARED_LIBRARIES__['msw']`,
   };
   if (!options.useLocalDS) {
-    defaultConfig.externals["@zextras/carbonio-design-system"] =
-      `__ZAPP_SHARED_LIBRARIES__['@zextras/carbonio-design-system']`;
+    defaultConfig.externals["@zextras/ui-components"] =
+      `__ZAPP_SHARED_LIBRARIES__['@zextras/ui-components']`;
   }
   const confPath = path.resolve(process.cwd(), "carbonio.webpack.js");
 

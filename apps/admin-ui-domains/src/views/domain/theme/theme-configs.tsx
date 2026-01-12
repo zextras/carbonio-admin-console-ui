@@ -17,7 +17,7 @@ import {
   SelectItem,
   TabBar,
   Text,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { noop } from "lodash-es";
 import {
   ChangeEvent,

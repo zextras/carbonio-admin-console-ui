@@ -30,6 +30,9 @@ export default tseslint.config(
       '**/*webpack*',
       '**/sdk/**',
       '**/*.config.*',
+      '**/.prettierrc.js',
+      '**/.reuse/template.js',
+      '**/fileTransformer.js',
     ],
   },
   {
@@ -73,4 +76,10 @@ export default tseslint.config(
     },
   },
   noticeConfig,
+  {
+    files: ['**/icons/**/*.[jt]sx'],
+    rules: {
+      'notice/notice': 'off',
+    },
+  },
 );

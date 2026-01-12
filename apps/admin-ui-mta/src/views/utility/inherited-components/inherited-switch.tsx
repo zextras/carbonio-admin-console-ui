@@ -10,7 +10,7 @@ import {
 	Row,
 	Switch,
 	Text,
-	Tooltip} from '@zextras/carbonio-design-system';
+	Tooltip} from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -50,7 +50,7 @@ const InheritedSwitch: FC<{
 					value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
 					onClick={(): void => onChange(inputName)}
 					label={label}
-					iconColor={iconColor}
+					iconColor={iconColor as 'primary' | 'text' | 'gray0' | 'error' | 'warning' | 'success'}
 					disabled={disabled}
 					onFocus={onFocus}
 				/>

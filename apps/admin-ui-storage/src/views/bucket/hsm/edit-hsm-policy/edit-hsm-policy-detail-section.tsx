@@ -11,7 +11,7 @@ import {
 	Padding,
 	Select,
 	Table,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

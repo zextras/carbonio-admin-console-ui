@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 

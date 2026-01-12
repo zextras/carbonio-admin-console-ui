@@ -16,7 +16,7 @@ import {
   Table,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { format, parse } from "date-fns";
 import { debounce } from "lodash-es";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";

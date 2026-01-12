@@ -5,7 +5,7 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ type LicenseResponse = {
 		dateStart?: number;
 		dateEnd?: number;
 		maintenanceEndDate?: number;
-		maintenanceStatus?: 'active' | 'expired' | 'expiring';
+		maintenanceStatus?: 'active' | 'expired' | 'expiring' | 'invalid';
 		lastValidationCheck?: number;
 		nextValidationDeadline?: number;
 		accountCount?: number;
@@ -32,6 +32,9 @@ type LicenseResponse = {
 		expired?: boolean;
 		notYetValid?: boolean;
 		authenticationToken?: string;
+		maxCarbonioVersion?: string;
+		carbonioVersion?: string;
+		updateTime?: number;
 		features: Array<{
 			name: string;
 			quantity: string;
@@ -131,7 +134,6 @@ export const useActivateLicense = () => {
 					label: data.message || t('core.subscription.license_activated_successfully'),
 					replace: true
 				});
-				queryClient.invalidateQueries({ queryKey: queryKeys.license() });
 			} else {
 				createSnackbar({
 					key: '1',
@@ -142,6 +144,7 @@ export const useActivateLicense = () => {
 					replace: true
 				});
 			}
+			queryClient.invalidateQueries({ queryKey: queryKeys.license() });
 		},
 		onError: () => {
 			createSnackbar({
@@ -199,13 +202,17 @@ export const useRemoveLicense = () => {
 
 type ModuleLicenseInfo = {
 	maintenanceEndDate?: number;
-	maintenanceStatus?: 'active' | 'expired' | 'expiring';
+	maintenanceStatus?: 'active' | 'expired' | 'expiring' | 'invalid';
+	expired?: boolean;
 	subType?: string;
 	features?: Array<{
 		name: string;
 		quantity: string;
 		enabled: boolean;
 	}>;
+	updateTime?: number;
+	maxCarbonioVersion?: string;
+	carbonioVersion?: string;
 };
 
 export const useModuleLicenseInfo = () => {
@@ -215,9 +222,15 @@ export const useModuleLicenseInfo = () => {
 	const moduleLicenseInfo: ModuleLicenseInfo | null = licenseData?.response
 		? {
 				maintenanceEndDate: licenseData?.response.maintenanceEndDate,
-				maintenanceStatus: licenseData?.response.maintenanceStatus,
+			maintenanceStatus:
+				licenseData?.response.subType === 'PERPETUAL' && licenseData?.response.expired
+					? 'invalid'
+					: licenseData?.response.maintenanceStatus,
 				subType: licenseData?.response.subType,
-				features: licenseData?.response.features
+				features: licenseData?.response.features,
+				updateTime: licenseData?.response.updateTime,
+				maxCarbonioVersion: licenseData?.response.maxCarbonioVersion,
+				carbonioVersion: licenseData?.response.carbonioVersion
 			}
 		: null;
 
@@ -225,7 +238,6 @@ export const useModuleLicenseInfo = () => {
 		isLicenseBannerOpen &&
 		moduleLicenseInfo?.subType === 'PERPETUAL' &&
 		moduleLicenseInfo.maintenanceStatus !== 'active';
-
 	return {
 		moduleLicenseInfo,
 		licenseBannerShouldBeDisplayed,

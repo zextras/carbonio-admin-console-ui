@@ -5,7 +5,7 @@
  */
 
 import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
-import { Button,Container, Divider, Input, Row, Text } from '@zextras/carbonio-design-system';
+import { Button,Container, Divider, Input, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -20,7 +20,7 @@ import {
 	Table,
 	Text,
 	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -61,12 +61,12 @@ import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
-enum RANGE {
-	DAYS = 'd',
-	HOURS = 'h',
-	MINUTES = 'm',
-	SECONDS = 's'
-}
+const RANGE = {
+	DAYS: 'd',
+	HOURS: 'h',
+	MINUTES: 'm',
+	SECONDS: 's'
+} as const;
 
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;
@@ -128,7 +128,7 @@ const ServerListTable: FC<{
 						<Text
 							color="gray0"
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>

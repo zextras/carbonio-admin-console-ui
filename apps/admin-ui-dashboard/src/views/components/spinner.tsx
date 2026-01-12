@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Spinner as SpinnerDS } from '@zextras/carbonio-design-system';
+import { Container, Spinner as SpinnerDS } from '@zextras/ui-components';
 import React from 'react';
 
 export const Spinner = (): React.JSX.Element => (

@@ -5,7 +5,7 @@
  */
 
 import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Table, Text } from '@zextras/carbonio-design-system';
+import { Button, Container, Icon, Table, Text } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

@@ -5,7 +5,7 @@
  */
 
 import { useAllServers } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Divider, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

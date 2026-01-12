@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Padding, Row, Tooltip } from '@zextras/carbonio-design-system';
+import { Button, Padding, Row, Tooltip } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

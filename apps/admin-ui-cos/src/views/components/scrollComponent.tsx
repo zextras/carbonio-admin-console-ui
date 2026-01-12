@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Icon, Padding, Text } from '@zextras/carbonio-design-system';
+import { Container, Icon, Padding, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -28,7 +28,7 @@ const ScrollContainer: FC<{
 			<Container orientation="horizontal" padding={{ top: 'large' }} width="100%">
 				<Icon color="gray" icon="ArrowheadDown" size="large" />
 				<Padding left="small">
-					<Text size="large" weight="300" color="gray">
+					<Text size="large" weight="light" color="gray">
 						{t('label.scroll_down_to_view_other_items', 'Scroll down to view other items')}
 					</Text>
 				</Padding>

@@ -21,7 +21,7 @@ import {
 	Row,
 	TabBar,
 	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { differenceBy, find,isEqual, reduce, remove } from 'lodash-es';
 import {
 	FC,

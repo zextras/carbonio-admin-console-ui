@@ -5,7 +5,7 @@
  */
 
 export const optimizeDepsInclude = [
-  '@zextras/carbonio-design-system',
+  '@zextras/ui-components',
   'i18next',
   'react-i18next',
   'react-router-dom',

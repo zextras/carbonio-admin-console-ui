@@ -9,12 +9,12 @@ import {
 	useCurrentUserRights,
 	useDomainInformation,
 	useDomainStore,
-	useHasRight,
+	useHasAllRights,
 	useIsAdvanced,
 	useUserAccounts,
 	useVersion
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider } from '@zextras/carbonio-design-system';
+import { Container, Divider } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -49,7 +49,7 @@ const Dashboard: FC = () => {
 
 	const { data: domainInformation } = useDomainInformation();
 	const { data: rights } = useCurrentUserRights();
-	const adminHasAllRights = useHasRight({ rightType: 'config', rightName: 'getAttrs' }).data;
+	const adminHasAllRights = useHasAllRights();
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	const openOperationView = useCallback(
@@ -118,7 +118,7 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
+				{isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />

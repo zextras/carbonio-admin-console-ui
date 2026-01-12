@@ -21,10 +21,10 @@ import {
 	Row,
 	Text,
 	Tooltip
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useMemo,useState } from 'react';
+import React, { useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
@@ -52,6 +52,7 @@ export type AllModuleConfig = {
 };
 
 const DATE_FORMAT = 'dd MMM yyyy';
+const TIME_FORMAT = 'dd MMM yyyy HH:mm';
 
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
@@ -107,7 +108,7 @@ export const Subscription = (): React.JSX.Element => {
 
 	const { data: version } = useVersion();
 	const { data: licenseData } = useLicenseInfo();
-	const [licenseKey, setLicenseKey] = useState(licenseData?.response?.authenticationToken ?? '');
+	const [licenseKey, setLicenseKey] = useState('');
 	const { data: rights } = useCurrentUserRights();
 	const { t } = useTranslation();
 
@@ -123,6 +124,12 @@ export const Subscription = (): React.JSX.Element => {
 		if (!licenseData) return null;
 		return licenseData;
 	}, [licenseData]);
+
+	useEffect(() => {
+		if (licenseData?.response?.authenticationToken) {
+			setLicenseKey(licenseData.response.authenticationToken);
+		}
+	}, [licenseData?.response?.authenticationToken]);
 
 	const modules: Array<AllModuleConfig> = useMemo(() => {
 		if (!licenseData?.response?.features) return [];
@@ -172,6 +179,7 @@ export const Subscription = (): React.JSX.Element => {
 		removeLicenseMutation.mutate(undefined, {
 			onSuccess: () => {
 				setOpen(false);
+				setLicenseKey('');
 			}
 		});
 	};
@@ -498,6 +506,28 @@ export const Subscription = (): React.JSX.Element => {
 								/>
 							</Row>
 						</Row>
+						{services.response.subType === 'PERPETUAL' &&
+							services.response.maxCarbonioVersion && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input label={t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version')} value={services.response.maxCarbonioVersion} />
+							</Row>
+						)}
+						{services.response.updateTime && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input label={t('core.subscription.updateTime', 'Update Time')}
+											 value={format(services.response.updateTime, TIME_FORMAT)} />
+							</Row>
+						)}
 					</Container>
 				)}
 				<Row

@@ -15,7 +15,7 @@ import {
 	Switch,
 	Text,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

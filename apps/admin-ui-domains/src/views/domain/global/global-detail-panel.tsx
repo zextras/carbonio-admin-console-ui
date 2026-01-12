@@ -16,7 +16,7 @@ import {
 	Switch,
 	Text,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';

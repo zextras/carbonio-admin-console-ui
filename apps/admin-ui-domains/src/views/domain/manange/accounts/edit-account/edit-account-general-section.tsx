@@ -8,6 +8,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomTextArea,
   Divider,
   Icon,
   Input,
@@ -21,7 +22,7 @@ import {
   Text,
   Tooltip,
   useSnackbar,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
@@ -47,7 +48,6 @@ import CustomChip from '../../../../components/customChip';
 import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
-import Textarea from '../../../../components/textarea';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
@@ -1365,7 +1365,7 @@ const EditAccountGeneralSection: FC<{
           </Text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Textarea
+          <CustomTextArea
             label={t('label.notes', 'Notes')}
             value={accountDetail?.zimbraNotes || ''}
             backgroundColor="gray5"

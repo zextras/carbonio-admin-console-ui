@@ -5,7 +5,7 @@
  */
 
 import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -13,7 +13,7 @@ import {
 	Text,
 	Tooltip,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

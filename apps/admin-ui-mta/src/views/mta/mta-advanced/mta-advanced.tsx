@@ -21,7 +21,7 @@ import {
   Switch,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { find, isEqual } from "lodash-es";
 import React, {
   ChangeEvent,

@@ -18,7 +18,7 @@ import {
 	Text,
 	useScreenMode,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';

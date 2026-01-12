@@ -15,7 +15,7 @@ import {
 	Switch,
 	Text,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -241,7 +241,6 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										minDate={new Date(restoreAccountDetail?.createDate ?? '')}
 										maxDate={new Date()}
 										dateFormat="dd/MM/yyyy hh:mm a"
-										style={{ background: 'green' }}
 									/>
 								</DatePickerContainer>
 							</Container>

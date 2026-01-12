@@ -26,13 +26,11 @@ import { useIsAdvanced } from '../../react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from '../../react-query/use-last-login';
 import { useMailstoreServers } from '../../react-query/use-mailstore-servers';
 import {
-  getAllRights,
-  getRights,
-  useCurrentUserRights,
-  useHasAllRights,
-  useHasRight,
-  useRightsByType,
-} from '../../react-query/use-rights';
+	getAllRights,
+	getRights,
+	useCurrentUserRights,
+	useHasAllRights,
+	useRightsByType} from '../../react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from '../../react-query/use-servers';
 import {
   useActivateLicense,
@@ -56,47 +54,46 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
   postSoapFetchRequest,
   fetchExternalSoap,
 
-  // ACCOUNTS
-  useUserAccount,
-  useUserAccounts,
-  useUserSettings,
-  // HISTORY
-  replaceHistory,
-  pushHistory,
-  // STUFF
-  usePrimaryBarState,
-  useAllConfig,
-  useIsAdvanced,
-  useDomainInformation,
-  useDomainStore,
-  useStickyBarStore,
-  useHasRight,
-  useHasAllRights,
-  useRightsByType,
-  getRights,
-  getAllRights,
-  useCurrentUserRights,
-  useMailstoreServers,
-  // APP ROUTERS
-  addRoute: (route: Partial<AppRouteDescriptor>) =>
-    useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),
-  removeRoute: (routeId: string) => useAppStore.getState().setters.removeRoute(routeId),
-  registerActions: useIntegrationsStore.getState().registerActions,
-  useAppConfigStore,
-  useConfigurationAttribute,
-  useLastLoginTimestamp,
-  useLicenseInfo,
-  useVersion,
-  useActivateLicense,
-  useRemoveLicense,
-  useModuleLicenseInfo,
-  useAllServers,
-  useMtaServers,
-  useServersByService,
-  useBackupServers,
-  useGlobalSettings,
-  useGlobalCarbonioSendAnalytics,
-  useGlobalConfigValue,
-  useGlobalConfigList,
-  getLocale,
+	// ACCOUNTS
+	useUserAccount,
+	useUserAccounts,
+	useUserSettings,
+	// HISTORY
+	replaceHistory,
+	pushHistory,
+	// STUFF
+	usePrimaryBarState,
+	useAllConfig,
+	useIsAdvanced,
+	useDomainInformation,
+	useDomainStore,
+	useStickyBarStore,
+	useHasAllRights,
+	useRightsByType,
+	getRights,
+	getAllRights,
+	useCurrentUserRights,
+	useMailstoreServers,
+	// APP ROUTERS
+	addRoute: (route: Partial<AppRouteDescriptor>) =>
+		useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg)),
+	removeRoute: (routeId: string) => useAppStore.getState().setters.removeRoute(routeId),
+	registerActions: useIntegrationsStore.getState().registerActions,
+	useAppConfigStore,
+	useConfigurationAttribute,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useVersion,
+	useActivateLicense,
+	useRemoveLicense,
+	useModuleLicenseInfo,
+	useAllServers,
+	useMtaServers,
+	useServersByService,
+	useBackupServers,
+	useGlobalSettings,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigValue,
+	useGlobalConfigList,
+	getLocale
 });

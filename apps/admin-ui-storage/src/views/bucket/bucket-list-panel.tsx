@@ -9,7 +9,7 @@ import {
 	useIsAdvanced,
 	useMailstoreServers
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Padding,Row, Text } from '@zextras/carbonio-design-system';
+import { Container, Padding,Row, Text } from '@zextras/ui-components';
 import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

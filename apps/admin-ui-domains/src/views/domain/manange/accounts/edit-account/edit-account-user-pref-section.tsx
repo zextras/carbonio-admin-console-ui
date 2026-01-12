@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput,Container, Divider, Row, Text } from '@zextras/carbonio-design-system';
+import { ChipInput,Container, Divider, Row, Text } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import {
 	ChangeEvent,

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { PaddingObj,Row } from '@zextras/carbonio-design-system';
+import { PaddingObj,Row } from '@zextras/ui-components';
 import { FC } from 'react';
 
 const ListRow: FC<{

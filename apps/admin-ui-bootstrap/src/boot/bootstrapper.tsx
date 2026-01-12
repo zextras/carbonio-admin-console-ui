@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager,SnackbarManager } from '@zextras/carbonio-design-system';
+import { ModalManager,SnackbarManager } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 
 import I18nFactory from '../i18n/i18n-factory';

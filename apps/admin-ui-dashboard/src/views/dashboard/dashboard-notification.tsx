@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Icon, Text } from '@zextras/carbonio-design-system';
+import { Button, Container, Icon, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

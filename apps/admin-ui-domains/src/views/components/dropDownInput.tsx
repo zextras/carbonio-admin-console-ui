@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Dropdown, Icon,Input } from '@zextras/carbonio-design-system';
+import { Dropdown, Icon,Input } from '@zextras/ui-components';
 import React, { FC } from 'react';
 
 interface DropDownInputType {

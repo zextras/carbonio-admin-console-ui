@@ -5,7 +5,7 @@
  */
 
 import { useCurrentUserRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import {
 	ChangeEvent,

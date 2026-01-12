@@ -19,7 +19,7 @@ import {
   Text,
   Tooltip,
   useSnackbar,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';

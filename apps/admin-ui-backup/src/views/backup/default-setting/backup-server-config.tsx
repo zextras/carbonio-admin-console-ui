@@ -11,7 +11,7 @@ import {
 	Padding,
 	Row,
 	Switch,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';

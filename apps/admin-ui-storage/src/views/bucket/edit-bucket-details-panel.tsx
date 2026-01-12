@@ -16,7 +16,7 @@ import {
   Table,
   Text,
   useSnackbar,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { find, get } from "lodash-es";
 import {
   ChangeEvent,

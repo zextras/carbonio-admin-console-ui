@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip } from '@zextras/carbonio-design-system';
+import { Chip } from '@zextras/ui-components';
 
 const copyClipboard = (label: string): any => {
 	navigator.clipboard.writeText(label);

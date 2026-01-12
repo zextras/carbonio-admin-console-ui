@@ -11,7 +11,7 @@ import {
 	RadioGroup,
 	Row,
 	Select,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

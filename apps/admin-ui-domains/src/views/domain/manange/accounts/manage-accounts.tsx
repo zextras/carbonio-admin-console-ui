@@ -20,7 +20,7 @@ import {
 	Table,
 	Text,
 	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { debounce, filter,flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';

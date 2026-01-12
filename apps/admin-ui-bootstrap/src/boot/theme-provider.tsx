@@ -8,7 +8,7 @@ import {
 	generateColorSet,
 	ThemeProvider as UIThemeProvider,
 	ThemeProviderProps as UIThemeProviderProps
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { reduce } from 'lodash-es';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { DefaultTheme } from 'styled-components';

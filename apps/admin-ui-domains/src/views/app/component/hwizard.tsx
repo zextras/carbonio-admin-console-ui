@@ -63,7 +63,8 @@ const Wizard: React.FC<Props> = ({
       nextI18nLabel={nextI18nLabel}
       backI18nLabel={backI18nLabel}
       cancelI18nLabel={cancelI18nLabel}
-      ref={{ sectionRef, activeRef }}
+      sectionRef={sectionRef}
+      activeRef={activeRef}
       setToggleWizardSection={setToggleWizardSection}
       {...useWizardAnswer}
       externalData={externalData}

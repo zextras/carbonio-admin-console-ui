@@ -17,7 +17,7 @@ import {
   Table,
   Text,
   Tooltip,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { isEmpty } from "lodash-es";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -26,12 +26,12 @@ import CustomHeaderFactory from "../../app/shared/customTableHeaderFactory";
 import CustomRowFactory from "../../app/shared/customTableRowFactory";
 import { bytesToSize } from "../../utility/utils";
 
-enum SMART_SCAN_TYPE {
-  DISABLED = 1,
-  ON_STARTUP_ONLY = 2,
-  ON_STARTUP_AND_SCHEDULED = 3,
-  SCHEDULED = 4,
-}
+const SMART_SCAN_TYPE = {
+  DISABLED: 1,
+  ON_STARTUP_ONLY: 2,
+  ON_STARTUP_AND_SCHEDULED: 3,
+  SCHEDULED: 4,
+} as const;
 
 type BackupServerType = {
   id: string;

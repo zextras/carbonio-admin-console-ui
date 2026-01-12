@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Padding, Row, Select, Text } from '@zextras/carbonio-design-system';
+import { Container, Input, Padding, Row, Select, Text } from '@zextras/ui-components';
 import {
 	ChangeEvent,
 	FC,

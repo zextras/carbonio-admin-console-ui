@@ -5,7 +5,7 @@
  */
 
 import { addRoute, removeRoute, useHasAllRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button } from '@zextras/carbonio-design-system';
+import { Button } from '@zextras/ui-components';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';

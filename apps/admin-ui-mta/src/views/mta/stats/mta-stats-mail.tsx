@@ -14,7 +14,7 @@ import {
   Table,
   Text,
   useSnackbar,
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { format } from 'date-fns';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

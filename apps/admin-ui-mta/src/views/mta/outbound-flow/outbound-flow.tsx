@@ -18,7 +18,7 @@ import {
 	Text,
 	Tooltip,
 	useSnackbar
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
