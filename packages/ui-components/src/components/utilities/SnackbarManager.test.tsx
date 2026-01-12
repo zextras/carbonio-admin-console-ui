@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useContext } from 'react';
-
 import { renderHook } from '@testing-library/react';
+import { useContext } from 'react';
 
-import { SnackbarManager, SnackbarManagerContext } from './SnackbarManager';
 import { ThemeProvider } from '../../theme/theme-context-provider';
+import { SnackbarManager, SnackbarManagerContext } from './SnackbarManager';
 
 describe('SnackbarManagerContext', () => {
 	it('should return undefined if no manager has been set', () => {

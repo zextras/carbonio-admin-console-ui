@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { screen } from '@testing-library/react';
-
-import { Radio } from './Radio';
 import { setup } from '../../test-utils';
 import { Text } from '../basic/text/Text';
+import { Radio } from './Radio';
 
 describe('Radio', () => {
 	test('should render a radio input with a label', () => {

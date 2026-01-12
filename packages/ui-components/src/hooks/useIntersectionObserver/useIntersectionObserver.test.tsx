@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { act } from '@testing-library/react';
 import React, { useEffect, useRef } from 'react';
 
-import { act } from '@testing-library/react';
-
-import { useIntersectionObserver } from './useIntersectionObserver';
 import { screen, setup } from '../../test-utils';
+import { useIntersectionObserver } from './useIntersectionObserver';
 
 const TestComponent = ({
 	onIntersect = (): void => undefined,

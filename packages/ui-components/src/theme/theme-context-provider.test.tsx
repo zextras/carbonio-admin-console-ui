@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
-
 import { screen } from '@testing-library/react';
+import React from 'react';
 import { DefaultTheme } from 'styled-components';
 
+import { setup } from '../test-utils';
 import { Theme, ThemeColorObj } from './theme';
 import { ThemeProvider } from './theme-context-provider';
-import { useTheme, generateColorSet, getColor } from './theme-utils';
-import { setup } from '../test-utils';
+import { generateColorSet, getColor,useTheme } from './theme-utils';
 
 const CUSTOM_THEME_COLOR = '#FF7514';
 

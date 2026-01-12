@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useContext } from 'react';
-
 import { renderHook } from '@testing-library/react';
+import { useContext } from 'react';
 
-import { ModalManager, ModalManagerContext } from './ModalManager';
 import { ThemeProvider } from '../../theme/theme-context-provider';
+import { ModalManager, ModalManagerContext } from './ModalManager';
 
 describe('ModalManagerContext', () => {
 	it('should return undefined if no manager has been set', () => {

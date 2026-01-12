@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
-
+import { useCallback, useEffect,useMemo, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { getColor } from '../../theme/theme-utils';
@@ -357,11 +356,11 @@ const SelectComponent = function SelectFn<T = string>(
 const Select = SelectComponent as SelectType;
 
 export {
-	SelectComponent,
-	Select,
-	type SelectProps,
-	type SelectItem,
 	type LabelFactoryProps,
 	type MultipleSelectionOnChange,
+	Select,
+	SelectComponent,
+	type SelectItem,
+	type SelectProps,
 	type SingleSelectionOnChange
 };

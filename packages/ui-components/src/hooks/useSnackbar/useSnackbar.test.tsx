@@ -3,11 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { act as rtlAct, renderHook } from '@testing-library/react';
 import React, { useRef } from 'react';
 
-import { act as rtlAct, renderHook } from '@testing-library/react';
-
-import { useSnackbar } from './useSnackbar';
 import { Button } from '../../components/basic/button/Button';
 import { TIMERS } from '../../components/constants';
 import {
@@ -18,6 +16,7 @@ import {
 } from '../../components/utilities/SnackbarManager';
 import { screen, setup } from '../../test-utils';
 import { ThemeProvider } from '../../theme/theme-context-provider';
+import { useSnackbar } from './useSnackbar';
 
 jest.mock<typeof import('react-dom')>('react-dom', () => ({
 	...jest.requireActual<typeof import('react-dom')>('react-dom'),

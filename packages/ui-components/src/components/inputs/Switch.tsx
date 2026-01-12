@@ -5,7 +5,7 @@
  */
 
 import React, { useRef } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
+import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';

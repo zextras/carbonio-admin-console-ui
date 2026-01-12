@@ -3,14 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
-import { screen } from '@testing-library/react';
 import 'jest-styled-components';
 
-import { Container } from './Container';
+import { screen } from '@testing-library/react';
+
 import { setup } from '../../test-utils';
 import { Theme } from '../../theme/theme';
+import { Container } from './Container';
 
 describe('Container', () => {
 	test('Set all borders in one if a string is passed as prop', () => {

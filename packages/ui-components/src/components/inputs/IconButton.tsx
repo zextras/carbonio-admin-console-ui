@@ -5,7 +5,6 @@
  */
 
 import { useCallback, useMemo } from 'react';
-
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { getPadding, isThemeSize, useTheme } from '../../theme/theme-utils';

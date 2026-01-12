@@ -5,6 +5,7 @@
  */
 
 import '@testing-library/jest-dom';
+
 import { act } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
 import { noop } from 'lodash';

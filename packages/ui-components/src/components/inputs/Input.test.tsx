@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { act, screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 
-import { act, screen, waitFor } from '@testing-library/react';
-
-import { Input } from './Input';
 import { setup } from '../../test-utils';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
+import { Input } from './Input';
 
 const ModalWithInput = (): React.JSX.Element => {
 	const [open, setOpen] = useState(false);

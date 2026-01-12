@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React from 'react';
 
-import { screen, act } from '@testing-library/react';
+import { act,screen } from '@testing-library/react';
 
-import { Checkbox } from './Checkbox';
 import { setup } from '../../test-utils';
 import { ICONS } from '../../testUtils/constants';
+import { Checkbox } from './Checkbox';
 
 describe('Checkbox', () => {
 	test('Render a checkbox with a label', () => {

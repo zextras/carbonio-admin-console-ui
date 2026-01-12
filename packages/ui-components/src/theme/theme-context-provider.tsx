@@ -5,8 +5,7 @@
  */
 
 import React, { useCallback } from 'react';
-
-import { ThemeProvider as SCThemeProvider, ThemeContext, DefaultTheme } from 'styled-components';
+import { DefaultTheme,ThemeContext, ThemeProvider as SCThemeProvider } from 'styled-components';
 
 import DefaultFontStyles from './roboto-global-styles';
 import { Theme as defaultTheme } from './theme';

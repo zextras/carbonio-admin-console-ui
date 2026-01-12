@@ -6,9 +6,9 @@
 
 import React, { useRef } from 'react';
 
-import { useSnackbar } from './useSnackbar';
 import { Button } from '../../components/basic/button/Button';
 import { CreateSnackbarFnArgs } from '../../components/utilities/SnackbarManager';
+import { useSnackbar } from './useSnackbar';
 
 export const Hook = (createSnackbarArgs: CreateSnackbarFnArgs): React.JSX.Element => {
 	const indexRef = useRef(1);

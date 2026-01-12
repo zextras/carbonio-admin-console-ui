@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useCallback,useEffect, useMemo, useState } from 'react';
 
 import { getKeyboardPreset, useKeyboard } from './useKeyboard';
 

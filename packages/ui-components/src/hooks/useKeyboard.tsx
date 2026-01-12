@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useMemo } from 'react';
-
 import { isMatch } from 'lodash';
+import React, { useEffect, useMemo } from 'react';
 
 import { RequireAtLeastOne } from '../types/utils';
 
@@ -272,4 +271,4 @@ function useKeyboard(
 	}, [presets, keyboardListeners, ref, registerListener]);
 }
 
-export { useKeyboard, getKeyboardPreset, type KeyboardPresetObj, type KeyboardPresetKey };
+export { getKeyboardPreset, type KeyboardPresetKey,type KeyboardPresetObj, useKeyboard };

@@ -24,8 +24,12 @@ const noticeRule = {
       {
         templateFile: resolve(__dirname, 'notice.template.ts'),
         templateVars: {
+          year: new Date().getFullYear(),
           author: 'Zextras <https://www.zextras.com>',
           license: 'AGPL-3.0-only',
+        },
+        varRegexps: {
+          year: /20\d{2}/,
         },
         onNonMatchingHeader: 'replace',
       },

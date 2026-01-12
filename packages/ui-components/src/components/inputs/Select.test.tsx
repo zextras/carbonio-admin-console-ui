@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { screen, within } from '@testing-library/react';
 import { forEach, map, reject, slice } from 'lodash';
 
-import { Select, SelectItem, SingleSelectionOnChange } from './Select';
 import { setup } from '../../test-utils';
 import { SELECTORS } from '../../testUtils/constants';
+import { Select, SelectItem, SingleSelectionOnChange } from './Select';
 
 const items: SelectItem<`${number}`>[] = [
 	{

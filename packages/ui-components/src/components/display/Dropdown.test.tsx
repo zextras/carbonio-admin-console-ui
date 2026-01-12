@@ -291,7 +291,6 @@ describe('Dropdown', () => {
 		const firstItem = items[0];
 		const { user } = setup(
 			<Dropdown items={items}>
-				{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 				<div tabIndex={0}>opener</div>
 			</Dropdown>
 		);
@@ -308,9 +307,7 @@ describe('Dropdown', () => {
 			<Dropdown items={items}>
 				<div>
 					<div>Non focusable element</div>
-					{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 					<div tabIndex={0}>opener</div>
-					{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 					<div tabIndex={0}>another focusable element</div>
 				</div>
 			</Dropdown>
@@ -994,7 +991,6 @@ describe('Dropdown', () => {
 
 			const { user } = setup(
 				<Dropdown items={items} handleTriggerEvents>
-					{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 					<div tabIndex={0}>opener</div>
 				</Dropdown>
 			);
@@ -1009,7 +1005,6 @@ describe('Dropdown', () => {
 
 			const { user } = setup(
 				<Dropdown items={items} handleTriggerEvents={false}>
-					{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 					<div tabIndex={0}>opener</div>
 				</Dropdown>
 			);

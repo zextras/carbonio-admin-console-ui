@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { screen } from '@testing-library/react';
-
-import { Catcher } from './Catcher';
 import { setup } from '../../test-utils';
+import { Catcher } from './Catcher';
 
 function ErrorComponent(): React.JSX.Element {
 	throw new Error("Error from the test component, don't panic if You see this error.");

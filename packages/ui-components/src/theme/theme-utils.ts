@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useContext } from 'react';
-
 import { reduce } from 'lodash';
 import { darken, lighten, parseToHsl, setLightness, toColorString } from 'polished';
 import { HslColor } from 'polished/lib/types/color';
+import { useContext } from 'react';
 import {
 	css,
 	DefaultTheme,
@@ -20,8 +19,6 @@ import {
 import type { ThemeColorObj, ThemeSizeObj } from './theme';
 
 type ColorSet = Record<'light' | 'dark', Record<keyof ThemeColorObj, (color: string) => string>>;
-type ThemePaletteObj = DefaultTheme['palette'];
-type ThemePaletteColorKey = keyof ThemePaletteObj;
 
 function isThemeVariant(
 	variant: string,
@@ -299,12 +296,11 @@ const useTheme = (): DefaultTheme => useContext(ThemeContext);
 
 export type { PaddingObj };
 export {
-	generateColorSet,
 	calcHighlight,
+	generateColorSet,
 	generateHighlightSet,
 	getColor,
 	getPadding,
 	getPadding as parsePadding,
-	useTheme,
-	pseudoClasses
-};
+	pseudoClasses,
+	useTheme};

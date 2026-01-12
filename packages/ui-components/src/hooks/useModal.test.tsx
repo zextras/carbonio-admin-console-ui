@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { act, renderHook } from '@testing-library/react';
 import React from 'react';
 
-import { act, renderHook } from '@testing-library/react';
-
-import { useModal } from './useModal';
 import { ModalManager } from '../components/utilities/ModalManager';
 import { ThemeProvider } from '../theme/theme-context-provider';
+import { useModal } from './useModal';
 
 jest.mock<typeof import('react-dom')>('react-dom', () => ({
 	...jest.requireActual<typeof import('react-dom')>('react-dom'),

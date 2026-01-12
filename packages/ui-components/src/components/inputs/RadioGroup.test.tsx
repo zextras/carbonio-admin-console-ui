@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
 import { screen } from '@testing-library/react';
 import { noop } from 'lodash';
 
+import { setup } from '../../test-utils';
 import { Radio } from './Radio';
 import { RadioGroup, RadioGroupProps } from './RadioGroup';
-import { setup } from '../../test-utils';
 
 describe('Radio Group', () => {
 	test('Should render a group with the radio', () => {

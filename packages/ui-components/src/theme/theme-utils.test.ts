@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Theme } from './theme';
-import type { ThemeColorObj } from './theme';
+import  { Theme,type ThemeColorObj } from './theme';
 import { generateHighlightSet, getPadding } from './theme-utils';
 
 describe('Theme Utils', () => {

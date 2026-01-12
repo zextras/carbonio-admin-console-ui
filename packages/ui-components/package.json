@@ -14,6 +14,7 @@
 	],
 	"scripts": {
 		"lint": "eslint --cache --quiet",
+    "lint:fix": "eslint --fix --cache --quiet",
 		"lint:icons": "eslint src/icons --fix",
 		"test": "jest --maxWorkers=50%",
 		"icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",

@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
 
-import { Divider } from './Divider';
 import { screen, setup } from '../../../test-utils';
 import { SELECTORS } from '../../../testUtils/constants';
 import { Theme } from '../../../theme/theme';
+import { Divider } from './Divider';
 
 describe('Divider', () => {
 	it('should render correctly', () => {
