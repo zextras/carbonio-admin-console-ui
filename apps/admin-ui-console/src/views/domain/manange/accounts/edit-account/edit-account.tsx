@@ -79,8 +79,6 @@ import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
-import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
-import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
