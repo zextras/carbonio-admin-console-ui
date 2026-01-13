@@ -26,7 +26,7 @@ function jsdomProjectConfig() {
           './__mocks__/@zextras/admin-ui-bootstrap.js',
         ),
       },
-      include: ['src/**/*.test.{ts,tsx}'],
+      include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
       globals: true,
       css: true,

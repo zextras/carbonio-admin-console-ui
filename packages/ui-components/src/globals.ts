@@ -14,8 +14,9 @@ type DSWindow = {
 };
 
 declare global {
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
+	 
 	interface Window extends DSWindow {}
 }
 
 export type { DSWindow };
+
