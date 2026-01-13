@@ -13,7 +13,7 @@ import {
 	useDomainStore,
 	useGlobalCarbonioSendAnalytics,
 	useIsAdvanced} from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, Icon, OverlayDivision, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +57,6 @@ import {
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED} from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import DropDownInput from '../components/dropDownInput';
-import OverlayDivision from '../components/overlayDivision';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';

@@ -51,6 +51,7 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/custom-text-area';
 export * from './components/custom/modal-overlay';
+export * from './components/custom/overlay-division';
 
 /** display components */
 export * from './components/display/Chip';

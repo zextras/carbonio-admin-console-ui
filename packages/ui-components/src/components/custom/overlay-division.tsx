@@ -3,20 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { Container, Text } from '@zextras/ui-components';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { keyframes } from 'styled-components';
 
 const rotateKeyframes = keyframes`
-from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-    }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 `;
+
 const KeyFrameContainer = styled(Container)`
 	width: 3rem;
 	height: 3rem;
@@ -28,12 +28,16 @@ const KeyFrameContainer = styled(Container)`
 	animation: ${rotateKeyframes} 1s linear infinite;
 `;
 
-const OverlayDivision: FC<{ ovelayStyle: any }> = ({ ovelayStyle }) => {
+type OverlayDivisionProps = {
+	ovelayStyle: any;
+};
+
+export const OverlayDivision: FC<OverlayDivisionProps> = ({ ovelayStyle }) => {
 	const [t] = useTranslation();
 	const OverlayContainer = ovelayStyle;
 	return (
 		<OverlayContainer>
-			<KeyFrameContainer></KeyFrameContainer>
+			<KeyFrameContainer />
 			<Container height="auto" padding={{ top: 'small' }}>
 				<Text color="gray5" size="medium" weight="bold">
 					{t('label.please_wait', 'Please wait')}
@@ -42,5 +46,3 @@ const OverlayDivision: FC<{ ovelayStyle: any }> = ({ ovelayStyle }) => {
 		</OverlayContainer>
 	);
 };
-
-export default OverlayDivision;

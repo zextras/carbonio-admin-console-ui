@@ -8,6 +8,7 @@ import {
 	Button,
 	Container,
 	Divider,
+	OverlayDivision,
 	Padding,
 	Row,
 	Text,
@@ -23,7 +24,6 @@ import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';

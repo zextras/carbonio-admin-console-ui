@@ -11,6 +11,7 @@ import {
 	Divider,
 	Icon,
 	Input,
+	OverlayDivision,
 	Padding,
 	Row,
 	Switch,
@@ -41,7 +42,6 @@ import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import DropDownInput from '../components/dropDownInput';
-import OverlayDivision from '../components/overlayDivision';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';

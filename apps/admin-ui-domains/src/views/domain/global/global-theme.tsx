@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Divider,
+  OverlayDivision,
   Padding,
   Row,
   Text,
@@ -20,7 +21,6 @@ import styled from "styled-components";
 
 import { themeConfigStore } from "../../../../types/domain";
 import { modifyConfig } from "../../../services/modify-config";
-import OverlayDivision from "../../components/overlayDivision";
 import { RouteLeavingGuard } from "../../ui-extras/nav-guard";
 import { isValidHexColor } from "../../utility/utils";
 import { ThemeConfigs } from "../theme/theme-configs";

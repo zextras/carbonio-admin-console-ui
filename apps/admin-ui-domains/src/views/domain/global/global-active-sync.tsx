@@ -10,6 +10,7 @@ import {
 	Container,
 	Divider,
 	Input,
+	OverlayDivision,
 	Padding,
 	Row,
 	Switch,
@@ -30,7 +31,6 @@ import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
-import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 
 const ovelayStyle = styled(Container)`

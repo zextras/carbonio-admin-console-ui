@@ -21,7 +21,9 @@ import {
 	Select,
 	Switch,
 	Text,
+	OverlayDivision,
 	useSnackbar
+}
 } from '@zextras/ui-components';
 import { find,isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -45,7 +47,6 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
