@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Dropdown, Icon,Input } from '@zextras/ui-components';
-import React, { FC } from 'react';
+import { Dropdown, Icon, Input } from '@zextras/ui-components';
+import type { FC } from 'react';
 
-interface DropDownInputType {
+type DropDownInputType = {
 	items: any;
 	placement?:
 		| 'bottom-start'
@@ -38,9 +38,9 @@ interface DropDownInputType {
 	inputDisabled?: boolean;
 	isCustomIcon: boolean;
 	customIconDetail?: any;
-}
+};
 
-const DropDownInput: FC<DropDownInputType> = ({
+export const DropDownInput: FC<DropDownInputType> = ({
 	items,
 	maxWidth,
 	width,
@@ -69,7 +69,6 @@ const DropDownInput: FC<DropDownInputType> = ({
 			<Input
 				label={inputLabel}
 				onChange={onChange}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-expect-error - needs a fix // Need to fix it with custom soultion
 				CustomIcon={(): React.ReactChild =>
 					isCustomIcon ? (
@@ -92,4 +91,4 @@ const DropDownInput: FC<DropDownInputType> = ({
 		</div>
 	</Dropdown>
 );
-export default DropDownInput;
+
