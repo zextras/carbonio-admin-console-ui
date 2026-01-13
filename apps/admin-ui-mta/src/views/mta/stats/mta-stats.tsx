@@ -9,6 +9,7 @@ import {
 	Button,
 	Container,
 	Divider,
+	ModalOverlay,
 	Row,
 	Table,
 	Text,
@@ -25,7 +26,6 @@ import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 import MTAStatsMail from './mta-stats-mail';
 

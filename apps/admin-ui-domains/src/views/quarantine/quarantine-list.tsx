@@ -13,6 +13,7 @@ import {
   Icon,
   Input,
   Modal,
+  ModalOverlay,
   Padding,
   Row,
   Table,
@@ -39,7 +40,6 @@ import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ModalOverlay from '../components/ModalOverlay';
 import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';

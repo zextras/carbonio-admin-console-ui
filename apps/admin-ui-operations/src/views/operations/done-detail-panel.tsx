@@ -10,6 +10,7 @@ import {
 	Divider,
 	Icon,
 	Input,
+	ModalOverlay,
 	Row,
 	Text,
 	useSnackbar} from '@zextras/ui-components';
@@ -20,7 +21,6 @@ import styled from 'styled-components';
 
 import { getAllDoneOperations } from '../../services/get-all-done-operation';
 import { useOperationStore } from '../../store/operation/store';
-import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import { OperationsDoneHeader } from '../utility/utils';
 import { OperationsTable } from './operations-table';

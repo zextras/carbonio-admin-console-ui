@@ -10,6 +10,7 @@ import {
 	Divider,
 	Icon,
 	Input,
+	ModalOverlay,
 	Padding,
 	Row,
 	Table,
@@ -38,7 +39,6 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';

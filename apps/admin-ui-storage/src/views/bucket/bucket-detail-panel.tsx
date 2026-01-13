@@ -9,6 +9,7 @@ import {
 	Divider,
 	Icon,
 	Input,
+	ModalOverlay,
 	Padding,
 	Row,
 	Table,
@@ -28,7 +29,6 @@ import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ModalOverlay from '../components/ModalOverlay';
 import ListRow from '../list/list-row';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
