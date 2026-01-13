@@ -4,15 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 // import module augmentations to make ts use them while generating types definitions
-import './globals';
 import './styled-components';
+
+// global definitions
+export * from './global';
+
+// Web components setup (imports theme CSS)
+export * from './web-components';
 
 /** Basic components */
 export * from './components/basic/button/Button';
 export { Icon, type IconProps } from './components/basic/icon/Icon';
 export * from './components/basic/Link';
-export * from './components/basic/Spinner';
 export * from './components/basic/text/Text';
+
 /** Layout components */
 export * from './components/layout/Container';
 export * from './components/layout/divider/Divider';
@@ -49,7 +54,6 @@ export * from './components/inputs/TextArea';
 export * from './components/navigation/TabBar';
 
 /** custom components */
-export * from './components/custom/custom-spinner';
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
 export * from './components/custom/modal-overlay';
@@ -84,7 +88,6 @@ export * from './components/utilities/Catcher';
 export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
-export * from './globals';
 export * from './hooks/useScreenMode';
 export * from './hooks/useSnackbar/useSnackbar';
 export type { ThemeObj as Theme } from './theme/theme';

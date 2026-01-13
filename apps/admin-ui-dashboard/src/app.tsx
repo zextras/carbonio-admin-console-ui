@@ -1,21 +1,21 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 
 import { addRoute } from '@zextras/admin-ui-bootstrap';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';
-import { CustomSpinner } from '@zextras/ui-components';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<CustomSpinner />}>
+	<Suspense fallback={<spinner-wc />}>
 		<LazyAppView {...props} />
 	</Suspense>
 );

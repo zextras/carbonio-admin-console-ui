@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src/**/*", "types/**/*", "global.d.ts", "../../fonts.d.ts"],
+  "include": ["src/**/*", "types/**/*", "global.d.ts"],
   "exclude": ["node_modules", "dist", "build"]
 }

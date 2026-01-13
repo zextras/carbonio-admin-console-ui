@@ -5,37 +5,42 @@
  */
 
 import { HTMLAttributes } from 'react';
-import styled, { keyframes } from 'styled-components';
 
-import { getColor } from '../../theme/theme-utils';
+import { getColor, useTheme } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
+import { Container } from '../layout/Container';
 
 type SpinnerProps = HTMLAttributes<HTMLDivElement> & {
 	color: AnyColor;
 };
 
-const rotateKeyframes = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-	}
-`;
+const spinnerStyle = (color: string): React.CSSProperties => ({
+	width: '0.75rem',
+	height: '0.75rem',
+	color,
+	border: '0.125rem solid currentColor',
+	borderRightColor: 'transparent',
+	borderRadius: '50%',
+	animation: 'spinner-rotate 0.75s linear infinite'
+});
 
-const StyledSpinner = styled.div<{ $color: AnyColor }>`
-	width: 0.75rem;
-	height: 0.75rem;
-	color: ${({ theme, $color }): string => getColor($color, theme)};
-	border: 0.125rem solid currentColor;
-	border-right-color: transparent;
-	border-radius: 50%;
-	animation: ${rotateKeyframes} 0.75s linear infinite;
-`;
+const Spinner = ({ color = 'primary', ...rest }: SpinnerProps) => {
+	const theme = useTheme();
+	const colorValue = getColor(color, theme);
 
-const Spinner = ({ color, ...rest }: SpinnerProps) => {
-	return <StyledSpinner data-testid="spinner" $color={color} {...rest} />;
+	return (
+		<>
+			<style>{`
+				@keyframes spinner-rotate {
+					from { transform: rotate(0deg); }
+					to { transform: rotate(360deg); }
+				}
+			`}</style>
+			<Container>
+				<div data-testid="spinner" style={spinnerStyle(colorValue)} {...rest} />
+			</Container>
+		</>
+	);
 };
 
-export type { SpinnerProps };
 export { Spinner };

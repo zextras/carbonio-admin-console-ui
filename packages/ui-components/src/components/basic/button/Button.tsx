@@ -11,7 +11,6 @@ import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { getColor, pseudoClasses } from '../../../theme/theme-utils';
 import { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
 import { Icon, IconProps } from '../icon/Icon';
-import { Spinner } from '../Spinner';
 import { Text } from '../text/Text';
 
 type ButtonShape = 'regular' | 'round';
@@ -131,17 +130,6 @@ const StyledText = styled(Text)<{ $loading: boolean; $size: string }>`
 		css`
 			opacity: 0;
 		`};
-`;
-
-const StyledLoadingContainer = styled.div`
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 `;
 
 const StyledButton = styled.button.attrs<
@@ -413,12 +401,6 @@ const Button = ({
 							$size={SIZES[size].secondaryButton.icon}
 						/>
 					</StyledSecondaryActionPlaceholder>
-				)}
-
-				{loading && (
-					<StyledLoadingContainer>
-						<Spinner color="currentColor" />
-					</StyledLoadingContainer>
 				)}
 			</StyledButton>
 			{secondaryAction && size !== 'extrasmall' && size !== 'small' && (

@@ -11,42 +11,41 @@ import styled from 'styled-components';
 
 import { COS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
 import { BreadCrumb } from './breadcrumb/breadcrumb-view';
-import { CustomSpinner } from '@zextras/ui-components';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 
 interface ContainerExtendProps extends ContainerProps {
-	isPrimaryBarExpanded?: boolean;
+  isPrimaryBarExpanded?: boolean;
 }
 
 const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-	transition: width 300ms;
+  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
+  transition: width 300ms;
 `;
 
 const AppView: FC = () => {
-	const isPrimaryBarExpanded = usePrimaryBarState();
-	return (
-		<Container>
-			<BreadCrumb />
-			<Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
-					<Container style={{ maxWidth: '265px' }}>
-						<Suspense fallback={<CustomSpinner />}>
-							<CosListPanel />
-						</Suspense>
-					</Container>
-					<Container style={{ maxWidth: '100%' }}>
-						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<CustomSpinner />}>
-								<CosDetailPanel />
-							</Suspense>
-						</DetailViewContainer>
-					</Container>
-				</Container>
-			</Route>
-		</Container>
-	);
+  const isPrimaryBarExpanded = usePrimaryBarState();
+  return (
+    <Container>
+      <BreadCrumb />
+      <Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
+        <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
+          <Container style={{ maxWidth: '265px' }}>
+            <Suspense fallback={<spinner-wc />}>
+              <CosListPanel />
+            </Suspense>
+          </Container>
+          <Container style={{ maxWidth: '100%' }}>
+            <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+              <Suspense fallback={<spinner-wc />}>
+                <CosDetailPanel />
+              </Suspense>
+            </DetailViewContainer>
+          </Container>
+        </Container>
+      </Route>
+    </Container>
+  );
 };
 
 export default AppView;
