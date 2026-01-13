@@ -22,7 +22,7 @@ import {
 	DefaultTabBarItem,
 	Checkbox
 } from '@zextras/carbonio-design-system';
-import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy, filter, set } from 'lodash';
+import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import moment from 'moment';
 import React, { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -55,6 +55,7 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
+import Paging from '../../../components/paging';
 
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
@@ -93,7 +94,6 @@ const EditMailingListView: FC<any> = ({
 		'Search for a user and click on the ADD button.'
 	);
 	const createSnackbar = useSnackbar();
-	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
 	const [distributionName, setDistributionName] = useState<string>('');
 	const [
@@ -126,7 +126,6 @@ const EditMailingListView: FC<any> = ({
 	const [searchOwner, setSearchOwner] = useState<string>('');
 	const [memberURL, setMemberURL] = useState<string>();
 	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
-	const [searchOwnerMemberOfList, setSearchOwnerMemberOfList] = useState<any[]>([]);
 	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
@@ -135,7 +134,6 @@ const EditMailingListView: FC<any> = ({
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
-	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
@@ -170,6 +168,11 @@ const EditMailingListView: FC<any> = ({
 	const [sendEmailsList, setSendEmailsList] = useState<any>([]);
 	const [sendEmailTableRows, setSendEmailTableRows] = useState<any>([]);
 
+	// dist list members offset
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(15);
+	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
+	const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -626,36 +629,78 @@ const EditMailingListView: FC<any> = ({
 
 	useEffect(() => {
 		if (dlm && dlm.length > 0) {
-			const allRows = dlm.map((item: any) => ({
-				id: item,
-				columns: [
-					<Text
-						size="small"
-						weight="regular"
-						key={item}
-						color="gray0"
-						onClick={(): void => {
-							setSelectedDistributionListMember([item]);
-						}}
-					>
-						{item}
-					</Text>,
-					selectedMailingList?.dynamic ? null : 
-					<Button
-						type="ghost"
-						color={'text'}
-						size="medium"
-						icon="CloseOutline"
-						aria-label={t('label.delete', 'Delete')}
-						onClick={(): void => deleteSingleRow(item,'distListMember')}
-					/>
-				]
-			}));
-			setDlmTableRows(allRows);
+			if (!filterMember) {
+				const allRows = dlm.map((item: any) => ({
+					id: item,
+					columns: [
+						<Text
+							size="small"
+							weight="regular"
+							key={item}
+							color="gray0"
+							onClick={(): void => {
+								setSelectedDistributionListMember([item]);
+							}}
+						>
+							{item}
+						</Text>,
+						selectedMailingList?.dynamic ? null : 
+						<Button
+							type="ghost"
+							color={'text'}
+							size="medium"
+							icon="CloseOutline"
+							style={{ position: 'inherit' }}
+							aria-label={t('label.delete', 'Delete')}
+							onClick={(): void => deleteSingleRow(item,'distListMember')}
+						/>
+					]
+				}));
+				const pagedRows = allRows.slice(offset, offset + limit);
+				setDlmTableRows(allRows);
+				setDLMPagedRows(pagedRows);
+			} else {
+				const filteredRows = dlm
+					.filter((item: any) =>
+						item.toLowerCase().includes(filterMember.toLowerCase())
+					)
+					.map((item: any) => ({
+						id: item,
+						columns: [
+							<Text
+								size="small"
+								weight="regular"
+								key={item}
+								color="gray0"
+								onClick={(): void => {
+									setSelectedDistributionListMember([item]);
+								}}
+							>
+								{item}
+							</Text>,
+							selectedMailingList?.dynamic ? null : 
+							<Button
+								type="ghost"
+								color={'text'}
+								size="medium"
+								icon="CloseOutline"
+								style={{ position: 'inherit' }}
+								aria-label={t('label.delete', 'Delete')}
+								onClick={(): void => deleteSingleRow(item,'distListMember')}
+							/>
+						]
+					}));
+				const pagedRows = filteredRows.slice(offset, offset + limit);
+				setDlmTableRows(filteredRows);
+				setDLMPagedRows(pagedRows);
+			}
 		} else {
 			setDlmTableRows([]);
+			setDLMPagedRows([]);
+			setOffset(0);
+			setDLMSearchCurrentPage(1);
 		}
-	}, [dlm]);
+	}, [dlm,offset,filterMember]);
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
@@ -678,6 +723,7 @@ const EditMailingListView: FC<any> = ({
 						color={'text'}
 						size="medium"
 						icon="CloseOutline"
+						style={{ position: 'inherit' }}
 						aria-label={t('label.delete', 'Delete')}
 						onClick={(): void => deleteSingleRow(item?.name,'owner')}
 					/>
@@ -721,6 +767,7 @@ const EditMailingListView: FC<any> = ({
 						color={'text'}
 						size="medium"
 						icon="CloseOutline"
+						style={{ position: 'inherit' }}
 						aria-label={t('label.delete', 'Delete')}
 						onClick={(): void => deleteSingleRow(item?.name,'sendEmail')}
 					/>
@@ -1870,6 +1917,20 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [searchOwner, t, ownersList]);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchSendEmail = useCallback(
+		debounce((searchWord) => {
+			searchEmailFromGal(searchWord);
+		}, 700),
+		[debounce]
+	);
+
+	useEffect(() => {
+		if (sendEmailItem !== '') {
+			searchSendEmail(sendEmailItem);
+		}
+	}, [sendEmailItem, searchSendEmail]);
+
 	const onAddSendEmail = useCallback(() => {
 		if (sendEmailItem !== '') {
 			const specialChars = /[ `'"<>,;]/;
@@ -2038,6 +2099,7 @@ const EditMailingListView: FC<any> = ({
 						color={'text'}
 						size="medium"
 						icon="CloseOutline"
+						style={{ position: 'inherit' }}
 						aria-label={t('label.delete', 'Delete')}
 						onClick={(): void => deleteSingleRow(item,'grantEmail')}
 					/>
@@ -2231,11 +2293,19 @@ const EditMailingListView: FC<any> = ({
 			const value = e.target.value;
 			if ( value != "" ){
 				setFilterMember(value);
+				setDLMSearchCurrentPage(1);
+				setOffset(0);
 				const allRows = dlmTableRows.filter((item: any) => item?.id.toLowerCase().includes(value.toLowerCase()));
 				setFilteredDlmTableRows(allRows);
+				const pagedRows = allRows.slice(0, limit);
+				setDLMPagedRows(pagedRows);
 			} else {
 				setFilterMember("");
-				setFilteredDlmTableRows(dlmTableRows);
+				setDLMSearchCurrentPage(1);
+				setOffset(0);
+				const pagedRows = dlmTableRows.slice(0, limit);
+				setFilteredDlmTableRows([]);
+				setDLMPagedRows(pagedRows);
 			}
 	}
 
@@ -2263,45 +2333,46 @@ const EditMailingListView: FC<any> = ({
 			}
 	}
 
-	// need to refactor with a callback ( need to pass all update filtered rows variables )
 	const deleteSingleRow = (itemName : string, type: string): void => {
-		if (type === 'grantEmail'){
+		if (type === 'grantEmail') {
 			const _grant = grantEmailsList.filter(
-				(item: any) => !itemName.includes(item)
+				(item: any) => itemName !== item
 			);
 			const _grant_filtered = filteredGrantEmailRows.filter(
-				(item: any) => !itemName.includes(item.id)
+				(item: any) => itemName !== item.id
 			);
 			setGrantEmailsList(_grant);
 			setFilteredGrantEmailRows(_grant_filtered);
 			setSelectedGrantEmail([]);
 			setGrantEmails(_grant);
 			setIsDirty(true);
-		}
-		else if (type === 'distListMember'){
+		} else if (type === 'distListMember') {
 			const _dlm = dlm.filter(
-				(item: any) => !itemName.includes(item)
+				(item: any) => itemName !== item
 			);
 			const _dlm_filtered = filteredDlmTableRows.filter(
-				(item: any) => !itemName.includes(item.id)
+				(item: any) => itemName !== item.id
 			);
 			setFilteredDlmTableRows(_dlm_filtered);
 			setDlm(_dlm);
 			setSelectedDistributionListMember([]);
-		}
-		else if (type === 'owner'){
+			if (DLMPagedRows.length === 1) {
+				setDLMSearchCurrentPage(1);
+				setOffset(0);
+				setFilterMember('');
+			}
+		} else if (type === 'owner') {
 			const _ownerList = ownersList.filter(
-				(item: any) => !itemName.includes(item?.name)
+				(item: any) => itemName !== item.name
 			);
 			setOwnersList(_ownerList);
 			setSelectedOwnerListMember([]);
-		}
-		else if (type === 'sendEmail'){
+		} else if (type === 'sendEmail') {
 			const _sendList = sendEmailsList.filter(
-				(item: any) => !itemName.includes(item?.name)
+				(item: any) => itemName !== item.name
 			);
 			const _send_filtered = filteredSendEmailRows.filter(
-				(item: any) => !itemName.includes(item?.id)
+				(item: any) => itemName !== item.id
 			);
 			setFilteredSendEmailRows(_send_filtered);
 			const sortedList = sortedUniq(_sendList);
@@ -2745,7 +2816,7 @@ const EditMailingListView: FC<any> = ({
 									}}
 								>
 									<Row width="auto" mainAlignment="flex-start" crossAlignment="flex-start">
-									{dlmTableRows.length > 0 && (
+									{( dlmTableRows.length > 0 || filterMember !== '' ) && (
 									<>
 										<Input
 												label={t('label.filter', "Filter") + " " + t('label.address', 'Address') }
@@ -2759,7 +2830,7 @@ const EditMailingListView: FC<any> = ({
 									</>
 									)}
 									<Table
-										rows={filterMember ? filteredDlmTableRows : dlmTableRows}
+										rows={DLMPagedRows}
 										headers={memberHeaders}
 										showCheckbox={false}
 										selectedRows={selectedDistributionListMember}
@@ -2769,11 +2840,36 @@ const EditMailingListView: FC<any> = ({
 											setSelectedDistributionListMember(selectedRows);
 										}}
 									/>
+									<Container
+										style={{
+											position: 'sticky',
+											bottom: '-4rem'
+										}}
+									>
+										<Container
+											orientation="horizontal"
+											mainAlignment="space-between"
+											background="gray6"
+											width="100%"
+											padding={{ right: 'extralarge' }}
+											height="auto"
+										>
+											<Container crossAlignment="flex-start">
+												<Paging
+													totalItem={filterMember ? filteredDlmTableRows.length : dlmTableRows.length}
+													setOffset={setOffset}
+													pageSize={limit}
+													currentPageProp={DLMCurrentPage}
+													onPageChange={setDLMSearchCurrentPage}
+												/>
+											</Container>
+										</Container>
+									</Container>
 									</Row>
 								</ListRow>
 							</Container>
 					</Row>
-					{dlmTableRows.length === 0 && !selectedMailingList?.dynamic && (
+					{dlmTableRows.length === 0 && !selectedMailingList?.dynamic && filterMember !== '' && (
 						<ListRow padding={{ all: 'small' }}>
 							<Container
 								background="gray6"
