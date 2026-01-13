@@ -9,7 +9,7 @@ import { Route } from 'react-router-dom';
 
 import { DASHBOARD } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import Dashboard from './dashboard/dashboard-view';
 
 const AppView: FC = () => {
@@ -23,7 +23,7 @@ const AppView: FC = () => {
 					background="gray5"
 					height="auto"
 				>
-					<Suspense fallback={<Spinner />}>
+					<Suspense fallback={<CustomSpinner />}>
 						<Dashboard />
 					</Suspense>
 				</Container>

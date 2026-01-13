@@ -15,13 +15,13 @@ import {
 	SERVER,
 	STORAGES_ROUTE_ID
 } from './constants';
-import { Spinner } from './views/components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<Spinner />}>
+	<Suspense fallback={<CustomSpinner />}>
 		<LazyAppView {...props} />
 	</Suspense>
 );

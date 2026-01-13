@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
 
@@ -32,13 +32,13 @@ const AppView: FC = () => {
 			<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
 					<Container style={{ maxWidth: '265px' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<CustomSpinner />}>
 							<DomainListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<CustomSpinner />}>
 								<DomainDetailPanel />
 							</Suspense>
 						</DetailViewContainer>

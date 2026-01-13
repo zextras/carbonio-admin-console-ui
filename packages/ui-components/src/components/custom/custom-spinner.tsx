@@ -6,7 +6,7 @@
 import { Container, Spinner as SpinnerDS } from '@zextras/ui-components';
 import React from 'react';
 
-export const Spinner = (): React.JSX.Element => (
+export const CustomSpinner = (): React.JSX.Element => (
 	<Container>
 		<SpinnerDS color={'primary'} />
 	</Container>

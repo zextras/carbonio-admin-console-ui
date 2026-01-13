@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import { LOG_AND_QUEUES, OPERATIONS_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import OperationsDetailPanel from './operations/operations-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
 
@@ -32,13 +32,13 @@ const AppView: FC = () => {
 			<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container style={{ maxWidth: '16.563rem' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<CustomSpinner />}>
 							<OperationsListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<CustomSpinner />}>
 								<OperationsDetailPanel />
 							</Suspense>
 						</DetailViewContainer>

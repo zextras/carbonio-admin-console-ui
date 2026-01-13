@@ -49,6 +49,7 @@ export * from './components/inputs/TextArea';
 export * from './components/navigation/TabBar';
 
 /** custom components */
+export * from './components/custom/custom-spinner';
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
 export * from './components/custom/modal-overlay';

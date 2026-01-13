@@ -13,7 +13,7 @@ import { BACKUP_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;
@@ -36,13 +36,13 @@ const AppView: FC = () => {
 					style={{ overflow: 'hidden' }}
 				>
 					<Container style={{ maxWidth: '265px' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<CustomSpinner />}>
 							<BackupListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<CustomSpinner />}>
 								<BackupDetailPanel />
 							</Suspense>
 						</DetailViewContainer>

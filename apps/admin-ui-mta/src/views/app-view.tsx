@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import { MANAGE_APP_ID, MTA_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import MTADetailPanel from './mta/mta-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
 
@@ -32,13 +32,13 @@ const AppView: FC = () => {
 			<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container style={{ maxWidth: '16.563rem' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<CustomSpinner />}>
 							<MTAListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<CustomSpinner />}>
 								<MTADetailPanel />
 							</Suspense>
 						</DetailViewContainer>

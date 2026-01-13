@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
+import { CustomSpinner } from '@zextras/ui-components';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
@@ -32,13 +32,13 @@ const AppView: FC = () => {
 			<Route path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container style={{ maxWidth: '265px' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<CustomSpinner />}>
 							<NotificationsListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<CustomSpinner />}>
 								<NotificationsDetailPanel />
 							</Suspense>
 						</DetailViewContainer>
