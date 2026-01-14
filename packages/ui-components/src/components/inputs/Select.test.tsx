@@ -6,7 +6,7 @@
 
 import { screen, within } from '@testing-library/react';
 import { setupTest } from 'admin-ui-test-utils';
-import { forEach, map, reject, slice } from 'lodash';
+import { forEach, map, reject, slice } from 'lodash-es';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../testUtils/constants';

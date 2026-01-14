@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isMatch } from 'lodash';
+import { isMatch } from 'lodash-es';
 import React, { useEffect, useMemo } from 'react';
 
 import { RequireAtLeastOne } from '../types/utils';

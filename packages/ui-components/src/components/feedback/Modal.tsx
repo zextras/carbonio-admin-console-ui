@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React, { HTMLAttributes, useCallback, useContext, useRef } from 'react';
 import { ThemeContext } from 'styled-components';
 

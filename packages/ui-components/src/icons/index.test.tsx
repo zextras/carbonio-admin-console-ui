@@ -1,6 +1,6 @@
 
 import { setupTest } from 'admin-ui-test-utils';
-import { differenceWith, map } from 'lodash';
+import { differenceWith, map } from 'lodash-es';
 
 import icons from './index';
 

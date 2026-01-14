@@ -6,7 +6,7 @@
 
 import { screen, waitFor } from '@testing-library/react';
 import { setupTest } from 'admin-ui-test-utils';
-import reduce from 'lodash/reduce';
+import reduce from 'lodash-es/reduce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { KeyboardPresetKey } from '../../../hooks/useKeyboard';
