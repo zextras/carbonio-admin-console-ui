@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { faker } from '@faker-js/faker';
 import { screen } from '@testing-library/react';
 import { setupTest } from 'admin-ui-test-utils';
 
@@ -46,8 +45,8 @@ describe('Text', () => {
   );
 
   it('should render the text with line height', () => {
-    const lineHeight = faker.number.int({ max: 10 });
+    const lineHeight = 10;
     setupTest(<Text lineHeight={lineHeight}>ABC</Text>);
-    expect(screen.getByText('ABC')).toHaveStyle({ lineHeight });
+    expect(screen.getByText('ABC')).toHaveStyle({ lineHeight: String(lineHeight) });
   });
 });

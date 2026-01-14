@@ -19,7 +19,7 @@ import { Banner, BannerProps, InfoContainer } from './Banner';
 
 describe('Banner', () => {
 	function makeTextCropped(
-		resizeObserver: vi.MockInstance<ResizeObserver, [ResizeObserverCallback]>,
+		resizeObserver: ReturnType<typeof vi.spyOn>,
 		infoContainerElement: HTMLElement
 	): void {
 		const resizeCallback = resizeObserver.mock.calls[0][0];
@@ -38,7 +38,7 @@ describe('Banner', () => {
 	}
 
 	function makeTextFullyVisible(
-		resizeObserver: vi.MockInstance<ResizeObserver, [ResizeObserverCallback]>,
+		resizeObserver: ReturnType<typeof vi.spyOn>,
 		infoContainerElement: HTMLElement
 	): void {
 		const resizeCallback = resizeObserver.mock.calls[0][0];

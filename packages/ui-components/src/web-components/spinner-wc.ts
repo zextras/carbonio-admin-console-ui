@@ -9,7 +9,7 @@ import { css, html, LitElement } from 'lit';
  * A simple loading spinner web component
  * @element spinner-wc
  */
-class SpinnerWC extends LitElement {
+export class SpinnerWC extends LitElement {
   static override styles = css`
     :host {
       display: inline-block;
