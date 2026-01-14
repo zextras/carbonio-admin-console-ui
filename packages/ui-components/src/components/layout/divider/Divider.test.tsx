@@ -4,22 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { screen, setup } from '../../../test-utils';
+import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
+
 import { SELECTORS } from '../../../testUtils/constants';
 import { Theme } from '../../../theme/theme';
 import { Divider } from './Divider';
 
 describe('Divider', () => {
-	it('should render correctly', () => {
-		setup(<Divider />);
-		const divider = screen.getByTestId(SELECTORS.divider);
-		expect(divider).toBeVisible();
-		expect(divider).toHaveStyle({ backgroundColor: Theme.palette.gray2.regular });
-	});
+  it('should render correctly', () => {
+    setupTest(<Divider />);
+    const divider = screen.getByTestId(SELECTORS.divider);
+    expect(divider).toBeVisible();
+    expect(divider).toHaveStyle({ backgroundColor: Theme.palette.gray2.regular });
+  });
 
-	it('should render color correctly', () => {
-		setup(<Divider color={'primary'} />);
-		const divider = screen.getByTestId(SELECTORS.divider);
-		expect(divider).toHaveStyle({ backgroundColor: Theme.palette.primary.regular });
-	});
+  it('should render color correctly', () => {
+    setupTest(<Divider color={'primary'} />);
+    const divider = screen.getByTestId(SELECTORS.divider);
+    expect(divider).toHaveStyle({ backgroundColor: Theme.palette.primary.regular });
+  });
 });
