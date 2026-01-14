@@ -4,29 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
-import { act,screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { setup } from '../../test-utils';
 import { ICONS } from '../../testUtils/constants';
 import { Checkbox } from './Checkbox';
 
 describe('Checkbox', () => {
-	test('Render a checkbox with a label', () => {
-		const onChange = jest.fn();
-		setup(<Checkbox label="Checkbox label" />);
-		expect(onChange).not.toHaveBeenCalled();
-		expect(screen.getByText(/checkbox label/i)).toBeVisible();
-		expect(screen.getByTestId(ICONS.checkboxOff)).toBeVisible();
-	});
+  test('Render a checkbox with a label', () => {
+    const onChange = vi.fn();
+    setup(<Checkbox label="Checkbox label" />);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText(/checkbox label/i)).toBeVisible();
+    expect(screen.getByTestId(ICONS.checkboxOff)).toBeVisible();
+  });
 
-	test('Click on the checkbox', async () => {
-		const onChange = jest.fn();
-		const { user } = setup(<Checkbox onChange={onChange} />);
-		await act(async () => {
-			await user.click(screen.getByTestId(ICONS.checkboxOff));
-		});
-		expect(onChange).toHaveBeenCalled();
-		expect(screen.getByTestId(ICONS.checkboxOn)).toBeVisible();
-	});
+  test('Click on the checkbox', async () => {
+    const onChange = vi.fn();
+    const { user } = setup(<Checkbox onChange={onChange} />);
+    await user.click(screen.getByTestId(ICONS.checkboxOff));
+    expect(onChange).toHaveBeenCalled();
+    expect(screen.getByTestId(ICONS.checkboxOn)).toBeVisible();
+  });
 });
