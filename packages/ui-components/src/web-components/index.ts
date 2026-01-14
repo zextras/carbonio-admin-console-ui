@@ -6,8 +6,7 @@
 
 // Import theme CSS to define CSS variables for web components
 import './theme.css';
-
-// The web component is already registered via customElements.define() in spinner-wc.ts
-// This file just needs to be imported once to load the theme
+// Import the spinner web component to register it with the browser
+import './spinner-wc';
 
 export {};
