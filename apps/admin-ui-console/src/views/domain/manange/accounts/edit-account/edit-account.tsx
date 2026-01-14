@@ -279,7 +279,7 @@ const EditAccount: FC<{
 		if (isAdvanced) {
 			items.push({
 				id: 'delegates',
-				label: t('label.delegates', 'DELEGATES'),
+				label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
 				CustomComponent: ReusedDefaultTabBar
 			});
 		}
