@@ -258,7 +258,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-										{(item.zimbraHideInGal && item.zimbraHideInGal === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
+										{(item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
 									</Text>
 								</Container>,
 								<Container
