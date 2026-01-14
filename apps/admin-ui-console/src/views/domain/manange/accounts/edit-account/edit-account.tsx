@@ -45,8 +45,6 @@ import {
 	PROFILE,
 	DELEGATES,
 	GENERAL_SECTION,
-	MOBILE_CALENDAR_FEATURE_SYNC,
-	MOBILE_CONTACT_FEATURE_SYNC,
 	SECURITY,
 	USER_PREFERENCES,
 	DOMAIN_NAME,
@@ -293,36 +291,6 @@ const EditAccount: FC<{
 			[setInitAccountDetail]
 		);
 
-		const modifyCoreAttributes = useCallback(
-			(body: any): void => {
-				setCoreAttributes(body)
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					.then((data: any) => {
-						setSwitchInitOptionValue(
-							'mobileContactFeatureSync',
-							body?.mobileContactFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
-						);
-						setSwitchInitOptionValue(
-							'mobileCalendarFeatureSync',
-							body?.mobileCalendarFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
-						);
-					})
-					.catch((error) => {
-						createSnackbar({
-							key: 'error',
-							severity: 'error',
-							label: error?.message
-								? error?.message
-								: // eslint-disable-next-line sonarjs/no-duplicate-string
-								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					});
-			},
-			[createSnackbar, setSwitchInitOptionValue, t]
-		);
 		const onDeleteFromList = useCallback(
 			(lists: any) => {
 				if (lists?.length > 0) {
@@ -592,39 +560,6 @@ const EditAccount: FC<{
 			remove(modifiedKeys, (ele) => ele === 'mail');
 		};
 
-		const handleMobileSyncFeatures = useCallback(
-			(modifiedKeys: string[]) => {
-				if (
-					(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
-						modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
-					isAdvanced
-				) {
-					const coreAttrBody: any = {
-						mobileCalendarFeatureSync: {
-							value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-							objectName: accountDetail?.name,
-							configType: ACCOUNT
-						},
-						mobileContactFeatureSync: {
-							value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-							objectName: accountDetail?.name,
-							configType: ACCOUNT
-						}
-					};
-					modifyCoreAttributes(coreAttrBody);
-					remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
-					remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
-				}
-			},
-			[
-				accountDetail?.mobileCalendarFeatureSync,
-				accountDetail?.mobileContactFeatureSync,
-				accountDetail?.name,
-				isAdvanced,
-				modifyCoreAttributes
-			]
-		);
-
 		const handleFileQuotaLimitChange = useCallback(
 			(modifiedKeys: string[]) => {
 				if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
@@ -772,7 +707,6 @@ const EditAccount: FC<{
 				await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
 			}
 
-			handleMobileSyncFeatures(modifiedKeys);
 			handleFileQuotaLimitChange(modifiedKeys);
 
 			modifiedKeys.forEach((ele: any) => {
@@ -811,7 +745,6 @@ const EditAccount: FC<{
 			getAccountList,
 			initAccountDetail,
 			isAdvanced,
-			modifyCoreAttributes,
 			setInitAccountDetail,
 			setShowEditAccountView,
 			deleteAdministrationRights,

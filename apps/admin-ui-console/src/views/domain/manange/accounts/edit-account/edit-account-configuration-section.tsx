@@ -19,9 +19,6 @@ import {
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { ACCOUNT } from '../../../../../constants';
-import { getCoreAttributes } from '../../../../../services/get-core-attributes';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
@@ -39,7 +36,6 @@ const EditAccountConfigurationSection: FC = () => {
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	useEffect(() => {
 		setPrefMailForwardingAddress(
@@ -78,55 +74,6 @@ const EditAccountConfigurationSection: FC = () => {
 		},
 		[accountDetail, setAccountDetail]
 	);
-
-	const setSwitchOptionValue = useCallback(
-		(key: string, value: string): void => {
-			setAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
-			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
-		},
-		[setAccountDetail, setInitAccountDetail]
-	);
-
-	const getMobileFeatureSync = useCallback(() => {
-		const body = [
-			{
-				configType: ACCOUNT,
-				configName: [accountDetail?.name],
-				attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync']
-			}
-		];
-		getCoreAttributes(body)
-			.then((data) => {
-				if (data?.attributes) {
-					setSwitchOptionValue(
-						'mobileContactFeatureSync',
-						data?.attributes?.mobileContactFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE'
-					);
-					setSwitchOptionValue(
-						'mobileCalendarFeatureSync',
-						data?.attributes?.mobileCalendarFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE'
-					);
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	}, [accountDetail?.name, createSnackbar, setSwitchOptionValue, t]);
-
-	useEffect(() => {
-		if (isAdvanced && accountDetail?.name) {
-			getMobileFeatureSync();
-		}
-	}, [accountDetail?.name, getMobileFeatureSync, isAdvanced]);
 
 	const setEmptyValue = useCallback(
 		(keyName: string) => {
