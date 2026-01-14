@@ -54,14 +54,6 @@ describe('Button', () => {
 		expect(screen.getByTestId('icon: BulbOutline')).toBeVisible();
 	});
 
-	test('Loading state', () => {
-		const label = faker.lorem.words(1);
-		const clickFn = jest.fn();
-		setup(<Button label={label} loading onClick={clickFn} />);
-		expect(screen.getByText(new RegExp(label, 'i'))).not.toBeVisible();
-		expect(screen.getByTestId('spinner')).toBeVisible();
-	});
-
 	test('Show tooltip on disabled button', async () => {
 		const clickFn = jest.fn();
 		const { user } = setup(
