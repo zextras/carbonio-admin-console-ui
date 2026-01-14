@@ -6,7 +6,9 @@
 
 import { screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
+import { vi } from 'vitest';
 
+import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
 import { Modal, ModalProps } from './Modal';
@@ -32,7 +34,7 @@ const ModalTester = ({ children, ...props }: ModalProps): React.JSX.Element => {
   );
 };
 
-describe.skip('Modal', () => {
+describe('Modal', () => {
   test('Render Modal', async () => {
     const { user } = setupTest(<ModalTester />);
 
@@ -77,34 +79,28 @@ describe.skip('Modal', () => {
   });
 
   test('should not blindly prevent default behavior of html elements', async () => {
-    const originalConsoleError = console.error;
-    const errors: string[] = [];
-    console.error = (...args): void => {
-      if (
-        'message' in args[0] &&
-        args[0].message === 'Not implemented: navigation (except hash changes)'
-      ) {
-        errors.push(args[0].message);
-      } else {
-        originalConsoleError(...args);
-      }
-    };
     const href = '/different-path';
+    let linkClickPrevented = false;
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>): void => {
+      // Check if default was prevented
+      linkClickPrevented = event.defaultPrevented;
+    };
     const { user } = setupTest(
       <ModalTester>
-        <a href={href}>This is a link</a>
+        <a href={href} onClick={handleClick}>
+          This is a link
+        </a>
       </ModalTester>,
     );
     await screen.findByRole('button');
     await user.click(screen.getByRole('button'));
     await screen.findByTestId('modal');
     await waitFor(() => expect(screen.getByRole('link')).toBeVisible());
-    await user.click(screen.getByRole('link'));
-    await waitFor(() =>
-      // see https://github.com/jsdom/jsdom/blob/2d51af302581a57ee5b9b65595f1714d669b7ea2/lib/jsdom/living/nodes/HTMLAnchorElement-impl.js
-      expect(errors).toEqual(['Not implemented: navigation (except hash changes)']),
-    );
-    console.error = originalConsoleError;
+    const link = screen.getByRole('link');
+    // Click the link
+    await user.click(link);
+    // The click should not have been prevented by the modal's overlay
+    expect(linkClickPrevented).toBe(false);
   });
 
   it('should disable secondary action button when secondaryActionDisabled is true', () => {
