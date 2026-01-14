@@ -5,9 +5,10 @@
  */
 
 import { screen, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
 import { Text } from '../basic/text/Text';
 import { DefaultTabBarItem, DefaultTabBarItemProps, TabBar } from './TabBar';
 
@@ -39,8 +40,8 @@ describe('TabBar', () => {
 			{ id: 'tab-two', label: 'Second Tab', CustomComponent: ReusedDefaultTabBar }
 		];
 
-		const changeFn = jest.fn();
-		const { rerender, user } = setup(
+		const changeFn = vi.fn();
+		const { rerender, user } = setupTest(
 			<TabBar items={items} selected={'tab-one'} onChange={changeFn} background="secondary" />
 		);
 		const teb0 = screen.getByTestId('tab0');

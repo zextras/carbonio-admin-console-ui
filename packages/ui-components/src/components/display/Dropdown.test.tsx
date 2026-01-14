@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { act } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
+import { setupTest, type UserEvent } from 'admin-ui-test-utils';
+import { vi } from 'vitest';
 
-import { screen, setup, UserEvent,within } from '../../test-utils';
 import { SELECTORS } from '../../testUtils/constants';
 import { Button } from '../basic/button/Button';
-import { TIMERS } from '../constants';
 import { Modal } from '../feedback/Modal';
 import { Dropdown, DropdownItem } from './Dropdown';
 
@@ -28,9 +28,9 @@ function findDropdownItem(label: string, container: HTMLElement = document.body)
 describe('Dropdown', () => {
 	it('should render a closed dropdown by default', () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
-		setup(
+		setupTest(
 			<Dropdown items={items} placement="bottom-end">
-				<Button icon="ArrowDown" label="Create" onClick={jest.fn()} />
+				<Button icon="ArrowDown" label="Create" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		expect(screen.queryByText('Some Item')).not.toBeInTheDocument();
@@ -42,9 +42,9 @@ describe('Dropdown', () => {
 			{ id: '2', label: 'Some Other Item' },
 			{ id: '3', label: 'Yet Another Item' }
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} placement="bottom-end">
-				<Button icon="ArrowDown" label="Create" onClick={jest.fn()} />
+				<Button icon="ArrowDown" label="Create" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -56,9 +56,9 @@ describe('Dropdown', () => {
 
 	it('should render the icon of the dropdown item if set', async () => {
 		const items = [{ id: '1', label: 'Some Item', icon: 'People' }] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} placement="bottom-end">
-				<Button icon="ArrowDown" label="Create" onClick={jest.fn()} />
+				<Button icon="ArrowDown" label="Create" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -71,9 +71,9 @@ describe('Dropdown', () => {
 			{ id: '1', label: 'Some Item', icon: 'People' },
 			{ id: '2', type: 'divider' }
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} placement="bottom-end">
-				<Button icon="ArrowDown" label="Create" onClick={jest.fn()} />
+				<Button icon="ArrowDown" label="Create" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -83,9 +83,9 @@ describe('Dropdown', () => {
 
 	it('should toggle dropdown visibility when clicking trigger', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		// first click trigger open
@@ -104,20 +104,18 @@ describe('Dropdown', () => {
 
 	it('should open and close properly when rendered inside a modal', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
-		const onClose = jest.fn();
-		const { user } = setup(
+		const onClose = vi.fn();
+		const { user } = setupTest(
 			<Modal open title="modal with dropdown" onClose={onClose}>
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			</Modal>
 		);
-		await screen.findByText('modal with dropdown');
-		act(() => {
-			jest.advanceTimersByTime(TIMERS.MODAL.DELAY_OPEN);
+		// modal is open and visible
+		await waitFor(() => {
+			expect(screen.getByText('modal with dropdown')).toBeVisible();
 		});
-		// modal is open
-		expect(screen.getByText('modal with dropdown')).toBeVisible();
 		// dropdown is closed
 		expect(screen.queryByText(/some item/i)).not.toBeInTheDocument();
 		// first click trigger open
@@ -141,18 +139,18 @@ describe('Dropdown', () => {
 		const subItem = {
 			id: '2',
 			label: '2',
-			onClick: jest.fn()
+			onClick: vi.fn()
 		} satisfies DropdownItem;
 		const parentItem = {
 			id: '1',
 			label: '1',
-			onClick: jest.fn(),
+			onClick: vi.fn(),
 			items: [subItem]
 		} satisfies DropdownItem;
 		const items = [parentItem];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -185,30 +183,28 @@ describe('Dropdown', () => {
 				tooltipLabel: undefined
 			}
 		];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={dropdownItems}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
 		await user.click(screen.getByRole('button', { name: /opener/i }));
 		await user.hover(screen.getByText('item 1'));
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.DELAY_SHOW);
 		expect(screen.queryByText(/tooltip/i)).not.toBeInTheDocument();
 		await user.unhover(screen.getByText('item 1'));
 		await user.hover(screen.getByText('item 2'));
 		expect(await screen.findByText('tooltip 2')).toBeVisible();
 		await user.unhover(screen.getByText('item 2'));
 		await user.hover(screen.getByText('item 3'));
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.DELAY_SHOW);
 		expect(screen.queryByText(/tooltip/i)).not.toBeInTheDocument();
 	});
 
 	it('should close dropdown when clicking on trigger component of a contextMenu dropdown', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} contextMenu>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -228,9 +224,9 @@ describe('Dropdown', () => {
 	it('should set focus on first element on open', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -243,9 +239,9 @@ describe('Dropdown', () => {
 			{ id: '1', label: 'item 1' },
 			{ id: '2', label: 'item 2', selected: true }
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -262,9 +258,9 @@ describe('Dropdown', () => {
 			{ id: '1', label: 'item 1', items: subitems },
 			{ id: '4', label: 'item 4', selected: true }
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -276,9 +272,9 @@ describe('Dropdown', () => {
 	it('should keep focus on trigger component if the disabledAutoFocus prop is set to true', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} disableAutoFocus>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -289,7 +285,7 @@ describe('Dropdown', () => {
 	it('should set focus on trigger component on close after clicking an item', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
 				<div tabIndex={0}>opener</div>
 			</Dropdown>
@@ -303,7 +299,7 @@ describe('Dropdown', () => {
 	it('should set focus on first focusable element inside trigger component on close after clicking an item', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
 				<div>
 					<div>Non focusable element</div>
@@ -321,9 +317,9 @@ describe('Dropdown', () => {
 	it('should not set focus on trigger component on close if disabledRestoreFocus is true', async () => {
 		const items = [{ id: '1', label: 'Some Item' }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items} disableRestoreFocus>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -338,9 +334,9 @@ describe('Dropdown', () => {
 		const items = [
 			{ id: '1', label: 'Some Item', items: [subItem, { id: '3', label: 'sub item 2' }] }
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -353,13 +349,13 @@ describe('Dropdown', () => {
 		const subItem = {
 			id: 'sub1',
 			label: 'sub1',
-			onClick: jest.fn()
+			onClick: vi.fn()
 		} satisfies DropdownItem;
 		const items = [{ id: '1', label: 'Some Item', items: [subItem] }] satisfies DropdownItem[];
 		const firstItem = items[0];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
@@ -374,16 +370,15 @@ describe('Dropdown', () => {
 		const subItem = { id: '2', label: '2' } satisfies DropdownItem;
 		const items = [{ id: '1', label: '1', items: [subItem] }] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
 		await user.click(screen.getByRole('button'));
 		await user.hover(screen.getByText('1'));
 		await user.hover(screen.getByText('2'));
-		jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED);
 		expect(screen.getByText('1')).toBeVisible();
 		expect(screen.getByText('2')).toBeVisible();
 	});
@@ -395,9 +390,9 @@ describe('Dropdown', () => {
 			{ id: '3', label: 'item 3' }
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -405,10 +400,8 @@ describe('Dropdown', () => {
 		await user.hover(screen.getByText(items[0].label));
 		await user.hover(screen.getByText(subItem.label));
 		await user.hover(screen.getByText(items[1].label));
-		jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED - 1);
 		expect(screen.getByText(subItem.label)).toBeVisible();
 		await user.hover(screen.getByText(subItem.label));
-		jest.runOnlyPendingTimers();
 		expect(screen.getByText(subItem.label)).toBeVisible();
 	});
 
@@ -416,18 +409,16 @@ describe('Dropdown', () => {
 		const subItem = { id: '2', label: '2' } satisfies DropdownItem;
 		const items = [{ id: '1', label: '1', items: [subItem] }] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
 		await user.click(screen.getByRole('button'));
 		await user.hover(screen.getByText(items[0].label));
 		await user.hover(screen.getByText(subItem.label));
-		jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED - 1);
 		await user.hover(screen.getByText(items[0].label));
-		jest.runOnlyPendingTimers();
 		expect(screen.getByText(subItem.label)).toBeVisible();
 	});
 
@@ -438,9 +429,9 @@ describe('Dropdown', () => {
 			{ id: '3', label: 'item 3' }
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -448,20 +439,20 @@ describe('Dropdown', () => {
 		await user.hover(screen.getByText(items[0].label));
 		await user.hover(screen.getByText(subItem.label));
 		await user.hover(screen.getByText(items[1].label));
-		act(() => {
-			jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED);
+		// Wait for the nested dropdown to close
+		await waitFor(() => {
+			expect(screen.queryByText(subItem.label)).not.toBeInTheDocument();
 		});
-		expect(screen.queryByText(subItem.label)).not.toBeInTheDocument();
 	});
 
 	it('should keep dropdown open when clicking on item if keepOpen is set on it', async () => {
 		const items = [
-			{ id: '1', label: '1', keepOpen: true, onClick: jest.fn() }
+			{ id: '1', label: '1', keepOpen: true, onClick: vi.fn() }
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -476,15 +467,15 @@ describe('Dropdown', () => {
 			id: '2',
 			label: 'item 2',
 			keepOpen: true,
-			onClick: jest.fn()
+			onClick: vi.fn()
 		} satisfies DropdownItem;
 		const items = [
-			{ id: '1', label: 'item 1', onClick: jest.fn(), items: [subItem] }
+			{ id: '1', label: 'item 1', onClick: vi.fn(), items: [subItem] }
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -499,12 +490,12 @@ describe('Dropdown', () => {
 
 	it('should not call onClick on disabled item', async () => {
 		const items = [
-			{ id: '1', label: 'item 1', onClick: jest.fn(), disabled: true }
+			{ id: '1', label: 'item 1', onClick: vi.fn(), disabled: true }
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -533,18 +524,15 @@ describe('Dropdown', () => {
 			}
 		] satisfies DropdownItem[];
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label="opener" onClick={jest.fn()} />
+				<Button label="opener" onClick={vi.fn()} />
 			</Dropdown>
 		);
 		await user.click(screen.getByRole('button'));
 		await user.hover(screen.getByText('item 1'));
 		await user.hover(screen.getByText('item 2'));
 		await user.hover(screen.getByText('item 3'));
-		act(() => {
-			jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED);
-		});
 		expect(screen.getByText('item 1')).toBeVisible();
 		expect(screen.getByText('item 2')).toBeVisible();
 		expect(screen.getByText('item 3')).toBeVisible();
@@ -579,9 +567,9 @@ describe('Dropdown', () => {
 				]
 			}
 		] satisfies DropdownItem[];
-		const { user } = setup(
+		const { user } = setupTest(
 			<Dropdown items={items}>
-				<Button label={'opener'} onClick={jest.fn()} />
+				<Button label={'opener'} onClick={vi.fn()} />
 			</Dropdown>
 		);
 
@@ -591,9 +579,6 @@ describe('Dropdown', () => {
 		expect(findDropdownItem('item 3')).toHaveFocus();
 		await user.hover(screen.getByText('item 4'));
 		expect(findDropdownItem('item 5')).toHaveFocus();
-		act(() => {
-			jest.advanceTimersByTime(TIMERS.DROPDOWN.CLOSE_NESTED);
-		});
 		expect(findDropdownItem('item 5')).toHaveFocus();
 	});
 
@@ -604,9 +589,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -620,9 +605,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -638,9 +623,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -654,9 +639,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -672,9 +657,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -688,9 +673,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -708,9 +693,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -724,9 +709,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -742,9 +727,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -760,9 +745,9 @@ describe('Dropdown', () => {
 				{ id: '2', label: 'item 2' },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -773,9 +758,9 @@ describe('Dropdown', () => {
 		it('should open nested dropdown when pressing arrow right', async () => {
 			const subItem = { id: '2', label: 'item 2' } satisfies DropdownItem;
 			const items = [{ id: '1', label: 'item 1', items: [subItem] }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -789,9 +774,9 @@ describe('Dropdown', () => {
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
 			const items = [{ id: '1', label: 'item 1', items: subItems }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -804,9 +789,9 @@ describe('Dropdown', () => {
 		it('should close only nested dropdown when pressing arrow left', async () => {
 			const subItem = { id: '2', label: 'item 2' } satisfies DropdownItem;
 			const items = [{ id: '1', label: 'item 1', items: [subItem] }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			expect(findDropdownItem(items[0].label)).toHaveFocus();
@@ -819,9 +804,9 @@ describe('Dropdown', () => {
 
 		it('should close dropdown on esc', async () => {
 			const items = [{ id: '1', label: 'item 1' }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.click(screen.getByRole('button'));
@@ -833,9 +818,9 @@ describe('Dropdown', () => {
 		it('should close only nested dropdown on esc', async () => {
 			const subItem = { id: '2', label: 'item 2' } satisfies DropdownItem;
 			const items = [{ id: '1', label: 'item 1', items: [subItem] }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.hover(screen.getByText(items[0].label));
@@ -848,9 +833,9 @@ describe('Dropdown', () => {
 		it('should set focus on parent dropdown when closing a nested dropdown', async () => {
 			const subItem = { id: '2', label: 'item 2' } satisfies DropdownItem;
 			const items = [{ id: '1', label: 'item 1', items: [subItem] }] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} forceOpen>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.hover(screen.getByText(items[0].label));
@@ -865,9 +850,9 @@ describe('Dropdown', () => {
 				{ id: '1', label: 'item 1', items: [subItem] },
 				{ id: '3', label: 'item 3' }
 			] satisfies DropdownItem[];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.click(screen.getByRole('button'));
@@ -886,12 +871,12 @@ describe('Dropdown', () => {
 			const parentItem = {
 				id: '1',
 				label: 'item 1',
-				onClick: jest.fn()
+				onClick: vi.fn()
 			} satisfies DropdownItem;
 			const items = [parentItem];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.click(screen.getByRole('button'));
@@ -902,17 +887,17 @@ describe('Dropdown', () => {
 		});
 
 		it('should invoke the onClick callback of the nested item on Enter and close dropdown', async () => {
-			const subItem = { id: '2', label: 'item 2', onClick: jest.fn() } satisfies DropdownItem;
+			const subItem = { id: '2', label: 'item 2', onClick: vi.fn() } satisfies DropdownItem;
 			const parentItem = {
 				id: '1',
 				label: 'item 1',
-				onClick: jest.fn(),
+				onClick: vi.fn(),
 				items: [subItem]
 			} satisfies DropdownItem;
 			const items = [parentItem];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.click(screen.getByRole('button'));
@@ -929,13 +914,13 @@ describe('Dropdown', () => {
 			const item = {
 				id: '1',
 				label: 'item 1',
-				onClick: jest.fn(),
+				onClick: vi.fn(),
 				disabled: true
 			} satisfies DropdownItem;
 			const items = [item];
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 			await user.click(screen.getByRole('button'));
@@ -945,12 +930,12 @@ describe('Dropdown', () => {
 
 		it('should keep dropdown open when pressing Enter on item with keepOpen set on it', async () => {
 			const items = [
-				{ id: '1', label: '1', keepOpen: true, onClick: jest.fn() }
+				{ id: '1', label: '1', keepOpen: true, onClick: vi.fn() }
 			] satisfies DropdownItem[];
 
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 
@@ -965,15 +950,15 @@ describe('Dropdown', () => {
 				id: '2',
 				label: 'item 2',
 				keepOpen: true,
-				onClick: jest.fn()
+				onClick: vi.fn()
 			} satisfies DropdownItem;
 			const items = [
-				{ id: '1', label: 'item 1', onClick: jest.fn(), items: [subItem] }
+				{ id: '1', label: 'item 1', onClick: vi.fn(), items: [subItem] }
 			] satisfies DropdownItem[];
 
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items}>
-					<Button label="opener" onClick={jest.fn()} />
+					<Button label="opener" onClick={vi.fn()} />
 				</Dropdown>
 			);
 
@@ -987,9 +972,9 @@ describe('Dropdown', () => {
 		});
 
 		it('should open the dropdown with Enter if the trigger element is not a button and handleTriggerEvents is set to true', async () => {
-			const items = [{ id: '1', label: 'item 1', onClick: jest.fn() }] satisfies DropdownItem[];
+			const items = [{ id: '1', label: 'item 1', onClick: vi.fn() }] satisfies DropdownItem[];
 
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} handleTriggerEvents>
 					<div tabIndex={0}>opener</div>
 				</Dropdown>
@@ -1001,9 +986,9 @@ describe('Dropdown', () => {
 		});
 
 		it('should not open the dropdown with Enter if the trigger element is not a button and handleTriggerEvents is set to false', async () => {
-			const items = [{ id: '1', label: 'item 1', onClick: jest.fn() }] satisfies DropdownItem[];
+			const items = [{ id: '1', label: 'item 1', onClick: vi.fn() }] satisfies DropdownItem[];
 
-			const { user } = setup(
+			const { user } = setupTest(
 				<Dropdown items={items} handleTriggerEvents={false}>
 					<div tabIndex={0}>opener</div>
 				</Dropdown>
@@ -1036,9 +1021,9 @@ describe('Dropdown', () => {
 					}
 				] satisfies DropdownItem[];
 
-				const { user } = setup(
+				const { user } = setupTest(
 					<Dropdown items={items}>
-						<Button label={'opener'} onClick={jest.fn()} />
+						<Button label={'opener'} onClick={vi.fn()} />
 					</Dropdown>
 				);
 

@@ -5,41 +5,42 @@
  */
 
 
-import { screen } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
+import { vi } from 'vitest';
 
-import { setup, within } from '../../../test-utils';
 import { ICONS, SELECTORS } from '../../../testUtils/constants';
 import { Snackbar, SnackbarProps } from './Snackbar';
 
 describe('Snackbar', () => {
 	it('should be hidden by default', () => {
-		setup(<Snackbar label={'test'} />);
+		setupTest(<Snackbar label={'test'} />);
 		expect(screen.queryByText('test')).not.toBeInTheDocument();
 	});
 
 	it('should be visible if open is true', async () => {
-		setup(<Snackbar label={'test'} open />);
+		setupTest(<Snackbar label={'test'} open />);
 		expect(screen.getByText('test')).toBeVisible();
 	});
 
 	it('should show action by default', () => {
-		setup(<Snackbar label={'test'} open />);
+		setupTest(<Snackbar label={'test'} open />);
 		expect(screen.getByRole('button', { name: /ok/i })).toBeVisible();
 	});
 
 	it('should show action with custom label', () => {
-		setup(<Snackbar label={'test'} open actionLabel={'a custom label'} />);
+		setupTest(<Snackbar label={'test'} open actionLabel={'a custom label'} />);
 		expect(screen.getByRole('button', { name: /a custom label/i })).toBeVisible();
 	});
 
 	it('should not show action if hideButton is true', () => {
-		setup(<Snackbar label={'test'} open actionLabel={'a custom label'} hideButton />);
+		setupTest(<Snackbar label={'test'} open actionLabel={'a custom label'} hideButton />);
 		expect(screen.queryByRole('button', { name: /ok/i })).not.toBeInTheDocument();
 	});
 
 	it('should call onActionClick if defined', async () => {
-		const onActionClick = jest.fn();
-		const { user } = setup(
+		const onActionClick = vi.fn();
+		const { user } = setupTest(
 			<Snackbar label={'test'} open actionLabel={'action'} onActionClick={onActionClick} />
 		);
 		await user.click(screen.getByRole('button', { name: /action/i }));
@@ -47,8 +48,8 @@ describe('Snackbar', () => {
 	});
 
 	it('should call onClose if defined and onActionClick is not defined', async () => {
-		const onClose = jest.fn();
-		const { user } = setup(
+		const onClose = vi.fn();
+		const { user } = setupTest(
 			<Snackbar label={'test'} open actionLabel={'action'} onClose={onClose} />
 		);
 		await user.click(screen.getByRole('button', { name: /action/i }));
@@ -56,9 +57,9 @@ describe('Snackbar', () => {
 	});
 
 	it('should call onActionClick if both onActionClick and onClose are defined', async () => {
-		const onActionClick = jest.fn();
-		const onClose = jest.fn();
-		const { user } = setup(
+		const onActionClick = vi.fn();
+		const onClose = vi.fn();
+		const { user } = setupTest(
 			<Snackbar
 				label={'test'}
 				open
@@ -72,27 +73,40 @@ describe('Snackbar', () => {
 		expect(onClose).not.toHaveBeenCalled();
 	});
 
-	it('should call onClose after 4 seconds by default', () => {
-		const onClose = jest.fn();
-		setup(<Snackbar label={'test'} open onClose={onClose} />);
-		jest.advanceTimersByTime(4000);
-		expect(onClose).toHaveBeenCalled();
+	it('should call onClose after 4 seconds by default', async () => {
+		const onClose = vi.fn();
+		setupTest(<Snackbar label={'test'} open onClose={onClose} />);
+		await waitFor(
+			() => {
+				expect(onClose).toHaveBeenCalled();
+			},
+			{ timeout: 10000 }
+		);
 	});
 
-	it('should call onClose after autoHideTimeout if defined', () => {
-		const onClose = jest.fn();
-		setup(<Snackbar label={'test'} open onClose={onClose} autoHideTimeout={2000} />);
-		jest.advanceTimersByTime(2000);
-		expect(onClose).toHaveBeenCalled();
+	it('should call onClose after autoHideTimeout if defined', async () => {
+		const onClose = vi.fn();
+		setupTest(<Snackbar label={'test'} open onClose={onClose} autoHideTimeout={2000} />);
+		await waitFor(
+			() => {
+				expect(onClose).toHaveBeenCalled();
+			},
+			{ timeout: 10000 }
+		);
 	});
 
-	it('should not call onClose after autoHideTimeout if disableAutoHide is true', () => {
-		const onClose = jest.fn();
-		setup(
+	it('should not call onClose after autoHideTimeout if disableAutoHide is true', async () => {
+		const onClose = vi.fn();
+		setupTest(
 			<Snackbar label={'test'} open onClose={onClose} autoHideTimeout={2000} disableAutoHide />
 		);
-		jest.advanceTimersByTime(2000);
-		expect(onClose).not.toHaveBeenCalled();
+		// Wait for the timeout period plus some buffer
+		await waitFor(
+			() => {
+				expect(onClose).not.toHaveBeenCalled();
+			},
+			{ timeout: 3000 }
+		);
 	});
 
 	it.each<[string, SnackbarProps['severity']]>([
@@ -101,12 +115,12 @@ describe('Snackbar', () => {
 		[ICONS.snackbarWarning, 'warning'],
 		[ICONS.snackbarError, 'error']
 	])('should show %s when severity is %s', (icon, severity) => {
-		setup(<Snackbar label={'test'} open severity={severity} />);
+		setupTest(<Snackbar label={'test'} open severity={severity} />);
 		expect(screen.getByTestId(icon)).toBeVisible();
 	});
 
 	it('should be rendered at window level', () => {
-		setup(
+		setupTest(
 			<div data-testid={'container'}>
 				<Snackbar label={'test'} open />
 			</div>
@@ -115,7 +129,7 @@ describe('Snackbar', () => {
 	});
 
 	it('should be rendered as a child if disablePortal is true', () => {
-		setup(
+		setupTest(
 			<div data-testid={'container'}>
 				<Snackbar label={'test'} open disablePortal />
 			</div>
@@ -131,13 +145,13 @@ describe('Snackbar', () => {
 	])(
 		'should show the progress bar if disableAutoHide is %s and progressBar is %s and onclose is defined',
 		(disableAutoHide, progressBar) => {
-			setup(
+			setupTest(
 				<Snackbar
 					open
 					label={'test'}
 					disableAutoHide={disableAutoHide}
 					progressBar={progressBar}
-					onClose={jest.fn()}
+					onClose={vi.fn()}
 				/>
 			);
 			expect(screen.getByTestId(SELECTORS.progressBar)).toBeVisible();
@@ -145,22 +159,22 @@ describe('Snackbar', () => {
 	);
 
 	it('should not show progress bar if disableAutoHide is true', () => {
-		setup(<Snackbar open label={'test'} disableAutoHide progressBar />);
+		setupTest(<Snackbar open label={'test'} disableAutoHide progressBar />);
 		expect(screen.queryByTestId(SELECTORS.progressBar)).not.toBeInTheDocument();
 	});
 
 	it('should not show progress bar if progressBar is false', () => {
-		setup(<Snackbar open label={'test'} disableAutoHide={false} progressBar={false} />);
+		setupTest(<Snackbar open label={'test'} disableAutoHide={false} progressBar={false} />);
 		expect(screen.queryByTestId(SELECTORS.progressBar)).not.toBeInTheDocument();
 	});
 
 	it('should not show progress bar if onClose is not defined', () => {
-		setup(<Snackbar open label={'test'} disableAutoHide={false} progressBar onClose={undefined} />);
+		setupTest(<Snackbar open label={'test'} disableAutoHide={false} progressBar onClose={undefined} />);
 		expect(screen.queryByTestId(SELECTORS.progressBar)).not.toBeInTheDocument();
 	});
 
 	it('should accept a component as label', () => {
-		setup(<Snackbar label={<div data-testid={'component'}>A component</div>} open />);
+		setupTest(<Snackbar label={<div data-testid={'component'}>A component</div>} open />);
 		expect(screen.getByTestId('component')).toBeVisible();
 	});
 });

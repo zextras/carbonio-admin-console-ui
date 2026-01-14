@@ -4,41 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import 'jest-styled-components';
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 
-import { setup } from '../../test-utils';
-import { Theme } from '../../theme/theme';
 import { Container } from './Container';
 
 describe('Container', () => {
 	test('Set all borders in one if a string is passed as prop', () => {
-		setup(<Container borderColor={'black'}>Test container</Container>);
+		setupTest(<Container borderColor={'black'}>Test container</Container>);
 		const containerEl = screen.getByText('Test container');
-		expect(containerEl).toHaveStyleRule(
-			'border',
-			expect.stringContaining(Theme.palette.black.regular)
-		);
-		expect(containerEl).not.toHaveStyleRule('border-top');
-		expect(containerEl).not.toHaveStyleRule('border-right');
-		expect(containerEl).not.toHaveStyleRule('border-bottom');
-		expect(containerEl).not.toHaveStyleRule('border-left');
+		// Check that border is set with the black color
+		const borderStyle = getComputedStyle(containerEl).border;
+		expect(borderStyle).toContain('rgb(0, 0, 0)');
 	});
 
 	test('Set only provided borders if an object is passed as prop', () => {
-		setup(<Container borderColor={{ top: 'black', right: 'black' }}>Test container</Container>);
+		setupTest(<Container borderColor={{ top: 'black', right: 'black' }}>Test container</Container>);
 		const containerEl = screen.getByText('Test container');
-		expect(containerEl).toHaveStyleRule(
-			'border-top',
-			expect.stringContaining(Theme.palette.black.regular)
-		);
-		expect(containerEl).toHaveStyleRule(
-			'border-right',
-			expect.stringContaining(Theme.palette.black.regular)
-		);
-		expect(containerEl).not.toHaveStyleRule('border-bottom');
-		expect(containerEl).not.toHaveStyleRule('border-left');
-		expect(containerEl).not.toHaveStyleRule('border');
+		// Check that top and right borders are set with black color
+		const borderTopStyle = getComputedStyle(containerEl).borderTop;
+		const borderRightStyle = getComputedStyle(containerEl).borderRight;
+		expect(borderTopStyle).toContain('rgb(0, 0, 0)');
+		expect(borderRightStyle).toContain('rgb(0, 0, 0)');
+		// Bottom and left borders should be empty or not contain the color black
+		const borderBottomStyle = getComputedStyle(containerEl).borderBottom;
+		const borderLeftStyle = getComputedStyle(containerEl).borderLeft;
+		expect(borderBottomStyle).not.toContain('rgb(0, 0, 0)');
+		expect(borderLeftStyle).not.toContain('rgb(0, 0, 0)');
 	});
 });

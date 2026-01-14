@@ -888,8 +888,6 @@ const Styler = styled(Container)`
 		white-space: nowrap;
 	}
 
-	/*# sourceMappingURL=styles.css.map */
-
 	font-family: ${({ theme }): string => theme.fonts.default};
 	font-size: ${({ theme }): string => theme.sizes.font.medium};
 	font-weight: ${({ theme }): number => theme.fonts.weight.regular};

@@ -5,9 +5,10 @@
  */
 
 import { screen, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { forEach, map, reject, slice } from 'lodash';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
 import { SELECTORS } from '../../testUtils/constants';
 import { Select, SelectItem } from './Select';
 
@@ -48,7 +49,7 @@ describe('Select', () => {
     test('disabled items are not selectable and does not trigger onChange', async () => {
       const label = 'Select an item';
       const onChange = vi.fn();
-      const { user } = setup(
+      const { user } = setupTest(
         <Select items={extendedItems} label={label} onChange={onChange} selection={items[0]} />,
       );
 
@@ -72,7 +73,7 @@ describe('Select', () => {
       test('label is visible, item is selected and onChange is not called', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        setup(<Select items={items} label={label} onChange={onChange} selection={items[0]} />);
+        setupTest(<Select items={items} label={label} onChange={onChange} selection={items[0]} />);
 
         // label is visible
         expect(screen.getByText(label)).toBeVisible();
@@ -86,7 +87,7 @@ describe('Select', () => {
       test('onChange is not called if the user clicks on the item with the same value as the selected one', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} selection={items[0]} />,
         );
 
@@ -102,7 +103,7 @@ describe('Select', () => {
       test('onChange is called if the user clicks on an item with a different value from the selected one', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} selection={items[0]} />,
         );
 
@@ -119,7 +120,7 @@ describe('Select', () => {
       test('click on an item does not automatically update the value of the select', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} selection={items[0]} />,
         );
 
@@ -131,7 +132,7 @@ describe('Select', () => {
       test('If the value change, the new value is shown as the selected one', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { rerender } = setup(
+        const { rerender } = setupTest(
           <Select items={items} label={label} onChange={onChange} selection={items[0]} />,
         );
         expect(screen.getByText(label)).toBeVisible();
@@ -145,7 +146,7 @@ describe('Select', () => {
       test('If there is not a default selection only label is visible, onchange is not called', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        setup(<Select items={items} label={label} onChange={onChange} />);
+        setupTest(<Select items={items} label={label} onChange={onChange} />);
 
         // label is visible
         expect(screen.getByText(label)).toBeVisible();
@@ -161,7 +162,7 @@ describe('Select', () => {
       test('If there is a default selection label and selected item are visible, onchange is not called', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        setup(
+        setupTest(
           <Select items={items} label={label} onChange={onChange} defaultSelection={items[0]} />,
         );
 
@@ -177,7 +178,7 @@ describe('Select', () => {
       test('onChange is not called if the user clicks on the item with the same value as the selected one', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} defaultSelection={items[0]} />,
         );
 
@@ -193,7 +194,7 @@ describe('Select', () => {
       test('onChange is called if the user clicks on an item with a different value from the selected one', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} defaultSelection={items[0]} />,
         );
 
@@ -210,7 +211,7 @@ describe('Select', () => {
       test('click on an item automatically update the value of the select', async () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { user } = setup(
+        const { user } = setupTest(
           <Select items={items} label={label} onChange={onChange} defaultSelection={items[0]} />,
         );
 
@@ -222,7 +223,7 @@ describe('Select', () => {
       test('If the default value change, the new value is not shown as the selected one', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
-        const { rerender } = setup(
+        const { rerender } = setupTest(
           <Select items={items} label={label} onChange={onChange} defaultSelection={items[0]} />,
         );
         expect(screen.getByText(label)).toBeVisible();
@@ -239,7 +240,7 @@ describe('Select', () => {
     test('there is an "All" item available', async () => {
       const label = 'Select an item';
       const onChange = vi.fn();
-      const { user } = setup(<Select multiple items={items} label={label} onChange={onChange} />);
+      const { user } = setupTest(<Select multiple items={items} label={label} onChange={onChange} />);
 
       await user.click(screen.getByText(label));
       expect(screen.getByText('All')).toBeVisible();
@@ -247,7 +248,7 @@ describe('Select', () => {
     test('clicking "All" item when not all the enabled items are selected, will select them all ignoring the disabled', async () => {
       const label = 'Select an item';
       const onChange = vi.fn();
-      const { user } = setup(
+      const { user } = setupTest(
         <Select multiple items={extendedItems} label={label} onChange={onChange} />,
       );
 
@@ -259,7 +260,7 @@ describe('Select', () => {
     test('clicking "All" item when all the enabled items are selected, will de-select them all ignoring the disabled', async () => {
       const label = 'Select an item';
       const onChange = vi.fn();
-      const { user } = setup(
+      const { user } = setupTest(
         <Select
           multiple
           items={extendedItems}
@@ -277,7 +278,7 @@ describe('Select', () => {
     test('if a disabled item is already selected, it cannot be de-selected', async () => {
       const label = 'Select an item';
       const onChange = vi.fn();
-      const { user } = setup(
+      const { user } = setupTest(
         <Select
           multiple
           items={extendedItems}
@@ -305,7 +306,7 @@ describe('Select', () => {
         const onChange = vi.fn();
         const selection = slice(items, 0, 2);
         const selectedLabel = map(selection, 'label').join(', ');
-        setup(
+        setupTest(
           <Select multiple items={items} label={label} onChange={onChange} selection={selection} />,
         );
 
@@ -322,7 +323,7 @@ describe('Select', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
         const selectedLabel = map(items, 'label').join(', ');
-        const { user } = setup(
+        const { user } = setupTest(
           <Select multiple items={items} label={label} onChange={onChange} selection={items} />,
         );
 
@@ -337,7 +338,7 @@ describe('Select', () => {
         const onChange = vi.fn();
         const selectedLabel = map(items, 'label').join(', ');
 
-        const { rerender } = setup(
+        const { rerender } = setupTest(
           <Select multiple items={items} label={label} onChange={onChange} selection={items} />,
         );
         expect(screen.getByText(label)).toBeVisible();
@@ -361,7 +362,7 @@ describe('Select', () => {
         const onChange = vi.fn();
         const previousSelectedLabel = map(items, 'label').join(', ');
         const nextSelectedLabel = map(reject(items, ['label', items[1].label]), 'label').join(', ');
-        const { user } = setup(
+        const { user } = setupTest(
           <Select
             multiple
             items={items}
@@ -382,7 +383,7 @@ describe('Select', () => {
         const label = 'Select an item';
         const onChange = vi.fn();
         const selectedLabel = map(items, 'label').join(', ');
-        const { rerender } = setup(
+        const { rerender } = setupTest(
           <Select
             multiple
             items={items}
@@ -422,7 +423,7 @@ describe('Select', () => {
         },
       },
     ];
-    const { user } = setup(
+    const { user } = setupTest(
       <Select
         label={'Label'}
         onChange={onChangeFn}

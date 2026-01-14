@@ -5,15 +5,16 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
 import { ICONS } from '../../testUtils/constants';
 import { Checkbox } from './Checkbox';
 
 describe('Checkbox', () => {
   test('Render a checkbox with a label', () => {
     const onChange = vi.fn();
-    setup(<Checkbox label="Checkbox label" />);
+    setupTest(<Checkbox label="Checkbox label" />);
     expect(onChange).not.toHaveBeenCalled();
     expect(screen.getByText(/checkbox label/i)).toBeVisible();
     expect(screen.getByTestId(ICONS.checkboxOff)).toBeVisible();
@@ -21,7 +22,7 @@ describe('Checkbox', () => {
 
   test('Click on the checkbox', async () => {
     const onChange = vi.fn();
-    const { user } = setup(<Checkbox onChange={onChange} />);
+    const { user } = setupTest(<Checkbox onChange={onChange} />);
     await user.click(screen.getByTestId(ICONS.checkboxOff));
     expect(onChange).toHaveBeenCalled();
     expect(screen.getByTestId(ICONS.checkboxOn)).toBeVisible();

@@ -5,15 +5,16 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { noop } from 'lodash';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
 import { Radio } from './Radio';
 import { RadioGroup, RadioGroupProps } from './RadioGroup';
 
 describe('Radio Group', () => {
 	test('Should render a group with the radio', () => {
-		setup(
+		setupTest(
 			<RadioGroup>
 				<Radio value={'r1'} label={`item 1`} />
 				<Radio value={'r2'} label={`item 2`} />
@@ -25,7 +26,7 @@ describe('Radio Group', () => {
 	});
 
 	test('should check the radio which match the defaultValue', () => {
-		setup(
+		setupTest(
 			<RadioGroup defaultValue={'r2'}>
 				<Radio value={'r1'} label={`item 1`} />
 				<Radio value={'r2'} label={`item 2`} />
@@ -38,7 +39,7 @@ describe('Radio Group', () => {
 	});
 
 	test('should check the radio which match the value', () => {
-		setup(
+		setupTest(
 			<RadioGroup defaultValue={'r2'} value={'r3'}>
 				<Radio value={'r1'} label={`item 1`} />
 				<Radio value={'r2'} label={`item 2`} />
@@ -51,10 +52,10 @@ describe('Radio Group', () => {
 	});
 
 	test('should call onClick of the radio component', async () => {
-		const onClick1Fn = jest.fn();
-		const onClick2Fn = jest.fn();
-		const onClick3Fn = jest.fn();
-		const { user } = setup(
+		const onClick1Fn = vi.fn();
+		const onClick2Fn = vi.fn();
+		const onClick3Fn = vi.fn();
+		const { user } = setupTest(
 			<RadioGroup>
 				<Radio value={'r1'} label={`item 1`} onClick={onClick1Fn} />
 				<Radio value={'r2'} label={`item 2`} onClick={onClick2Fn} />
@@ -68,7 +69,7 @@ describe('Radio Group', () => {
 	});
 
 	test('should set all radio as disabled when the group is disabled', () => {
-		setup(
+		setupTest(
 			<RadioGroup value={'r3'} disabled>
 				<Radio value={'r1'} label={`item 1`} />
 				<Radio value={'r2'} label={`item 2`} />
@@ -85,10 +86,10 @@ describe('Radio Group', () => {
 	describe('Controlled mode', () => {
 		test('should call onChange with the new value to set without updating the checked radio', async () => {
 			type RadioGroupOnChange = NonNullable<RadioGroupProps<`r${number}`>['onChange']>;
-			const onChangeFn = jest.fn<ReturnType<RadioGroupOnChange>, Parameters<RadioGroupOnChange>>(
+			const onChangeFn = vi.fn<ReturnType<RadioGroupOnChange>, Parameters<RadioGroupOnChange>>(
 				(value) => noop(value)
 			);
-			const { user } = setup(
+			const { user } = setupTest(
 				<RadioGroup value={'r3'} onChange={onChangeFn}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />
@@ -109,8 +110,8 @@ describe('Radio Group', () => {
 		});
 
 		test('should not call onChange if the new value to set is equal to the current one', async () => {
-			const onChangeFn = jest.fn();
-			const { user } = setup(
+			const onChangeFn = vi.fn();
+			const { user } = setupTest(
 				<RadioGroup value={'r3'} onChange={onChangeFn}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />
@@ -122,7 +123,7 @@ describe('Radio Group', () => {
 		});
 
 		test('should update the checked radio when value change', () => {
-			const { rerender } = setup(
+			const { rerender } = setupTest(
 				<RadioGroup value={'r3'}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />
@@ -143,7 +144,7 @@ describe('Radio Group', () => {
 
 	describe('Uncontrolled mode', () => {
 		test('should update the checked radio on click', async () => {
-			const { user } = setup(
+			const { user } = setupTest(
 				<RadioGroup defaultValue={'r3'}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />
@@ -156,8 +157,8 @@ describe('Radio Group', () => {
 		});
 
 		test('should not call onChange with the new value to set', async () => {
-			const onChangeFn = jest.fn();
-			const { user } = setup(
+			const onChangeFn = vi.fn();
+			const { user } = setupTest(
 				<RadioGroup defaultValue={'r3'} onChange={onChangeFn}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />
@@ -169,7 +170,7 @@ describe('Radio Group', () => {
 		});
 
 		test('should not update the checked radio when defaultValue change', () => {
-			const { rerender } = setup(
+			const { rerender } = setupTest(
 				<RadioGroup defaultValue={'r3'}>
 					<Radio value={'r1'} label={`item 1`} />
 					<Radio value={'r2'} label={`item 2`} />

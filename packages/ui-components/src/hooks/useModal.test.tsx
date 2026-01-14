@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { beforeEach,describe, expect, it, vi } from 'vitest';
 
@@ -50,9 +50,7 @@ describe('useModal', () => {
       ),
     });
     expect(result.current).toBeDefined();
-    act(() => {
-      result.current.createModal({ id: 'id' });
-    });
+    result.current.createModal({ id: 'id' });
     expect(console.error).not.toHaveBeenCalledWith(modalContextError);
   });
 });

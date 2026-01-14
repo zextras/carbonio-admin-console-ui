@@ -37,7 +37,9 @@ class SpinnerWC extends LitElement {
   }
 }
 
-customElements.define('spinner-wc', SpinnerWC);
+if (!customElements.get('spinner-wc')) {
+  customElements.define('spinner-wc', SpinnerWC);
+}
 
 declare global {
   interface HTMLElementTagNameMap {
