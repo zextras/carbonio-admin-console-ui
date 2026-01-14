@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import "@testing-library/jest-dom";
 import { server } from "admin-ui-test-utils";
+import { cleanup } from "@testing-library/react";
 import { noop } from "lodash-es";
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
 
@@ -54,6 +56,7 @@ window.matchMedia = function matchMedia(query: string): MediaQueryList {
 };
 
 window.fetch = require("node-fetch");
+
 beforeEach(() => {
   // cleanup local storage
   window.localStorage.clear();
@@ -68,6 +71,7 @@ afterAll(() => {
 });
 
 afterEach(() => {
+  cleanup();
   server.events.removeAllListeners();
   server.resetHandlers();
 });

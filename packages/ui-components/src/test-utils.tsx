@@ -1,125 +1,28 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	act,
-	ByRoleMatcher,
-	ByRoleOptions,
-	GetAllBy,
-	queries,
-	queryHelpers,
-	render,
-	RenderOptions,
-	RenderResult,
-	Screen,
-	screen as rtlScreen,
-	within as rtlWithin
-} from '@testing-library/react';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
-import { defaultKeyMap } from '@testing-library/user-event/dist/cjs/keyboard/keyMap';
-import React, { type ReactElement } from 'react';
+import { vi } from 'vitest';
 
-import { ThemeProvider } from './theme/theme-context-provider';
+import { setupTest as sharedSetupTest, screen } from 'admin-ui-test-utils';
 
-type User = ReturnType<(typeof userEvent)['setup']>;
 type KeyboardModifiers = {
-	ctrl?: boolean;
-};
-type KeyboardEventFn = (modifiers?: KeyboardModifiers) => ReturnType<User['keyboard']>;
-
-export type UserEvent = User & {
-	readonly arrowUp: KeyboardEventFn;
-	readonly arrowDown: KeyboardEventFn;
-	readonly arrowLeft: KeyboardEventFn;
-	readonly arrowRight: KeyboardEventFn;
-	readonly esc: KeyboardEventFn;
-	readonly enter: KeyboardEventFn;
-	readonly rightClick: (target: Element) => Promise<void>;
+	readonly ctrl?: boolean;
 };
 
-type WrapperProps = {
-	children?: React.ReactNode;
-};
+type SharedUserEvent = ReturnType<typeof sharedSetupTest>['user'];
 
-type ByRoleWithIconOptions = ByRoleOptions & {
-	icon: string | RegExp;
-};
-
-/**
- * Matcher function to search an icon button through the icon data-testid
- */
-const queryAllByRoleWithIcon: GetAllBy<[ByRoleMatcher, ByRoleWithIconOptions]> = (
-	container,
-	role,
-	{ icon, ...options }
-) =>
-	rtlWithin(container)
-		.queryAllByRole(role, options)
-		.filter((element) => rtlWithin(element).queryByTestId(icon) !== null);
-
-const getByRoleWithIconMultipleError = (
-	_container: Element | null,
-	role: ByRoleMatcher,
-	options: ByRoleWithIconOptions
-): string => `Found multiple elements with role ${role as string} and icon ${options.icon}`;
-const getByRoleWithIconMissingError = (
-	_container: Element | null,
-	role: ByRoleMatcher,
-	options: ByRoleWithIconOptions
-): string => `Unable to find an element with role ${role as string} and icon ${options.icon}`;
-
-const [
-	queryByRoleWithIcon,
-	getAllByRoleWithIcon,
-	getByRoleWithIcon,
-	findAllByRoleWithIcon,
-	findByRoleWithIcon
-] = queryHelpers.buildQueries<[ByRoleMatcher, ByRoleWithIconOptions]>(
-	queryAllByRoleWithIcon,
-	getByRoleWithIconMultipleError,
-	getByRoleWithIconMissingError
-);
-
-const customQueries = {
-	// byRoleWithIcon
-	queryByRoleWithIcon,
-	getAllByRoleWithIcon,
-	getByRoleWithIcon,
-	findAllByRoleWithIcon,
-	findByRoleWithIcon
-};
-
-const queriesExtended = { ...queries, ...customQueries };
-
-export function within(
-	element: Parameters<typeof rtlWithin<typeof queriesExtended>>[0]
-): ReturnType<typeof rtlWithin<typeof queriesExtended>> {
-	return rtlWithin(element, queriesExtended);
-}
-
-export const screen: Screen<typeof queriesExtended> = { ...rtlScreen, ...within(document.body) };
-
-const Wrapper = ({ children }: WrapperProps): React.JSX.Element => (
-	<ThemeProvider>{children}</ThemeProvider>
-);
-
-function customRender(
-	ui: React.ReactElement,
-	options: Omit<RenderOptions, 'queries'> = {}
-): RenderResult<typeof queriesExtended> {
-	return render(ui, {
-		wrapper: Wrapper,
-		queries: { ...queries, ...customQueries },
-		...options
-	});
-}
-
-type SetupOptions = {
-	renderOptions?: Omit<RenderOptions, 'queries'>;
-	setupOptions?: Parameters<(typeof userEvent)['setup']>[0];
+type UserEvent = SharedUserEvent & {
+	readonly arrowUp: (modifiers?: KeyboardModifiers) => ReturnType<SharedUserEvent['keyboard']>;
+	readonly arrowDown: (modifiers?: KeyboardModifiers) => ReturnType<SharedUserEvent['keyboard']>;
+	readonly arrowLeft: () => ReturnType<SharedUserEvent['keyboard']>;
+	readonly arrowRight: () => ReturnType<SharedUserEvent['keyboard']>;
+	readonly esc: () => ReturnType<SharedUserEvent['keyboard']>;
+	readonly enter: () => ReturnType<SharedUserEvent['keyboard']>;
 };
 
 function wrapKeyboardTextWithModifier(text: string, modifiers?: KeyboardModifiers): string {
@@ -130,52 +33,57 @@ function wrapKeyboardTextWithModifier(text: string, modifiers?: KeyboardModifier
 	return finalText;
 }
 
-function setupUserEvent(options?: SetupOptions['setupOptions']): UserEvent {
-	const user = userEvent.setup({
-		keyboardMap: [{ code: 'Comma', key: ',' }, ...defaultKeyMap],
-		advanceTimers: jest.advanceTimersByTimeAsync,
-		...options
-	});
+function setupUserEvent(options?: Parameters<typeof userEvent.setup>[0]): UserEvent {
+	const user = userEvent.setup(options) as UserEvent;
+
+	user.arrowUp = (modifiers?: KeyboardModifiers) =>
+		user.keyboard(wrapKeyboardTextWithModifier('[ArrowUp]', modifiers));
+	user.arrowDown = (modifiers?: KeyboardModifiers) =>
+		user.keyboard(wrapKeyboardTextWithModifier('[ArrowDown]', modifiers));
+	user.arrowLeft = () => user.keyboard('[ArrowLeft]');
+	user.arrowRight = () => user.keyboard('[ArrowRight]');
+	user.esc = () => user.keyboard('[Escape]');
+	user.enter = () => user.keyboard('[Enter]');
+
+	return user;
+}
+
+export function setup(
+	ui: ReactElement,
+	options?: Parameters<typeof sharedSetupTest>[1]
+): ReturnType<typeof sharedSetupTest> & { user: UserEvent } {
+	const result = sharedSetupTest(ui, options);
 	return {
-		...user,
-		arrowUp: (modifiers) => user.keyboard(wrapKeyboardTextWithModifier('[ArrowUp]', modifiers)),
-		arrowDown: (modifiers) => user.keyboard(wrapKeyboardTextWithModifier('[ArrowDown]', modifiers)),
-		arrowLeft: () => user.keyboard('[ArrowLeft]'),
-		arrowRight: () => user.keyboard('[ArrowRight]'),
-		esc: () => user.keyboard('[Escape]'),
-		enter: () => user.keyboard('[Enter]'),
-		rightClick: (target: Element): Promise<void> => user.pointer({ target, keys: '[MouseRight]' })
+		...result,
+		user: setupUserEvent(options?.setupOptions)
 	};
 }
 
-export const setup = (
-	ui: ReactElement,
-	options?: SetupOptions
-): { user: UserEvent } & ReturnType<typeof customRender> => ({
-	user: setupUserEvent(options?.setupOptions),
-	...customRender(ui, options?.renderOptions)
-});
-
 export function makeItemsVisible(): void {
-	const { calls, instances } = (
-		window.IntersectionObserver as jest.Mock<
-			IntersectionObserver,
-			[callback: IntersectionObserverCallback, options?: IntersectionObserverInit]
-		>
-	).mock;
-	calls.forEach((call, index) => {
-		const [onChange] = call;
-		// trigger the intersection on the observed element
-		act(() => {
-			onChange(
-				[
-					{
-						intersectionRatio: 0,
-						isIntersecting: true
-					} as IntersectionObserverEntry
-				],
-				instances[index]
-			);
-		});
+	const intersectionObserverMock = vi.mocked(globalThis.IntersectionObserver);
+	const { calls } = intersectionObserverMock.mock;
+
+	calls.forEach((call) => {
+		const [callback, instance] = call;
+		callback(
+			[
+				{
+					boundingClientRect: new DOMRect(),
+					intersectionRatio: 0,
+					intersectionRect: new DOMRect(),
+					isIntersecting: true,
+					rootBounds: null,
+					target: document.createElement('div'),
+					time: 0
+				}
+			] as Array<IntersectionObserverEntry>,
+			instance
+		);
 	});
 }
+
+// Re-export utilities from shared test-utils and testing-library
+export { screen } from 'admin-ui-test-utils';
+export type { UserEvent };
+export * from '@testing-library/react';
+
