@@ -1,79 +1,76 @@
 {
-	"name": "@zextras/ui-components",
-	"description": "UI Components for Carbonio Admin Panel",
-	"main": "./src/index.ts",
-	"module": "./src/index.ts",
-	"types": "./src/index.ts",
-	"exports": {
-		".": "./src/index.ts"
-	},
-	"type": "commonjs",
-	"files": [
-		"src",
-		"package.json"
-	],
-	"scripts": {
-		"lint": "eslint --cache --quiet",
-		"lint:fix": "eslint --fix --cache --quiet",
-		"lint:icons": "eslint src/icons --fix",
-		"test": "jest --maxWorkers=50% --coverage=false",
-		"icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
-		"build": "echo 'No build needed - apps import TypeScript source directly'",
-		"clean": "rm -rf dist/* types/*",
-		"type-check": "tsc --noEmit"
-	},
-	"author": "Zextras Frontend Tribe <https://www.zextras.com/carbonio/>",
-	"license": "AGPL-3.0-only",
-	"sideEffects": false,
-	"devDependencies": {
-		"@faker-js/faker": "^8.4.0",
-		"@microsoft/api-extractor": "^7.43.0",
-		"@svgr/cli": "^8.0.1",
-		"@testing-library/dom": "^10.3.2",
-		"@testing-library/jest-dom": "^6.4.6",
-		"@testing-library/react": "^16.0.0",
-		"@testing-library/user-event": "^14.6.1",
-		"@types/jest": "^29.5.12",
-		"@types/lodash": "^4.14.196",
-		"@types/react": "^19.1.0",
-		"@types/react-datepicker": "^4.15.0",
-		"@types/react-dom": "^19.1.0",
-		"@types/styled-components": "^5.1.26",
-		"create-index": "2.6.0",
-		"del": "^7.1.0",
-		"eslint-plugin-notice": "^0.9.10",
-		"jest": "^29.7.0",
-		"jest-environment-jsdom": "^29.7.0",
-		"jest-fail-on-console": "^3.1.2",
-		"jest-junit": "^16.0.0",
-		"jest-styled-components": "^7.2.0",
-		"jsdom": "^24.0.0",
-		"lit": "^3.3.2",
-		"lodash": "^4.17.21",
-		"process": "0.11.10",
-		"react": "^19.1.0",
-		"react-docgen-typescript": "^2.2.2",
-		"react-dom": "^19.1.0",
-		"ts-jest": "^29.4.6",
-		"ts-node": "^10 >=10.9.2",
-		"typescript": "^5.4.5"
-	},
-	"browserslist": [
-		">1%",
-		"last 3 version",
-		"Firefox ESR",
-		"not dead"
-	],
-	"peerDependencies": {
-		"lodash": "^4.17.21",
-		"react": "^18.0.0 || ^19.0.0",
-		"react-dom": "^18.0.0 || ^19.0.0",
-		"styled-components": "^5.3.11"
-	},
-	"dependencies": {
-		"@floating-ui/dom": "^1.5.3",
-		"core-js": "^3.38.1",
-		"polished": "^4.2.2",
-		"react-datepicker": "^4.25.0"
-	}
+  "name": "@zextras/ui-components",
+  "description": "UI Components for Carbonio Admin Panel",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "type": "commonjs",
+  "files": [
+    "src",
+    "package.json"
+  ],
+  "scripts": {
+    "lint": "eslint --cache --quiet",
+    "lint:fix": "eslint --fix --cache --quiet",
+    "lint:icons": "eslint src/icons --fix",
+    "test": "vitest run",
+    "test:watch": "vitest --browser --watch --open",
+    "test:ci": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
+    "icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
+    "build": "echo 'No build needed - apps import TypeScript source directly'",
+    "clean": "rm -rf dist/* types/*",
+    "type-check": "tsc --noEmit"
+  },
+  "author": "Zextras Frontend Tribe <https://www.zextras.com/carbonio/>",
+  "license": "AGPL-3.0-only",
+  "sideEffects": false,
+  "devDependencies": {
+    "admin-ui-test-utils": "workspace:*",
+    "@faker-js/faker": "^8.4.0",
+    "@microsoft/api-extractor": "^7.43.0",
+    "@svgr/cli": "^8.0.1",
+    "@testing-library/dom": "^10.3.2",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/lodash": "^4.14.196",
+    "@types/react": "^19.1.0",
+    "@types/react-datepicker": "^4.15.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/styled-components": "^5.1.26",
+    "create-index": "2.6.0",
+    "del": "^7.1.0",
+    "eslint-plugin-notice": "^0.9.10",
+    "jsdom": "^24.0.0",
+    "lit": "^3.3.2",
+    "lodash": "^4.17.21",
+    "process": "0.11.10",
+    "react": "^19.1.0",
+    "react-docgen-typescript": "^2.2.2",
+    "react-dom": "^19.1.0",
+    "ts-node": "^10 >=10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "browserslist": [
+    ">1%",
+    "last 3 version",
+    "Firefox ESR",
+    "not dead"
+  ],
+  "peerDependencies": {
+    "lodash": "^4.17.21",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "styled-components": "^5.3.11"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.5.3",
+    "core-js": "^3.38.1",
+    "polished": "^4.2.2",
+    "react-datepicker": "^4.25.0"
+  }
 }
