@@ -33,7 +33,7 @@ export const WscSettings: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const { isLicensed, isLoading, error, requiresLicenseCheck } = useWscLicense();
+	const { isLicensed, isLoading, isGlobalAdmin, error, requiresLicenseCheck } = useWscLicense();
 
 	const wscLicenseDisabledWarningLabel = t(
 		'wsc.section.license.warning',
@@ -122,7 +122,7 @@ export const WscSettings: FC<{
 
 	return (
 		<Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-			{requiresLicenseCheck && !isLoading && !isLicensed && !error && (
+			{requiresLicenseCheck && !isLoading && !isLicensed && !error && isGlobalAdmin && (
 				<Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
 			)}
 			<BoxLayout

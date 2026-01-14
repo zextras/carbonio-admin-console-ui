@@ -11,10 +11,12 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/subscription-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap/src/store/account/hooks';
 
 export interface WscLicenseHook {
 	isLicensed: boolean;
 	isLoading: boolean;
+	isGlobalAdmin: boolean;
 	error: string | null;
 	requiresLicenseCheck: boolean;
 }
@@ -22,8 +24,10 @@ export interface WscLicenseHook {
 export const useWscLicense = (): WscLicenseHook => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [isLicensed, setIsLicensed] = useState<boolean>(false);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const userSetting = useUserSettings();
 
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -35,11 +39,14 @@ export const useWscLicense = (): WscLicenseHook => {
 
 	useEffect(() => {
 		if (isAdvanced) {
-			fetchSoap('zextras', {
-				_jsns: ZIMBRA_ADMIN_URN,
-				module: 'ZxCore',
-				action: 'getLicenseInfo'
-			})
+			const globalAdmin = userSetting?.attrs?.zimbraIsAdminAccount;
+		    if (globalAdmin && globalAdmin === 'TRUE') {
+				setIsGlobalAdmin(true);
+				fetchSoap('zextras', {
+					_jsns: ZIMBRA_ADMIN_URN,
+					module: 'ZxCore',
+					action: 'getLicenseInfo'
+				})
 				.then((res) => {
 					const response = JSON.parse(res.response.content);
 					if (response.ok) {
@@ -64,8 +71,13 @@ export const useWscLicense = (): WscLicenseHook => {
 				.finally(() => {
 					setIsLoading(false);
 				});
+			} else {
+				// Non-global admin users are not able to get WSC license info
+				setIsLicensed(false);
+				setIsLoading(false);
+			}
 		}
-	}, [createSnackbar, wscLicenseErrorLabel, isAdvanced]);
+	}, [createSnackbar, wscLicenseErrorLabel, isAdvanced, userSetting]);
 
-	return { isLicensed, isLoading, error, requiresLicenseCheck: isAdvanced };
+	return { isLicensed, isLoading, isGlobalAdmin, error, requiresLicenseCheck: isAdvanced };
 };
