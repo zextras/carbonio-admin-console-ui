@@ -29,16 +29,16 @@ importers:
         version: 14.1.8
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-        version: 5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+        version: 5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/browser-playwright':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -107,10 +107,10 @@ importers:
         version: 8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       vite-plugin-svgr:
         specifier: ^4.5.0
-        version: 4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+        version: 4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       vitest:
         specifier: ^4.0.14
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -125,7 +125,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -149,7 +149,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -213,7 +213,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -252,7 +252,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -267,7 +267,7 @@ importers:
         version: 5.90.17(react@19.2.3)
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
@@ -361,10 +361,10 @@ importers:
         version: 0.7.39
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-        version: 5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+        version: 5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -409,10 +409,10 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.2.6
-        version: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)
+        version: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -421,7 +421,7 @@ importers:
     dependencies:
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -442,7 +442,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       react:
         specifier: ^19.1.0
         version: 19.2.3
@@ -497,7 +497,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -536,7 +536,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -551,7 +551,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -581,7 +581,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -645,7 +645,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -684,7 +684,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -702,7 +702,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -732,7 +732,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -799,7 +799,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -838,7 +838,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -853,7 +853,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -883,7 +883,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -947,7 +947,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -986,7 +986,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1001,7 +1001,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1031,7 +1031,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1095,7 +1095,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1134,7 +1134,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1146,7 +1146,7 @@ importers:
         version: 5.90.17(react@19.2.3)
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1176,7 +1176,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1243,7 +1243,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1282,7 +1282,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1297,7 +1297,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1324,7 +1324,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1388,7 +1388,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1427,7 +1427,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1445,7 +1445,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1472,7 +1472,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1536,7 +1536,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1575,7 +1575,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1590,7 +1590,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1617,7 +1617,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1681,7 +1681,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1720,7 +1720,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1735,7 +1735,7 @@ importers:
         version: 1.1.10
       '@vitest/browser-preview':
         specifier: ^4.0.14
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@zextras/admin-ui-bootstrap':
         specifier: workspace:*
         version: link:../admin-ui-bootstrap
@@ -1765,7 +1765,7 @@ importers:
         version: 10.28.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.321.2
+        version: 1.322.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1829,7 +1829,7 @@ importers:
         version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.17(vitest@4.0.17)
@@ -1868,7 +1868,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -1951,7 +1951,10 @@ importers:
         version: 14.6.1(@testing-library/dom@10.4.1)
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+        version: 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
+      '@zextras/ui-components':
+        specifier: workspace:*
+        version: link:../ui-components
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1963,7 +1966,7 @@ importers:
         version: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       vitest:
         specifier: ^4.0.5
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       vitest-browser-react:
         specifier: ^2.0.2
         version: 2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17)
@@ -3391,8 +3394,8 @@ packages:
   '@posthog/core@1.9.1':
     resolution: {integrity: sha512-kRb1ch2dhQjsAapZmu6V66551IF2LnCbc1rnrQqnR7ArooVyJN9KOPXre16AJ3ObJz2eTfuP7x25BMyS2Y5Exw==}
 
-  '@posthog/types@1.321.2':
-    resolution: {integrity: sha512-nsMeHlVNlTB68JyV3/0+5FDreiTpUCStDH8ZUH/Hfsbw1howyf9a7DyURTwwhXdnyO0DksEFUIX+4IKCJs/H9g==}
+  '@posthog/types@1.322.0':
+    resolution: {integrity: sha512-oaGT0yshq1hdulGXzIYGPmv8TiRPBdNMlrdrAJRTkT+t7LcRRIfNGZ8VCvgXvRAKKfe0KSobl8SkJm+TJ1qX6Q==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -6404,8 +6407,8 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  memfs@4.51.1:
-    resolution: {integrity: sha512-Eyt3XrufitN2ZL9c/uIRMyDwXanLI88h/L3MoWqNY747ha3dMR9dWqp8cRT5ntjZ0U1TNuq4U91ZXK0sMBjYOQ==}
+  memfs@4.52.0:
+    resolution: {integrity: sha512-dG5ZY1wUCPWhtl4M2mlc7Wx4OrMGtiI79axnScxwDoPR/25biQYrYm21OpKyZcnKv8pvWaX95SRtZgecZ84gFg==}
 
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
@@ -7065,8 +7068,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.321.2:
-    resolution: {integrity: sha512-h5852d9lYmSNjKWvjDkrmO9/awUU3jayNBEoEBUuMAdfDPc4yYYdxBJeDBxYnCFm6RjCLy4O+vmcwuCRC67EXA==}
+  posthog-js@1.322.0:
+    resolution: {integrity: sha512-vNNcWp2NpFMX8nqf06uZ49OzGjj9tqh1F25ls9YegXCeCIpT37sYPSFI4GiyQAaunUXd1IR2L5iWK/zGGhVESA==}
 
   preact@10.28.2:
     resolution: {integrity: sha512-lbteaWGzGHdlIuiJ0l2Jq454m6kcpI1zNje6d8MlGAFlYvP2GO4ibnat7P74Esfz4sPTdM6UxtTwh/d3pwM9JA==}
@@ -7826,8 +7829,8 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.44.1:
-    resolution: {integrity: sha512-t/R3R/n0MSwnnazuPpPNVO60LX0SKL45pyl9YlvxIdkH0Of7D5qM2EVe+yASRIlY5pZ73nclYJfNANGWPwFDZw==}
+  terser@5.45.0:
+    resolution: {integrity: sha512-hQ9c+JZEnMug8eqzuU48sCeq95f00lLDAaJ5gWhRkFXsfy3+SUkZXiF/Z66ZO6EomSmgqXnkhVrWXKaQ8K41Ug==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -8299,8 +8302,8 @@ packages:
   warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
-  watchpack@2.5.0:
-    resolution: {integrity: sha512-e6vZvY6xboSwLz2GD36c16+O/2Z6fKvIf4pOXptw2rY9MVwE/TXc6RGqxD3I3x0a28lwBY7DE+76uTPSsBrrCA==}
+  watchpack@2.5.1:
+    resolution: {integrity: sha512-Zn5uXdcFNIA1+1Ei5McRd+iRzfhENPCe7LeABkJtNulSxjma+l7ltNx55BWZkRlwRnpOgHqxnjyaDgJnNXnqzg==}
     engines: {node: '>=10.13.0'}
 
   wbuf@1.7.3:
@@ -10058,7 +10061,7 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
-  '@posthog/types@1.321.2': {}
+  '@posthog/types@1.322.0': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -10812,7 +10815,7 @@ snapshots:
       '@typescript-eslint/types': 8.53.0
       eslint-visitor-keys: 4.2.1
 
-  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))':
+  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.6)
@@ -10820,45 +10823,45 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/browser-playwright@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)':
+  '@vitest/browser-playwright@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)':
     dependencies:
-      '@vitest/browser': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
-      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+      '@vitest/browser': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
+      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       playwright: 1.57.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser-preview@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)':
+  '@vitest/browser-preview@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
-      '@vitest/browser': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      '@vitest/browser': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)':
+  '@vitest/browser@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)':
     dependencies:
-      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       '@vitest/utils': 4.0.17
       magic-string: 0.30.21
       pixelmatch: 7.1.0
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
       ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
@@ -10878,7 +10881,7 @@ snapshots:
       magicast: 0.5.1
       obug: 2.1.1
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -10891,14 +10894,14 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))':
+  '@vitest/mocker@4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))':
     dependencies:
       '@vitest/spy': 4.0.17
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.12.7(@types/node@20.19.29)(typescript@5.9.3)
-      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)
 
   '@vitest/pretty-format@4.0.17':
     dependencies:
@@ -10926,7 +10929,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
 
   '@vitest/utils@4.0.17':
     dependencies:
@@ -12852,7 +12855,7 @@ snapshots:
       he: 1.2.0
       param-case: 3.0.4
       relateurl: 0.2.7
-      terser: 5.44.1
+      terser: 5.45.0
 
   html-parse-stringify@3.0.1:
     dependencies:
@@ -13550,7 +13553,7 @@ snapshots:
 
   media-typer@0.3.0: {}
 
-  memfs@4.51.1:
+  memfs@4.52.0:
     dependencies:
       '@jsonjoy.com/json-pack': 1.21.0(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
@@ -14119,7 +14122,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.321.2:
+  posthog-js@1.322.0:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
@@ -14127,7 +14130,7 @@ snapshots:
       '@opentelemetry/resources': 2.4.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
       '@posthog/core': 1.9.1
-      '@posthog/types': 1.321.2
+      '@posthog/types': 1.322.0
       core-js: 3.47.0
       dompurify: 3.3.1
       fflate: 0.4.8
@@ -15090,10 +15093,10 @@ snapshots:
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
-      terser: 5.44.1
+      terser: 5.45.0
       webpack: 5.104.1
 
-  terser@5.44.1:
+  terser@5.45.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
       acorn: 8.15.0
@@ -15419,18 +15422,18 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-svgr@4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)):
+  vite-plugin-svgr@4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.55.1)
       '@svgr/core': 8.1.0(typescript@5.9.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
-      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0):
+  vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -15443,22 +15446,22 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       less: 4.5.1
-      terser: 5.44.1
+      terser: 5.45.0
       tsx: 4.21.0
 
   vitest-browser-react@2.0.2(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.17):
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0)
     optionalDependencies:
       '@types/react': 19.2.8
       '@types/react-dom': 19.2.3(@types/react@19.2.8)
 
-  vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.44.1)(tsx@4.21.0):
+  vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.29)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(terser@5.45.0)(tsx@4.21.0):
     dependencies:
       '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))
+      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))
       '@vitest/pretty-format': 4.0.17
       '@vitest/runner': 4.0.17
       '@vitest/snapshot': 4.0.17
@@ -15475,13 +15478,13 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       '@types/node': 20.19.29
-      '@vitest/browser-playwright': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
-      '@vitest/browser-preview': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.44.1)(tsx@4.21.0))(vitest@4.0.17)
+      '@vitest/browser-playwright': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
+      '@vitest/browser-preview': 4.0.17(msw@2.12.7(@types/node@20.19.29)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.29)(jiti@2.6.1)(less@4.5.1)(terser@5.45.0)(tsx@4.21.0))(vitest@4.0.17)
       '@vitest/ui': 4.0.17(vitest@4.0.17)
       jsdom: 26.1.0
     transitivePeerDependencies:
@@ -15509,7 +15512,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  watchpack@2.5.0:
+  watchpack@2.5.1:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
@@ -15547,7 +15550,7 @@ snapshots:
   webpack-dev-middleware@7.4.5(webpack@5.104.1):
     dependencies:
       colorette: 2.0.20
-      memfs: 4.51.1
+      memfs: 4.52.0
       mime-types: 3.0.2
       on-finished: 2.4.1
       range-parser: 1.2.1
@@ -15620,7 +15623,7 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.0
       terser-webpack-plugin: 5.3.16(webpack@5.104.1)
-      watchpack: 2.5.0
+      watchpack: 2.5.1
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
