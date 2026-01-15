@@ -96,7 +96,7 @@ const CreateMailingList: FC<{
 		zimbraNotes: '',
 		memberURL: LDAP,
 		members: [],
-		zimbraDistributionListSendShareMessageToNewMembers: true,
+		zimbraDistributionListSendShareMessageToNewMembers: false,
 		owners: [],
 		prefixName: '',
 		suffixName: '',
@@ -309,6 +309,43 @@ const CreateMailingList: FC<{
 					/>
 				),
 				PrevButton: (props: any) => null,
+				NextButton: (props: any) => (
+					<Button
+						{...props}
+						label={t('label.next', 'NEXT')}
+						icon="ChevronRightOutline"
+						iconPlacement="right"
+					/>
+				)
+			},
+			{
+				name: 'settings',
+				label: t('label.settings', 'Settings'),
+				icon: 'OptionsOutline',
+				view: MailingListSettingsSection,
+				CancelButton: (props: any): ReactElement => (
+					<Button
+						{...props}
+						type="outlined"
+						key="wizard-cancel"
+						label={t('label.cancel', 'Cancel')}
+						color="secondary"
+						icon="CloseOutline"
+						iconPlacement="right"
+						onClick={(): void => {
+							setShowCreateMailingListView(false);
+						}}
+					/>
+				),
+				PrevButton: (props: any) => (
+					<Button
+						{...props}
+						label={t('label.back', 'BACK')}
+						icon="ChevronLeftOutline"
+						color="secondary"
+						iconPlacement="left"
+					/>
+				),
 				NextButton: (props: any) => (
 					<Button
 						{...props}

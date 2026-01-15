@@ -389,30 +389,33 @@ const MailingListSettingsSection: FC<any> = () => {
 					</Text>
 				</Row>
 
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'medium', bottom: 'medium' }}
-					>
-						<Switch
-							value={mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers}
-							label={t(
-								'label.send_new_members_notification_for_share_assigned_to_this_group',
-								'Send new members a notification for the share/delegation assigned to this group'
-							)}
-							onClick={(): void => {
-								setMailingListDetail((prev: any) => ({
-									...prev,
-									zimbraDistributionListSendShareMessageToNewMembers:
-										!mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
-								}));
-							}}
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
+
+				{ !mailingListDetail?.dynamic && (
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'medium', bottom: 'medium' }}
+						>
+							<Switch
+								value={mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers}
+								label={t(
+									'label.send_new_members_notification_for_share_assigned_to_this_group',
+									'Send new members a notification for the share/delegation assigned to this group'
+								)}
+								onClick={(): void => {
+									setMailingListDetail((prev: any) => ({
+										...prev,
+										zimbraDistributionListSendShareMessageToNewMembers:
+											!mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
+									}));
+								}}
+								iconColor="primary"
+							/>
+						</Container>
+					</ListRow>
+				)}
 
 				<ListRow>
 					<Container
@@ -455,6 +458,11 @@ const MailingListSettingsSection: FC<any> = () => {
 						/>
 					</Container>
 				</ListRow>
+				<ListRow>
+					<Container>
+						<Divider />
+					</Container>
+				</ListRow>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" weight="bold">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
@@ -474,9 +482,10 @@ const MailingListSettingsSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
-						padding={{ top: 'medium', right: 'small' }}
-						width="70%"
+						padding={{ top: 'large', right: 'small' }}
+						width="100%"
 					>
+					<Row mainAlignment="flex-start" width="65%" crossAlignment="flex-start">
 						<DropDownInput
 							width="100%"
 							items={items}
@@ -488,38 +497,29 @@ const MailingListSettingsSection: FC<any> = () => {
 							inputValue={member}
 							isCustomIcon={false}
 						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'medium', right: 'small' }}
-					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							size="large"
-							onClick={onAdd}
-							disabled={member === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							size="large"
-							onClick={onDeleteFromList}
-							disabled={selectedDistributionListOwner && selectedDistributionListOwner.length === 0}
-						/>
+					</Row>
+					<Row width="35%" mainAlignment="flex-start" crossAlignment="flex-start">
+						<Padding left="large">
+							<Button
+								type="outlined"
+								label={t('label.add', 'Add')}
+								color="primary"
+								size="extralarge"
+								onClick={onAdd}
+								disabled={member === ''}
+							/>
+						</Padding>
+						<Padding left="large">
+							<Button
+								type="outlined"
+								label={t('label.delete', 'Delete')}
+								color="error"
+								size="extralarge"
+								onClick={onDeleteFromList}
+								disabled={selectedDistributionListOwner && selectedDistributionListOwner.length === 0}
+							/>
+						</Padding>
+					</Row>
 					</Container>
 				</ListRow>
 				<ListRow>
@@ -571,6 +571,11 @@ const MailingListSettingsSection: FC<any> = () => {
 						<Divider />
 					</Container>
 				</ListRow>
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" weight="bold" color="gray0">
+						{t('label.sending_options', 'Sending Options')}
+					</Text>
+				</Row>
 				<ListRow>
 					<Container padding={{ top: 'large' }}>
 						<Select
@@ -591,6 +596,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 						width="100%"
 					>
+					<Row mainAlignment="flex-start" width="65%" crossAlignment="flex-start">
 						<DropDownInput
 							width="100%"
 							items={grantItems}
@@ -606,38 +612,29 @@ const MailingListSettingsSection: FC<any> = () => {
 							isCustomIcon={false}
 							inputDisabled={grantType?.value !== EMAIL}
 						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						width="18%"
-						padding={{ top: 'large' }}
-					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							size="large"
-							onClick={onAddGrantEmail}
-							disabled={grantEmailItem === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large' }}
-						width="25%"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							size="large"
-							onClick={onDeleteFromGrantEmail}
-							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
-						/>
+					</Row>
+					<Row width="35%" mainAlignment="flex-start" crossAlignment="flex-start">
+						<Padding left="large">
+							<Button
+								type="outlined"
+								label={t('label.add', 'Add')}
+								color="primary"
+								size="extralarge"
+								onClick={onAddGrantEmail}
+								disabled={grantEmailItem === ''}
+							/>
+						</Padding>
+						<Padding left="large">
+							<Button
+								type="outlined"
+								label={t('label.delete', 'Delete')}
+								color="error"
+								size="extralarge"
+								onClick={onDeleteFromGrantEmail}
+								disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
+							/>
+						</Padding>
+					</Row>
 					</Container>
 				</ListRow>
 

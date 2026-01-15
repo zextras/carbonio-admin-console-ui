@@ -13,6 +13,7 @@ import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
+import Textarea from '../../../components/textarea';
 
 const MailingListCreateSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -22,6 +23,7 @@ const MailingListCreateSection: FC<any> = () => {
 	const [memberList, setMemberList] = useState<Array<any>>([]);
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
 	const [grantEmailType, setGrantEmailType] = useState<string>('');
+	const [grantEmailsList, setGrantEmailsList] = useState<Array<any>>([]);
 
 	const tableHeader: any[] = useMemo(
 		() => [
@@ -40,6 +42,18 @@ const MailingListCreateSection: FC<any> = () => {
 			{
 				id: 'members',
 				label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
+				width: '100%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const grantEmailHeaders: any[] = useMemo(
+		() => [
+			{
+				id: 'grantEmail',
+				label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
 				width: '100%',
 				bold: true
 			}
@@ -74,6 +88,21 @@ const MailingListCreateSection: FC<any> = () => {
 				]
 			}));
 			setOwnerMember(allRows);
+		}
+	}, [mailingListDetail?.owners]);
+
+	useEffect(() => {
+		const grantList = mailingListDetail?.ownerGrantEmails;
+		if (grantList && grantList.length > 0) {
+			const allRows = grantList.map((item: any) => ({
+				id: item,
+				columns: [
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
+						{item}
+					</Text>
+				]
+			}));
+			setGrantEmailsList(allRows);
 		}
 	}, [mailingListDetail?.owners]);
 
@@ -150,10 +179,95 @@ const MailingListCreateSection: FC<any> = () => {
 						<Input
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
+							value={mailingListDetail?.description}
+						/>
+					</Container>
+				</ListRow>
+
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
+							backgroundColor="gray6"
 							value={mailingListDetail?.zimbraNotes}
 						/>
 					</Container>
 				</ListRow>
+
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" weight="bold">
+						{t('label.main_settings', 'Main Settings')}
+					</Text>
+				</Row>
+				<ListRow>
+					{!mailingListDetail?.dynamic && (
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('label.share_message_to_new_member', 'Share message to new members')}
+								backgroundColor="gray6"
+								value={
+									mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
+										? t('label.yes', 'Yes')
+										: t('label.no', 'No')
+								}
+							/>
+						</Container>
+					)}
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.hidden_from_gal', 'Hidden from GAL')}
+							backgroundColor="gray6"
+							value={
+								mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
+							}
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.can_receive_email', 'Can receive email')}
+							backgroundColor="gray6"
+							value={
+								mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
+							}
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.dynamic_mode', 'Dynamic Mode')}
+							backgroundColor="gray6"
+							value={
+								mailingListDetail?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')
+							}
+						/>
+					</Container>
+				</ListRow>
+
+
 				{!mailingListDetail?.dynamic && (
 					<Row>
 						<Container
@@ -181,59 +295,7 @@ const MailingListCreateSection: FC<any> = () => {
 						</Container>
 					</ListRow>
 				)}
-				{mailingListDetail?.dynamic && (
-					<ListRow>
-						{!mailingListDetail?.dynamic && (
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'large', right: 'small' }}
-							>
-								<Input
-									label={t('label.share_message_to_new_member', 'Share message to new members')}
-									backgroundColor="gray6"
-									value={
-										mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
-											? t('label.yes', 'Yes')
-											: t('label.no', 'No')
-									}
-								/>
-							</Container>
-						)}
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('label.hidden_from_gal', 'Hidden from GAL')}
-								backgroundColor="gray6"
-								value={
-									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
-								}
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t(
-									'label.send_new_members_notification_for_share_assigned_to_this_group',
-									'Send new members a notification for the share/delegation assigned to this group'
-								)}
-								backgroundColor="gray6"
-								value={
-									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
-								}
-							/>
-						</Container>
-					</ListRow>
-				)}
+
 				{mailingListDetail?.dynamic && (
 					<>
 						<ListRow>
@@ -250,29 +312,6 @@ const MailingListCreateSection: FC<any> = () => {
 								/>
 							</Container>
 						</ListRow>
-						<Row>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'extralarge', bottom: 'medium' }}
-							>
-								<Text size="small" weight="bold">
-									{t('label.members', 'Members')}
-								</Text>
-							</Container>
-						</Row>
-						<ListRow>
-							<Container padding={{ bottom: 'medium' }}>
-								<Table
-									rows={ldapQueryMembers}
-									headers={tableHeader}
-									showCheckbox={false}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
-							</Container>
-						</ListRow>
 					</>
 				)}
 
@@ -281,21 +320,13 @@ const MailingListCreateSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
-						padding={{ top: 'extralarge', bottom: 'medium' }}
+						padding={{ top: 'extralarge'}}
 					>
 						<Text size="small" weight="bold">
 							{t('label.owners_settings', 'Owners’ Settings')}
 						</Text>
 					</Container>
 				</Row>
-
-				<ListRow>
-					<Input
-						label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
-						backgroundColor="gray6"
-						value={grantEmailType}
-					/>
-				</ListRow>
 
 				<ListRow>
 					<Container padding={{ bottom: 'medium', top: 'medium' }}>
@@ -309,52 +340,27 @@ const MailingListCreateSection: FC<any> = () => {
 					</Container>
 				</ListRow>
 
-				{!mailingListDetail?.dynamic && (
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" weight="bold" color="gray0">
+						{t('label.sending_options', 'Sending Options')}
+					</Text>
+				</Row>
+				<ListRow>
+					<Input
+						label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
+						backgroundColor="gray6"
+						value={grantEmailType}
+					/>
+				</ListRow>
+				{grantEmailsList && grantEmailsList.length > 0 && (
 					<ListRow>
-						{!mailingListDetail?.dynamic && (
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'large', right: 'small' }}
-							>
-								<Input
-									label={t('label.share_message_to_new_member', 'Share message to new members')}
-									backgroundColor="gray6"
-									value={
-										mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
-											? t('label.yes', 'Yes')
-											: t('label.no', 'No')
-									}
-								/>
-							</Container>
-						)}
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('label.hidden_from_gal', 'Hidden from GAL')}
-								backgroundColor="gray6"
-								value={
-									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
-								}
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('label.can_receive_email', 'Can receive email')}
-								backgroundColor="gray6"
-								value={
-									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
-								}
+						<Container padding={{ bottom: 'medium', top: 'medium' }}>
+							<Table
+								rows={grantEmailsList}
+								headers={grantEmailHeaders}
+								showCheckbox={false}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					</ListRow>
