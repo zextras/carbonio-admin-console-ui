@@ -140,9 +140,15 @@ const DomainMailingList: FC = () => {
 				}
 			},
 			{
+				id: 'dynamic',
+				label: t('label.dynamic', 'Dynamic'),
+				width: '7%',
+				bold: true
+			},
+			{
 				id: 'gal',
 				label: t('label.gal', 'GAL'),
-				width: '15%',
+				width: '7%',
 				bold: true
 			},
 			{
@@ -244,6 +250,21 @@ const DomainMailingList: FC = () => {
 										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
 											? t('label.can_send_receiver', 'Can Receive')
 											: t('label.cant_send_receiver', "Can't Receive")}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-dynamic`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
+										{item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
 									</Text>
 								</Container>,
 								<Container
@@ -499,14 +520,16 @@ const DomainMailingList: FC = () => {
 				});
 			} else {
 				attributes.push({
-					n: 'description',
-					_content: description
-				});
-				attributes.push({
 					n: 'zimbraDistributionListSendShareMessageToNewMembers',
 					_content: zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE
 				});
 			}
+
+			attributes.push({
+				n: 'description',
+				_content: description
+			});
+
 			let dl: any = {};
 			let action: any = {};
 			if (ownerGrantEmailType?.value === PUB) {
