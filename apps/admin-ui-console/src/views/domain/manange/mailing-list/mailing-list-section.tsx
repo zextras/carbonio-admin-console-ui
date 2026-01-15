@@ -26,11 +26,10 @@ import {
 	Divider
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { debounce, sortedUniq, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { MailingListContext } from './mailinglist-context';
-import {  LDAP, LDAP_QUERY, PUB, TRUE } from '../../../../constants';
+import {  LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
@@ -411,6 +410,7 @@ const MailingListSection: FC<any> = () => {
 										value={filterMember}
 										backgroundColor="gray5"
 										onChange={handleInputChangeMember}
+										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								/>
 								<Container padding={{ bottom: 'small' }}>
 									<Divider />

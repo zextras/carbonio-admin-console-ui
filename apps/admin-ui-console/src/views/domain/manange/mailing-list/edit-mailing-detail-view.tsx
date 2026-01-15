@@ -20,7 +20,8 @@ import {
 	useSnackbar,
 	TabBar,
 	DefaultTabBarItem,
-	Checkbox
+	Checkbox,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import moment from 'moment';
@@ -399,49 +400,6 @@ const EditMailingListView: FC<any> = ({
 								dlm: []
 						}));
 					}
-						/*if (!selectedMailingList?.dynamic) {
-							setDlm(_dlm);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								dlm: _dlm
-							}));
-						} else {
-							const allMembers = _dlm.map((item: any) => ({
-								label: item,
-								background: 'gray3',
-								color: 'text',
-								id: item,
-								name: item
-							}));
-							setOwnerOfList(allMembers);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								ownerOfList: allMembers
-							}));
-						}
-					} else if (!selectedMailingList?.dynamic) {
-						setPreviousDetail((prevState: any) => ({
-							...prevState,
-							dlm: []
-						}));
-					} else if (selectedMailingList?.dynamic) {
-						setPreviousDetail((prevState: any) => ({
-							...prevState,
-							ownerOfList: []
-						}));
-					}
-					if (distributionListMembers?.owners && distributionListMembers?.owners[0]?.owner) {
-						setOwnersList(distributionListMembers?.owners[0]?.owner);
-						setPreviousDetail((prevState: any) => ({
-							...prevState,
-							ownersList: distributionListMembers?.owners[0]?.owner
-						}));
-					} else {
-						setPreviousDetail((prevState: any) => ({
-							...prevState,
-							ownersList: []
-						}));
-					}*/
 					if (distributionListMembers?.a) {
 						/* Get Gal Hide Information */
 						const _zimbraHideInGal = distributionListMembers?.a?.find(
@@ -2286,6 +2244,7 @@ const EditMailingListView: FC<any> = ({
 			label: t('label.security', 'SECURITY'),
 			CustomComponent: ReusedDefaultTabBar
 		},
+		!selectedMailingList?.dynamic &&
 		{
 			id: 'delegates',
 			label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
@@ -2549,28 +2508,30 @@ const EditMailingListView: FC<any> = ({
 							setAliasChange={(): void => ((): any => true)()}
 						/>
 					</Container>
-					<ListRow padding={{ all: 'small' }}>
-						<Container
-							padding={{ top: 'small' }}
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-						>
-							<Switch
-								value={zimbraDistributionListSendShareMessageToNewMembers}
-								label={t(
-									'label.send_new_members_notification_for_share_assigned_to_this_group',
-									'Send new members a notification for the share/delegation assigned to this group'
-								)}
-								onClick={(): void => {
-									setIsDirty(true);
-									setZimbraDistributionListSendShareMessageToNewMembers(
-										!zimbraDistributionListSendShareMessageToNewMembers
-									);
-								}}
-								iconColor="primary"
-							/>
-						</Container>
-					</ListRow>
+					{ !selectedMailingList?.dynamic && (
+						<ListRow padding={{ all: 'small' }}>
+							<Container
+								padding={{ top: 'small' }}
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+							>
+								<Switch
+									value={zimbraDistributionListSendShareMessageToNewMembers}
+									label={t(
+										'label.send_new_members_notification_for_share_assigned_to_this_group',
+										'Send new members a notification for the share/delegation assigned to this group'
+									)}
+									onClick={(): void => {
+										setIsDirty(true);
+										setZimbraDistributionListSendShareMessageToNewMembers(
+											!zimbraDistributionListSendShareMessageToNewMembers
+										);
+									}}
+									iconColor="primary"
+								/>
+							</Container>
+						</ListRow>
+					)}
 					<ListRow padding={{ left: 'small', right: 'small', bottom: 'small' }}>
 						<Container mainAlignment="flex-start" crossAlignment="flex-start">
 							<Switch
@@ -2827,6 +2788,7 @@ const EditMailingListView: FC<any> = ({
 												value={filterMember}
 												backgroundColor="gray5"
 												onChange={handleInputChange}
+												CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 										/>
 										<Container padding={{ bottom: 'small' }}>
 											<Divider />
@@ -3135,6 +3097,7 @@ const EditMailingListView: FC<any> = ({
 										value={filterGrantEmail}
 										backgroundColor="gray5"
 										onChange={handleInputChangeGrantEmail}
+										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								/>
 								<Container padding={{ bottom: 'small' }}>
 									<Divider />
@@ -3289,6 +3252,7 @@ const EditMailingListView: FC<any> = ({
 												value={filterSendEmail}
 												backgroundColor="gray5"
 												onChange={handleInputChangeSendEmail}
+												CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 										/>
 										<Container padding={{ bottom: 'small' }}>
 											<Divider />
