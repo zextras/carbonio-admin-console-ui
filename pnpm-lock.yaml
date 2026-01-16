@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  styled-components: 5.3.11
+
 importers:
 
   .:
@@ -166,7 +169,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -305,7 +308,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       ua-parser-js:
         specifier: ^1.0.41
@@ -453,7 +456,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -598,7 +601,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -749,7 +752,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       tinymce:
         specifier: ^6.8.4
@@ -900,7 +903,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1048,7 +1051,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1193,7 +1196,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1341,7 +1344,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1489,7 +1492,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1634,7 +1637,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1782,7 +1785,7 @@ importers:
         specifier: ^5.3.4
         version: 5.3.4(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       zustand:
         specifier: ^4.5.7
@@ -1904,7 +1907,7 @@ importers:
         version: 12.3.0(less@4.5.1)(webpack@5.104.1)
       mini-css-extract-plugin:
         specifier: ^2.7.7
-        version: 2.9.4(webpack@5.104.1)
+        version: 2.10.0(webpack@5.104.1)
       node-http-proxy-json:
         specifier: ^0.1.9
         version: 0.1.9
@@ -1959,7 +1962,7 @@ importers:
         specifier: ^2.12.2
         version: 2.12.7(@types/node@20.19.30)(typescript@5.9.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       vitest:
         specifier: ^4.0.5
@@ -1986,7 +1989,7 @@ importers:
         specifier: ^4.25.0
         version: 4.25.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       styled-components:
-        specifier: ^5.3.11
+        specifier: 5.3.11
         version: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
     devDependencies:
       '@faker-js/faker':
@@ -4460,7 +4463,7 @@ packages:
   babel-plugin-styled-components@2.1.4:
     resolution: {integrity: sha512-Xgp9g+A/cG47sUyRwwYxGM4bR/jDRg5N6it/8+HxCnbT5XNKSKDT9xm4oag/osgqjC2It/vH0yXsomOG6k558g==}
     peerDependencies:
-      styled-components: '>= 2'
+      styled-components: 5.3.11
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -6486,8 +6489,8 @@ packages:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
 
-  mini-css-extract-plugin@2.9.4:
-    resolution: {integrity: sha512-ZWYT7ln73Hptxqxk2DxPU9MmapXRhxkJD6tkSR04dnQxm8BGu2hzgKLugK5yySD97u/8yy7Ma7E76k9ZdvtjkQ==}
+  mini-css-extract-plugin@2.10.0:
+    resolution: {integrity: sha512-540P2c5dYnJlyJxTaSloliZexv8rji6rY8FhQN+WF/82iHQfA23j/xtJx97L+mXOML27EqksSek/g4eK7jaL3g==}
     engines: {node: '>= 12.13.0'}
     peerDependencies:
       webpack: ^5.0.0
@@ -13630,7 +13633,7 @@ snapshots:
 
   min-indent@1.0.1: {}
 
-  mini-css-extract-plugin@2.9.4(webpack@5.104.1):
+  mini-css-extract-plugin@2.10.0(webpack@5.104.1):
     dependencies:
       schema-utils: 4.3.3
       tapable: 2.3.0

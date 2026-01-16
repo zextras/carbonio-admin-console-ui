@@ -37,7 +37,8 @@ export default defineConfig(({ mode }) => ({
 	resolve: {
 		alias: {
 			'app-entrypoint': resolve(__dirname, 'src/app.tsx')
-		}
+		},
+		dedupe: ['react', 'react-dom', 'styled-components']
 	},
 	define: {
 		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')

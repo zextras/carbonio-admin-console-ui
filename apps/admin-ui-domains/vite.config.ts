@@ -38,7 +38,8 @@ export default defineConfig(({ mode }) => ({
 		alias: {
 			'app-entrypoint': resolve(__dirname, 'src/app.tsx'),
 			'tinymce/tinymce': resolve(__dirname, 'node_modules/tinymce/tinymce.min.js')
-		}
+		},
+		dedupe: ['react', 'react-dom', 'styled-components']
 	},
 	define: {
 		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')

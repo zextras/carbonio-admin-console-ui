@@ -47,7 +47,8 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				path: 'path-browserify'
 			},
-			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
+			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
+			dedupe: ['react', 'react-dom', 'styled-components']
 		},
 			build: {
 				outDir: `dist/source/${commitHash}`,

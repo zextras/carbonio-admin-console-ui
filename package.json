@@ -74,6 +74,16 @@
     "Firefox ESR",
     "not dead"
   ],
+  "pnpm": {
+    "overrides": {
+      "styled-components": "5.3.11"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "styled-components": "5.3.11"
+      }
+    }
+  },
   "msw": {
     "workerDirectory": [
       "./packages/test-utils/public",
