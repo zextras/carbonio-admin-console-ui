@@ -5,7 +5,7 @@
  */
 
 import { screen, within } from '@testing-library/react';
-import { setupTest } from 'admin-ui-test-utils';
+import { setupTest } from '@test-utils';
 import React from 'react';
 import { vi } from 'vitest';
 

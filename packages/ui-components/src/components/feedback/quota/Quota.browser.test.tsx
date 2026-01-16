@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { setupBrowserTest } from '@test-utils';
 import { page } from 'vitest/browser';
 
 import { SELECTORS } from '../../../testUtils/constants';

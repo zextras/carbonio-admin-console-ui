@@ -7,7 +7,7 @@
 
 import { faker } from '@faker-js/faker';
 import { screen, waitFor, within } from '@testing-library/react';
-import { setupTest, UserEvent } from 'admin-ui-test-utils';
+import { setupTest, UserEvent } from '@test-utils';
 import { DefaultTheme } from 'styled-components';
 import { find as findStyled } from 'styled-components/test-utils';
 import { vi } from 'vitest';

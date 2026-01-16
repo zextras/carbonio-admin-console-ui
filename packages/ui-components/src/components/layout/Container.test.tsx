@@ -6,7 +6,7 @@
 
 
 import { screen } from '@testing-library/react';
-import { setupTest } from 'admin-ui-test-utils';
+import { setupTest } from '@test-utils';
 
 import { Container } from './Container';
 

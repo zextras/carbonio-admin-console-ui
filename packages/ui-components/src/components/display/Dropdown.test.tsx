@@ -5,7 +5,7 @@
  */
 
 import { screen, waitFor, within } from '@testing-library/react';
-import { setupTest, type UserEvent } from 'admin-ui-test-utils';
+import { setupTest, type UserEvent } from '@test-utils';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../testUtils/constants';
