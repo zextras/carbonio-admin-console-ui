@@ -5,9 +5,9 @@
  */
 
 import { faker } from '@faker-js/faker';
-import { setupTest } from '@test-utils';
 import { screen } from '@testing-library/react';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Avatar } from './Avatar';
 
 describe('Avatar', () => {

@@ -1,5 +1,5 @@
 
-import { setupTest } from '@test-utils';
+import { setupTest } from '../test-utils/test-utils';
 import { differenceWith, map } from 'lodash-es';
 
 import icons from './index';
