@@ -69,26 +69,6 @@ const useRights = ({ enabled = true, userName }: RightsOptions = {}) => {
   });
 };
 
-export const useHasRight = (
-  options: RightsOptions & { rightType?: string; rightName?: string } = {},
-) => {
-  const { rightType, rightName, ...rightsOptions } = options;
-  const result = useRights(rightsOptions);
-
-  return {
-    ...result,
-    data: Boolean(
-      result.data?.some(
-        (right) =>
-          rightType &&
-          right.type === rightType &&
-          rightName &&
-          (right.all?.[0] as any)?.right?.some((r: any) => r.n === rightName),
-      ),
-    ),
-  };
-};
-
 export const useHasAllRights = () => {
   const accounts = useUserAccounts();
   const userName = accounts?.[0]?.name || '';

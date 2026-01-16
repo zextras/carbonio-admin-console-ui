@@ -9,7 +9,7 @@ import {
 	useCurrentUserRights,
 	useDomainInformation,
 	useDomainStore,
-	useHasRight,
+	useHasAllRights,
 	useIsAdvanced,
 	useUserAccounts,
 	useVersion
@@ -49,7 +49,7 @@ const Dashboard: FC = () => {
 
 	const { data: domainInformation } = useDomainInformation();
 	const { data: rights } = useCurrentUserRights();
-	const adminHasAllRights = useHasRight({ rightType: 'config', rightName: 'getAttrs' }).data;
+	const adminHasAllRights = useHasAllRights();
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	const openOperationView = useCallback(
@@ -118,7 +118,7 @@ const Dashboard: FC = () => {
 				style={{ overflow: 'auto' }}
 				height="calc(100vh - 6.55rem)"
 			>
-				{adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
+				{isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
 						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />

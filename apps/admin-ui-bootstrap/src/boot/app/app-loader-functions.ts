@@ -28,7 +28,6 @@ import {
 	getRights,
 	useCurrentUserRights,
 	useHasAllRights,
-	useHasRight,
 	useRightsByType} from '../../react-query/use-rights';
 import { useAllServers, useMtaServers, useServersByService } from '../../react-query/use-servers';
 import {
@@ -66,7 +65,6 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useDomainInformation,
 	useDomainStore,
 	useStickyBarStore,
-	useHasRight,
 	useHasAllRights,
 	useRightsByType,
 	getRights,

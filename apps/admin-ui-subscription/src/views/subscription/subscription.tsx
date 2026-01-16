@@ -52,6 +52,7 @@ export type AllModuleConfig = {
 };
 
 const DATE_FORMAT = 'dd MMM yyyy';
+const TIME_FORMAT = 'dd MMM yyyy HH:mm';
 
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
@@ -505,6 +506,28 @@ export const Subscription = (): React.JSX.Element => {
 								/>
 							</Row>
 						</Row>
+						{services.response.subType === 'PERPETUAL' &&
+							services.response.maxCarbonioVersion && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input label={t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version')} value={services.response.maxCarbonioVersion} />
+							</Row>
+						)}
+						{services.response.updateTime && (
+							<Row
+								width="49.5%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							>
+								<Input label={t('core.subscription.updateTime', 'Update Time')}
+											 value={format(services.response.updateTime, TIME_FORMAT)} />
+							</Row>
+						)}
 					</Container>
 				)}
 				<Row
