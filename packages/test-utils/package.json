@@ -34,6 +34,11 @@
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"
   },
+  "peerDependencies": {
+    "@zextras/ui-components": "workspace:*",
+    "react-dom": "^19.2.3",
+    "react": "^19.2.3"
+  },
   "dependencies": {
     "i18next": "^22.5.1",
     "react": "^19.2.3"
