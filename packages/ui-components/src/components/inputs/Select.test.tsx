@@ -9,7 +9,7 @@ import { forEach, map, reject, slice } from 'lodash-es';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../test-utils/constants';
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Select, SelectItem } from './Select';
 
 const items: SelectItem<`${number}`>[] = [

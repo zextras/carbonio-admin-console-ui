@@ -7,7 +7,7 @@
 import { screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { setupTest } from '../../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Button } from './Button';
 
 describe('Button', () => {

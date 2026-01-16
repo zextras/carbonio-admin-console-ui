@@ -8,7 +8,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../test-utils/constants';
-import { setupTest, type UserEvent } from '../../test-utils/test-utils';
+import { setupTest, type UserEvent } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
 import { Dropdown, DropdownItem } from './Dropdown';

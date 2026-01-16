@@ -9,7 +9,7 @@ import React from 'react';
 import { vi } from 'vitest';
 
 import { ICONS } from '../../test-utils/constants';
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { DateTimePicker, DateTimePickerProps } from './DateTimePicker';
 

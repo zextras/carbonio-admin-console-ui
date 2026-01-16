@@ -8,7 +8,7 @@ import { screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 import { vi } from 'vitest';
 
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
 import { Modal, ModalProps } from './Modal';

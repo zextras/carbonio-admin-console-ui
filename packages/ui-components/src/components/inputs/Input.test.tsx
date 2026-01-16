@@ -6,7 +6,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
 import { Input } from './Input';

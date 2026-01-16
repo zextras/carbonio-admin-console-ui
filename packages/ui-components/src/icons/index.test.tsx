@@ -1,7 +1,7 @@
 
 import { differenceWith, map } from 'lodash-es';
 
-import { setupTest } from '../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import icons from './index';
 
 describe('Icons', () => {

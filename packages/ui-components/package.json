@@ -29,6 +29,7 @@
   "license": "AGPL-3.0-only",
   "sideEffects": false,
   "devDependencies": {
+    "admin-ui-test-utils": "workspace:*",
     "@faker-js/faker": "^8.4.0",
     "@microsoft/api-extractor": "^7.43.0",
     "@testing-library/user-event": "^14.6.1",

@@ -11,7 +11,7 @@ import { vi } from 'vitest';
 
 import { Text } from '../../index';
 import { ICONS } from '../../test-utils/constants';
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Chip } from './Chip';
 
 describe('Chip', () => {

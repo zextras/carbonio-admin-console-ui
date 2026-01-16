@@ -12,7 +12,7 @@ import { find as findStyled } from 'styled-components/test-utils';
 import { vi } from 'vitest';
 
 import { ICONS } from '../../../test-utils/constants';
-import { setupTest, UserEvent } from '../../../test-utils/test-utils';
+import { setupTest, type UserEvent } from 'admin-ui-test-utils';
 import { Theme } from '../../../theme/theme';
 import { ModalManager } from '../../utilities/ModalManager';
 import { Banner, BannerProps, InfoContainer } from './Banner';

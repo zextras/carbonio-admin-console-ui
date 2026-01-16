@@ -6,7 +6,7 @@
 
 import { screen } from '@testing-library/react';
 
-import { setupTest } from '../../test-utils/test-utils';
+import { setupTest } from 'admin-ui-test-utils';
 import { Link } from './Link';
 
 describe('Link', () => {
