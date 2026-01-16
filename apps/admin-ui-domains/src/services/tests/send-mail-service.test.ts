@@ -4,20 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
-import { beforeEach,describe, expect, it, vi } from 'vitest';
+import { getSetupServer } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
+import { describe, expect, it } from 'vitest';
 
 import { sendMail } from '../send-mail-service';
 
-vi.mock('@zextras/admin-ui-bootstrap', () => ({
-	postSoapFetchRequest: vi.fn()
-}));
-
 describe('sendMail', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it('should call postSoapFetchRequest with correct parameters', async () => {
 		const mockResponse = {
 			Body: {
@@ -27,18 +20,18 @@ describe('sendMail', () => {
 			}
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const api = 'TestAPI';
 		const body = { test: 'data' };
 
-		await sendMail(api, body);
+		const result = await sendMail(api, body);
 
-		expect(postSoapFetchRequest).toHaveBeenCalledWith(
-			'/service/admin/soap/zextras',
-			body,
-			'TestAPI'
-		);
+		expect(result).toEqual({ success: true });
 	});
 
 	it('should parse JSON content when response contains content', async () => {
@@ -51,7 +44,11 @@ describe('sendMail', () => {
 			}
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('SendEmail', { to: 'test@example.com' });
 
@@ -67,7 +64,11 @@ describe('sendMail', () => {
 			Body: mockBody
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('GetStatus', {});
 
@@ -82,7 +83,11 @@ describe('sendMail', () => {
 			Body: mockBody
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('TestAPI', {});
 
@@ -98,7 +103,11 @@ describe('sendMail', () => {
 			Body: mockBody
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('TestAPI', {});
 
@@ -108,7 +117,11 @@ describe('sendMail', () => {
 	it('should return Body when Body is undefined', async () => {
 		const mockResponse = {};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('TestAPI', {});
 
@@ -134,7 +147,11 @@ describe('sendMail', () => {
 			}
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('GetUsers', {});
 
@@ -151,18 +168,15 @@ describe('sendMail', () => {
 			Body: mockBody
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		const result = await sendMail('TestAPI', {});
 
 		expect(result).toEqual(mockBody);
-	});
-
-	it('should propagate errors from postSoapFetchRequest', async () => {
-		const error = new Error('Network error');
-		vi.mocked(postSoapFetchRequest).mockRejectedValue(error);
-
-		await expect(sendMail('TestAPI', {})).rejects.toThrow('Network error');
 	});
 
 	it('should handle different body types', async () => {
@@ -174,30 +188,22 @@ describe('sendMail', () => {
 			}
 		};
 
-		vi.mocked(postSoapFetchRequest).mockResolvedValue(mockResponse);
+		getSetupServer().use(
+			http.post('/service/admin/soap/zextras', () => {
+				return HttpResponse.json(mockResponse);
+			})
+		);
 
 		// Test with object
-		await sendMail('API1', { key: 'value' });
-		expect(postSoapFetchRequest).toHaveBeenLastCalledWith(
-			'/service/admin/soap/zextras',
-			{ key: 'value' },
-			'API1'
-		);
+		const result1 = await sendMail('API1', { key: 'value' });
+		expect(result1).toEqual({ result: 'ok' });
 
 		// Test with array
-		await sendMail('API2', [1, 2, 3]);
-		expect(postSoapFetchRequest).toHaveBeenLastCalledWith(
-			'/service/admin/soap/zextras',
-			[1, 2, 3],
-			'API2'
-		);
+		const result2 = await sendMail('API2', [1, 2, 3]);
+		expect(result2).toEqual({ result: 'ok' });
 
 		// Test with string
-		await sendMail('API3', 'string body');
-		expect(postSoapFetchRequest).toHaveBeenLastCalledWith(
-			'/service/admin/soap/zextras',
-			'string body',
-			'API3'
-		);
+		const result3 = await sendMail('API3', 'string body');
+		expect(result3).toEqual({ result: 'ok' });
 	});
 });

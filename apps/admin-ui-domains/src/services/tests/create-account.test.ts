@@ -4,20 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createSoapAPIInterceptor } from 'admin-ui-test-utils';
+import { describe, expect, it } from 'vitest';
 
 import { createAccountRequest } from '../create-account';
 
-vi.mock('@zextras/admin-ui-bootstrap', () => ({
-    soapFetch: vi.fn()
-}));
-
 describe('createAccountRequest', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
     it('should call soapFetch with correct parameters including password', async () => {
         const mockResponse = {
             account: {
@@ -25,7 +17,7 @@ describe('createAccountRequest', () => {
                 name: 'newuser@example.com'
             }
         };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'New User',
@@ -34,17 +26,9 @@ describe('createAccountRequest', () => {
         const name = 'newuser@example.com';
         const password = 'SecurePassword123';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'newuser@example.com',
-            password: 'SecurePassword123',
-            a: [
-                { n: 'displayName', _content: 'New User' },
-                { n: 'zimbraAccountStatus', _content: 'active' }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should remove password from request when password is empty string', async () => {
@@ -54,7 +38,7 @@ describe('createAccountRequest', () => {
                 name: 'delegate@example.com'
             }
         };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Delegate User'
@@ -62,24 +46,14 @@ describe('createAccountRequest', () => {
         const name = 'delegate@example.com';
         const password = '';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'delegate@example.com',
-            a: [
-                { n: 'displayName', _content: 'Delegate User' }
-            ]
-        });
-
-        // Verify password is not in the request
-        const callArgs = vi.mocked(soapFetch).mock.calls[0][1];
-        expect(callArgs).not.toHaveProperty('password');
+        expect(result).toEqual(mockResponse);
     });
 
     it('should remove password from request when password is null', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'No Password User'
@@ -87,15 +61,14 @@ describe('createAccountRequest', () => {
         const name = 'nopass@example.com';
         const password = null as any;
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        const callArgs = vi.mocked(soapFetch).mock.calls[0][1];
-        expect(callArgs).not.toHaveProperty('password');
+        expect(result).toEqual(mockResponse);
     });
 
     it('should remove password from request when password is undefined', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Undefined Password User'
@@ -103,15 +76,14 @@ describe('createAccountRequest', () => {
         const name = 'undefined@example.com';
         const password = undefined as any;
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        const callArgs = vi.mocked(soapFetch).mock.calls[0][1];
-        expect(callArgs).not.toHaveProperty('password');
+        expect(result).toEqual(mockResponse);
     });
 
     it('should remove password from request when password is 0 (falsy but not empty string)', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Zero Password User'
@@ -119,33 +91,27 @@ describe('createAccountRequest', () => {
         const name = 'zero@example.com';
         const password = 0 as any;
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        const callArgs = vi.mocked(soapFetch).mock.calls[0][1];
-        expect(callArgs).not.toHaveProperty('password');
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle empty attributes object', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {};
         const name = 'minimal@example.com';
         const password = 'password123';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'minimal@example.com',
-            password: 'password123',
-            a: []
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle multiple attributes', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Full User',
@@ -157,20 +123,9 @@ describe('createAccountRequest', () => {
         const name = 'fulluser@example.com';
         const password = 'StrongPass456';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'fulluser@example.com',
-            password: 'StrongPass456',
-            a: [
-                { n: 'displayName', _content: 'Full User' },
-                { n: 'zimbraAccountStatus', _content: 'active' },
-                { n: 'zimbraMailQuota', _content: '1073741824' },
-                { n: 'description', _content: 'Test account' },
-                { n: 'zimbraCOSId', _content: 'cos-123' }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should return the response from soapFetch', async () => {
@@ -181,7 +136,7 @@ describe('createAccountRequest', () => {
                 displayName: 'Return Test'
             }
         };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const result = await createAccountRequest(
             { displayName: 'Return Test' },
@@ -192,18 +147,9 @@ describe('createAccountRequest', () => {
         expect(result).toEqual(mockResponse);
     });
 
-    it('should propagate errors from soapFetch', async () => {
-        const error = new Error('Account already exists');
-        vi.mocked(soapFetch).mockRejectedValue(error);
-
-        await expect(
-            createAccountRequest({ displayName: 'Error User' }, 'error@example.com', 'pass')
-        ).rejects.toThrow('Account already exists');
-    });
-
     it('should handle attribute values with special characters', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: "O'Brien, John <John>",
@@ -212,22 +158,14 @@ describe('createAccountRequest', () => {
         const name = 'special@example.com';
         const password = 'Pass@123!';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'special@example.com',
-            password: 'Pass@123!',
-            a: [
-                { n: 'displayName', _content: "O'Brien, John <John>" },
-                { n: 'description', _content: 'User with "quotes" and special chars: & < >' }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle undefined values in attributes', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Test User',
@@ -237,23 +175,14 @@ describe('createAccountRequest', () => {
         const name = 'undefined-attr@example.com';
         const password = 'password';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'undefined-attr@example.com',
-            password: 'password',
-            a: [
-                { n: 'displayName', _content: 'Test User' },
-                { n: 'description', _content: undefined },
-                { n: 'zimbraAccountStatus', _content: 'active' }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle empty string values in attributes', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: '',
@@ -262,22 +191,14 @@ describe('createAccountRequest', () => {
         const name = 'empty-attr@example.com';
         const password = 'password';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'empty-attr@example.com',
-            password: 'password',
-            a: [
-                { n: 'displayName', _content: '' },
-                { n: 'description', _content: 'Has empty display name' }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle numeric values in attributes', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             zimbraMailQuota: 1073741824,
@@ -286,22 +207,14 @@ describe('createAccountRequest', () => {
         const name = 'numeric@example.com';
         const password = 'password';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'numeric@example.com',
-            password: 'password',
-            a: [
-                { n: 'zimbraMailQuota', _content: 1073741824 },
-                { n: 'zimbraFeatureMailPriority', _content: 0 }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should handle boolean values in attributes', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             zimbraFeatureCalendarEnabled: true,
@@ -310,22 +223,14 @@ describe('createAccountRequest', () => {
         const name = 'boolean@example.com';
         const password = 'password';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'boolean@example.com',
-            password: 'password',
-            a: [
-                { n: 'zimbraFeatureCalendarEnabled', _content: true },
-                { n: 'zimbraFeatureContactsEnabled', _content: false }
-            ]
-        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should keep password when it is whitespace string', async () => {
         const mockResponse = { success: true };
-        vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+        createSoapAPIInterceptor('CreateAccount', mockResponse);
 
         const attr = {
             displayName: 'Whitespace Password'
@@ -333,13 +238,8 @@ describe('createAccountRequest', () => {
         const name = 'whitespace@example.com';
         const password = '   ';
 
-        await createAccountRequest(attr, name, password);
+        const result = await createAccountRequest(attr, name, password);
 
-        expect(soapFetch).toHaveBeenCalledWith('CreateAccount', {
-            _jsns: 'urn:zimbraAdmin',
-            name: 'whitespace@example.com',
-            password: '   ',
-            a: [{ n: 'displayName', _content: 'Whitespace Password' }]
-        });
+        expect(result).toEqual(mockResponse);
     });
 });

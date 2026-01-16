@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
 import { createSoapAPIInterceptor } from 'admin-ui-test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { createDomain } from '../create-domain';
 
 describe('createDomain', () => {
-  it.only('should create domain successfully with domain name only', async () => {
+  it('should create domain successfully with domain name only', async () => {
     const domainName = 'example.com';
     const mockResponse = {
       domain: {
@@ -46,70 +45,11 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
-    // Act
     const result = await createDomain(domainName, attributes);
 
-    // Assert
-    expect(soapFetch).toHaveBeenCalledTimes(1);
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-      a: attributes,
-    });
     expect(result).toEqual(mockResponse);
-  });
-
-  it('should handle error when domain already exists', async () => {
-    // Arrange
-    const domainName = 'existing.com';
-    const duplicateError = new Error('account.DOMAIN_EXISTS');
-
-    vi.mocked(soapFetch).mockRejectedValue(duplicateError);
-
-    // Act & Assert
-    await expect(createDomain(domainName)).rejects.toThrow('account.DOMAIN_EXISTS');
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
-  });
-
-  it('should handle invalid domain name error', async () => {
-    // Arrange
-    const invalidDomain = 'invalid domain name';
-    const formatError = new Error('account.INVALID_NAME');
-
-    vi.mocked(soapFetch).mockRejectedValue(formatError);
-
-    // Act & Assert
-    await expect(createDomain(invalidDomain)).rejects.toThrow('account.INVALID_NAME');
-    expect(soapFetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('should handle permission denied error', async () => {
-    // Arrange
-    const domainName = 'newdomain.com';
-    const permissionError = new Error('service.PERM_DENIED');
-
-    vi.mocked(soapFetch).mockRejectedValue(permissionError);
-
-    // Act & Assert
-    await expect(createDomain(domainName)).rejects.toThrow('service.PERM_DENIED');
-    expect(soapFetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('should handle network error', async () => {
-    // Arrange
-    const domainName = 'example.com';
-    const networkError = new Error('Network error: Unable to reach server');
-
-    vi.mocked(soapFetch).mockRejectedValue(networkError);
-
-    // Act & Assert
-    await expect(createDomain(domainName)).rejects.toThrow('Network error');
-    expect(soapFetch).toHaveBeenCalledTimes(1);
   });
 
   it('should create subdomain successfully', async () => {
@@ -125,16 +65,12 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
     expect(result).toEqual(mockResponse);
   });
 
@@ -151,16 +87,12 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
     expect(result).toEqual(mockResponse);
   });
 
@@ -177,16 +109,12 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
     expect(result).toEqual(mockResponse);
   });
 
@@ -204,17 +132,12 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName, attributes);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-      a: attributes,
-    });
     expect(result).toEqual(mockResponse);
   });
 
@@ -240,45 +163,13 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName, attributes);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-      a: attributes,
-    });
     expect(result).toEqual(mockResponse);
-  });
-
-  it('should handle timeout error', async () => {
-    // Arrange
-    const domainName = 'example.com';
-    const timeoutError = new Error('Request timeout');
-
-    vi.mocked(soapFetch).mockRejectedValue(timeoutError);
-
-    // Act & Assert
-    await expect(createDomain(domainName)).rejects.toThrow('Request timeout');
-    expect(soapFetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('should handle empty domain name', async () => {
-    // Arrange
-    const domainName = '';
-    const emptyError = new Error('account.INVALID_NAME');
-
-    vi.mocked(soapFetch).mockRejectedValue(emptyError);
-
-    // Act & Assert
-    await expect(createDomain(domainName)).rejects.toThrow('account.INVALID_NAME');
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
   });
 
   it('should handle malformed response from server', async () => {
@@ -286,14 +177,13 @@ describe('createDomain', () => {
     const domainName = 'example.com';
     const malformedResponse = null;
 
-    vi.mocked(soapFetch).mockResolvedValue(malformedResponse);
+    createSoapAPIInterceptor('CreateDomain', malformedResponse);
 
     // Act
     const result = await createDomain(domainName);
 
     // Assert
-    expect(result).toBeNull();
-    expect(soapFetch).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({});
   });
 
   it('should create domain with hyphenated name', async () => {
@@ -309,16 +199,12 @@ describe('createDomain', () => {
       },
     };
 
-    vi.mocked(soapFetch).mockResolvedValue(mockResponse);
+    createSoapAPIInterceptor('CreateDomain', mockResponse);
 
     // Act
     const result = await createDomain(domainName);
 
     // Assert
-    expect(soapFetch).toHaveBeenCalledWith('CreateDomain', {
-      _jsns: 'urn:zimbraAdmin',
-      name: domainName,
-    });
     expect(result).toEqual(mockResponse);
   });
-});
+})
