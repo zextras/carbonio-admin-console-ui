@@ -1963,7 +1963,7 @@ importers:
         version: 2.12.7(@types/node@20.19.30)(typescript@5.9.3)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
+        version: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
       vitest:
         specifier: ^4.0.5
         version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
@@ -1990,7 +1990,7 @@ importers:
         version: 4.25.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       styled-components:
         specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
+        version: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
     devDependencies:
       '@faker-js/faker':
         specifier: ^8.4.0
@@ -10861,7 +10861,7 @@ snapshots:
       '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0))
       playwright: 1.57.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -10873,7 +10873,7 @@ snapshots:
       '@testing-library/dom': 10.4.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
       '@vitest/browser': 4.0.17(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0))(vitest@4.0.17)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -10889,7 +10889,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
       ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
@@ -10957,7 +10957,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
 
   '@vitest/utils@4.0.17':
     dependencies:
@@ -11355,6 +11355,18 @@ snapshots:
       lodash: 4.17.21
       picomatch: 2.3.1
       styled-components: 5.3.11(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+
+  babel-plugin-styled-components@2.1.4(styled-components@5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3))(supports-color@5.5.0):
+    dependencies:
+      '@babel/helper-annotate-as-pure': 7.27.3
+      '@babel/helper-module-imports': 7.28.6(supports-color@5.5.0)
+      '@babel/plugin-syntax-jsx': 7.28.6(@babel/core@7.28.6)
+      lodash: 4.17.21
+      picomatch: 2.3.1
+      styled-components: 5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -15036,6 +15048,24 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
+  styled-components@5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3):
+    dependencies:
+      '@babel/helper-module-imports': 7.28.6(supports-color@5.5.0)
+      '@babel/traverse': 7.28.6(supports-color@5.5.0)
+      '@emotion/is-prop-valid': 1.4.0
+      '@emotion/stylis': 0.8.5
+      '@emotion/unitless': 0.7.5
+      babel-plugin-styled-components: 2.1.4(styled-components@5.3.11(react-dom@19.2.3(react@19.2.3))(react-is@17.0.2)(react@19.2.3))(supports-color@5.5.0)
+      css-to-react-native: 3.2.0
+      hoist-non-react-statics: 3.3.2
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+      react-is: 17.0.2
+      shallowequal: 1.1.0
+      supports-color: 5.5.0
+    transitivePeerDependencies:
+      - '@babel/core'
+
   super-regex@1.1.0:
     dependencies:
       function-timeout: 1.0.2
@@ -15463,52 +15493,10 @@ snapshots:
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
     optionalDependencies:
       '@types/react': 19.2.8
       '@types/react-dom': 19.2.3(@types/react@19.2.8)
-
-  vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@24.1.3)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0):
-    dependencies:
-      '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0))
-      '@vitest/pretty-format': 4.0.17
-      '@vitest/runner': 4.0.17
-      '@vitest/snapshot': 4.0.17
-      '@vitest/spy': 4.0.17
-      '@vitest/utils': 4.0.17
-      es-module-lexer: 1.7.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.3
-      std-env: 3.10.0
-      tinybench: 2.9.0
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@opentelemetry/api': 1.9.0
-      '@types/node': 20.19.30
-      '@vitest/browser-playwright': 4.0.17(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(playwright@1.57.0)(vite@7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0))(vitest@4.0.17)
-      '@vitest/browser-preview': 4.0.17(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(vite@7.3.1(@types/node@20.19.30)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(tsx@4.21.0))(vitest@4.0.17)
-      '@vitest/ui': 4.0.17(vitest@4.0.17)
-      jsdom: 24.1.3
-    transitivePeerDependencies:
-      - jiti
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
 
   vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(less@4.5.1)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0):
     dependencies:
