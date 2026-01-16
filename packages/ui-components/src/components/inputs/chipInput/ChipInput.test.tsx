@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../../../test-utils/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import reduce from 'lodash-es/reduce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { KeyboardPresetKey } from '../../../hooks/useKeyboard';
 import { ICONS, SELECTORS } from '../../../test-utils/constants';
+import { setupTest } from '../../../test-utils/test-utils';
 import { ChipInput, ChipInputProps, ChipItem } from './ChipInput';
 
 describe('ChipInput', () => {

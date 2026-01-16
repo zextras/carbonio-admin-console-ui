@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../../test-utils/test-utils';
 import { screen, within } from '@testing-library/react';
 import React from 'react';
 import { vi } from 'vitest';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Text } from '../basic/text/Text';
 import { DefaultTabBarItem, DefaultTabBarItemProps, TabBar } from './TabBar';
 

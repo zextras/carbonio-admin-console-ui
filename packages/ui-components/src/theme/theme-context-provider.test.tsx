@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 import React from 'react';
 import { DefaultTheme } from 'styled-components';
 
+import { setupTest } from '../test-utils/test-utils';
 import { Theme, ThemeColorObj } from './theme';
 import { ThemeProvider } from './theme-context-provider';
 import { generateColorSet, getColor, useTheme } from './theme-utils';

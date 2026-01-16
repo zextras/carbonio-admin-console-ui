@@ -5,9 +5,9 @@
  */
 
 
-import { setupTest } from '../../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Container } from './Container';
 
 describe('Container', () => {

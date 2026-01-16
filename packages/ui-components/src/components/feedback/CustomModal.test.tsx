@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../../test-utils/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import React, { useState } from 'react';
 import { vi } from 'vitest';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
 import { CustomModal, CustomModalProps } from './CustomModal';

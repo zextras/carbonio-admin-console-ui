@@ -6,11 +6,11 @@
 
 
 import { faker } from '@faker-js/faker';
-import { setupTest } from '../../test-utils/test-utils';
 import { screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { ICONS, SELECTORS } from '../../test-utils/constants';
+import { setupTest } from '../../test-utils/test-utils';
 import { Icon } from '../basic/icon/Icon';
 import { Container } from '../layout/Container';
 import { Table, THeader, TRow } from './Table';

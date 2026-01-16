@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 import React from 'react';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Catcher } from './Catcher';
 
 function ErrorComponent(): React.JSX.Element {

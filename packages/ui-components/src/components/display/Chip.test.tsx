@@ -5,13 +5,13 @@
  */
 
 import { faker } from '@faker-js/faker';
-import { setupTest } from '../../test-utils/test-utils';
 import { screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { vi } from 'vitest';
 
 import { Text } from '../../index';
 import { ICONS } from '../../test-utils/constants';
+import { setupTest } from '../../test-utils/test-utils';
 import { Chip } from './Chip';
 
 describe('Chip', () => {

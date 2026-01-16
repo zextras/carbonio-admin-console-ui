@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { setupTest } from '../../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 import { addMonths, format, startOfMonth } from 'date-fns';
 import React from 'react';
 import { vi } from 'vitest';
 
 import { ICONS } from '../../test-utils/constants';
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
 import { DateTimePicker, DateTimePickerProps } from './DateTimePicker';
 

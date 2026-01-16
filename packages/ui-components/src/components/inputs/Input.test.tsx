@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { setupTest } from '../../test-utils/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
 import { Input } from './Input';

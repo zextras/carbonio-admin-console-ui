@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '../../../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 
 import { ICONS } from '../../../test-utils/constants';
+import { setupTest } from '../../../test-utils/test-utils';
 import { MultiButton, MultiButtonProps } from './MultiButton';
 
 describe('MultiButton', () => {
