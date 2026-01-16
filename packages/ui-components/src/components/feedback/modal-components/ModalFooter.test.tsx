@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '@test-utils';
+import { setupTest } from '../../../test-utils/test-utils';
 import { screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { SELECTORS } from '../../../testUtils/constants';
+import { SELECTORS } from '../../../test-utils/constants';
 import { ModalFooter } from './ModalFooter';
 
 describe('Modal footer', () => {

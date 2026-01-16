@@ -3,32 +3,55 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { defineConfig } from 'vitest/config';
 
-import { defineConfig, mergeConfig } from 'vitest/config';
-import path from 'node:path';
-import baseConfig from '../../vitest.config.base.js';
+function jsdomProjectConfig() {
+  return {
+    test: {
+      name: 'unit',
+      environment: 'jsdom',
+      setupFiles: ['./vitest-jsdom-setup.ts'],
+      env: {
+        TZ: 'UTC',
+      },
+      include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
+      exclude: ['dist/**', 'node_modules/**'],
+      globals: true,
+      css: true,
+      clearMocks: true,
+      mockReset: true,
+      restoreMocks: true,
+      testTimeout: 10000,
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+    },
+  };
+}
 
-export default mergeConfig(
-	baseConfig,
-	defineConfig({
-		test: {
-			setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
-			include: ['src/**/*.{test,test.browser}.{ts,tsx}'],
-			exclude: [
-				'node_modules/**',
-				'dist/**',
-				'src/**/*.stories.tsx',
-				'src/**/stories-helpers.ts(x)?'
-			],
-			coverage: {
-				exclude: [
-					'src/**/*.stories.tsx',
-					'src/**/stories-helpers.ts(x)?',
-					'src/testUtils/**',
-					'src/types/**',
-					'src/icons/tsTemplate.ts'
-				]
-			}
-		}
-	})
-);
+export default defineConfig({
+  test: {
+    globals: true,
+    passWithNoTests: true,
+    projects: [jsdomProjectConfig()],
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      exclude: [
+        'coverage/**',
+        'dist/**',
+        '**/node_modules/**',
+        '**/[.]**',
+        'packages/*/test{,s}/**',
+        '**/*.d.ts',
+        '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+        '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
+        '**/*.config.{js,ts}',
+        '**/*.test.{ts,tsx}',
+        '**/*.spec.{ts,tsx}',
+      ],
+      include: ['src/**/*.{ts,tsx}'],
+    },
+  },
+});

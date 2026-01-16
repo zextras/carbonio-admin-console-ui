@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest } from '@test-utils';
+import { setupTest } from '../../../test-utils/test-utils';
 import { screen } from '@testing-library/react';
 
-import { SELECTORS } from '../../../testUtils/constants';
+import { SELECTORS } from '../../../test-utils/constants';
 import { Theme } from '../../../theme/theme';
 import { Divider } from './Divider';
 

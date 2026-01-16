@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupTest, type UserEvent } from '@test-utils';
+import { setupTest, type UserEvent } from '../../test-utils/test-utils';
 import { screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { SELECTORS } from '../../testUtils/constants';
+import { SELECTORS } from '../../test-utils/constants';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
 import { Dropdown, DropdownItem } from './Dropdown';

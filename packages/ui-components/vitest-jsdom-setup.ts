@@ -9,58 +9,56 @@ import { cleanup } from '@testing-library/react';
 import { noop } from 'lodash-es';
 import { vi, afterEach } from 'vitest';
 
-vi.useFakeTimers();
-
 afterEach(() => {
-	cleanup();
-	vi.clearAllTimers();
+  cleanup();
+  vi.clearAllTimers();
 });
 
 // matchMedia mock
 Object.defineProperty(window, 'matchMedia', {
-	writable: true,
-	value: (query: string): MediaQueryList => ({
-		matches: false,
-		media: query,
-		onchange: null,
-		addListener: noop,
-		removeListener: noop,
-		addEventListener: noop,
-		removeEventListener: noop,
-		dispatchEvent: () => true
-	})
+  writable: true,
+  value: (query: string): MediaQueryList => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: noop,
+    removeListener: noop,
+    addEventListener: noop,
+    removeEventListener: noop,
+    dispatchEvent: () => true,
+  }),
 });
 
 // resizeTo mock
 window.resizeTo = function resizeTo(width, height): void {
-	Object.assign(this, {
-		innerWidth: width,
-		innerHeight: height,
-		outerWidth: width,
-		outerHeight: height
-	}).dispatchEvent(new this.Event('resize'));
+  Object.assign(this, {
+    innerWidth: width,
+    innerHeight: height,
+    outerWidth: width,
+    outerHeight: height,
+  }).dispatchEvent(new this.Event('resize'));
 };
 
 // IntersectionObserver mock
 vi.stubGlobal(
-	'IntersectionObserver',
-	vi.fn(function intersectionObserverMock() {
-		return {
-			observe: noop,
-			unobserve: noop,
-			disconnect: noop
-		};
-	})
+  'IntersectionObserver',
+  vi.fn(function intersectionObserverMock() {
+    return {
+      observe: noop,
+      unobserve: noop,
+      disconnect: noop,
+    };
+  }),
 );
 
 // ResizeObserver mock
 vi.stubGlobal(
-	'ResizeObserver',
-	vi.fn(function ResizeObserverMock() {
-		return {
-			observe: vi.fn(),
-			unobserve: vi.fn(),
-			disconnect: vi.fn()
-		};
-	})
+  'ResizeObserver',
+  vi.fn(function ResizeObserverMock() {
+    return {
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    };
+  }),
 );

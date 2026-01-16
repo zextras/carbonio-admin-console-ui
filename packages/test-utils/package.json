@@ -27,7 +27,6 @@
   ],
   "devDependencies": {
     "@testing-library/user-event": "^14.6.1",
-    "@zextras/ui-components": "workspace:*",
     "@vitest/browser": "^4.0.5",
     "eslint": "^9.34.0",
     "msw": "^2.12.2",

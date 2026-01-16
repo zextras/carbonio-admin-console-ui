@@ -6,13 +6,13 @@
 
 
 import { faker } from '@faker-js/faker';
-import { setupTest, UserEvent } from '@test-utils';
+import { setupTest, UserEvent } from '../../../test-utils/test-utils';
 import { screen, waitFor, within } from '@testing-library/react';
 import { DefaultTheme } from 'styled-components';
 import { find as findStyled } from 'styled-components/test-utils';
 import { vi } from 'vitest';
 
-import { ICONS } from '../../../testUtils/constants';
+import { ICONS } from '../../../test-utils/constants';
 import { Theme } from '../../../theme/theme';
 import { ModalManager } from '../../utilities/ModalManager';
 import { Banner, BannerProps, InfoContainer } from './Banner';
