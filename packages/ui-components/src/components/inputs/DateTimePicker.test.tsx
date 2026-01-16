@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { screen } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen } from '@testing-library/react';
 import { addMonths, format, startOfMonth } from 'date-fns';
 import React from 'react';
 import { vi } from 'vitest';

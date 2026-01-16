@@ -5,8 +5,8 @@
  */
 
 
-import { screen } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen } from '@testing-library/react';
 
 import { Container } from './Container';
 

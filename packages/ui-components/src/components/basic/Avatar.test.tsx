@@ -5,8 +5,8 @@
  */
 
 import { faker } from '@faker-js/faker';
-import { screen } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen } from '@testing-library/react';
 
 import { Avatar } from './Avatar';
 

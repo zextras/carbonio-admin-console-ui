@@ -6,8 +6,8 @@
 
 
 import { faker } from '@faker-js/faker';
-import { screen, within } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { ICONS, SELECTORS } from '../../testUtils/constants';

@@ -5,8 +5,8 @@
  */
 
 import { faker } from '@faker-js/faker';
-import { screen, waitFor, within } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { vi } from 'vitest';
 

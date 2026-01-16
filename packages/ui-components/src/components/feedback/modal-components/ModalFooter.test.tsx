@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { screen, within } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../../testUtils/constants';

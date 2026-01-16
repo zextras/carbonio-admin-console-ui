@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { screen, waitFor } from '@testing-library/react';
 import { setupTest } from '@test-utils';
+import { screen, waitFor } from '@testing-library/react';
 import reduce from 'lodash-es/reduce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 

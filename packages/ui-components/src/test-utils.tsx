@@ -17,12 +17,11 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash-es';
 import React, { type ReactElement } from 'react';
-
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
-import i18next, { type i18n } from 'i18next';
 import { render as browserRender } from 'vitest-browser-react';
 
 import { ModalManager, SnackbarManager, ThemeProvider } from './index';
