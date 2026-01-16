@@ -4,76 +4,71 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import 'jest-styled-components';
 
 import { faker } from '@faker-js/faker';
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { DefaultTheme } from 'styled-components';
 import { find as findStyled } from 'styled-components/test-utils';
+import { vi } from 'vitest';
 
-import { setup, UserEvent } from '../../../test-utils';
-import { ICONS } from '../../../testUtils/constants';
+import { ICONS } from '../../../test-utils/constants';
+import { setupTest, UserEvent } from '../../../test-utils/test-utils';
 import { Theme } from '../../../theme/theme';
-import { TIMERS } from '../../constants';
 import { ModalManager } from '../../utilities/ModalManager';
 import { Banner, BannerProps, InfoContainer } from './Banner';
 
 describe('Banner', () => {
 	function makeTextCropped(
-		resizeObserver: jest.MockInstance<ResizeObserver, [ResizeObserverCallback]>,
+		resizeObserver: ReturnType<typeof vi.spyOn>,
 		infoContainerElement: HTMLElement
 	): void {
 		const resizeCallback = resizeObserver.mock.calls[0][0];
-		jest.spyOn(infoContainerElement, 'clientHeight', 'get').mockReturnValue(20);
-		jest.spyOn(infoContainerElement, 'scrollHeight', 'get').mockReturnValue(30);
-		act(() => {
-			resizeCallback(
-				[
-					{
-						contentRect: {
-							height: 20
-						}
-					} as ResizeObserverEntry
-				],
-				resizeObserver.mock.instances[0]
-			);
-		});
+		vi.spyOn(infoContainerElement, 'clientHeight', 'get').mockReturnValue(20);
+		vi.spyOn(infoContainerElement, 'scrollHeight', 'get').mockReturnValue(30);
+		resizeCallback(
+			[
+				{
+					contentRect: {
+						height: 20
+					}
+				} as ResizeObserverEntry
+			],
+			resizeObserver.mock.instances[0]
+		);
 	}
 
 	function makeTextFullyVisible(
-		resizeObserver: jest.MockInstance<ResizeObserver, [ResizeObserverCallback]>,
+		resizeObserver: ReturnType<typeof vi.spyOn>,
 		infoContainerElement: HTMLElement
 	): void {
 		const resizeCallback = resizeObserver.mock.calls[0][0];
-		jest.spyOn(infoContainerElement, 'clientHeight', 'get').mockReturnValue(30);
-		jest.spyOn(infoContainerElement, 'scrollHeight', 'get').mockReturnValue(30);
-		act(() => {
-			resizeCallback(
-				[
-					{
-						contentRect: {
-							height: 30
-						}
-					} as ResizeObserverEntry
-				],
-				resizeObserver.mock.instances[0]
-			);
-		});
+		vi.spyOn(infoContainerElement, 'clientHeight', 'get').mockReturnValue(30);
+		vi.spyOn(infoContainerElement, 'scrollHeight', 'get').mockReturnValue(30);
+		resizeCallback(
+			[
+				{
+					contentRect: {
+						height: 30
+					}
+				} as ResizeObserverEntry
+			],
+			resizeObserver.mock.instances[0]
+		);
 	}
 
 	async function openMoreInfoModal(user: UserEvent): Promise<HTMLElement> {
-		await user.click(screen.getByRole('button', { name: /more info/i }));
+		const moreInfoButton = await screen.findByRole('button', { name: /more info/i });
+		await user.click(moreInfoButton);
 		const modal = await screen.findByTestId('modal');
-
-		// run modal timeout
-		act(() => {
-			jest.advanceTimersByTime(TIMERS.MODAL.DELAY_OPEN);
+		// Wait for modal to become visible
+		await waitFor(() => {
+			expect(modal).toBeVisible();
 		});
 		return modal;
 	}
 
 	test('Render a banner', () => {
-		setup(<Banner severity={'success'} description={'Description'} />);
+		setupTest(<Banner severity={'success'} description={'Description'} />);
 		expect(screen.getByText('Description')).toBeVisible();
 	});
 
@@ -101,41 +96,36 @@ describe('Banner', () => {
 	])(
 		'Banner with severity %s and type %s has main color %s, background %s and text %s',
 		(severity, type, mainColor, backgroundColor, textColor) => {
-			const { getByRoleWithIcon } = setup(
+			const { getByRoleWithIcon } = setupTest(
 				<Banner
 					severity={severity}
 					type={type}
 					data-testid={'banner'}
 					title={'Title'}
 					description={'Description'}
-					primaryAction={{ label: 'Primary action', onClick: jest.fn() }}
-					secondaryAction={{ label: 'Secondary action', onClick: jest.fn() }}
+					primaryAction={{ label: 'Primary action', onClick: vi.fn() }}
+					secondaryAction={{ label: 'Secondary action', onClick: vi.fn() }}
 					showClose
-					onClose={jest.fn()}
+					onClose={vi.fn()}
 				/>
 			);
-			expect(screen.getByTestId('banner')).toHaveStyleRule(
-				'background',
-				Theme.palette[backgroundColor].regular
-			);
-			expect(screen.getByText('Title')).toHaveStyleRule('color', Theme.palette[textColor].regular);
-			expect(screen.getByText('Description')).toHaveStyleRule(
-				'color',
-				Theme.palette[textColor].regular
-			);
-			expect(screen.getByRole('button', { name: 'Primary action' })).toHaveStyleRule(
-				'color',
-				Theme.palette[mainColor].regular
-			);
-			expect(screen.getByRole('button', { name: 'Secondary action' })).toHaveStyleRule(
-				'color',
-				Theme.palette[mainColor].regular
-			);
+			expect(screen.getByTestId('banner')).toHaveStyle({
+				background: Theme.palette[backgroundColor].regular
+			});
+			expect(screen.getByText('Title')).toHaveStyle({ color: Theme.palette[textColor].regular });
+			expect(screen.getByText('Description')).toHaveStyle({
+				color: Theme.palette[textColor].regular
+			});
+			expect(screen.getByRole('button', { name: 'Primary action' })).toHaveStyle({
+				color: Theme.palette[mainColor].regular
+			});
+			expect(screen.getByRole('button', { name: 'Secondary action' })).toHaveStyle({
+				color: Theme.palette[mainColor].regular
+			});
 
-			expect(getByRoleWithIcon('button', { icon: ICONS.close })).toHaveStyleRule(
-				'color',
-				Theme.palette[textColor].regular
-			);
+			expect(getByRoleWithIcon('button', { icon: ICONS.close })).toHaveStyle({
+				color: Theme.palette[textColor].regular
+			});
 		}
 	);
 
@@ -145,7 +135,7 @@ describe('Banner', () => {
 		['info', 'InfoOutline'],
 		['error', 'CloseCircleOutline']
 	])('Banner with severity %s has icon %s', (severity, icon) => {
-		setup(
+		setupTest(
 			<Banner
 				severity={severity}
 				type={faker.helpers.arrayElement<BannerProps['type']>([
@@ -160,22 +150,22 @@ describe('Banner', () => {
 		expect(screen.getByTestId(`icon: ${icon}`)).toBeVisible();
 	});
 
-	test('More info button is shown if text is cropped', () => {
+	test('More info button is shown if text is cropped', async () => {
 		const longDescription = faker.lorem.sentences(4);
 		const longTitle = faker.lorem.sentences(2);
-		const resizeObserver = jest.spyOn(window, 'ResizeObserver');
-		setup(<Banner description={longDescription} title={longTitle} data-testid={'banner'} />);
+		const resizeObserver = vi.spyOn(window, 'ResizeObserver');
+		setupTest(<Banner description={longDescription} title={longTitle} data-testid={'banner'} />);
 		const infoContainer = findStyled(screen.getByTestId('banner'), InfoContainer);
 		expect(infoContainer).not.toBeNull();
 		makeTextCropped(resizeObserver, infoContainer as HTMLElement);
-		expect(screen.getByRole('button', { name: /more info/i })).toBeVisible();
+		expect(await screen.findByRole('button', { name: /more info/i })).toBeVisible();
 	});
 
 	test('More info button is hidden if text is entirely visible', () => {
 		const longDescription = faker.lorem.sentences(4);
 		const longTitle = faker.lorem.sentences(2);
-		const resizeObserver = jest.spyOn(window, 'ResizeObserver');
-		setup(<Banner description={longDescription} title={longTitle} data-testid={'banner'} />);
+		const resizeObserver = vi.spyOn(window, 'ResizeObserver');
+		setupTest(<Banner description={longDescription} title={longTitle} data-testid={'banner'} />);
 		const infoContainer = findStyled(screen.getByTestId('banner'), InfoContainer);
 		expect(infoContainer).not.toBeNull();
 		makeTextFullyVisible(resizeObserver, infoContainer as HTMLElement);
@@ -183,13 +173,13 @@ describe('Banner', () => {
 	});
 
 	test('Close action is hidden by default', () => {
-		const { queryByRoleWithIcon } = setup(<Banner description={'Banner'} />);
+		const { queryByRoleWithIcon } = setupTest(<Banner description={'Banner'} />);
 		expect(queryByRoleWithIcon('button', { icon: ICONS.close })).not.toBeInTheDocument();
 	});
 
 	test('Close action is shown if showClose is true', async () => {
-		const closeFn = jest.fn();
-		const { getByRoleWithIcon, user } = setup(
+		const closeFn = vi.fn();
+		const { getByRoleWithIcon, user } = setupTest(
 			<Banner description={'Banner'} showClose onClose={closeFn} />
 		);
 		const closeAction = getByRoleWithIcon('button', { icon: ICONS.close });
@@ -199,8 +189,8 @@ describe('Banner', () => {
 	});
 
 	test('Primary action is shown if prop is valued', async () => {
-		const clickFn = jest.fn();
-		const { user } = setup(
+		const clickFn = vi.fn();
+		const { user } = setupTest(
 			<Banner description={'banner'} primaryAction={{ label: 'primary', onClick: clickFn }} />
 		);
 		const action = screen.getByRole('button', { name: /primary/i });
@@ -211,13 +201,13 @@ describe('Banner', () => {
 	});
 
 	test('Actions are hidden by default', async () => {
-		setup(<Banner description={'banner'} />);
+		setupTest(<Banner description={'banner'} />);
 		expect(screen.queryByRole('button')).not.toBeInTheDocument();
 	});
 
 	test('Secondary action is shown if prop is valued', async () => {
-		const clickFn = jest.fn();
-		const { user } = setup(
+		const clickFn = vi.fn();
+		const { user } = setupTest(
 			<Banner description={'banner'} secondaryAction={{ label: 'secondary', onClick: clickFn }} />
 		);
 		const action = screen.getByRole('button', { name: /secondary/i });
@@ -228,9 +218,9 @@ describe('Banner', () => {
 	});
 
 	test('Both primary and secondary actions are visible if props are valued', async () => {
-		const primaryActionFn = jest.fn();
-		const secondaryActionFn = jest.fn();
-		const { user } = setup(
+		const primaryActionFn = vi.fn();
+		const secondaryActionFn = vi.fn();
+		const { user } = setupTest(
 			<Banner
 				description={'banner'}
 				primaryAction={{ label: 'primary', onClick: primaryActionFn }}
@@ -254,11 +244,11 @@ describe('Banner', () => {
 	test('More info opens a modal containing title, description, primary and secondary actions', async () => {
 		const longDescription = faker.lorem.sentences(4);
 		const longTitle = faker.lorem.sentences(2);
-		const resizeObserver = jest.spyOn(window, 'ResizeObserver');
-		const primaryActionFn = jest.fn();
-		const secondaryActionFn = jest.fn();
+		const resizeObserver = vi.spyOn(window, 'ResizeObserver');
+		const primaryActionFn = vi.fn();
+		const secondaryActionFn = vi.fn();
 
-		const { user } = setup(
+		const { user } = setupTest(
 			<ModalManager>
 				<Banner
 					description={longDescription}
@@ -289,16 +279,16 @@ describe('Banner', () => {
 	test('More info modal has the close icon button with a tooltip', async () => {
 		const longDescription = faker.lorem.sentences(4);
 		const longTitle = faker.lorem.sentences(2);
-		const resizeObserver = jest.spyOn(window, 'ResizeObserver');
+		const resizeObserver = vi.spyOn(window, 'ResizeObserver');
 
-		const { getByRoleWithIcon, user } = setup(
+		const { getByRoleWithIcon, user } = setupTest(
 			<ModalManager>
 				<Banner
 					description={longDescription}
 					title={longTitle}
 					data-testid={'banner'}
-					primaryAction={{ label: 'primary action', onClick: jest.fn() }}
-					secondaryAction={{ label: 'secondary action', onClick: jest.fn() }}
+					primaryAction={{ label: 'primary action', onClick: vi.fn() }}
+					secondaryAction={{ label: 'secondary action', onClick: vi.fn() }}
 				/>
 			</ModalManager>
 		);

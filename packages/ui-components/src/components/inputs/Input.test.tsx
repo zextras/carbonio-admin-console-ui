@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 
-import { setup } from '../../test-utils';
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
 import { Modal } from '../feedback/Modal';
 import { Input } from './Input';
@@ -48,13 +48,10 @@ const ModalWithInput = (): React.JSX.Element => {
 
 describe('Input', () => {
 	test('Input inside a Modal does not lose focus after typing first character', async () => {
-		const { user } = setup(<ModalWithInput />);
+		const { user } = setupTest(<ModalWithInput />);
 		expect(screen.getByRole('button', { name: /open modal/i })).toBeVisible();
 		await user.click(screen.getByRole('button', { name: /open modal/i }));
-		await screen.findByText(/modal title/i);
-		// run timers of modal
-		act(() => jest.runOnlyPendingTimers());
-		const inputElement = screen.getByRole('textbox', { name: /input label/i });
+		const inputElement = await screen.findByRole('textbox', { name: /input label/i });
 		expect(inputElement).toBeVisible();
 		await user.click(inputElement);
 		await waitFor(() => expect(inputElement).toHaveFocus());

@@ -10,6 +10,7 @@ import {
   ChipInput,
   Container,
   CustomTextArea,
+  DropDownInput,
   Icon,
   Input,
   Padding,
@@ -39,7 +40,6 @@ import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
-import DropDownInput from '../../../components/dropDownInput';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';

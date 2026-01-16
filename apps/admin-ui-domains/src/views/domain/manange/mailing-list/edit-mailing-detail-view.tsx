@@ -10,8 +10,10 @@ import {
   Container,
   CustomTextArea,
   Divider,
+  DropDownInput,
   Input,
   Modal,
+  OverlayDivision,
   Padding,
   Row,
   Select,
@@ -45,9 +47,7 @@ import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Displayer from '../../../components/displayer';
-import DropDownInput from '../../../components/dropDownInput';
 import ManageAliases from '../../../components/manageAliases';
-import OverlayDivision from '../../../components/overlayDivision';
 import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';

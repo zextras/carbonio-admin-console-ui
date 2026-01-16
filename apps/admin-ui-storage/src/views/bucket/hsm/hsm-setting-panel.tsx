@@ -10,6 +10,7 @@ import {
 	Container,
 	Divider,
 	Input,
+	ModalOverlay,
 	Padding,
 	Row,
 	Switch,
@@ -34,7 +35,6 @@ import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';

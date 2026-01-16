@@ -6,8 +6,9 @@
 
 import { screen, waitFor } from '@testing-library/react';
 import React, { useState } from 'react';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
 import { CustomModal, CustomModalProps } from './CustomModal';
@@ -34,7 +35,7 @@ const ModalTester = ({ children, ...props }: CustomModalProps): React.JSX.Elemen
 
 describe('Custom Modal', () => {
 	test('Render Modal', async () => {
-		const { user } = setup(<ModalTester />);
+		const { user } = setupTest(<ModalTester />);
 
 		const button = screen.getByRole('button', { name: /trigger modal/i });
 		expect(button).toBeVisible();
@@ -48,8 +49,8 @@ describe('Custom Modal', () => {
 	});
 
 	test('click on overlay close modal', async () => {
-		const onClick = jest.fn();
-		const { user } = setup(<ModalTester onClick={onClick} />);
+		const onClick = vi.fn();
+		const { user } = setupTest(<ModalTester onClick={onClick} />);
 
 		const button = screen.getByRole('button', { name: /trigger modal/i });
 		expect(screen.queryByText('My Title')).not.toBeInTheDocument();
@@ -63,8 +64,8 @@ describe('Custom Modal', () => {
 	});
 
 	test('click on modal content does not close modal', async () => {
-		const onClick = jest.fn();
-		const { user } = setup(<ModalTester onClick={onClick} />);
+		const onClick = vi.fn();
+		const { user } = setupTest(<ModalTester onClick={onClick} />);
 
 		const button = screen.getByRole('button', { name: /trigger modal/i });
 		expect(button).toBeVisible();
@@ -77,33 +78,27 @@ describe('Custom Modal', () => {
 	});
 
 	test('should not blindly prevent default behavior of html elements', async () => {
-		const originalConsoleError = console.error;
-		const errors: string[] = [];
-		console.error = (...args): void => {
-			if (
-				'message' in args[0] &&
-				args[0].message === 'Not implemented: navigation (except hash changes)'
-			) {
-				errors.push(args[0].message);
-			} else {
-				originalConsoleError(...args);
-			}
-		};
 		const href = '/different-path';
-		const { user } = setup(
+		let linkClickPrevented = false;
+		const handleClick = (event: React.MouseEvent<HTMLAnchorElement>): void => {
+			// Check if default was prevented
+			linkClickPrevented = event.defaultPrevented;
+		};
+		const { user } = setupTest(
 			<ModalTester>
-				<a href={href}>This is a link</a>
+				<a href={href} onClick={handleClick}>
+					This is a link
+				</a>
 			</ModalTester>
 		);
 		await screen.findByRole('button');
 		await user.click(screen.getByRole('button'));
 		await screen.findByTestId('modal');
 		await waitFor(() => expect(screen.getByRole('link')).toBeVisible());
-		await user.click(screen.getByRole('link'));
-		await waitFor(() =>
-			// see https://github.com/jsdom/jsdom/blob/2d51af302581a57ee5b9b65595f1714d669b7ea2/lib/jsdom/living/nodes/HTMLAnchorElement-impl.js
-			expect(errors).toEqual(['Not implemented: navigation (except hash changes)'])
-		);
-		console.error = originalConsoleError;
+		const link = screen.getByRole('link');
+		// Click the link
+		await user.click(link);
+		// The click should not have been prevented by the modal's overlay
+		expect(linkClickPrevented).toBe(false);
 	});
 });

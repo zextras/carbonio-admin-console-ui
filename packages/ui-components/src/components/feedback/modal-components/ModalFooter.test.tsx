@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
+import { vi } from 'vitest';
 
-import { setup, within } from '../../../test-utils';
-import { SELECTORS } from '../../../testUtils/constants';
-import { TIMERS } from '../../constants';
+import { SELECTORS } from '../../../test-utils/constants';
+import { setupTest } from '../../../test-utils/test-utils';
 import { ModalFooter } from './ModalFooter';
 
 describe('Modal footer', () => {
 	it('displays a disabled primary button if the "confirmDisabled" is set to true', async () => {
-		setup(<ModalFooter confirmLabel={'confirm'} confirmDisabled onConfirm={jest.fn()} />);
+		setupTest(<ModalFooter confirmLabel={'confirm'} confirmDisabled onConfirm={vi.fn()} />);
 		const confirmButton = screen.getByRole('button', { name: /confirm/i });
 		expect(confirmButton).toBeDisabled();
 	});
@@ -21,11 +21,11 @@ describe('Modal footer', () => {
 	it.each([false, undefined])(
 		'displays an enabled primary button if the "confirmDisabled" is set to %s',
 		async (confirmDisabled) => {
-			setup(
+			setupTest(
 				<ModalFooter
 					confirmLabel={'confirm'}
 					confirmDisabled={confirmDisabled}
-					onConfirm={jest.fn()}
+					onConfirm={vi.fn()}
 				/>
 			);
 			const confirmButton = screen.getByRole('button', { name: /confirm/i });
@@ -35,11 +35,10 @@ describe('Modal footer', () => {
 
 	it('should show the tooltip on the confirm action if confirmTooltip is set', async () => {
 		const confirmTooltip = 'Confirm tooltip';
-		const { user } = setup(
-			<ModalFooter confirmLabel={'confirm'} confirmTooltip={confirmTooltip} onConfirm={jest.fn()} />
+		const { user } = setupTest(
+			<ModalFooter confirmLabel={'confirm'} confirmTooltip={confirmTooltip} onConfirm={vi.fn()} />
 		);
 		const confirmButton = screen.getByRole('button', { name: /confirm/i });
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 		await user.hover(confirmButton);
 		const tooltip = await screen.findByTestId(SELECTORS.tooltip);
 		expect(within(tooltip).getByText(confirmTooltip)).toBeVisible();
@@ -48,26 +47,25 @@ describe('Modal footer', () => {
 	it.each(['', undefined])(
 		'should not render the tooltip on the confirm action if the tooltip label is %s',
 		async (confirmTooltip) => {
-			const { user } = setup(
+			const { user } = setupTest(
 				<ModalFooter
 					confirmLabel={'confirm'}
 					confirmTooltip={confirmTooltip}
-					onConfirm={jest.fn()}
+					onConfirm={vi.fn()}
 				/>
 			);
 			const secondaryButton = screen.getByRole('button', { name: /confirm/i });
-			jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 			await user.hover(secondaryButton);
 			expect(screen.queryByTestId(SELECTORS.tooltip)).not.toBeInTheDocument();
 		}
 	);
 
 	it('should disable secondary action button when secondaryActionDisabled is true', () => {
-		setup(
+		setupTest(
 			<ModalFooter
 				secondaryActionDisabled
 				secondaryActionLabel={'secondaryAction'}
-				onSecondaryAction={jest.fn()}
+				onSecondaryAction={vi.fn()}
 			/>
 		);
 		const secondaryButton = screen.getByRole('button', { name: /secondaryAction/i });
@@ -77,11 +75,11 @@ describe('Modal footer', () => {
 	it.each([false, undefined])(
 		'should enable secondary action button when secondaryActionDisabled is %s',
 		(secondaryActionDisabled) => {
-			setup(
+			setupTest(
 				<ModalFooter
 					secondaryActionDisabled={secondaryActionDisabled}
 					secondaryActionLabel={'secondaryAction'}
-					onSecondaryAction={jest.fn()}
+					onSecondaryAction={vi.fn()}
 				/>
 			);
 			const secondaryButton = screen.getByRole('button', { name: /secondaryAction/i });
@@ -91,15 +89,14 @@ describe('Modal footer', () => {
 
 	it('should show the tooltip on the secondary action if secondaryActionTooltip is set', async () => {
 		const secondaryActionTooltip = 'This is the secondary tooltip';
-		const { user } = setup(
+		const { user } = setupTest(
 			<ModalFooter
 				secondaryActionLabel={'secondaryAction'}
-				onSecondaryAction={jest.fn()}
+				onSecondaryAction={vi.fn()}
 				secondaryActionTooltip={secondaryActionTooltip}
 			/>
 		);
 		const secondaryButton = screen.getByRole('button', { name: /secondaryAction/i });
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 		await user.hover(secondaryButton);
 		const tooltip = await screen.findByTestId(SELECTORS.tooltip);
 		expect(within(tooltip).getByText(secondaryActionTooltip)).toBeVisible();
@@ -108,15 +105,14 @@ describe('Modal footer', () => {
 	it.each(['', undefined])(
 		'should not render the tooltip on the secondary action if the tooltip label is %s',
 		async (secondaryActionTooltip) => {
-			const { user } = setup(
+			const { user } = setupTest(
 				<ModalFooter
 					secondaryActionLabel={'secondaryAction'}
-					onSecondaryAction={jest.fn()}
+					onSecondaryAction={vi.fn()}
 					secondaryActionTooltip={secondaryActionTooltip}
 				/>
 			);
 			const secondaryButton = screen.getByRole('button', { name: /secondaryAction/i });
-			jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 			await user.hover(secondaryButton);
 			expect(screen.queryByTestId(SELECTORS.tooltip)).not.toBeInTheDocument();
 		}

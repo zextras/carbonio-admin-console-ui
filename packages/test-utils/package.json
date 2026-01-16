@@ -30,11 +30,12 @@
     "@vitest/browser": "^4.0.5",
     "eslint": "^9.34.0",
     "msw": "^2.12.2",
+    "styled-components": "^5.3.11",
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"
   },
   "dependencies": {
     "i18next": "^22.5.1",
-    "@zextras/ui-components": "workspace:*"
+    "react": "^19.2.3"
   }
 }

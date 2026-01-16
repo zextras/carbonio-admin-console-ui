@@ -10,6 +10,7 @@ import {
   Container,
   CustomTextArea,
   Divider,
+  DropDownInput,
   Icon,
   Input,
   Modal,
@@ -45,7 +46,6 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
-import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';

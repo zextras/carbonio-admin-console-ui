@@ -9,7 +9,6 @@ import { Route } from 'react-router-dom';
 
 import { LEGAL_HOLD_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 
 const AppView: FC = () => {
@@ -23,7 +22,7 @@ const AppView: FC = () => {
 					style={{ overflow: 'hidden' }}
 				>
 					<Container style={{ maxWidth: '100%' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<spinner-wc />}>
 							<LegalHoldPanel />
 						</Suspense>
 					</Container>

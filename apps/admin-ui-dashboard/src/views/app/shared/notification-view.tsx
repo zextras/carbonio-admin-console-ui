@@ -9,6 +9,7 @@ import {
   DefaultTabBarItem,
   Divider,
   Icon,
+  ModalOverlay,
   TabBar,
   Table,
   Text,
@@ -28,7 +29,6 @@ import {
 } from '../../../constants';
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
-import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 import CustomHeaderFactory from './customTableHeaderFactory';
 import CustomRowFactory from './customTableRowFactory';

@@ -6,18 +6,18 @@
 
 import { screen } from '@testing-library/react';
 import React from 'react';
+import { vi } from 'vitest';
 
-import { setup } from '../../test-utils';
+import { setupTest } from '../../test-utils/test-utils';
 import { Button } from '../basic/button/Button';
-import { TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Tooltip } from './Tooltip';
 
 describe('Tooltip', () => {
 	test('Render Tooltip', async () => {
 		const messageText = 'Overflowing tooltip text';
-		const clickFn = jest.fn();
-		const { user } = setup(
+		const clickFn = vi.fn();
+		const { user } = setupTest(
 			<Container orientation="horizontal" mainAlignment="flex-start">
 				<Tooltip placement="right" label={messageText}>
 					<Button label="Name Lastname" onClick={clickFn} />
@@ -25,8 +25,6 @@ describe('Tooltip', () => {
 			</Container>
 		);
 		const button = screen.getByText(/Name Lastname/i);
-		// wait so tooltip can register the listeners
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 		await user.hover(button);
 		await screen.findByText(messageText);
 
@@ -35,8 +33,8 @@ describe('Tooltip', () => {
 
 	test('Disabled Tooltip is not shown', async () => {
 		const messageText = 'Overflowing tooltip text';
-		const clickFn = jest.fn();
-		const { user } = setup(
+		const clickFn = vi.fn();
+		const { user } = setupTest(
 			<Container orientation="horizontal" mainAlignment="flex-start">
 				<Tooltip placement="right" label={messageText} disabled>
 					<Button label="Name Lastname" onClick={clickFn} />
@@ -44,17 +42,14 @@ describe('Tooltip', () => {
 			</Container>
 		);
 		const button = screen.getByText(/Name Lastname/i);
-		// wait so tooltip can register the listeners
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
 		await user.hover(button);
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.DELAY_SHOW);
 		expect(screen.queryByText(messageText)).not.toBeInTheDocument();
 	});
 
 	test('Ref for children is set through the prop triggerRef', () => {
 		const childRef = React.createRef<HTMLElement>();
 		const triggerRef = React.createRef<HTMLElement>();
-		setup(
+		setupTest(
 			<Tooltip label={'tooltip label'} triggerRef={triggerRef}>
 				<span ref={childRef}>Trigger tooltip</span>
 			</Tooltip>

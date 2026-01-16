@@ -5,14 +5,13 @@
  */
 
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button, Container } from '@zextras/ui-components';
+import { Button, Container, OverlayDivision } from '@zextras/ui-components';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
-import OverlayDivision from '../../../../components/overlayDivision';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 

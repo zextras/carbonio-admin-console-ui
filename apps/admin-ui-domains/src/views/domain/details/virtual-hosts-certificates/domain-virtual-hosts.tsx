@@ -13,6 +13,7 @@ import {
   Button,
   Container,
   Divider,
+  ModalOverlay,
   Padding,
   Row,
   Text,
@@ -35,7 +36,6 @@ import {
 } from "../../../../constants";
 import { flushCache } from "../../../../services/flush-cache-service";
 import { modifyDomain } from "../../../../services/modify-domain-service";
-import ModalOverlay from "../../../components/ModalOverlay";
 import { RouteLeavingGuard } from "../../../ui-extras/nav-guard";
 import { AlertBanner } from "./alert-banner";
 import { CertificateView } from "./certificate-view";

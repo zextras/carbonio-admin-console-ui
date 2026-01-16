@@ -16,6 +16,7 @@ import {
   Input,
   Link,
   Modal,
+  OverlayDivision,
   Padding,
   Radio,
   Row,
@@ -70,7 +71,6 @@ import {
 import { fetchSoap } from "../../../../../services/bucket-service";
 import { useBucketVolumeStore } from "../../../../../store/bucket-volume/store";
 import Displayer from "../../../../components/displayer";
-import OverlayDivision from "../../../../components/overlayDivision";
 import ListRow from "../../../../list/list-row";
 import {
   BucketTypeItems,

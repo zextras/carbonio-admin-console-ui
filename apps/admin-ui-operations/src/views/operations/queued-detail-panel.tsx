@@ -5,14 +5,13 @@
  */
 
 import { useAllServers } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, Divider, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { stopOperations } from '../../services/stop-operation';
 import { useOperationStore } from '../../store/operation/store';
-import ModalOverlay from '../components/ModalOverlay';
 import { OperationsHeader } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';

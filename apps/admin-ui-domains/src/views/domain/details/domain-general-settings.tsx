@@ -19,6 +19,7 @@ import {
   Divider,
   Input,
   Modal,
+  OverlayDivision,
   Padding,
   Row,
   Select,
@@ -50,7 +51,6 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
-import OverlayDivision from '../../components/overlayDivision';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';

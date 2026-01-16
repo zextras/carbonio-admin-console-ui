@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash';
+import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
 import React, {
 	InputHTMLAttributes,
 	useCallback,

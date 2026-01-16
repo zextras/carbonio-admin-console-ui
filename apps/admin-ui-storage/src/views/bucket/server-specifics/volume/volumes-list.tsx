@@ -13,6 +13,7 @@ import {
 	Button,
 	Container,
 	Divider,
+	ModalOverlay,
 	Row,
 	Table,
 	Text,
@@ -48,7 +49,6 @@ import { setCurrentVolumeRequest } from '../../../../services/set-current-volume
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import ModalOverlay from '../../../components/ModalOverlay';
 import { indexerHeaders,volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 

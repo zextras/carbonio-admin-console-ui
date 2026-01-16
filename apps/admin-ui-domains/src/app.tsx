@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -25,13 +25,12 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
-import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-  <Suspense fallback={<Spinner />}>
+  <Suspense fallback={<spinner-wc />}>
     <LazyAppView {...props} />
   </Suspense>
 );

@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-declare const BASE_PATH: string;
 
-declare module '*.svg' {
-	const content: any;
-	export default content;
+import '@zextras/ui-components';
+
+declare module '*.jsx';
+
+declare global {
+  const BASE_PATH: string;
 }

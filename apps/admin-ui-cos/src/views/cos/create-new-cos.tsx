@@ -11,6 +11,7 @@ import {
   CustomTextArea,
   Divider,
   Input,
+  OverlayDivision,
   Padding,
   Row,
   Text,
@@ -24,7 +25,6 @@ import styled from 'styled-components';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
-import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
 
 const ovelayStyle = styled(Container)`

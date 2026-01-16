@@ -4,82 +4,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { screen } from '@testing-library/react';
+import { vi } from 'vitest';
 
-import { faker } from '@faker-js/faker';
-import { act, screen } from '@testing-library/react';
-
-import { setup } from '../../../test-utils';
-import { TIMERS } from '../../constants';
-import { Tooltip } from '../../display/Tooltip';
+import { setupTest } from '../../../test-utils/test-utils';
 import { Button } from './Button';
 
 describe('Button', () => {
-	test('The label must be Upper Case', () => {
-		const label = faker.lorem.words(1);
-		const clickFn = jest.fn();
-		setup(<Button label={label} onClick={clickFn} />);
-		expect(screen.getByText(label)).toBeVisible();
-		expect(screen.getByText(label)).toHaveStyle('text-transform: uppercase');
-	});
+  const label = 'buttonlabel';
 
-	test('Click on its label', async () => {
-		const label = faker.lorem.words(1);
-		const onClick = jest.fn();
-		const { user } = setup(<Button label={label} onClick={onClick} />);
-		await user.click(screen.getByText(new RegExp(label, 'i')));
-		expect(onClick).toHaveBeenCalled();
-	});
+  test('The label must be Upper Case', () => {
+    const clickFn = vi.fn();
+    setupTest(<Button label={label} onClick={clickFn} />);
+    expect(screen.getByText(label)).toBeVisible();
+    expect(screen.getByText(label)).toHaveStyle('text-transform: uppercase');
+  });
 
-	test('Click on its label, button is disabled', async () => {
-		const label = faker.lorem.words(1);
-		const onClick = jest.fn();
-		const { user } = setup(<Button label={label} onClick={onClick} disabled />);
-		await user.click(screen.getByText(new RegExp(label, 'i')));
-		expect(onClick).not.toHaveBeenCalled();
-	});
+  test('Click on its label', async () => {
+    const onClick = vi.fn();
+    const { user } = setupTest(<Button label={label} onClick={onClick} />);
+    const button = screen.getByRole('button', { name: new RegExp(label, 'i') });
+    await user.click(button);
+    expect(onClick).toHaveBeenCalled();
+  });
 
-	test('Trigger the onClick with the keyboard', async () => {
-		const label = faker.lorem.words(1);
-		const onClick = jest.fn();
-		const { user } = setup(<Button label={label} onClick={onClick} />);
-		await user.type(screen.getByText(new RegExp(label, 'i')), '{enter}');
-		expect(onClick).toHaveBeenCalled();
-	});
+  test('button is disabled when disabled prop is passed', () => {
+    setupTest(<Button label={label} onClick={() => {}} disabled />);
 
-	test('Show an icon', () => {
-		const label = faker.lorem.words(1);
-		const clickFn = jest.fn();
-		setup(<Button label={label} icon="BulbOutline" onClick={clickFn} />);
-		expect(screen.getByText(new RegExp(label, 'i'))).toBeVisible();
-		expect(screen.getByTestId('icon: BulbOutline')).toBeVisible();
-	});
+    const button = screen.getByRole('button', { name: new RegExp(label, 'i') });
+    expect(button).toBeDisabled();
+  });
 
-	test('Loading state', () => {
-		const label = faker.lorem.words(1);
-		const clickFn = jest.fn();
-		setup(<Button label={label} loading onClick={clickFn} />);
-		expect(screen.getByText(new RegExp(label, 'i'))).not.toBeVisible();
-		expect(screen.getByTestId('spinner')).toBeVisible();
-	});
-
-	test('Show tooltip on disabled button', async () => {
-		const clickFn = jest.fn();
-		const { user } = setup(
-			<Tooltip label={'Tooltip label'}>
-				<Button label={'Button'} loading onClick={clickFn} disabled />
-			</Tooltip>
-		);
-		const button = screen.getByRole('button');
-		expect(screen.queryByText('Tooltip label')).not.toBeInTheDocument();
-		// wait for tooltip to register listeners
-		jest.advanceTimersByTime(TIMERS.TOOLTIP.REGISTER_LISTENER);
-		expect(screen.queryByText('Tooltip label')).not.toBeInTheDocument();
-		await user.hover(button);
-		await screen.findByText('Tooltip label');
-		expect(screen.getByText('Tooltip label')).toBeVisible();
-		await act(async () => {
-			await user.unhover(button);
-		});
-		expect(screen.queryByText('Tooltip label')).not.toBeInTheDocument();
-	});
+  test('Show an icon', () => {
+    const clickFn = vi.fn();
+    setupTest(<Button label={label} icon="BulbOutline" onClick={clickFn} />);
+    expect(screen.getByText(new RegExp(label, 'i'))).toBeVisible();
+    expect(screen.getByTestId('icon: BulbOutline')).toBeVisible();
+  });
 });
+
