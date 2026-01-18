@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button,Container, Divider, Padding, Row, Text } from '@zextras/ui-components';
-import { FC } from 'react';
+import {  Button,Container, Padding, Row, Text  } from '@zextras/ui-components';
+import {  FC  } from 'react';
 
 const ListPanelItem: FC<{
 	title: string;
@@ -42,7 +42,7 @@ const ListPanelItem: FC<{
 				</Padding>
 			</Row>
 		</Container>
-		<Divider color="gray3" />
+		<divider-wc color="gray3"></divider-wc>
 	</>
 );
 

@@ -3,49 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Padding,
-  PasswordInput,
-  Row,
-  Select,
-  Table,
-  Text,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { find, get } from "lodash-es";
-import {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useTranslation } from "react-i18next";
+import {   Button,  Container,  Icon,  Input,  Padding,  PasswordInput,  Row,  Select,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  find, get  } from "lodash-es";
+import {   ChangeEvent,  FC,  useCallback,  useEffect,  useMemo,  useState } from "react";
+import {  useTranslation  } from "react-i18next";
 
-import { TestConnectionObjectType } from "../../../types";
-import {
-  ALIBABA,
-  AMAZON_WEB_SERVICE_S3,
-  CUSTOM_S3,
-  EMC,
-  ZIMBRA_ADMIN_URN,
-} from "../../constants";
-import { fetchSoap } from "../../services/bucket-service";
-import { useBucketVolumeStore } from "../../store/bucket-volume/store";
+import {  TestConnectionObjectType  } from "../../../types";
+import {   ALIBABA,  AMAZON_WEB_SERVICE_S3,  CUSTOM_S3,  EMC,  ZIMBRA_ADMIN_URN } from "../../constants";
+import {  fetchSoap  } from "../../services/bucket-service";
+import {  useBucketVolumeStore  } from "../../store/bucket-volume/store";
 import CustomHeaderFactory from "../app/shared/customTableHeaderFactory";
 import CustomRowFactory from "../app/shared/customTableRowFactory";
 import Displayer from "../components/displayer";
-import {
-  BucketRegions,
-  BucketRegionsInAlibaba,
-  BucketTypeItems,
-} from "../utility/utils";
+import {   BucketRegions,  BucketRegionsInAlibaba,  BucketTypeItems } from "../utility/utils";
 
 const DetailsHeaders = [
   {
@@ -631,7 +601,7 @@ const EditBucketDetailPanel: FC<{
           />
         </Row>
       </Row>
-      <Divider />
+      <divider-wc></divider-wc>
       <Displayer buttons={buttons} pinIcon={false} />
       <Container
         padding={{ all: "large" }}
@@ -784,7 +754,7 @@ const EditBucketDetailPanel: FC<{
             disabled={toggleBtn}
           />
         </Row>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
 
         {checkError !== "" && (
           <Container

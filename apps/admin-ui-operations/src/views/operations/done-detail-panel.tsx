@@ -4,26 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Container,
-	Divider,
-	Icon,
-	Input,
-	ModalOverlay,
-	Row,
-	Text,
-	useSnackbar} from '@zextras/ui-components';
-import { find, map } from 'lodash-es';
+import {  useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Container,	Icon,	Input,	ModalOverlay,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  find, map  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { getAllDoneOperations } from '../../services/get-all-done-operation';
-import { useOperationStore } from '../../store/operation/store';
+import {  getAllDoneOperations  } from '../../services/get-all-done-operation';
+import {  useOperationStore  } from '../../store/operation/store';
 import Paging from '../components/paging';
-import { OperationsDoneHeader } from '../utility/utils';
-import { OperationsTable } from './operations-table';
+import {  OperationsDoneHeader  } from '../utility/utils';
+import {  OperationsTable  } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
 const RelativeContainer = styled(Container)`
@@ -131,7 +123,7 @@ const DoneDetailPanel: FC = () => {
 						{t('operations.done_panel_heading', 'Done Operations')}
 					</Text>
 				</Row>
-				<Divider />
+				<divider-wc></divider-wc>
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"
@@ -183,7 +175,7 @@ const DoneDetailPanel: FC = () => {
 						width="fill"
 						padding={{ top: 'large' }}
 					>
-						<Divider />
+						<divider-wc></divider-wc>
 					</Row>
 					{filteredOperationData.length !== 0 && (
 						<Container

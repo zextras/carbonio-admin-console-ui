@@ -3,54 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	useAppConfigStore,
-	useCurrentUserRights,
-	useIsAdvanced
-} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	Modal,
-	Padding,
-	Row,
-	Select,
-	SelectItem,
-	Switch,
-	Table,
-	Text,
-	useSnackbar} from '@zextras/ui-components';
-import { find,isEqual } from 'lodash-es';
+import { 	useAppConfigStore,	useCurrentUserRights,	useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Input,	Modal,	Padding,	Row,	Select,	SelectItem,	Switch,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  find,isEqual  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 
-import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
-import {
-	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-	CONFIG,
-	D_DISCARD,
-	D_PASS,
-	FALSE,
-	TRUE,
-	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-	ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
-	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-	ZIMBRA_CLAM_AVDATABASE_MIRROR,
-	ZIMBRA_SPAM_KILL_PERCENT,
-	ZIMBRA_SPAM_SUBJECT_TAG,
-	ZIMBRA_SPAM_TAG_PERCENT,
-	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
-	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
-	ZIMBRA_VIRUS_WARN_ADMIN,
-	ZIMBRA_VIRUS_WARN_RECIPIENT} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
+import {  MtaAntivirusAndAntispam, TRow  } from '../../../../types';
+import { 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,	CONFIG,	D_DISCARD,	D_PASS,	FALSE,	TRUE,	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,	ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,	ZIMBRA_CLAM_AVDATABASE_MIRROR,	ZIMBRA_SPAM_KILL_PERCENT,	ZIMBRA_SPAM_SUBJECT_TAG,	ZIMBRA_SPAM_TAG_PERCENT,	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,	ZIMBRA_VIRUS_WARN_ADMIN,	ZIMBRA_VIRUS_WARN_RECIPIENT } from '../../../constants';
+import {  modifyConfig  } from '../../../services/modify-config';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
-import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
+import {  isSpaceAvailableInString, isValidHostname  } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -844,7 +809,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				padding={{ all: 'extralarge' }}

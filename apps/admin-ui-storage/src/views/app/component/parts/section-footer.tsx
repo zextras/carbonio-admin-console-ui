@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, Row } from '@zextras/ui-components';
+import {  Container, Row  } from '@zextras/ui-components';
 import React, { ReactNode } from 'react';
 
 export const SectionFooter = ({
@@ -15,7 +15,7 @@ export const SectionFooter = ({
 }): React.JSX.Element => (
 	<Row width="100%">
 		<Row takeAvailableSpace>
-			{divider && <Divider />}
+			{divider && <divider-wc></divider-wc>}
 			<Container height="fit" padding={{ all: 'large' }}>
 				{footer}
 			</Container>

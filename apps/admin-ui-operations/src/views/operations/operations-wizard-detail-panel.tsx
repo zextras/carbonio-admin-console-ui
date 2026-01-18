@@ -4,30 +4,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	Padding,
-	Row,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { 	Button,	Container,	Input,	Padding,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  FC, useCallback, useEffect, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
+import {  useParams  } from 'react-router-dom';
 
-import {
-	DONE_ROUTE_ID,
-	FALSE_OPERTION,
-	QUEUED,
-	RUNNING_ROUTE_ID,
-	STARTED,
-	TRUE_OPERTION
-} from '../../constants';
+import { 	DONE_ROUTE_ID,	FALSE_OPERTION,	QUEUED,	RUNNING_ROUTE_ID,	STARTED,	TRUE_OPERTION } from '../../constants';
 import ListRow from '../list/list-row';
-import { copyTextToClipboard } from '../utility/utils';
+import {  copyTextToClipboard  } from '../utility/utils';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 const OperationsWizardDetailPanel: FC<{
@@ -112,7 +96,7 @@ const OperationsWizardDetailPanel: FC<{
 					/>
 				</Row>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
 				<Row
 					mainAlignment="flex-end"
@@ -194,7 +178,7 @@ const OperationsWizardDetailPanel: FC<{
 					</Row>
 				</Row>
 				<Padding vertical="large" />
-				<Divider />
+				<divider-wc></divider-wc>
 				<Padding vertical="large" />
 				<Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
 					<Text size="medium" color="gray0" weight="bold">

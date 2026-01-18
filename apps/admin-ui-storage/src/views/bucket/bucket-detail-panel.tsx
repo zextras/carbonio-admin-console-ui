@@ -3,30 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	ModalOverlay,
-	Padding,
-	Row,
-	Table,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/ui-components';
-import { TFunction } from 'i18next';
-import { filter } from 'lodash-es';
+import { 	Button,	Container,	Icon,	Input,	ModalOverlay,	Padding,	Row,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  TFunction  } from 'i18next';
+import {  filter  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { objectType,TestConnectionObjectType } from '../../../types';
+import {  objectType,TestConnectionObjectType  } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import {  ZIMBRA_ADMIN_URN  } from '../../constants';
+import {  fetchSoap  } from '../../services/bucket-service';
+import {  useBucketVolumeStore  } from '../../store/bucket-volume/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -353,7 +341,7 @@ const BucketDetailPanel: FC = () => {
 						{t('buckets.bucket_list', 'Buckets List')}
 					</Text>
 				</Row>
-				<Divider />
+				<divider-wc></divider-wc>
 				<Padding vertical="small" />
 				<Row
 					width="100%"

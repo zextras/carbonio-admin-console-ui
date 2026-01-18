@@ -4,35 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	ModalOverlay,
-	Padding,
-	Row,
-	Switch,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import {  getSoapFetchRequest, soapFetch, useAllServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Input,	ModalOverlay,	Padding,	Row,	Switch,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
+import {  useParams  } from 'react-router-dom';
 
-import {
-	APPOINTMENT,
-	CONTACT,
-	DOCUMENT,
-	MESSAGE,
-	SERVER,
-	VOLUME_INDEX_TYPE,
-	ZIMBRA_ADMIN_URN
-} from '../../../constants';
-import { fetchSoap } from '../../../services/bucket-service';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
+import { 	APPOINTMENT,	CONTACT,	DOCUMENT,	MESSAGE,	SERVER,	VOLUME_INDEX_TYPE,	ZIMBRA_ADMIN_URN } from '../../../constants';
+import {  fetchSoap  } from '../../../services/bucket-service';
+import {  setCoreAttributes  } from '../../../services/set-core-attributes';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
@@ -652,7 +632,7 @@ const HSMsettingPanel: FC = () => {
 			</Row>
 
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				crossAlignment="flex-start"

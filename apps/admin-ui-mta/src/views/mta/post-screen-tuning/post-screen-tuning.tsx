@@ -3,50 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Padding,
-	Row,
-	Select,
-	SelectItem,
-	Switch,
-	Text,
-	useSnackbar} from '@zextras/ui-components';
-import { isEqual } from 'lodash-es';
+import {  useAppConfigStore  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Icon,	Input,	Padding,	Row,	Select,	SelectItem,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  isEqual  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { MtaPostTuning } from '../../../../types';
-import {
-	IS_SHOW_POST_TUNING_BANNER,
-	ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
-	ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
-	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,
-	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
-	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
-	ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
-	ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
-	ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
-	ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
-	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
-	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
-	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
-} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
+import {  MtaPostTuning  } from '../../../../types';
+import { 	IS_SHOW_POST_TUNING_BANNER,	ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,	ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,	ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,	ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,	ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,	ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,	ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,	ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,	ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,	ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,	ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,	ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION } from '../../../constants';
+import {  modifyConfig  } from '../../../services/modify-config';
 import ListRow from '../../list/list-row';
-import { useLocalStorage } from '../../utility/utils';
+import {  useLocalStorage  } from '../../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -756,7 +724,7 @@ const MTAPostScreenTuning: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				padding={{ all: 'extralarge' }}
