@@ -19,7 +19,8 @@
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
     "noUncheckedIndexedAccess": false,
-    "types": ["@vitest/browser/matchers", "vitest/globals"]
+    "types": ["@vitest/browser/matchers", "vitest/globals"],
+    "useDefineForClassFields": false
   },
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]

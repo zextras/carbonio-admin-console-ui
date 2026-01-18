@@ -46,6 +46,7 @@ function browserProjectConfig() {
     test: {
       name: 'browser',
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
@@ -111,10 +112,14 @@ function browserProjectConfig() {
 }
 
 export default defineConfig({
+  esbuild: {
+    target: 'es2022',
+  },
   test: {
     globals: true,
     passWithNoTests: true,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
+
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'json', 'html', 'lcov'],
