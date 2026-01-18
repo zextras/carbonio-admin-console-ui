@@ -21,7 +21,19 @@ const packageName = packageJson.carbonio.name;
 export default defineConfig(({ mode }) => ({
 	mode: mode || process.env.NODE_ENV || 'production',
 	plugins: [
-		react(),
+		react({
+			babel: {
+				plugins: [
+					'babel-plugin-styled-components',
+					[
+						'@babel/plugin-proposal-decorators',
+						{
+							legacy: true
+						}
+					]
+				]
+			}
+		}),
 		{
 			name: 'add-module-registration',
 			generateBundle(_options, bundle) {

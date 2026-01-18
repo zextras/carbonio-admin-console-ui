@@ -25,7 +25,15 @@ export default defineConfig(({ mode }) => {
 		plugins: [
 			react({
 				babel: {
-					plugins: ['babel-plugin-styled-components']
+					plugins: [
+						'babel-plugin-styled-components',
+						[
+							'@babel/plugin-proposal-decorators',
+							{
+								legacy: true
+							}
+						]
+					]
 				}
 			}),
 			svgr({

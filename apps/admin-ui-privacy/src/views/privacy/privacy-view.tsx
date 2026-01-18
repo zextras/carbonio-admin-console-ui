@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -133,10 +133,7 @@ const PrivacyView: FC = () => {
                 </Row>
               </Container>
             </Row>
-
-            <Row orientation="horizontal" width="100%" background="gray6">
-              <Divider />
-            </Row>
+            <divider-wc></divider-wc>
             <Container
               orientation="column"
               crossAlignment="flex-start"
