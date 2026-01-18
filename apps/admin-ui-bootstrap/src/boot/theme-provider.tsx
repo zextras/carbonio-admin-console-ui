@@ -111,7 +111,7 @@ interface ThemeProviderProps {
 }
 export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
 	const settings = useUserSettings();
-	const zimbraPrefFontSize = settings?.prefs?.zimbraPrefFontSize as string;
+	const zimbraPrefFontSize = (settings?.prefs?.zimbraPrefFontSize as string) || 'normal';
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {

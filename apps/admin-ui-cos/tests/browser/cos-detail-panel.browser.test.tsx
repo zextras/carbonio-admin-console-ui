@@ -45,7 +45,7 @@ const mockApiResponse = {
 
 describe('CosDetailPanel', () => {
 	beforeEach(async () => {
-		grantUserConfigRights();
+		await grantUserConfigRights();
 	});
 
 	afterEach(() => {
@@ -69,7 +69,7 @@ describe('CosDetailPanel', () => {
 	it('should show the list of COS elements', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<Switch>
 				<Route path="/cos">
 					<CosDetailPanel />
@@ -84,7 +84,7 @@ describe('CosDetailPanel', () => {
 	it('should change the number of visible COS', async () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<Switch>
 				<Route path="/cos">
 					<CosDetailPanel />

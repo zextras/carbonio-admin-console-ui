@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '@testing-library/jest-dom';
 import { server } from 'admin-ui-test-utils';
 import { cleanup } from '@testing-library/react';
 import { noop } from 'lodash-es';

@@ -64,7 +64,7 @@ export const BootstrapBridgeProvider = ({
 }): React.JSX.Element => {
   const history = useHistory();
   const createSnackbar = () => ({});
-  const createModal = () => ({});
+  const createModal = () => {};
 
   // Initialize the context bridge immediately and synchronously
   const { add } = useContextBridge.getState();
