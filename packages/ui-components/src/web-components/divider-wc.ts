@@ -7,7 +7,6 @@
 import './theme.css';
 
 import { css, html, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
 
 export class DividerElement extends LitElement {
   static override styles = css`
@@ -22,10 +21,14 @@ export class DividerElement extends LitElement {
       min-height: 0.0625rem;
       width: 100%;
       border: none;
+      margin: 0;
+      padding: 0;
     }
   `;
 
-  @property({ type: String, reflect: true })
+  static override properties = {
+    color: { type: String, reflect: true },
+  };
   color = 'gray2';
 
   override render() {

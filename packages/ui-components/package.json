@@ -23,7 +23,11 @@
   },
   "author": "Zextras Frontend Tribe <https://www.zextras.com/carbonio/>",
   "license": "AGPL-3.0-only",
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/web-components/**/*",
+    "./src/web-components/*.css",
+    "*.css"
+  ],
   "devDependencies": {
     "@microsoft/api-extractor": "^7.43.0",
     "@svgr/cli": "^8.0.1",

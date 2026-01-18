@@ -6,8 +6,13 @@
 
 // Import theme CSS to define CSS variables for web components
 import './theme.css';
-// Import the spinner web component to register it with the browser
-import './spinner-wc';
-import './divider-wc';
 
-export {};
+// Import and export the web components to ensure they are bundled and registered
+export { DividerElement } from './divider-wc';
+export { SpinnerWC } from './spinner-wc';
+
+// Function to ensure web components are registered (call this if needed)
+export function registerWebComponents(): void {
+  // The imports above will register the custom elements
+  // This function exists to ensure the side effects are executed
+}
