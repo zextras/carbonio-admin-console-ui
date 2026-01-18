@@ -5,6 +5,7 @@
  */
 
 import { execSync } from 'node:child_process';
+
 import { resolve } from 'path';
 
 import react from '@vitejs/plugin-react';
@@ -17,58 +18,50 @@ const packageName = 'carbonio-admin-ui-subscription';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-	mode: mode || process.env.NODE_ENV || 'production',
-	plugins: [
-		react({
-			babel: {
-				plugins: [
-					'babel-plugin-styled-components',
-					[
-						'@babel/plugin-proposal-decorators',
-						{
-							legacy: true
-						}
-					]
-				]
-			}
-		}),
-		{
-			name: 'add-module-registration',
-			generateBundle(_options, bundle) {
-				for (const fileName in bundle) {
-					const chunk = bundle[fileName];
-					if (chunk.type === 'chunk' && fileName.startsWith('app.')) {
-						chunk.code += `\nif (typeof __ZAPP_HMR_EXPORT__ !== 'undefined' && __ZAPP_ENTRY__) { const component = __ZAPP_ENTRY__.default || __ZAPP_ENTRY__; __ZAPP_HMR_EXPORT__['${packageName}'](component); }\n`;
-					}
-				}
-			}
-		}
-	],
-	resolve: {
-		alias: {
-			'app-entrypoint': resolve(__dirname, 'src/app.tsx')
-		},
-		dedupe: ['react', 'react-dom', 'styled-components']
-	},
-	define: {
-		'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
-	},
-	build: {
-		outDir: `dist/source/${commitHash}`,
-		emptyOutDir: true,
-		lib: {
-			entry: 'src/app.tsx',
-			formats: ['iife'],
-			name: '__ZAPP_ENTRY__',
-			fileName: () => 'main.[hash].js'
-		},
-		rollupOptions: createModuleRollupOptions({ packageName }),
-		cssCodeSplit: false,
-		sourcemap: true,
-		minify: mode === 'development' ? false : 'esbuild',
-		target: 'es2020'
-	},
-	esbuild: {
-		logOverride: { 'this-is-undefined-in-esm': 'silent' }
-	}
+  mode: mode || process.env.NODE_ENV || 'production',
+  plugins: [
+    react({
+      babel: {
+        plugins: ['babel-plugin-styled-components'],
+      },
+    }),
+    {
+      name: 'add-module-registration',
+      generateBundle(_options, bundle) {
+        for (const fileName in bundle) {
+          const chunk = bundle[fileName];
+          if (chunk.type === 'chunk' && fileName.startsWith('app.')) {
+            chunk.code += `\nif (typeof __ZAPP_HMR_EXPORT__ !== 'undefined' && __ZAPP_ENTRY__) { const component = __ZAPP_ENTRY__.default || __ZAPP_ENTRY__; __ZAPP_HMR_EXPORT__['${packageName}'](component); }\n`;
+          }
+        }
+      },
+    },
+  ],
+  resolve: {
+    alias: {
+      'app-entrypoint': resolve(__dirname, 'src/app.tsx'),
+    },
+    dedupe: ['react', 'react-dom', 'styled-components'],
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+  },
+  build: {
+    outDir: `dist/source/${commitHash}`,
+    emptyOutDir: true,
+    lib: {
+      entry: 'src/app.tsx',
+      formats: ['iife'],
+      name: '__ZAPP_ENTRY__',
+      fileName: () => 'main.[hash].js',
+    },
+    rollupOptions: createModuleRollupOptions({ packageName }),
+    cssCodeSplit: false,
+    sourcemap: true,
+    minify: mode === 'development' ? false : 'esbuild',
+    target: 'es2020',
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' },
+  },
 }));
