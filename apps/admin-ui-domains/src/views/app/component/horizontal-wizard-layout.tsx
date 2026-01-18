@@ -21,7 +21,7 @@ interface RowExtendProps extends RowProps {
 
 const RowContainer = styled(Row)<RowExtendProps>`
   border-bottom: ${({ isActive, theme }): string =>
-    isActive ? `2px solid ${theme.palette.primary.regular}` : ''};
+    isActive ? `2px solid ${theme?.palette?.primary?.regular || '#2b73d2'}` : ''};
   cursor: pointer;
 `;
 
