@@ -33,7 +33,7 @@ function jsdomProjectConfig() {
       clearMocks: true,
       mockReset: true,
       restoreMocks: true,
-      testTimeout: 10000,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
@@ -90,7 +90,7 @@ function browserProjectConfig() {
       globals: true,
       css: true,
       clearMocks: true,
-      testTimeout: 10_000,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
       hookTimeout: 15_000,
     },
     plugins: [
