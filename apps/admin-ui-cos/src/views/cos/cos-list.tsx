@@ -4,30 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Row,
-	Table,
-	Text,
-	useSnackbar} from '@zextras/ui-components';
-import { debounce } from 'lodash-es';
+import { 	Button,	Container,	Icon,	Input,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  debounce  } from 'lodash-es';
 import React, { FC, ReactElement,useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
-import { getCosList } from '../../services/search-cos-service';
-import { useCosStore } from '../../store/cos/store';
+import {  GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT  } from '../../constants';
+import {  getCosList  } from '../../services/search-cos-service';
+import {  useCosStore  } from '../../store/cos/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
 
 type StatusTypes = {
 	[key: string]: {
@@ -284,7 +275,7 @@ const CosList: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"

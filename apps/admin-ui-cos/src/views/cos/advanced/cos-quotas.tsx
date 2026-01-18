@@ -3,22 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  CustomTextArea,
-  Divider,
-  Input,
-  Padding,
-  Row,
-  Select,
-  SingleSelectionOnChange,
-  Text,
-} from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import {   Container,  CustomTextArea,  Input,  Padding,  Row,  Select,  SingleSelectionOnChange,  Text } from '@zextras/ui-components';
+import {  ChangeEvent, FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
-import { TimeItems } from '../../../../types/general';
+import {  AccountType  } from '../../../../types/account';
+import {  TimeItems  } from '../../../../types/general';
 import ListRow from '../../list/list-row';
 
 type QuotaProps = {
@@ -223,7 +213,7 @@ const COSQuotas: FC<QuotaProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <Divider />
+      <divider-wc></divider-wc>
     </Row>
   );
 };
