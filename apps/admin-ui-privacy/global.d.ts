@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports, simple-import-sort/imports
 import React from 'react';
 
 import '@zextras/ui-components';
