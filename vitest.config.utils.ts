@@ -11,7 +11,6 @@ export const optimizeDepsInclude = [
   'react-router-dom',
   'ua-parser-js',
   'i18next-http-backend',
-  '@sentry/browser',
   'lodash-es',
   'styled-components',
   // date-fns locales
