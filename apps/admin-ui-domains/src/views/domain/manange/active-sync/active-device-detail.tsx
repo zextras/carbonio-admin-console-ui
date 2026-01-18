@@ -4,31 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useStickyBarStore } from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Input,
-  Row,
-  Select,
-  Text,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { format } from "date-fns";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import {  useStickyBarStore  } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Input,  Row,  Select,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  format  } from "date-fns";
+import {  FC, useCallback, useEffect, useMemo, useState  } from "react";
+import {  useTranslation  } from "react-i18next";
 
-import {
-  RESET_DEVICE,
-  SUSPEND_DEVICE,
-  WIPE_DEVICE,
-  ZX_MOBILE,
-} from "../../../../constants";
-import { getMobileDeviceDetail } from "../../../../services/get-mobile-device-detail";
-import { resetDevice } from "../../../../services/reset-device";
-import { suspendDevice } from "../../../../services/suspend-device";
-import { wipeDevice } from "../../../../services/wipe-device";
+import {   RESET_DEVICE,  SUSPEND_DEVICE,  WIPE_DEVICE,  ZX_MOBILE } from "../../../../constants";
+import {  getMobileDeviceDetail  } from "../../../../services/get-mobile-device-detail";
+import {  resetDevice  } from "../../../../services/reset-device";
+import {  suspendDevice  } from "../../../../services/suspend-device";
+import {  wipeDevice  } from "../../../../services/wipe-device";
 import Displayer from "../../../components/displayer";
 import ListRow from "../../../list/list-row";
 import ActiveDeviceConfirmation from "./active-device-confirmation";
@@ -423,7 +409,7 @@ const ActiveDeviceDetail: FC<{
           />
         </Row>
       </Row>
-      <Divider />
+      <divider-wc></divider-wc>
       <ListRow>
         <Displayer buttons={buttons} pinIcon={isSticky} />
       </ListRow>

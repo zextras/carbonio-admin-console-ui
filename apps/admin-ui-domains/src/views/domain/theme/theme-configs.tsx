@@ -3,35 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  getAllRights,
-  useCurrentUserRights,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  DefaultTabBarItem,
-  Divider,
-  Padding,
-  Row,
-  SelectItem,
-  TabBar,
-  Text,
-} from "@zextras/ui-components";
-import { noop } from "lodash-es";
-import {
-  ChangeEvent,
-  FC,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {   getAllRights,  useCurrentUserRights } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  DefaultTabBarItem,  Padding,  Row,  SelectItem,  TabBar,  Text } from "@zextras/ui-components";
+import {  noop  } from "lodash-es";
+import {   ChangeEvent,  FC,  ReactElement,  useCallback,  useEffect,  useMemo,  useState } from "react";
+import {  Trans, useTranslation  } from "react-i18next";
 
-import { themeConfigStore } from "../../../../types/domain";
-import { CONFIG, PRIMARY_COLOR_CODE_EX } from "../../../constants";
+import {  themeConfigStore  } from "../../../../types/domain";
+import {  CONFIG, PRIMARY_COLOR_CODE_EX  } from "../../../constants";
 import ListRow from "../../list/list-row";
 import InheritedInput from "../../utility/inherited-components/inherited-input";
 import InheritedSelect from "../../utility/inherited-components/inherited-select";
@@ -367,7 +346,7 @@ export const ThemeConfigs: FC<{
             />
           </Row>
           <Row width="100%">
-            <Divider color="gray2" />
+            <divider-wc></divider-wc>
           </Row>
           <Container crossAlignment="flex-start" padding={{ all: "0px" }}>
             {change === "end_user" && (
@@ -396,7 +375,7 @@ export const ThemeConfigs: FC<{
             )}
           </Container>
           <Container padding={{ top: "small" }}>
-            <Divider color="gray2" />
+            <divider-wc></divider-wc>
           </Container>
           <ListRow>
             <Container

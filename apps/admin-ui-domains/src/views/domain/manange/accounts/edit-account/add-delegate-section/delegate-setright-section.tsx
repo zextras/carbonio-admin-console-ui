@@ -3,28 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Checkbox,
-	Container,
-	Divider,
-	Radio,
-	RadioGroup,
-	Row,
-	Select,
-	Text} from '@zextras/ui-components';
-import { cloneDeep } from 'lodash-es';
-import { FC, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Checkbox,	Container,	Radio,	RadioGroup,	Row,	Select,	Text } from '@zextras/ui-components';
+import {  cloneDeep  } from 'lodash-es';
+import {  FC, useContext, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import {
-	MANAGE_NO_SEND,
-	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
-	SEND_READ_MAILS,
-	SEND_READ_MANAGE_MAILS
-} from '../../../../../../constants';
-import { delegateRightsType } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
+import { 	MANAGE_NO_SEND,	READ_MAILS_ONLY,	SEND_MAILS_ONLY,	SEND_READ_MAILS,	SEND_READ_MANAGE_MAILS } from '../../../../../../constants';
+import {  delegateRightsType  } from '../../../../../utility/utils';
+import {  AccountContext  } from '../../account-context';
 
 const DelegateSetRightsSection: FC = () => {
 	const [t] = useTranslation();
@@ -73,7 +59,7 @@ const DelegateSetRightsSection: FC = () => {
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				{!(
 					deligateDetail?.delegeteRights === SEND_MAILS_ONLY ||

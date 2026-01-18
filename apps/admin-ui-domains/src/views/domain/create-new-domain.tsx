@@ -4,47 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  ChipInput,
-  Container,
-  CustomTextArea,
-  Divider,
-  Input,
-  OverlayDivision,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Text,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { map, some } from 'lodash-es';
+import {  replaceHistory, useDomainStore, useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
+import {   Button,  ChipInput,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
+import {  map, some  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import {  useTranslation  } from 'react-i18next';
+import {  useHistory  } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Attribute, DomainResponse, objectType, SelectItem } from '../../../types';
-import {
-  ACTIVE,
-  DOMAINS_ROUTE_ID,
-  GENERAL_SETTINGS,
-  HTTPS,
-  INTERNAL_GAL,
-  MANAGE,
-  ZIMBRA_ADMIN_URN,
-} from '../../constants';
-import { createDomain } from '../../services/create-domain';
-import { createGalSyncAccount } from '../../services/create-gal-sync-service';
-import { createObjectAttribute } from '../../services/create-object-attribute-service';
-import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
-import { getCosList } from '../../services/search-cos-service';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import {  Attribute, DomainResponse, objectType, SelectItem  } from '../../../types';
+import {   ACTIVE,  DOMAINS_ROUTE_ID,  GENERAL_SETTINGS,  HTTPS,  INTERNAL_GAL,  MANAGE,  ZIMBRA_ADMIN_URN } from '../../constants';
+import {  createDomain  } from '../../services/create-domain';
+import {  createGalSyncAccount  } from '../../services/create-gal-sync-service';
+import {  createObjectAttribute  } from '../../services/create-object-attribute-service';
+import {  InitDomainForDelegation  } from '../../services/init-domain-for-delegation';
+import {  getCosList  } from '../../services/search-cos-service';
+import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
-import { GbToBytes, isValidEmail } from '../utility/utils';
+import {  GbToBytes, isValidEmail  } from '../utility/utils';
 
 const ovelayStyle = styled(Container)`
   position: fixed;
@@ -407,7 +384,7 @@ const CreateDomain: FC = () => {
                 {t('label.new_domain', 'New Domain')}
               </Text>
             </Padding>
-            <Divider />
+            <divider-wc></divider-wc>
           </Row>
         </Container>
         <Container
@@ -505,7 +482,7 @@ const CreateDomain: FC = () => {
             mainAlignment="flex-start"
             padding={{ vertical: 'large', horizontal: 'small' }}
           >
-            <Divider />
+            <divider-wc></divider-wc>
           </Row>
           <Row mainAlignment="flex-start" width="100%">
             <Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -578,7 +555,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -615,7 +592,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -648,7 +625,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Row>
               <Row
                 mainAlignment="flex-start"

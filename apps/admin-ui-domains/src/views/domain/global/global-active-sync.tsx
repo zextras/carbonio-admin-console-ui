@@ -4,33 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	OverlayDivision,
-	Padding,
-	Row,
-	Switch,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Input,	OverlayDivision,	Padding,	Row,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  ChangeEvent, FC, useEffect, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { doPurgeActiveSync } from '../../../services/do-purge-mobile-state';
-import { doStratStopJail } from '../../../services/do-start-stop-jail';
-import { getMobileAntiDosService } from '../../../services/get-mobile-anti-dos-service';
-import { getMobileAntiDosServiceJailDuration } from '../../../services/get-mobile-anti-dos-service-jail-duration';
-import { getMobileAntiDosServiceMaxRequests } from '../../../services/get-mobile-anti-dos-service-max-requests';
-import { getMobileAntiDosServiceTimeWindow } from '../../../services/get-mobile-anti-dos-service-time-window';
-import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-service';
-import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
-import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
-import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
+import {  doPurgeActiveSync  } from '../../../services/do-purge-mobile-state';
+import {  doStratStopJail  } from '../../../services/do-start-stop-jail';
+import {  getMobileAntiDosService  } from '../../../services/get-mobile-anti-dos-service';
+import {  getMobileAntiDosServiceJailDuration  } from '../../../services/get-mobile-anti-dos-service-jail-duration';
+import {  getMobileAntiDosServiceMaxRequests  } from '../../../services/get-mobile-anti-dos-service-max-requests';
+import {  getMobileAntiDosServiceTimeWindow  } from '../../../services/get-mobile-anti-dos-service-time-window';
+import {  setAntiDosServiceEnabled  } from '../../../services/set-mobile-anti-dos-service';
+import {  setAntiDosServiceJailDuration  } from '../../../services/set-mobile-anti-dos-service-jail-duration';
+import {  setAntiDosServiceMaxRequests  } from '../../../services/set-mobile-anti-dos-service-max-requests';
+import {  setAntiDosServiceTimeWindow  } from '../../../services/set-mobile-anti-dos-service-time-window';
 import ListRow from '../../list/list-row';
 
 const ovelayStyle = styled(Container)`
@@ -273,7 +262,7 @@ const GlobalActiveSync: FC = () => {
 							</Row>
 						</Row>
 					</Container>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<Container
 					orientation="column"

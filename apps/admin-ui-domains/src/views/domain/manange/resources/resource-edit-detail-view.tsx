@@ -4,36 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  Container,
-  CustomTextArea,
-  Divider,
-  Icon,
-  Input,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { format, parse } from 'date-fns';
-import { isEqual } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  useDomainStore, useStickyBarStore  } from '@zextras/admin-ui-bootstrap';
+import {   Button,  Container,  CustomTextArea,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  format, parse  } from 'date-fns';
+import {  isEqual  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
-import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
-import { getCalenderResource } from '../../../../services/get-cal-resource-service';
-import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
-import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
-import { setPasswordRequest } from '../../../../services/set-password-service';
+import {  deleteCalendarResource  } from '../../../../services/delete-cal-resource-service';
+import {  getCalenderResource  } from '../../../../services/get-cal-resource-service';
+import {  getDelegateAuthRequest  } from '../../../../services/get-delegate-auth-request';
+import {  modifyCalendarResource  } from '../../../../services/modify-cal-resource-service';
+import {  renameCalendarResource  } from '../../../../services/rename-cal-resource-service';
+import {  setPasswordRequest  } from '../../../../services/set-password-service';
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { SendInviteAccounts } from './send-invite-accounts';
+import {  RouteLeavingGuard  } from '../../../ui-extras/nav-guard';
+import {  SendInviteAccounts  } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
   LOCATION: 'Location',
@@ -823,7 +810,7 @@ const ResourceEditDetailView: FC<any> = ({
         </Row>
       </Row>
       <Row>
-        <Divider color="gray3" />
+        <divider-wc color="gray3"></divider-wc>
       </Row>
 
       <Container
@@ -1063,7 +1050,7 @@ const ResourceEditDetailView: FC<any> = ({
 
         <>
           <Row width="100%" padding={{ top: 'medium' }}>
-            <Divider color="gray3" />
+            <divider-wc color="gray3"></divider-wc>
           </Row>
           <Row padding={{ top: 'extralarge' }}>
             <Text size="small" weight="bold">
@@ -1117,7 +1104,7 @@ const ResourceEditDetailView: FC<any> = ({
         </>
 
         <Row width="100%" padding={{ top: 'medium' }}>
-          <Divider color="gray3" />
+          <divider-wc color="gray3"></divider-wc>
         </Row>
         <SendInviteAccounts
           isEditable
@@ -1125,7 +1112,7 @@ const ResourceEditDetailView: FC<any> = ({
           setSendInviteList={setSendInviteList}
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <Divider color="gray3" />
+          <divider-wc color="gray3"></divider-wc>
         </Row>
 
         <Row padding={{ top: 'extralarge' }} width="100%">

@@ -4,55 +4,39 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useStickyBarStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  Container,
-  CustomTextArea,
-  Divider,
-  DropDownInput,
-  Input,
-  Modal,
-  OverlayDivision,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { format } from 'date-fns';
-import { debounce, differenceBy, isEqual, sortedUniq, uniq, uniqBy } from 'lodash-es';
+import {  useDomainStore, useStickyBarStore, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import {   Button,  Container,  CustomTextArea,  DropDownInput,  Input,  Modal,  OverlayDivision,  Padding,  Row,  Select,  Switch,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  debounce, differenceBy, isEqual, sortedUniq, uniq, uniqBy  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
 import helmetLogo from '../../../../assets/helmet_logo.svg';
-import { ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR } from '../../../../constants';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
-import { deleteDistributionList } from '../../../../services/delete-distribution-list';
-import { deleteMailingListAliasRequest } from '../../../../services/delete-mailing-list-alias';
-import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { getDistributionList } from '../../../../services/get-distribution-list';
-import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
-import { getGrant } from '../../../../services/get-grant';
-import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { searchGal } from '../../../../services/search-gal-service';
+import {  ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR  } from '../../../../constants';
+import {  addDistributionListMember  } from '../../../../services/add-distributionlist-member-service';
+import {  addMailingListAliasRequest  } from '../../../../services/add-mailing-list-alias';
+import {  deleteDistributionList  } from '../../../../services/delete-distribution-list';
+import {  deleteMailingListAliasRequest  } from '../../../../services/delete-mailing-list-alias';
+import {  distributionListAction  } from '../../../../services/distribution-list-action-service';
+import {  getDistributionList  } from '../../../../services/get-distribution-list';
+import {  getDistributionListMembership  } from '../../../../services/get-distributionlists-membership-service';
+import {  getGrant  } from '../../../../services/get-grant';
+import {  modifyDistributionList  } from '../../../../services/modify-distributionlist-service';
+import {  removeDistributionListMember  } from '../../../../services/remove-distributionlist-member-service';
+import {  renameDistributionList  } from '../../../../services/rename-distributionlist-service';
+import {  searchDirectory  } from '../../../../services/search-directory-service';
+import {  getDomainList  } from '../../../../services/search-domain-service';
+import {  searchGal  } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import Displayer from '../../../components/displayer';
 import ManageAliases from '../../../components/manageAliases';
 import Paging from '../../../components/paging';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
+import {  RouteLeavingGuard  } from '../../../ui-extras/nav-guard';
+import {  getAllEmailFromString, getDateFromStr, isValidEmail  } from '../../../utility/utils';
 
 const TRUE_FALSE = {
   TRUE: 'TRUE',
@@ -1929,7 +1913,7 @@ const EditMailingListView: FC<any> = ({
           </Row>
         </Row>
         <Row>
-          <Divider color="gray3" />
+          <divider-wc color="gray3"></divider-wc>
         </Row>
 
         <Container
@@ -2426,7 +2410,7 @@ const EditMailingListView: FC<any> = ({
 
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small', bottom: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
-              <Divider />
+              <divider-wc></divider-wc>
             </Container>
           </Row>
           <ListRow padding={{ all: 'small' }}>

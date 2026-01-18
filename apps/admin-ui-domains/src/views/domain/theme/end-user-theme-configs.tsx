@@ -3,14 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, Padding, Text } from '@zextras/ui-components';
+import {  Container, Padding, Text  } from '@zextras/ui-components';
 import React, { FC } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 
-import { themeConfigStore } from '../../../../types';
+import {  themeConfigStore  } from '../../../../types';
 import ListRow from '../../list/list-row';
 import InheritedInput from '../../utility/inherited-components/inherited-input';
-import { isValidHttpsUrl } from '../../utility/utils';
+import {  isValidHttpsUrl  } from '../../utility/utils';
 
 const HttpsErrorMessage: FC = () => {
 	const [t] = useTranslation();
@@ -130,7 +130,7 @@ const EndUserThemeConfigs: FC<{
 				</Container>
 			</ListRow>
 			<Container padding={{ top: 'small' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Container>
 			<ListRow>
 				<Padding vertical="large" horizontal="small" width="100%">
@@ -340,7 +340,7 @@ const EndUserThemeConfigs: FC<{
 				</Container>
 			</ListRow>
 			<Container padding={{ top: 'small' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Container>
 			<ListRow>
 				<Padding vertical="large" horizontal="small" width="100%">
@@ -394,7 +394,7 @@ const EndUserThemeConfigs: FC<{
 				</Container>
 			</ListRow>
 			<Container padding={{ top: 'small' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Container>
 			<ListRow>
 				<Padding vertical="large" horizontal="small" width="100%">
@@ -511,7 +511,7 @@ const EndUserThemeConfigs: FC<{
 				</Container>
 			</ListRow>
 			<Container padding={{ top: 'small' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Container>
 			<ListRow>
 				<ListRow>

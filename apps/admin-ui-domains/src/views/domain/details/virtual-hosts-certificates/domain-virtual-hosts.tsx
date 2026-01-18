@@ -4,44 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  soapFetch,
-  useDomainStore,
-  useUserSettings,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  ModalOverlay,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { isEqual, mapValues, reduce } from "lodash-es";
-import { FC, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import {   soapFetch,  useDomainStore,  useUserSettings } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  ModalOverlay,  Padding,  Row,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  isEqual, mapValues, reduce  } from "lodash-es";
+import {  FC, useCallback, useEffect, useState  } from "react";
+import {  useTranslation  } from "react-i18next";
+import {  useParams  } from "react-router-dom";
 
-import { objectType } from "../../../../../types";
-import {
-  TRUE,
-  ZIMBRA_ADMIN_URN,
-  ZIMBRA_DOMAIN_NAME,
-  ZIMBRA_ID,
-  ZIMBRA_SSL_CERTIFICATE,
-  ZIMBRA_SSL_PRIVATE_KEY,
-  ZIMBRA_VIRTUAL_HOSTNAME,
-} from "../../../../constants";
-import { flushCache } from "../../../../services/flush-cache-service";
-import { modifyDomain } from "../../../../services/modify-domain-service";
-import { RouteLeavingGuard } from "../../../ui-extras/nav-guard";
-import { AlertBanner } from "./alert-banner";
-import { CertificateView } from "./certificate-view";
+import {  objectType  } from "../../../../../types";
+import {   TRUE,  ZIMBRA_ADMIN_URN,  ZIMBRA_DOMAIN_NAME,  ZIMBRA_ID,  ZIMBRA_SSL_CERTIFICATE,  ZIMBRA_SSL_PRIVATE_KEY,  ZIMBRA_VIRTUAL_HOSTNAME } from "../../../../constants";
+import {  flushCache  } from "../../../../services/flush-cache-service";
+import {  modifyDomain  } from "../../../../services/modify-domain-service";
+import {  RouteLeavingGuard  } from "../../../ui-extras/nav-guard";
+import {  AlertBanner  } from "./alert-banner";
+import {  CertificateView  } from "./certificate-view";
 import DeleteCertificateModel from "./delete-certificate-model";
-import { LoadVerifyCertificateWizard } from "./load-verify-certificate-wizard";
-import { VirtualHostSection } from "./virtual-host-section";
+import {  LoadVerifyCertificateWizard  } from "./load-verify-certificate-wizard";
+import {  VirtualHostSection  } from "./virtual-host-section";
 
 export const DomainVirtualHosts: FC = () => {
   const [t] = useTranslation();
@@ -430,7 +409,7 @@ export const DomainVirtualHosts: FC = () => {
               </Row>
             </Row>
           </Container>
-          <Divider color="gray2" />
+          <divider-wc></divider-wc>
         </Row>
         <Container
           orientation="column"
@@ -446,7 +425,7 @@ export const DomainVirtualHosts: FC = () => {
           </Container>
           {alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
           <Row width="100%" padding={{ horizontal: "large" }}>
-            <Divider color="gray2" />
+            <divider-wc></divider-wc>
           </Row>
           <CertificateView
             domainCertiDetails={domainCertiDetails}

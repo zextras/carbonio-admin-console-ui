@@ -3,45 +3,24 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	ModalOverlay,
-	Padding,
-	Row,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { debounce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Icon,	Input,	ModalOverlay,	Padding,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  debounce  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
-import {
-	ALL,
-	ASC,
-	DESC,
-	EMAIL,
-	FALSE,
-	GRP,
-	PUB,
-	RECORD_DISPLAY_LIMIT,
-	TRUE} from '../../../../constants';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import { createMailingList } from '../../../../services/create-mailing-list-service';
-import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
+import { 	ALL,	ASC,	DESC,	EMAIL,	FALSE,	GRP,	PUB,	RECORD_DISPLAY_LIMIT,	TRUE } from '../../../../constants';
+import {  addDistributionListMember  } from '../../../../services/add-distributionlist-member-service';
+import {  createMailingList  } from '../../../../services/create-mailing-list-service';
+import {  distributionListAction  } from '../../../../services/distribution-list-action-service';
+import {  searchDirectory  } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
 import EditMailingListView from './edit-mailing-detail-view';
 
@@ -668,7 +647,7 @@ const DomainMailingList: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"

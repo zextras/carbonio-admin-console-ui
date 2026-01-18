@@ -3,31 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Divider,
-  DropDownInput,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { debounce, sortedUniq, uniq } from 'lodash-es';
+import {   Button,  Container,  DropDownInput,  Padding,  Row,  Select,  Switch,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  debounce, sortedUniq, uniq  } from 'lodash-es';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 
 import helmetLogo from '../../../../assets/helmet_logo.svg';
-import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
-import { searchGal } from '../../../../services/search-gal-service';
+import {  ALL, EMAIL, GRP, PUB  } from '../../../../constants';
+import {  searchGal  } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
-import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
-import { MailingListContext } from './mailinglist-context';
+import {  getAllEmailFromString, isValidEmail  } from '../../../utility/utils';
+import {  MailingListContext  } from './mailinglist-context';
 
 const MailingListSettingsSection: FC<any> = () => {
   const { t } = useTranslation();
@@ -567,7 +555,7 @@ const MailingListSettingsSection: FC<any> = () => {
 
         <ListRow>
           <Container>
-            <Divider />
+            <divider-wc></divider-wc>
           </Container>
         </ListRow>
         <ListRow>

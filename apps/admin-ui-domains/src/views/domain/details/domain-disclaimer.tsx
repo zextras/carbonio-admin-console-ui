@@ -4,36 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore,useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Switch,
-	Text,
-	TextArea,
-	useSnackbar} from '@zextras/ui-components';
-import { encode } from 'html-entities';
-import { isEqual } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useDomainStore,useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Padding,	Row,	Switch,	Text,	TextArea,	useSnackbar } from '@zextras/ui-components';
+import {  encode  } from 'html-entities';
+import {  isEqual  } from 'lodash-es';
+import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { DomainDisclaimerType, objectType } from '../../../../types';
+import {  DomainDisclaimerType, objectType  } from '../../../../types';
 import Composer from '../../../composer/composer';
-import {
-	AMAVIS_DISCLAIMER_OPTIONS,
-	FALSE,
-	TRUE,
-	ZIMBRA_ADMIN_URN,
-	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
-	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
-} from '../../../constants';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
+import { 	AMAVIS_DISCLAIMER_OPTIONS,	FALSE,	TRUE,	ZIMBRA_ADMIN_URN,	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED } from '../../../constants';
+import {  flushCache  } from '../../../services/flush-cache-service';
+import {  modifyDomain  } from '../../../services/modify-domain-service';
 import ListRow from '../../list/list-row';
 
 const EditorWrapper = styled.div`
@@ -318,7 +301,7 @@ const DomainDisclaimer: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 
 			<Container

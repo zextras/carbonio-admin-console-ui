@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, List, ListItem,Padding, Text } from '@zextras/ui-components';
+import {  Container, List, ListItem,Padding, Text  } from '@zextras/ui-components';
 import React, { FC, useCallback } from 'react';
 
 const ListItems: FC<{
@@ -55,7 +55,7 @@ const ListItems: FC<{
 											</Text>
 										</Padding>
 									</Container>
-									<Divider color="gray3" />
+									<divider-wc color="gray3"></divider-wc>
 								</Container>
 							) : (
 								<div style={{ height: '4rem' }} />
