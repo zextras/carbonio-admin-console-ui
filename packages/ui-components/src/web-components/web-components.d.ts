@@ -12,6 +12,7 @@ declare global {
     namespace JSX {
       interface IntrinsicElements {
         'spinner-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+        'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
       }
     }
   }
