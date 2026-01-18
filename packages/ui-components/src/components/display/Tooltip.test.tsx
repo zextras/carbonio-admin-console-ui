@@ -5,10 +5,10 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { vi } from 'vitest';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Container } from '../layout/Container';
 import { Tooltip } from './Tooltip';

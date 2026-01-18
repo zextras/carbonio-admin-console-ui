@@ -5,8 +5,8 @@
  */
 
 import { screen } from '@testing-library/react';
-
 import { setupTest } from 'admin-ui-test-utils';
+
 import { Theme } from '../../../theme/theme';
 import { Text, TextProps } from './Text';
 

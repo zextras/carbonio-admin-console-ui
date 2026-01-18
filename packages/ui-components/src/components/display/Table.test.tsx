@@ -7,10 +7,10 @@
 
 import { faker } from '@faker-js/faker';
 import { screen, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { vi } from 'vitest';
 
 import { ICONS, SELECTORS } from '../../test-utils/constants';
-import { setupTest } from 'admin-ui-test-utils';
 import { Icon } from '../basic/icon/Icon';
 import { Container } from '../layout/Container';
 import { Table, THeader, TRow } from './Table';

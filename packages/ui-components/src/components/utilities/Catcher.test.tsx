@@ -5,9 +5,9 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Catcher } from './Catcher';
 
 function ErrorComponent(): React.JSX.Element {

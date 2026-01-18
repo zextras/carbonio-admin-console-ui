@@ -5,9 +5,9 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 
 import { SELECTORS } from '../../../test-utils/constants';
-import { setupTest } from 'admin-ui-test-utils';
 import { Theme } from '../../../theme/theme';
 import { Divider } from './Divider';
 

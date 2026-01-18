@@ -5,10 +5,10 @@
  */
 
 import { screen, waitFor, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { vi } from 'vitest';
 
 import { ICONS, SELECTORS } from '../../../test-utils/constants';
-import { setupTest } from 'admin-ui-test-utils';
 import { Snackbar, SnackbarProps } from './Snackbar';
 
 describe('Snackbar', () => {

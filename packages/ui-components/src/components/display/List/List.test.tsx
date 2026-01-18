@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Container } from '../../layout/Container';
 import { ListItem } from '../ListItem';
 import { List } from './List';

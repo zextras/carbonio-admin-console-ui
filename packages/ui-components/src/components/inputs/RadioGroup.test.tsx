@@ -5,9 +5,9 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { vi } from 'vitest';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Radio } from './Radio';
 import { RadioGroup } from './RadioGroup';
 

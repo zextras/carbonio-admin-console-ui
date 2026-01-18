@@ -5,10 +5,10 @@
  */
 
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { DefaultTheme } from 'styled-components';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Theme, ThemeColorObj } from './theme';
 import { ThemeProvider } from './theme-context-provider';
 import { generateColorSet, getColor, useTheme } from './theme-utils';

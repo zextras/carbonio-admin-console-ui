@@ -7,12 +7,12 @@
 
 import { faker } from '@faker-js/faker';
 import { screen, waitFor, within } from '@testing-library/react';
+import { setupTest, type UserEvent } from 'admin-ui-test-utils';
 import { DefaultTheme } from 'styled-components';
 import { find as findStyled } from 'styled-components/test-utils';
 import { vi } from 'vitest';
 
 import { ICONS } from '../../../test-utils/constants';
-import { setupTest, type UserEvent } from 'admin-ui-test-utils';
 import { Theme } from '../../../theme/theme';
 import { ModalManager } from '../../utilities/ModalManager';
 import { Banner, BannerProps, InfoContainer } from './Banner';

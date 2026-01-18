@@ -5,10 +5,10 @@
  */
 
 import { screen, within } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import { vi } from 'vitest';
 
 import { SELECTORS } from '../../../test-utils/constants';
-import { setupTest } from 'admin-ui-test-utils';
 import { ModalFooter } from './ModalFooter';
 
 describe('Modal footer', () => {

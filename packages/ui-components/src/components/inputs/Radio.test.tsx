@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { screen } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { vi } from 'vitest';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Text } from '../basic/text/Text';
 import { Radio } from './Radio';
 

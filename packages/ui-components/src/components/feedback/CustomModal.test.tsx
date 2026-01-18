@@ -5,10 +5,10 @@
  */
 
 import { screen, waitFor } from '@testing-library/react';
+import { setupTest } from 'admin-ui-test-utils';
 import React, { useState } from 'react';
 import { vi } from 'vitest';
 
-import { setupTest } from 'admin-ui-test-utils';
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
 import { CustomModal, CustomModalProps } from './CustomModal';
