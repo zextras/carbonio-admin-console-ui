@@ -126,7 +126,7 @@ export default defineConfig({
         '**/[.]**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',
-        '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+        '**/{karma,rollup,webpack,vite,vitest,ava,babel,nyc,cypress,tsup,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
         '**/*.config.{js,ts}',
         '**/*.test.{ts,tsx}',
