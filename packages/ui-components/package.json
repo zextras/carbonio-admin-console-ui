@@ -34,12 +34,13 @@
     "@types/styled-components": "^5.1.26",
     "create-index": "2.6.0",
     "del": "^7.1.0",
+    "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-notice": "^0.9.10",
     "react": "^19.1.0",
     "react-docgen-typescript": "^2.2.2",
     "react-dom": "^19.1.0",
     "ts-node": "^10 >=10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.7.2"
   },
   "browserslist": [
     ">1%",

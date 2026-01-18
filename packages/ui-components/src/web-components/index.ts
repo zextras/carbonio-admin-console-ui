@@ -8,5 +8,6 @@
 import './theme.css';
 // Import the spinner web component to register it with the browser
 import './spinner-wc';
+import './divider-wc';
 
 export {};

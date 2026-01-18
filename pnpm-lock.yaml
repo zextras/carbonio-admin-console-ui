@@ -2034,6 +2034,9 @@ importers:
       del:
         specifier: ^7.1.0
         version: 7.1.0
+      eslint-plugin-lit:
+        specifier: ^2.1.1
+        version: 2.1.1(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-notice:
         specifier: ^0.9.10
         version: 0.9.10(eslint@9.39.2(jiti@2.6.1))
@@ -2050,7 +2053,7 @@ importers:
         specifier: ^10 >=10.9.2
         version: 10.9.2(@types/node@20.19.30)(typescript@5.9.3)
       typescript:
-        specifier: ^5.4.5
+        specifier: ^5.7.2
         version: 5.9.3
 
 packages:
@@ -5177,6 +5180,12 @@ packages:
     engines: {node: '>=4.0'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9
+
+  eslint-plugin-lit@2.1.1:
+    resolution: {integrity: sha512-qmyAOnnTCdS+vDnNxtCoF0icSKIio4GUv6ZLnaCtTX6G/YezRa6Ag6tOQ+MfV5Elvtw9CIXeliRX4mIBSwrPIA==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      eslint: '>= 8'
 
   eslint-plugin-notice@0.9.10:
     resolution: {integrity: sha512-rF79EuqdJKu9hhTmwUkNeSvLmmq03m/NXq/NHwUENHbdJ0wtoyOjxZBhW4QCug8v5xYE6cGe3AWkGqSIe9KUbQ==}
@@ -12121,6 +12130,12 @@ snapshots:
       object.fromentries: 2.0.8
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
+
+  eslint-plugin-lit@2.1.1(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      eslint: 9.39.2(jiti@2.6.1)
+      parse5: 6.0.1
+      parse5-htmlparser2-tree-adapter: 6.0.1
 
   eslint-plugin-notice@0.9.10(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
