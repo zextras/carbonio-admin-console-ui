@@ -783,16 +783,14 @@ const ManageAccounts: FC = () => {
 								} else {
 									item[ele?.n] = [ele._content];
 								}
+							} else if (
+								ele?.pd &&
+								ele?.n === "zimbraIsAdminAccount" &&
+								ele?.pd === true
+							) {
+								item[ele?.n] = "TRUE";
 							} else {
-								if (
-										ele?.pd && 
-										ele?.n === "zimbraIsAdminAccount" &&
-										ele?.pd === true
-									) {	 
-									item[ele?.n] = "TRUE";
-								} else {									 
-									item[ele?.n] = ele._content;
-								}
+								item[ele?.n] = ele._content;
 							}
 						});
 						accountListArr.push({
