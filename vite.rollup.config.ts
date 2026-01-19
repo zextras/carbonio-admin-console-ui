@@ -68,8 +68,9 @@ export function createModuleRollupOptions(options: ESMModuleRollupOptions): Roll
 
 /**
  * Creates standardized rollup options for the ESM bootstrap application (shell).
- * The shell bundles all dependencies - they are provided to sub-apps via import maps
+ * The shell externalizes shared dependencies - they are loaded via import maps
  * which point to separately built shared-deps bundles.
+ * This ensures a single instance of React/styled-components/etc across shell and sub-apps.
  *
  * @param isDev - Whether this is a development build
  * @returns RollupOptions configured for the ESM shell
@@ -89,9 +90,20 @@ export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
     inlineDynamicImports: true,
   };
 
+  // Shell must externalize shared deps to use the same instances as sub-apps via import maps
+  // This prevents "multiple React instances" errors with hooks
+  const sharedExternals = [
+    'react',
+    'react-dom',
+    'lodash-es',
+    'styled-components',
+    'i18next',
+    'react-i18next',
+    '@tanstack/react-query',
+  ];
+
   return {
-    // Shell bundles everything - shared deps are built separately and loaded via import maps
-    // Sub-apps externalize and resolve these via import maps at runtime
+    external: sharedExternals,
     output,
   };
 }

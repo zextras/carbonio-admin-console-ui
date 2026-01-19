@@ -54,9 +54,11 @@ const sharedDepsConfig = [
   },
   {
     name: 'react-i18next',
-    entry: resolve(nodeModulesDir, 'react-i18next/react-i18next.js'),
+    entry: resolve(nodeModulesDir, 'react-i18next/dist/es/index.js'),
     outputName: 'react-i18next.mjs',
-    type: 'copy',
+    type: 'build',
+    // react-i18next must use the shared React and i18next instances to avoid context issues
+    external: ['react', 'react-dom', 'i18next'],
   },
   {
     name: '@tanstack/react-query',
