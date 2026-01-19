@@ -1,3 +1,9 @@
+## [0.12.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.9...v0.12.0-devel.10) (2026-01-19)
+
+### Features
+
+* hide files ulimited quota to a fixed 0 ([b38533c](https://github.com/zextras/carbonio-admin-console-ui/commit/b38533c293493ab6c0fd187de35cc2707821e9ef))
+
 ## [0.12.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.8...v0.12.0-devel.9) (2026-01-19)
 
 ### Features
