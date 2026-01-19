@@ -784,7 +784,15 @@ const ManageAccounts: FC = () => {
 									item[ele?.n] = [ele._content];
 								}
 							} else {
-								item[ele?.n] = ele._content;
+								if (
+										ele?.pd && 
+										ele?.n === "zimbraIsAdminAccount" &&
+										ele?.pd === true
+									) {	 
+									item[ele?.n] = "TRUE";
+								} else {									 
+									item[ele?.n] = ele._content;
+								}
 							}
 						});
 						accountListArr.push({
@@ -868,18 +876,20 @@ const ManageAccounts: FC = () => {
 								>
 									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
 								</Text>,
-								<Text
-									size="small"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
-										handleClickTableRow(item);
-									}}
-								>
-									{item?.description || <>&nbsp;</>}
-								</Text>
+								<Tooltip key={`${item.id}-userDesc`} label={item?.description || <>&nbsp;</>}>
+									<Text
+										size="small"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											handleClickTableRow(item);
+										}}
+									>
+										{item?.description ?? <>&nbsp;</>}
+									</Text>
+								</Tooltip>
 							],
 							item,
 							clickable: true
