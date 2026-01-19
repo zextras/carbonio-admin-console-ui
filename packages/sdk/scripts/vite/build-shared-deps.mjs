@@ -76,6 +76,14 @@ const sharedDepsConfig = [
     // react-router-dom must use the shared React instance to avoid context issues
     external: ['react', 'react-dom'],
   },
+  {
+    name: 'zustand',
+    entry: resolve(nodeModulesDir, 'zustand/esm/index.mjs'),
+    outputName: 'zustand.mjs',
+    type: 'build',
+    // zustand must use the shared React instance for hooks to work correctly
+    external: ['react', 'react-dom'],
+  },
 ];
 
 /**

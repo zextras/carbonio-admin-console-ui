@@ -45,6 +45,7 @@ export function getSharedDependencyPaths(commitHash) {
     { name: 'react-i18next', file: 'react-i18next.mjs' },
     { name: '@tanstack/react-query', file: 'react-query.mjs' },
     { name: 'react-router-dom', file: 'react-router-dom.mjs' },
+    { name: 'zustand', file: 'zustand.mjs' },
   ];
 
   for (const depConfig of vendorableDeps) {

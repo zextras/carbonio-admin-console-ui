@@ -20,6 +20,7 @@ export const SHARED_EXTERNALS = [
   'react-i18next',
   '@tanstack/react-query',
   'react-router-dom',
+  'zustand',
   '@zextras/admin-ui-bootstrap',
   'msw',
 ] as const;

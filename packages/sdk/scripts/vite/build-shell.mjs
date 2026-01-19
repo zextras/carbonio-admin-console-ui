@@ -56,7 +56,9 @@ await build({
       // The bootstrap-exports must bundle react-query so that sub-apps
       // using hooks like useLicenseInfo share the same QueryClient context
       // with the shell's ReactQueryProvider.
-      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next'],
+      // NOTE: zustand must be externalized to share the same store instance
+      // between shell.mjs and bootstrap-exports.mjs
+      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next', 'zustand'],
       output: {
         entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
       },
