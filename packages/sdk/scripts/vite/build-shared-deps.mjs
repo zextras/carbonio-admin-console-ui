@@ -50,12 +50,6 @@ const sharedDepsConfig = [
     outputName: 'i18next.mjs',
     type: 'build',
   },
-  {
-    name: '@zextras/carbonio-design-system',
-    entry: resolve(nodeModulesDir, '@zextras/carbonio-design-system/dist/zapp-ui.bundle.mjs'),
-    outputName: 'carbonio-design-system.mjs',
-    type: 'build',
-  },
 ];
 
 /**

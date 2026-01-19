@@ -17,8 +17,8 @@ const bootstrapPkg = JSON.parse(readFileSync(bootstrapPackagePath, 'utf8'));
  * Extracts version from a semver range (e.g., "^19.1.0" -> "19.1.0")
  */
 function extractVersion(range) {
-	if (!range) return null;
-	return range.replace(/^[^0-9]*/, ''); // Remove ^, ~, >=, etc.
+  if (!range) return null;
+  return range.replace(/^[^0-9]*/, ''); // Remove ^, ~, >=, etc.
 }
 
 /**
@@ -26,37 +26,29 @@ function extractVersion(range) {
  * Only includes dependencies that can be successfully vendored
  */
 export function getSharedDependencyPaths(commitHash) {
-	const deps = {
-		...bootstrapPkg.dependencies,
-		...bootstrapPkg.devDependencies,
-	};
+  const deps = {
+    ...bootstrapPkg.dependencies,
+    ...bootstrapPkg.devDependencies,
+  };
 
-	const paths = {};
+  const paths = {};
 
-	// Only include dependencies we can successfully vendor as ESM
-	// These are the packages that have been tested and work with offline vendoring
-	// Note: Filenames match what Vite's lib mode outputs
-	const vendorableDeps = [
-		{ name: 'react', file: 'index.mjs' },
-		{ name: 'react-dom', file: 'client.mjs' },
-		{ name: 'lodash-es', file: 'lodash.mjs' },
-		{ name: 'lodash', file: 'lodash.mjs' },  // Alias for carbonio-design-system compatibility
-		{ name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
-		{ name: 'i18next', file: 'i18next.mjs' },
-		{ name: '@zextras/carbonio-design-system', file: 'carbonio-design-system.mjs' },
-	];
+  // Only include dependencies we can successfully vendor as ESM
+  // These are the packages that have been tested and work with offline vendoring
+  // Note: Filenames match what Vite's lib mode outputs
+  const vendorableDeps = [
+    { name: 'react', file: 'index.mjs' },
+    { name: 'react-dom', file: 'client.mjs' },
+    { name: 'lodash-es', file: 'lodash.mjs' },
+    { name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
+    { name: 'i18next', file: 'i18next.mjs' },
+  ];
 
-	for (const depConfig of vendorableDeps) {
-		const version = extractVersion(deps[depConfig.name]);
-		if (version) {
-			paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
-		} else if (depConfig.name === 'lodash') {
-			// Special case: 'lodash' is an alias to 'lodash-es' for carbonio-design-system compatibility
-			paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
-		}
-	}
+  for (const depConfig of vendorableDeps) {
+    paths[depConfig.name] = `/static/iris/shared-dependencies/${commitHash}/${depConfig.file}`;
+  }
 
-	return paths;
+  return paths;
 }
 
 /**
@@ -64,46 +56,43 @@ export function getSharedDependencyPaths(commitHash) {
  * Returns CDN URLs for shared dependencies based on installed versions
  */
 export function getSharedDependencyCdnUrls() {
-	const deps = {
-		...bootstrapPkg.dependencies,
-		...bootstrapPkg.devDependencies,
-	};
+  const deps = {
+    ...bootstrapPkg.dependencies,
+    ...bootstrapPkg.devDependencies,
+  };
 
-	const urls = {};
+  const urls = {};
 
-	// Core shared dependencies
-	const sharedDeps = [
-		'react',
-		'react-dom',
-		'react-i18next',
-		'lodash-es',
-		'react-router-dom',
-		'styled-components',
-		'i18next',
-		'@emotion/react',
-		'@emotion/styled',
-	];
+  // Core shared dependencies
+  const sharedDeps = [
+    'react',
+    'react-dom',
+    'react-i18next',
+    'lodash-es',
+    'react-router-dom',
+    'styled-components',
+    'i18next',
+    '@emotion/react',
+    '@emotion/styled',
+  ];
 
-	for (const dep of sharedDeps) {
-		const version = extractVersion(deps[dep]);
-		if (version) {
-			if (dep === 'react-dom') {
-				urls[dep] = `https://esm.sh/react-dom@${version}/client`;
-			} else {
-				urls[dep] = `https://esm.sh/${dep}@${version}`;
-			}
-		}
-	}
+  for (const dep of sharedDeps) {
+    const version = extractVersion(deps[dep]);
+    if (version) {
+      if (dep === 'react-dom') {
+        urls[dep] = `https://esm.sh/react-dom@${version}/client`;
+      } else {
+        urls[dep] = `https://esm.sh/${dep}@${version}`;
+      }
+    }
+  }
 
-	// Design system (always use latest from CDN)
-	urls['@zextras/carbonio-design-system'] = 'https://esm.sh/@zextras/carbonio-design-system';
-
-	return urls;
+  return urls;
 }
 
 /**
  * Returns the list of shared dependency names (matching SHARED_EXTERNALS)
  */
 export function getSharedDependencyNames() {
-	return Object.keys(getSharedDependencyCdnUrls());
+  return Object.keys(getSharedDependencyCdnUrls());
 }

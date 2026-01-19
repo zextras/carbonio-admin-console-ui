@@ -52,14 +52,7 @@ await build({
     },
     sourcemap: isDev,
     rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'lodash-es',
-        'styled-components',
-        'i18next',
-        '@zextras/carbonio-design-system',
-      ],
+      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next'],
       output: {
         entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
       },
@@ -100,7 +93,10 @@ if (fs.existsSync(indexHtmlPath)) {
   const importMapScript = `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
 
   // Inject import map BEFORE the shell.*.mjs script tag
-  indexHtml = indexHtml.replace(/(<script type="module"[^>]*shell\.[^"']*\.mjs")/, `${importMapScript}\n  $1`);
+  indexHtml = indexHtml.replace(
+    /(<script type="module"[^>]*shell\.[^"']*\.mjs")/,
+    `${importMapScript}\n  $1`,
+  );
 
   // Write to both dist and current directories
   fs.writeFileSync(indexHtmlPath, indexHtml);
@@ -120,7 +116,9 @@ const packageJson = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json')
 let exportsFileName;
 try {
   const distFiles = fs.readdirSync(distDir);
-  const exportsFiles = distFiles.filter((f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'));
+  const exportsFiles = distFiles.filter(
+    (f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'),
+  );
   if (exportsFiles.length > 0) {
     // Prefer hashed filenames
     const hashedFiles = exportsFiles.filter((f) => f !== 'bootstrap-exports.mjs');
@@ -128,7 +126,9 @@ try {
   }
 } catch {
   // Fallback to default naming
-  exportsFileName = isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.${commitHash.substring(0, 8)}.mjs`;
+  exportsFileName = isDev
+    ? 'bootstrap-exports.mjs'
+    : `bootstrap-exports.${commitHash.substring(0, 8)}.mjs`;
 }
 
 // Use different bundle names for dev vs production (ESM uses .mjs)
