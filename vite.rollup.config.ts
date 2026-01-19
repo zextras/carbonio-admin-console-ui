@@ -103,6 +103,7 @@ export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
     'react-i18next',
     '@tanstack/react-query',
     'react-router-dom',
+    'zustand',
   ];
 
   return {
