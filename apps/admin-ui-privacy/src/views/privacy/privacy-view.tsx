@@ -3,24 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm } from '@tanstack/react-form';
-import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider, Row, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { find } from 'lodash-es';
-import { FC, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useForm  } from '@tanstack/react-form';
+import {  soapFetch, useAllConfig, useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
+import {  Container, Row, Text, useSnackbar  } from '@zextras/ui-components';
+import {  find  } from 'lodash-es';
+import {  FC, useCallback, useMemo  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import {
-  CARBONIO_ALLOW_FEEDBACK,
-  CARBONIO_SEND_ANALYTICS,
-  CARBONIO_SEND_FULL_ERROR_STACK,
-  CONFIG,
-  FALSE,
-  TRUE,
-} from '../../constants';
-import { FormButtons } from './parts/form-buttons';
-import { FormSwitch } from './parts/form-switch';
-import { SwitchDescription } from './parts/form-title';
+import {   CARBONIO_ALLOW_FEEDBACK,  CARBONIO_SEND_ANALYTICS,  CARBONIO_SEND_FULL_ERROR_STACK,  CONFIG,  FALSE,  TRUE } from '../../constants';
+import {  FormButtons  } from './parts/form-buttons';
+import {  FormSwitch  } from './parts/form-switch';
+import {  SwitchDescription  } from './parts/form-title';
 
 type ModifyConfigAPI = { allowFeedback: boolean; sendAnalytics: boolean; sendFullError: boolean };
 
@@ -133,10 +126,7 @@ const PrivacyView: FC = () => {
                 </Row>
               </Container>
             </Row>
-
-            <Row orientation="horizontal" width="100%" background="gray6">
-              <Divider />
-            </Row>
+            <divider-wc></divider-wc>
             <Container
               orientation="column"
               crossAlignment="flex-start"

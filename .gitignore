@@ -59,6 +59,8 @@ node_modules/
 .turbo
 apps/*/coverage
 apps/*/junit.xml
+packages/*/coverage
+packages/*/junit.xml
 .scannerwork
 **/__screenshots__/**
 package

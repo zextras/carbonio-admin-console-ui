@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Catcher } from "@zextras/carbonio-design-system";
+import { Catcher } from "@zextras/ui-components";
 import React, { FC, useCallback } from "react";
 
 const AppErrorCatcher: FC<{ children: React.ReactNode }> = ({ children }) => {

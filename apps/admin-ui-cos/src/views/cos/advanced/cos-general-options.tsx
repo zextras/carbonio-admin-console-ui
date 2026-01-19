@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Switch, Text } from '@zextras/carbonio-design-system';
+import { Container, Row, Switch, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,7 @@ const COSGeneralOptions: FC<{
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+			<Text size="extralarge" weight="bold">
 				{labels.generalOptions}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

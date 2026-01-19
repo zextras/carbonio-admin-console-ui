@@ -12,7 +12,7 @@ import {
 	SelectItem,
 	Switch,
 	Text
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -5,7 +5,7 @@
  */
 
 import { useAllServers } from '@zextras/admin-ui-bootstrap';
-import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

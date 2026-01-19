@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Checkbox,Text } from '@zextras/carbonio-design-system';
+import { Checkbox,Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
@@ -15,21 +15,21 @@ const TableRow = styled.tr<{
 }>`
 	transition: background-color 0.2s ease-out;
 	&:nth-child(odd) {
-		background-color: ${({ theme }): string => theme.palette.gray6.regular};
+		background-color: ${({ theme }): string => theme?.palette?.gray6?.regular || '#ffffff'};
 		&:hover {
-			background-color: ${({ theme }): string => theme.palette.gray6.hover};
+			background-color: ${({ theme }): string => theme?.palette?.gray6?.hover || '#e6e6e6'};
 		}
 	}
 	&:nth-child(even) {
-		background-color: ${({ theme }): string => theme.palette.gray5.regular};
+		background-color: ${({ theme }): string => theme?.palette?.gray5?.regular || '#f5f6f8'};
 		&:hover {
-			background-color: ${({ theme }): string => theme.palette.gray5.hover};
+			background-color: ${({ theme }): string => theme?.palette?.gray5?.hover || '#d7dbe3'};
 		}
 	}
 	${({ selected, highlight, theme }): SimpleInterpolation =>
 		(selected || highlight) &&
 		css`
-			background-color: ${theme.palette.highlight.regular} !important;
+			background-color: ${theme?.palette?.highlight?.regular || '#2b73d2'} !important;
 		`};
 	${({ clickable, showCheckbox }): SimpleInterpolation =>
 		(clickable === true || (typeof clickable === 'undefined' && showCheckbox === false)) &&

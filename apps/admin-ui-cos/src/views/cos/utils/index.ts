@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SelectItem } from '@zextras/carbonio-design-system';
+import { SelectItem } from '@zextras/ui-components';
 
 /**
  * Finds a `SelectItem` from a list based on the provided value, returning a fallback item if no match is found.

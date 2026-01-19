@@ -8,7 +8,7 @@ import {
 	generateColorSet,
 	ThemeProvider as UIThemeProvider,
 	ThemeProviderProps as UIThemeProviderProps
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import { reduce } from 'lodash-es';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { DefaultTheme } from 'styled-components';
@@ -111,7 +111,7 @@ interface ThemeProviderProps {
 }
 export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Element => {
 	const settings = useUserSettings();
-	const zimbraPrefFontSize = settings?.prefs?.zimbraPrefFontSize as string;
+	const zimbraPrefFontSize = (settings?.prefs?.zimbraPrefFontSize as string) || 'normal';
 	const [extensions, setExtensions] = useState<Partial<Record<keyof DefaultTheme, ThemeExtension>>>(
 		{
 			fonts: (theme) => {

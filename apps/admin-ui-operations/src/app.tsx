@@ -4,18 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '@zextras/ui-components';
+
 import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, OPERATIONS_ROUTE_ID, PRIMARY_BAR_OPERATIONS } from './constants';
-import { Spinner } from './views/components/spinner';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<Spinner />}>
+	<Suspense fallback={<spinner-wc />}>
 		<LazyAppView {...props} />
 	</Suspense>
 );

@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { server } from "admin-ui-test-utils";
-import { noop } from "lodash-es";
-import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
+import { server } from 'admin-ui-test-utils';
+import { cleanup } from '@testing-library/react';
+import { noop } from 'lodash-es';
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
-vi.stubGlobal("__CARBONIO_DEV__", false);
-vi.stubGlobal("BASE_PATH", "");
+vi.stubGlobal('__CARBONIO_DEV__', false);
+vi.stubGlobal('BASE_PATH', '');
 
 // Mock localStorage for jsdom
 const localStorageMock = (() => {
@@ -31,13 +32,13 @@ const localStorageMock = (() => {
     key: (index: number) => {
       const keys = Object.keys(store);
       return keys[index] || null;
-    }
+    },
   };
 })();
 
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
-  writable: true
+  writable: true,
 });
 
 window.matchMedia = function matchMedia(query: string): MediaQueryList {
@@ -53,14 +54,49 @@ window.matchMedia = function matchMedia(query: string): MediaQueryList {
   };
 };
 
-window.fetch = require("node-fetch");
+// IntersectionObserver mock
+vi.stubGlobal(
+  'IntersectionObserver',
+  vi.fn(function intersectionObserverMock() {
+    return {
+      observe: noop,
+      unobserve: noop,
+      disconnect: noop,
+    };
+  }),
+);
+
+// ResizeObserver mock
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(function ResizeObserverMock() {
+    return {
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    };
+  }),
+);
+
+// resizeTo mock
+window.resizeTo = function resizeTo(width, height): void {
+  Object.assign(this, {
+    innerWidth: width,
+    innerHeight: height,
+    outerWidth: width,
+    outerHeight: height,
+  }).dispatchEvent(new this.Event('resize'));
+};
+
+window.fetch = require('node-fetch');
+
 beforeEach(() => {
   // cleanup local storage
   window.localStorage.clear();
 });
 
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: "warn" });
+  server.listen({ onUnhandledRequest: 'warn' });
 });
 
 afterAll(() => {
@@ -68,6 +104,7 @@ afterAll(() => {
 });
 
 afterEach(() => {
+  cleanup();
   server.events.removeAllListeners();
   server.resetHandlers();
 });

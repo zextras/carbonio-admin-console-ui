@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManagerContext, useSnackbar } from '@zextras/carbonio-design-system';
+import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
 import { FC, useContext } from 'react';
 import { BrowserRouter, useHistory } from 'react-router-dom';
 

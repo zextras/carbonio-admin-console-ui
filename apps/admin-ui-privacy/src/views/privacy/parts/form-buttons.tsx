@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Padding } from '@zextras/carbonio-design-system';
+import { Button, Padding } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 type FormButtonsProps = { onSave: () => void; onCancel: () => void };

@@ -3,50 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	ChipInput,
-	Container,
-	Divider,
-	Input,
-	Padding,
-	Row,
-	Select,
-	Switch,
-	Table,
-	Text,
-	Tooltip,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
+import {  useAppConfigStore, useCurrentUserRights, useMtaServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	ChipInput,	Container,	Input,	Padding,	Row,	Select,	Switch,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  find, isEqual, join, map, some, split, trim  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 
-import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
-import {
-	ANTISPAM,
-	ANTIVIRUS,
-	CONFIG,
-	FALSE,
-	OPENDKIM,
-	TRUE,
-	ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-	ZIMBRA_MTA_MY_HOSTNAME,
-	ZIMBRA_MTA_MY_NETWORKS,
-	ZIMBRA_MTA_MY_ORIGIN,
-	ZIMBRA_MTA_RELAY_HOST,
-	ZIMBRA_MTA_SASL_AUTH_ENABLED,
-	ZIMBRA_MTA_SMTP_HELLO_NAME,
-	ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
+import {  IpRangeValue, MtaOutboundFlow, Server, TRow  } from '../../../../types';
+import { 	ANTISPAM,	ANTIVIRUS,	CONFIG,	FALSE,	OPENDKIM,	TRUE,	ZIMBRA_MTA_FALLBACK_RELAY_HOST,	ZIMBRA_MTA_MY_HOSTNAME,	ZIMBRA_MTA_MY_NETWORKS,	ZIMBRA_MTA_MY_ORIGIN,	ZIMBRA_MTA_RELAY_HOST,	ZIMBRA_MTA_SASL_AUTH_ENABLED,	ZIMBRA_MTA_SMTP_HELLO_NAME,	ZIMBRA_MTA_TLS_SECURITY_LEVEL,	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP } from '../../../constants';
+import {  modifyConfig  } from '../../../services/modify-config';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
-import { validateIpAddress } from '../../utility/utils';
+import {  validateIpAddress  } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -512,7 +482,7 @@ const MTAOutBoundFlow: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				padding={{ all: 'extralarge' }}

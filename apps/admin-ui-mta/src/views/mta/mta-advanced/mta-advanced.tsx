@@ -4,25 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  useAppConfigStore,
-  useCurrentUserRights,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Input,
-  Padding,
-  Radio,
-  RadioGroup,
-  Row,
-  Select,
-  Switch,
-  Text,
-  useSnackbar,
-} from "@zextras/carbonio-design-system";
-import { find, isEqual } from "lodash-es";
+import {   useAppConfigStore,  useCurrentUserRights } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Input,  Padding,  Radio,  RadioGroup,  Row,  Select,  Switch,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  find, isEqual  } from "lodash-es";
 import React, {
   ChangeEvent,
   FC,
@@ -31,27 +15,13 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useTranslation } from "react-i18next";
+import {  useTranslation  } from "react-i18next";
 
-import { MtaAdvanced } from "../../../../types";
-import {
-  CONFIG,
-  ZIMBRA_AMAVIS_LOG_LEVEL,
-  ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-  ZIMBRA_CLAM_AV_MAX_THREADS,
-  ZIMBRA_LMTP_NUM_THREADS,
-  ZIMBRA_MILTER_MAX_CONNECTIONS,
-  ZIMBRA_MITER_NUM_THREADS,
-  ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-  ZIMBRA_MTA_MESSAGE_SIZE,
-  ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-  ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-  ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-  ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-} from "../../../constants";
-import { modifyConfig } from "../../../services/modify-config";
+import {  MtaAdvanced  } from "../../../../types";
+import {   CONFIG,  ZIMBRA_AMAVIS_LOG_LEVEL,  ZIMBRA_AMAVIS_SA_LOG_LEVEL,  ZIMBRA_CLAM_AV_MAX_THREADS,  ZIMBRA_LMTP_NUM_THREADS,  ZIMBRA_MILTER_MAX_CONNECTIONS,  ZIMBRA_MITER_NUM_THREADS,  ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,  ZIMBRA_MTA_MESSAGE_SIZE,  ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,  ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,  ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,  ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL } from "../../../constants";
+import {  modifyConfig  } from "../../../services/modify-config";
 import ListRow from "../../list/list-row";
-import { bytesToMB, isValidProxy, mbToBytes } from "../../utility/utils";
+import {  bytesToMB, isValidProxy, mbToBytes  } from "../../utility/utils";
 
 const MTAAdvanced: FC = () => {
   const [t] = useTranslation();
@@ -640,7 +610,7 @@ const MTAAdvanced: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <Divider />
+        <divider-wc></divider-wc>
       </ListRow>
 
       <Container

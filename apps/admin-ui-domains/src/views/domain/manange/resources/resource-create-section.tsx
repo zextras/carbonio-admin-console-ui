@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider,Icon, Input, Row, Text } from '@zextras/carbonio-design-system';
-import { FC, useCallback,useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  Container,Icon, Input, Row, Text  } from '@zextras/ui-components';
+import {  FC, useCallback,useContext  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
 import ListRow from '../../../list/list-row';
-import { ResourceContext } from './resource-context';
-import { SendInviteAccounts } from './send-invite-accounts';
+import {  ResourceContext  } from './resource-context';
+import {  SendInviteAccounts  } from './send-invite-accounts';
 
 const ResourceCreateSection: FC = () => {
 	const context = useContext(ResourceContext);
@@ -152,7 +152,7 @@ const ResourceCreateSection: FC = () => {
 					</Container>
 				</ListRow>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray3" />
+					<divider-wc color="gray3"></divider-wc>
 				</Row>
 				<SendInviteAccounts
 					isEditable={false}
@@ -161,7 +161,7 @@ const ResourceCreateSection: FC = () => {
 					hideSearchBar
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray3" />
+					<divider-wc color="gray3"></divider-wc>
 				</Row>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" weight="bold">

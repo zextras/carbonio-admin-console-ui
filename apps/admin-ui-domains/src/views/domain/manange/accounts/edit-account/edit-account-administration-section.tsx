@@ -4,39 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Dropdown,
-	Input,
-	Padding,
-	Row,
-	Select,
-	Switch,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash-es';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useIsAdvanced, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Dropdown,	Input,	Padding,	Row,	Select,	Switch,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  debounce  } from 'lodash-es';
+import {  FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
-import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
-import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
-import {
-	getInitializedDomains,
-	GetInitializedDomainsResponse
-} from '../../../../../services/get-initialized-domains';
-import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../../services/search-directory-service';
+import {  DISPLAYNAME, FETCH_DATA_LIMIT, TRUE  } from '../../../../../constants';
+import {  addDistributionListMember  } from '../../../../../services/add-distributionlist-member-service';
+import {  getAccountMembershipRequest  } from '../../../../../services/get-account-membership';
+import { 	getInitializedDomains,	GetInitializedDomainsResponse } from '../../../../../services/get-initialized-domains';
+import {  removeDistributionListMember  } from '../../../../../services/remove-distributionlist-member-service';
+import {  searchDirectory  } from '../../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
+import {  AccountContext  } from '../account-context';
+import {  AccountType  } from '../account-types/account-types';
 
 const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
@@ -434,7 +418,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 				accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 					<>
 						<Row width="100%" padding={{ top: '2rem' }}>
-							<Divider color="gray2" />
+							<divider-wc></divider-wc>
 						</Row>
 						<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 							<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">

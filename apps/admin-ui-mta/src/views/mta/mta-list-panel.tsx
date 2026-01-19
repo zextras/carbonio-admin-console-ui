@@ -8,7 +8,7 @@ import {
   useGlobalCarbonioSendAnalytics,
   useMtaServers,
 } from '@zextras/admin-ui-bootstrap';
-import { Container, Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,6 @@ import {
   QUEUE,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
-import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 

@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider,Row, Text } from '@zextras/carbonio-design-system';
-import { FC, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import {  Container,Row, Text  } from '@zextras/ui-components';
+import {  FC, useCallback  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
 
@@ -210,7 +210,7 @@ export const Features: FC<{
 						</Row>
 					</Container>
 				)}
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row
 				mainAlignment="flex-start"
@@ -266,7 +266,7 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row
 				mainAlignment="flex-start"

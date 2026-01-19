@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Divider, Input,Padding, Text, Tooltip } from '@zextras/carbonio-design-system';
-import { FC, useContext, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Container, Input,Padding, Text, Tooltip  } from '@zextras/ui-components';
+import {  FC, useContext, useEffect, useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import ListRow from '../../../list/list-row';
-import { HSMContext } from '../hsm-context/hsm-context';
+import {  HSMContext  } from '../hsm-context/hsm-context';
 
 const HSMcreatePolicy: FC<any> = () => {
 	const [t] = useTranslation();
@@ -185,7 +185,7 @@ const HSMcreatePolicy: FC<any> = () => {
 			</ListRow>
 			<ListRow>
 				<Container padding={{ top: 'small' }}>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Container>
 			</ListRow>
 			<ListRow>

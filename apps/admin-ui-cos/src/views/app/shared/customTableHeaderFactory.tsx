@@ -11,7 +11,7 @@ import {
   Row,
   Select,
   Text,
-} from "@zextras/carbonio-design-system";
+} from "@zextras/ui-components";
 import { isEmpty } from "lodash-es";
 import React, {
   FC,

@@ -4,59 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	postSoapFetchRequest,
-	useDomainStore,
-	useIsAdvanced,
-	useUserAccount,
-	useUserSettings} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Row,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { debounce, filter, flatMapDeep } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { 	postSoapFetchRequest,	useDomainStore,	useIsAdvanced,	useUserAccount,	useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	ModalOverlay,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  debounce, filter, flatMapDeep  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
-import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
+import {  Attribute, CosMaxAccountValues, objectType  } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
-import {
-	ADMIN_GROUP_FLAG,
-	HELPDESK_ADMINS,
-	RECORD_DISPLAY_LIMIT,
-	SYSTEM_ACCOUNT_FLAG,
-	ZIMBRA_ADMIN_URN,
-	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
-} from '../../../../constants';
-import { accountListDirectory } from '../../../../services/account-list-directory-service';
-import { checkRightRequest } from '../../../../services/check-right';
-import {
-	CosA,
-	getCosGeneralInformation,
-	GetCosResponse} from '../../../../services/cos-general-information-service';
-import { getAccountRequest } from '../../../../services/get-account';
-import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { getSessions } from '../../../../services/get-sessions';
-import { getSingatures } from '../../../../services/get-signature-service';
-import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
-import { fetchSoap } from '../../../../services/listOTP-service';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
+import { 	ADMIN_GROUP_FLAG,	HELPDESK_ADMINS,	RECORD_DISPLAY_LIMIT,	SYSTEM_ACCOUNT_FLAG,	ZIMBRA_ADMIN_URN,	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS } from '../../../../constants';
+import {  accountListDirectory  } from '../../../../services/account-list-directory-service';
+import {  checkRightRequest  } from '../../../../services/check-right';
+import { 	CosA,	getCosGeneralInformation,	GetCosResponse } from '../../../../services/cos-general-information-service';
+import {  getAccountRequest  } from '../../../../services/get-account';
+import {  getAccountMembershipRequest  } from '../../../../services/get-account-membership';
+import {  getSessions  } from '../../../../services/get-sessions';
+import {  getSingatures  } from '../../../../services/get-signature-service';
+import {  InitDomainForDelegation  } from '../../../../services/init-domain-for-delegation';
+import {  fetchSoap  } from '../../../../services/listOTP-service';
+import {  removeDistributionListMember  } from '../../../../services/remove-distributionlist-member-service';
+import {  searchDirectory  } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
-import { AccountContext } from '../accounts/account-context';
+import {  AccountContext  } from '../accounts/account-context';
 import EditAccount from '../accounts/edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
@@ -998,7 +974,7 @@ const ManageDelegates: FC = () => {
 							</Row>
 						</Row>
 						<Row orientation="horizontal" width="100%" background="gray6">
-							<Divider />
+							<divider-wc></divider-wc>
 						</Row>
 						{isGlobalAdmin && (
 							<>
@@ -1015,7 +991,7 @@ const ManageDelegates: FC = () => {
 									/>
 								</ListRow>
 								<Row orientation="horizontal" width="100%" background="gray6">
-									<Divider />
+									<divider-wc></divider-wc>
 								</Row>
 							</>
 						)}

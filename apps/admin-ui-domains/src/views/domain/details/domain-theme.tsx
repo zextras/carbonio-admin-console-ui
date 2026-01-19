@@ -3,31 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore,useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { cloneDeep, isEqual, reduce } from 'lodash-es';
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useAppConfigStore,useDomainStore, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	OverlayDivision,	Padding,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  cloneDeep, isEqual, reduce  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { themeConfigStore } from '../../../../types/domain';
-import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { getDomainInformation } from '../../../services/domain-information-service';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import OverlayDivision from '../../components/overlayDivision';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { isValidHexColor } from '../../utility/utils';
-import { ThemeConfigs } from '../theme/theme-configs';
-import { ResetTheme } from '../theme/theme-reset';
+import {  themeConfigStore  } from '../../../../types/domain';
+import {  TRUE, ZIMBRA_ADMIN_URN  } from '../../../constants';
+import {  getDomainInformation  } from '../../../services/domain-information-service';
+import {  flushCache  } from '../../../services/flush-cache-service';
+import {  modifyDomain  } from '../../../services/modify-domain-service';
+import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
+import {  isValidHexColor  } from '../../utility/utils';
+import {  ThemeConfigs  } from '../theme/theme-configs';
+import {  ResetTheme  } from '../theme/theme-reset';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -299,7 +290,7 @@ const DomainTheme: FC = () => {
 								</Row>
 							</Row>
 						</Container>
-						<Divider color="gray2" />
+						<divider-wc></divider-wc>
 					</Row>
 					<ThemeConfigs
 						themeConfig={domainTheme}

@@ -4,28 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  soapFetch,
-  useIsAdvanced,
-  useStickyBarStore,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Input,
-  Link,
-  Modal,
-  Padding,
-  Radio,
-  Row,
-  Select,
-  Switch,
-  Text,
-  Tooltip,
-  useSnackbar,
-} from "@zextras/carbonio-design-system";
-import { isEmpty } from "lodash-es";
+import {   soapFetch,  useIsAdvanced,  useStickyBarStore } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Input,  Link,  Modal,  OverlayDivision,  Padding,  Radio,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from "@zextras/ui-components";
+import {  isEmpty  } from "lodash-es";
 import React, {
   FC,
   useCallback,
@@ -34,49 +15,16 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {  Trans, useTranslation  } from "react-i18next";
 import styled from "styled-components";
 
-import {
-  Bucket,
-  BucketVolume,
-  objectType,
-  Volume,
-  VolumeType,
-} from "../../../../../../types";
-import {
-  ALIBABA,
-  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
-  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
-  CEPH,
-  CLOUDIAN,
-  CUSTOM_S3,
-  EMC,
-  FILEBLOB,
-  INDEX,
-  MINIO,
-  OPENIO,
-  PRIMARY,
-  PRIMARY_TYPE_VALUE,
-  S3,
-  SCALITYS3,
-  SECONDARY,
-  SECONDARY_TYPE_VALUE,
-  SWIFT,
-  UNUSED,
-  USAGE_IN_EXTERNAL_BACKUP,
-  ZIMBRA_ADMIN_URN,
-} from "../../../../../constants";
-import { fetchSoap } from "../../../../../services/bucket-service";
-import { useBucketVolumeStore } from "../../../../../store/bucket-volume/store";
+import {   Bucket,  BucketVolume,  objectType,  Volume,  VolumeType } from "../../../../../../types";
+import {   ALIBABA,  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,  CEPH,  CLOUDIAN,  CUSTOM_S3,  EMC,  FILEBLOB,  INDEX,  MINIO,  OPENIO,  PRIMARY,  PRIMARY_TYPE_VALUE,  S3,  SCALITYS3,  SECONDARY,  SECONDARY_TYPE_VALUE,  SWIFT,  UNUSED,  USAGE_IN_EXTERNAL_BACKUP,  ZIMBRA_ADMIN_URN } from "../../../../../constants";
+import {  fetchSoap  } from "../../../../../services/bucket-service";
+import {  useBucketVolumeStore  } from "../../../../../store/bucket-volume/store";
 import Displayer from "../../../../components/displayer";
-import OverlayDivision from "../../../../components/overlayDivision";
 import ListRow from "../../../../list/list-row";
-import {
-  BucketTypeItems,
-  volumeAllocationList,
-  volumeTypeList,
-} from "../../../../utility/utils";
+import {   BucketTypeItems,  volumeAllocationList,  volumeTypeList } from "../../../../utility/utils";
 
 const ovelayStyle = styled(Container)`
   position: fixed;
@@ -840,7 +788,7 @@ const ModifyVolume: FC<{
             />
           </Row>
         </Row>
-        <Divider />
+        <divider-wc></divider-wc>
         <Displayer buttons={buttons} pinIcon={isSticky} />
         {Object.keys(externalVolDetail)?.length === 0 ? (
           <Container

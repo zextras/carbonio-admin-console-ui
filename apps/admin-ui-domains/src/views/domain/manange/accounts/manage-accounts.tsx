@@ -4,68 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	postSoapFetchRequest,
-	useDomainStore,
-	useIsAdvanced,
-	useUserAccount} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Padding,
-	Row,
-	Table,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { debounce, filter,flatMapDeep } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { 	postSoapFetchRequest,	useDomainStore,	useIsAdvanced,	useUserAccount } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Icon,	Input,	ModalOverlay,	Padding,	Row,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  debounce, filter,flatMapDeep  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useRef,useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
-import {
-	ABQ_MODE,
-	ACCOUNT,
-	ASC,
-	BACKUP_ENABLED,
-	BACKUP_SELF_UNDELETE_ALLOWED,
-	COS,
-	DESC,
-	FILES_QUOTA_LIMIT,
-	FILES_QUOTA_USED,
-	MAILBOX_QUOTA_USED,
-	RECORD_DISPLAY_LIMIT,
-	ZIMBRA_ADMIN_URN
-} from '../../../../constants';
-import {
-	accountListDirectory,
-	getMailboxQuota
-} from '../../../../services/account-list-directory-service';
-import { checkRightRequest } from '../../../../services/check-right';
-import {
-	CosA,
-	getCosGeneralInformation,
-	GetCosResponse} from '../../../../services/cos-general-information-service';
-import { getAccountRequest } from '../../../../services/get-account';
-import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { getCoreAttributes } from '../../../../services/get-core-attributes';
-import { getFileQuotaById } from '../../../../services/get-file-quota';
-import { getSessions } from '../../../../services/get-sessions';
-import { getSingatures } from '../../../../services/get-signature-service';
-import { fetchSoap } from '../../../../services/listOTP-service';
+import { 	ABQ_MODE,	ACCOUNT,	ASC,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	COS,	DESC,	FILES_QUOTA_LIMIT,	FILES_QUOTA_USED,	MAILBOX_QUOTA_USED,	RECORD_DISPLAY_LIMIT,	ZIMBRA_ADMIN_URN } from '../../../../constants';
+import { 	accountListDirectory,	getMailboxQuota } from '../../../../services/account-list-directory-service';
+import {  checkRightRequest  } from '../../../../services/check-right';
+import { 	CosA,	getCosGeneralInformation,	GetCosResponse } from '../../../../services/cos-general-information-service';
+import {  getAccountRequest  } from '../../../../services/get-account';
+import {  getAccountMembershipRequest  } from '../../../../services/get-account-membership';
+import {  getCoreAttributes  } from '../../../../services/get-core-attributes';
+import {  getFileQuotaById  } from '../../../../services/get-file-quota';
+import {  getSessions  } from '../../../../services/get-sessions';
+import {  getSingatures  } from '../../../../services/get-signature-service';
+import {  fetchSoap  } from '../../../../services/listOTP-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { AccountContext } from './account-context';
-import { AccountType } from './account-types/account-types';
+import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
+import {  AccountContext  } from './account-context';
+import {  AccountType  } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 
@@ -1130,7 +1095,7 @@ const ManageAccounts: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"

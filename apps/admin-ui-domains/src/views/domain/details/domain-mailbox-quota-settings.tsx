@@ -4,48 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore,useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	Padding,
-	Row,
-	Select,
-	Table,
-	Text,
-	THeader,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { TFunction } from 'i18next';
-import { isEqual, reduce } from 'lodash-es';
+import {  useDomainStore,useIsAdvanced, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Input,	Padding,	Row,	Select,	Table,	Text,	THeader,	useSnackbar } from '@zextras/ui-components';
+import {  TFunction  } from 'i18next';
+import {  isEqual, reduce  } from 'lodash-es';
 import React, { FC, useCallback,useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 
-import {
-	ALLOW_SEND_RECEIVE,
-	BLOCK_SEND,
-	BLOCK_SEND_RECEIVE,
-	BYTE_PER_MB,
-	PERCENT_USED,
-	RECORD_DISPLAY_LIMIT,
-	TOTAL_USED,
-	TRUE,
-	ZIMBRA_ADMIN_URN
-} from '../../../constants';
-import { flushCache } from '../../../services/flush-cache-service';
-import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
-import { getQuotaUsage } from '../../../services/get-quota-usage-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
+import { 	ALLOW_SEND_RECEIVE,	BLOCK_SEND,	BLOCK_SEND_RECEIVE,	BYTE_PER_MB,	PERCENT_USED,	RECORD_DISPLAY_LIMIT,	TOTAL_USED,	TRUE,	ZIMBRA_ADMIN_URN } from '../../../constants';
+import {  flushCache  } from '../../../services/flush-cache-service';
+import {  getQuotaUsageAdvance  } from '../../../services/get-file-quota-accounts-usage';
+import {  getQuotaUsage  } from '../../../services/get-quota-usage-service';
+import {  modifyDomain  } from '../../../services/modify-domain-service';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DownloadCSV from '../../app/shared/download-csv';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
-import { MailBoxQuota } from '../../app/types/mailbox_quota';
+import {  MailBoxQuota  } from '../../app/types/mailbox_quota';
 import Paging from '../../components/paging';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { BytesToGB, GbToBytes } from '../../utility/utils';
+import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
+import {  BytesToGB, GbToBytes  } from '../../utility/utils';
 
 const formatQuota = (quotaUsed: number, quotaLimit: number, t: TFunction): [string, number] => {
 	if (quotaLimit === 0) {
@@ -568,7 +547,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"
@@ -741,7 +720,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 								width="fill"
 								padding={{ top: 'medium' }}
 							>
-								<Divider />
+								<divider-wc></divider-wc>
 							</Row>
 							<Container orientation="horizontal" mainAlignment="space-between" width="100%">
 								<Container crossAlignment="flex-start">

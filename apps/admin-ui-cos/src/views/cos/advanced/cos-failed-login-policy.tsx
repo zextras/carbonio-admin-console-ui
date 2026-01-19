@@ -3,21 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Container,
-	Divider,
-	Input,
-	Row,
-	Select,
-	SingleSelectionOnChange,
-	Switch,
-	Text
-} from '@zextras/carbonio-design-system';
-import { ChangeEvent, FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Container,	Input,	Row,	Select,	SingleSelectionOnChange,	Switch,	Text } from '@zextras/ui-components';
+import {  ChangeEvent, FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
-import { TimeItems } from '../../../../types/general';
+import {  AccountType  } from '../../../../types/account';
+import {  TimeItems  } from '../../../../types/general';
 import ListRow from '../../list/list-row';
 
 type FailedLoginPolicyProps = {
@@ -181,7 +172,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 		</Row>
 	);
 };

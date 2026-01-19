@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import { Spinner } from './components/spinner';
 import { Subscription } from './subscription/subscription';
 
 interface ContainerExtendProps extends ContainerProps {
@@ -32,7 +31,7 @@ const AppView: FC = () => {
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container style={{ maxWidth: '100%' }}>
 						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<Spinner />}>
+							<Suspense fallback={<spinner-wc />}>
 								<Subscription />
 							</Suspense>
 						</DetailViewContainer>

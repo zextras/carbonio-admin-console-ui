@@ -11,7 +11,7 @@ import {
 	Select,
 	SelectItem,
 	Text,
-	Tooltip} from '@zextras/carbonio-design-system';
+	Tooltip} from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

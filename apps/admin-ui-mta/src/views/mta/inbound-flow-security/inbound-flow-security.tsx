@@ -3,45 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	ChipInput,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Switch,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { find, isEqual, uniq } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo,useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  useAppConfigStore, useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	ChipInput,	Container,	Padding,	Row,	Switch,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  find, isEqual, uniq  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo,useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
-import { MtaInboundSecurity } from '../../../../types';
-import {
-	_REJECT_UNKNOWN_CLIENT_HOSTNAME,
-	CONFIG,
-	FALSE,
-	REJECT_INVALID_HELO_HOSTNAME,
-	REJECT_NON_FQDN_HELO_HOSTNAME,
-	REJECT_NON_FQDN_SENDER,
-	REJECT_SENDER_LOGIN_MISMATCH,
-	REJECT_UNKNOWN_CLIENT_HOSTNAME,
-	REJECT_UNKNOWN_HELO_HOSTNAME,
-	REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,
-	REJECT_UNKNOWN_SENDER_DOMAIN,
-	TRUE,
-	ZIMBRA_MTA_BLOCKED_EXTENSION,
-	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-	ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
-	ZIMBRA_MTA_RESTRICTION,
-	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
+import {  MtaInboundSecurity  } from '../../../../types';
+import { 	_REJECT_UNKNOWN_CLIENT_HOSTNAME,	CONFIG,	FALSE,	REJECT_INVALID_HELO_HOSTNAME,	REJECT_NON_FQDN_HELO_HOSTNAME,	REJECT_NON_FQDN_SENDER,	REJECT_SENDER_LOGIN_MISMATCH,	REJECT_UNKNOWN_CLIENT_HOSTNAME,	REJECT_UNKNOWN_HELO_HOSTNAME,	REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,	REJECT_UNKNOWN_SENDER_DOMAIN,	TRUE,	ZIMBRA_MTA_BLOCKED_EXTENSION,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,	ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,	ZIMBRA_MTA_RESTRICTION,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS } from '../../../constants';
+import {  modifyConfig  } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 
@@ -624,7 +594,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 
 			<Container
@@ -651,7 +621,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					</Text>
 				</Container>
 				<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-					<Divider />
+					<divider-wc></divider-wc>
 				</Container>
 				<Container
 					crossAlignment="flex-start"
@@ -760,7 +730,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					</Container>
 				</Container>
 				<ListRow>
-					<Divider />
+					<divider-wc></divider-wc>
 				</ListRow>
 
 				<Container
@@ -850,7 +820,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					</Container>
 				</Container>
 				<ListRow>
-					<Divider />
+					<divider-wc></divider-wc>
 				</ListRow>
 
 				<Container

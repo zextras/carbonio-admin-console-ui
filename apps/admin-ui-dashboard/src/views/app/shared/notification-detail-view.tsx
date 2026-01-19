@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useStickyBarStore } from '@zextras/admin-ui-bootstrap';
-import { Button,Container, Divider, Input, Row, Text } from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useStickyBarStore  } from '@zextras/admin-ui-bootstrap';
+import {  Button,Container, Input, Row, Text  } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
 import Displayer from '../../components/displayer';
 import ListRow from '../../list/list-row';
@@ -95,7 +95,7 @@ const NotificationDetail: FC<{
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Row width="100%" padding={{ all: 'small' }}>
 				<Displayer buttons={buttons} pinIcon={isSticky} />

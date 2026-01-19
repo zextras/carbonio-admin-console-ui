@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ import { MANAGE_APP_ID, STORAGES_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
-import { Spinner } from './components/spinner';
+
 
 const AppView: FC = () => {
 	return (
@@ -20,12 +20,12 @@ const AppView: FC = () => {
 			<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container style={{ maxWidth: '265px' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<spinner-wc />}>
 							<BucketListPanel />
 						</Suspense>
 					</Container>
 					<Container style={{ maxWidth: '100%' }}>
-						<Suspense fallback={<Spinner />}>
+						<Suspense fallback={<spinner-wc />}>
 							<BucketRoutePanel />
 						</Suspense>
 					</Container>

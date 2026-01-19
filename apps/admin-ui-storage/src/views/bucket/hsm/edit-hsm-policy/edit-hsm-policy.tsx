@@ -4,21 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	Button,
-	Container,
-	DefaultTabBarItem,
-	Divider,
-	Icon,
-	Padding,
-	Row,
-	TabBar,
-	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Button,	Container,	DefaultTabBarItem,	Icon,	Padding,	Row,	TabBar,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  FC, ReactElement, useCallback, useEffect, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { HSMContext } from '../hsm-context/hsm-context';
+import {  HSMContext  } from '../hsm-context/hsm-context';
 import EditHsmPolicyDetailSection from './edit-hsm-policy-detail-section';
 import EditHsmPolicyVolumesSection from './edit-hsm-policy-volumes-section';
 
@@ -209,7 +199,7 @@ const EditHsmPolicy: FC<{
 				</Row>
 			</Row>
 			<Row>
-				<Divider color="gray3" />
+				<divider-wc color="gray3"></divider-wc>
 			</Row>
 
 			<Container
@@ -235,7 +225,7 @@ const EditHsmPolicy: FC<{
 					/>
 				</Row>
 				<Row width="100%">
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
 					<Container crossAlignment="flex-start" padding={{ all: '0rem' }}>

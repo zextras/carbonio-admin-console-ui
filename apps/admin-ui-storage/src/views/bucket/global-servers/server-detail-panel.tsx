@@ -3,35 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	getSoapFetchRequest,
-	useIsAdvanced,
-	useMailstoreServers
-} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Row,
-	Table,
-	Text} from '@zextras/carbonio-design-system';
-import { TFunction } from 'i18next';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	getSoapFetchRequest,	useIsAdvanced,	useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Icon,	Input,	Row,	Table,	Text } from '@zextras/ui-components';
+import {  TFunction  } from 'i18next';
+import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import {
-	DESCRIPTION,
-	HSM_SCHEDULED_KEY,
-	INDEXER_MANAGER_KEY,
-	ZIMBRA_ADMIN_URN
-} from '../../../constants';
-import { fetchSoap } from '../../../services/bucket-service';
+import { 	DESCRIPTION,	HSM_SCHEDULED_KEY,	INDEXER_MANAGER_KEY,	ZIMBRA_ADMIN_URN } from '../../../constants';
+import {  fetchSoap  } from '../../../services/bucket-service';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import { headerAdvanced } from '../../utility/utils';
+import {  headerAdvanced  } from '../../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -344,7 +327,7 @@ const ServerDetailPanel: FC = () => {
 						{t('buckets.servers_list', 'Servers List')}
 					</Text>
 				</Row>
-				<Divider />
+				<divider-wc></divider-wc>
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"

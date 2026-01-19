@@ -1,10 +1,9 @@
- 
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Icon,Row, Table, Text } from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Table, Text } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,215 +13,214 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
-	operations: Array<any>;
-	headers: any;
-	donePanel: boolean;
-	selectedRows: any;
-	onSelectionChange: any;
-	onClick: (value: number) => void;
+  operations: Array<any>;
+  headers: any;
+  donePanel: boolean;
+  selectedRows: any;
+  onSelectionChange: any;
+  onClick: (value: number) => void;
 }> = ({ operations, headers, donePanel, selectedRows, onSelectionChange, onClick }) => {
-	const [t] = useTranslation();
+  const [t] = useTranslation();
 
-	const doneTableRowPanel = useMemo(
-		() =>
-			operations?.map((v, i) => ({
-				id: i?.toString(),
-				columns: [
-					<Row
-						
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="regular">
-							{v?.serverName || ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.name || ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							
-							justifyContent: 'flex-center'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						{v?.type === EXCEPTION && (
-							<Icon icon="StopCircleOutline" size="medium" color="secondary" />
-						)}
-						{v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
-						{v?.type === STARTED && (
-							<Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
-						)}
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.parameters?.requesterAddress}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.humanStartTime ? v?.humanStartTime : ''}
-						</Text>
-					</Row>
-				],
-				clickable: true
-			})),
-		[onClick, operations]
-	);
+  const doneTableRowPanel = useMemo(
+    () =>
+      operations?.map((v, i) => ({
+        id: i?.toString(),
+        columns: [
+          <Row
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+            key={i}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="medium">
+              {v?.serverName || ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.name || ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
 
-	const unDoneTableRowsPanel = useMemo(
-		() =>
-			operations?.map((v, i) => ({
-				id: i?.toString(),
-				columns: [
-					<Row
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="regular">
-							{v?.host || ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.name || ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-start'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.parameters?.requesterAddress}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-center'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						style={{
-							textAlign: 'left',
-							justifyContent: 'flex-center'
-						}}
-						onClick={(): void => {
-							onClick(i);
-						}}
-					>
-						<Text weight="light" size="small">
-							{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
-						</Text>
-					</Row>
-				],
-				clickable: true
-			})),
-		[onClick, operations]
-	);
+              justifyContent: 'flex-center',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            {v?.type === EXCEPTION && (
+              <Icon icon="StopCircleOutline" size="medium" color="secondary" />
+            )}
+            {v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+            {v?.type === STARTED && (
+              <Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
+            )}
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.parameters?.requesterAddress}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.humanStartTime ? v?.humanStartTime : ''}
+            </Text>
+          </Row>,
+        ],
+        clickable: true,
+      })),
+    [onClick, operations],
+  );
 
-	const tableRows = useMemo(
-		() => (donePanel ? doneTableRowPanel : unDoneTableRowsPanel),
-		[donePanel, doneTableRowPanel, unDoneTableRowsPanel]
-	);
+  const unDoneTableRowsPanel = useMemo(
+    () =>
+      operations?.map((v, i) => ({
+        id: i?.toString(),
+        columns: [
+          <Row
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+            key={i}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="medium">
+              {v?.host || ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.name || ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-start',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.parameters?.requesterAddress}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-center',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+            </Text>
+          </Row>,
+          <Row
+            key={i}
+            style={{
+              textAlign: 'left',
+              justifyContent: 'flex-center',
+            }}
+            onClick={(): void => {
+              onClick(i);
+            }}
+          >
+            <Text weight="light" size="small">
+              {v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+            </Text>
+          </Row>,
+        ],
+        clickable: true,
+      })),
+    [onClick, operations],
+  );
 
-	return (
-		<Container crossAlignment="flex-start">
-			<Table
-				headers={headers}
-				rows={tableRows}
-				showCheckbox={false}
-				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
-				RowFactory={CustomRowFactory}
-				HeaderFactory={CustomHeaderFactory}
-			/>
-			{tableRows.length === 0 && (
-				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text weight="light" size="small">
-						{t('label.empty_table', 'Empty Table')}
-					</Text>
-				</Row>
-			)}
-		</Container>
-	);
+  const tableRows = useMemo(
+    () => (donePanel ? doneTableRowPanel : unDoneTableRowsPanel),
+    [donePanel, doneTableRowPanel, unDoneTableRowsPanel],
+  );
+
+  return (
+    <Container crossAlignment="flex-start">
+      <Table
+        headers={headers}
+        rows={tableRows}
+        showCheckbox={false}
+        multiSelect={false}
+        selectedRows={selectedRows}
+        onSelectionChange={onSelectionChange}
+        RowFactory={CustomRowFactory}
+        HeaderFactory={CustomHeaderFactory}
+      />
+      {tableRows.length === 0 && (
+        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
+          <Text weight="light" size="small">
+            {t('label.empty_table', 'Empty Table')}
+          </Text>
+        </Row>
+      )}
+    </Container>
+  );
 };

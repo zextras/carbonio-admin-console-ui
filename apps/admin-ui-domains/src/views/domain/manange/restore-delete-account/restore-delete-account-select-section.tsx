@@ -4,38 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  getSoapFetchRequest,
-  useDomainStore,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Row,
-  Table,
-  Text,
-  useSnackbar,
-} from "@zextras/carbonio-design-system";
-import { debounce } from "lodash-es";
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {   getSoapFetchRequest,  useDomainStore } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Icon,  Input,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  debounce  } from "lodash-es";
+import {   FC,  useCallback,  useContext,  useEffect,  useMemo,  useState } from "react";
+import {  Trans, useTranslation  } from "react-i18next";
 
 import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
 import CustomRowFactory from "../../../app/shared/customTableRowFactory";
 import Paging from "../../../components/paging";
 import ListRow from "../../../list/list-row";
-import { getFormatedShortDate } from "../../../utility/utils";
-import { RestoreDeleteAccountContext } from "./restore-delete-account-context";
+import {  getFormatedShortDate  } from "../../../utility/utils";
+import {  RestoreDeleteAccountContext  } from "./restore-delete-account-context";
 
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const { t } = useTranslation();
@@ -367,7 +347,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 
             <ListRow>
               <Container padding={{ top: "large", bottom: "small" }}>
-                <Divider />
+                <divider-wc></divider-wc>
               </Container>
             </ListRow>
             <ListRow>

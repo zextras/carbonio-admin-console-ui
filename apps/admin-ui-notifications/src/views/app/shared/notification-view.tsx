@@ -4,31 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Container,
-  DefaultTabBarItem,
-  Divider,
-  Icon,
-  TabBar,
-  Table,
-  Text,
-  useSnackbar,
-} from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { orderBy } from 'lodash-es';
-import { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {   Container,  DefaultTabBarItem,  Icon,  ModalOverlay,  TabBar,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  orderBy  } from 'lodash-es';
+import {  FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import {
-  DESC,
-  NOTIFICATION_ALL,
-  NOTIFICATION_ERROR,
-  NOTIFICATION_INFORMATION,
-  NOTIFICATION_WARNING,
-} from '../../../constants';
-import { getAllNotifications } from '../../../services/get-all-notifications';
-import { readUnreadNotification } from '../../../services/read-unread-notification';
-import ModalOverlay from '../../components/ModalOverlay';
+import {   DESC,  NOTIFICATION_ALL,  NOTIFICATION_ERROR,  NOTIFICATION_INFORMATION,  NOTIFICATION_WARNING } from '../../../constants';
+import {  getAllNotifications  } from '../../../services/get-all-notifications';
+import {  readUnreadNotification  } from '../../../services/read-unread-notification';
 import ListRow from '../../list/list-row';
 import CustomHeaderFactory from './customTableHeaderFactory';
 import CustomRowFactory from './customTableRowFactory';
@@ -462,7 +446,7 @@ const NotificationView: FC<{
         </Container>
       </ListRow>
       <ListRow>
-        <Divider />
+        <divider-wc></divider-wc>
       </ListRow>
       <ListRow>
         <Container

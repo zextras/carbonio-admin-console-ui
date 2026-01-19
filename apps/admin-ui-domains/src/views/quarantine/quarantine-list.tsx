@@ -4,45 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  Collapse,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Modal,
-  Padding,
-  Row,
-  Table,
-  Text,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useAppConfigStore  } from '@zextras/admin-ui-bootstrap';
+import {   Button,  Collapse,  Container,  Icon,  Input,  Modal,  ModalOverlay,  OverlayDivision,  Padding,  Row,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
 import logo from '../../assets/ninja_robo.svg';
-import { batchService } from '../../services/batch-service';
-import { bounceMsgRequest } from '../../services/bounce-message';
-import { createAccountRequest } from '../../services/create-account';
-import { deleteAccount } from '../../services/delete-account-service';
-import { getAccountRequest } from '../../services/get-account';
-import { getAllConfig } from '../../services/get-all-config';
-import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request';
-import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
-import { msgActionRequest } from '../../services/message-action';
-import { modifyConfig } from '../../services/modify-config';
+import {  batchService  } from '../../services/batch-service';
+import {  bounceMsgRequest  } from '../../services/bounce-message';
+import {  createAccountRequest  } from '../../services/create-account';
+import {  deleteAccount  } from '../../services/delete-account-service';
+import {  getAccountRequest  } from '../../services/get-account';
+import {  getAllConfig  } from '../../services/get-all-config';
+import {  getDelegateAuthRequest  } from '../../services/get-delegate-auth-request';
+import {  getQuarantineMessages  } from '../../services/get-quarantine-messages-service';
+import {  msgActionRequest  } from '../../services/message-action';
+import {  modifyConfig  } from '../../services/modify-config';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ModalOverlay from '../components/ModalOverlay';
-import OverlayDivision from '../components/overlayDivision';
 import ListRow from '../list/list-row';
-import { MessageTableHeaders, RandomString } from '../utility/utils';
+import {  MessageTableHeaders, RandomString  } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -1096,7 +1080,7 @@ const QuarantineList: FC = () => {
       </Row>
 
       <Row orientation="horizontal" width="100%" background="gray6">
-        <Divider />
+        <divider-wc></divider-wc>
       </Row>
       <Container
         orientation="column"
@@ -1170,7 +1154,7 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <Divider />
+                      <divider-wc></divider-wc>
                     </Row>
                     <Row orientation="horizontal" width="100%" padding={{ vertical: 'large' }}>
                       <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
@@ -1220,7 +1204,7 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <Divider />
+                      <divider-wc></divider-wc>
                     </Row>
                     <Row
                       orientation="horizontal"
@@ -1502,7 +1486,7 @@ const QuarantineList: FC = () => {
                     </Row>
                   </Row>
                   <Row width="100%" padding={{ top: 'medium' }}>
-                    <Divider color="gray2" />
+                    <divider-wc></divider-wc>
                   </Row>
                   <Row
                     width="100%"

@@ -4,41 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Row,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { format } from 'date-fns';
-import { debounce,filter, flatMapDeep } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef,useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  postSoapFetchRequest, useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	ModalOverlay,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  debounce,filter, flatMapDeep  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useRef,useState  } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
-import { accountListDirectory } from '../../services/account-list-directory-service';
-import {
-	CosA,
-	getCosGeneralInformation,
-	GetCosResponse} from '../../services/cos-general-information-service';
-import { getAccountRequest } from '../../services/get-account';
-import { getAccountMembershipRequest } from '../../services/get-account-membership';
-import { getSessions } from '../../services/get-sessions';
-import { getSingatures } from '../../services/get-signature-service';
-import { fetchSoap } from '../../services/listOTP-service';
+import {  RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN  } from '../../constants';
+import {  accountListDirectory  } from '../../services/account-list-directory-service';
+import { 	CosA,	getCosGeneralInformation,	GetCosResponse } from '../../services/cos-general-information-service';
+import {  getAccountRequest  } from '../../services/get-account';
+import {  getAccountMembershipRequest  } from '../../services/get-account-membership';
+import {  getSessions  } from '../../services/get-sessions';
+import {  getSingatures  } from '../../services/get-signature-service';
+import {  fetchSoap  } from '../../services/listOTP-service';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
-import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import { AccountContext } from './manange/accounts/account-context';
+import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
+import {  AccountContext  } from './manange/accounts/account-context';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -704,7 +692,7 @@ const GlobalDelegates: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"
