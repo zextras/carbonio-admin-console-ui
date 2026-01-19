@@ -1,3 +1,9 @@
+## [0.12.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.10...v0.12.0-devel.11) (2026-01-19)
+
+### Bug Fixes
+
+* show zimbraAuthLdapExternalDn only when zimbraAuthLdapURL is def… ([#1035](https://github.com/zextras/carbonio-admin-console-ui/issues/1035)) ([b80f25d](https://github.com/zextras/carbonio-admin-console-ui/commit/b80f25d94a742e4e464cf6d1b545c7eda720217a))
+
 ## [0.12.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.9...v0.12.0-devel.10) (2026-01-19)
 
 ### Features
