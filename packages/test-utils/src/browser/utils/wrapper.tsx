@@ -6,6 +6,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
+import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
