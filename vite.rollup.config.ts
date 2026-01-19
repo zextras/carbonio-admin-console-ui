@@ -19,6 +19,7 @@ export const SHARED_EXTERNALS = [
   'i18next',
   'react-i18next',
   '@tanstack/react-query',
+  'react-router-dom',
   '@zextras/admin-ui-bootstrap',
   'msw',
 ] as const;
@@ -100,6 +101,7 @@ export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
     'i18next',
     'react-i18next',
     '@tanstack/react-query',
+    'react-router-dom',
   ];
 
   return {

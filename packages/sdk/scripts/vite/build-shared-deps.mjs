@@ -68,6 +68,14 @@ const sharedDepsConfig = [
     // react-query must use the shared React instance to avoid context issues
     external: ['react', 'react-dom'],
   },
+  {
+    name: 'react-router-dom',
+    entry: resolve(nodeModulesDir, 'react-router-dom/esm/react-router-dom.js'),
+    outputName: 'react-router-dom.mjs',
+    type: 'build',
+    // react-router-dom must use the shared React instance to avoid context issues
+    external: ['react', 'react-dom'],
+  },
 ];
 
 /**
