@@ -195,7 +195,15 @@ async function main() {
 
   // Ensure bootstrap is built with import map BEFORE copying
   log('\n🔨 Ensuring bootstrap is built with import map...', 'blue');
-  const bootstrapDistDir = join(dirName, '..', 'apps', 'admin-ui-bootstrap', 'dist', 'source', commitHash);
+  const bootstrapDistDir = join(
+    dirName,
+    '..',
+    'apps',
+    'admin-ui-bootstrap',
+    'dist',
+    'source',
+    commitHash,
+  );
   const bootstrapIndexHtml = join(bootstrapDistDir, 'index.html');
 
   // Check if bootstrap needs building (index.html doesn't exist or doesn't have import map)
@@ -250,24 +258,24 @@ async function main() {
   await Promise.all(copyPromises);
   log(`✓ Copied ${components.length} components`, 'green');
 
-  // Copy shared dependencies from bootstrap
-  log('\n📦 Copying shared dependencies...', 'blue');
-  const bootstrapDir = join(dirName, '..', 'apps', 'admin-ui-bootstrap', 'dist', 'source');
-  const sharedDepsSource = join(bootstrapDir, commitHash, 'shared-dependencies');
+  // Verify shared dependencies exist
+  // Note: Shared dependencies are built directly to the package directory by build-shared-deps.mjs
+  // (called from build-shell.mjs during bootstrap build), not to bootstrap's dist folder
+  log('\n📦 Checking shared dependencies...', 'blue');
   const sharedDepsTarget = join(installDir, 'shared-dependencies', commitHash);
 
-  if (existsSync(sharedDepsSource)) {
-    mkdirSync(sharedDepsTarget, { recursive: true });
-    await spawnCommand(rustBinary as string, [
-      'parallel-copy',
-      sharedDepsSource,
-      sharedDepsTarget,
-      '--jobs',
-      String(parallelJobs),
-    ]);
-    log('✓ Copied shared dependencies', 'green');
+  if (existsSync(sharedDepsTarget)) {
+    const sharedDepsFiles = readdirSync(sharedDepsTarget);
+    if (sharedDepsFiles.length > 0) {
+      log(`✓ Shared dependencies found (${sharedDepsFiles.length} files)`, 'green');
+    } else {
+      log('⚠️  Shared dependencies directory exists but is empty', 'yellow');
+    }
   } else {
-    log('⚠️  Shared dependencies not found - bootstrap may not have been built', 'yellow');
+    log(
+      '⚠️  Shared dependencies not found - you may need to run: pnpm --filter @zextras/admin-ui-bootstrap run build',
+      'yellow',
+    );
   }
 
   // Copy bootstrap index.html to current directory (for container/development use)

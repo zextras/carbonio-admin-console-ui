@@ -43,6 +43,8 @@ const sharedDepsConfig = [
     entry: resolve(nodeModulesDir, 'styled-components/dist/styled-components.browser.esm.js'),
     outputName: 'styled-components.browser.esm.mjs',
     type: 'build',
+    // styled-components must use the shared React instance to avoid context issues
+    external: ['react', 'react-dom'],
   },
   {
     name: 'i18next',
@@ -199,7 +201,8 @@ export async function buildSharedDeps(commitHash) {
           emptyOutDir: false,
           sourcemap: false,
           rollupOptions: {
-            external: [],
+            // Use external from config, default to empty array
+            external: depConfig.external || [],
             output: {
               globals: {},
               // Remove .esm.js suffix that Vite adds
