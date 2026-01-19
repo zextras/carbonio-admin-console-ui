@@ -34,7 +34,7 @@ export function getSharedDependencyPaths(commitHash) {
   const paths = {};
 
   // Only include dependencies we can successfully vendor as ESM
-  // These are the packages that have been tested and work with offline vendoring
+  // These are packages that have been tested and work with offline vendoring
   // Note: Filenames match what Vite's lib mode outputs
   const vendorableDeps = [
     { name: 'react', file: 'index.mjs' },
@@ -42,6 +42,7 @@ export function getSharedDependencyPaths(commitHash) {
     { name: 'lodash-es', file: 'lodash.mjs' },
     { name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
     { name: 'i18next', file: 'i18next.mjs' },
+    { name: 'react-i18next', file: 'react-i18next.mjs' },
     { name: '@tanstack/react-query', file: 'react-query.mjs' },
   ];
 

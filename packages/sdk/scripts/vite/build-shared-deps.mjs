@@ -53,6 +53,13 @@ const sharedDepsConfig = [
     type: 'build',
   },
   {
+    name: 'react-i18next',
+    entry: resolve(nodeModulesDir, 'react-i18next/react-i18next.js'),
+    outputName: 'react-i18next.mjs',
+    type: 'build',
+    external: ['react', 'i18next'],
+  },
+  {
     name: '@tanstack/react-query',
     entry: resolve(nodeModulesDir, '@tanstack/react-query/build/modern/index.js'),
     outputName: 'react-query.mjs',
