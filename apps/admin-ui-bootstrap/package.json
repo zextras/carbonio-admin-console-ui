@@ -22,7 +22,6 @@
     "deploy": "npm run build && sdk deploy --admin",
     "deploy:dev": "npm run build:dev && sdk deploy --admin",
     "reset": "node ../../scripts/reset.js",
-    "start": "sdk watch --admin",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
     "test:ci": "vitest run --coverage"

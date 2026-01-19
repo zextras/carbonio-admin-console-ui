@@ -9,7 +9,6 @@
     "build:dev": "sdk build --dev",
     "deploy": "npm run build && sdk deploy",
     "deploy:dev": "npm run build:dev && sdk deploy",
-    "start": "sdk watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet",
