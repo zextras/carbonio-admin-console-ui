@@ -221,11 +221,14 @@ async function main() {
     }
   }
 
+  // Build environment with commit hash
+  const buildEnv = { ...process.env, COMMIT_HASH: commitHash };
+
   if (bootstrapNeedsBuild) {
     log('Building bootstrap to generate import map...', 'cyan');
     const bootstrapDir = join(appsDir, 'admin-ui-bootstrap');
     process.chdir(bootstrapDir);
-    execCommand(isDevMode ? 'pnpm build:dev' : 'pnpm build');
+    execCommand(isDevMode ? 'pnpm build:dev' : 'pnpm build', { env: buildEnv });
     process.chdir(rootDir);
     log('✓ Bootstrap built successfully', 'green');
   } else {
@@ -265,7 +268,7 @@ async function main() {
       rmSync(componentInstallDir, { recursive: true, force: true });
 
       const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
-      execCommand(buildCommand);
+      execCommand(buildCommand, { env: buildEnv });
       buildStats.built++;
       buildStats.builtPackages.push(component.name);
 
@@ -290,7 +293,14 @@ async function main() {
   const importMap = generateImportMap(commitHash);
   log(`✓ Import map generated with ${Object.keys(importMap.imports).length} entries`, 'green');
 
-  const htmlPath = join(installDir, 'carbonio-admin-ui', commitHash, 'index.html');
+  const bootstrapVersionedDir = join(installDir, 'carbonio-admin-ui', commitHash);
+  const htmlPath = join(bootstrapVersionedDir, 'index.html');
+  const importMapJsonPath = join(bootstrapVersionedDir, 'import-map.json');
+
+  // Write the import-map.json file
+  writeFileSync(importMapJsonPath, JSON.stringify(importMap, null, 2));
+  log('✓ import-map.json updated', 'green');
+
   if (existsSync(htmlPath)) {
     let html = readFileSync(htmlPath, 'utf-8');
     const scriptTag = `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
@@ -321,7 +331,6 @@ async function main() {
   // Copy bootstrap index.html to current directory (for container/development use)
   log('\n=== Copying bootstrap index.html to current directory ===', 'blue');
   const bootstrapCurrentDir = join(installDir, 'carbonio-admin-ui', 'current');
-  const bootstrapVersionedDir = join(installDir, 'carbonio-admin-ui', commitHash);
 
   if (existsSync(bootstrapVersionedDir)) {
     mkdirSync(bootstrapCurrentDir, { recursive: true });
