@@ -1,3 +1,15 @@
+## [0.12.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.9...v0.12.0-devel.10) (2026-01-19)
+
+### Features
+
+* hide files ulimited quota to a fixed 0 ([b38533c](https://github.com/zextras/carbonio-admin-console-ui/commit/b38533c293493ab6c0fd187de35cc2707821e9ef))
+
+## [0.12.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.8...v0.12.0-devel.9) (2026-01-19)
+
+### Features
+
+* added tooltip on description of managed account ([#1030](https://github.com/zextras/carbonio-admin-console-ui/issues/1030)) ([1adb627](https://github.com/zextras/carbonio-admin-console-ui/commit/1adb6274864840582edb4959fdf3f5da87673fe1))
+
 ## [0.12.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.7...v0.12.0-devel.8) (2026-01-08)
 
 ### Bug Fixes
