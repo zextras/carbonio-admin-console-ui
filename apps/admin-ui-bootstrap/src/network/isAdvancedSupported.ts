@@ -17,7 +17,7 @@ export const isAdvancedSupported = (): Promise<Supported | Error> =>
 		.then(async (response: Response) => {
 			if (response.ok) {
 				const data = await response.json();
-				if ('items' in data && isArray<string>(data.items)) {
+				if ('items' in data && isArray(data.items)) {
 					const installedServices = data.items as Array<string>;
 					const isAdvanced =
 						installedServices.filter((service): boolean => service === 'carbonio-advanced').length >

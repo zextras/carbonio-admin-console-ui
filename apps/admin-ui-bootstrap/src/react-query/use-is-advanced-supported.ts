@@ -31,7 +31,7 @@ export const queryFnIsAdvancedSupported = async () => {
     const response = await fetch("/services/catalog/services");
     if (response.ok) {
       const data = await response.json();
-      if ("items" in data && isArray<string>(data.items)) {
+      if ("items" in data && isArray(data.items)) {
         const installedServices = data.items as Array<string>;
         const isAdvanced =
           installedServices.filter((service) => service === "carbonio-advanced")
