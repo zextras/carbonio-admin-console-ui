@@ -4,78 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	useCurrentUserRights,
-	useDomainStore,
-	useIsAdvanced,
-	useStickyBarStore,
-	useUserSettings} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	DefaultTabBarItem,
-	Divider,
-	Icon,
-	Modal,
-	Padding,
-	Row,
-	TabBar,
-	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { differenceBy, find,isEqual, reduce, remove } from 'lodash-es';
-import {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState} from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { 	useCurrentUserRights,	useDomainStore,	useIsAdvanced,	useStickyBarStore,	useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	DefaultTabBarItem,	Icon,	Modal,	OverlayDivision,	Padding,	Row,	TabBar,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  differenceBy, find,isEqual, reduce, remove  } from 'lodash-es';
+import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useState } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import {
-	ABQ_MODE,
-	ACCOUNT,
-	ADMIN_LOGIN_AS,
-	ADMINISTRATION,
-	BACKUP_ENABLED,
-	BACKUP_SELF_UNDELETE_ALLOWED,
-	CHANGE_DISPLAY_NAME_BOOLEAN,
-	CHANGE_NAME_BOOLEAN,
-	CLOSED,
-	CONFIGURATION,
-	DELEGATES,
-	DOMAIN_NAME,
-	FILES_QUOTA_LIMIT,
-	GENERAL_SECTION,
-	IS_DEFAULT_USER_NAME,
-	MOBILE_CALENDAR_FEATURE_SYNC,
-	MOBILE_CONTACT_FEATURE_SYNC,
-	PROFILE,
-	SECURITY,
-	TRUE,
-	UID,
-	USER_PREFERENCES} from '../../../../../constants';
-import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
-import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
-import { deleteAccount } from '../../../../../services/delete-account-service';
-import { flushCache } from '../../../../../services/flush-cache-service';
-import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
-import { renameAccountRequest } from '../../../../../services/rename-account';
-import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
-import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
-import { setPasswordRequest } from '../../../../../services/set-password';
+import { 	ABQ_MODE,	ACCOUNT,	ADMIN_LOGIN_AS,	ADMINISTRATION,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	CHANGE_DISPLAY_NAME_BOOLEAN,	CHANGE_NAME_BOOLEAN,	CLOSED,	CONFIGURATION,	DELEGATES,	DOMAIN_NAME,	FILES_QUOTA_LIMIT,	GENERAL_SECTION,	IS_DEFAULT_USER_NAME,	MOBILE_CALENDAR_FEATURE_SYNC,	MOBILE_CONTACT_FEATURE_SYNC,	PROFILE,	SECURITY,	TRUE,	UID,	USER_PREFERENCES } from '../../../../../constants';
+import {  addAccountAliasRequest  } from '../../../../../services/add-account-alias';
+import {  deleteAccountAliasRequest  } from '../../../../../services/delete-account-alias';
+import {  deleteAccount  } from '../../../../../services/delete-account-service';
+import {  flushCache  } from '../../../../../services/flush-cache-service';
+import {  getDelegateAuthRequest  } from '../../../../../services/get-delegate-auth-request';
+import {  modifyAccountRequest  } from '../../../../../services/modify-account';
+import {  removeDistributionListMember  } from '../../../../../services/remove-distributionlist-member-service';
+import {  renameAccountRequest  } from '../../../../../services/rename-account';
+import {  resetFileQuotaLimitById  } from '../../../../../services/reset-file-quota-limit';
+import {  getDomainList  } from '../../../../../services/search-domain-service';
+import {  setCoreAttributes  } from '../../../../../services/set-core-attributes';
+import {  setFileQuotaLimitById  } from '../../../../../services/set-file-quota-limit';
+import {  setPasswordRequest  } from '../../../../../services/set-password';
 import Displayer from '../../../../components/displayer';
-import OverlayDivision from '../../../../components/overlayDivision';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
+import {  RouteLeavingGuard  } from '../../../../ui-extras/nav-guard';
+import {  AccountContext  } from '../account-context';
+import {  AccountType  } from '../account-types/account-types';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -1056,7 +1010,7 @@ const EditAccount: FC<{
 					</Row>
 				</Row>
 				<Row>
-					<Divider color="gray3" />
+					<divider-wc color="gray3"></divider-wc>
 				</Row>
 				<Container
 					padding={{ all: 'small' }}
@@ -1073,7 +1027,7 @@ const EditAccount: FC<{
 						width="100%"
 						background="gray6"
 					/>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Container>
 				<Container
 					padding={{ left: 'large', right: 'large' }}

@@ -5,13 +5,14 @@
  */
 
 export const optimizeDepsInclude = [
-  '@zextras/carbonio-design-system',
+  '@zextras/ui-components',
   'i18next',
   'react-i18next',
   'react-router-dom',
   'ua-parser-js',
   'i18next-http-backend',
-  '@sentry/browser',
+  'lodash-es',
+  'styled-components',
   // date-fns locales
   'date-fns/locale/zh-CN',
   'date-fns/locale/nl',

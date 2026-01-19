@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button,Container, Dropdown, Text, Tooltip } from '@zextras/carbonio-design-system';
+import { Button,Container, Dropdown, Text, Tooltip } from '@zextras/ui-components';
 import { map, noop } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

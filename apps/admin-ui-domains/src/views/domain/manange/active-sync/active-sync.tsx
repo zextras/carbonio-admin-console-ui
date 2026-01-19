@@ -4,28 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Padding,
-  Row,
-  Table,
-  Text,
-  useSnackbar,
-} from "@zextras/carbonio-design-system";
-import { format } from "date-fns";
-import { debounce } from "lodash-es";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {  useDomainStore  } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Icon,  Input,  Padding,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  format  } from "date-fns";
+import {  debounce  } from "lodash-es";
+import {  FC, useCallback, useEffect, useMemo, useState  } from "react";
+import {  Trans, useTranslation  } from "react-i18next";
 
 import logo from "../../../../assets/gardian.svg";
-import { ZX_MOBILE } from "../../../../constants";
-import { doRemoveDevice } from "../../../../services/do-remove-device";
-import { getAllDevices } from "../../../../services/get-all-devices";
+import {  ZX_MOBILE  } from "../../../../constants";
+import {  doRemoveDevice  } from "../../../../services/do-remove-device";
+import {  getAllDevices  } from "../../../../services/get-all-devices";
 import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
 import CustomRowFactory from "../../../app/shared/customTableRowFactory";
 import ActiveDeviceDetail from "./active-device-detail";
@@ -442,7 +431,7 @@ const ActiveSync: FC = () => {
           </Container>
         </Row>
         <Row orientation="horizontal" width="100%" background="gray6">
-          <Divider />
+          <divider-wc></divider-wc>
         </Row>
         <Container
           orientation="column"

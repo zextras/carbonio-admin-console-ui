@@ -11,7 +11,7 @@ import {
 	Modal,
 	Padding,
 	Row,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

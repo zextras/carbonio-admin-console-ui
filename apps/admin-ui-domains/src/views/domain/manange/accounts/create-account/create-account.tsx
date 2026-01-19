@@ -5,7 +5,7 @@
  */
 
 import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Padding,useSnackbar } from '@zextras/carbonio-design-system';
+import { Button, Container, OverlayDivision, Padding, useSnackbar } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -15,7 +15,6 @@ import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
-import OverlayDivision from '../../../../components/overlayDivision';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
@@ -90,6 +89,18 @@ interface AccountDetailObj {
 	pinCodes: string;
 	showOtpOptionSection: boolean;
 	description: string;
+	telephoneNumber: string;
+	homePhone: string;
+	mobile: string;
+	pager: string;
+	facsimileTelephoneNumber: string;
+	company: string;
+	title: string;
+	co: string;
+	l: string;
+	st: string;
+	postalCode: string;
+	street: string;
 }
 
 const CreateAccount: FC<{
@@ -134,7 +145,19 @@ const CreateAccount: FC<{
 		secrateCode: '',
 		pinCodes: '',
 		showOtpOptionSection: true,
-		description: ''
+		description: '',
+		telephoneNumber: '',
+		homePhone: '',
+		mobile: '',
+		pager: '',
+		facsimileTelephoneNumber: '',
+		company: '',
+		title: '',
+		co: '',
+		l: '',
+		st: '',
+		postalCode: '',
+		street: ''
 	});
 	const [activeStep, setActiveStep] = useState('');
 	const [accountCreate, setAccountCreate] = useState('');
@@ -156,7 +179,19 @@ const CreateAccount: FC<{
 				zimbraNotes: accountDetail?.zimbraNotes,
 				displayName: accountDetail?.displayName,
 				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId,
-				description: accountDetail?.description
+				description: accountDetail?.description,
+				telephoneNumber: accountDetail?.telephoneNumber,
+				homePhone: accountDetail?.homePhone,
+				mobile: accountDetail?.mobile,
+				pager: accountDetail?.pager,
+				facsimileTelephoneNumber: accountDetail?.facsimileTelephoneNumber,
+				company: accountDetail?.company,
+				title: accountDetail?.title,
+				co: accountDetail?.co,
+				l: accountDetail?.l,
+				postalCode: accountDetail?.postalCode,
+				street: accountDetail?.street,
+				st: accountDetail?.st
 			},
 			`${accountDetail?.name}@${domainName}`,
 			accountDetail?.password || ''
@@ -238,7 +273,19 @@ const CreateAccount: FC<{
 			secrateCode: '',
 			pinCodes: '',
 			showOtpOptionSection: true,
-			description: ''
+			description: '',
+			telephoneNumber: '',
+			homePhone: '',
+			mobile: '',
+			pager: '',
+			facsimileTelephoneNumber: '',
+			company: '',
+			title: '',
+			co: '',
+			l: '',
+			st: '',
+			postalCode: '',
+			street: ''
 		});
 		setActiveStep('details');
 		setAccountCreate('');

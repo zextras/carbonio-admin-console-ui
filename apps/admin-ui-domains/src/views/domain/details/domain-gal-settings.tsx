@@ -4,69 +4,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useMailstoreServers,useUserSettings } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Dropdown,
-	DropdownItem,
-	Icon,
-	Input,
-	Padding,
-	Row,
-	Select,
-	Switch,
-	Table,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
+import {  useDomainStore, useMailstoreServers,useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Dropdown,	DropdownItem,	Icon,	Input,	Padding,	Row,	Select,	Switch,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import {  useTranslation  } from 'react-i18next';
+import {  useParams  } from 'react-router-dom';
 
-import {
-	AccountDataType,
-	Attribute,
-	DomainDataType,
-	IntervalType,
-	objectType,
-	Server} from '../../../../types';
-import {
-	EXTERNAL_SERVER_EXAMPLE,
-	FALSE,
-	INTERNAL_GAL,
-	LDAP_BIND_DN_LABLE,
-	LDAP_FILTER_LABEL,
-	LDAP_SEARCH_BASE_LABEL,
-	TRUE,
-	ZIMBRA,
-	ZIMBRA_ADMIN_URN
-} from '../../../constants';
-import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
-import { destroyAccount } from '../../../services/destroy-account-service';
-import { getDomainInformation } from '../../../services/domain-information-service';
-import { flushCache } from '../../../services/flush-cache-service';
-import { getAccount } from '../../../services/get-account-service';
-import { getDatasource } from '../../../services/get-datasource-service';
-import { modifyAccountRequest } from '../../../services/modify-account';
-import { modifyDataSource } from '../../../services/modify-datasource-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
+import { 	AccountDataType,	Attribute,	DomainDataType,	IntervalType,	objectType,	Server } from '../../../../types';
+import { 	EXTERNAL_SERVER_EXAMPLE,	FALSE,	INTERNAL_GAL,	LDAP_BIND_DN_LABLE,	LDAP_FILTER_LABEL,	LDAP_SEARCH_BASE_LABEL,	TRUE,	ZIMBRA,	ZIMBRA_ADMIN_URN } from '../../../constants';
+import {  createGalSyncAccount  } from '../../../services/create-gal-sync-service';
+import {  destroyAccount  } from '../../../services/destroy-account-service';
+import {  getDomainInformation  } from '../../../services/domain-information-service';
+import {  flushCache  } from '../../../services/flush-cache-service';
+import {  getAccount  } from '../../../services/get-account-service';
+import {  getDatasource  } from '../../../services/get-datasource-service';
+import {  modifyAccountRequest  } from '../../../services/modify-account';
+import {  modifyDataSource  } from '../../../services/modify-datasource-service';
+import {  modifyDomain  } from '../../../services/modify-domain-service';
+import {  reSyncGalAccount  } from '../../../services/re-sync-gal-account-service';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
+import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
+import {  GalServerTableheaders, MeasureUnitItems  } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
-enum RANGE {
-	DAYS = 'd',
-	HOURS = 'h',
-	MINUTES = 'm',
-	SECONDS = 's'
-}
+const RANGE = {
+	DAYS: 'd',
+	HOURS: 'h',
+	MINUTES: 'm',
+	SECONDS: 's'
+} as const;
 
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;
@@ -128,7 +97,7 @@ const ServerListTable: FC<{
 						<Text
 							color="gray0"
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
@@ -1072,7 +1041,7 @@ const DomainGalSettings: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 
 			{/* new layout based on internal external mode */}
 			<Container
@@ -1391,7 +1360,7 @@ const DomainGalSettings: FC = () => {
 						</Container>
 
 						<Container height="fit" padding={{ all: 'small' }}>
-							<Divider />
+							<divider-wc></divider-wc>
 						</Container>
 
 						<Container

@@ -3,48 +3,24 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Text,
-	Tooltip,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import {  useAppConfigStore, useCurrentUserRights, useMtaServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Padding,	Row,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  find, isEqual, join, map, reduce, some, split, trim  } from 'lodash-es';
+import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
+import {  useParams  } from 'react-router-dom';
 
-import { IpRangeValue, MtaServerGeneral } from '../../../../../types';
-import {
-	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-	CONFIG,
-	FALSE,
-	TRUE,
-	ZIMBRA_ADMIN_URN,
-	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-	ZIMBRA_AMAVIS_LOG_LEVEL,
-	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-	ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-	ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-	ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_MY_NETWORKS,
-	ZIMBRA_MTA_RELAY_HOST,
-	ZIMBRA_MTA_SASL_AUTH_ENABLED,
-	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL} from '../../../../constants';
-import { getServerInformationByName } from '../../../../services/get-server-information';
-import { modifyServer } from '../../../../services/modify-server';
+import {  IpRangeValue, MtaServerGeneral  } from '../../../../../types';
+import { 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,	CONFIG,	FALSE,	TRUE,	ZIMBRA_ADMIN_URN,	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,	ZIMBRA_AMAVIS_LOG_LEVEL,	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,	ZIMBRA_AMAVIS_SA_LOG_LEVEL,	ZIMBRA_MTA_FALLBACK_RELAY_HOST,	ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,	ZIMBRA_MTA_MY_NETWORKS,	ZIMBRA_MTA_RELAY_HOST,	ZIMBRA_MTA_SASL_AUTH_ENABLED,	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL } from '../../../../constants';
+import {  getServerInformationByName  } from '../../../../services/get-server-information';
+import {  modifyServer  } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
 import InheritedInput from '../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
-import { validateIpAddress } from '../../../utility/utils';
+import {  validateIpAddress  } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {
 	const [t] = useTranslation();
@@ -758,7 +734,7 @@ const MTAServerGeneral: FC = () => {
 				</Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				padding={{ all: 'extralarge' }}

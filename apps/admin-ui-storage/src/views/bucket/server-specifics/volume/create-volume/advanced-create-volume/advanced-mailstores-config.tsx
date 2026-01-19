@@ -11,7 +11,7 @@ import {
 	Radio,
 	Row,
 	Switch,
-	Text} from '@zextras/carbonio-design-system';
+	Text} from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

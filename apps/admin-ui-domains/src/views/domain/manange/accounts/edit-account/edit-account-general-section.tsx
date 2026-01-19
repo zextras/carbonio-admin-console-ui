@@ -3,26 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  ChipInput,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Modal,
-  Padding,
-  Quota,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Text,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/carbonio-design-system';
-import { debounce, map } from 'lodash-es';
+import {  useDomainStore, useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import {   Button,  ChipInput,  Container,  CustomTextArea,  DropDownInput,  Icon,  Input,  Modal,  Padding,  Quota,  Row,  Select,  Switch,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
+import {  debounce, map  } from 'lodash-es';
 import React, {
   ChangeEvent,
   FC,
@@ -32,37 +15,26 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { Attribute, objectType } from '../../../../../../types';
-import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
-import { endSession } from '../../../../../services/end-session';
-import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { getDomainList } from '../../../../../services/search-domain-service';
+import {  Attribute, objectType  } from '../../../../../../types';
+import {  ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE  } from '../../../../../constants';
+import {  endSession  } from '../../../../../services/end-session';
+import {  getDelegateAuthRequest  } from '../../../../../services/get-delegate-auth-request';
+import {  modifyAccountRequest  } from '../../../../../services/modify-account';
+import {  getDomainList  } from '../../../../../services/search-domain-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
-import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
-import Textarea from '../../../../components/textarea';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import {
-  ABQStatus,
-  AccountStatus,
-  backupEnabledStatus,
-  BytesToGB,
-  formatZimbraDate,
-  GbToBytes,
-  isValidDecimalNumber,
-  localeList,
-} from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import {   ABQStatus,  AccountStatus,  backupEnabledStatus,  BytesToGB,  formatZimbraDate,  GbToBytes,  isValidDecimalNumber,  localeList } from '../../../../utility/utils';
+import {  AccountContext  } from '../account-context';
+import {  AccountType  } from '../account-types/account-types';
 
 type UserSession = {
   name: string;
@@ -1200,7 +1172,7 @@ const EditAccountGeneralSection: FC<{
         </Row>
       )}
       <Row width="100%" padding={{ top: 'medium' }}>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
       </Row>
 
       {renderRowHeader({
@@ -1222,7 +1194,7 @@ const EditAccountGeneralSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
@@ -1301,7 +1273,7 @@ const EditAccountGeneralSection: FC<{
         ></Row>
       </Row>
       <Row width="100%" padding={{ top: 'large' }}>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
         <Text size="small" color="gray0" weight="bold">
@@ -1341,7 +1313,7 @@ const EditAccountGeneralSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
@@ -1365,7 +1337,7 @@ const EditAccountGeneralSection: FC<{
           </Text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Textarea
+          <CustomTextArea
             label={t('label.notes', 'Notes')}
             value={accountDetail?.zimbraNotes || ''}
             backgroundColor="gray5"
@@ -1376,7 +1348,7 @@ const EditAccountGeneralSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <Divider color="gray2" />
+        <divider-wc></divider-wc>
       </Row>
       <Row
         mainAlignment="flex-start"

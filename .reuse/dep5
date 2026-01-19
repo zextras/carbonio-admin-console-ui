@@ -181,3 +181,15 @@ License: AGPL-3.0-only
 Files: tools/**
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
+
+Files: packages/ui-components/src/icons/**/*.tsx
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC-BY-NC-SA-4.0
+
+Files: packages/ui-components/src/fonts/**
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: CC-BY-NC-SA-4.0
+
+Files: packages/ui-components/src/icons/index.test.tsx
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only

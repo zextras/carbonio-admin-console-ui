@@ -4,30 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import {
-	ChipInput,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Row,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash-es';
+import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import { 	ChipInput,	Container,	Icon,	Input,	Row,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import {  map, some  } from 'lodash-es';
 import React, { ChangeEvent,FC, useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 
-import { ACCOUNT } from '../../../../../constants';
-import { getCoreAttributes } from '../../../../../services/get-core-attributes';
-import { WscSettings } from '../../../../../wsc/wsc-settings';
+import {  ACCOUNT  } from '../../../../../constants';
+import {  getCoreAttributes  } from '../../../../../services/get-core-attributes';
+import {  WscSettings  } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
-import { Features } from '../../../../cos/features';
+import {  Features  } from '../../../../cos/features';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
-import { isValidEmail } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import {  isValidEmail  } from '../../../../utility/utils';
+import {  AccountContext  } from '../account-context';
+import {  AccountType  } from '../account-types/account-types';
 
 const EditAccountConfigurationSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -285,7 +276,7 @@ const EditAccountConfigurationSection: FC = () => {
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
@@ -316,7 +307,7 @@ const EditAccountConfigurationSection: FC = () => {
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
@@ -331,7 +322,7 @@ const EditAccountConfigurationSection: FC = () => {
 					setEmptyValue={setEmptyValue}
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">

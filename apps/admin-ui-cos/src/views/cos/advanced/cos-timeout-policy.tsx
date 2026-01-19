@@ -3,19 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Container,
-	Divider,
-	Input,
-	Row,
-	Select,
-	SingleSelectionOnChange,
-	Text
-} from '@zextras/carbonio-design-system';
-import { ChangeEvent, FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Container,	Input,	Row,	Select,	SingleSelectionOnChange,	Text } from '@zextras/ui-components';
+import {  ChangeEvent, FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { TimeItems } from '../../../../types/general';
+import {  TimeItems  } from '../../../../types/general';
 import ListRow from '../../list/list-row';
 
 type TimeoutPolicyProps = {
@@ -178,7 +170,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 		</Row>
 	);
 };

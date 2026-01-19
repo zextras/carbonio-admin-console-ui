@@ -7,24 +7,24 @@
 import { isArray } from 'lodash-es';
 
 type Supported = {
-	supported: boolean;
+  supported: boolean;
 };
 type Error = {
-	errorMessage: string;
+  errorMessage: string;
 };
 export const isAdvancedSupported = (): Promise<Supported | Error> =>
-	fetch('/services/catalog/services')
-		.then(async (response: Response) => {
-			if (response.ok) {
-				const data = await response.json();
-				if ('items' in data && isArray<string>(data.items)) {
-					const installedServices = data.items as Array<string>;
-					const isAdvanced =
-						installedServices.filter((service): boolean => service === 'carbonio-advanced').length >
-						0;
-					return { supported: isAdvanced };
-				}
-			}
-			return { errorMessage: '' };
-		})
-		.catch(() => ({ errorMessage: 'Network error' }));
+  fetch('/services/catalog/services')
+    .then(async (response: Response) => {
+      if (response.ok) {
+        const data = await response.json();
+        if ('items' in data && isArray(data.items)) {
+          const installedServices = data.items as Array<string>;
+          const isAdvanced =
+            installedServices.filter((service): boolean => service === 'carbonio-advanced').length >
+            0;
+          return { supported: isAdvanced };
+        }
+      }
+      return { errorMessage: '' };
+    })
+    .catch(() => ({ errorMessage: 'Network error' }));

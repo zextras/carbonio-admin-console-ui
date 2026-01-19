@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

@@ -1,0 +1,56 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { HTMLAttributes } from 'react';
+import styled, { css, SimpleInterpolation } from 'styled-components';
+
+import { With$Prefix } from '../../../types/utils';
+
+type ModalBodyProps = HTMLAttributes<HTMLDivElement> & {
+	/** Max height of the body container */
+	maxHeight?: string;
+	/** Align text to the center */
+	centered?: boolean;
+	ref?: React.Ref<HTMLDivElement>;
+};
+
+const ModalBodyComponent = styled.div<With$Prefix<ModalBodyProps>>`
+	overflow-y: auto;
+	max-height: ${({ $maxHeight }): SimpleInterpolation => $maxHeight};
+	max-width: 100%;
+	box-sizing: border-box;
+	width: 100%;
+	padding-top: ${({ theme }): string => theme.sizes.padding.large};
+	padding-bottom: ${({ theme }): string => theme.sizes.padding.large};
+	${({ $centered }): SimpleInterpolation =>
+		$centered &&
+		css`
+			text-align: center;
+		`};
+	&::-webkit-scrollbar {
+		width: 0.5rem;
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: ${({ theme }): string => theme.palette.gray3.regular};
+		border-radius: 0.25rem;
+	}
+	flex-grow: 1;
+`;
+
+const ModalBody = ({ maxHeight, centered, children, ref, ...rest }: ModalBodyProps) => {
+	return (
+		<ModalBodyComponent $centered={centered} $maxHeight={maxHeight} ref={ref} {...rest}>
+			{children}
+		</ModalBodyComponent>
+	);
+};
+
+export type { ModalBodyProps };
+export { ModalBody };

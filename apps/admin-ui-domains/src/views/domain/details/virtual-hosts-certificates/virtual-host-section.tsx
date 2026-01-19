@@ -14,7 +14,7 @@ import {
 	Row,
 	Text,
 	Tooltip
-} from '@zextras/carbonio-design-system';
+} from '@zextras/ui-components';
 import React, { useCallback,useState } from 'react';
 import { Trans,useTranslation } from 'react-i18next';
 

@@ -6,13 +6,13 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useCurrentUserRights,useUserAccounts } from '@zextras/admin-ui-bootstrap';
-import { useSnackbar } from '@zextras/carbonio-design-system';
+import { useSnackbar } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { afterEach, beforeEach, describe, expect, it, Mock,vi } from 'vitest';
 
 vi.mock('@zextras/admin-ui-bootstrap');
 
-vi.mock('@zextras/carbonio-design-system', () => ({
+vi.mock('@zextras/ui-components', () => ({
 	useSnackbar: vi.fn()
 }));
 

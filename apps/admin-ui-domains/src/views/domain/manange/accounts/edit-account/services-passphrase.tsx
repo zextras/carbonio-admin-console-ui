@@ -13,7 +13,7 @@ import {
 	Row,
 	Select,
 	Text,
-	useSnackbar} from '@zextras/carbonio-design-system';
+	useSnackbar} from '@zextras/ui-components';
 import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

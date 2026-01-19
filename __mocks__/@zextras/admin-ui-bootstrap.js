@@ -1,10 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 import { vi } from 'vitest';
 
 export {
-	fetchExternalSoap,
-	getSoapFetchRequest,
-	postSoapFetchRequest,
-	soapFetch} from '@zextras/admin-ui-bootstrap';
+  fetchExternalSoap,
+  getSoapFetchRequest,
+  postSoapFetchRequest,
+  soapFetch,
+} from '@zextras/admin-ui-bootstrap';
 
 export const useDomainInformation = vi.fn();
 export const addRoute = vi.fn();
@@ -23,3 +29,5 @@ export const replaceHistory = vi.fn();
 export const pushHistory = vi.fn();
 export const getRoutes = vi.fn(() => []);
 export const useRoutes = vi.fn(() => []);
+export const useContextBridge = vi.fn();
+export const queryClient = vi.fn();

@@ -6,7 +6,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
+import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -63,7 +63,7 @@ export const BootstrapBridgeProvider = ({
 }): React.JSX.Element => {
   const history = useHistory();
   const createSnackbar = () => ({});
-  const createModal = () => ({});
+  const createModal = () => {};
 
   // Initialize the context bridge immediately and synchronously
   const { add } = useContextBridge.getState();

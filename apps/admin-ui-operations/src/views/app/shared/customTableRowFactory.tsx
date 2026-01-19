@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Checkbox,Text } from '@zextras/carbonio-design-system';
+import { Checkbox,Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 

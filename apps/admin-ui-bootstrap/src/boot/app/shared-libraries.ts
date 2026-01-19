@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as ZappUI from '@zextras/carbonio-design-system';
+import * as ZappUI from '@zextras/ui-components';
+import { DividerElement, SpinnerWC } from '@zextras/ui-components';
 import * as Lodash from 'lodash-es';
 import * as PropTypes from 'prop-types';
 import React from 'react';
@@ -16,24 +17,28 @@ import * as StyledComponents from 'styled-components';
 import * as BootstrapExports from '../../../exports';
 import { IShellWindow } from '../../../types';
 
+// Force web component registration by referencing the classes
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+const _webComponents = { SpinnerWC, DividerElement };
+
 export function injectSharedLibraries(): void {
-	const wnd: IShellWindow = window as unknown as IShellWindow;
-	if (wnd.__ZAPP_SHARED_LIBRARIES__) {
-		// Ensure bootstrap exports are preserved
-		Object.assign(wnd.__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'], BootstrapExports);
-		return;
-	}
-	wnd.__ZAPP_SHARED_LIBRARIES__ = {
-		'prop-types': PropTypes,
-		react: React,
-		'react-dom': ReactDOM,
-		'react-i18next': ReactI18n,
-		'lodash-es': Lodash,
-		'react-router-dom': ReactRouterDom,
-		'styled-components': StyledComponents,
-		// DO NOT RENAME THIS
-		'@zextras/admin-ui-bootstrap': { ...BootstrapExports },
-		'@zextras/carbonio-design-system': ZappUI
-	};
-	wnd.__ZAPP_HMR_EXPORT__ = {};
+  const wnd: IShellWindow = window as unknown as IShellWindow;
+  if (wnd.__ZAPP_SHARED_LIBRARIES__) {
+    // Ensure bootstrap exports are preserved
+    Object.assign(wnd.__ZAPP_SHARED_LIBRARIES__['@zextras/admin-ui-bootstrap'], BootstrapExports);
+    return;
+  }
+  wnd.__ZAPP_SHARED_LIBRARIES__ = {
+    'prop-types': PropTypes,
+    react: React,
+    'react-dom': ReactDOM,
+    'react-i18next': ReactI18n,
+    'lodash-es': Lodash,
+    'react-router-dom': ReactRouterDom,
+    'styled-components': StyledComponents,
+    // DO NOT RENAME THIS
+    '@zextras/admin-ui-bootstrap': { ...BootstrapExports },
+    '@zextras/ui-components': ZappUI,
+  };
+  wnd.__ZAPP_HMR_EXPORT__ = {};
 }

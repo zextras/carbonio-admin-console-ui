@@ -3,19 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  Divider,
-  Input,
-  Row,
-  Text,
-} from "@zextras/carbonio-design-system";
-import { FC, useContext, useMemo } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {   Container,  Input,  Row,  Text } from "@zextras/ui-components";
+import {  FC, useContext, useMemo  } from "react";
+import {  Trans, useTranslation  } from "react-i18next";
 
-import { READ_MAILS_ONLY } from "../../../../../../constants";
-import { delegateRightsType } from "../../../../../utility/utils";
-import { AccountContext } from "../../account-context";
+import {  READ_MAILS_ONLY  } from "../../../../../../constants";
+import {  delegateRightsType  } from "../../../../../utility/utils";
+import {  AccountContext  } from "../../account-context";
 
 const DelegateAddSection: FC = () => {
   const [t] = useTranslation();
@@ -65,7 +59,7 @@ const DelegateAddSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: "medium" }}>
-          <Divider color="gray2" />
+          <divider-wc></divider-wc>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
           <Row

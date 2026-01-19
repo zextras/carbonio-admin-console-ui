@@ -3,26 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Text,
-	useSnackbar
-} from '@zextras/carbonio-design-system';
-import { differenceWith, isEqual, map, some } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Button,	Container,	Padding,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  differenceWith, isEqual, map, some  } from 'lodash-es';
+import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { TwoFactorAuthPolicyValues } from '../../../../types';
-import { OK } from '../../../constants';
-import { list2faPolicies } from '../../../services/list-2fa-policies';
-import { set2faPolicies } from '../../../services/set-2fa-policies';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { isValidIpRange,TwoFactorPolicyArray } from '../../utility/utils';
-import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';
+import {  TwoFactorAuthPolicyValues  } from '../../../../types';
+import {  OK  } from '../../../constants';
+import {  list2faPolicies  } from '../../../services/list-2fa-policies';
+import {  set2faPolicies  } from '../../../services/set-2fa-policies';
+import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
+import {  isValidIpRange,TwoFactorPolicyArray  } from '../../utility/utils';
+import {  TwoFactorAuthencationConfig  } from '../two-factor-authentication/2fa-config';
 
 const GlobalTwoFactorAuthentcation: FC = () => {
 	const [t] = useTranslation();
@@ -188,7 +180,7 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 							</Row>
 						</Row>
 					</Container>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<TwoFactorAuthencationConfig
 					policies={arrPolicies}

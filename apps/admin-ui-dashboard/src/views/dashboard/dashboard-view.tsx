@@ -4,38 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	getRights,
-	useCurrentUserRights,
-	useDomainInformation,
-	useDomainStore,
-	useHasAllRights,
-	useIsAdvanced,
-	useUserAccounts,
-	useVersion
-} from '@zextras/admin-ui-bootstrap';
-import { Container, Divider } from '@zextras/carbonio-design-system';
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { 	getRights,	useCurrentUserRights,	useDomainInformation,	useDomainStore,	useHasAllRights,	useIsAdvanced,	useUserAccounts,	useVersion } from '@zextras/admin-ui-bootstrap';
+import {  Container  } from '@zextras/ui-components';
+import {  FC, useCallback, useEffect, useState  } from 'react';
+import {  useHistory  } from 'react-router-dom';
 
-import {
-	ACCOUNTS,
-	DISTRIBUTION_LIST,
-	DOMAINS_ROUTE_ID,
-	LIST,
-	LIST_SERVER,
-	LOG_AND_QUEUES,
-	MANAGE,
-	NOTIFICATION_ROUTE_ID,
-	SERVER,
-	SERVERS_LIST,
-	STORAGES_ROUTE_ID
-} from '../../constants';
+import { 	ACCOUNTS,	DISTRIBUTION_LIST,	DOMAINS_ROUTE_ID,	LIST,	LIST_SERVER,	LOG_AND_QUEUES,	MANAGE,	NOTIFICATION_ROUTE_ID,	SERVER,	SERVERS_LIST,	STORAGES_ROUTE_ID } from '../../constants';
 import ListRow from '../list/list-row';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
-import { LicenseBanner } from './license-banner';
+import {  LicenseBanner  } from './license-banner';
 import QuickAccess from './quick-access-view';
 
 const Dashboard: FC = () => {
@@ -110,7 +89,7 @@ const Dashboard: FC = () => {
 	
 	return (
 		<Container>
-			<Divider color="gray6" />
+			<divider-wc color="gray6"></divider-wc>
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"

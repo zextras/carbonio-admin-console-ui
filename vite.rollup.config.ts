@@ -20,7 +20,7 @@ export const SHARED_EXTERNALS = [
   "@emotion/styled",
   "@zextras/carbonio-ui-preview",
   "@zextras/admin-ui-bootstrap",
-  "@zextras/carbonio-design-system",
+  "@zextras/ui-components",
   "msw",
   "i18next",
 ] as const;
@@ -44,8 +44,8 @@ export function createSharedGlobals(
     "@zextras/carbonio-ui-preview":
       '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-ui-preview"]',
     "@zextras/admin-ui-bootstrap": `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
-    "@zextras/carbonio-design-system":
-      '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-design-system"]',
+    "@zextras/ui-components":
+      '__ZAPP_SHARED_LIBRARIES__["@zextras/ui-components"]',
     msw: '__ZAPP_SHARED_LIBRARIES__["msw"]',
     i18next: '__ZAPP_SHARED_LIBRARIES__["i18next"]',
   };

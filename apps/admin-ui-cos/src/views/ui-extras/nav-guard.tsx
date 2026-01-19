@@ -5,7 +5,7 @@
  */
 
 
-import { Modal } from '@zextras/carbonio-design-system';
+import { Modal } from '@zextras/ui-components';
 import { Location } from 'history';
 import React, { FC, useEffect, useMemo,useState } from 'react';
 import { useTranslation } from 'react-i18next';
