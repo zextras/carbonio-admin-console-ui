@@ -4,51 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Checkbox,
-	ChipInput,
-	ChipInputProps,
-	Container,
-	Divider,
-	Padding,
-	Row,
-	Table,
-	Text,
-	useSnackbar} from '@zextras/ui-components';
-import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
-import {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState} from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Checkbox,	ChipInput,	ChipInputProps,	Container,	Padding,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  cloneDeep, debounce, filter, find, findIndex, map, pullAt  } from 'lodash-es';
+import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useRef,	useState } from 'react';
+import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
-import {
-	MANAGE_NO_SEND,
-	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
-	SEND_READ_MAILS,
-	SEND_READ_MANAGE_MAILS,
-	ZIMBRA_ADMIN_URN
-} from '../../../../../constants';
-import { accountListDirectory } from '../../../../../services/account-list-directory-service';
-import { batchService } from '../../../../../services/batch-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section-component';
+import { 	MANAGE_NO_SEND,	READ_MAILS_ONLY,	SEND_MAILS_ONLY,	SEND_READ_MAILS,	SEND_READ_MANAGE_MAILS,	ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import {  accountListDirectory  } from '../../../../../services/account-list-directory-service';
+import {  batchService  } from '../../../../../services/batch-service';
+import {  HorizontalWizard  } from '../../../../app/component/hwizard';
+import {  Section  } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
+import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
+import {  deligateSendSettings, isValidEmail  } from '../../../../utility/utils';
+import {  AccountContext  } from '../account-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
@@ -871,7 +845,7 @@ const EditAccountDelegatesSection: FC = () => {
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 
 			{isSimplified && (
@@ -1040,7 +1014,7 @@ const EditAccountDelegatesSection: FC = () => {
 						</Row>
 					</Container>
 					<Row width="100%" padding={{ top: 'medium' }}>
-						<Divider color="gray2" />
+						<divider-wc></divider-wc>
 					</Row>
 					<Container mainAlignment="flex-start" height="auto" padding={{ bottom: '3rem' }}>
 						<Container

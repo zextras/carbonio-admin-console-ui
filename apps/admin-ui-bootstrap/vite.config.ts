@@ -25,7 +25,6 @@ type AppManifest = {
 	readonly entryPoint: string;
 };
 
-
 // IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
 const commitHash = process.env.COMMIT_HASH || /* @__PURE__ */ (() => {
 	try {
@@ -102,7 +101,7 @@ export const getAppByPackageName = (packageName) => APP_REGISTRY.find((app) => a
 };
 
 export default defineConfig(({ mode }) => {
-	const isDev = mode === 'development';
+  const isDev = mode === 'development';
 
 	return {
 		plugins: [

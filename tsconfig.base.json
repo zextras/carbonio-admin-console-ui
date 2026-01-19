@@ -26,4 +26,29 @@
 	},
 	"include": ["src/**/*", "*.d.ts"],
 	"exclude": ["**/*.spec.ts"]
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "checkJs": false,
+    "noEmit": true,
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "moduleResolution": "bundler",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "allowSyntheticDefaultImports": true,
+    "preserveConstEnums": true,
+    "noUncheckedIndexedAccess": false,
+    "types": ["@vitest/browser/matchers", "vitest/globals"],
+    "useDefineForClassFields": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.spec.ts"]
 }

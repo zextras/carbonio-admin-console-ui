@@ -3,6 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import './theme.css';
+
 import { css, html, LitElement } from 'lit';
 
 /**
@@ -33,7 +36,15 @@ export class SpinnerWC extends LitElement {
   `;
 
   override render() {
-    return html` <div class="spinner" role="status" aria-busy="true" aria-label="Loading"></div> `;
+    return html`
+      <div
+        data-testid="spinner"
+        class="spinner"
+        role="status"
+        aria-busy="true"
+        aria-label="Loading"
+      ></div>
+    `;
   }
 }
 

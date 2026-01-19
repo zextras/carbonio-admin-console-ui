@@ -4,120 +4,122 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/*  this file defines CSS variables that map to the colors defined in Theme.palette */
+
 :root {
-	/* Primary palette - matches Theme.palette.primary */
-	--color-primary: #2b73d2;
-	--color-primary-hover: #225ca8;
-	--color-primary-active: #1e5092;
-	--color-primary-focus: #225ca8;
-	--color-primary-disabled: #aac8ee;
+  /* Primary palette - matches Theme.palette.primary */
+  --color-primary: #2b73d2;
+  --color-primary-hover: #225ca8;
+  --color-primary-active: #1e5092;
+  --color-primary-focus: #225ca8;
+  --color-primary-disabled: #aac8ee;
 
-	/* Secondary palette - matches Theme.palette.secondary */
-	--color-secondary: #828282;
-	--color-secondary-hover: #696969;
-	--color-secondary-active: #5c5c5c;
-	--color-secondary-focus: #696969;
-	--color-secondary-disabled: #cccccc;
+  /* Secondary palette - matches Theme.palette.secondary */
+  --color-secondary: #828282;
+  --color-secondary-hover: #696969;
+  --color-secondary-active: #5c5c5c;
+  --color-secondary-focus: #696969;
+  --color-secondary-disabled: #cccccc;
 
-	/* Header palette - matches Theme.palette.header */
-	--color-header: #cfd5dc;
-	--color-header-hover: #b1bbc6;
-	--color-header-active: #a3aebc;
-	--color-header-focus: #b1bbc6;
-	--color-header-disabled: #cfd5dc;
+  /* Header palette - matches Theme.palette.header */
+  --color-header: #cfd5dc;
+  --color-header-hover: #b1bbc6;
+  --color-header-active: #a3aebc;
+  --color-header-focus: #b1bbc6;
+  --color-header-disabled: #cfd5dc;
 
-	/* Gray scale - matches Theme.palette.gray0-6 */
-	--color-gray0: #414141;
-	--color-gray0-hover: #282828;
-	--color-gray0-active: #1b1b1b;
-	--color-gray0-focus: #282828;
-	--color-gray0-disabled: #cccccc;
+  /* Gray scale - matches Theme.palette.gray0-6 */
+  --color-gray0: #414141;
+  --color-gray0-hover: #282828;
+  --color-gray0-active: #1b1b1b;
+  --color-gray0-focus: #282828;
+  --color-gray0-disabled: #cccccc;
 
-	--color-gray1: #828282;
-	--color-gray1-hover: #696969;
-	--color-gray1-active: #5c5c5c;
-	--color-gray1-focus: #696969;
-	--color-gray1-disabled: #cccccc;
+  --color-gray1: #828282;
+  --color-gray1-hover: #696969;
+  --color-gray1-active: #5c5c5c;
+  --color-gray1-focus: #696969;
+  --color-gray1-disabled: #cccccc;
 
-	--color-gray2: #cfd5dc;
-	--color-gray2-hover: #b1bbc6;
-	--color-gray2-active: #a3aebc;
-	--color-gray2-focus: #b1bbc6;
-	--color-gray2-disabled: #cfd5dc;
+  --color-gray2: #cfd5dc;
+  --color-gray2-hover: #b1bbc6;
+  --color-gray2-active: #a3aebc;
+  --color-gray2-focus: #b1bbc6;
+  --color-gray2-disabled: #cfd5dc;
 
-	--color-gray3: #e6e9ed;
-	--color-gray3-hover: #c8cfd8;
-	--color-gray3-active: #bac2cd;
-	--color-gray3-focus: #c8cfd8;
-	--color-gray3-disabled: #e6e9ed;
+  --color-gray3: #e6e9ed;
+  --color-gray3-hover: #c8cfd8;
+  --color-gray3-active: #bac2cd;
+  --color-gray3-focus: #c8cfd8;
+  --color-gray3-disabled: #e6e9ed;
 
-	--color-gray4: #eeeff3;
-	--color-gray4-hover: #d0d3de;
-	--color-gray4-active: #c1c5d3;
-	--color-gray4-focus: #d0d3de;
-	--color-gray4-disabled: #eeeff3;
+  --color-gray4: #eeeff3;
+  --color-gray4-hover: #d0d3de;
+  --color-gray4-active: #c1c5d3;
+  --color-gray4-focus: #d0d3de;
+  --color-gray4-disabled: #eeeff3;
 
-	--color-gray5: #f5f6f8;
-	--color-gray5-hover: #d7dbe3;
-	--color-gray5-active: #c8ced9;
-	--color-gray5-focus: #d7dbe3;
-	--color-gray5-disabled: #f5f6f8;
+  --color-gray5: #f5f6f8;
+  --color-gray5-hover: #d7dbe3;
+  --color-gray5-active: #c8ced9;
+  --color-gray5-focus: #d7dbe3;
+  --color-gray5-disabled: #f5f6f8;
 
-	--color-gray6: #ffffff;
-	--color-gray6-hover: #e6e6e6;
-	--color-gray6-active: #d9d9d9;
-	--color-gray6-focus: #e6e6e6;
-	--color-gray6-disabled: #ffffff;
+  --color-gray6: #ffffff;
+  --color-gray6-hover: #e6e6e6;
+  --color-gray6-active: #d9d9d9;
+  --color-gray6-focus: #e6e6e6;
+  --color-gray6-disabled: #ffffff;
 
-	/* Semantic colors - matches Theme.palette */
-	--color-warning: #ffc107;
-	--color-warning-hover: #d39e00;
-	--color-warning-active: #ba8b00;
-	--color-warning-focus: #d39e00;
-	--color-warning-disabled: #ffe699;
+  /* Semantic colors - matches Theme.palette */
+  --color-warning: #ffc107;
+  --color-warning-hover: #d39e00;
+  --color-warning-active: #ba8b00;
+  --color-warning-focus: #d39e00;
+  --color-warning-disabled: #ffe699;
 
-	--color-error: #d74942;
-	--color-error-hover: #be3028;
-	--color-error-active: #a92a24;
-	--color-error-focus: #be3028;
-	--color-error-disabled: #edaeab;
+  --color-error: #d74942;
+  --color-error-hover: #be3028;
+  --color-error-active: #a92a24;
+  --color-error-focus: #be3028;
+  --color-error-disabled: #edaeab;
 
-	--color-success: #8bc34a;
-	--color-success-hover: #71a436;
-	--color-success-active: #639030;
-	--color-success-focus: #71a436;
-	--color-success-disabled: #cee6b2;
+  --color-success: #8bc34a;
+  --color-success-hover: #71a436;
+  --color-success-active: #639030;
+  --color-success-focus: #71a436;
+  --color-success-disabled: #cee6b2;
 
-	--color-info: #2196d3;
-	--color-info-hover: #1a75a7;
-	--color-info-active: #176691;
-	--color-info-focus: #1a75a7;
-	--color-info-disabled: #a7d7f1;
+  --color-info: #2196d3;
+  --color-info-hover: #1a75a7;
+  --color-info-active: #176691;
+  --color-info-focus: #1a75a7;
+  --color-info-disabled: #a7d7f1;
 
-	/* Text - matches Theme.palette.text */
-	--color-text: #333333;
-	--color-text-hover: #1a1a1a;
-	--color-text-active: #0d0d0d;
-	--color-text-focus: #1a1a1a;
-	--color-text-disabled: #cccccc;
+  /* Text - matches Theme.palette.text */
+  --color-text: #333333;
+  --color-text-hover: #1a1a1a;
+  --color-text-active: #0d0d0d;
+  --color-text-focus: #1a1a1a;
+  --color-text-disabled: #cccccc;
 
-	/* Black & White - matches Theme.palette.black/white */
-	--color-black: #000000;
-	--color-white: #FFFFFF;
+  /* Black & White - matches Theme.palette.black/white */
+  --color-black: #000000;
+  --color-white: #ffffff;
 
-	/* Banner colors - matches Theme.palette */
-	--color-successBanner: #E6F2D8;
-	--color-warningBanner: #FFF7DE;
-	--color-infoBanner: #D3EBF8;
-	--color-errorBanner: #F6D6D5;
+  /* Banner colors - matches Theme.palette */
+  --color-successBanner: #e6f2d8;
+  --color-warningBanner: #fff7de;
+  --color-infoBanner: #d3ebf8;
+  --color-errorBanner: #f6d6d5;
 
-	/* Transparent - matches Theme.palette.transparent */
-	--color-transparent: rgba(0, 0, 0, 0);
-	--color-transparent-hover: rgba(0, 0, 0, 0.05);
-	--color-transparent-active: rgba(0, 0, 0, 0.1);
-	--color-transparent-focus: rgba(0, 0, 0, 0.05);
-	--color-transparent-disabled: rgba(0, 0, 0, 0);
+  /* Transparent - matches Theme.palette.transparent */
+  --color-transparent: rgba(0, 0, 0, 0);
+  --color-transparent-hover: rgba(0, 0, 0, 0.05);
+  --color-transparent-active: rgba(0, 0, 0, 0.1);
+  --color-transparent-focus: rgba(0, 0, 0, 0.05);
+  --color-transparent-disabled: rgba(0, 0, 0, 0);
 
-	/* Current color - matches Theme.palette.currentColor */
-	--color-currentColor: currentColor;
+  /* Current color - matches Theme.palette.currentColor */
+  --color-currentColor: currentColor;
 }

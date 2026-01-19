@@ -3,28 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore } from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { isEqual } from "lodash-es";
-import { FC, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import {  useAppConfigStore  } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  isEqual  } from "lodash-es";
+import {  FC, useCallback, useEffect, useState  } from "react";
+import {  useTranslation  } from "react-i18next";
 import styled from "styled-components";
 
-import { themeConfigStore } from "../../../../types/domain";
-import { modifyConfig } from "../../../services/modify-config";
-import { RouteLeavingGuard } from "../../ui-extras/nav-guard";
-import { isValidHexColor } from "../../utility/utils";
-import { ThemeConfigs } from "../theme/theme-configs";
-import { ResetTheme } from "../theme/theme-reset";
+import {  themeConfigStore  } from "../../../../types/domain";
+import {  modifyConfig  } from "../../../services/modify-config";
+import {  RouteLeavingGuard  } from "../../ui-extras/nav-guard";
+import {  isValidHexColor  } from "../../utility/utils";
+import {  ThemeConfigs  } from "../theme/theme-configs";
+import {  ResetTheme  } from "../theme/theme-reset";
 
 const ovelayStyle = styled(Container)`
   position: fixed;
@@ -364,7 +355,7 @@ const GlobalTheme: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <Divider color="gray2" />
+            <divider-wc></divider-wc>
           </Row>
           <ThemeConfigs
             isGlobalTheme

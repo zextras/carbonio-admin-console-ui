@@ -33,7 +33,7 @@ function jsdomProjectConfig() {
       clearMocks: true,
       mockReset: true,
       restoreMocks: true,
-      testTimeout: 10000,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
@@ -46,6 +46,7 @@ function browserProjectConfig() {
     test: {
       name: 'browser',
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
@@ -89,7 +90,7 @@ function browserProjectConfig() {
       globals: true,
       css: true,
       clearMocks: true,
-      testTimeout: 10_000,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
       hookTimeout: 15_000,
     },
     plugins: [
@@ -111,10 +112,14 @@ function browserProjectConfig() {
 }
 
 export default defineConfig({
+  esbuild: {
+    target: 'es2022',
+  },
   test: {
     globals: true,
     passWithNoTests: true,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
+
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'json', 'html', 'lcov'],

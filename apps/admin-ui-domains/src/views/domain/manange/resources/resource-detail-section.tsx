@@ -3,30 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  CustomTextArea,
-  Divider,
-  Icon,
-  Input,
-  Row,
-  Select,
-  SelectItem,
-  Text,
-} from '@zextras/ui-components';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
+import {   Container,  CustomTextArea,  Icon,  Input,  Row,  Select,  SelectItem,  Text } from '@zextras/ui-components';
+import {  ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
 import ListRow from '../../../list/list-row';
-import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
-import { ResourceContext } from './resource-context';
-import {
-  RESOURCE_TYPE,
-  SCHEDULE_POLITY_TYPE,
-  STATUS,
-  TRUE_FALSE,
-} from './resource-edit-detail-view';
+import {  checkValidUserName, convertToAscii, getModifiedName  } from '../../../utility/utils';
+import {  ResourceContext  } from './resource-context';
+import {   RESOURCE_TYPE,  SCHEDULE_POLITY_TYPE,  STATUS,  TRUE_FALSE } from './resource-edit-detail-view';
 
 type SelectValue = SelectItem[] | string | null;
 
@@ -410,7 +395,7 @@ const ResourceDetailSection: FC = () => {
           </Container>
         </ListRow>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <Divider color="gray3" />
+          <divider-wc color="gray3"></divider-wc>
         </Row>
         <ListRow>
           <Container

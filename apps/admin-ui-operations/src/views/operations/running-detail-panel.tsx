@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
-import { FC, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useAllServers  } from '@zextras/admin-ui-bootstrap';
+import {  Container, ModalOverlay, Row, Text, useSnackbar  } from '@zextras/ui-components';
+import {  FC, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { stopOperations } from '../../services/stop-operation';
-import { useOperationStore } from '../../store/operation/store';
-import { OperationsHeader } from '../utility/utils';
+import {  stopOperations  } from '../../services/stop-operation';
+import {  useOperationStore  } from '../../store/operation/store';
+import {  OperationsHeader  } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
-import { OperationsTable } from './operations-table';
+import {  OperationsTable  } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
 const RelativeContainer = styled(Container)`
@@ -116,7 +116,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 						{t('operations.running_panel_heading', 'Running Operations')}
 					</Text>
 				</Row>
-				<Divider />
+				<divider-wc></divider-wc>
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"

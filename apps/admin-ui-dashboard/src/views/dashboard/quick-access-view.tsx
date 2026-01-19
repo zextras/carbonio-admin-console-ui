@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ContainerProps, Divider, Icon, Text } from '@zextras/ui-components';
-import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  Container, ContainerProps, Icon, Text  } from '@zextras/ui-components';
+import {  FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
 import ListRow from '../list/list-row';
@@ -119,7 +119,7 @@ const QuickAccess: FC<{
               </ListRow>
               <ListRow>
                 <Container padding={{ left: 'large', right: 'large' }}>
-                  <Divider />
+                  <divider-wc></divider-wc>
                 </Container>
               </ListRow>
               <ListRow>

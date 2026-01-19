@@ -4,26 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMtaServers } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	ModalOverlay,
-	Row,
-	Table,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { format } from 'date-fns';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useMtaServers  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	ModalOverlay,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
-import { MtaStats } from '../../../../types';
+import {  MtaStats  } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
-import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
-import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
+import {  ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING  } from '../../../constants';
+import {  getMailqueueInformation  } from '../../../services/get-mail-queue-info';
+import {  mailQueueFlushByServer  } from '../../../services/mail-queue-flush';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
@@ -355,7 +346,7 @@ const MTAStats: FC = () => {
 				<Row></Row>
 			</Row>
 			<ListRow>
-				<Divider />
+				<divider-wc></divider-wc>
 			</ListRow>
 			<Container
 				padding={{ all: 'extralarge' }}

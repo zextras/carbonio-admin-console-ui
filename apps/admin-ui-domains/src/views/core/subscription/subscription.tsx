@@ -4,32 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	useActivateLicense,
-	useCurrentUserRights,
-	useLicenseInfo,
-	useRemoveLicense,
-	useVersion
-} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Input,
-	Modal,
-	Quota,
-	Row,
-	Text,
-	Tooltip
-} from '@zextras/ui-components';
-import { format } from 'date-fns';
-import { find } from 'lodash-es';
+import { 	useActivateLicense,	useCurrentUserRights,	useLicenseInfo,	useRemoveLicense,	useVersion } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Input,	Modal,	Quota,	Row,	Text,	Tooltip } from '@zextras/ui-components';
+import {  format  } from 'date-fns';
+import {  find  } from 'lodash-es';
 import React, { useMemo,useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 
-import { CONFIG } from '../../../constants';
-import { LicenseBanner } from '../../dashboard/license-banner';
-import { ServiceStatus } from './service-status';
+import {  CONFIG  } from '../../../constants';
+import {  LicenseBanner  } from '../../dashboard/license-banner';
+import {  ServiceStatus  } from './service-status';
 
 type Module = {
 	value: string;
@@ -230,7 +214,7 @@ export const Subscription = (): React.JSX.Element => {
 			</Container>
 
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				mainAlignment="flex-start"
@@ -555,7 +539,7 @@ export const Subscription = (): React.JSX.Element => {
 						</>
 					))}
 				</Container>
-				<Divider style={{ marginBlockStart: '2rem' }} />
+				<divider-wc style={{ marginBlockStart: '2rem' }}></divider-wc>
 			</Container>
 			<Modal
 				title={t('core.subscription.modal.label', 'Deactivate Token')}

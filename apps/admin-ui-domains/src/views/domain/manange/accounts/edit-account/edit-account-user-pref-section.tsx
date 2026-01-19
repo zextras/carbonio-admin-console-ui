@@ -4,30 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput,Container, Divider, Row, Text } from '@zextras/ui-components';
-import { map, some } from 'lodash-es';
-import {
-	ChangeEvent,
-	FC,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState} from 'react';
-import { useTranslation } from 'react-i18next';
+import {  ChipInput,Container, Row, Text  } from '@zextras/ui-components';
+import {  map, some  } from 'lodash-es';
+import { 	ChangeEvent,	FC,	useCallback,	useContext,	useEffect,	useMemo,	useState } from 'react';
+import {  useTranslation  } from 'react-i18next';
 
 import CustomChip from '../../../../components/customChip';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
-import {
-	appointmentReminder,
-	charactorSet,
-	conversationGroupBy,
-	isValidEmail,
-	timeZoneList} from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
-import { SignatureDetail } from './signature-detail';
+import { 	appointmentReminder,	charactorSet,	conversationGroupBy,	isValidEmail,	timeZoneList } from '../../../../utility/utils';
+import {  AccountContext  } from '../account-context';
+import {  SignatureDetail  } from './signature-detail';
 
 const EditAccountUserPrefrencesSection: FC<{
 	signatureItems: any;
@@ -329,7 +317,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row mainAlignment="flex-start" width="100%">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -414,7 +402,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -479,7 +467,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -511,7 +499,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				accountId={accountDetail?.zimbraId}
 			/>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -547,7 +535,7 @@ const EditAccountUserPrefrencesSection: FC<{
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
+				<divider-wc></divider-wc>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">

@@ -3,37 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	ChipInput,
-	ChipItem,
-	Container,
-	Divider,
-	Input,
-	Padding,
-	Row,
-	Switch,
-	Text,
-	useSnackbar
-} from '@zextras/ui-components';
-import { filter, isEqual, map } from 'lodash-es';
+import {  useAppConfigStore  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	ChipInput,	ChipItem,	Container,	Input,	Padding,	Row,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  filter, isEqual, map  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { Attribute, GlobalDisclaimerType } from '../../../../types';
-import {
-	CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-	FALSE,
-	TRUE,
-	ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
-} from '../../../constants';
-import { getAllConfig } from '../../../services/get-all-config';
-import { modifyConfig } from '../../../services/modify-config';
+import {  Attribute, GlobalDisclaimerType  } from '../../../../types';
+import { 	CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,	FALSE,	TRUE,	ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED } from '../../../constants';
+import {  getAllConfig  } from '../../../services/get-all-config';
+import {  modifyConfig  } from '../../../services/modify-config';
 import ListRow from '../../list/list-row';
-import { isValidEmail } from '../../utility/utils';
+import {  isValidEmail  } from '../../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -352,7 +334,7 @@ const GlobalDetailPanel: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 			<Container
 				orientation="column"
 				crossAlignment="flex-start"

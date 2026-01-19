@@ -3,39 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Padding,
-	Row,
-	Switch,
-	Table,
-	Text,
-	Tooltip,
-	useSnackbar} from '@zextras/ui-components';
+import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	Icon,	Input,	Padding,	Row,	Switch,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
 import logo from '../../../assets/ninja_robo.svg';
-import {
-	CONTENT_TYPE_TEXT_PLAIN,
-	SAML_METADATA_JSON_FILE,
-	ZIMBRA_PUBLIC_SERVICE_HOSTNAME,
-	ZIMBRA_PUBLIC_SERVICE_PROTOCOL
-} from '../../../constants';
-import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
-import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
-import { getSamlConfig } from '../../../services/get-saml-configurations';
-import { importSamlConfig } from '../../../services/import-saml-configurations';
-import { updateSamlAttributes } from '../../../services/update-saml-attributes';
+import { 	CONTENT_TYPE_TEXT_PLAIN,	SAML_METADATA_JSON_FILE,	ZIMBRA_PUBLIC_SERVICE_HOSTNAME,	ZIMBRA_PUBLIC_SERVICE_PROTOCOL } from '../../../constants';
+import {  deleteSamlAttributes  } from '../../../services/delete-saml-attributes';
+import {  generateSignedCertificate  } from '../../../services/generate-signed-certificate';
+import {  getSamlConfig  } from '../../../services/get-saml-configurations';
+import {  importSamlConfig  } from '../../../services/import-saml-configurations';
+import {  updateSamlAttributes  } from '../../../services/update-saml-attributes';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
+import {  copyTextToClipboard, download, getServiceUrl, getSPEntityId  } from '../../utility/utils';
 
 type SamlAttribute = {
 	attribute: string;
@@ -414,7 +397,7 @@ const DomainSaml: FC = () => {
 							</Row>
 						</Row>
 					</Container>
-					<Divider color="gray2" />
+					<divider-wc></divider-wc>
 				</Row>
 				<Container
 					orientation="column"

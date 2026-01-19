@@ -3,29 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Padding,
-  PasswordInput,
-  Popper,
-  Row,
-  Select,
-  SelectItem,
-  Switch,
-  Text,
-  Tooltip as TooltipDefault,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { isEmpty } from "lodash-es";
+import {   useDomainStore,  useIsAdvanced,  useUserSettings } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Icon,  Input,  Padding,  PasswordInput,  Popper,  Row,  Select,  SelectItem,  Switch,  Text,  Tooltip as TooltipDefault,  useSnackbar } from "@zextras/ui-components";
+import {  isEmpty  } from "lodash-es";
 import React, {
   FC,
   RefObject,
@@ -35,22 +15,16 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useTranslation } from "react-i18next";
+import {  useTranslation  } from "react-i18next";
 
-import { Attribute, objectType } from "../../../../types";
-import {
-  CHECK_OK,
-  DISABLED,
-  ENABLED,
-  TRUE,
-  ZIMBRA_ADMIN_URN,
-} from "../../../constants";
-import { CheckAuthConfig } from "../../../services/check-auth-config-service";
-import { flushCache } from "../../../services/flush-cache-service";
-import { modifyDomain } from "../../../services/modify-domain-service";
+import {  Attribute, objectType  } from "../../../../types";
+import {   CHECK_OK,  DISABLED,  ENABLED,  TRUE,  ZIMBRA_ADMIN_URN } from "../../../constants";
+import {  CheckAuthConfig  } from "../../../services/check-auth-config-service";
+import {  flushCache  } from "../../../services/flush-cache-service";
+import {  modifyDomain  } from "../../../services/modify-domain-service";
 import ListRow from "../../list/list-row";
-import { RouteLeavingGuard } from "../../ui-extras/nav-guard";
-import { isValidLdapBaseUrl } from "../../utility/utils";
+import {  RouteLeavingGuard  } from "../../ui-extras/nav-guard";
+import {  isValidLdapBaseUrl  } from "../../utility/utils";
 
 const ZimbraAuthMethod = {
   INTERNAL: "zimbra",
@@ -721,7 +695,7 @@ const DomainAuthentication: FC = () => {
               </Row>
             </Row>
           </Container>
-          <Divider color="gray2" />
+          <divider-wc></divider-wc>
         </Row>
         <Container
           orientation="column"
@@ -953,7 +927,7 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <Divider color="gray2" />
+                  <divider-wc></divider-wc>
                 </Padding>
               </ListRow>
               <ListRow>
@@ -1017,7 +991,7 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <Divider color="gray2" />
+                  <divider-wc></divider-wc>
                 </Padding>
               </ListRow>
               <Padding horizontal="small" width="90%"></Padding>

@@ -4,36 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from "@zextras/admin-ui-bootstrap";
-import {
-  Button,
-  Container,
-  Divider,
-  Icon,
-  Input,
-  Padding,
-  Row,
-  Table,
-  Text,
-  useSnackbar,
-} from "@zextras/ui-components";
-import { format, parse } from "date-fns";
-import { debounce } from "lodash-es";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import {  useDomainStore  } from "@zextras/admin-ui-bootstrap";
+import {   Button,  Container,  Icon,  Input,  Padding,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  format, parse  } from "date-fns";
+import {  debounce  } from "lodash-es";
+import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from "react";
+import {  Trans, useTranslation  } from "react-i18next";
 
 import logo from "../../../../assets/gardian.svg";
-import { ASC, DESC, RECORD_DISPLAY_LIMIT } from "../../../../constants";
-import { createResource } from "../../../../services/create-cal-resource-service";
-import { createSignature } from "../../../../services/create-signature-service";
-import { modifyCalendarResource } from "../../../../services/modify-cal-resource-service";
-import { searchDirectory } from "../../../../services/search-directory-service";
+import {  ASC, DESC, RECORD_DISPLAY_LIMIT  } from "../../../../constants";
+import {  createResource  } from "../../../../services/create-cal-resource-service";
+import {  createSignature  } from "../../../../services/create-signature-service";
+import {  modifyCalendarResource  } from "../../../../services/modify-cal-resource-service";
+import {  searchDirectory  } from "../../../../services/search-directory-service";
 import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
 import CustomRowFactory from "../../../app/shared/customTableRowFactory";
 import TrackNumberPerPage from "../../../app/shared/track-number-per-page";
 import Paging from "../../../components/paging";
 import ScrollContainer from "../../../components/scrollComponent";
-import { generateSnackbarFromError } from "../../../error/generate-snackbar-error";
+import {  generateSnackbarFromError  } from "../../../error/generate-snackbar-error";
 import CreateResource from "./create-resource";
 import ResourceEditDetailView from "./resource-edit-detail-view";
 
@@ -583,7 +572,7 @@ const DomainResources: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <Divider />
+        <divider-wc></divider-wc>
       </Row>
       <Container
         orientation="column"

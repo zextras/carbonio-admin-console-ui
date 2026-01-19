@@ -15,7 +15,6 @@ import {
 import {
   Button,
   Container,
-  Divider,
   Input,
   OverlayDivision,
   Padding,
@@ -1003,7 +1002,7 @@ const BackupConfiguration: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <Divider color="gray2" />
+            <divider-wc></divider-wc>
           </Row>
           <Container
             mainAlignment="flex-start"
@@ -1368,7 +1367,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Container>
             </ListRow>
 
@@ -1437,7 +1436,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Container>
             </ListRow>
 

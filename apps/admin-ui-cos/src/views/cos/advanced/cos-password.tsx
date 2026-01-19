@@ -3,21 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-	Container,
-	Divider,
-	Icon,
-	Input,
-	Padding,
-	Row,
-	Switch,
-	Text
-} from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { 	Container,	Icon,	Input,	Padding,	Row,	Switch,	Text } from '@zextras/ui-components';
+import {  ChangeEvent, FC  } from 'react';
+import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { AccountType } from '../../../../types/account';
+import {  AccountType  } from '../../../../types/account';
 import ListRow from '../../list/list-row';
 
 const CustomIcon = styled(Icon)`
@@ -287,7 +278,7 @@ const COSPassword: FC<COSPasswordProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<Divider />
+			<divider-wc></divider-wc>
 		</Row>
 	);
 };

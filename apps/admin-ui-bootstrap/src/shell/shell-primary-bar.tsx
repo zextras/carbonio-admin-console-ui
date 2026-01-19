@@ -4,16 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	Button,
-	Container,
-	Divider,
-	Padding,
-	Popper,
-	Row,
-	Text} from '@zextras/ui-components';
-import { map, sortBy,trim } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useRef,useState } from 'react';
+import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
+import { map, sortBy, trim } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -24,234 +17,234 @@ import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
 
 const PrimaryBarContainer = styled(Container)`
-	min-width: 48px;
-	max-width: 192px;
-	width: ${({ sidebarIsOpen }): number => (sidebarIsOpen ? 192 : 48)}px;
-	transition: width 300ms;
-	overflow-x: hidden;
+  min-width: 48px;
+  max-width: 192px;
+  width: ${({ sidebarIsOpen }): number => (sidebarIsOpen ? 192 : 48)}px;
+  transition: width 300ms;
+  overflow-x: hidden;
 `;
 
 const PrimaryBarRow = styled(Row)<{ active: boolean }>`
-	background-color: ${({ theme, active }): string =>
-		active ? theme.palette.highlight.regular : 'gray6'};
-	cursor: pointer;
-	&:hover {
-		background: ${({ theme, active }): string => theme.palette[active ? 'gray4' : 'gray6'].hover};
-	}
+  background-color: ${({ theme, active }): string =>
+    active ? theme.palette.highlight.regular : 'gray6'};
+  cursor: pointer;
+  &:hover {
+    background: ${({ theme, active }): string => theme.palette[active ? 'gray4' : 'gray6'].hover};
+  }
 `;
 
 const PrimaryBarButton = styled(Button)`
-	&:hover {
-		background: transparent;
-	}
+  &:hover {
+    background: transparent;
+  }
 `;
 
 const CustomText = styled(Text)`
-	width: 75%;
-	height: 100%;
-	display: flex;
-	align-items: center;
+  width: 75%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 type PrimaryBarItemProps = {
-	view: PrimaryBarView;
-	active: boolean;
-	isExpanded: boolean;
-	onClick: () => void;
+  view: PrimaryBarView;
+  active: boolean;
+  isExpanded: boolean;
+  onClick: () => void;
 };
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
-	const [open, setOpen] = useState(false);
-	const containerRef = useRef(undefined);
-	return (
-		<>
-			<Container
-				ref={containerRef}
-				onMouseEnter={(): void => setOpen(true)}
-				onMouseLeave={(): void => setOpen(false)}
-				height="52px"
-			>
-				<PrimaryBarRow width="fill" mainAlignment="flex-start" active={active}>
-					<BadgeWrap badge={view.badge} isExpanded={isExpanded}>
-						{typeof view.component === 'string' ? (
-							<PrimaryBarButton
-								type="ghost"
-								color={'text'}
-								icon={view.component}
-								onClick={onClick}
-								size={'extralarge'}
-							/>
-						) : (
-							<Text onClick={onClick}>
-								<view.component active={active} />
-							</Text>
-						)}
-					</BadgeWrap>
-					{isExpanded && (
-						<CustomText color="text" weight="bold" onClick={onClick}>
-							{view.label}
-						</CustomText>
-					)}
-				</PrimaryBarRow>
-			</Container>
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(undefined);
+  return (
+    <>
+      <Container
+        ref={containerRef}
+        onMouseEnter={(): void => setOpen(true)}
+        onMouseLeave={(): void => setOpen(false)}
+        height="52px"
+      >
+        <PrimaryBarRow width="fill" mainAlignment="flex-start" active={active}>
+          <BadgeWrap badge={view.badge} isExpanded={isExpanded}>
+            {typeof view.component === 'string' ? (
+              <PrimaryBarButton
+                type="ghost"
+                color={'text'}
+                icon={view.component}
+                onClick={onClick}
+                size={'extralarge'}
+              />
+            ) : (
+              <Text onClick={onClick}>
+                <view.component active={active} />
+              </Text>
+            )}
+          </BadgeWrap>
+          {isExpanded && (
+            <CustomText color="text" weight="bold" onClick={onClick}>
+              {view.label}
+            </CustomText>
+          )}
+        </PrimaryBarRow>
+      </Container>
 
-			<Popper
-				open={open}
-				anchorEl={containerRef}
-				placement="right"
-				onClose={(): void => setOpen(false)}
-				disableRestoreFocus
-			>
-				{!view?.tooltip ? (
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						background="gray3"
-						height="fit"
-						crossAlignment="flex-start"
-					>
-						<Padding value="8px">
-							<Text>{view.label}</Text>
-						</Padding>
-					</Container>
-				) : (
-					<view.tooltip />
-				)}
-			</Popper>
-		</>
-	);
+      <Popper
+        open={open}
+        anchorEl={containerRef}
+        placement="right"
+        onClose={(): void => setOpen(false)}
+        disableRestoreFocus
+      >
+        {!view?.tooltip ? (
+          <Container
+            orientation="horizontal"
+            mainAlignment="flex-start"
+            background="gray3"
+            height="fit"
+            crossAlignment="flex-start"
+          >
+            <Padding value="8px">
+              <Text>{view.label}</Text>
+            </Padding>
+          </Container>
+        ) : (
+          <view.tooltip />
+        )}
+      </Popper>
+    </>
+  );
 };
 
 const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
-	const isOpen = useUtilityBarStore((s) => s.primaryBarState);
+  const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
-	const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
-	const onCollapserClick = useCallback(() => {
-		setIsOpen(!isOpen);
-	}, [isOpen, setIsOpen]);
-	const primaryBarViews = useAppStore((s) => s.views.primaryBar);
-	const primarybarSections = useAppStore((s) => s.views.primarybarSections);
-	const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
-	const [routes, setRoutes] = useState<Record<string, string>>({});
-	const history = useHistory();
+  const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
+  const onCollapserClick = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen, setIsOpen]);
+  const primaryBarViews = useAppStore((s) => s.views.primaryBar);
+  const primarybarSections = useAppStore((s) => s.views.primarybarSections);
+  const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
+  const [routes, setRoutes] = useState<Record<string, string>>({});
+  const history = useHistory();
 
-	useEffect(() => {
-		setRoutes((r) =>
-			primaryBarViews.reduce((acc, v) => {
-				acc[v?.id] = v.route;
-				return acc;
-			}, r)
-		);
-	}, [primaryBarViews]);
-	useEffect(() => {
-		if (activeRoute) {
-			setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(history.location.pathname, '/') }));
-		}
-	}, [activeRoute, history.location.pathname, primaryBarViews]);
+  useEffect(() => {
+    setRoutes((r) =>
+      primaryBarViews.reduce((acc, v) => {
+        acc[v?.id] = v.route;
+        return acc;
+      }, r),
+    );
+  }, [primaryBarViews]);
+  useEffect(() => {
+    if (activeRoute) {
+      setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(history.location.pathname, '/') }));
+    }
+  }, [activeRoute, history.location.pathname, primaryBarViews]);
 
-	useEffect(() => {
-		let allPrimaryBarView = [];
-		if (primaryBarViews.length > 0) {
-			allPrimaryBarView = primaryBarViews.filter(
-				(item) => item.section === undefined || !item.section
-			);
-			if (primarybarSections.length > 0) {
-				primarybarSections.forEach((item) => {
-					const section = {
-						id: item?.id,
-						position: item?.position,
-						label: item?.label
-					};
-					const parimaryBarItems: any = [];
-					primaryBarViews.forEach((primaryBarItem) => {
-						if (item?.id === primaryBarItem?.section?.id) {
-							parimaryBarItems.push(primaryBarItem);
-						}
-					});
-					allPrimaryBarView.push({
-						position: item?.position,
-						badge: { show: false, count: 0, showCount: false, color: 'primary' },
-						visible: true,
-						section,
-						children: parimaryBarItems
-					});
-				});
-			}
-			setPrimaryBarViewWithSection(sortBy(allPrimaryBarView, 'position'));
-		}
-	}, [primarybarSections, primaryBarViews]);
+  useEffect(() => {
+    let allPrimaryBarView = [];
+    if (primaryBarViews.length > 0) {
+      allPrimaryBarView = primaryBarViews.filter(
+        (item) => item.section === undefined || !item.section,
+      );
+      if (primarybarSections.length > 0) {
+        primarybarSections.forEach((item) => {
+          const section = {
+            id: item?.id,
+            position: item?.position,
+            label: item?.label,
+          };
+          const parimaryBarItems: any = [];
+          primaryBarViews.forEach((primaryBarItem) => {
+            if (item?.id === primaryBarItem?.section?.id) {
+              parimaryBarItems.push(primaryBarItem);
+            }
+          });
+          allPrimaryBarView.push({
+            position: item?.position,
+            badge: { show: false, count: 0, showCount: false, color: 'primary' },
+            visible: true,
+            section,
+            children: parimaryBarItems,
+          });
+        });
+      }
+      setPrimaryBarViewWithSection(sortBy(allPrimaryBarView, 'position'));
+    }
+  }, [primarybarSections, primaryBarViews]);
 
-	return (
-		<>
-			<PrimaryBarContainer
-				sidebarIsOpen={isOpen}
-				role="menu"
-				height="fill"
-				background="gray6"
-				orientation="vertical"
-				mainAlignment="space-between"
-				style={{
-					maxHeight: 'calc(100vh - 48px)',
-					overflowY: 'auto'
-				}}
-			>
-				<Container mainAlignment="flex-start">
-					{map(primaryBarViewWithSection, (view, index) =>
-						view.visible ? (
-							<React.Fragment key={index}>
-								{view?.section === undefined && (
-									<PrimaryBarElement
-										key={view?.id}
-										onClick={(): void => history.push(`/${routes[view?.id]}`)}
-										view={view}
-										isExpanded={isOpen}
-										active={activeRoute?.id === view?.id}
-									/>
-								)}
-								{view?.section && isOpen && (
-									<>
-										<Row
-											mainAlignment="flex-start"
-											crossAlignment="flex-start"
-											width="100%"
-											padding={{ left: 'large', right: 'large' }}
-										>
-											<Text size="small" weight="bold" color="#CFD5DC">
-												<Padding top="large" bottom="small">
-													{view?.section?.label}
-												</Padding>
-											</Text>
-											<Divider></Divider>
-										</Row>
-									</>
-								)}
-								{view?.section && !isOpen && view?.children && (
-									<Container height="auto" padding={{ left: 'medium', right: 'medium' }}>
-										<Divider></Divider>
-									</Container>
-								)}
-								{view?.children &&
-									view?.children.length > 0 &&
-									map(view?.children, (item) => (
-										<PrimaryBarElement
-											key={item?.id}
-											onClick={(): void => {
-												history.push(`/${routes[item?.id]}`);
-											}}
-											view={item}
-											isExpanded={isOpen}
-											active={activeRoute?.id === item?.id}
-										/>
-									))}
-							</React.Fragment>
-						) : null
-					)}
-				</Container>
-				<Container mainAlignment="flex-end" height="fit"></Container>
-			</PrimaryBarContainer>
-			<Collapser onClick={onCollapserClick} open={isOpen} />
-		</>
-	);
+  return (
+    <>
+      <PrimaryBarContainer
+        sidebarIsOpen={isOpen}
+        role="menu"
+        height="fill"
+        background="gray6"
+        orientation="vertical"
+        mainAlignment="space-between"
+        style={{
+          maxHeight: 'calc(100vh - 48px)',
+          overflowY: 'auto',
+        }}
+      >
+        <Container mainAlignment="flex-start">
+          {map(primaryBarViewWithSection, (view, index) =>
+            view.visible ? (
+              <React.Fragment key={index}>
+                {view?.section === undefined && (
+                  <PrimaryBarElement
+                    key={view?.id}
+                    onClick={(): void => history.push(`/${routes[view?.id]}`)}
+                    view={view}
+                    isExpanded={isOpen}
+                    active={activeRoute?.id === view?.id}
+                  />
+                )}
+                {view?.section && isOpen && (
+                  <>
+                    <Row
+                      mainAlignment="flex-start"
+                      crossAlignment="flex-start"
+                      width="100%"
+                      padding={{ left: 'large', right: 'large' }}
+                    >
+                      <Text size="small" weight="bold" color="#CFD5DC">
+                        <Padding top="large" bottom="small">
+                          {view?.section?.label}
+                        </Padding>
+                      </Text>
+                      <divider-wc></divider-wc>
+                    </Row>
+                  </>
+                )}
+                {view?.section && !isOpen && view?.children && (
+                  <Container height="auto" padding={{ left: 'medium', right: 'medium' }}>
+                    <divider-wc></divider-wc>
+                  </Container>
+                )}
+                {view?.children &&
+                  view?.children.length > 0 &&
+                  map(view?.children, (item) => (
+                    <PrimaryBarElement
+                      key={item?.id}
+                      onClick={(): void => {
+                        history.push(`/${routes[item?.id]}`);
+                      }}
+                      view={item}
+                      isExpanded={isOpen}
+                      active={activeRoute?.id === item?.id}
+                    />
+                  ))}
+              </React.Fragment>
+            ) : null,
+          )}
+        </Container>
+        <Container mainAlignment="flex-end" height="fit"></Container>
+      </PrimaryBarContainer>
+      <Collapser onClick={onCollapserClick} open={isOpen} />
+    </>
+  );
 };
 
 export default ShellPrimaryBar;

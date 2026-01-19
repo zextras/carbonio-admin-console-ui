@@ -4,55 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	postSoapFetchRequest,
-	soapFetch,
-	useAllServers,
-	useIsAdvanced} from '@zextras/admin-ui-bootstrap';
-import {
-	Button,
-	Container,
-	Divider,
-	ModalOverlay,
-	Row,
-	Table,
-	Text,
-	THeader,
-	useSnackbar} from '@zextras/ui-components';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { 	postSoapFetchRequest,	soapFetch,	useAllServers,	useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { 	Button,	Container,	ModalOverlay,	Row,	Table,	Text,	THeader,	useSnackbar } from '@zextras/ui-components';
+import {  FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
+import {  useTranslation  } from 'react-i18next';
+import {  useParams  } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { objectType,Volume } from '../../../../../types';
-import {
-	ALIBABA,
-	CENTRALIZED,
-	CEPH,
-	CLOUDIAN,
-	CUSTOM_S3,
-	EMC,
-	FILEBLOB,
-	FLEX_START,
-	LOCAL_VALUE,
-	NO,
-	OPENIO,
-	S3,
-	SCALITYS3,
-	SWIFT,
-	YES,
-	ZIMBRA_ADMIN_URN
-} from '../../../../constants';
-import { fetchSoap } from '../../../../services/bucket-service';
-import { createVoume } from '../../../../services/create-volume-service';
-import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
+import {  objectType,Volume  } from '../../../../../types';
+import { 	ALIBABA,	CENTRALIZED,	CEPH,	CLOUDIAN,	CUSTOM_S3,	EMC,	FILEBLOB,	FLEX_START,	LOCAL_VALUE,	NO,	OPENIO,	S3,	SCALITYS3,	SWIFT,	YES,	ZIMBRA_ADMIN_URN } from '../../../../constants';
+import {  fetchSoap  } from '../../../../services/bucket-service';
+import {  createVoume  } from '../../../../services/create-volume-service';
+import {  setCurrentVolumeRequest  } from '../../../../services/set-current-volume-service';
+import {  useBucketVolumeStore  } from '../../../../store/bucket-volume/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import { indexerHeaders,volTableHeader } from '../../../utility/utils';
+import {  indexerHeaders,volTableHeader  } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
-import { VolumeContext } from './create-volume/volume-context';
+import {  VolumeContext  } from './create-volume/volume-context';
 import DeleteVolumeModel from './delete-volume-model';
 import IndexerVolumeTable from './indexer-volume-table';
 import ModifyVolume from './modify-volume/modify-volume';
@@ -749,7 +719,7 @@ const VolumesDetailPanel: FC = () => {
 						})}
 					</Text>
 				</Row>
-				<Divider />
+				<divider-wc></divider-wc>
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"

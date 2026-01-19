@@ -4,57 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  replaceHistory,
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  ChipInput,
-  ChipItem,
-  Container,
-  CustomTextArea,
-  Divider,
-  Input,
-  Modal,
-  OverlayDivision,
-  Padding,
-  Row,
-  Select,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
+import {   replaceHistory,  useDomainStore,  useIsAdvanced,  useUserSettings } from '@zextras/admin-ui-bootstrap';
+import {   Button,  ChipInput,  ChipItem,  Container,  CustomTextArea,  Input,  Modal,  OverlayDivision,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  cloneDeep, filter, find, isEqual, map, some  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
-import {
-  ACTIVE,
-  CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
-  CLOSED,
-  HTTP,
-  HTTPS,
-  LOCKED,
-  MAINTENANCE,
-  NOT_SET,
-  SUSPENDED,
-  TRUE,
-  ZIMBRA_ADMIN_URN,
-  ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
-} from '../../../constants';
-import { batchService } from '../../../services/batch-service';
-import { deleteDomain } from '../../../services/delete-domain-service';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { searchDirectory } from '../../../services/search-directory-service';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import {  CosMaxAccountValues, Domain, DomainsByFeature, objectType  } from '../../../../types';
+import {   ACTIVE,  CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,  CLOSED,  HTTP,  HTTPS,  LOCKED,  MAINTENANCE,  NOT_SET,  SUSPENDED,  TRUE,  ZIMBRA_ADMIN_URN,  ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS } from '../../../constants';
+import {  batchService  } from '../../../services/batch-service';
+import {  deleteDomain  } from '../../../services/delete-domain-service';
+import {  flushCache  } from '../../../services/flush-cache-service';
+import {  modifyDomain  } from '../../../services/modify-domain-service';
+import {  searchDirectory  } from '../../../services/search-directory-service';
+import {  generateSnackbarFromError  } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { getDateFromStr, getFormatedDate, isValidEmail, timeZoneList } from '../../utility/utils';
+import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
+import {  getDateFromStr, getFormatedDate, isValidEmail, timeZoneList  } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
 
@@ -868,7 +835,7 @@ const DomainGeneralSettings: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <Divider />
+        <divider-wc></divider-wc>
       </Row>
 
       <Container
@@ -987,7 +954,7 @@ const DomainGeneralSettings: FC = () => {
                 mainAlignment="space-between"
                 style={{ margin: '8px' }}
               >
-                <Divider />
+                <divider-wc></divider-wc>
               </Container>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
