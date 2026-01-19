@@ -12,7 +12,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createESMBootstrapRollupOptions } from '../../vite.esm.config';
+import { createBootstrapRollupOptions } from '../../vite.rollup.config';
 
 type AppManifest = {
 	readonly name: string;
@@ -137,7 +137,7 @@ export default defineConfig(({ mode }) => {
 			outDir: `dist/source/${commitHash}`,
 			emptyOutDir: true,
 			sourcemap: isDev,
-			rollupOptions: createESMBootstrapRollupOptions(isDev)
+			rollupOptions: createBootstrapRollupOptions(isDev)
 		},
 		base: basePath,
 		publicDir: 'assets',

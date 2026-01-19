@@ -52,7 +52,11 @@ await build({
     },
     sourcemap: isDev,
     rollupOptions: {
-      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next', '@tanstack/react-query'],
+      // NOTE: Do NOT externalize @tanstack/react-query here!
+      // The bootstrap-exports must bundle react-query so that sub-apps
+      // using hooks like useLicenseInfo share the same QueryClient context
+      // with the shell's ReactQueryProvider.
+      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next'],
       output: {
         entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
       },
@@ -92,9 +96,9 @@ if (fs.existsSync(indexHtmlPath)) {
   let indexHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
   const importMapScript = `<script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
 
-  // Inject import map BEFORE the shell.*.mjs script tag
+  // Inject import map BEFORE the shell script tag (handles both shell.mjs and shell.[hash].mjs)
   indexHtml = indexHtml.replace(
-    /(<script type="module"[^>]*shell\.[^"']*\.mjs")/,
+    /(<script type="module"[^>]*shell(?:\.[^"']+)?\.mjs")/,
     `${importMapScript}\n  $1`,
   );
 

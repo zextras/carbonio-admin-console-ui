@@ -11,7 +11,7 @@ import type { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
-import { createESMModuleRollupOptions } from './vite.esm.config';
+import { createModuleRollupOptions } from './vite.rollup.config';
 
 export interface AppViteConfigOptions {
 	/** Additional resolve aliases (e.g., tinymce for domains app) */
@@ -43,7 +43,7 @@ export function createAppViteConfig(options: AppViteConfigOptions = {}): UserCon
 				formats: ['es'],
 				fileName: () => 'main.[hash].mjs',
 			},
-			rollupOptions: createESMModuleRollupOptions({ packageName }),
+			rollupOptions: createModuleRollupOptions({ packageName }),
 			cssCodeSplit: false,
 			sourcemap: true,
 			minify: mode === 'development' ? false : 'esbuild',

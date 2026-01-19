@@ -285,18 +285,14 @@ function main() {
 
   process.chdir(rootDir);
 
-  // Copy shared dependencies from bootstrap
-  log('\n=== Copying shared dependencies ===', 'blue');
-  const bootstrapSourceDir = join(appsDir, 'admin-ui-bootstrap', 'dist', 'source');
-  const sharedDepsSource = join(bootstrapSourceDir, commitHash, 'shared-dependencies');
-  const sharedDepsTarget = join(installDir, 'shared-dependencies', commitHash);
+  // Verify shared dependencies exist (they're built directly to the package dir by build-shell)
+  log('\n=== Verifying shared dependencies ===', 'blue');
+  const sharedDepsDir = join(installDir, 'shared-dependencies', commitHash);
 
-  if (existsSync(sharedDepsSource)) {
-    mkdirSync(sharedDepsTarget, { recursive: true });
-    copyRecursive(sharedDepsSource, sharedDepsTarget);
-    log('✓ Copied shared dependencies', 'green');
+  if (existsSync(sharedDepsDir)) {
+    log('✓ Shared dependencies found', 'green');
   } else {
-    log('⚠️  Shared dependencies not found - skipping', 'yellow');
+    log('⚠️  Shared dependencies not found - they should have been built by bootstrap', 'yellow');
   }
 
   // Copy bootstrap index.html to current directory (for container/development use)
