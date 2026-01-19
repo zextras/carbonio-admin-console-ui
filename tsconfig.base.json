@@ -1,31 +1,4 @@
 {
-	"extends": "@tsconfig/node14/tsconfig.json",
-	"compilerOptions": {
-		"checkJs": false,
-		"noEmit": true,
-		"module": "esnext",
-		"jsx": "react-jsx",
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"target": "ESNext",
-		"allowJs": true,
-		"resolveJsonModule": true,
-		"moduleDetection": "force",
-		"isolatedModules": true,
-		"strict": true,
-		"noImplicitOverride": true,
-		"moduleResolution": "bundler",
-		"paths": {
-			"virtual:app-registry": ["./apps/admin-ui-bootstrap/src/app-registry.d.ts"]
-		},
-		"lib": ["esnext", "dom", "dom.iterable"],
-		"allowSyntheticDefaultImports": true,
-		"preserveConstEnums": true,
-		"noUncheckedIndexedAccess": false,
-		"types": ["@vitest/browser/matchers", "vitest/globals"]
-	},
-	"include": ["src/**/*", "*.d.ts"],
-	"exclude": ["**/*.spec.ts"]
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
     "checkJs": false,
@@ -42,6 +15,9 @@
     "strict": true,
     "noImplicitOverride": true,
     "moduleResolution": "bundler",
+    "paths": {
+      "virtual:app-registry": ["./apps/admin-ui-bootstrap/src/app-registry.d.ts"]
+    },
     "lib": ["esnext", "dom", "dom.iterable"],
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
@@ -49,6 +25,5 @@
     "types": ["@vitest/browser/matchers", "vitest/globals"],
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src/**/*", "*.d.ts"]
 }
