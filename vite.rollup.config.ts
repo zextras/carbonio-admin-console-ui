@@ -17,6 +17,7 @@ export const SHARED_EXTERNALS = [
   'lodash-es',
   'styled-components',
   'i18next',
+  'react-i18next',
   '@tanstack/react-query',
   '@zextras/admin-ui-bootstrap',
   'msw',
