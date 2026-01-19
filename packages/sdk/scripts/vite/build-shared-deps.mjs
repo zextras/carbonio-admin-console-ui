@@ -24,13 +24,13 @@ const sharedDepsConfig = [
     name: 'react',
     entry: resolve(nodeModulesDir, 'react/cjs/react.production.js'),
     outputName: 'index.mjs',
-    type: 'wrap-cjs', // Wrap CJS with both default and named exports
+    type: 'wrap-cjs',
   },
   {
     name: 'react-dom',
     entry: resolve(nodeModulesDir, 'react-dom/cjs/react-dom.production.js'),
     outputName: 'client.mjs',
-    type: 'wrap-cjs', // Wrap CJS with both default and named exports
+    type: 'wrap-cjs',
   },
   {
     name: 'lodash-es',
@@ -56,8 +56,7 @@ const sharedDepsConfig = [
     name: 'react-i18next',
     entry: resolve(nodeModulesDir, 'react-i18next/react-i18next.js'),
     outputName: 'react-i18next.mjs',
-    type: 'build',
-    external: ['react', 'i18next'],
+    type: 'copy',
   },
   {
     name: '@tanstack/react-query',
@@ -90,6 +89,44 @@ export async function buildSharedDeps(commitHash) {
         const outputPath = join(outputDir, depConfig.outputName);
         copyFileSync(depConfig.entry, outputPath);
         console.log(`  ✓ Copied ${depConfig.name}`);
+        continue;
+      }
+
+      // For ESM packages that need esbuild for proper externalization
+      if (depConfig.type === 'build-esbuild') {
+        const entryDir = dirname(depConfig.entry);
+        buildSync({
+          entryPoints: [depConfig.entry],
+          bundle: true,
+          format: 'esm',
+          outfile: join(outputDir, depConfig.outputName),
+          target: 'esnext',
+          minify: true,
+          platform: 'browser',
+          external: depConfig.external || [],
+          resolveExtensions: ['.js'],
+          mainFields: ['module', 'main'],
+          conditions: ['import'],
+          // Preserve source files for proper module resolution
+          absWorkingDir: entryDir,
+        });
+        console.log(`  ✓ Built ${depConfig.name}`);
+        continue;
+      }
+
+      // For CJS packages that need wrapping with named exports (React, react-dom)
+      if (depConfig.type === 'build-esbuild') {
+        buildSync({
+          entryPoints: [depConfig.entry],
+          bundle: true,
+          format: 'esm',
+          outfile: join(outputDir, depConfig.outputName),
+          target: 'esnext',
+          minify: true,
+          platform: 'browser',
+          external: ['react', 'i18next'],
+        });
+        console.log(`  ✓ Built ${depConfig.name}`);
         continue;
       }
 
@@ -154,15 +191,34 @@ export async function buildSharedDeps(commitHash) {
           'version',
         ];
 
-        // Get the export variable name from the esm output (usually something like "export default X();")
-        const defaultMatch = esmCode.match(/export default (\w+)\(\);/);
-        const defaultVar = defaultMatch ? defaultMatch[1] : null;
+        // Get the export variable name from the esm output
+        // esbuild may output either:
+        //   - "export default X();" (older versions)
+        //   - "export { V as default };" (newer versions)
+        let defaultMatch = esmCode.match(/export default (\w+)\(\);/);
+        let defaultVar = defaultMatch ? defaultMatch[1] : null;
+        let exportStyle = 'function-call'; // "export default X();"
+
+        // Try the newer esbuild format: "export { V as default };"
+        if (!defaultVar) {
+          defaultMatch = esmCode.match(/export\s*\{\s*(\w+)\s+as\s+default\s*\};?/);
+          if (defaultMatch) {
+            defaultVar = defaultMatch[1];
+            exportStyle = 'named-as-default'; // "export { V as default };"
+          }
+        }
 
         if (defaultVar) {
           // Append manual named exports before the default export
           let namedExports = '\n// Named exports for compatibility\n';
-          // Call the function once and store result for all named exports
-          namedExports += `const _exports = ${defaultVar}();\n`;
+          
+          // For "export { V as default };" style, V is already the module object
+          // For "export default X();" style, we need to call X() to get the module object
+          if (exportStyle === 'named-as-default') {
+            namedExports += `const _exports = ${defaultVar};\n`;
+          } else {
+            namedExports += `const _exports = ${defaultVar}();\n`;
+          }
 
           if (depConfig.name === 'react') {
             reactExports.forEach((exp) => {
@@ -188,12 +244,22 @@ export async function buildSharedDeps(commitHash) {
           }
 
           // Replace the default export line with named exports + default export
-          const modifiedCode = esmCode.replace(
-            /export default \w+\(\);/,
-            namedExports + 'export default ' + defaultVar + '();',
-          );
+          let modifiedCode;
+          if (exportStyle === 'named-as-default') {
+            modifiedCode = esmCode.replace(
+              /export\s*\{\s*\w+\s+as\s+default\s*\};?/,
+              namedExports + 'export { ' + defaultVar + ' as default };',
+            );
+          } else {
+            modifiedCode = esmCode.replace(
+              /export default \w+\(\);/,
+              namedExports + 'export default ' + defaultVar + '();',
+            );
+          }
 
           writeFileSync(esmPath, modifiedCode, 'utf-8');
+        } else {
+          console.warn(`  ⚠ Could not find default export pattern in ${depConfig.name}, named exports not added`);
         }
 
         console.log(`  ✓ Wrapped ${depConfig.name} with named exports`);
