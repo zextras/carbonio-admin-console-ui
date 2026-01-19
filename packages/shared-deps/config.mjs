@@ -42,6 +42,7 @@ export function getSharedDependencyPaths(commitHash) {
     { name: 'lodash-es', file: 'lodash.mjs' },
     { name: 'styled-components', file: 'styled-components.browser.esm.mjs' },
     { name: 'i18next', file: 'i18next.mjs' },
+    { name: '@tanstack/react-query', file: 'react-query.mjs' },
   ];
 
   for (const depConfig of vendorableDeps) {

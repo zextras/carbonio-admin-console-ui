@@ -52,6 +52,14 @@ const sharedDepsConfig = [
     outputName: 'i18next.mjs',
     type: 'build',
   },
+  {
+    name: '@tanstack/react-query',
+    entry: resolve(nodeModulesDir, '@tanstack/react-query/build/modern/index.js'),
+    outputName: 'react-query.mjs',
+    type: 'build',
+    // react-query must use the shared React instance to avoid context issues
+    external: ['react', 'react-dom'],
+  },
 ];
 
 /**
@@ -186,6 +194,8 @@ export async function buildSharedDeps(commitHash) {
       }
 
       // For packages that need building, use Vite
+      // Get the output filename without extension for the entry file name
+      const outputBaseName = depConfig.outputName.replace(/\.mjs$/, '');
       await build({
         entry: depConfig.entry,
         configFile: false,
@@ -194,7 +204,7 @@ export async function buildSharedDeps(commitHash) {
           lib: {
             entry: depConfig.entry,
             name: depConfig.name,
-            fileName: depConfig.outputName,
+            fileName: () => outputBaseName,
             formats: ['esm'],
           },
           outDir: outputDir,
@@ -205,8 +215,8 @@ export async function buildSharedDeps(commitHash) {
             external: depConfig.external || [],
             output: {
               globals: {},
-              // Remove .esm.js suffix that Vite adds
-              entryFileNames: '[name].mjs',
+              // Use the configured output name
+              entryFileNames: `${outputBaseName}.mjs`,
             },
           },
           target: 'esnext',

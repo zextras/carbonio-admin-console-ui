@@ -52,7 +52,7 @@ await build({
     },
     sourcemap: isDev,
     rollupOptions: {
-      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next'],
+      external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next', '@tanstack/react-query'],
       output: {
         entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
       },
