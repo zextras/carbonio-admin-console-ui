@@ -70,7 +70,7 @@ const DomainMailingList: FC = () => {
 		() => [
 			{
 				id: 'displayName',
-				label: t('label.distribution_list_name', 'Name'),
+				label: t('label.display_name', 'DisplayName'),
 				width: '20%',
 				bold: true,
 				sortable: true,
@@ -89,12 +89,6 @@ const DomainMailingList: FC = () => {
 					setSortOrder(order);
 					setSortedColumn(id);
 				}
-			},
-			{
-				id: 'members',
-				label: t('label.members', 'Members'),
-				width: '15%',
-				bold: true
 			},
 			{
 				id: 'status',
@@ -161,7 +155,7 @@ const DomainMailingList: FC = () => {
 
 	const getMailingList = useCallback((): void => {
 		const attrs =
-			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
+			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
 		setIsRequestInProgress(true);
@@ -214,21 +208,6 @@ const DomainMailingList: FC = () => {
 								</Container>,
 								<Container
 									crossAlignment="flex-start"
-									key={`${item?.id}-member`}
-									style={{ cursor: 'pointer' }}
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedMailingList(item);
-										setSelectedFromRow(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={`${item?.id}member-child`} color="gray0">
-										{''}
-									</Text>
-								</Container>,
-								<Container
-									crossAlignment="flex-start"
 									key={`${item?.id}-status`}
 									style={{ cursor: 'pointer' }}
 									onClick={(e: { stopPropagation: () => void }): void => {
@@ -240,8 +219,8 @@ const DomainMailingList: FC = () => {
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-											? t('label.can_send_receiver', 'Can Send & Receive')
-											: t('label.cant_send_receiver', "Can't Send & Receive")}
+											? t('label.can_send_receiver', 'Can Receive')
+											: t('label.cant_send_receiver', "Can't Receive")}
 									</Text>
 								</Container>,
 								<Container
@@ -256,7 +235,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-										{''}
+										{(item.zimbraHideInGal && item.zimbraHideInGal === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
 									</Text>
 								</Container>,
 								<Container
@@ -793,7 +772,7 @@ const DomainMailingList: FC = () => {
 				</Row>
 			</Container>
 			{showMailingListDetailView && (
-				<ModalOverlay open={showMailingListDetailView}>
+				<ModalOverlay open={showMailingListDetailView} maxWidth='58.75rem'>
 					<EditMailingListView
 						selectedMailingList={selectedMailingList}
 						setIsUpdateRecord={setIsUpdateRecord}
@@ -803,7 +782,7 @@ const DomainMailingList: FC = () => {
 			)}
 
 			{showCreateMailingListView && (
-				<ModalOverlay open={showCreateMailingListView}>
+				<ModalOverlay open={showCreateMailingListView} maxWidth='58.75rem'>
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}
