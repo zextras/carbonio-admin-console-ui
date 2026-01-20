@@ -253,8 +253,8 @@ const ManageAccounts: FC = () => {
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
-	const [isAccountDeleted, setIsDeletedAccount] = useState<boolean>(false);
-	const [isAccountCreated, setIsCreatedAccount] = useState<boolean>(false);
+	const [isAccountDeleted, setIsAccountDeleted] = useState<boolean>(false);
+	const [isAccountCreated, setIsAccountCreated] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
 		getGlobalConfig: false
@@ -998,11 +998,11 @@ const ManageAccounts: FC = () => {
 				isAccountDeleted === true
 			) {
 				getTotalFilteredUser();
-				setIsCreatedAccount(false);
-				setIsDeletedAccount(false);
+				setIsAccountCreated(false);
+				setIsAccountDeleted(false);
 			}
 		}
-	}, [showCreateAccountView, domainName, setIsCreatedAccount, setIsDeletedAccount, isAccountDeleted, isAccountCreated, totalAccountCreated, getTotalFilteredUser]);
+	}, [showCreateAccountView, domainName, setIsAccountCreated, setIsAccountDeleted, isAccountDeleted, isAccountCreated, totalAccountCreated, getTotalFilteredUser]);
 
 	const closeAccountDetailDialog = useCallback(() => {
 		if (showAccountDetailView) {
@@ -1315,7 +1315,7 @@ const ManageAccounts: FC = () => {
 									<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
-											setIsDeletedAccount={setIsDeletedAccount}
+											setIsAccountDeleted={setIsAccountDeleted}
 											selectedAccount={selectedAccount}
 											getAccountList={getAccountList}
 											signatureList={signatureList}
@@ -1340,7 +1340,7 @@ const ManageAccounts: FC = () => {
 				<ModalOverlay open={showCreateAccountView}>
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
-						setIsCreatedAccount={setIsCreatedAccount}
+						setIsAccountCreated={setIsAccountCreated}
 						getAccountList={getAccountList}
 						setShowEditAccountView={setShowEditAccountView}
 						openDetailView={openDetailView}
