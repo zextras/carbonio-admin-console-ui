@@ -1,3 +1,13 @@
+## [0.12.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.12...v0.12.0-devel.13) (2026-01-20)
+
+### Features
+
+* added counter for total user using a specific ([07007f0](https://github.com/zextras/carbonio-admin-console-ui/commit/07007f0c9023e13fc04b6f82f3e72a85cc2db9aa))
+
+### Bug Fixes
+
+* sonarqube correct inconsistent useState destructuring ([3f84f56](https://github.com/zextras/carbonio-admin-console-ui/commit/3f84f567e6c71e77279b02397886ca3a01232a55))
+
 ## [0.12.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.11...v0.12.0-devel.12) (2026-01-20)
 
 ### Bug Fixes
