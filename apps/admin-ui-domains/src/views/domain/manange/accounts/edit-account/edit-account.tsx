@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { 	useCurrentUserRights,	useDomainStore,	useIsAdvanced,	useStickyBarStore,	useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { 	useCurrentUserRights,	useDomainStore,	useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { 	Button,	Container,	DefaultTabBarItem,	Icon,	Modal,	OverlayDivision,	Padding,	Row,	TabBar,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  differenceBy, find,isEqual, reduce, remove  } from 'lodash-es';
 import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useState } from 'react';
 import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { 	ABQ_MODE,	ACCOUNT,	ADMIN_LOGIN_AS,	ADMINISTRATION,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	CHANGE_DISPLAY_NAME_BOOLEAN,	CHANGE_NAME_BOOLEAN,	CLOSED,	CONFIGURATION,	DELEGATES,	DOMAIN_NAME,	FILES_QUOTA_LIMIT,	GENERAL_SECTION,	IS_DEFAULT_USER_NAME,	MOBILE_CALENDAR_FEATURE_SYNC,	MOBILE_CONTACT_FEATURE_SYNC,	PROFILE,	SECURITY,	TRUE,	UID,	USER_PREFERENCES } from '../../../../../constants';
+import { 	ABQ_MODE,	ACCOUNT,	ADMIN_LOGIN_AS,	ADMINISTRATION,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	CHANGE_DISPLAY_NAME_BOOLEAN,	CHANGE_NAME_BOOLEAN,	CLOSED,	CONFIGURATION,	DELEGATES,	DOMAIN_NAME,	FILES_QUOTA_LIMIT,	GENERAL_SECTION,	IS_DEFAULT_USER_NAME,	PROFILE,	SECURITY,	TRUE,	UID,	USER_PREFERENCES } from '../../../../../constants';
 import {  addAccountAliasRequest  } from '../../../../../services/add-account-alias';
 import {  deleteAccountAliasRequest  } from '../../../../../services/delete-account-alias';
 import {  deleteAccount  } from '../../../../../services/delete-account-service';
@@ -102,7 +102,6 @@ const EditAccount: FC<{
 	const isAdvanced = useIsAdvanced();
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-	const { isSticky, setIsSticky } = useStickyBarStore();
 	const { data: rights = [] } = useCurrentUserRights();
 
 	const userType = useMemo(() => {
@@ -230,47 +229,11 @@ const EditAccount: FC<{
 	if (isAdvanced) {
 		items.push({
 			id: 'delegates',
-			label: t('label.delegates', 'DELEGATES'),
+			label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
 			CustomComponent: ReusedDefaultTabBar
 		});
 	}
 
-	const setSwitchInitOptionValue = useCallback(
-		(key: string, value: string): void => {
-			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
-		},
-		[setInitAccountDetail]
-	);
-
-	const modifyCoreAttributes = useCallback(
-		(body: any): void => {
-			setCoreAttributes(body)
-				.then((data: any) => {
-					setSwitchInitOptionValue(
-						'mobileContactFeatureSync',
-						body?.mobileContactFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
-					);
-					setSwitchInitOptionValue(
-						'mobileCalendarFeatureSync',
-						body?.mobileCalendarFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
-					);
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: error?.message
-							? error?.message
-							: 
-								t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[createSnackbar, setSwitchInitOptionValue, t]
-	);
 	const onDeleteFromList = useCallback(
 		(lists: any) => {
 			if (lists?.length > 0) {
@@ -540,39 +503,6 @@ const EditAccount: FC<{
 		remove(modifiedKeys, (ele) => ele === 'mail');
 	};
 
-	const handleMobileSyncFeatures = useCallback(
-		(modifiedKeys: string[]) => {
-			if (
-				(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
-					modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
-				isAdvanced
-			) {
-				const coreAttrBody: any = {
-					mobileCalendarFeatureSync: {
-						value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-						objectName: accountDetail?.name,
-						configType: ACCOUNT
-					},
-					mobileContactFeatureSync: {
-						value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-						objectName: accountDetail?.name,
-						configType: ACCOUNT
-					}
-				};
-				modifyCoreAttributes(coreAttrBody);
-				remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
-				remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
-			}
-		},
-		[
-			accountDetail?.mobileCalendarFeatureSync,
-			accountDetail?.mobileContactFeatureSync,
-			accountDetail?.name,
-			isAdvanced,
-			modifyCoreAttributes
-		]
-	);
-
 	const handleFileQuotaLimitChange = useCallback(
 		(modifiedKeys: string[]) => {
 			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
@@ -719,7 +649,6 @@ const EditAccount: FC<{
 			await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
 		}
 
-		handleMobileSyncFeatures(modifiedKeys);
 		handleFileQuotaLimitChange(modifiedKeys);
 
 		modifiedKeys.forEach((ele: any) => {
@@ -758,7 +687,6 @@ const EditAccount: FC<{
 		getAccountList,
 		initAccountDetail,
 		isAdvanced,
-		modifyCoreAttributes,
 		setInitAccountDetail,
 		setShowEditAccountView,
 		deleteAdministrationRights,
