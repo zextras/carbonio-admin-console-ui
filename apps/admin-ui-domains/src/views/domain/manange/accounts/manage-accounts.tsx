@@ -8,7 +8,7 @@ import { 	postSoapFetchRequest,	useDomainStore,	useIsAdvanced,	useUserAccount } 
 import { 	Button,	Container,	Icon,	Input,	ModalOverlay,	Padding,	Row,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
 import {  format  } from 'date-fns';
 import {  debounce, filter,flatMapDeep  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useRef,useState  } from 'react';
+import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useRef,useState  } from 'react';
 import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -16,6 +16,7 @@ import { 	ABQ_MODE,	ACCOUNT,	ASC,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	
 import { 	accountListDirectory,	getMailboxQuota } from '../../../../services/account-list-directory-service';
 import {  checkRightRequest  } from '../../../../services/check-right';
 import { 	CosA,	getCosGeneralInformation,	GetCosResponse } from '../../../../services/cos-general-information-service';
+import { countAccount } from '../../../../services/count-account-service';
 import {  getAccountRequest  } from '../../../../services/get-account';
 import {  getAccountMembershipRequest  } from '../../../../services/get-account-membership';
 import {  getCoreAttributes  } from '../../../../services/get-core-attributes';
@@ -47,9 +48,12 @@ type CheckRightResponse = {
 	_jsns: string;
 };
 
+type Timer = ReturnType<typeof setTimeout>;
+
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const timer = useRef<Timer | undefined>(undefined);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -245,9 +249,12 @@ const ManageAccounts: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalAccount, setTotalAccount] = useState<number>(0);
+	const [totalAccountCreated, setTotalAccountCreated] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
+	const [isAccountDeleted, setIsDeletedAccount] = useState<boolean>(false);
+	const [isAccountCreated, setIsCreatedAccount] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
 		getGlobalConfig: false
@@ -593,6 +600,9 @@ const ManageAccounts: FC = () => {
 					const inDirectMemArr: any[] = [];
 
 					data?.dl?.forEach((ele: any) => {
+						//remove zimbraIsAdminGroup
+						const re = /^__(monitoring|helpdesk|groups|users|delegated|domain)_admins.*/;
+						if (re.test(ele?.name)) return;
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
 						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -752,6 +762,27 @@ const ManageAccounts: FC = () => {
 	const handleClickTableRow = (item: any): void => {
 		openDetailView(item);
 	};
+
+	const getTotalFilteredUser = useCallback((): void => {
+		if (domainName) {
+			countAccount(domainName).then((res) => {
+				if (res?.Body) {
+					const coses = res?.Body?.CountAccountResponse?.cos;
+					let counter = 0;
+					for (const cos in coses) {
+						if (coses[cos].name != "defaultExternal") {
+							counter = counter + Number(coses[cos]._content);
+						}
+					}
+					setTotalAccountCreated(counter);
+				}
+			}).catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+				setHasError(true);
+			})
+		}
+	}, [domainName, t, createSnackbar]);
 
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -959,6 +990,20 @@ const ManageAccounts: FC = () => {
 		setAccountSearchCurrentPage(1);
 	}, [searchQuery]);
 
+	useEffect(() => {
+		if (domainName) {
+			if (
+				totalAccountCreated == 0 ||
+				isAccountCreated === true ||
+				isAccountDeleted === true
+			) {
+				getTotalFilteredUser();
+				setIsCreatedAccount(false);
+				setIsDeletedAccount(false);
+			}
+		}
+	}, [showCreateAccountView, domainName, setIsCreatedAccount, setIsDeletedAccount, isAccountDeleted, isAccountCreated, totalAccountCreated, getTotalFilteredUser]);
+
 	const closeAccountDetailDialog = useCallback(() => {
 		if (showAccountDetailView) {
 			setShowAccountDetailView(false);
@@ -1071,6 +1116,23 @@ const ManageAccounts: FC = () => {
 		]
 	);
 
+	const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+		const value = e.target.value;
+		if (timer.current) {
+			clearTimeout(timer.current);
+		}
+		if (value != "") {
+			setSearchString(value);
+			const newTimer = setTimeout(() => {
+				setSearchQuery(generateSearchFilterQuery(value, statusFilter, typeFilter));
+			}, 600);
+			timer.current = newTimer;
+		} else {
+			setSearchString("");
+			setSearchQuery(generateSearchFilterQuery(value, statusFilter, typeFilter));
+		}
+	};
+
 	return (
 		<Container
 			padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -1085,12 +1147,17 @@ const ManageAccounts: FC = () => {
 					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
 								{t('domain.account_list', 'Accounts List')}
 							</Text>
 						</Row>
-						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
+							<Text size="medium" overflow="break-word">
+								{t('domain.total_accounts', 'Total Accounts')} : {totalAccountCreated}
+							</Text>
+						</Row>
+						<Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding all={'0'}>
 								<Button
 									color="primary"
@@ -1132,9 +1199,7 @@ const ManageAccounts: FC = () => {
 									disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
-									onChange={(e: any): any => {
-										setSearchString(e.target.value);
-									}}
+									onChange={handleInputChange}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								/>
 							</Container>
@@ -1250,6 +1315,7 @@ const ManageAccounts: FC = () => {
 									<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
+											setIsDeletedAccount={setIsDeletedAccount}
 											selectedAccount={selectedAccount}
 											getAccountList={getAccountList}
 											signatureList={signatureList}
@@ -1274,6 +1340,7 @@ const ManageAccounts: FC = () => {
 				<ModalOverlay open={showCreateAccountView}>
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
+						setIsCreatedAccount={setIsCreatedAccount}
 						getAccountList={getAccountList}
 						setShowEditAccountView={setShowEditAccountView}
 						openDetailView={openDetailView}

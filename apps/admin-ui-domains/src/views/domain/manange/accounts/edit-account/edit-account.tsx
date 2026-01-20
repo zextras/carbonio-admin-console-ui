@@ -55,6 +55,7 @@ const ovelayStyle = styled(Container)`
 
 const EditAccount: FC<{
 	setShowEditAccountView: any;
+	setIsDeletedAccount: any;
 	selectedAccount: any;
 	getAccountList: any;
 	signatureItems: any;
@@ -69,6 +70,7 @@ const EditAccount: FC<{
 	STATUS_COLOR: any;
 }> = ({
 	setShowEditAccountView,
+	setIsDeletedAccount,
 	selectedAccount,
 	getAccountList,
 	signatureItems,
@@ -914,6 +916,7 @@ const EditAccount: FC<{
 			.then((data: any) => {
 				onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
 				setShowEditAccountView(false);
+				setIsDeletedAccount(true);
 				setDefaultTab('general');
 			})
 			.catch((error) => {
@@ -930,7 +933,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [selectedAccount?.id, onSuccess, t, createSnackbar, setDefaultTab, setShowEditAccountView]);
+	}, [selectedAccount?.id, onSuccess, t, setShowEditAccountView, setIsDeletedAccount, setDefaultTab, createSnackbar]);
 
 	const handleCloseWhenDirty = useCallback(() => {
 		setShowModal(true);

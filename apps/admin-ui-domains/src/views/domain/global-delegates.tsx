@@ -835,6 +835,7 @@ const GlobalDelegates: FC = () => {
 											isDirty={isDirty}
 											setIsDirty={setIsDirty}
 											STATUS_COLOR={STATUS_COLOR}
+											setIsDeletedAccount={false}
 										/>
 									</ModalOverlay>
 								)}

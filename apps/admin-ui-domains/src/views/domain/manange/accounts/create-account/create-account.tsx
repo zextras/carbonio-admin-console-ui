@@ -109,6 +109,7 @@ const CreateAccount: FC<{
 	setShowEditAccountView: any;
 	openDetailView: any;
 	setShowAccountDetailView: any;
+	setIsCreatedAccount: any;
 	setDefaultTab: any;
 }> = ({
 	setShowCreateAccountView,
@@ -116,6 +117,7 @@ const CreateAccount: FC<{
 	setShowEditAccountView,
 	openDetailView,
 	setShowAccountDetailView,
+	setIsCreatedAccount,
 	setDefaultTab
 }) => {
 	const { t } = useTranslation();
@@ -203,6 +205,7 @@ const CreateAccount: FC<{
 						setActiveStep('otp');
 					} else {
 						setShowCreateAccountView(false);
+						setIsCreatedAccount(true);
 					}
 					setAccountDetail((prev) => ({
 						...prev,
@@ -238,15 +241,7 @@ const CreateAccount: FC<{
 				});
 				setIsLoading(false);
 			});
-	}, [
-		accountDetail,
-		createSnackbar,
-		domainName,
-		getAccountList,
-		isAdvanced,
-		setShowCreateAccountView,
-		t
-	]);
+	}, [accountDetail?.co, accountDetail?.company, accountDetail?.defaultCOS, accountDetail?.description, accountDetail?.displayName, accountDetail?.facsimileTelephoneNumber, accountDetail?.givenName, accountDetail?.homePhone, accountDetail?.initials, accountDetail?.l, accountDetail?.mobile, accountDetail?.name, accountDetail?.pager, accountDetail?.password, accountDetail?.postalCode, accountDetail?.sn, accountDetail?.st, accountDetail?.street, accountDetail?.telephoneNumber, accountDetail?.title, accountDetail?.zimbraAccountStatus, accountDetail?.zimbraCOSId, accountDetail?.zimbraNotes, accountDetail?.zimbraPasswordMustChange, accountDetail?.zimbraPrefLocale, accountDetail?.zimbraPrefTimeZoneId, createSnackbar, domainName, getAccountList, isAdvanced, setIsCreatedAccount, setShowCreateAccountView, t]);
 
 	const createNewAccount = useCallback((): void => {
 		setAccountDetail({
@@ -328,16 +323,9 @@ const CreateAccount: FC<{
 			setDefaultTab('administration');
 		} else {
 			setShowCreateAccountView(false);
+			setIsCreatedAccount(true);
 		}
-	}, [
-		accountDetail,
-		handleOnGenerateOTP,
-		setShowCreateAccountView,
-		openDetailView,
-		setShowAccountDetailView,
-		setShowEditAccountView,
-		setDefaultTab
-	]);
+	}, [accountDetail, handleOnGenerateOTP, setShowCreateAccountView, openDetailView, setShowAccountDetailView, setShowEditAccountView, setDefaultTab, setIsCreatedAccount]);
 
 	useEffect(() => {
 		if (accountCreate === 'create') {
@@ -455,7 +443,8 @@ const CreateAccount: FC<{
 
 	const onComplete = useCallback(() => {
 		setShowCreateAccountView(false);
-	}, [setShowCreateAccountView]);
+		setIsCreatedAccount(true);
+	}, [setShowCreateAccountView, setIsCreatedAccount]);
 
 	const wizardStepItems = useMemo(
 		() => (!isAdvanced ? wizardSteps.filter((item: any) => item?.name !== 'otp') : wizardSteps),
