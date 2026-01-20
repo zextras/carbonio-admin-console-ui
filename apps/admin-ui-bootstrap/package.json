@@ -13,7 +13,8 @@
     "node": "v22",
     "npm": "v10"
   },
-  "scripts": {
+    "scripts": {
+    "dev": "vite",
     "build": "sdk build-shell",
     "build:dev": "sdk build-shell --dev",
     "type-check": "tsc --noEmit",

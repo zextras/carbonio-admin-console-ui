@@ -15,74 +15,79 @@ import svgr from 'vite-plugin-svgr';
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
 
 type AppManifest = {
-	readonly name: string;
-	readonly packageName: string;
-	readonly displayName: string;
-	readonly priority: number;
-	readonly icon: string;
-	readonly attrKey: string;
-	readonly version: string;
-	readonly entryPoint: string;
+  readonly name: string;
+  readonly packageName: string;
+  readonly displayName: string;
+  readonly priority: number;
+  readonly icon: string;
+  readonly attrKey: string;
+  readonly version: string;
+  readonly entryPoint: string;
 };
 
 // IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
-const commitHash = process.env.COMMIT_HASH || /* @__PURE__ */ (() => {
-	try {
-		return /* @__PURE__ */ require('child_process').execSync('git rev-parse HEAD').toString().trim();
-	} catch {
-		return 'unknown';
-	}
-})();
+const commitHash =
+  process.env.COMMIT_HASH ||
+  /* @__PURE__ */ (() => {
+    try {
+      return /* @__PURE__ */ require('child_process')
+        .execSync('git rev-parse HEAD')
+        .toString()
+        .trim();
+    } catch {
+      return 'unknown';
+    }
+  })();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
 
 const appRegistryPlugin = (): Plugin => {
-	const virtualModuleId = 'virtual:app-registry';
-	const resolvedVirtualModuleId = '\0' + virtualModuleId;
+  const virtualModuleId = 'virtual:app-registry';
+  const resolvedVirtualModuleId = '\0' + virtualModuleId;
 
-	return {
-		name: 'app-registry',
-		resolveId(id: string) {
-			if (id === virtualModuleId) {
-				return resolvedVirtualModuleId;
-			}
-		},
-		load(id: string) {
-			if (id === resolvedVirtualModuleId) {
-				const appsDir = join(__dirname, '../../apps');
-				const adminUiDirs = readdirSync(appsDir).filter(
-					(dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
-				);
+  return {
+    name: 'app-registry',
+    resolveId(id: string) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id: string) {
+      if (id === resolvedVirtualModuleId) {
+        const appsDir = join(__dirname, '../../apps');
+        const adminUiDirs = readdirSync(appsDir).filter(
+          (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
+        );
 
-				const apps = adminUiDirs
-					.map((dir): AppManifest | null => {
-						const packageJsonPath = join(appsDir, dir, 'package.json');
-						try {
-							const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-							const carbonio = packageJson.carbonio;
+        const apps = adminUiDirs
+          .map((dir): AppManifest | null => {
+            const packageJsonPath = join(appsDir, dir, 'package.json');
+            try {
+              const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+              const carbonio = packageJson.carbonio;
 
-							if (carbonio && carbonio.type === 'carbonioAdmin') {
-								return {
-									name: carbonio.name,
-									packageName: packageJson.name,
-									displayName: carbonio.display,
-									priority: carbonio.priority ?? 99,
-									icon: carbonio.icon,
-									attrKey: carbonio.attrKey ?? '',
-									version: packageJson.version,
-									entryPoint: packageJson.name,
-								};
-							}
-						} catch {
-							// Skip if package.json cannot be read
-						}
-						return null;
-					})
-					.filter((app): app is AppManifest => app !== null)
-					.sort((a, b) => a.priority - b.priority);
+              if (carbonio && carbonio.type === 'carbonioAdmin') {
+                return {
+                  name: carbonio.name,
+                  packageName: packageJson.name,
+                  displayName: carbonio.display,
+                  priority: carbonio.priority ?? 99,
+                  icon: carbonio.icon,
+                  attrKey: carbonio.attrKey ?? '',
+                  version: packageJson.version,
+                  entryPoint: packageJson.name,
+                };
+              }
+            } catch {
+              // Skip if package.json cannot be read
+            }
+            return null;
+          })
+          .filter((app): app is AppManifest => app !== null)
+          .sort((a, b) => a.priority - b.priority);
 
-				// Generate JavaScript module content (types provided via .d.ts)
-				return `/*
+        // Generate JavaScript module content (types provided via .d.ts)
+        return `/*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -95,55 +100,55 @@ export const APP_REGISTRY = ${JSON.stringify(apps, null, '\t')};
 export const getAppByName = (name) => APP_REGISTRY.find((app) => app.name === name);
 export const getAppByPackageName = (packageName) => APP_REGISTRY.find((app) => app.packageName === packageName);
 `;
-			}
-		},
-	};
+      }
+    },
+  };
 };
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
 
-	return {
-		plugins: [
-			react({
-				babel: {
-					plugins: ['babel-plugin-styled-components']
-				}
-			}),
-			svgr({
-				svgrOptions: {
-					ref: true,
-					svgo: false,
-					titleProp: true,
-					exportType: 'default'
-				},
-				include: '**/*.svg'
-			}),
-			appRegistryPlugin()
-		],
-		define: {
-			COMMIT_ID: JSON.stringify(commitHash),
-			BASE_PATH: JSON.stringify(basePath),
-			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production')
-		},
-		resolve: {
-			alias: {
-				path: 'path-browserify'
-			},
-			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
-			dedupe: ['react', 'react-dom', 'styled-components']
-		},
-		build: {
-			outDir: `dist/source/${commitHash}`,
-			emptyOutDir: true,
-			sourcemap: isDev,
-			rollupOptions: createBootstrapRollupOptions(isDev)
-		},
-		base: basePath,
-		publicDir: 'assets',
-		server: {
-			port: 3000,
-			strictPort: false
-		}
-	};
+  return {
+    plugins: [
+      react({
+        babel: {
+          plugins: ['babel-plugin-styled-components'],
+        },
+      }),
+      svgr({
+        svgrOptions: {
+          ref: true,
+          svgo: false,
+          titleProp: true,
+          exportType: 'default',
+        },
+        include: '**/*.svg',
+      }),
+      appRegistryPlugin(),
+    ],
+    define: {
+      COMMIT_ID: JSON.stringify(commitHash),
+      BASE_PATH: JSON.stringify(isDev ? '/carbonioAdmin/' : basePath),
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+    },
+    resolve: {
+      alias: {
+        path: 'path-browserify',
+      },
+      extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
+      dedupe: ['react', 'react-dom', 'styled-components'],
+    },
+    build: {
+      outDir: `dist/source/${commitHash}`,
+      emptyOutDir: true,
+      sourcemap: isDev,
+      rollupOptions: createBootstrapRollupOptions(isDev),
+    },
+    base: isDev ? '/carbonioAdmin/' : basePath,
+    publicDir: 'assets',
+    server: {
+      port: 3000,
+      strictPort: false,
+    },
+  };
 });
