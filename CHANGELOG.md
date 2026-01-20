@@ -1,3 +1,10 @@
+## [0.12.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.11...v0.12.0-devel.12) (2026-01-20)
+
+### Bug Fixes
+
+* fix send&receive label ([a6107ae](https://github.com/zextras/carbonio-admin-console-ui/commit/a6107aeee3746d48f17ace0580eea847aa722d38))
+* fixed domain list ( removed unused column + fixed column name ) ([2a12c52](https://github.com/zextras/carbonio-admin-console-ui/commit/2a12c525216705158db5b3857974e0a1ba1bfcc6))
+
 ## [0.12.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.10...v0.12.0-devel.11) (2026-01-19)
 
 ### Bug Fixes
