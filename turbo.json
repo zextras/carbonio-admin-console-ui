@@ -11,13 +11,6 @@
       "cache": true,
       "passThroughEnv": ["NODE_ENV"]
     },
-    "build:dev": {
-      "dependsOn": ["^build:dev"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"],
-      "cache": false,
-      "passThroughEnv": ["NODE_ENV"]
-    },
     "build:unified": {
       "dependsOn": [],
       "inputs": ["apps/**", "scripts/**", "package.json"],

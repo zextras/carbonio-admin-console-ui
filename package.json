@@ -13,9 +13,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "build:dev": "turbo run build:dev",
     "build:unified": "tsx ./scripts/build_unified.ts",
-    "build:unified:dev": "tsx ./scripts/build_unified.ts --dev",
     "build:unified:fast": "tsx ./scripts/build_unified_fast.ts",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",

@@ -228,7 +228,7 @@ async function main() {
     log('Building bootstrap to generate import map...', 'cyan');
     const bootstrapDir = join(appsDir, 'admin-ui-bootstrap');
     process.chdir(bootstrapDir);
-    execCommand(isDevMode ? 'pnpm build:dev' : 'pnpm build', { env: buildEnv });
+    execCommand('pnpm build', { env: buildEnv });
     process.chdir(rootDir);
     log('✓ Bootstrap built successfully', 'green');
   } else {
@@ -267,7 +267,7 @@ async function main() {
       const componentInstallDir = join(installDir, component.target);
       rmSync(componentInstallDir, { recursive: true, force: true });
 
-      const buildCommand = isDevMode ? 'pnpm build:dev' : 'pnpm build';
+      const buildCommand = 'pnpm build';
       execCommand(buildCommand, { env: buildEnv });
       buildStats.built++;
       buildStats.builtPackages.push(component.name);
@@ -289,7 +289,9 @@ async function main() {
   process.chdir(rootDir);
 
   log('\n=== Regenerating import map with all modules ===', 'blue');
-  const { generateImportMap } = await import(join(rootDir, 'packages/sdk/scripts/vite/generate-import-map.mjs'));
+  const { generateImportMap } = await import(
+    join(rootDir, 'packages/sdk/scripts/vite/generate-import-map.mjs')
+  );
   const importMap = generateImportMap(commitHash);
   log(`✓ Import map generated with ${Object.keys(importMap.imports).length} entries`, 'green');
 
@@ -311,7 +313,8 @@ async function main() {
       html = html.substring(0, importMapStart) + scriptTag + html.substring(importMapEnd);
     } else {
       const shellScriptStart = html.indexOf('<script type="module"');
-      html = html.substring(0, shellScriptStart) + scriptTag + '\n  ' + html.substring(shellScriptStart);
+      html =
+        html.substring(0, shellScriptStart) + scriptTag + '\n  ' + html.substring(shellScriptStart);
     }
 
     writeFileSync(htmlPath, html);

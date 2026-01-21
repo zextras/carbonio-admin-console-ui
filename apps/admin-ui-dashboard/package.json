@@ -6,12 +6,9 @@
   "main": "src/app.tsx",
   "scripts": {
     "build": "sdk build",
-    "build:dev": "sdk build --dev",
     "build:esm": "vite build --config vite.config.esm.ts",
-    "build:esm:dev": "vite build --config vite.config.esm.ts --mode development && node postbuild-esm.mjs",
     "test:esm": "node test-esm-build.mjs",
     "deploy": "npm run build && sdk deploy",
-    "deploy:dev": "npm run build:dev && sdk deploy",
     "reset": "node ../../scripts/reset.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",

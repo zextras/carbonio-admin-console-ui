@@ -13,15 +13,13 @@
     "node": "v22",
     "npm": "v10"
   },
-    "scripts": {
+  "scripts": {
     "dev": "vite",
     "build": "sdk build-shell",
-    "build:dev": "sdk build-shell --dev",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",
     "deploy": "npm run build && sdk deploy --admin",
-    "deploy:dev": "npm run build:dev && sdk deploy --admin",
     "reset": "node ../../scripts/reset.js",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",

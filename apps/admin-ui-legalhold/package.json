@@ -6,9 +6,7 @@
   "main": "src/app.tsx",
   "scripts": {
     "build": "sdk build",
-    "build:dev": "sdk build --dev",
     "deploy": "npm run build && sdk deploy",
-    "deploy:dev": "npm run build:dev && sdk deploy",
     "reset": "node ../../scripts/reset.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint --quiet --cache",

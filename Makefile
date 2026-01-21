@@ -11,7 +11,7 @@ deploy-dev:
 	pnpm deploy:unified ${TEST_HOST}
 
 build-%:
-	cd apps/$* && pnpm build:dev
+	cd apps/$* && pnpm build
 deploy-%:
 	cd apps/$* && npm run deploy -- -v -d -h ${TEST_HOST}
 
