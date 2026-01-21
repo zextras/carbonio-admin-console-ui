@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
     "build:unified": "tsx ./scripts/build_unified.ts",
     "build:unified:fast": "tsx ./scripts/build_unified_fast.ts",
     "release": "semantic-release",

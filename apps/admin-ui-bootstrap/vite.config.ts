@@ -40,6 +40,10 @@ const commitHash =
   })();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
+const appsDir = join(__dirname, '../../apps');
+const apps = readdirSync(appsDir).filter(
+  (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
+);
 
 const appRegistryPlugin = (): Plugin => {
   const virtualModuleId = 'virtual:app-registry';
@@ -105,8 +109,15 @@ export const getAppByPackageName = (packageName) => APP_REGISTRY.find((app) => a
   };
 };
 
+const getProxyTarget = (): string => {
+  const target = process.env.VITE_TARGET || 'localhost';
+  console.log('Proxy target:', `https://${target}:6071`);
+  return `https://${target}:6071`;
+};
+
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
+  const proxyTarget = getProxyTarget();
 
   return {
     plugins: [
@@ -134,6 +145,18 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         path: 'path-browserify',
+        ...apps.reduce((acc: Record<string, string>, dir: string) => {
+          const packageJsonPath = join(appsDir, dir, 'package.json');
+          try {
+            const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+            if (packageJson.name) {
+              acc[packageJson.name] = join(appsDir, dir, 'src/index.ts');
+            }
+          } catch {
+            // Skip if package.json cannot be read
+          }
+          return acc;
+        }, {}),
       },
       extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
       dedupe: ['react', 'react-dom', 'styled-components'],
@@ -151,31 +174,31 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       proxy: {
         '/carbonioAdmin/static': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
           followRedirects: true,
         },
         '/service': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
           secure: false,
         },
         '/logout': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
         },
         '/zx': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
         },
         '/services': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
         },
         '/static/login': {
-          target: 'https://localhost:6071',
+          target: proxyTarget,
           changeOrigin: true,
           secure: false,
         },
