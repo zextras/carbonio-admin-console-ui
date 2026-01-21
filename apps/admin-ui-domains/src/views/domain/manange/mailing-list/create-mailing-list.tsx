@@ -73,12 +73,14 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
+// eslint-disable-next-line no-empty-pattern
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
 	createMailingListReq: any;
 	isLoading: boolean;
 }> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
 	const { t } = useTranslation();
+	const [wizardData, setWizardData] = useState();
 	const domainInformation = useDomainStore((state) => state.domain);
 
 	const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
@@ -92,7 +94,7 @@ const CreateMailingList: FC<{
 		zimbraNotes: '',
 		memberURL: LDAP,
 		members: [],
-		zimbraDistributionListSendShareMessageToNewMembers: true,
+		zimbraDistributionListSendShareMessageToNewMembers: false,
 		owners: [],
 		prefixName: '',
 		suffixName: '',
@@ -232,7 +234,6 @@ const CreateMailingList: FC<{
 			},
 			{
 				name: 'create',
-
 				label: t('label.create', 'Create'),
 				icon: 'PowerOutline',
 				view: MailingListCreateSection,
@@ -302,6 +303,43 @@ const CreateMailingList: FC<{
 					/>
 				),
 				PrevButton: (props: any) => null,
+				NextButton: (props: any) => (
+					<Button
+						{...props}
+						label={t('label.next', 'NEXT')}
+						icon="ChevronRightOutline"
+						iconPlacement="right"
+					/>
+				)
+			},
+			{
+				name: 'settings',
+				label: t('label.settings', 'Settings'),
+				icon: 'OptionsOutline',
+				view: MailingListSettingsSection,
+				CancelButton: (props: any): ReactElement => (
+					<Button
+						{...props}
+						type="outlined"
+						key="wizard-cancel"
+						label={t('label.cancel', 'Cancel')}
+						color="secondary"
+						icon="CloseOutline"
+						iconPlacement="right"
+						onClick={(): void => {
+							setShowCreateMailingListView(false);
+						}}
+					/>
+				),
+				PrevButton: (props: any) => (
+					<Button
+						{...props}
+						label={t('label.back', 'BACK')}
+						icon="ChevronLeftOutline"
+						color="secondary"
+						iconPlacement="left"
+					/>
+				),
 				NextButton: (props: any) => (
 					<Button
 						{...props}
@@ -394,6 +432,7 @@ const CreateMailingList: FC<{
 								: standardMailingListSizardSteps
 						}
 						Wrapper={WizardInSection}
+						onChange={setWizardData}
 						onComplete={onComplete}
 						setToggleWizardSection={setShowCreateMailingListView}
 					/>

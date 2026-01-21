@@ -3,24 +3,43 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
-import { 	Button,	Container,	Icon,	Input,	ModalOverlay,	Padding,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
-import {  debounce  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import {
+	Button,
+	Container,
+	Icon,
+	Input,
+	ModalOverlay,
+	Padding,
+	Row,
+	Table,
+	Text,
+	useSnackbar} from '@zextras/ui-components';
+import { debounce } from 'lodash';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
-import { 	ALL,	ASC,	DESC,	EMAIL,	FALSE,	GRP,	PUB,	RECORD_DISPLAY_LIMIT,	TRUE } from '../../../../constants';
-import {  addDistributionListMember  } from '../../../../services/add-distributionlist-member-service';
-import {  createMailingList  } from '../../../../services/create-mailing-list-service';
-import {  distributionListAction  } from '../../../../services/distribution-list-action-service';
-import {  searchDirectory  } from '../../../../services/search-directory-service';
+import {
+	ALL,
+	ASC,
+	DESC,
+	EMAIL,
+	FALSE,
+	GRP,
+	PUB,
+	RECORD_DISPLAY_LIMIT,
+	TRUE} from '../../../../constants';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import { createMailingList } from '../../../../services/create-mailing-list-service';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
-import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
 import EditMailingListView from './edit-mailing-detail-view';
 
@@ -41,7 +60,7 @@ const DomainMailingList: FC = () => {
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
-	const timer = useRef<number>(0);
+	const timer = useRef<any>(null);
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -100,7 +119,7 @@ const DomainMailingList: FC = () => {
 					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
 					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
 				],
-				 
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -117,9 +136,15 @@ const DomainMailingList: FC = () => {
 				}
 			},
 			{
+				id: 'dynamic',
+				label: t('label.dynamic', 'Dynamic'),
+				width: '7%',
+				bold: true
+			},
+			{
 				id: 'gal',
 				label: t('label.gal', 'GAL'),
-				width: '15%',
+				width: '7%',
 				bold: true
 			},
 			{
@@ -153,12 +178,6 @@ const DomainMailingList: FC = () => {
 		[doClickAction, doDoubleClickAction]
 	);
 
-	// Helper function to get attribute value by name
-	const getAttributeValue = (attributes: any[], attributeName: string): string | undefined => {
-		const attribute = attributes?.find((a: any) => a?.n === attributeName);
-		return attribute?._content;
-	};
-
 	const getMailingList = useCallback((): void => {
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
@@ -174,14 +193,6 @@ const DomainMailingList: FC = () => {
 					}
 					const mList: any[] = [];
 					dlList.forEach((item: any, index: number) => {
-						// Extract attribute values to reduce nesting
-						const displayName = getAttributeValue(item?.a, 'displayName');
-						const mailStatus = getAttributeValue(item?.a, 'zimbraMailStatus');
-						const hideInGal = getAttributeValue(item?.a, 'zimbraHideInGal');
-						const description = getAttributeValue(item?.a, 'description');
-						const isMailEnabled = mailStatus === 'enabled';
-						const showInGal = hideInGal !== 'TRUE';
-						
 						mList.push({
 							id: item?.id,
 							columns: [
@@ -202,7 +213,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}display-child`}
 										color="gray0"
 									>
-										{displayName}
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 									</Text>
 								</Container>,
 								<Container
@@ -232,9 +243,24 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-										{isMailEnabled
+										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
 											? t('label.can_send_receiver', 'Can Receive')
 											: t('label.cant_send_receiver', "Can't Receive")}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-dynamic`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
+										{item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
 									</Text>
 								</Container>,
 								<Container
@@ -249,7 +275,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-										{showInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
+										{(item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
 									</Text>
 								</Container>,
 								<Container
@@ -269,7 +295,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}description-child`}
 										color="gray0"
 									>
-										{description}
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
 									</Text>
 								</Container>
 							]
@@ -362,7 +388,7 @@ const DomainMailingList: FC = () => {
 				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
 				.then((data: any) => {
 					setIsUpdateRecord(true);
-					 
+					// eslint-disable-next-line no-shadow
 					let isError = false;
 					let errorMessage = '';
 					data.forEach((item: any) => {
@@ -459,7 +485,7 @@ const DomainMailingList: FC = () => {
 			allOwnersList: any[],
 			ownerGrantEmailType: { value: string },
 			ownerGrantEmails: string[]
-				) => {
+		) => {
 			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({
@@ -489,14 +515,16 @@ const DomainMailingList: FC = () => {
 				});
 			} else {
 				attributes.push({
-					n: 'description',
-					_content: description
-				});
-				attributes.push({
 					n: 'zimbraDistributionListSendShareMessageToNewMembers',
 					_content: zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE
 				});
 			}
+
+			attributes.push({
+				n: 'description',
+				_content: description
+			});
+
 			let dl: any = {};
 			let action: any = {};
 			if (ownerGrantEmailType?.value === PUB) {
@@ -640,7 +668,7 @@ const DomainMailingList: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<divider-wc></divider-wc>
+				<divider-wc />
 			</Row>
 			<Container
 				orientation="column"
