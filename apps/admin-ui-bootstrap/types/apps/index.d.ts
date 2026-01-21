@@ -13,7 +13,6 @@ export type CarbonioModule = {
   name: string;
   priority: number;
   type: 'carbonioAdmin' | 'shell';
-  attrKey?: string;
   icon: string;
   display: string;
   js_entrypoint: string;

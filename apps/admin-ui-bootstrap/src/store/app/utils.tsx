@@ -16,7 +16,6 @@ export const normalizeApp = (app: Partial<CarbonioModule>): CarbonioModule => ({
   name: app.name ?? 'module',
   priority: app.priority ?? 99,
   type: app.type ?? 'carbonioAdmin',
-  attrKey: app.attrKey,
   icon: app.icon ?? 'Cube',
   display: app.display ?? 'Module',
 });

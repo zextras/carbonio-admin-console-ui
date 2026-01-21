@@ -15,8 +15,6 @@ export type AppManifest = {
   readonly priority: number;
   /** Icon name from carbonio-ui-preview */
   readonly icon: string;
-  /** Optional attribute key for feature flags */
-  readonly attrKey: string;
   /** Package entryPoint */
   readonly entryPoint: string;
 };

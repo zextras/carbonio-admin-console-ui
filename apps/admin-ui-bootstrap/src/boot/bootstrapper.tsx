@@ -11,7 +11,6 @@ import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
 import { useBridge } from '../store/context-bridge';
 import { TrackerProvider } from '../tracker/provider';
-import { unloadAllApps } from './app/load-apps';
 import BootstrapperContextProvider from './bootstrapper-provider';
 import BootstrapperRouter from './bootstrapper-router';
 import { ErrorPage } from './error-page';
@@ -40,13 +39,10 @@ const Bootstrapper: FC = () => {
       }
       setLoading(false);
     });
-    return () => {
-      unloadAllApps();
-    };
   }, [i18nFactory]);
 
   if (loading) {
-    return null;
+    return <spinner-wc></spinner-wc>;
   }
 
   if (error) {

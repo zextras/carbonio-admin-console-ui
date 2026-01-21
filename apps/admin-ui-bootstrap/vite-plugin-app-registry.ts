@@ -35,7 +35,6 @@ function scanAppsDir(): Array<AppManifest> {
             displayName: carbonio.display,
             priority: carbonio.priority ?? 99,
             icon: carbonio.icon,
-            attrKey: carbonio.attrKey ?? '',
             entryPoint: packageJson.name,
           };
           return manifest;
@@ -63,7 +62,6 @@ function buildStateObjects(apps: Array<AppManifest>): { apps: string; appContext
         name: app.name,
         priority: app.priority,
         type: 'carbonioAdmin',
-        attrKey: app.attrKey,
         icon: app.icon,
         display: app.displayName,
         js_entrypoint: app.entryPoint,
