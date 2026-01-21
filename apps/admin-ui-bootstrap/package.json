@@ -14,7 +14,7 @@
     "npm": "v10"
   },
   "scripts": {
-    "dev": "node scripts/dev.mjs",
+    "dev": "tsx scripts/dev.ts",
     "build": "sdk build-shell",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
