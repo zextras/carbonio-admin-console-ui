@@ -45,20 +45,20 @@ describe('LicenseBanner', () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expiring');
 
 		// Check if any text appears first
-		await expect.element(page.getByText(/Your maintenance expires on/i)).toBeVisible();
+		await expect.element(page.getByText(/Maintenance expires on/i)).toBeVisible();
 	});
 
 	it('renders expired message', async () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'expired');
 		// Match either 18 or 19 Jun 2025 depending on timezone
-		await expect.element(page.getByText(/Your maintenance has expired/i)).toBeVisible();
+		await expect.element(page.getByText(/Maintenance has expired./i)).toBeVisible();
 	});
 
 	it('renders invalid message', async () => {
 		setupLicenseBannerTest(<LicenseBanner />, 'invalid');
 
 		// Check if any text appears first
-		await expect.element(page.getByText(/Your subscription does not support Carbonio version/i)).toBeVisible();
+		await expect.element(page.getByText(/Your maintenance does not support Carbonio version/i)).toBeVisible();
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {

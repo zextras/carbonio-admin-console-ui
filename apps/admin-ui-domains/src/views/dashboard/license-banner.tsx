@@ -33,48 +33,56 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	const updateTime = moduleLicenseInfo?.updateTime ?? 0;
 	const updateTimeFormatted = format(updateTime ?? 0, 'dd MMM yyyy HH:mm');
 
-	const bannerExpiredDescription = t(
-		'banner.maintenance-expired-description',
-		'Your maintenance expired on {{maintenanceEndDate}}.',
-		{ maintenanceEndDate: maintenanceEndDateFormatted }
-	);
 	const bannerExpiringDescription = t(
 		'banner.maintenance-expiring-description',
-		'Your maintenance will expire on {{maintenanceEndDate}}.',
+		'Maintenance expires on {{maintenanceEndDate}}.',
 		{ maintenanceEndDate: maintenanceEndDateFormatted }
-	);
-	const bannerInvalidDescription = t(
-		'banner.maintenance-invalid-description',
-		'License is invalid.'
 	);
 	const bannerExpiringLabel = t(
 		'banner.maintenance-expiring-label',
-		'Your maintenance expires on {{maintenanceEndDate}}. Renew to continue receiving updates. Your license supports upgrades up to Carbonio {{maxCarbonioVersion}}. – Last subscription update {{updateTime}}',
-		{ maintenanceEndDate: maintenanceEndDateFormatted,
-			maxCarbonioVersion: maxCarbonioVersion,
+		'Renew to continue receiving updates.\nYour maintenance supports upgrades up to Carbonio {{maxCarbonioVersion}}.\nPlease contact your licensing provider to plan your maintenance renewal.\nLast license update: {{updateTime}}',
+		{ maxCarbonioVersion: maxCarbonioVersion,
 			updateTime: updateTimeFormatted }
+	);
+	const bannerExpiringWithoutMaxVersionLabel = t(
+		'banner.maintenance-expiring-empty-max-version-label',
+		'Renew to continue receiving updates.\nYour maintenance supports upgrades up to Carbonio Not defined.\nPlease contact your licensing provider to plan your maintenance renewal.\nLast license update: {{updateTime}}',
+		{ updateTime: updateTimeFormatted }
+	);
+	const bannerExpiredDescription = t(
+		'banner.maintenance-expired-description',
+		'Maintenance has expired.'
 	);
 	const bannerExpiredLabel = t(
 		'banner.maintenance-expired-label',
-		'Your maintenance has expired. Renew to receive updates. Your license supports versions up to {{maxCarbonioVersion}}. Your current version is {{carbonioVersion}}. Do not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption. – Last subscription update {{updateTime}}',
-		{ maintenanceEndDate: maintenanceEndDateFormatted,
-			maxCarbonioVersion: maxCarbonioVersion,
+		'Your maintenance supports Carbonio versions up to {{maxCarbonioVersion}}. Installed version: {{carbonioVersion}}.\nDo not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption.\nTo continue receiving updates, please contact your licensing provider to renew your maintenance.\nLast license update: {{updateTime}}',
+		{ maxCarbonioVersion: maxCarbonioVersion,
 			carbonioVersion: carbonioVersion,
 			updateTime: updateTimeFormatted }
 	);
+	const bannerExpiredWithoutMaxVersionLabel = t(
+		'banner.maintenance-expired-empty-max-version-label',
+		'Your maintenance supports Carbonio versions up to Not defined. Installed version: {{carbonioVersion}}.\nDo not upgrade beyond Not defined to avoid service disruption.\nTo continue receiving updates, please contact your licensing provider to renew your maintenance.\nLast license update: {{updateTime}}',
+		{ carbonioVersion: carbonioVersion,
+			updateTime: updateTimeFormatted }
+	);
+	const bannerInvalidDescription = t(
+		'banner.maintenance-invalid-description',
+		'Your maintenance does not support Carbonio version {{carbonioVersion}}.',
+		{ carbonioVersion: carbonioVersion }
+	);
 	const bannerInvalidLabel = t(
 		'banner.maintenance-invalid-label',
-		'Your subscription does not support Carbonio version {{carbonioVersion}}. Maximum supported version is {{maxCarbonioVersion}}. Please provide a valid license. – Last subscription update {{updateTime}}',
+		'Maximum supported version: {{maxCarbonioVersion}}.\nPlease contact your licensing provider to update or renew your maintenance.\nLast license update: {{updateTime}}',
 		{ maxCarbonioVersion: maxCarbonioVersion,
-			carbonioVersion: carbonioVersion,
 			updateTime: updateTimeFormatted }
 	);
 
 	const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 
 	const labelToShow = useMemo(
-		() => (maintenanceStatus === 'expiring' ? bannerExpiringLabel : maintenanceStatus === 'expired' ? bannerExpiredLabel : bannerInvalidLabel),
-		[bannerExpiringLabel, bannerExpiredLabel, maintenanceStatus, bannerInvalidLabel]
+		() => (maintenanceStatus === 'expiring' ? maxCarbonioVersion ? bannerExpiringLabel : bannerExpiringWithoutMaxVersionLabel : maintenanceStatus === 'expired' ? maxCarbonioVersion ? bannerExpiredLabel : bannerExpiredWithoutMaxVersionLabel : bannerInvalidLabel),
+		[bannerExpiringLabel, bannerExpiringWithoutMaxVersionLabel, bannerExpiredWithoutMaxVersionLabel, bannerExpiredLabel, maintenanceStatus, maxCarbonioVersion, bannerInvalidLabel]
 	);
 
 	const descriptionToShow = useMemo(
@@ -107,14 +115,20 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 					<Row padding={{ right: '0.5rem' }}>
 						<Icon size="large" icon="AlertTriangleOutline" color="gray6" />
 					</Row>
-					<Row takeAvailableSpace mainAlignment="flex-start" crossAlignment="flex-start">
-						<Text color="gray6" overflow="break-word">
+					<Container
+						width="fill"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="vertical"
+						gap="0.5rem"
+					>
+						<Text color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
 							{descriptionToShow}
 						</Text>
-						<Text color="gray6" overflow="break-word">
+						<Text color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
 							{labelToShow}
 						</Text>
-					</Row>
+					</Container>
 					<Row>
 						<Button
 							type="ghost"
