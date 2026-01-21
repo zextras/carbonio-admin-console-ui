@@ -97,7 +97,7 @@ describe('Subscription - License Banner', () => {
 			versionData: mockVersionData
 		});
 
-		await expect.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i)).toBeVisible();
+		await expect.element(page.getByText(/Maintenance has expired./i)).toBeVisible();
 	});
 
 	it('should display license banner when maintenance status is expiring and subType is PERPETUAL', async () => {
@@ -115,7 +115,7 @@ describe('Subscription - License Banner', () => {
 		});
 
 		await expect
-			.element(page.getByText(/Your maintenance will expire on 18 Jun 2025/i))
+			.element(page.getByText(/Maintenance expires on 18 Jun 2025/i))
 			.toBeVisible();
 	});
 
@@ -134,7 +134,7 @@ describe('Subscription - License Banner', () => {
 		});
 
 		await expect
-			.element(page.getByText(/invalid/i))
+			.element(page.getByText(/Your maintenance does not support Carbonio version/i))
 			.toBeVisible();
 	});
 
@@ -180,7 +180,7 @@ describe('Subscription - License Banner', () => {
 			versionData: mockVersionData
 		});
 
-		await expect.element(page.getByText(/Your maintenance expired on 18 Jun 2025/i)).toBeVisible();
+		await expect.element(page.getByText(/Maintenance has expired./i)).toBeVisible();
 
 		const closeButton = page.getByTestId('license-banner-close-button');
 		await closeButton.click();
