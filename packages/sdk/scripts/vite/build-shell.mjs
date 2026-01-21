@@ -148,7 +148,6 @@ const componentJson = {
   commit: commitHash,
   priority: -1,
   type: 'shell',
-  attrKey: '',
   icon: 'CubeOutline',
   display: 'Admin Shell',
   sentryDsn: '',
