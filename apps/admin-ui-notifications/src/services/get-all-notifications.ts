@@ -12,8 +12,7 @@ export const getAllNotifications = async (): Promise<any> =>
 		{
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
-			action: 'getAllNotifications',
-			targetServers: 'all_servers'
+			action: 'getAllNotifications'
 		},
 		'zextras'
 	);
