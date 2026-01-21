@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 
@@ -150,7 +150,9 @@ export default defineConfig(({ mode }) => {
           try {
             const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
             if (packageJson.name) {
-              acc[packageJson.name] = join(appsDir, dir, 'src/index.ts');
+              const indexPath = join(appsDir, dir, 'src/index.ts');
+              const appPath = join(appsDir, dir, 'src/app.tsx');
+              acc[packageJson.name] = existsSync(indexPath) ? indexPath : appPath;
             }
           } catch {
             // Skip if package.json cannot be read

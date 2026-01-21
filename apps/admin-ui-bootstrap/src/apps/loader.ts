@@ -15,8 +15,6 @@ export type AppEntry = {
   Component: ComponentType;
 };
 
-// Store app context by package name for addRoute to use
-// This persists after module loading since useEffect runs later
 const appContextMap = new Map<string, AppManifest>();
 
 export const getAppContext = (packageName: string): AppManifest | undefined =>
@@ -32,7 +30,68 @@ export async function loadAllApps(): Promise<void> {
       // Store app context before import (available for addRoute when useEffect runs)
       appContextMap.set(manifest.packageName, manifest);
 
-      const module = await import(manifest.entryPoint);
+      let module;
+      switch (manifest.packageName) {
+        case '@zextras/admin-ui-dashboard':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-dashboard');
+          break;
+        case '@zextras/admin-ui-domains':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-domains');
+          break;
+        case '@zextras/admin-ui-mta':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-mta');
+          break;
+        case '@zextras/admin-ui-backup':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-backup');
+          break;
+        case '@zextras/admin-ui-cos':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-cos');
+          break;
+        case '@zextras/admin-ui-legalhold':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-legalhold');
+          break;
+        case '@zextras/admin-ui-privacy':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-privacy');
+          break;
+        case '@zextras/admin-ui-storage':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-storage');
+          break;
+        case '@zextras/admin-ui-operations':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-operations');
+          break;
+        case '@zextras/admin-ui-notifications':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-notifications');
+          break;
+        case '@zextras/admin-ui-subscription':
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import('@zextras/admin-ui-subscription');
+          break;
+        default:
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          module = await import(manifest.packageName);
+      }
       const Component = module.default as ComponentType;
 
       useAppStore.setState((state) => ({
