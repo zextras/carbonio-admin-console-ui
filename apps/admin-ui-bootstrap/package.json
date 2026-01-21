@@ -14,7 +14,7 @@
     "npm": "v10"
   },
   "scripts": {
-    "dev": "tsx scripts/dev.ts",
+    "dev": "vite",
     "build": "sdk build-shell",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",

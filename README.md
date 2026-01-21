@@ -38,6 +38,31 @@ This command will:
 - Prune the pnpm store
 - Reinstall all dependencies
 
+## Development Server
+
+### Starting the Dev Server
+
+To start the development server, run:
+
+```bash
+pnpm dev
+```
+
+The dev server will start on `http://localhost:3000/carbonioAdmin/`.
+
+### Configuring Proxy Target
+
+By default, the dev server proxies API requests to `https://localhost:6071`. To change the proxy target, set the `VITE_TARGET` environment variable:
+
+```bash
+# Use a custom hostname
+VITE_TARGET=myserver pnpm dev
+
+# The proxy target will be set to: https://myserver:6071
+```
+
+All proxy endpoints (`/service`, `/services`, `/zx`, `/logout`, `/carbonioAdmin/static`, `/static/login`) will forward requests to the configured target.
+
 ## Available Scripts
 
 All scripts use Turborepo for efficient task orchestration across workspaces.
