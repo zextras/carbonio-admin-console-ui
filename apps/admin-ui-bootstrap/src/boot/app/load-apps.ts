@@ -5,10 +5,9 @@
  */
 
 import { filter } from 'lodash-es';
-import { APP_REGISTRY } from 'virtual:app-registry';
 
-import { CarbonioModule } from '../../../types';
 import { getUserSetting } from '../../react-query/use-account';
+import { useAppStore } from '../../store/app';
 import { useI18nStore } from '../../store/i18n/store';
 
 /**
@@ -17,28 +16,12 @@ import { useI18nStore } from '../../store/i18n/store';
  * Note: Apps are already loaded via loadAllApps() in init.ts, this handles i18n only
  */
 export function loadApps(): void {
-  const appsToLoad = filter(APP_REGISTRY, (app) => {
+  const appsToLoad = filter(Object.values(useAppStore.getState().apps), (app) => {
     return !(app.attrKey && getUserSetting('attrs', app.attrKey) !== 'TRUE');
   });
 
-  // Convert AppManifest to CarbonioModule format for addI18n
-  const carbonioModules: Array<CarbonioModule> = appsToLoad.map(
-    (app) =>
-      ({
-        commit: '', // No longer needed for bundled apps
-        description: '',
-        js_entrypoint: '', // No longer needed for bundled apps
-        name: app.name,
-        priority: app.priority,
-        type: 'carbonioAdmin',
-        attrKey: app.attrKey,
-        icon: app.icon,
-        display: app.displayName,
-      }) as CarbonioModule,
-  );
-
   const { locale, addI18n } = useI18nStore.getState();
-  addI18n(carbonioModules, locale);
+  addI18n(appsToLoad, locale);
 }
 
 export function unloadAllApps(): Promise<void> {

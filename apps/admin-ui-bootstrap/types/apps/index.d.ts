@@ -6,7 +6,6 @@
 
 import { ComponentType, FC } from 'react';
 
-import { AppManifest } from '../../src/apps/types.ts';
 import { QueryChip } from '../search/items';
 
 export type CarbonioModule = {
@@ -128,7 +127,6 @@ export type AppSetters = {
   addApps: (apps: Array<Partial<CarbonioModule>>) => void;
   addRoute: (routeData: AppRouteDescriptor) => string;
   removeRoute: (id: string) => void;
-  registerApps: (appManifest: Array<AppManifest>) => void;
 };
 export type AppState = {
   apps: Record<string, CarbonioModule>;

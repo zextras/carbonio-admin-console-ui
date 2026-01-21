@@ -16,7 +16,6 @@ import {
   PrimarybarSection,
   PrimaryBarView,
 } from '../../../types';
-import type { AppManifest } from '../../apps/types';
 import { SHELL_APP_ID } from '../../constants';
 import { normalizeApp } from './utils';
 
@@ -65,28 +64,6 @@ export const useAppStore = create<AppState>((set) => ({
           ...(find(apps, (app) => app.name === SHELL_APP_ID) ?? {}),
         },
         appContexts: reduce(apps, (acc, val) => (val.name ? { ...acc, [val.name]: {} } : acc), {}),
-      }));
-    },
-    registerApps: (apps: AppManifest[]): void => {
-      set((state) => ({
-        apps: reduce(
-          apps,
-          (acc, app) => ({
-            ...acc,
-            [app.name]: {
-              description: '',
-              name: app.name,
-              priority: app.priority,
-              type: 'carbonioAdmin' as const,
-              attrKey: app.attrKey,
-              icon: app.icon,
-              display: app.displayName,
-              js_entrypoint: app.entryPoint,
-            },
-          }),
-          state.apps,
-        ),
-        appContexts: reduce(apps, (acc, val) => ({ ...acc, [val.name]: {} }), state.appContexts),
       }));
     },
     // add route (id route primaryBar secondaryBar app)

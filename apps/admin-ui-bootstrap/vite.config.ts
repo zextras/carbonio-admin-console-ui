@@ -90,7 +90,24 @@ const appRegistryPlugin = (): Plugin => {
           .filter((app): app is AppManifest => app !== null)
           .sort((a, b) => a.priority - b.priority);
 
-        // Generate JavaScript module content (types provided via .d.ts)
+        const appsObject = apps.reduce(
+          (acc, app) => ({
+            ...acc,
+            [app.name]: {
+              description: '',
+              name: app.name,
+              priority: app.priority,
+              type: 'carbonioAdmin',
+              attrKey: app.attrKey,
+              icon: app.icon,
+              display: app.displayName,
+              js_entrypoint: app.entryPoint,
+            },
+          }),
+          {},
+        );
+        const appContextsObject = apps.reduce((acc, app) => ({ ...acc, [app.name]: {} }), {});
+
         const appImports = apps.map(
           (app) =>
             `try {
@@ -102,11 +119,15 @@ const appRegistryPlugin = (): Plugin => {
         ['${app.name}']: Component
       }
     }));
-    appContextMap.set('${app.packageName}', APP_REGISTRY.find((a) => a.packageName === '${app.packageName}'));
-    console.info('%c loaded ${app.name}', 'color: white; background: #539507;padding: 4px 8px 2px 4px; font-family: sans-serif; border-radius: 12px; width: 100%');
+    appContextMap.set('${app.packageName}', APP_REGISTRY.find((a) => a.packageName === '${
+              app.packageName
+            }'));
+    console.info('%c loaded ${
+      app.name
+    }', 'color: white; background: #539507;padding: 4px 8px 2px 4px; font-family: sans-serif; border-radius: 12px; width: 100%');
   } catch (error) {
     console.error('Failed to load app ${app.name}:', error);
-  }`
+  }`,
         );
 
         return `/*
@@ -119,10 +140,12 @@ const appRegistryPlugin = (): Plugin => {
 
 export const APP_REGISTRY = ${JSON.stringify(apps, null, '\t')};
 
-export const getAppByName = (name) => APP_REGISTRY.find((app) => app.name === name);
-export const getAppByPackageName = (packageName) => APP_REGISTRY.find((app) => app.packageName === packageName);
-
 export async function loadAllApps(useAppStore, appContextMap) {
+  useAppStore.setState((state) => ({
+    apps: { ...${JSON.stringify(appsObject)} },
+    appContexts: { ...${JSON.stringify(appContextsObject)} }
+  }));
+
   ${appImports.join('\n\n  ')}
 }
 `;

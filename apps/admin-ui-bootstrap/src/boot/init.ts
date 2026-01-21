@@ -4,15 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { APP_REGISTRY } from 'virtual:app-registry';
-
 import { loadAllApps } from '../apps/loader';
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
 import { loginConfig } from '../network/login-config';
 import { queryClient } from '../providers/react-query-provider';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
-import { useAppStore } from '../store/app';
 import { useI18nStore } from '../store/i18n/store';
 import { loadApps } from './app/load-apps';
 
@@ -24,9 +21,6 @@ export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
     if (!response) {
       return { error: 'Advanced is not supported' };
     }
-
-    // Register apps from compile-time registry
-    useAppStore.getState().setters.registerApps(APP_REGISTRY);
 
     let initialCalls;
     if (response.supported) {
