@@ -153,6 +153,12 @@ const DomainMailingList: FC = () => {
 		[doClickAction, doDoubleClickAction]
 	);
 
+	// Helper function to get attribute value by name
+	const getAttributeValue = (attributes: any[], attributeName: string): string | undefined => {
+		const attribute = attributes?.find((a: any) => a?.n === attributeName);
+		return attribute?._content;
+	};
+
 	const getMailingList = useCallback((): void => {
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
@@ -168,7 +174,12 @@ const DomainMailingList: FC = () => {
 					}
 					const mList: any[] = [];
 					dlList.forEach((item: any, index: number) => {
-						const hideInGal = item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content;
+						// Extract attribute values to reduce nesting
+						const displayName = getAttributeValue(item?.a, 'displayName');
+						const mailStatus = getAttributeValue(item?.a, 'zimbraMailStatus');
+						const hideInGal = getAttributeValue(item?.a, 'zimbraHideInGal');
+						const description = getAttributeValue(item?.a, 'description');
+						const isMailEnabled = mailStatus === 'enabled';
 						const showInGal = hideInGal !== 'TRUE';
 						
 						mList.push({
@@ -191,7 +202,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}display-child`}
 										color="gray0"
 									>
-										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+										{displayName}
 									</Text>
 								</Container>,
 								<Container
@@ -221,7 +232,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
+										{isMailEnabled
 											? t('label.can_send_receiver', 'Can Receive')
 											: t('label.cant_send_receiver', "Can't Receive")}
 									</Text>
@@ -258,7 +269,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}description-child`}
 										color="gray0"
 									>
-										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+										{description}
 									</Text>
 								</Container>
 							]
