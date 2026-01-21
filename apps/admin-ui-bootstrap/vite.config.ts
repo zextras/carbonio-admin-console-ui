@@ -149,6 +149,37 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       strictPort: false,
+      proxy: {
+        '/carbonioAdmin/static': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
+          followRedirects: true,
+        },
+        '/service': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/logout': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+        },
+        '/zx': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+        },
+        '/services': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+        },
+        '/static/login': {
+          target: 'https://localhost:6071',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     },
   };
 });
