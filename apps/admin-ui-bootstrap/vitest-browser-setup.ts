@@ -4,39 +4,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-(globalThis as any).__CARBONIO_DEV__ = false;
 (globalThis as any).BASE_PATH = '';
 
 import 'vitest-browser-react';
 
 import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
-import { afterAll, afterEach, beforeAll, beforeEach,vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 const localStorageMock = {
-	getItem: vi.fn(),
-	setItem: vi.fn(),
-	removeItem: vi.fn(),
-	clear: vi.fn()
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 };
 Object.defineProperty(window, 'localStorage', {
-	value: localStorageMock
+  value: localStorageMock,
 });
 
 beforeAll(async () => {
-	await startMockWorker();
+  await startMockWorker();
 });
 
 beforeEach(() => {
-	resetMockWorker();
+  resetMockWorker();
 });
 
 afterAll(() => {
-	stopMockWorker();
-	vi.clearAllMocks();
-	resetMockWorker();
+  stopMockWorker();
+  vi.clearAllMocks();
+  resetMockWorker();
 });
 
 afterEach(() => {
-	vi.unstubAllGlobals();
-	resetMockWorker();
+  vi.unstubAllGlobals();
+  resetMockWorker();
 });

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { ModalManager, SnackbarManager } from '@zextras/ui-components';
-import { FC, Suspense, use } from 'react';
+import { FC, use } from 'react';
 
 import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
@@ -50,13 +50,11 @@ const BootstrapperContent: FC = () => {
   );
 };
 
-const Bootstrapper: FC = () => {
+const Bootstrapper = () => {
   return (
     <ReactQueryProvider>
       <ThemeProvider>
-        <Suspense fallback={<spinner-wc></spinner-wc>}>
-          <BootstrapperContent />
-        </Suspense>
+        <BootstrapperContent />
       </ThemeProvider>
     </ReactQueryProvider>
   );

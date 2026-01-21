@@ -5,16 +5,14 @@
  */
 import '../splash.css';
 
-import { FC } from 'react';
-
 import Helmet from '../svg/carbonio-head.svg';
 
-const LoadingView: FC = () => (
-	<div className="splash">
-		<Helmet fill="#A3AEBC" />
-		<div className="loader">
-			<div className="bar"></div>
-		</div>
-	</div>
+const LoadingView = () => (
+  <div className="splash">
+    <Helmet fill="#A3AEBC" />
+    <div className="loader">
+      <div className="bar"></div>
+    </div>
+  </div>
 );
 export default LoadingView;
