@@ -12,7 +12,6 @@ import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
-import { appRegistryPlugin } from './vite-plugin-app-registry';
 
 // IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
 const commitHash =
@@ -60,7 +59,6 @@ export default defineConfig(({ mode }) => {
         },
         include: '**/*.svg',
       }),
-      appRegistryPlugin(),
     ],
     define: {
       COMMIT_ID: JSON.stringify(commitHash),
