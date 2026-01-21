@@ -168,6 +168,9 @@ const DomainMailingList: FC = () => {
 					}
 					const mList: any[] = [];
 					dlList.forEach((item: any, index: number) => {
+						const hideInGal = item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content;
+						const showInGal = hideInGal !== 'TRUE';
+						
 						mList.push({
 							id: item?.id,
 							columns: [
@@ -235,7 +238,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-										{(item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
+										{showInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
 									</Text>
 								</Container>,
 								<Container
