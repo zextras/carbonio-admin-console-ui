@@ -91,6 +91,24 @@ const appRegistryPlugin = (): Plugin => {
           .sort((a, b) => a.priority - b.priority);
 
         // Generate JavaScript module content (types provided via .d.ts)
+        const appImports = apps.map(
+          (app) =>
+            `try {
+    const module${apps.indexOf(app)} = await import('${app.packageName}');
+    const Component = module${apps.indexOf(app)}.default;
+    useAppStore.setState((state) => ({
+      entryPoints: {
+        ...state.entryPoints,
+        ['${app.name}']: Component
+      }
+    }));
+    appContextMap.set('${app.packageName}', APP_REGISTRY.find((a) => a.packageName === '${app.packageName}'));
+    console.info('%c loaded ${app.name}', 'color: white; background: #539507;padding: 4px 8px 2px 4px; font-family: sans-serif; border-radius: 12px; width: 100%');
+  } catch (error) {
+    console.error('Failed to load app ${app.name}:', error);
+  }`
+        );
+
         return `/*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -103,6 +121,10 @@ export const APP_REGISTRY = ${JSON.stringify(apps, null, '\t')};
 
 export const getAppByName = (name) => APP_REGISTRY.find((app) => app.name === name);
 export const getAppByPackageName = (packageName) => APP_REGISTRY.find((app) => app.packageName === packageName);
+
+export async function loadAllApps(useAppStore, appContextMap) {
+  ${appImports.join('\n\n  ')}
+}
 `;
       }
     },
