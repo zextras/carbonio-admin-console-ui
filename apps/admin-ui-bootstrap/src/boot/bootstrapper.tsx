@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { ModalManager, SnackbarManager } from '@zextras/ui-components';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, Suspense, use } from 'react';
 
 import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
@@ -17,6 +16,9 @@ import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
 
+const i18nFactory = new I18nFactory();
+const initPromise = init(i18nFactory);
+
 const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
   useBridge({
     functions: {},
@@ -27,47 +29,34 @@ const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
   return null;
 };
 
-const Bootstrapper: FC = () => {
-  const i18nFactory = useMemo(() => new I18nFactory(), []);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+const BootstrapperContent: FC = () => {
+  const initResult = use(initPromise);
 
-  useEffect(() => {
-    init(i18nFactory).then((response) => {
-      if (response && 'error' in response) {
-        setError(true);
-      }
-      setLoading(false);
-    });
-  }, [i18nFactory]);
-
-  if (loading) {
-    return <spinner-wc></spinner-wc>;
-  }
-
-  if (error) {
-    return (
-      <ReactQueryProvider>
-        <ThemeProvider>
-          <ErrorPage />
-        </ThemeProvider>
-      </ReactQueryProvider>
-    );
+  if (initResult && 'error' in initResult) {
+    return <ErrorPage />;
   }
 
   return (
+    <SnackbarManager>
+      <ModalManager>
+        <TrackerProvider>
+          <BootstrapperContextProvider i18nFactory={i18nFactory}>
+            <TBridge i18nFactory={i18nFactory} />
+            <BootstrapperRouter />
+          </BootstrapperContextProvider>
+        </TrackerProvider>
+      </ModalManager>
+    </SnackbarManager>
+  );
+};
+
+const Bootstrapper: FC = () => {
+  return (
     <ReactQueryProvider>
       <ThemeProvider>
-        <SnackbarManager>
-          <ModalManager>
-            <TrackerProvider>
-              <BootstrapperContextProvider i18nFactory={i18nFactory}>
-                <TBridge i18nFactory={i18nFactory} />
-                <BootstrapperRouter />
-              </BootstrapperContextProvider>
-            </TrackerProvider>
-          </ModalManager>
-        </SnackbarManager>
+        <Suspense fallback={<spinner-wc></spinner-wc>}>
+          <BootstrapperContent />
+        </Suspense>
       </ThemeProvider>
     </ReactQueryProvider>
   );
