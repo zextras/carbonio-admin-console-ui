@@ -1,6 +1,7 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
 import path from 'node:path';
 import baseConfig from '../../vitest.config.base.js';
+import { appRegistryPlugin } from './vite-plugin-app-registry.ts';
 
 const customConfig = defineConfig({
 	test: {
@@ -19,11 +20,24 @@ if (merged.test?.projects) {
 		delete unitProject.test.alias['@zextras/admin-ui-bootstrap'];
 	}
 
+	// Add appRegistryPlugin to unit tests to resolve virtual:app-registry
+	if (unitProject) {
+		if (!unitProject.plugins) {
+			unitProject.plugins = [];
+		}
+		unitProject.plugins.push(appRegistryPlugin());
+	}
+
 	const browserProject = merged.test.projects.find((p) => p.test?.name === 'browser');
 	if (browserProject?.test) {
 		browserProject.test.setupFiles = [
 			path.resolve(import.meta.dirname, './vitest-browser-setup.ts')
 		];
+		// Add appRegistryPlugin to browser tests to resolve virtual:app-registry
+		if (!browserProject.plugins) {
+			browserProject.plugins = [];
+		}
+		browserProject.plugins.push(appRegistryPlugin());
 	}
 }
 

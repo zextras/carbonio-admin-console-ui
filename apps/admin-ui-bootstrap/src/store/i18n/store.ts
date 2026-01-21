@@ -35,7 +35,6 @@ const addShell = (apps: Array<CarbonioModule>): Array<CarbonioModule> => [
     name: SHELL_APP_ID,
     priority: -1,
     type: 'shell',
-    attrKey: '',
     icon: '',
     display: 'Shell',
   },

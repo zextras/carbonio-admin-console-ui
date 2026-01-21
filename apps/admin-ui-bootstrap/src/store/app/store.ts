@@ -33,7 +33,6 @@ export const useAppStore = create<AppState>((set) => ({
     priority: -1,
     version: '',
     type: 'shell',
-    attrKey: '',
     icon: '',
     display: 'Shell',
   },

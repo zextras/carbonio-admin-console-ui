@@ -55,7 +55,7 @@ export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
   try {
     const advancedSupport = await queryFnIsAdvancedSupported();
 
-    if (!advancedSupport) {
+    if (!advancedSupport || 'errorMessage' in advancedSupport) {
       return { error: 'Advanced is not supported' };
     }
 
