@@ -70,7 +70,7 @@ const DomainMailingList: FC = () => {
 		() => [
 			{
 				id: 'displayName',
-				label: t('label.distribution_list_name', 'Name'),
+				label: t('label.display_name', 'DisplayName'),
 				width: '20%',
 				bold: true,
 				sortable: true,
@@ -89,12 +89,6 @@ const DomainMailingList: FC = () => {
 					setSortOrder(order);
 					setSortedColumn(id);
 				}
-			},
-			{
-				id: 'members',
-				label: t('label.members', 'Members'),
-				width: '15%',
-				bold: true
 			},
 			{
 				id: 'status',
@@ -159,9 +153,15 @@ const DomainMailingList: FC = () => {
 		[doClickAction, doDoubleClickAction]
 	);
 
+	// Helper function to get attribute value by name
+	const getAttributeValue = (attributes: any[], attributeName: string): string | undefined => {
+		const attribute = attributes?.find((a: any) => a?.n === attributeName);
+		return attribute?._content;
+	};
+
 	const getMailingList = useCallback((): void => {
 		const attrs =
-			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
+			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
 		setIsRequestInProgress(true);
@@ -174,6 +174,14 @@ const DomainMailingList: FC = () => {
 					}
 					const mList: any[] = [];
 					dlList.forEach((item: any, index: number) => {
+						// Extract attribute values to reduce nesting
+						const displayName = getAttributeValue(item?.a, 'displayName');
+						const mailStatus = getAttributeValue(item?.a, 'zimbraMailStatus');
+						const hideInGal = getAttributeValue(item?.a, 'zimbraHideInGal');
+						const description = getAttributeValue(item?.a, 'description');
+						const isMailEnabled = mailStatus === 'enabled';
+						const showInGal = hideInGal !== 'TRUE';
+						
 						mList.push({
 							id: item?.id,
 							columns: [
@@ -194,7 +202,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}display-child`}
 										color="gray0"
 									>
-										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+										{displayName}
 									</Text>
 								</Container>,
 								<Container
@@ -214,21 +222,6 @@ const DomainMailingList: FC = () => {
 								</Container>,
 								<Container
 									crossAlignment="flex-start"
-									key={`${item?.id}-member`}
-									style={{ cursor: 'pointer' }}
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedMailingList(item);
-										setSelectedFromRow(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={`${item?.id}member-child`} color="gray0">
-										{''}
-									</Text>
-								</Container>,
-								<Container
-									crossAlignment="flex-start"
 									key={`${item?.id}-status`}
 									style={{ cursor: 'pointer' }}
 									onClick={(e: { stopPropagation: () => void }): void => {
@@ -239,9 +232,9 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-											? t('label.can_send_receiver', 'Can Send & Receive')
-											: t('label.cant_send_receiver', "Can't Send & Receive")}
+										{isMailEnabled
+											? t('label.can_send_receiver', 'Can Receive')
+											: t('label.cant_send_receiver', "Can't Receive")}
 									</Text>
 								</Container>,
 								<Container
@@ -256,7 +249,7 @@ const DomainMailingList: FC = () => {
 									}}
 								>
 									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-										{''}
+										{showInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
 									</Text>
 								</Container>,
 								<Container
@@ -276,7 +269,7 @@ const DomainMailingList: FC = () => {
 										key={`${item?.id}description-child`}
 										color="gray0"
 									>
-										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+										{description}
 									</Text>
 								</Container>
 							]
@@ -793,7 +786,7 @@ const DomainMailingList: FC = () => {
 				</Row>
 			</Container>
 			{showMailingListDetailView && (
-				<ModalOverlay open={showMailingListDetailView}>
+				<ModalOverlay open={showMailingListDetailView} maxWidth='58.75rem'>
 					<EditMailingListView
 						selectedMailingList={selectedMailingList}
 						setIsUpdateRecord={setIsUpdateRecord}
@@ -803,7 +796,7 @@ const DomainMailingList: FC = () => {
 			)}
 
 			{showCreateMailingListView && (
-				<ModalOverlay open={showCreateMailingListView}>
+				<ModalOverlay open={showCreateMailingListView} maxWidth='58.75rem'>
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}

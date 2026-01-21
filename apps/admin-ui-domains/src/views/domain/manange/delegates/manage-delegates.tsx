@@ -1189,6 +1189,7 @@ const ManageDelegates: FC = () => {
 									isDirty={isDirty}
 									setIsDirty={setIsDirty}
 									STATUS_COLOR={STATUS_COLOR}
+									setIsAccountDeleted={false}
 								/>
 							</ModalOverlay>
 						)}

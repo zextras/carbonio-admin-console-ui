@@ -390,6 +390,10 @@ const EditMailingListView: FC<any> = ({
               }));
             } else {
               setZimbraDistributionListSendShareMessageToNewMembers(false);
+              setPreviousDetail((prevState: any) => ({
+								...prevState,
+								zimbraDistributionListSendShareMessageToNewMembers: false
+							}));
             }
 
             const _zimbraMailAlias = distributionListMembers?.a?.filter(

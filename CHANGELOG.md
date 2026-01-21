@@ -1,3 +1,32 @@
+## [0.12.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.13...v0.12.0-devel.14) (2026-01-21)
+
+### Bug Fixes
+
+* CO-3059 Admin ui Notifications is not working ([#1040](https://github.com/zextras/carbonio-admin-console-ui/issues/1040)) ([a09ce78](https://github.com/zextras/carbonio-admin-console-ui/commit/a09ce78242bd30d0200cc7f321b4bb5304923778))
+
+## [0.12.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.12...v0.12.0-devel.13) (2026-01-20)
+
+### Features
+
+* added counter for total user using a specific ([07007f0](https://github.com/zextras/carbonio-admin-console-ui/commit/07007f0c9023e13fc04b6f82f3e72a85cc2db9aa))
+
+### Bug Fixes
+
+* sonarqube correct inconsistent useState destructuring ([3f84f56](https://github.com/zextras/carbonio-admin-console-ui/commit/3f84f567e6c71e77279b02397886ca3a01232a55))
+
+## [0.12.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.11...v0.12.0-devel.12) (2026-01-20)
+
+### Bug Fixes
+
+* fix send&receive label ([a6107ae](https://github.com/zextras/carbonio-admin-console-ui/commit/a6107aeee3746d48f17ace0580eea847aa722d38))
+* fixed domain list ( removed unused column + fixed column name ) ([2a12c52](https://github.com/zextras/carbonio-admin-console-ui/commit/2a12c525216705158db5b3857974e0a1ba1bfcc6))
+
+## [0.12.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.10...v0.12.0-devel.11) (2026-01-19)
+
+### Bug Fixes
+
+* show zimbraAuthLdapExternalDn only when zimbraAuthLdapURL is def… ([#1035](https://github.com/zextras/carbonio-admin-console-ui/issues/1035)) ([b80f25d](https://github.com/zextras/carbonio-admin-console-ui/commit/b80f25d94a742e4e464cf6d1b545c7eda720217a))
+
 ## [0.12.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.9...v0.12.0-devel.10) (2026-01-19)
 
 ### Features
