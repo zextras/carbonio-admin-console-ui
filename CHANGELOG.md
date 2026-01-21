@@ -1,3 +1,9 @@
+## [0.12.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.13...v0.12.0-devel.14) (2026-01-21)
+
+### Bug Fixes
+
+* CO-3059 Admin ui Notifications is not working ([#1040](https://github.com/zextras/carbonio-admin-console-ui/issues/1040)) ([a09ce78](https://github.com/zextras/carbonio-admin-console-ui/commit/a09ce78242bd30d0200cc7f321b4bb5304923778))
+
 ## [0.12.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.12...v0.12.0-devel.13) (2026-01-20)
 
 ### Features
