@@ -14,7 +14,7 @@ import { build } from 'vite';
 import { buildSharedDeps } from './build-shared-deps';
 import { generateImportMap } from './generate-import-map';
 
-export const buildShell = async (): Promise<void> => {
+export async function buildShell(): Promise<void> {
   const args = process.argv.slice(2);
 
   const cwd = process.cwd();
@@ -161,4 +161,4 @@ export const buildShell = async (): Promise<void> => {
 
   console.log(`\nBuild completed successfully!`);
   console.log(`Output directory: ${distDir}`);
-};
+}

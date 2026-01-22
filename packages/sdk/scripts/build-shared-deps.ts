@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -10,6 +9,8 @@ import { dirname, join, resolve } from 'node:path';
 
 import { buildSync } from 'esbuild';
 import { build } from 'vite';
+
+import { log } from './utils';
 
 /**
  * Find the workspace root by looking for pnpm-workspace.yaml or package.json with "workspaces"
@@ -111,17 +112,17 @@ export async function buildSharedDeps(commitHash: string) {
   // Ensure output directory exists
   mkdirSync(outputDir, { recursive: true });
 
-  console.log(`Building shared dependencies to: ${outputDir}`);
+  log(`Building shared dependencies to: ${outputDir}`);
 
   for (const depConfig of sharedDepsConfig) {
-    console.log(`Building ${depConfig.name}...`);
+    log(`Building ${depConfig.name}...`);
 
     try {
       // For pre-bundled packages, just copy the file
       if (depConfig.type === 'copy') {
         const outputPath = join(outputDir, depConfig.outputName);
         copyFileSync(depConfig.entry, outputPath);
-        console.log(`  ✓ Copied ${depConfig.name}`);
+        log(`  ✓ Copied ${depConfig.name}`);
         continue;
       }
 
@@ -143,7 +144,7 @@ export async function buildSharedDeps(commitHash: string) {
           // Preserve source files for proper module resolution
           absWorkingDir: entryDir,
         });
-        console.log(`  ✓ Built ${depConfig.name}`);
+        log(`  ✓ Built ${depConfig.name}`);
         continue;
       }
 
@@ -159,7 +160,7 @@ export async function buildSharedDeps(commitHash: string) {
           platform: 'browser',
           external: ['react', 'i18next'],
         });
-        console.log(`  ✓ Built ${depConfig.name}`);
+        log(`  ✓ Built ${depConfig.name}`);
         continue;
       }
 
@@ -292,12 +293,12 @@ export async function buildSharedDeps(commitHash: string) {
 
           writeFileSync(esmPath, modifiedCode, 'utf-8');
         } else {
-          console.warn(
+          log(
             `  ⚠ Could not find default export pattern in ${depConfig.name}, named exports not added`,
           );
         }
 
-        console.log(`  ✓ Wrapped ${depConfig.name} with named exports`);
+        log(`  ✅ Wrapped ${depConfig.name} with named exports`);
         continue;
       }
 
@@ -339,14 +340,14 @@ export async function buildSharedDeps(commitHash: string) {
           },
         },
       });
-      console.log(`  ✓ Built ${depConfig.name}`);
+      log(`  ✓ Built ${depConfig.name}`);
     } catch (error) {
       console.error(`  ✗ Failed to build ${depConfig.name}`);
       throw error;
     }
   }
 
-  console.log('Shared dependencies build completed!');
+  log('✅ Shared dependencies build completed!', 'green');
 }
 
 // Main execution - only run when executed directly (not when imported)

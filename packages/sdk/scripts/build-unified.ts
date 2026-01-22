@@ -1,36 +1,26 @@
-#!/usr/bin/env node
-/* eslint-disable no-console */
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
+import { execSync } from 'child_process';
 import {
+  copyFileSync,
   existsSync,
   mkdirSync,
   readdirSync,
-  copyFileSync,
-  statSync,
   readFileSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from 'fs';
-import { join, dirname } from 'path';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const fileName = fileURLToPath(import.meta.url);
-const dirName = dirname(fileName);
+import { generateImportMap } from './generate-import-map';
+import { log } from './utils';
 
-// Colors for output
-const colors = {
-  green: '\x1b[0;32m',
-  blue: '\x1b[0;34m',
-  red: '\x1b[0;31m',
-  reset: '\x1b[0m',
-};
-
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
-
-function execCommand(command, options = {}) {
+function execCommand(command: string, options = {}) {
   try {
     return execSync(command, {
       stdio: 'inherit',
@@ -38,12 +28,23 @@ function execCommand(command, options = {}) {
       ...options,
     });
   } catch (error) {
-    log(`Error executing command: ${command} - ${error.message}`, 'red');
+    log(`Error executing command: ${command} - ${(error as Error).message}`, 'red');
     process.exit(1);
   }
 }
+export function findWorkspaceRoot(): string {
+  let currentDir = process.cwd();
 
-function copyRecursive(src, dest) {
+  while (currentDir !== '/') {
+    if (existsSync(join(currentDir, 'pnpm-workspace.yaml'))) {
+      return currentDir;
+    }
+    currentDir = dirname(currentDir);
+  }
+
+  throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
+}
+function copyRecursive(src: string, dest: string) {
   if (!existsSync(src)) {
     log(`Error: Source directory does not exist: ${src}`, 'red');
     process.exit(1);
@@ -61,23 +62,11 @@ function copyRecursive(src, dest) {
   }
 }
 
-function buildAlreadyExists(componentName, commitHash) {
-  const commitHashDir = join(
-    dirName,
-    '..',
-    'package',
-    'opt',
-    'zextras',
-    'admin',
-    'iris',
-    componentName,
-    commitHash,
-  );
-  console.log('=====>', commitHashDir);
+function buildAlreadyExists(componentName: string, commitHash: string, installDir: string) {
+  const commitHashDir = join(installDir, componentName, commitHash);
   if (!existsSync(commitHashDir)) {
     return false;
   }
-
   return true;
 }
 
@@ -92,7 +81,7 @@ function getAllGitStatus(): Map<string, boolean> {
     const result = execSync('git status --porcelain apps/', {
       encoding: 'utf-8',
       stdio: 'pipe',
-      cwd: join(dirName, '..'),
+      cwd: findWorkspaceRoot(),
     });
 
     gitStatusCache = new Map();
@@ -112,7 +101,7 @@ function getAllGitStatus(): Map<string, boolean> {
         if (parts.length >= 2) {
           const filePath = parts[1];
           // Extract component name from path like "apps/admin-ui-xxx/file"
-          const match = filePath.match(/^apps\/(admin-ui-[^\/]+)/);
+          const match = filePath.match(/^apps\/(admin-ui-[^/]+)/);
           if (match) {
             componentsChanged.add(match[1]);
           }
@@ -121,7 +110,8 @@ function getAllGitStatus(): Map<string, boolean> {
     }
 
     // Initialize all known components as false (no changes)
-    const appsDir = join(dirName, '..', 'apps');
+    const rootDir = findWorkspaceRoot();
+    const appsDir = join(rootDir, 'apps');
     if (existsSync(appsDir)) {
       const components = readdirSync(appsDir).filter((dir) => dir.startsWith('admin-ui-'));
 
@@ -130,7 +120,7 @@ function getAllGitStatus(): Map<string, boolean> {
 
     return gitStatusCache;
   } catch (error) {
-    log(`Error checking git status: ${error.message}`, 'red');
+    log(`Error checking git status: ${(error as Error).message}`, 'red');
     return new Map();
   }
 }
@@ -149,7 +139,7 @@ function getLastTag() {
 }
 
 // Dynamically discover all admin-ui components
-function discoverComponents(appsDir) {
+function discoverComponents(appsDir: string) {
   const adminUiDirs = readdirSync(appsDir)
     .filter((dir) => dir.startsWith('admin-ui-') && statSync(join(appsDir, dir)).isDirectory())
     .map((dir) => {
@@ -173,13 +163,9 @@ function discoverComponents(appsDir) {
   return adminUiDirs;
 }
 
-async function main() {
-  // Parse command line arguments
-  const args = process.argv.slice(2);
-  const isDevMode = args.includes('--dev');
-
-  // Get the root directory
-  const rootDir = join(dirName, '..');
+export async function buildUnified() {
+  // Get the workspace root directory
+  const rootDir = findWorkspaceRoot();
   const appsDir = join(rootDir, 'apps');
 
   const pkgVersion = getLastTag().replace(/^v/, '');
@@ -225,14 +211,14 @@ async function main() {
   const buildEnv = { ...process.env, COMMIT_HASH: commitHash };
 
   if (bootstrapNeedsBuild) {
-    log('Building bootstrap to generate import map...', 'cyan');
+    log('Building bootstrap to generate import map...', 'blue');
     const bootstrapDir = join(appsDir, 'admin-ui-bootstrap');
     process.chdir(bootstrapDir);
     execCommand('pnpm build', { env: buildEnv });
     process.chdir(rootDir);
-    log('✓ Bootstrap built successfully', 'green');
+    log('✅ Bootstrap built successfully', 'green');
   } else {
-    log('✓ Bootstrap already built with import map', 'green');
+    log('✅ Bootstrap already built with import map', 'green');
   }
 
   // Build and copy each component
@@ -242,7 +228,7 @@ async function main() {
     const distSourceDir = join(componentDir, 'dist', 'source');
 
     // Check if build already exists for current commit AND if there are uncommitted changes
-    const buildExists = buildAlreadyExists(component.target, commitHash);
+    const buildExists = buildAlreadyExists(component.target, commitHash, installDir);
     const hasChanges = hasUncommittedChanges(component.name);
 
     if (buildExists && !hasChanges) {
@@ -282,18 +268,15 @@ async function main() {
       log(`Copying ${component.name} to package...`, 'green');
       const targetDir = join(installDir, component.target);
       mkdirSync(targetDir, { recursive: true });
-      copyRecursive(join(distSourceDir), targetDir);
+      copyRecursive(distSourceDir, targetDir);
     }
   });
 
   process.chdir(rootDir);
 
   log('\n=== Regenerating import map with all modules ===', 'blue');
-  const { generateImportMap } = await import(
-    join(rootDir, 'packages/sdk/scripts/vite/generate-import-map.mjs')
-  );
   const importMap = generateImportMap(commitHash);
-  log(`✓ Import map generated with ${Object.keys(importMap.imports).length} entries`, 'green');
+  log(`✅ Import map generated with ${Object.keys(importMap.imports).length} entries`, 'green');
 
   const bootstrapVersionedDir = join(installDir, 'carbonio-admin-ui', commitHash);
   const htmlPath = join(bootstrapVersionedDir, 'index.html');
@@ -301,7 +284,7 @@ async function main() {
 
   // Write the import-map.json file
   writeFileSync(importMapJsonPath, JSON.stringify(importMap, null, 2));
-  log('✓ import-map.json updated', 'green');
+  log('✅ import-map.json updated', 'green');
 
   if (existsSync(htmlPath)) {
     let html = readFileSync(htmlPath, 'utf-8');
@@ -318,7 +301,7 @@ async function main() {
     }
 
     writeFileSync(htmlPath, html);
-    log('✓ Bootstrap index.html updated', 'green');
+    log('✅ Bootstrap index.html updated', 'green');
   }
 
   // Verify shared dependencies exist (they're built directly to the package dir by build-shell)
@@ -326,12 +309,11 @@ async function main() {
   const sharedDepsDir = join(installDir, 'shared-dependencies', commitHash);
 
   if (existsSync(sharedDepsDir)) {
-    log('✓ Shared dependencies found', 'green');
+    log('✅ Shared dependencies found', 'green');
   } else {
     log('⚠️  Shared dependencies not found - they should have been built by bootstrap', 'yellow');
   }
 
-  // Copy bootstrap index.html to current directory (for container/development use)
   log('\n=== Copying bootstrap index.html to current directory ===', 'blue');
   const bootstrapCurrentDir = join(installDir, 'carbonio-admin-ui', 'current');
 
@@ -341,7 +323,7 @@ async function main() {
     if (existsSync(indexHtmlSource)) {
       const indexHtmlDest = join(bootstrapCurrentDir, 'index.html');
       copyFileSync(indexHtmlSource, indexHtmlDest);
-      log('✓ Copied index.html to current directory', 'green');
+      log('✅ Copied index.html to current directory', 'green');
     }
   }
 
@@ -445,5 +427,3 @@ postinst() {
 
   log('=== Build complete! ===', 'green');
 }
-
-main();

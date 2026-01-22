@@ -6,6 +6,7 @@
 
 import { buildApp } from './scripts/build';
 import { buildShell } from './scripts/build-shell';
+import { buildUnified } from './scripts/build-unified';
 
 const command = process.argv[2];
 
@@ -21,6 +22,10 @@ switch (command) {
   case 'buildShell':
     buildShell();
     break;
+  case 'build_unified':
+    buildUnified();
+    break;
+
   default:
     console.error(`Unknown command: ${command}`);
     console.error('Available commands: buildApp, buildShell');

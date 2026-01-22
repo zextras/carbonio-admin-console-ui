@@ -54,6 +54,6 @@ export const buildApp = async (options: BuildOptions): Promise<void> => {
       console.error(`Vite build failed with code ${code}`);
       process.exit(code || 1);
     }
-    console.log('\nBuild completed successfully!');
+    console.log('\n✅ Build completed successfully!');
   });
 };

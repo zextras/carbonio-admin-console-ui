@@ -4,7 +4,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { execSync, spawn } from 'child_process';
-import { fileURLToPath } from 'url';
 import { cpus } from 'os';
 
 function spawnCommand(command: string, args: string[], cwd?: string): Promise<void> {
@@ -30,8 +29,18 @@ function spawnCommand(command: string, args: string[], cwd?: string): Promise<vo
   });
 }
 
-const fileName = fileURLToPath(import.meta.url);
-const dirName = dirname(fileName);
+function findWorkspaceRoot(): string {
+  let currentDir = process.cwd();
+
+  while (currentDir !== '/') {
+    if (existsSync(join(currentDir, 'pnpm-workspace.yaml'))) {
+      return currentDir;
+    }
+    currentDir = dirname(currentDir);
+  }
+
+  throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
+}
 
 // Colors for output
 const colors = {
@@ -41,16 +50,18 @@ const colors = {
   yellow: '\x1b[0;33m',
   cyan: '\x1b[0;36m',
   reset: '\x1b[0m',
-};
+} as const;
 
-function log(message: string, color = 'reset') {
+type ColorName = keyof typeof colors;
+
+function log(message: string, color: ColorName = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function useRustOptimizer() {
+  const rootDir = findWorkspaceRoot();
   const rustBinary = join(
-    dirName,
-    '..',
+    rootDir,
     'tools',
     'build-optimizer',
     'target',
@@ -90,7 +101,7 @@ async function main() {
     log('  This may take a minute on first run...', 'blue');
     try {
       execSync('cargo build --release --manifest-path tools/build-optimizer/Cargo.toml', {
-        cwd: join(dirName, '..'),
+        cwd: findWorkspaceRoot(),
         stdio: 'inherit',
       });
       log('✓ Rust binary built successfully', 'green');
@@ -161,7 +172,7 @@ async function main() {
         const [component, status] = line.split(':').map((s) => s.trim());
         if (
           status.includes('CHANGES') ||
-          !existsSync(join(dirName, '..', 'apps', component, 'dist', 'source', commitHash))
+          !existsSync(join(findWorkspaceRoot(), 'apps', component, 'dist', 'source', commitHash))
         ) {
           componentsToBuild.push(component);
         }
@@ -178,7 +189,7 @@ async function main() {
   } else {
     log(`\n🔨 Building ${componentsToBuild.length} components in parallel...`, 'blue');
     log(`  Building in parallel with ${parallelJobs} jobs`, 'cyan');
-    const rootDir = join(dirName, '..');
+    const rootDir = findWorkspaceRoot();
 
     // Build only the components that need rebuilding
     const componentsArg = `--components="${componentsToBuild.join(',')}"`;
@@ -195,9 +206,9 @@ async function main() {
 
   // Ensure bootstrap is built with import map BEFORE copying
   log('\n🔨 Ensuring bootstrap is built with import map...', 'blue');
+  const rootDir = findWorkspaceRoot();
   const bootstrapDistDir = join(
-    dirName,
-    '..',
+    rootDir,
     'apps',
     'admin-ui-bootstrap',
     'dist',
@@ -219,7 +230,7 @@ async function main() {
     log('  Building bootstrap to generate import map...', 'cyan');
     try {
       execSync('pnpm --filter @zextras/admin-ui-bootstrap run build', {
-        cwd: join(dirName, '..'),
+        cwd: rootDir,
         stdio: 'inherit',
       });
       log('  ✓ Bootstrap built successfully', 'green');
@@ -233,11 +244,11 @@ async function main() {
 
   // Copy components (AFTER bootstrap is built with import map)
   log('\n📋 Copying components to package...', 'blue');
-  const packageDir = join(dirName, '..', 'package');
+  const packageDir = join(rootDir, 'package');
   const installDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
 
   const copyPromises = components.map(async (component) => {
-    const sourceDir = join(dirName, '..', 'apps', component.name, 'dist', 'source');
+    const sourceDir = join(rootDir, 'apps', component.name, 'dist', 'source');
     const targetDir = join(installDir, component.target);
 
     if (!existsSync(sourceDir)) {
