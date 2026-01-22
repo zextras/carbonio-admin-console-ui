@@ -12,6 +12,7 @@ import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
+import { appRegistryPlugin } from './vite-plugin-app-registry';
 
 // IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
 const commitHash =
@@ -45,6 +46,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      appRegistryPlugin(),
       react({
         babel: {
           plugins: ['babel-plugin-styled-components'],
@@ -63,7 +65,6 @@ export default defineConfig(({ mode }) => {
     define: {
       COMMIT_ID: JSON.stringify(commitHash),
       BASE_PATH: JSON.stringify(isDev ? '/carbonioAdmin/' : basePath),
-      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
     },
     resolve: {
       alias: {
