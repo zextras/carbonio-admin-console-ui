@@ -172,25 +172,23 @@ const NotificationView: FC<{
             let allCount = 0;
             let warningCount = 0;
             let errorCount = 0;
-            Object.keys(content?.response).forEach((ele) => {
-              if (content?.response[ele] && content?.response[ele]?.response?.notifications) {
-                const allNotification = content?.response[ele]?.response?.notifications;
-                notificationItems.push(...allNotification);
-                const info = allNotification.filter(
-                  (item: Notification) => item?.level === NOTIFICATION_INFORMATION,
-                );
-                const warn = allNotification.filter(
-                  (item: Notification) => item?.level === NOTIFICATION_WARNING,
-                );
-                const error = allNotification.filter(
-                  (item: Notification) => item?.level === NOTIFICATION_ERROR,
-                );
-                allCount += allNotification.length;
-                infoCount += info.length;
-                warningCount += warn.length;
-                errorCount += error.length;
-              }
-            });
+            if (content?.response && content?.response?.notifications) {
+              const allNotification = content?.response?.notifications;
+              notificationItems.push(...allNotification);
+              const info = allNotification.filter(
+                (item: Notification) => item?.level === NOTIFICATION_INFORMATION,
+              );
+              const warn = allNotification.filter(
+                (item: Notification) => item?.level === NOTIFICATION_WARNING,
+              );
+              const error = allNotification.filter(
+                (item: Notification) => item?.level === NOTIFICATION_ERROR,
+              );
+              allCount += allNotification.length;
+              infoCount += info.length;
+              warningCount += warn.length;
+              errorCount += error.length;
+            }
             setNotificationList(
               orderBy(notificationItems, (item: Notification) => new Date(item?.date), [DESC]),
             );
@@ -457,6 +455,7 @@ const NotificationView: FC<{
           maxHeight="calc(100vh - 21.25rem)"
           minHeight="auto"
           padding={{ all: isAddPadding ? 'large' : '' }}
+          style={{ overflow: 'auto' }}
         >
           <Table
             selectedRows={selectedRow}

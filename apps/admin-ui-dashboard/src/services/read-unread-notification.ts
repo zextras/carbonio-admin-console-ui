@@ -17,7 +17,6 @@ export const readUnreadNotification = async (
 			module: 'ZxCore',
 			action: 'setNotificationAttr',
 			notificationId,
-			targetServers: 'all_servers',
 			key: 'ack',
 			value
 		},
