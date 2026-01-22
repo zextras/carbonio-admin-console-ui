@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "sdk build-shell",
+    "build": "sdk buildShell",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",

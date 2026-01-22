@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -7,12 +6,26 @@
 
 import { build } from 'vite';
 import { buildSync } from 'esbuild';
-import { mkdirSync, readFileSync, copyFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, copyFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = join(__dirname, '../../../..');
+/**
+ * Find the workspace root by looking for pnpm-workspace.yaml or package.json with "workspaces"
+ */
+function findWorkspaceRoot(startDir: string): string {
+  let dir = startDir;
+  while (dir !== '/') {
+    if (existsSync(join(dir, 'pnpm-workspace.yaml'))) {
+      return dir;
+    }
+    dir = dirname(dir);
+  }
+  // Fallback to startDir if we can't find workspace root
+  return startDir;
+}
+
+const cwd = process.cwd();
+const rootDir = findWorkspaceRoot(cwd);
 const nodeModulesDir = join(rootDir, 'node_modules');
 
 /**
@@ -90,7 +103,7 @@ const sharedDepsConfig = [
  * Build shared dependencies using Vite library mode
  * This converts CommonJS to ESM and handles all dependencies
  */
-export async function buildSharedDeps(commitHash) {
+export async function buildSharedDeps(commitHash: string) {
   const outputDir = join(rootDir, 'package/opt/zextras/admin/iris/shared-dependencies', commitHash);
 
   // Ensure output directory exists
@@ -229,7 +242,7 @@ export async function buildSharedDeps(commitHash) {
         if (defaultVar) {
           // Append manual named exports before the default export
           let namedExports = '\n// Named exports for compatibility\n';
-          
+
           // For "export { V as default };" style, V is already the module object
           // For "export default X();" style, we need to call X() to get the module object
           if (exportStyle === 'named-as-default') {
@@ -277,7 +290,9 @@ export async function buildSharedDeps(commitHash) {
 
           writeFileSync(esmPath, modifiedCode, 'utf-8');
         } else {
-          console.warn(`  ⚠ Could not find default export pattern in ${depConfig.name}, named exports not added`);
+          console.warn(
+            `  ⚠ Could not find default export pattern in ${depConfig.name}, named exports not added`,
+          );
         }
 
         console.log(`  ✓ Wrapped ${depConfig.name} with named exports`);
@@ -288,7 +303,6 @@ export async function buildSharedDeps(commitHash) {
       // Get the output filename without extension for the entry file name
       const outputBaseName = depConfig.outputName.replace(/\.mjs$/, '');
       await build({
-        entry: depConfig.entry,
         configFile: false,
         mode: 'production',
         build: {
@@ -296,7 +310,7 @@ export async function buildSharedDeps(commitHash) {
             entry: depConfig.entry,
             name: depConfig.name,
             fileName: () => outputBaseName,
-            formats: ['esm'],
+            formats: ['esm' as any],
           },
           outDir: outputDir,
           emptyOutDir: false,
@@ -325,8 +339,7 @@ export async function buildSharedDeps(commitHash) {
       });
       console.log(`  ✓ Built ${depConfig.name}`);
     } catch (error) {
-      console.error(`  ✗ Failed to build ${depConfig.name}:`, error.message);
-      console.error(error.stack);
+      console.error(`  ✗ Failed to build ${depConfig.name}`);
       throw error;
     }
   }

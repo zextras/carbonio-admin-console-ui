@@ -5,10 +5,8 @@
  */
 
 import { spawn } from 'node:child_process';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { existsSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
 
 type BuildOptions = {
   dev?: boolean;
@@ -17,8 +15,7 @@ type BuildOptions = {
 };
 
 export const buildApp = async (options: BuildOptions): Promise<void> => {
-  const args: Array<string> = [];
-
+  const args = process.argv.slice(2);
   if (options.dev) {
     args.push('--dev');
   }
@@ -27,15 +24,36 @@ export const buildApp = async (options: BuildOptions): Promise<void> => {
     args.push(`--pkgRel=${options.pkgRel}`);
   }
 
-  const scriptPath = resolve(__dirname, 'vite', 'build.mjs');
+  const projectRoot = process.cwd();
 
-  const buildProcess = spawn('node', [scriptPath, ...args], {
+  const isDev = args.includes('--dev');
+
+  const env = {
+    ...process.env,
+    NODE_ENV: isDev ? 'development' : 'production',
+  };
+
+  console.log(`Building in ${isDev ? 'development' : 'production'} mode`);
+
+  // Clean the dist directory before building
+  const distPath = join(projectRoot, 'dist');
+  if (existsSync(distPath)) {
+    console.log('Cleaning dist directory...');
+    rmSync(distPath, { recursive: true, force: true });
+  }
+
+  const vite = spawn('vite', ['build', ...(isDev ? ['--mode', 'development'] : [])], {
+    cwd: projectRoot,
+    env,
     stdio: 'inherit',
     shell: true,
-    cwd: process.cwd(),
   });
 
-  buildProcess.on('close', (code: number | null) => {
-    process.exit(code ?? 0);
+  vite.on('close', (code) => {
+    if (code !== 0) {
+      console.error(`Vite build failed with code ${code}`);
+      process.exit(code || 1);
+    }
+    console.log('\nBuild completed successfully!');
   });
 };

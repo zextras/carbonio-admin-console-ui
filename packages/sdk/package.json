@@ -1,6 +1,6 @@
 {
   "name": "admin-ui-sdk",
-  "description": "Admin-ui-sdk SDK",
+  "description": "Admin ui sdk",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -26,10 +26,12 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
+    "esbuild": "^0.27.2",
     "i18next": "^22.5.1",
     "node-http-proxy-json": "^0.1.9",
     "path-browserify": "^1.0.1",
-    "semver": "^7.7.2"
+    "semver": "^7.7.2",
+    "vite": "^7.2.6"
   },
   "devDependencies": {
     "@types/node": "^22.19.7",

@@ -5,7 +5,7 @@
   "description": "Admin dashboard module for Zextras Carbonio",
   "main": "src/app.tsx",
   "scripts": {
-    "build": "sdk build",
+    "build": "sdk buildApp",
     "build:esm": "vite build --config vite.config.esm.ts",
     "test:esm": "node test-esm-build.mjs",
     "deploy": "npm run build && sdk deploy",

@@ -5,15 +5,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { getSharedDependencyPaths } from './utils';
 
-import { getSharedDependencyPaths } from '../../../shared-deps/config.mjs';
+/**
+ * Find the workspace root by looking for pnpm-workspace.yaml
+ */
+function findWorkspaceRoot(startDir: string): string {
+  let dir = startDir;
+  while (dir !== '/') {
+    if (existsSync(join(dir, 'pnpm-workspace.yaml'))) {
+      return dir;
+    }
+    dir = dirname(dir);
+  }
+  // Fallback to startDir if we can't find workspace root
+  return startDir;
+}
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const rootDir = join(__dirname, '../../../..');
+const cwd = process.cwd();
+const rootDir = findWorkspaceRoot(cwd);
 const appsDir = join(rootDir, 'apps');
 const packageDir = join(rootDir, 'package/opt/zextras/admin/iris');
 
@@ -21,7 +33,7 @@ const packageDir = join(rootDir, 'package/opt/zextras/admin/iris');
  * Generates import map for all admin-ui modules
  * Maps bare module specifiers to their built chunk URLs
  */
-export function generateImportMap(commitHash) {
+export function generateImportMap(commitHash: string) {
   const adminUiDirs = readdirSync(appsDir).filter(
     (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
   );
@@ -59,7 +71,10 @@ export function generateImportMap(commitHash) {
             );
             if (files.length > 0) {
               // For individual app builds, use absolute path from bootstrap dist
-              mainFile = `/static/iris/carbonio-admin-ui-${dir.replace('admin-ui-', '')}/${commitHash}/${files[0]}`;
+              mainFile = `/static/iris/carbonio-admin-ui-${dir.replace(
+                'admin-ui-',
+                '',
+              )}/${commitHash}/${files[0]}`;
             }
           } catch {
             // Individual app dist doesn't exist either, skip

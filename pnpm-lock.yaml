@@ -152,7 +152,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -445,7 +445,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       react:
         specifier: ^19.1.0
         version: 19.2.3
@@ -584,7 +584,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -735,7 +735,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -886,7 +886,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1034,7 +1034,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1179,7 +1179,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1327,7 +1327,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1475,7 +1475,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1620,7 +1620,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1768,7 +1768,7 @@ importers:
         version: 10.28.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.333.0
+        version: 1.334.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.3)
@@ -1881,6 +1881,9 @@ importers:
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
+      esbuild:
+        specifier: ^0.27.2
+        version: 0.27.2
       i18next:
         specifier: ^22.5.1
         version: 22.5.1
@@ -1893,6 +1896,9 @@ importers:
       semver:
         specifier: ^7.7.2
         version: 7.7.3
+      vite:
+        specifier: ^7.2.6
+        version: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)
     devDependencies:
       '@types/node':
         specifier: ^22.19.7
@@ -3261,8 +3267,8 @@ packages:
   '@posthog/core@1.13.0':
     resolution: {integrity: sha512-knjncrk7qRmssFRbGzBl1Tunt21GRpe0Wv+uVelyL0Rh7PdQUsgguulzXFTps8hA6wPwTU4kq85qnbAJ3eH6Wg==}
 
-  '@posthog/types@1.333.0':
-    resolution: {integrity: sha512-9Wg/2ez+EZh6NmtOjhtYSkBHz/yIq8WMS0QSIizUoggh35hHVg4BTMXl3rz/tPearJNKU/8oRjEyuZ0OYTEDOA==}
+  '@posthog/types@1.334.0':
+    resolution: {integrity: sha512-PgXKhnLIa5vTlfUBuwojZq9GVw4ojRJDS3gb3lCmx8qbkYA+5wg03i5ICa9DxEB1pcuP7rYj9b78tdwGitifZw==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -6400,8 +6406,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.333.0:
-    resolution: {integrity: sha512-c7vquERMedjuGE2GnaDDJW/V1BIMMQG7BlYKrH0z8O7fc3WpEsQ/IyQ+9aD9+DLxlDCFpzrwgoxVDWi9K37mdA==}
+  posthog-js@1.334.0:
+    resolution: {integrity: sha512-e+PicdydgU9LnvF/6nJuSFcKMfdd9DIBR2j0tjWfe4ySQrniBMhtQUAejJrJAWHL48B8icMDC/4VCNvhri79JA==}
 
   preact@10.28.2:
     resolution: {integrity: sha512-lbteaWGzGHdlIuiJ0l2Jq454m6kcpI1zNje6d8MlGAFlYvP2GO4ibnat7P74Esfz4sPTdM6UxtTwh/d3pwM9JA==}
@@ -7485,8 +7491,8 @@ packages:
     resolution: {integrity: sha512-Zn5uXdcFNIA1+1Ei5McRd+iRzfhENPCe7LeABkJtNulSxjma+l7ltNx55BWZkRlwRnpOgHqxnjyaDgJnNXnqzg==}
     engines: {node: '>=10.13.0'}
 
-  web-vitals@4.2.4:
-    resolution: {integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==}
+  web-vitals@5.1.0:
+    resolution: {integrity: sha512-ArI3kx5jI0atlTtmV0fWU3fjpLmq/nD3Zr1iFFlJLaqa5wLBkUSzINwBPySCX/8jRyjlmy1Volw1kz1g9XE4Jg==}
 
   web-worker@1.2.0:
     resolution: {integrity: sha512-PgF341avzqyx60neE9DD+XS26MMNMoUQRz9NOZwW32nPQrF6p77f1htcnjBSEV8BGMKZ16choqUG4hyI0Hx7mA==}
@@ -9070,7 +9076,7 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
-  '@posthog/types@1.333.0': {}
+  '@posthog/types@1.334.0': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -9867,7 +9873,7 @@ snapshots:
       magicast: 0.5.1
       obug: 2.1.1
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@22.19.7)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@22.19.7)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9924,7 +9930,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@22.19.7)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@22.19.7)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
 
   '@vitest/utils@4.0.17':
     dependencies:
@@ -12615,7 +12621,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.333.0:
+  posthog-js@1.334.0:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
@@ -12623,13 +12629,13 @@ snapshots:
       '@opentelemetry/resources': 2.5.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
       '@posthog/core': 1.13.0
-      '@posthog/types': 1.333.0
+      '@posthog/types': 1.334.0
       core-js: 3.48.0
       dompurify: 3.3.1
       fflate: 0.4.8
       preact: 10.28.2
       query-selector-shadow-dom: 1.0.1
-      web-vitals: 4.2.4
+      web-vitals: 5.1.0
 
   preact@10.28.2: {}
 
@@ -13790,7 +13796,7 @@ snapshots:
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@22.19.7)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@22.19.7)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
+      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.30)(@vitest/browser-playwright@4.0.17)(@vitest/browser-preview@4.0.17)(@vitest/ui@4.0.17)(jiti@2.6.1)(jsdom@26.1.0)(msw@2.12.7(@types/node@20.19.30)(typescript@5.9.3))(terser@5.46.0)(tsx@4.21.0)
     optionalDependencies:
       '@types/react': 19.2.9
       '@types/react-dom': 19.2.3(@types/react@19.2.9)
@@ -13896,7 +13902,7 @@ snapshots:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
 
-  web-vitals@4.2.4: {}
+  web-vitals@5.1.0: {}
 
   web-worker@1.2.0: {}
 
