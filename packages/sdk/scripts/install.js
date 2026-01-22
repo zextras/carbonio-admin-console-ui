@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { handler: build } = require('./build');
-const { handler: deploy } = require('./deploy');
-const chalkTemplate = require('chalk');
+import { handler as build } from './build.js';
+import { handler as deploy } from './deploy.js';
+import chalk from 'chalk';
 
-exports.desc = 'Build and deploy the project to a Carbonio instance';
+export const desc = 'Build and deploy the project to a Carbonio instance';
 
-exports.handler = async (options) => {
+export const handler = async (options) => {
 	await build(options);
 	await deploy(options);
-	console.log(chalkTemplate.bgBlue.white.bold('Install Completed'));
+	console.log(chalk.bgBlue.white.bold('Install Completed'));
 };

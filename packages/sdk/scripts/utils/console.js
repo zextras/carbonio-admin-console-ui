@@ -1,6 +1,12 @@
-const chalk = require('chalk');
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-exports.printArgs = (opts, label) => {
+import chalk from 'chalk';
+
+export const printArgs = (opts, label) => {
 	if (opts.verbose) {
 		const options = Object.entries(opts);
 		console.log(chalk.green.bold(`${label} options:`));
@@ -9,7 +15,7 @@ exports.printArgs = (opts, label) => {
 		});
 	}
 	return opts;
-}
+};
 
 const logErrors = (errors, gravity, verbose) => {
 	const title = gravity === 'error' ? chalk.bgRed.white : chalk.bgYellow.white;
@@ -22,9 +28,9 @@ const logErrors = (errors, gravity, verbose) => {
 		if (error.details) console.log(message('Details: '), error.details);
 		if (error.stack && verbose) console.log(message('Stack: '), error.stack);
 	});
-}
+};
 
-exports.logBuild =
+export const logBuild =
 	([resolve, reject], options) =>
 	(err, stats) => {
 		if (err) {

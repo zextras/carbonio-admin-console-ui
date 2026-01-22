@@ -5,7 +5,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { pkg } = require('./utils/pkg');
+import { pkg } from './utils/pkg.js';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parseArgs = () => {
 	const args = process.argv.slice(2);
@@ -53,17 +57,23 @@ const parseArgs = () => {
 const { command, options } = parseArgs();
 
 const commands = {
-	build: require('./build'),
-	'build-shell': require('./build-shell'),
-	deploy: require('./deploy'),
-	install: require('./install')
+	build: () => import('./build.js'),
+	'build-shell': () => import('./build-shell.js'),
+	deploy: () => import('./deploy.js'),
+	install: () => import('./install.js')
 };
 
 if (!command || !commands[command]) {
 	console.error('Usage: npx sdk <command> [options]\n');
 	console.error('Commands:');
-	Object.entries(commands).forEach(([name, cmd]) => {
-		console.error(`  ${name.padEnd(12)} ${cmd.desc}`);
+	const commandEntries = await Promise.all(
+		Object.entries(commands).map(async ([name, importFn]) => {
+			const mod = await importFn();
+			return [name, mod.desc || ''];
+		})
+	);
+	commandEntries.forEach(([name, desc]) => {
+		console.error(`  ${name.padEnd(12)} ${desc}`);
 	});
 	console.error('\nOptions:');
 	console.error('  -v, --verbose   Verbose logging');
@@ -76,7 +86,8 @@ if (!command || !commands[command]) {
 	process.exit(1);
 }
 
-commands[command].handler(options).catch(err => {
+const mod = await commands[command]();
+mod.handler(options).catch(err => {
 	console.error(err);
 	process.exit(1);
 });

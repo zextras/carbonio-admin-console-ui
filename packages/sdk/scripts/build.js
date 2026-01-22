@@ -4,12 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { spawn } = require('node:child_process');
-const { resolve } = require('node:path');
+import { spawn } from 'node:child_process';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-exports.desc = 'Build project using Vite';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-exports.handler = async (options) => {
+export const desc = 'Build project using Vite';
+
+export const handler = async (options) => {
 	const args = [];
 	
 	if (options.dev) {

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { readFileSync } = require('node:fs');
-const path = require('path');
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-exports.pkg = JSON.parse(readFileSync(path.resolve(process.cwd(), 'package.json')));
+export const pkg = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json')));

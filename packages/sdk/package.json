@@ -1,6 +1,7 @@
 {
 	"name": "admin-ui-sdk",
 	"description": "Admin-ui-sdk SDK",
+	"type": "module",
 	"main": "scripts/index.js",
 	"bin": {
 		"sdk": "scripts/index.js"
