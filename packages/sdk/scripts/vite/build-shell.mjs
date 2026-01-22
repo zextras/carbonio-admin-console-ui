@@ -150,7 +150,6 @@ const componentJson = {
   type: 'shell',
   icon: 'CubeOutline',
   display: 'Admin Shell',
-  sentryDsn: '',
 };
 
 fs.writeFileSync(
