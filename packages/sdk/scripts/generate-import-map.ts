@@ -38,7 +38,7 @@ export function generateImportMap(commitHash: string) {
     (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
   );
 
-  const imports = {};
+  const imports: Record<string, string> = {};
 
   // Get shared dependency local paths from package.json versions
   const sharedLibs = getSharedDependencyPaths(commitHash);
@@ -86,7 +86,7 @@ export function generateImportMap(commitHash: string) {
         }
       }
     } catch (error) {
-      console.warn(`Warning: Could not process ${dir}:`, error.message);
+      console.warn(`Warning: Could not process ${dir}:`, (error as Error).message);
     }
   }
 
@@ -144,7 +144,7 @@ export function generateImportMap(commitHash: string) {
       }
     }
   } catch (error) {
-    console.warn(`Warning: Could not process admin-ui-bootstrap:`, error.message);
+    console.warn(`Warning: Could not process admin-ui-bootstrap:`, (error as Error).message);
   }
 
   return {
