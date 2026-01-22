@@ -7,22 +7,35 @@
 /* eslint-disable no-console */
 import chalk from 'chalk';
 import { commitHash } from './utils/setup.js';
-import { printArgs } from './utils/console.js';
+import { printArgs, ParsedOptions } from './utils/console.js';
 import { execSync } from 'node:child_process';
 import path from 'path';
 import { existsSync, readdirSync } from 'node:fs';
 
-const updateJson = (appJson, carbonioJson, options) => {
+type ComponentJson = {
+	components: Array<{
+		name: string;
+		[key: string]: unknown;
+	}>;
+};
+
+type DeployOptions = ParsedOptions & {
+	host?: string;
+	user?: string;
+	port?: string;
+};
+
+const updateJson = (appJson: Record<string, unknown>, carbonioJson: ComponentJson, options: DeployOptions): ComponentJson => {
 	const components = carbonioJson.components.filter(
 		(component) => component.name !== options.name
 	);
-	components.push(appJson);
+	components.push(appJson as { name: string; [key: string]: unknown });
 	return { components };
 };
 
 export const desc = 'Deploy the project to a Carbonio instance';
 
-export const handler = async (options) => {
+export const handler = async (options: DeployOptions): Promise<void> => {
 	const pathPrefix = `/opt/zextras/${options.admin ? 'admin' : 'web'}/iris/`;
 	printArgs(options, 'Deploy');
 	const distPath = path.resolve(process.cwd(), 'dist');
@@ -34,14 +47,14 @@ export const handler = async (options) => {
 		);
 		return;
 	}
-	
+
 	// Read the actual commit hash from the built dist instead of using current HEAD
 	// This prevents mismatch when deploying without rebuilding after new commits
 	const distSourcePath = path.resolve(distPath, 'source');
-	const commitDirs = existsSync(distSourcePath) 
-		? readdirSync(distSourcePath).filter(f => f !== 'current')
+	const commitDirs = existsSync(distSourcePath)
+		? readdirSync(distSourcePath).filter((f: string) => f !== 'current')
 		: [];
-	
+
 	let deployCommitHash = commitHash;
 	if (commitDirs.length === 1) {
 		// Use the commit hash from the actual build directory

@@ -6,4 +6,4 @@
 
 import { execSync } from 'node:child_process';
 
-export const commitHash = execSync('git rev-parse HEAD').toString().trim();
+export const commitHash: string = execSync('git rev-parse HEAD').toString().trim();

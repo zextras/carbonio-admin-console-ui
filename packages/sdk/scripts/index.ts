@@ -6,21 +6,32 @@
  */
 
 import { pkg } from './utils/pkg.js';
+import { ParsedOptions } from './utils/console.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const parseArgs = () => {
+type CommandHandler = {
+	handler: (options: ParsedOptions) => Promise<void>;
+	desc?: string;
+};
+
+type ParseArgsResult = {
+	command?: string;
+	options: ParsedOptions;
+};
+
+const parseArgs = (): ParseArgsResult => {
 	const args = process.argv.slice(2);
-	const options = {
+	const options: ParsedOptions = {
 		verbose: false,
 		admin: pkg.carbonio?.type === 'carbonioAdmin',
-		name: pkg.carbonio?.name,
-		svgr: pkg.sdk?.svgr ?? false
+		name: pkg.carbonio?.name ?? '',
+		svgr: pkg.sdk?.svgr ?? false,
 	};
 
-	const flags = {
+	const flags: Record<string, Array<string>> = {
 		verbose: ['-v', '--verbose'],
 		admin: ['-a', '--admin'],
 		name: ['-n', '--name'],
@@ -29,7 +40,7 @@ const parseArgs = () => {
 		user: ['-u', '--user'],
 		port: ['-p', '--port'],
 		dev: ['-d', '--dev'],
-		pkgRel: ['--pkgRel']
+		pkgRel: ['--pkgRel'],
 	};
 
 	let i = 0;
@@ -38,7 +49,7 @@ const parseArgs = () => {
 		const found = Object.entries(flags).find(([_, aliases]) => aliases.includes(arg));
 
 		if (found) {
-			const [key, aliases] = found;
+			const [key] = found;
 			if (key === 'verbose' || key === 'admin' || key === 'svgr' || key === 'dev') {
 				options[key] = true;
 			} else if (args[i + 1] && !args[i + 1].startsWith('-')) {
@@ -49,18 +60,18 @@ const parseArgs = () => {
 		i++;
 	}
 
-	const command = args.find(arg => !arg.startsWith('-'));
+	const command = args.find((arg: string) => !arg.startsWith('-'));
 
 	return { command, options };
 };
 
 const { command, options } = parseArgs();
 
-const commands = {
+const commands: Record<string, () => Promise<CommandHandler>> = {
 	build: () => import('./build.js'),
 	'build-shell': () => import('./build-shell.js'),
 	deploy: () => import('./deploy.js'),
-	install: () => import('./install.js')
+	install: () => import('./install.js'),
 };
 
 if (!command || !commands[command]) {
@@ -69,8 +80,8 @@ if (!command || !commands[command]) {
 	const commandEntries = await Promise.all(
 		Object.entries(commands).map(async ([name, importFn]) => {
 			const mod = await importFn();
-			return [name, mod.desc || ''];
-		})
+			return [name, mod.desc || ''] as [string, string];
+		}),
 	);
 	commandEntries.forEach(([name, desc]) => {
 		console.error(`  ${name.padEnd(12)} ${desc}`);
@@ -86,8 +97,8 @@ if (!command || !commands[command]) {
 	process.exit(1);
 }
 
-const mod = await commands[command]();
-mod.handler(options).catch(err => {
+const mod = await commands[command ?? 'build']();
+mod.handler(options).catch((err: Error) => {
 	console.error(err);
 	process.exit(1);
 });

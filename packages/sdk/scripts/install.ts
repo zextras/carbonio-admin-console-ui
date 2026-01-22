@@ -7,10 +7,11 @@
 import { handler as build } from './build.js';
 import { handler as deploy } from './deploy.js';
 import chalk from 'chalk';
+import { ParsedOptions } from './utils/console.js';
 
 export const desc = 'Build and deploy the project to a Carbonio instance';
 
-export const handler = async (options) => {
+export const handler = async (options: ParsedOptions): Promise<void> => {
 	await build(options);
 	await deploy(options);
 	console.log(chalk.bgBlue.white.bold('Install Completed'));

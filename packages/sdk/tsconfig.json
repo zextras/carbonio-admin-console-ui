@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./scripts",
+    "noEmit": false,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["scripts/**/*"],
+  "exclude": ["scripts/vite/**/*", "dist/**/*"]
+}

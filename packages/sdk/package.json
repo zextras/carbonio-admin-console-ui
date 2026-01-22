@@ -1,29 +1,39 @@
 {
-	"name": "admin-ui-sdk",
-	"description": "Admin-ui-sdk SDK",
-	"type": "module",
-	"main": "scripts/index.js",
-	"bin": {
-		"sdk": "scripts/index.js"
-	},
-	"engines": {
-		"node": ">=22.0.0",
-		"pnpm": ">=8.0.0"
-	},
-	"packageManager": "pnpm@10.15.0",
-	"keywords": [
-		"SDK"
-	],
-	"author": "zextras",
-	"license": "AGPL-3.0-only",
-	"files": [
-		"scripts"
-	],
-	"dependencies": {
-		"chalk": "^4.1.2",
-		"i18next": "^22.5.1",
-		"node-http-proxy-json": "^0.1.9",
-		"path-browserify": "^1.0.1",
-		"semver": "^7.7.2"
-	}
+  "name": "admin-ui-sdk",
+  "description": "Admin-ui-sdk SDK",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "sdk": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "keywords": [
+    "SDK"
+  ],
+  "author": "zextras",
+  "license": "AGPL-3.0-only",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "i18next": "^22.5.1",
+    "node-http-proxy-json": "^0.1.9",
+    "path-browserify": "^1.0.1",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.2"
+  }
 }
