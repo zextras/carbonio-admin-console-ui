@@ -7,7 +7,7 @@
 import { soapFetch } from '@zextras/admin-ui-bootstrap';
 
 export const countAccount = async (domainName: string): Promise<any> =>
-	soapFetch(`CountAccountRequest`, {
+	soapFetch(`CountAccount`, {
 		_jsns: 'urn:zimbraAdmin',
 		domain: {
 			_content: domainName,
