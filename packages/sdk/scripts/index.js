@@ -5,39 +5,78 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
 const { pkg } = require('./utils/pkg');
 
-yargs(hideBin(process.argv))
-	.options({
-		verbose: {
-			alias: 'v',
-			desc: 'Verbose logging',
-			default: false,
-			boolean: true
-		},
-		admin: {
-			alias: 'a',
-			desc: 'Build/Watch in admin mode, defaults to true only for the admin packages',
-			default: pkg.carbonio.type === 'carbonioAdmin',
-			boolean: true
-		},
-		name: {
-			alias: 'n',
-			desc: 'Alternative name to use for the package, overrides the carbonio.name field',
-			default: pkg.carbonio?.name
-		},
-		svgr: {
-			desc: 'use svgr-loader instead of file-loader for svg files',
-			boolean: true,
-			default: pkg.sdk?.svgr ?? false
+const parseArgs = () => {
+	const args = process.argv.slice(2);
+	const options = {
+		verbose: false,
+		admin: pkg.carbonio?.type === 'carbonioAdmin',
+		name: pkg.carbonio?.name,
+		svgr: pkg.sdk?.svgr ?? false
+	};
+
+	const flags = {
+		verbose: ['-v', '--verbose'],
+		admin: ['-a', '--admin'],
+		name: ['-n', '--name'],
+		svgr: ['--svgr'],
+		host: ['-h', '--host'],
+		user: ['-u', '--user'],
+		port: ['-p', '--port'],
+		dev: ['-d', '--dev'],
+		pkgRel: ['--pkgRel']
+	};
+
+	let i = 0;
+	while (i < args.length) {
+		const arg = args[i];
+		const found = Object.entries(flags).find(([_, aliases]) => aliases.includes(arg));
+
+		if (found) {
+			const [key, aliases] = found;
+			if (key === 'verbose' || key === 'admin' || key === 'svgr' || key === 'dev') {
+				options[key] = true;
+			} else if (args[i + 1] && !args[i + 1].startsWith('-')) {
+				options[key] = args[i + 1];
+				i++;
+			}
 		}
-	})
-	.command(require('./deploy'))
-	.command(require('./install'))
-	.command(require('./build'))
-	.command(require('./build-shell'))
-	.usage('Usage: npx $0 <command> [options]')
-	.demandCommand(1, 'You need to specify at least one command')
-	.parse();
+		i++;
+	}
+
+	const command = args.find(arg => !arg.startsWith('-'));
+
+	return { command, options };
+};
+
+const { command, options } = parseArgs();
+
+const commands = {
+	build: require('./build'),
+	'build-shell': require('./build-shell'),
+	deploy: require('./deploy'),
+	install: require('./install')
+};
+
+if (!command || !commands[command]) {
+	console.error('Usage: npx sdk <command> [options]\n');
+	console.error('Commands:');
+	Object.entries(commands).forEach(([name, cmd]) => {
+		console.error(`  ${name.padEnd(12)} ${cmd.desc}`);
+	});
+	console.error('\nOptions:');
+	console.error('  -v, --verbose   Verbose logging');
+	console.error('  -h, --host     Destination hostname');
+	console.error('  -u, --user     Username for ssh access (default: root)');
+	console.error('  -p, --port     Port number');
+	console.error('  -d, --dev      Development mode');
+	console.error('  --pkgRel       Package release number');
+	console.error('  -n, --name     Alternative package name');
+	process.exit(1);
+}
+
+commands[command].handler(options).catch(err => {
+	console.error(err);
+	process.exit(1);
+});

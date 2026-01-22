@@ -7,16 +7,7 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 
-exports.command = 'build-shell';
 exports.desc = 'Build shell/bootstrap using Vite';
-exports.builder = {
-	dev: {
-		desc: 'Build in development mode',
-		alias: 'd',
-		default: false,
-		boolean: true
-	}
-};
 
 exports.handler = async (options) => {
 	const args = [];

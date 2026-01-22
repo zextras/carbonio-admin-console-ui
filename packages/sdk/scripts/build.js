@@ -7,20 +7,7 @@
 const { spawn } = require('node:child_process');
 const { resolve } = require('node:path');
 
-exports.command = 'build';
 exports.desc = 'Build project using Vite';
-exports.builder = {
-	dev: {
-		desc: 'Build in development mode',
-		alias: 'd',
-		default: false,
-		boolean: true
-	},
-	pkgRel: {
-		desc: 'Package release number',
-		default: '1'
-	}
-};
 
 exports.handler = async (options) => {
 	const args = [];

@@ -20,27 +20,7 @@ const updateJson = (appJson, carbonioJson, options) => {
   return { components };
 };
 
-exports.command = 'deploy';
 exports.desc = 'Deploy the project to a Carbonio instance';
-exports.builder = Object.assign(
-  {
-    host: {
-      desc: 'Destination hostname',
-      demandOption: true,
-      alias: 'h',
-    },
-    user: {
-      desc: 'Username for ssh access',
-      alias: 'u',
-      default: 'root',
-    },
-    port: {
-      desc: 'Localhost port to use',
-      alias: 'p',
-      default: '',
-    },
-  }
-);
 
 exports.handler = async (options) => {
   const pathPrefix = `/opt/zextras/${options.admin ? 'admin' : 'web'}/iris/`;
