@@ -1,3 +1,15 @@
+## [0.12.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.15...v0.12.0-devel.16) (2026-01-22)
+
+### Bug Fixes
+
+* account counter issue fixed ([#1044](https://github.com/zextras/carbonio-admin-console-ui/issues/1044)) ([1dd00c6](https://github.com/zextras/carbonio-admin-console-ui/commit/1dd00c69edd73420da77d5a39cf1346bc9ef439d))
+
+## [0.12.0-devel.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.14...v0.12.0-devel.15) (2026-01-22)
+
+### Bug Fixes
+
+* account count request issue fixed ([#1043](https://github.com/zextras/carbonio-admin-console-ui/issues/1043)) ([9b2c8a0](https://github.com/zextras/carbonio-admin-console-ui/commit/9b2c8a0fb5be1cb3bc4e7b627e17189238a7e519))
+
 ## [0.12.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.13...v0.12.0-devel.14) (2026-01-21)
 
 ### Bug Fixes

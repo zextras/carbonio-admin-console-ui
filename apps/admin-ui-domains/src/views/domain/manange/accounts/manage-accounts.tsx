@@ -766,8 +766,8 @@ const ManageAccounts: FC = () => {
 	const getTotalFilteredUser = useCallback((): void => {
 		if (domainName) {
 			countAccount(domainName).then((res) => {
-				if (res?.Body) {
-					const coses = res?.Body?.CountAccountResponse?.cos;
+				if (res) {
+					const coses = res?.cos;
 					let counter = 0;
 					for (const cos in coses) {
 						if (coses[cos].name != "defaultExternal") {
