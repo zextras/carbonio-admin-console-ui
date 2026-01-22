@@ -28,7 +28,6 @@ export default tseslint.config(
       'package/**',
       '**/*vitest*',
       '**/*webpack*',
-      '**/sdk/**',
       '**/*.config.*',
       '**/.prettierrc.js',
       '**/.reuse/template.js',

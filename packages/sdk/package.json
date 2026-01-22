@@ -21,6 +21,8 @@
   ],
   "scripts": {
     "build": "tsup",
+    "lint": "eslint --quiet",
+    "linaut:fix": "eslint --fix --cache --quiet",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit"
   },

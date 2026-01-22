@@ -178,6 +178,10 @@ Files: .husky/**
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: **/tsup.config.ts
+Copyright: 2025 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: tools/**
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -9,6 +10,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import path from 'node:path';
 
 import { build } from 'vite';
+
 import { buildSharedDeps } from './build-shared-deps';
 import { generateImportMap } from './generate-import-map';
 

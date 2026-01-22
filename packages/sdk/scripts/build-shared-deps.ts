@@ -1,13 +1,15 @@
+/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { build } from 'vite';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+
 import { buildSync } from 'esbuild';
-import { mkdirSync, readFileSync, copyFileSync, writeFileSync, existsSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { build } from 'vite';
 
 /**
  * Find the workspace root by looking for pnpm-workspace.yaml or package.json with "workspaces"
@@ -310,7 +312,7 @@ export async function buildSharedDeps(commitHash: string) {
             entry: depConfig.entry,
             name: depConfig.name,
             fileName: () => outputBaseName,
-            formats: ['esm' as any],
+            formats: ['es'],
           },
           outDir: outputDir,
           emptyOutDir: false,

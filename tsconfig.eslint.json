@@ -13,7 +13,8 @@
     "apps/**/types/**/*",
     "apps/**/translations/**/*",
     "packages/test-utils/**/*",
-    "packages/ui-components/**/*"
+    "packages/ui-components/**/*",
+    "packages/sdk/**/*"
   ],
   "exclude": ["node_modules", "**/node_modules", "**/dist", "**/build", "**/.turbo"]
 }
