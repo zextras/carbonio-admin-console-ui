@@ -5,6 +5,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { existsSync } from 'fs';
+import { dirname, join } from 'path';
+
 const VENDORABLE_DEPS: Record<string, string> = {
   react: 'index.mjs',
   'react-dom': 'client.mjs',
@@ -52,4 +55,17 @@ type ColorName = keyof typeof colors;
  */
 export function log(message: string, color: ColorName = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+export function findWorkspaceRoot(): string {
+  let currentDir = process.cwd();
+
+  while (currentDir !== '/') {
+    if (existsSync(join(currentDir, 'pnpm-workspace.yaml'))) {
+      return currentDir;
+    }
+    currentDir = dirname(currentDir);
+  }
+
+  throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
 }

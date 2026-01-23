@@ -7,6 +7,7 @@
 import { buildApp } from './scripts/build';
 import { buildShell } from './scripts/build-shell';
 import { buildUnified } from './scripts/build-unified';
+import { reset } from './scripts/reset';
 
 const command = process.argv[2];
 
@@ -21,6 +22,9 @@ switch (command) {
     break;
   case 'buildShell':
     buildShell();
+    break;
+  case 'reset':
+    reset();
     break;
   case 'build_unified':
     buildUnified();

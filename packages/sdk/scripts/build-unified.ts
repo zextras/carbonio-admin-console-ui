@@ -15,10 +15,10 @@ import {
   statSync,
   writeFileSync,
 } from 'fs';
-import { dirname, join } from 'path';
+import { join } from 'path';
 
 import { generateImportMap } from './generate-import-map';
-import { log } from './utils';
+import { findWorkspaceRoot, log } from './utils';
 
 function execCommand(command: string, options = {}) {
   try {
@@ -32,18 +32,7 @@ function execCommand(command: string, options = {}) {
     process.exit(1);
   }
 }
-export function findWorkspaceRoot(): string {
-  let currentDir = process.cwd();
 
-  while (currentDir !== '/') {
-    if (existsSync(join(currentDir, 'pnpm-workspace.yaml'))) {
-      return currentDir;
-    }
-    currentDir = dirname(currentDir);
-  }
-
-  throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
-}
 function copyRecursive(src: string, dest: string) {
   if (!existsSync(src)) {
     log(`Error: Source directory does not exist: ${src}`, 'red');

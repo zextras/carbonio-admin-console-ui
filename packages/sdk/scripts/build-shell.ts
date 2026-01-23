@@ -11,7 +11,7 @@ import path from 'node:path';
 
 import { build } from 'vite';
 
-import { buildSharedDeps } from './build-shared-deps';
+import { buildSharedDeps } from './build-shared-deps/build-shared-deps';
 import { generateImportMap } from './generate-import-map';
 
 export async function buildShell(): Promise<void> {
