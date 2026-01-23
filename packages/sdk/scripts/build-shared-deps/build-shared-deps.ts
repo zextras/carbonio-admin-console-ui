@@ -10,7 +10,7 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild } from 'vite';
 
-import { findWorkspaceRoot, log } from '../utils';
+import { colorLog,findWorkspaceRoot } from '../utils';
 import { REACT_DOM_EXPORTS, REACT_EXPORTS } from './constants';
 import { DepConfig, sharedDepsConfig } from './shared-deps-config';
 
@@ -27,11 +27,11 @@ export async function buildSharedDeps(commitHash: string) {
   }
   mkdirSync(outputDir, { recursive: true });
 
-  log(`Building shared dependencies to: ${outputDir}`);
+  colorLog(`Building shared dependencies to: ${outputDir}`);
 
   // Run builds in parallel
   const buildPromises = sharedDepsConfig.map(async (dep) => {
-    log(`Building ${dep.name}...`);
+    colorLog(`Building ${dep.name}...`);
     try {
       if (dep.type === 'copy') {
         // Implementation for copy if needed (not currently used in config but good to keep)
@@ -45,7 +45,7 @@ export async function buildSharedDeps(commitHash: string) {
         await buildWithVite(dep, outputDir);
       }
 
-      log(`  ✓ Built ${dep.name}`);
+      colorLog(`  ✓ Built ${dep.name}`);
     } catch (error) {
       console.error(`  ✗ Failed to build ${dep.name}`);
       throw error;
@@ -53,7 +53,7 @@ export async function buildSharedDeps(commitHash: string) {
   });
 
   await Promise.all(buildPromises);
-  log('✅ Shared dependencies build completed!', 'green');
+  colorLog('✅ Shared dependencies build completed!', 'green');
 }
 
 /**

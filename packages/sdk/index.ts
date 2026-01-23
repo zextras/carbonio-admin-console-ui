@@ -15,6 +15,7 @@ const command = process.argv[2];
 const options = {
   dev: process.argv.includes('--dev'),
   pkgRel: process.argv.find((arg) => arg.startsWith('--pkgRel='))?.split('=')[1],
+  remoteHost: process.argv.find((arg) => arg.startsWith('--host='))?.split('=')[1],
 };
 
 switch (command) {
@@ -31,7 +32,7 @@ switch (command) {
     buildUnified();
     break;
   case 'deploy':
-    deploy(options);
+    deploy(options.remoteHost ?? '');
     break;
 
   default:

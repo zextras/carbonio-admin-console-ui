@@ -6,16 +6,16 @@
 
 import { execSync } from 'child_process';
 
-import { findWorkspaceRoot, log } from './utils';
+import { colorLog,findWorkspaceRoot } from './utils';
 
 export function reset() {
-  log('Resetting monorepo... ', 'blue');
+  colorLog('Resetting monorepo... ', 'blue');
   try {
     const rootDir = findWorkspaceRoot();
     // Use the rootDir explicitly for every command
     const execOptions = { stdio: 'inherit' as const, cwd: rootDir };
 
-    log(`Resetting monorepo at: ${rootDir}`, 'blue');
+    colorLog(`Resetting monorepo at: ${rootDir}`, 'blue');
 
     const steps = [
       { name: 'Cleaning root', command: 'rm -rf node_modules pnpm-lock.yaml .turbo' },
@@ -26,11 +26,11 @@ export function reset() {
     ];
 
     for (const step of steps) {
-      log(step.name, 'blue');
+      colorLog(step.name, 'blue');
       execSync(step.command, execOptions);
     }
   } catch (error) {
-    log('Reset failed.', 'red');
+    colorLog('Reset failed.', 'red');
     process.exit(1);
   }
 }
