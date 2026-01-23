@@ -114,6 +114,7 @@ export default defineConfig(({ mode }) => {
         '/logout': {
           target: proxyTarget,
           changeOrigin: true,
+          secure: false,
         },
         '/zx': {
           target: proxyTarget,
@@ -123,6 +124,7 @@ export default defineConfig(({ mode }) => {
         '/services': {
           target: proxyTarget,
           changeOrigin: true,
+          secure: false,
         },
         '/login': {
           target: proxyTarget,
