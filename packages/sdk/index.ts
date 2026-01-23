@@ -26,7 +26,7 @@ switch (command) {
   case 'reset':
     reset();
     break;
-  case 'build_unified':
+  case 'buildUnified':
     buildUnified();
     break;
 
