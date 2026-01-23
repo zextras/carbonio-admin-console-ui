@@ -118,6 +118,7 @@ export default defineConfig(({ mode }) => {
         '/zx': {
           target: proxyTarget,
           changeOrigin: true,
+          secure: false,
         },
         '/services': {
           target: proxyTarget,
