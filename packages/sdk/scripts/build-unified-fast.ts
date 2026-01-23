@@ -7,9 +7,9 @@
 /* eslint-disable no-console */
 
 import { execSync, spawn } from 'child_process';
-import { copyFileSync,existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { cpus } from 'os';
-import { dirname,join } from 'path';
+import { dirname, join } from 'path';
 
 function spawnCommand(command: string, args: string[], cwd?: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ function log(message: string, color: ColorName = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-function useRustOptimizer() {
+function getRustOptimizer() {
   const rootDir = findWorkspaceRoot();
   const rustBinary = join(
     rootDir,
@@ -100,7 +100,7 @@ async function main() {
     return;
   }
 
-  let rustBinary = useRustOptimizer();
+  let rustBinary = getRustOptimizer();
   if (!rustBinary) {
     log('⚠️  Rust binary not built. Building with cargo...', 'yellow');
     log('  This may take a minute on first run...', 'blue');
@@ -110,7 +110,7 @@ async function main() {
         stdio: 'inherit',
       });
       log('✓ Rust binary built successfully', 'green');
-      rustBinary = useRustOptimizer();
+      rustBinary = getRustOptimizer();
     } catch (error) {
       log('❌ Failed to build Rust binary', 'red');
       process.argv.push('--dev');
