@@ -388,6 +388,7 @@ describe('CreateAccount API Integration (browser)', () => {
         setShowEditAccountView: vi.fn(),
         openDetailView: vi.fn(),
         setShowAccountDetailView: vi.fn(),
+        setIsAccountCreated: vi.fn(),
         setDefaultTab: vi.fn()
     };
 
