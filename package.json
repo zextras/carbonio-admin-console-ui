@@ -14,7 +14,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
-    "build:unified": "sdk build_unified",
+    "build:unified": "pnpm exec sdk build_unified",
     "build:unified:fast": "tsx ./scripts/build_unified_fast.ts",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
@@ -26,7 +26,7 @@
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
-    "reset": "sdk reset"
+    "reset": "pnpm exec sdk reset"
   },
   "dependencies": {
     "react": "^19.1.0"

@@ -5,10 +5,10 @@
   "description": "Admin dashboard module for Zextras Carbonio",
   "main": "src/app.tsx",
   "scripts": {
-    "build": "sdk buildApp",
+    "build": "pnpm exec sdk buildApp",
     "build:esm": "vite build --config vite.config.esm.ts",
     "test:esm": "node test-esm-build.mjs",
-    "deploy": "npm run build && sdk deploy",
+    "deploy": "pnpm run build && pnpm exec sdk deploy",
     "reset": "node ../../scripts/reset.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",

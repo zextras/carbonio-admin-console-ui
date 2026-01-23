@@ -15,11 +15,11 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "sdk buildShell",
+    "build": "pnpm exec sdk buildShell",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",
-    "deploy": "npm run build && sdk deploy --admin",
+    "deploy": "pnpm run build && pnpm exec sdk deploy --admin",
     "reset": "node ../../scripts/reset.js",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
