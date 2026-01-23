@@ -705,7 +705,7 @@ describe('EditAccountSecuritySection (browser)', () => {
   });
 
   describe('Email Sending for OTP', () => {
-    it.only('should render OTP wizard with QR code when showCreateOTP is true', async () => {
+    it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
       const mockGetListOtp = vi.fn();
       const testContext = {
         ...mockContextValue,
