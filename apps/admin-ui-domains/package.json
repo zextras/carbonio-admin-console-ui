@@ -5,9 +5,8 @@
   "description": "Admin module for Zextras Carbonio",
   "main": "src/app.tsx",
   "scripts": {
-    "build": "pnpm exec sdk buildApp",
-    "deploy": "pnpm run build && pnpm exec sdk deploy",
-    "reset": "node ../../scripts/reset.js",
+    "build": "sdk buildApp",
+    "reset": "sdk reset",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",

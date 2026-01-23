@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildApp } from './scripts/build';
+import { buildApp } from './scripts/build-app';
 import { buildShell } from './scripts/build-shell';
 import { buildUnified } from './scripts/build-unified';
+import { deploy } from './scripts/deploy';
 import { reset } from './scripts/reset';
 
 const command = process.argv[2];
@@ -28,6 +29,9 @@ switch (command) {
     break;
   case 'buildUnified':
     buildUnified();
+    break;
+  case 'deploy':
+    deploy(options);
     break;
 
   default:

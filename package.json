@@ -14,10 +14,10 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
-    "build:unified": "pnpm exec sdk buildUnified",
+    "build:unified": "sdk buildUnified",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
-    "deploy:unified": "node ./scripts/deploy-unified.js",
+    "deploy": "sdk deploy",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "type-check": "turbo run type-check",
@@ -25,7 +25,7 @@
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
-    "reset": "pnpm exec sdk reset"
+    "reset": "sdk reset"
   },
   "dependencies": {
     "react": "^19.1.0"
