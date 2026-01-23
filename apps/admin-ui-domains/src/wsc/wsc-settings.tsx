@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useLicenseInfo } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Banner, Container, Padding } from '@zextras/ui-components';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { TRUE } from '../constants';
 import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
 import InheritedInput from '../views/utility/inherited-components/inherited-input';
@@ -32,6 +33,13 @@ export const WscSettings: FC<{
 }) => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
+  const userSetting = useUserSettings();
+
+  const isGlobalAdmin = useMemo(
+    () => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
+    [userSetting?.attrs?.zimbraIsAdminAccount],
+  );
+
   const { data: licenseData, isLoading, error } = useLicenseInfo();
 
   const wscFeature = licenseData?.response?.features?.find(
@@ -127,7 +135,7 @@ export const WscSettings: FC<{
 
   return (
     <Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-      {requiresLicenseCheck && !isLoading && !isLicensed && !error && (
+      {requiresLicenseCheck && !isLoading && !isLicensed && !error && isGlobalAdmin && (
         <Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
       )}
       <BoxLayout
