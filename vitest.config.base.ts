@@ -21,6 +21,10 @@ function jsdomProjectConfig() {
       },
       alias: {
         'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
+        '@zextras/admin-ui-bootstrap': path.resolve(
+          __dirname,
+          './__mocks__/@zextras/admin-ui-bootstrap.js',
+        ),
       },
       include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
