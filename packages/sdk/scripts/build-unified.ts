@@ -220,7 +220,7 @@ export async function buildUnified() {
     const buildExists = buildAlreadyExists(component.target, commitHash, installDir);
     const hasChanges = hasUncommittedChanges(component.name);
 
-    if (buildExists && !hasChanges) {
+    if ((buildExists && !hasChanges) || component.name === 'admin-ui-bootstrap') {
       log(
         `⚡ Skipping ${component.name} - build already exists for ${commitHash} and no uncommitted changes`,
         'green',

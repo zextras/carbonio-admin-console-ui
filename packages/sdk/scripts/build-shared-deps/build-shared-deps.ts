@@ -128,18 +128,3 @@ async function buildWithVite(dep: DepConfig, outputDir: string) {
     },
   });
 }
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const args = process.argv.slice(2);
-  const commitHash = args[0] || process.env.COMMIT_HASH;
-
-  if (!commitHash) {
-    console.error('Error: COMMIT_HASH must be provided');
-    process.exit(1);
-  }
-
-  buildSharedDeps(commitHash).catch((error) => {
-    console.error('Build failed:', error);
-    process.exit(1);
-  });
-}
