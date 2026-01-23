@@ -104,7 +104,6 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // Verify main sections are visible
             await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
             await expect.element(page.getByText('Settings')).toBeVisible();
             await expect.element(page.getByText('Description').first()).toBeVisible();
@@ -121,7 +120,6 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // Verify all input fields are present
             await expect.element(page.getByLabelText('Surname')).toBeVisible();
             await expect.element(page.getByLabelText('Middle Name Initials')).toBeVisible();
             await expect.element(page.getByLabelText('Name', { exact: true })).toBeVisible();
@@ -160,15 +158,12 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // Fill given name (labeled "Name")
             const givenNameInput = page.getByLabelText('Name', { exact: true });
             await userEvent.fill(givenNameInput, 'John');
 
-            // Fill surname
             const surnameInput = page.getByLabelText('Surname');
             await userEvent.fill(surnameInput, 'Doe');
 
-            // Verify setAccountDetail was called with the values
             expect(setAccountDetail).toHaveBeenCalled();
         });
 
@@ -185,7 +180,6 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // Fill all name fields
             const givenNameInput = page.getByLabelText('Name', { exact: true });
             await userEvent.fill(givenNameInput, 'John');
 
@@ -195,7 +189,6 @@ describe('CreateAccountDetailSection (browser)', () => {
             const surnameInput = page.getByLabelText('Surname');
             await userEvent.fill(surnameInput, 'Doe');
 
-            // Verify setAccountDetail was called
             expect(setAccountDetail).toHaveBeenCalled();
         });
     });
@@ -214,12 +207,10 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // Fill name fields
             await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
             await userEvent.fill(page.getByLabelText('Middle Name Initials'), 'M');
             await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
 
-            // Verify setAccountDetail was called for display name
             expect(setAccountDetail).toHaveBeenCalled();
         });
     });
@@ -297,8 +288,6 @@ describe('CreateAccountDetailSection (browser)', () => {
                 </AccountContext.Provider>
             );
 
-            // With defaultCOS = true, dropdown should be disabled
-            // This is visual verification in the rendered component
             await expect.element(page.getByText('Default COS')).toBeVisible();
         });
     });
@@ -320,7 +309,6 @@ describe('CreateAccountDetailSection (browser)', () => {
             const phoneInput = page.getByLabelText('Phone');
             await userEvent.fill(phoneInput, '+1-555-1234');
 
-            // Valid phone should call setAccountDetail
             expect(setAccountDetail).toHaveBeenCalled();
         });
     });
@@ -404,7 +392,6 @@ describe('CreateAccount API Integration (browser)', () => {
     };
 
     beforeEach(() => {
-        // Setup domain store
         useDomainStore.setState({
             domain: {
                 name: 'test-domain.com',
@@ -417,7 +404,6 @@ describe('CreateAccount API Integration (browser)', () => {
             ]
         });
 
-        vi.clearAllMocks();
     });
 
     afterEach(() => {
@@ -447,24 +433,19 @@ describe('CreateAccount API Integration (browser)', () => {
 
         setupBrowserTest(<CreateAccount {...mockProps} />);
 
-        // Fill required fields
         await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
         await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
         await userEvent.fill(page.getByLabelText('Password', { exact: true }), 'SecurePass123!');
         await userEvent.fill(page.getByLabelText('Repeat Password'), 'SecurePass123!');
 
-        // Click create button
         const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
         await userEvent.click(createButton);
 
-        // Wait for request to be sent
         await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
 
-        // Parse the captured request body
         const capturedRequest = apiInterceptor.getLastRequest();
         capturedRequestBody = await capturedRequest.json();
 
-        // Verify request payload contains correct data
         expect(capturedRequestBody.Body.CreateAccountRequest.name).toBe('john.doe@test-domain.com');
         expect(capturedRequestBody.Body.CreateAccountRequest.password).toBe('SecurePass123!');
         expect(capturedRequestBody.Body.CreateAccountRequest.a).toEqual(
