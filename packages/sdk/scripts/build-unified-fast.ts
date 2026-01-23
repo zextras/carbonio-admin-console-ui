@@ -1,10 +1,15 @@
-#!/usr/bin/env node
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /* eslint-disable no-console */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, copyFileSync } from 'fs';
-import { join, dirname } from 'path';
 import { execSync, spawn } from 'child_process';
+import { copyFileSync,existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { cpus } from 'os';
+import { dirname,join } from 'path';
 
 function spawnCommand(command: string, args: string[], cwd?: string): Promise<void> {
   return new Promise((resolve, reject) => {
