@@ -244,7 +244,6 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'pnpm --filter admin-ui-sdk build'
                         sh 'pnpm build:unified'
                     }
                     stash includes: 'package/**,yap.json', name: 'staging'

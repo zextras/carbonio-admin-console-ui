@@ -5,8 +5,8 @@
   "description": "Admin module for Zextras Carbonio",
   "main": "src/app.tsx",
   "scripts": {
-    "build": "sdk buildApp",
-    "reset": "sdk reset",
+    "build": "npx tsx ../../scripts/build-app.ts",
+    "reset": "npx tsx ../../scripts/reset.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",
