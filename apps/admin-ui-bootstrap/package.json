@@ -64,7 +64,6 @@
     "@vitejs/plugin-react": "^5.0.2",
     "@vitest/browser": "^4.0.5",
     "@vitest/coverage-istanbul": "^4.0.5",
-    "admin-ui-sdk": "workspace:*",
     "admin-ui-test-utils": "workspace:*",
     "babel-plugin-i18next-extract": "^1.1.0",
     "babel-plugin-styled-components": "^2.1.4",
@@ -91,9 +90,6 @@
   "author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
   "maintainers": [],
   "license": "AGPL-3.0-only",
-  "sdk": {
-    "svgr": true
-  },
   "carbonio": {
     "name": "carbonio-admin-ui",
     "translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",

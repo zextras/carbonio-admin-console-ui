@@ -143,10 +143,9 @@ Packages reference each other using the `workspace:*` protocol:
 
 ```json
 {
-	"dependencies": {
-		"@zextras/admin-ui-bootstrap": "workspace:*",
-		"admin-ui-sdk": "workspace:*"
-	}
+  "dependencies": {
+    "@zextras/admin-ui-bootstrap": "workspace:*"
+  }
 }
 ```
 
