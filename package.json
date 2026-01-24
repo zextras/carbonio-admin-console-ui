@@ -14,7 +14,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
-    "build:unified": "sdk buildUnified",
+    "build:unified": "pnpm exec sdk buildUnified",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "deploy": "sdk deploy",
