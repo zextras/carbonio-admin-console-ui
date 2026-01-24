@@ -14,10 +14,10 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
-    "build:unified": "npx tsx scripts/build-unified/index.ts",
+    "build:unified": "pnpm exec tsx scripts/build-unified/index.ts",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
-    "deploy": "npx tsx scripts/deploy.ts",
+    "deploy": "pnpm exec tsx scripts/deploy.ts",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "type-check": "turbo run type-check",
@@ -25,7 +25,7 @@
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
-    "reset": "npx tsx scripts/reset.ts"
+    "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
     "react": "^19.1.0"

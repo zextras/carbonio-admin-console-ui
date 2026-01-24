@@ -9,7 +9,7 @@ import { execSync } from 'child_process';
 import { readdirSync, statSync } from 'fs';
 import { join } from 'path';
 
-export const deploy = (remoteHost: string) => {
+const deploy = (remoteHost: string) => {
   if (!remoteHost) {
     console.error('❌ Error: Please provide the remote host as a command-line argument.');
     console.log('Usage: node deploy.js <remote_host>');
@@ -92,3 +92,5 @@ export const deploy = (remoteHost: string) => {
 
   console.log('\n✨ Deployment Complete!');
 };
+
+deploy(process.argv[2]);

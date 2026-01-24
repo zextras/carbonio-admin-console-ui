@@ -8,7 +8,7 @@ import { execSync } from 'child_process';
 
 import { colorLog,findWorkspaceRoot } from './utils';
 
-export function reset() {
+function reset() {
   colorLog('Resetting monorepo... ', 'blue');
   try {
     const rootDir = findWorkspaceRoot();
@@ -34,3 +34,5 @@ export function reset() {
     process.exit(1);
   }
 }
+
+reset();

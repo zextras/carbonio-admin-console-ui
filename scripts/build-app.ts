@@ -14,7 +14,7 @@ type BuildOptions = {
   [key: string]: string | boolean | undefined;
 };
 
-export const buildApp = async (options: BuildOptions): Promise<void> => {
+const buildApp = async (options: BuildOptions): Promise<void> => {
   const args = process.argv.slice(2);
   if (options.dev) {
     args.push('--dev');
@@ -57,3 +57,5 @@ export const buildApp = async (options: BuildOptions): Promise<void> => {
     console.log('\n✅ Build completed successfully!');
   });
 };
+
+buildApp({});

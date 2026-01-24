@@ -21,7 +21,7 @@ function getLastTag() {
     stdio: 'pipe',
   }).trim();
 }
-export async function buildUnified() {
+async function buildUnified() {
   const rootDir = findWorkspaceRoot();
   const appsDir = join(rootDir, 'apps');
   const pkgVersion = getLastTag().replace(/^v/, '');
@@ -55,3 +55,5 @@ export async function buildUnified() {
 
   colorLog('=== Build complete! ===', 'green');
 }
+
+buildUnified();
