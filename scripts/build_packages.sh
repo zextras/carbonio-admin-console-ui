@@ -9,7 +9,7 @@ OS=${1:-"ubuntu-jammy"}
 
 echo "Building for OS: $OS"
 
-docker run -it --rm \
+docker run --rm \
 	--entrypoint=yap \
 	-v "$(pwd)/artifacts/${OS}":/artifacts \
 	-v "$(pwd)":/tmp/build \

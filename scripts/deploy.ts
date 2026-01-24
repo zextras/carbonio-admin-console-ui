@@ -39,7 +39,7 @@ const deploy = (remoteHost: string) => {
 
   // 1. Build the unified package and create .deb files
   console.log('🔨 Starting Build...');
-  run('pnpm build:unified -- --dev');
+  run('pnpm build:unified');
 
   // 2. Create the .deb packages
   console.log('📦 Packaging...');
