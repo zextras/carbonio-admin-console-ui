@@ -13,6 +13,7 @@ import { build } from 'vite';
 
 import { buildSharedDeps } from './build-shared-deps/build-shared-deps';
 import { generateImportMap } from './generate-import-map';
+import { copyRecursive, findWorkspaceRoot } from './utils';
 
 async function buildShell(): Promise<void> {
   const args = process.argv.slice(2);
@@ -41,35 +42,6 @@ async function buildShell(): Promise<void> {
   });
 
   // Build library exports separately
-  console.log('\nBuilding library exports...');
-  await build({
-    configFile: path.resolve(cwd, 'vite.config.ts'),
-    mode,
-    build: {
-      outDir: path.resolve(cwd, 'dist', 'source', commitHash),
-      emptyOutDir: false, // Don't delete the runtime shell
-      lib: {
-        entry: path.resolve(cwd, 'exports.ts'),
-        name: 'CarbonioAdminUIBootstrap',
-        fileName: (format) => `bootstrap-exports.${format === 'es' ? 'mjs' : 'cjs'}`,
-        formats: ['es'],
-      },
-      sourcemap: isDev,
-      rollupOptions: {
-        // NOTE: Do NOT externalize @tanstack/react-query here!
-        // The bootstrap-exports must bundle react-query so that sub-apps
-        // using hooks like useLicenseInfo share the same QueryClient context
-        // with the shell's ReactQueryProvider.
-        // NOTE: zustand must be externalized to share the same store instance
-        // between shell.mjs and bootstrap-exports.mjs
-        external: ['react', 'react-dom', 'lodash-es', 'styled-components', 'i18next', 'zustand'],
-        output: {
-          entryFileNames: isDev ? 'bootstrap-exports.mjs' : `bootstrap-exports.[hash].mjs`,
-        },
-      },
-    },
-  });
-
   console.log('\nBuilding shared dependencies...');
   await buildSharedDeps(commitHash, isDev);
 
@@ -119,48 +91,48 @@ async function buildShell(): Promise<void> {
   writeFileSync(commitFilePath, commitHash);
   console.log('Generated commit file');
 
-  // Generate component.json
-  const packageJson = JSON.parse(readFileSync(path.resolve(cwd, 'package.json'), 'utf-8'));
+  // Copy built files to package directory
+  console.log('\nCopying built files to package directory...');
+  const rootDir = findWorkspaceRoot();
+  const packageDir = path.resolve(
+    rootDir,
+    'package',
+    'opt',
+    'zextras',
+    'admin',
+    'iris',
+    'carbonio-admin-ui',
+  );
+  const packageCommitDir = path.resolve(packageDir, commitHash);
+  const packageCurrentDir = path.resolve(packageDir, 'current');
 
-  // Determine the library exports file name
-  let exportsFileName;
-  try {
-    const distFiles = readdirSync(distDir);
-    const exportsFiles = distFiles.filter(
-      (f) => f.startsWith('bootstrap-exports.') && f.endsWith('.mjs'),
-    );
-    if (exportsFiles.length > 0) {
-      // Prefer hashed filenames
-      const hashedFiles = exportsFiles.filter((f) => f !== 'bootstrap-exports.mjs');
-      exportsFileName = hashedFiles.length > 0 ? hashedFiles[0] : exportsFiles[0];
-    }
-  } catch {
-    // Fallback to default naming
-    exportsFileName = isDev
-      ? 'bootstrap-exports.mjs'
-      : `bootstrap-exports.${commitHash.substring(0, 8)}.mjs`;
+  // Clean package directory before writing
+  if (existsSync(packageDir)) {
+    rmSync(packageDir, { recursive: true, force: true });
+    console.log(`Cleaned ${packageDir}`);
   }
 
-  // Use different bundle names for dev vs production (ESM uses .mjs)
-  const bundleName = exportsFileName;
+  // Ensure package directories exist
+  mkdirSync(packageCommitDir, { recursive: true });
+  mkdirSync(packageCurrentDir, { recursive: true });
 
-  const componentJson = {
-    name: 'carbonio-admin-ui',
-    js_entrypoint: `/static/iris/carbonio-admin-ui/${commitHash}/${bundleName}`,
-    description: packageJson.description || '',
-    version: packageJson.version,
-    commit: commitHash,
-    priority: -1,
-    type: 'shell',
-    icon: 'CubeOutline',
-    display: 'Admin Shell',
-  };
+  // Copy all files to commit-specific directory
+  copyRecursive(distDir, packageCommitDir);
+  console.log(`Copied to ${packageCommitDir}`);
 
-  writeFileSync(path.resolve(distDir, 'component.json'), JSON.stringify(componentJson, null, '\t'));
-  console.log('Generated component.json');
+  // Copy only index.html to current directory
+  const distIndexHtmlPath = path.resolve(distDir, 'index.html');
+  if (existsSync(distIndexHtmlPath)) {
+    writeFileSync(
+      path.resolve(packageCurrentDir, 'index.html'),
+      readFileSync(distIndexHtmlPath, 'utf-8'),
+    );
+    console.log(`Copied index.html to ${packageCurrentDir}`);
+  }
 
   console.log(`\nBuild completed successfully!`);
   console.log(`Output directory: ${distDir}`);
+  console.log(`Package directory: ${packageDir}`);
 }
 
 buildShell();

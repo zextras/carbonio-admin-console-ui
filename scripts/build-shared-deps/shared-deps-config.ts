@@ -19,7 +19,7 @@ export type DepConfig = {
  * Build configuration for each shared dependency
  * We use Vite to bundle them into browser-compatible ESM
  */
-export function sharedDepsConfig(rootDir: string, nodeModulesDir: string): DepConfig[] {
+export function sharedDepsConfig(nodeModulesDir: string): DepConfig[] {
   return [
     {
       name: 'react',

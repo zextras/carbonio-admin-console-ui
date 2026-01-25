@@ -10,7 +10,7 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild } from 'vite';
 
-import { colorLog,findWorkspaceRoot } from '../utils';
+import { colorLog, findWorkspaceRoot } from '../utils';
 import { REACT_DOM_EXPORTS, REACT_EXPORTS } from './constants';
 import { DepConfig, sharedDepsConfig } from './shared-deps-config';
 
@@ -29,7 +29,7 @@ export async function buildSharedDeps(commitHash: string, isDev: boolean) {
   colorLog(`Building shared dependencies to: ${outputDir}`);
 
   // Get config with resolved paths
-  const config = sharedDepsConfig(rootDir, nodeModulesDir);
+  const config = sharedDepsConfig(nodeModulesDir);
 
   // Run builds in parallel
   const buildPromises = config.map(async (dep) => {
@@ -88,7 +88,12 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean
 /**
  * Handles standard ESM builds using Vite (Rollup)
  */
-async function buildWithVite(dep: DepConfig, outputDir: string, isDev: boolean, nodeModulesDir: string) {
+async function buildWithVite(
+  dep: DepConfig,
+  outputDir: string,
+  isDev: boolean,
+  nodeModulesDir: string,
+) {
   const outputBaseName = dep.outputName.replace(/\.mjs$/, '');
 
   await viteBuild({
