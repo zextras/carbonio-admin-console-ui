@@ -71,7 +71,7 @@ async function buildShell(): Promise<void> {
   });
 
   console.log('\nBuilding shared dependencies...');
-  await buildSharedDeps(commitHash);
+  await buildSharedDeps(commitHash, isDev);
 
   console.log('\nRunning post-build tasks...');
   const distDir = path.resolve(cwd, 'dist', 'source', commitHash);

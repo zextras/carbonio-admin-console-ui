@@ -14,10 +14,9 @@ import { colorLog,findWorkspaceRoot } from '../utils';
 import { REACT_DOM_EXPORTS, REACT_EXPORTS } from './constants';
 import { DepConfig, sharedDepsConfig } from './shared-deps-config';
 
-const rootDir = findWorkspaceRoot();
-const nodeModulesDir = join(rootDir, 'node_modules');
-
-export async function buildSharedDeps(commitHash: string) {
+export async function buildSharedDeps(commitHash: string, isDev: boolean) {
+  const rootDir = findWorkspaceRoot();
+  const nodeModulesDir = join(rootDir, 'node_modules');
   const sharedDepsParentDir = join(rootDir, 'package/opt/zextras/admin/iris/shared-dependencies');
   const outputDir = join(sharedDepsParentDir, commitHash);
 
@@ -29,20 +28,17 @@ export async function buildSharedDeps(commitHash: string) {
 
   colorLog(`Building shared dependencies to: ${outputDir}`);
 
+  // Get config with resolved paths
+  const config = sharedDepsConfig(rootDir, nodeModulesDir);
+
   // Run builds in parallel
-  const buildPromises = sharedDepsConfig.map(async (dep) => {
+  const buildPromises = config.map(async (dep) => {
     colorLog(`Building ${dep.name}...`);
     try {
-      if (dep.type === 'copy') {
-        // Implementation for copy if needed (not currently used in config but good to keep)
-        // copyFileSync(dep.entry, join(outputDir, dep.outputName));
-        return;
-      }
-
       if (dep.type === 'wrap-cjs') {
-        await buildWrappedCJS(dep, outputDir);
+        await buildWrappedCJS(dep, outputDir, isDev);
       } else if (dep.type === 'build-vite') {
-        await buildWithVite(dep, outputDir);
+        await buildWithVite(dep, outputDir, isDev, nodeModulesDir);
       }
 
       colorLog(`  ✓ Built ${dep.name}`);
@@ -60,7 +56,7 @@ export async function buildSharedDeps(commitHash: string) {
  * Handles CJS modules (React/ReactDOM) by creating a virtual entry point
  * that re-exports named exports explicitly.
  */
-async function buildWrappedCJS(dep: DepConfig, outputDir: string) {
+async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean) {
   const exportsList = dep.name === 'react' ? REACT_EXPORTS : REACT_DOM_EXPORTS;
 
   // Create a virtual entry file content
@@ -83,7 +79,7 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string) {
     format: 'esm',
     outfile: join(outputDir, dep.outputName),
     target: 'esnext',
-    minify: false, // Keep false if you need to debug named exports, otherwise true is fine
+    minify: !isDev,
     platform: 'browser',
     external: dep.external || [],
   });
@@ -92,13 +88,13 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string) {
 /**
  * Handles standard ESM builds using Vite (Rollup)
  */
-async function buildWithVite(dep: DepConfig, outputDir: string) {
+async function buildWithVite(dep: DepConfig, outputDir: string, isDev: boolean, nodeModulesDir: string) {
   const outputBaseName = dep.outputName.replace(/\.mjs$/, '');
 
   await viteBuild({
     configFile: false,
-    mode: 'production',
-    logLevel: 'silent', // Reduce noise during parallel builds
+    mode: isDev ? 'development' : 'production',
+    logLevel: 'silent',
     build: {
       lib: {
         entry: dep.entry,
@@ -108,7 +104,7 @@ async function buildWithVite(dep: DepConfig, outputDir: string) {
       },
       outDir: outputDir,
       emptyOutDir: false,
-      sourcemap: false,
+      sourcemap: isDev,
       rollupOptions: {
         external: dep.external || [],
         output: {
@@ -116,10 +112,10 @@ async function buildWithVite(dep: DepConfig, outputDir: string) {
         },
       },
       target: 'esnext',
-      minify: true,
+      minify: !isDev,
     },
     define: {
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
     },
     resolve: {
       alias: {
