@@ -106,14 +106,6 @@ Files: **/junit.xml
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
-Files: packages/sdk/scripts/**/*.js
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: AGPL-3.0-only
-
-Files: packages/sdk/scripts/configs/*.json
-Copyright: 2021 Zextras <https://www.zextras.com>
-License: AGPL-3.0-only
-
 Files: apps/yap.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only

@@ -6,7 +6,6 @@
 
 import { type To } from 'history';
 import { type i18n } from 'i18next';
-import { ComponentType } from 'react';
 
 import { CarbonioModule, PanelMode } from '../apps';
 
@@ -29,11 +28,11 @@ export type ContextBridgeState = {
 	add: (content: Partial<Omit<ContextBridgeState, 'add'>>) => void;
 };
 
-export type IShellWindow = Window & {
-	__ZAPP_SHARED_LIBRARIES__: { [name: string]: any };
-	__ZAPP_HMR_EXPORT__: { [pkgName: string]: (appClass: ComponentType) => void };
-	// __ZAPP_HMR_HANDLERS__: { [pkgName: string]: (handlers: RequestHandlersList) => void };
-};
+/**
+ * Extended Window type for the shell application.
+ * ESM modules use import maps for dependency sharing - no globals needed.
+ */
+export type IShellWindow = Window;
 
 export type LoadedAppRuntime = AppInjections & {
 	pkg: CarbonioModule;

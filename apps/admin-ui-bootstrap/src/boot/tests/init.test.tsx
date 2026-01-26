@@ -33,8 +33,8 @@ const mocki18n: any = {
 describe('init', () => {
 	it('should return error when advanced supported fails', async () => {
 		advancedSupportedApi.withError();
-		const { result } = renderHook(() => init(mocki18n));
-		expect(await result.current).toHaveProperty('error');
+		const result = await init(mocki18n);
+		expect(result).toHaveProperty('error');
 	});
 
 	it('should return error when advanced supported true but other APIs fail', async () => {
@@ -44,8 +44,8 @@ describe('init', () => {
 		loginConfigApi(() => HttpResponse.error());
 		getInfoRequestApi(() => HttpResponse.error());
 
-		const { result } = renderHook(() => init(mocki18n));
-		expect(await result.current).toHaveProperty('error');
+		const result = await init(mocki18n);
+		expect(result).toHaveProperty('error');
 	});
 
 	it.skip('should set advanced true only when all api succeed', async () => {

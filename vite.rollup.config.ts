@@ -4,91 +4,62 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { OutputOptions, RollupOptions } from "rollup";
+import type { OutputOptions, RollupOptions } from 'rollup';
 
 /**
- * Shared external dependencies for all microfrontend modules
+ * Shared external dependencies for ESM microfrontend modules.
+ * These will be resolved via import maps at runtime.
+ * Only include packages that can be successfully vendored for offline use.
  */
 export const SHARED_EXTERNALS = [
-  "react",
-  "react-dom",
-  "react-i18next",
-  "lodash-es",
-  "react-router-dom",
-  "styled-components",
-  "@emotion/react",
-  "@emotion/styled",
-  "@zextras/carbonio-ui-preview",
-  "@zextras/admin-ui-bootstrap",
-  "@zextras/ui-components",
-  "msw",
-  "i18next",
+  'react',
+  'react-dom',
+  'lodash-es',
+  'styled-components',
+  'i18next',
+  'react-i18next',
+  '@tanstack/react-query',
+  'react-router-dom',
+  'zustand',
+  '@zextras/admin-ui-bootstrap',
+  'msw',
 ] as const;
 
 /**
- * Creates global mappings for externalized dependencies
- * Maps package names to their runtime window.__ZAPP_SHARED_LIBRARIES__ locations
+ * Configuration options for ESM module rollup
  */
-export function createSharedGlobals(
-  packageName: string,
-): Record<string, string> {
-  return {
-    react: '__ZAPP_SHARED_LIBRARIES__["react"]',
-    "react-dom": '__ZAPP_SHARED_LIBRARIES__["react-dom"]',
-    "react-i18next": '__ZAPP_SHARED_LIBRARIES__["react-i18next"]',
-    "lodash-es": '__ZAPP_SHARED_LIBRARIES__["lodash-es"]',
-    "react-router-dom": '__ZAPP_SHARED_LIBRARIES__["react-router-dom"]',
-    "styled-components": '__ZAPP_SHARED_LIBRARIES__["styled-components"]',
-    "@emotion/react": '__ZAPP_SHARED_LIBRARIES__["@emotion/react"]',
-    "@emotion/styled": '__ZAPP_SHARED_LIBRARIES__["@emotion/styled"]',
-    "@zextras/carbonio-ui-preview":
-      '__ZAPP_SHARED_LIBRARIES__["@zextras/carbonio-ui-preview"]',
-    "@zextras/admin-ui-bootstrap": `__ZAPP_SHARED_LIBRARIES__["@zextras/admin-ui-bootstrap"]["${packageName}"]`,
-    "@zextras/ui-components":
-      '__ZAPP_SHARED_LIBRARIES__["@zextras/ui-components"]',
-    msw: '__ZAPP_SHARED_LIBRARIES__["msw"]',
-    i18next: '__ZAPP_SHARED_LIBRARIES__["i18next"]',
-  };
-}
-
-/**
- * Configuration options for module rollup
- */
-export interface ModuleRollupOptions {
+export interface ESMModuleRollupOptions {
   packageName: string;
   externals?: string[];
   includeDefaults?: boolean;
 }
 
 /**
- * Creates standardized rollup options for microfrontend modules
+ * Creates standardized rollup options for microfrontend ESM modules.
+ * All dependencies are resolved via import maps - no globals needed.
  *
  * @param options - Configuration for the module
- * @returns RollupOptions configured for the module
+ * @returns RollupOptions configured for ESM output
  */
-export function createModuleRollupOptions(
-  options: ModuleRollupOptions,
-): RollupOptions {
-  const { packageName, externals = [], includeDefaults = true } = options;
+export function createModuleRollupOptions(options: ESMModuleRollupOptions): RollupOptions {
+  const { externals = [], includeDefaults = true } = options;
 
-  const allExternals = includeDefaults
-    ? [...SHARED_EXTERNALS, ...externals]
-    : externals;
+  const allExternals = includeDefaults ? [...SHARED_EXTERNALS, ...externals] : externals;
 
   const output: OutputOptions = {
-    exports: "default",
-    entryFileNames: "[name].[hash].js",
-    chunkFileNames: "[name].[hash].chunk.js",
-    inlineDynamicImports: true,
+    exports: 'default',
+    entryFileNames: '[name].[hash].mjs',
+    chunkFileNames: '[name].[hash].chunk.mjs',
+    inlineDynamicImports: false, // Enable code splitting
     assetFileNames: (assetInfo) => {
-      const fileName = assetInfo.names?.[0] || assetInfo.name || "";
-      if (fileName.endsWith(".css")) {
-        return "style.[hash].css";
+      const fileName = assetInfo.names?.[0] || assetInfo.name || '';
+      if (fileName.endsWith('.css')) {
+        return 'style.[hash].css';
       }
-      return "[name].[hash][extname]";
+      return '[name].[hash][extname]';
     },
-    interop: "compat",
-    globals: createSharedGlobals(packageName),
+    interop: 'auto',
+    // No globals - ESM uses import maps
   };
 
   return {
@@ -98,25 +69,49 @@ export function createModuleRollupOptions(
 }
 
 /**
- * Creates standardized rollup options for the bootstrap application
+ * Creates standardized rollup options for the ESM bootstrap application (shell).
+ * The shell externalizes shared dependencies - they are loaded via import maps
+ * which point to separately built shared-deps bundles.
+ * This ensures a single instance of React/styled-components/etc across shell and sub-apps.
  *
  * @param isDev - Whether this is a development build
- * @returns RollupOptions configured for the shell
+ * @returns RollupOptions configured for the ESM shell
  */
 export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
   const output: OutputOptions = {
-    entryFileNames: isDev ? "zapp-shell.bundle.js" : "zapp-admin-ui.bundle.js",
-    chunkFileNames: "[name].[hash].chunk.js",
+    entryFileNames: isDev ? 'shell.mjs' : 'shell.[hash].mjs',
+    chunkFileNames: '[name].[hash].chunk.mjs',
     assetFileNames: (assetInfo) => {
-      const fileName = assetInfo.names?.[0] || assetInfo.name || "";
-      if (fileName.endsWith(".css")) {
-        return "[name].[hash].css";
+      const fileName = assetInfo.names?.[0] || assetInfo.name || '';
+      if (fileName.endsWith('.css')) {
+        return '[name].[hash].css';
       }
-      return "[name].[hash][extname]";
+      return '[name].[hash][extname]';
     },
+    // Bootstrap can inline its code but should keep app imports dynamic
+    inlineDynamicImports: true,
   };
 
+  // Shell must externalize shared deps to use the same instances as sub-apps via import maps
+  // This prevents "multiple React instances" errors with hooks
+  const sharedExternals = [
+    'react',
+    'react-dom',
+    'lodash-es',
+    'styled-components',
+    'i18next',
+    'react-i18next',
+    '@tanstack/react-query',
+    'react-router-dom',
+    'zustand',
+  ];
+
   return {
+    external: sharedExternals,
     output,
   };
 }
+
+// Re-export for backwards compatibility during migration
+export { createModuleRollupOptions as createESMModuleRollupOptions };
+export { createBootstrapRollupOptions as createESMBootstrapRollupOptions };

@@ -370,11 +370,7 @@ fn parallel_build(
         components
             .par_iter()
             .map(|component| {
-                let build_cmd = if dev_mode {
-                    "pnpm build:dev"
-                } else {
-                    "pnpm build"
-                };
+                let build_cmd = "pnpm build"
 
                 println!("Building {}...", component.name);
 

@@ -13,21 +13,19 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "build:dev": "turbo run build:dev",
-    "build:unified": "tsx ./scripts/build_unified.ts",
-    "build:unified:dev": "tsx ./scripts/build_unified.ts --dev",
-    "build:unified:fast": "tsx ./scripts/build_unified_fast.ts",
+    "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
+    "build:unified": "pnpm exec tsx scripts/build-unified/index.ts",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
-    "deploy:unified": "node ./scripts/deploy-unified.js",
-    "test": "node scripts/test-runner.js",
+    "deploy": "pnpm exec tsx scripts/deploy.ts",
+    "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "type-check": "turbo run type-check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
-    "reset": "node scripts/reset.js"
+    "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
     "react": "^19.1.0"

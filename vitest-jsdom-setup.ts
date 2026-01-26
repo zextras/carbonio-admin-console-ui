@@ -9,7 +9,6 @@ import { cleanup } from '@testing-library/react';
 import { noop } from 'lodash-es';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
-vi.stubGlobal('__CARBONIO_DEV__', false);
 vi.stubGlobal('BASE_PATH', '');
 
 // Mock localStorage for jsdom

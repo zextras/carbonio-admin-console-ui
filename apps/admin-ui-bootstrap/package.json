@@ -14,15 +14,12 @@
     "npm": "v10"
   },
   "scripts": {
-    "build": "sdk build-shell",
-    "build:dev": "sdk build-shell --dev",
+    "dev": "vite",
+    "build": "pnpm exec tsx ../../scripts/build-shell.ts",
+    "reset": "pnpm exec tsx ../../scripts/reset.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --quiet --cache",
-    "deploy": "npm run build && sdk deploy --admin",
-    "deploy:dev": "npm run build:dev && sdk deploy --admin",
-    "reset": "node ../../scripts/reset.js",
-    "start": "sdk watch --admin",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
     "test:ci": "vitest run --coverage"
@@ -57,7 +54,7 @@
     "@tanstack/react-query-devtools": "^5.90.2",
     "@testing-library/react": "^16.3.1",
     "@types/lodash-es": "^4.14.197",
-    "@types/node": "^20.17.27",
+    "@types/node": "^22.19.7",
     "@types/prop-types": "^15.7.15",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.2.0",
@@ -67,7 +64,6 @@
     "@vitejs/plugin-react": "^5.0.2",
     "@vitest/browser": "^4.0.5",
     "@vitest/coverage-istanbul": "^4.0.5",
-    "admin-ui-sdk": "workspace:*",
     "admin-ui-test-utils": "workspace:*",
     "babel-plugin-i18next-extract": "^1.1.0",
     "babel-plugin-styled-components": "^2.1.4",
@@ -94,9 +90,6 @@
   "author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
   "maintainers": [],
   "license": "AGPL-3.0-only",
-  "sdk": {
-    "svgr": true
-  },
   "carbonio": {
     "name": "carbonio-admin-ui",
     "translations_repository": "git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",

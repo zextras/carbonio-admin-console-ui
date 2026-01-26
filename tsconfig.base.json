@@ -15,6 +15,9 @@
     "strict": true,
     "noImplicitOverride": true,
     "moduleResolution": "bundler",
+    "paths": {
+      "virtual:app-registry": ["./apps/admin-ui-bootstrap/src/app-registry.d.ts"]
+    },
     "lib": ["esnext", "dom", "dom.iterable"],
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
@@ -22,6 +25,5 @@
     "types": ["@vitest/browser/matchers", "vitest/globals"],
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src/**/*", "*.d.ts"]
 }

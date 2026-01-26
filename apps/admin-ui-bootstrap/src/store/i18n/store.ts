@@ -12,9 +12,9 @@ import { dropRight, forEach, reduce } from 'lodash-es';
 import { initReactI18next } from 'react-i18next';
 import { create } from 'zustand';
 
+import { CarbonioModule } from '../../../types/apps';
 import { SHELL_APP_ID } from '../../constants';
 import { queryClient } from '../../providers/react-query-provider';
-import type { CarbonioModule } from '../../types/apps';
 
 type I18nState = {
   instances: Record<string, i18n>;
@@ -30,14 +30,11 @@ type I18nActions = {
 const addShell = (apps: Array<CarbonioModule>): Array<CarbonioModule> => [
   ...apps,
   {
-    commit: '',
     description: '',
     js_entrypoint: '',
     name: SHELL_APP_ID,
     priority: -1,
-    version: '',
     type: 'shell',
-    attrKey: '',
     icon: '',
     display: 'Shell',
   },
