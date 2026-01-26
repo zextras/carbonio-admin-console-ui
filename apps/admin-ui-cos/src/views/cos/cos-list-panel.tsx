@@ -52,7 +52,7 @@ const CustomIcon = styled(Icon)`
 export const CosListPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const locationService = useLocation();
+  const { pathname } = useLocation();
   const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
   const [searchCosName, setSearchCosName] = useState('');
   const [isCosSelect, setIsCosSelect] = useState(false);
@@ -110,10 +110,12 @@ export const CosListPanel: FC = () => {
   }, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
 
   useEffect(() => {
+    console.log('$$$$$$$pathname', pathname);
+
     if (
-      (locationService.pathname &&
-        locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
-      locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
+      (pathname &&
+        pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
+      pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
     ) {
       setCosList([]);
       setIsCosSelect(false);
@@ -122,7 +124,7 @@ export const CosListPanel: FC = () => {
       setCosView('');
       setCos({});
     }
-  }, [locationService, setCos, setCosView]);
+  }, [pathname, setCos, setCosView]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchCosCall = useCallback(
@@ -252,52 +254,52 @@ export const CosListPanel: FC = () => {
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-          {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <Text overflow="break-word">
-                    {t(
-                      'many_cos_info_msg',
-                      'So many COSes! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </Text>
-                </Row>
-              </>
-            ),
-          },
-        ]
-      : cosList.map((cosData: any) => ({
-          id: cosData.id,
-          label: cosData.name,
+        {
           customComponent: (
-            <SelectItem
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '3px',
-                width: 'inherit',
-              }}
-              onClick={(): void => {
-                selectedCos(cosData);
-              }}
-            >
-              {cosData?.name}
-            </SelectItem>
+            <>
+              <Row mainAlignment="flex-start">
+                <Padding horizontal="small">
+                  <CustomIcon icon="InfoOutline"></CustomIcon>
+                </Padding>
+              </Row>
+              <Row
+                mainAlignment="flex-start"
+                width="100%"
+                padding={{
+                  all: 'small',
+                }}
+              >
+                <Text overflow="break-word">
+                  {t(
+                    'many_cos_info_msg',
+                    'So many COSes! Which one would you like to see? Start typing to filter.',
+                  )}
+                </Text>
+              </Row>
+            </>
           ),
-        }));
+        },
+      ]
+      : cosList.map((cosData: any) => ({
+        id: cosData.id,
+        label: cosData.name,
+        customComponent: (
+          <SelectItem
+            style={{
+              display: 'block',
+              textAlign: 'left',
+              height: 'inherit',
+              padding: '3px',
+              width: 'inherit',
+            }}
+            onClick={(): void => {
+              selectedCos(cosData);
+            }}
+          >
+            {cosData?.name}
+          </SelectItem>
+        ),
+      }));
 
   useEffect(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
