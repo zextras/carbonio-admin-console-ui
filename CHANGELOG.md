@@ -1,3 +1,9 @@
+## [0.12.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.16...v0.12.0-devel.17) (2026-01-26)
+
+### Features
+
+* implement ESM build with import maps ([#1041](https://github.com/zextras/carbonio-admin-console-ui/issues/1041)) ([8334128](https://github.com/zextras/carbonio-admin-console-ui/commit/8334128c65f1379369e162276f0ce4e5ff7e8125))
+
 ## [0.12.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.15...v0.12.0-devel.16) (2026-01-22)
 
 ### Bug Fixes
