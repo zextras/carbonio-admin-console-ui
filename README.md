@@ -94,12 +94,12 @@ This script:
 
 ### Deployment
 
-#### `pnpm deploy <hostname>`
+#### `pnpm run deploy <hostname>`
 
 Deploys the unified package to a remote host.
 
 ```bash
-pnpm deploy kc-dev3-prymta1.demo.zextras.io
+pnpm run deploy <hostname>
 ```
 
 This script:
