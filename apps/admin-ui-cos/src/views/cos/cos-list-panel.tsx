@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
+import { useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
   DropDownInput,
@@ -22,10 +22,8 @@ import styled from 'styled-components';
 
 import {
   ADVANCED,
-  COS,
   COS_LIST,
   COS_ROUTE_ID,
-  CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
   IS_COS_DETAIL_LIST_EXPANDED,
@@ -110,11 +108,8 @@ export const CosListPanel: FC = () => {
   }, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
 
   useEffect(() => {
-    console.log('$$$$$$$pathname', pathname);
-
     if (
-      (pathname &&
-        pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
+      (pathname && pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
       pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
     ) {
       setCosList([]);
@@ -165,23 +160,6 @@ export const CosListPanel: FC = () => {
     },
     [setCos, setCosView],
   );
-
-  useEffect(() => {
-    if (cosView === COS_LIST || cosView === '') {
-      replaceHistory(`/${COS_LIST}`);
-      setCosView(COS_LIST);
-    } else if (cosView === CREATE_NEW_COS_ROUTE_ID) {
-      replaceHistory(`/${cosView}`);
-    } else if (isCosSelect && cos?.id) {
-      if (cosView === COS) {
-        replaceHistory(`/cos_list`);
-      } else if (cosView) {
-        replaceHistory(`/${cos?.id}/${cosView}`);
-      } else {
-        replaceHistory(`/${cos?.id}/${GENERAL_INFORMATION}`);
-      }
-    }
-  }, [isCosSelect, cos, cosView, globalCarbonioSendAnalytics, setCosView]);
 
   const detailOptions = useMemo<
     {
@@ -254,52 +232,52 @@ export const CosListPanel: FC = () => {
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-        {
-          customComponent: (
-            <>
-              <Row mainAlignment="flex-start">
-                <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline"></CustomIcon>
-                </Padding>
-              </Row>
-              <Row
-                mainAlignment="flex-start"
-                width="100%"
-                padding={{
-                  all: 'small',
-                }}
-              >
-                <Text overflow="break-word">
-                  {t(
-                    'many_cos_info_msg',
-                    'So many COSes! Which one would you like to see? Start typing to filter.',
-                  )}
-                </Text>
-              </Row>
-            </>
-          ),
-        },
-      ]
+          {
+            customComponent: (
+              <>
+                <Row mainAlignment="flex-start">
+                  <Padding horizontal="small">
+                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                  </Padding>
+                </Row>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  padding={{
+                    all: 'small',
+                  }}
+                >
+                  <Text overflow="break-word">
+                    {t(
+                      'many_cos_info_msg',
+                      'So many COSes! Which one would you like to see? Start typing to filter.',
+                    )}
+                  </Text>
+                </Row>
+              </>
+            ),
+          },
+        ]
       : cosList.map((cosData: any) => ({
-        id: cosData.id,
-        label: cosData.name,
-        customComponent: (
-          <SelectItem
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '3px',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              selectedCos(cosData);
-            }}
-          >
-            {cosData?.name}
-          </SelectItem>
-        ),
-      }));
+          id: cosData.id,
+          label: cosData.name,
+          customComponent: (
+            <SelectItem
+              style={{
+                display: 'block',
+                textAlign: 'left',
+                height: 'inherit',
+                padding: '3px',
+                width: 'inherit',
+              }}
+              onClick={(): void => {
+                selectedCos(cosData);
+              }}
+            >
+              {cosData?.name}
+            </SelectItem>
+          ),
+        }));
 
   useEffect(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);

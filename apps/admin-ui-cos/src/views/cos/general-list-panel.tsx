@@ -12,45 +12,45 @@ import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 
 const GeneralListPanel: FC<any> = ({ generalOptionItems }) => {
-	const [t] = useTranslation();
-	const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
-	const { cosView, setCosView } = useCosStore();
+  const [t] = useTranslation();
+  const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
+  const { cosView, setCosView } = useCosStore();
 
-	const toggleGeneralView = (): void => {
-		if (isGeneralListExpanded) {
-			setIsGeneralListExpanded(false);
-			localStorage.setItem(IS_GENERAL_LIST_EXPANDED, 'false');
-		} else {
-			setIsGeneralListExpanded(true);
-			localStorage.removeItem(IS_GENERAL_LIST_EXPANDED);
-		}
-	};
+  const toggleGeneralView = (): void => {
+    if (isGeneralListExpanded) {
+      setIsGeneralListExpanded(false);
+      localStorage.setItem(IS_GENERAL_LIST_EXPANDED, 'false');
+    } else {
+      setIsGeneralListExpanded(true);
+      localStorage.removeItem(IS_GENERAL_LIST_EXPANDED);
+    }
+  };
 
-	useEffect(() => {
-		const storedValue = localStorage.getItem(IS_GENERAL_LIST_EXPANDED);
-		if (storedValue === 'false') {
-			setIsGeneralListExpanded(false);
-		} else {
-			setIsGeneralListExpanded(true);
-		}
-	}, []);
+  useEffect(() => {
+    const storedValue = localStorage.getItem(IS_GENERAL_LIST_EXPANDED);
+    if (storedValue === 'false') {
+      setIsGeneralListExpanded(false);
+    } else {
+      setIsGeneralListExpanded(true);
+    }
+  }, []);
 
-	return (
-		<>
-			<ListPanelItem
-				title={t('label.general', 'General')}
-				isListExpanded={isGeneralListExpanded}
-				setToggleView={toggleGeneralView}
-			/>
-			{isGeneralListExpanded && (
-				<ListItems
-					items={generalOptionItems}
-					selectedOperationItem={cosView}
-					setSelectedOperationItem={setCosView}
-				/>
-			)}
-		</>
-	);
+  return (
+    <>
+      <ListPanelItem
+        title={t('label.general', 'General')}
+        isListExpanded={isGeneralListExpanded}
+        setToggleView={toggleGeneralView}
+      />
+      {isGeneralListExpanded && (
+        <ListItems
+          items={generalOptionItems}
+          selectedOperationItem={cosView}
+          setSelectedOperationItem={setCosView}
+        />
+      )}
+    </>
+  );
 };
 
 export default GeneralListPanel;
