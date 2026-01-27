@@ -44,8 +44,6 @@ async function buildUnified() {
   const apps = components.filter((comp) => comp.name !== 'admin-ui-bootstrap');
   await buildApps(apps, installDir, appsDir, commitHash);
 
-  await buildApps(components, installDir, appsDir, commitHash);
-
   process.chdir(rootDir);
   regenerateImportMap(commitHash, installDir);
 

@@ -1,12 +1,15 @@
-/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { execSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
+import path, { join } from 'node:path';
+
 import { spawn } from 'node:child_process';
-import { existsSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+
+import { colorLog, copyRecursive, findWorkspaceRoot } from './utils';
 
 type BuildOptions = {
   dev?: boolean;
@@ -25,6 +28,7 @@ const buildApp = async (options: BuildOptions): Promise<void> => {
   }
 
   const projectRoot = process.cwd();
+  const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
 
   const isDev = args.includes('--dev');
 
@@ -33,12 +37,13 @@ const buildApp = async (options: BuildOptions): Promise<void> => {
     NODE_ENV: isDev ? 'development' : 'production',
   };
 
-  console.log(`Building in ${isDev ? 'development' : 'production'} mode`);
+  colorLog(`Building in ${isDev ? 'development' : 'production'} mode`, 'blue');
+  colorLog(`Commit hash: ${commitHash}`, 'blue');
 
   // Clean the dist directory before building
-  const distPath = join(projectRoot, 'dist');
+  const distPath = path.join(projectRoot, 'dist');
   if (existsSync(distPath)) {
-    console.log('Cleaning dist directory...');
+    colorLog('🧹 Cleaning dist directory...', 'blue');
     rmSync(distPath, { recursive: true, force: true });
   }
 
@@ -51,10 +56,53 @@ const buildApp = async (options: BuildOptions): Promise<void> => {
 
   vite.on('close', (code) => {
     if (code !== 0) {
-      console.error(`Vite build failed with code ${code}`);
+      colorLog(`❌ Vite build failed with code ${code}`, 'red');
       process.exit(code || 1);
     }
-    console.log('\n✅ Build completed successfully!');
+    colorLog('\n✅ Build completed successfully!', 'green');
+
+    // Read carbonio.name from package.json
+    const packageJsonPath = path.join(projectRoot, 'package.json');
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+    const carbonioName = packageJson.carbonio?.name;
+
+    if (!carbonioName) {
+      colorLog('❌ Error: carbonio.name not found in package.json', 'red');
+      process.exit(1);
+    }
+
+    colorLog(`Carbonio module name: ${carbonioName}`, 'blue');
+
+    // Copy built files to package directory
+    colorLog('\n📦 Copying built files to package directory...', 'blue');
+    const rootDir = findWorkspaceRoot();
+    const packageDir = path.resolve(
+      rootDir,
+      'package',
+      'opt',
+      'zextras',
+      'admin',
+      'iris',
+      carbonioName,
+    );
+
+    // Clean package directory before writing
+    if (existsSync(packageDir)) {
+      rmSync(packageDir, { recursive: true, force: true });
+      colorLog(`Cleaned ${packageDir}`, 'blue');
+    }
+
+    // Ensure package directory exists
+    mkdirSync(packageDir, { recursive: true });
+
+    const distSourceDir = join(projectRoot, 'dist', 'source');
+    // Copy all files from dist to package directory
+    copyRecursive(distSourceDir, packageDir);
+    colorLog(`✅ Copied to ${packageDir}`, 'green');
+
+    colorLog(`\n🎉 Build and packaging completed successfully!`, 'green');
+    colorLog(`Output directory: ${distPath}`, 'gray');
+    colorLog(`Package directory: ${packageDir}`, 'gray');
   });
 };
 
