@@ -14,7 +14,6 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
-    "build:unified": "pnpm exec tsx scripts/build-unified/index.ts",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "deploy": "pnpm exec tsx scripts/deploy.ts",

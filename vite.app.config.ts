@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { findWorkspaceRoot, getCommitHash } from './scripts/utils';
+import { getWorkspaceRoot, getCommitHash } from './scripts/utils';
 import { defineConfig } from 'vite';
 
 import { createModuleRollupOptions } from './vite.rollup.config';
@@ -21,7 +21,7 @@ export interface AppViteConfigOptions {
 
 export function createAppViteConfig(): UserConfig {
   const commitHash = getCommitHash();
-  const rootDir = findWorkspaceRoot();
+  const rootDir = getWorkspaceRoot();
   const packageJson = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'));
   const packageName = packageJson.carbonio.name;
   const mode = process.env.NODE_ENV || 'production';

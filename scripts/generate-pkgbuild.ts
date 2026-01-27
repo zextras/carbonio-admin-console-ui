@@ -3,21 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { writeFileSync } from 'fs';
+import { readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { colorLog } from '../utils';
-import { Component } from './types';
+import { colorLog, getWorkspaceRoot, getCommitHash } from '../utils';
 
-export const genratePkgbuild = (
-  components: Array<Component>,
-  pkgVersion: string,
-  packageDir: string,
-  commitHash: string,
-): void => {
+export const genratePkgbuild = (pkgVersion: string): void => {
+  const rootDir = getWorkspaceRoot();
+  const commitHash = getCommitHash();
+  const packageDir = join(rootDir, 'package');
+  const appsDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
+  const componentList = readdirSync(appsDir);
+
   colorLog('Creating PKGBUILD...', 'blue');
-
-  const componentList = components.map((c) => c.target).join(' ');
 
   const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"

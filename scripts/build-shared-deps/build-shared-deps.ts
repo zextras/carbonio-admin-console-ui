@@ -10,12 +10,12 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild } from 'vite';
 
-import { colorLog, findWorkspaceRoot } from '../utils';
+import { colorLog, getWorkspaceRoot } from '../utils';
 import { REACT_DOM_EXPORTS, REACT_EXPORTS } from './constants';
 import { DepConfig, sharedDepsConfig } from './shared-deps-config';
 
 export async function buildSharedDeps(commitHash: string, isDev: boolean) {
-  const rootDir = findWorkspaceRoot();
+  const rootDir = getWorkspaceRoot();
   const nodeModulesDir = join(rootDir, 'node_modules');
   const sharedDepsParentDir = join(rootDir, 'package/opt/zextras/admin/iris/shared-dependencies');
   const outputDir = join(sharedDepsParentDir, commitHash);

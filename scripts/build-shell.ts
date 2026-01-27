@@ -13,7 +13,7 @@ import { build } from 'vite';
 
 import { buildSharedDeps } from './build-shared-deps/build-shared-deps';
 import { generateImportMap } from './generate-import-map';
-import { copyRecursive, findWorkspaceRoot } from './utils';
+import { copyRecursive, getWorkspaceRoot } from './utils';
 
 async function buildShell(): Promise<void> {
   const args = process.argv.slice(2);
@@ -93,7 +93,7 @@ async function buildShell(): Promise<void> {
 
   // Copy built files to package directory
   console.log('\nCopying built files to package directory...');
-  const rootDir = findWorkspaceRoot();
+  const rootDir = getWorkspaceRoot();
   const packageDir = path.resolve(
     rootDir,
     'package',

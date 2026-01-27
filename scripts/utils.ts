@@ -58,7 +58,7 @@ export function colorLog(message: string, color: ColorName = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-export function findWorkspaceRoot(dir: string = process.cwd()): string {
+export function getWorkspaceRoot(dir: string = process.cwd()): string {
   if (existsSync(join(dir, 'pnpm-workspace.yaml'))) {
     return dir;
   }
@@ -66,7 +66,7 @@ export function findWorkspaceRoot(dir: string = process.cwd()): string {
   if (parentDir === dir || dir === '/') {
     throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
   }
-  return findWorkspaceRoot(parentDir);
+  return getWorkspaceRoot(parentDir);
 }
 
 export function execCommand(command: string, options = {}) {
