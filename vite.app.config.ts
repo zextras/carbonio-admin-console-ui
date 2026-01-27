@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { findWorkspaceRoot, getCommitHash } from './scripts/utils';
 import { defineConfig } from 'vite';
 
 import { createModuleRollupOptions } from './vite.rollup.config';
@@ -18,8 +19,9 @@ export interface AppViteConfigOptions {
   additionalAliases?: Record<string, string>;
 }
 
-export function createAppViteConfig(options: AppViteConfigOptions = {}): UserConfig {
-  const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
+export function createAppViteConfig(): UserConfig {
+  const commitHash = getCommitHash();
+  const rootDir = findWorkspaceRoot();
   const packageJson = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'));
   const packageName = packageJson.carbonio.name;
   const mode = process.env.NODE_ENV || 'production';
@@ -30,14 +32,23 @@ export function createAppViteConfig(options: AppViteConfigOptions = {}): UserCon
     resolve: {
       alias: {
         'app-entrypoint': resolve(process.cwd(), 'src/app.tsx'),
-        ...options.additionalAliases,
       },
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
     },
     build: {
-      outDir: `dist/source/${commitHash}`,
+      outDir: resolve(
+        rootDir,
+        'package',
+        'opt',
+        'zextras',
+        'admin',
+        'iris',
+        packageName,
+        commitHash,
+      ),
+
       emptyOutDir: true,
       lib: {
         entry: 'src/app.tsx',
@@ -48,9 +59,6 @@ export function createAppViteConfig(options: AppViteConfigOptions = {}): UserCon
       sourcemap: true,
       minify: mode === 'development' ? false : 'esbuild',
       target: 'es2020',
-    },
-    esbuild: {
-      logOverride: { 'this-is-undefined-in-esm': 'silent' },
     },
   };
 }

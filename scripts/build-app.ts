@@ -62,47 +62,47 @@ const buildApp = async (options: BuildOptions): Promise<void> => {
     colorLog('\n✅ Build completed successfully!', 'green');
 
     // Read carbonio.name from package.json
-    const packageJsonPath = path.join(projectRoot, 'package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-    const carbonioName = packageJson.carbonio?.name;
-
-    if (!carbonioName) {
-      colorLog('❌ Error: carbonio.name not found in package.json', 'red');
-      process.exit(1);
-    }
-
-    colorLog(`Carbonio module name: ${carbonioName}`, 'blue');
-
-    // Copy built files to package directory
-    colorLog('\n📦 Copying built files to package directory...', 'blue');
-    const rootDir = findWorkspaceRoot();
-    const packageDir = path.resolve(
-      rootDir,
-      'package',
-      'opt',
-      'zextras',
-      'admin',
-      'iris',
-      carbonioName,
-    );
-
-    // Clean package directory before writing
-    if (existsSync(packageDir)) {
-      rmSync(packageDir, { recursive: true, force: true });
-      colorLog(`Cleaned ${packageDir}`, 'blue');
-    }
-
-    // Ensure package directory exists
-    mkdirSync(packageDir, { recursive: true });
-
-    const distSourceDir = join(projectRoot, 'dist', 'source');
-    // Copy all files from dist to package directory
-    copyRecursive(distSourceDir, packageDir);
-    colorLog(`✅ Copied to ${packageDir}`, 'green');
-
-    colorLog(`\n🎉 Build and packaging completed successfully!`, 'green');
-    colorLog(`Output directory: ${distPath}`, 'gray');
-    colorLog(`Package directory: ${packageDir}`, 'gray');
+    // const packageJsonPath = path.join(projectRoot, 'package.json');
+    // const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+    // const carbonioName = packageJson.carbonio?.name;
+    //
+    // if (!carbonioName) {
+    //   colorLog('❌ Error: carbonio.name not found in package.json', 'red');
+    //   process.exit(1);
+    // }
+    //
+    // colorLog(`Carbonio module name: ${carbonioName}`, 'blue');
+    //
+    // // Copy built files to package directory
+    // colorLog('\n📦 Copying built files to package directory...', 'blue');
+    // const rootDir = findWorkspaceRoot();
+    // const packageDir = path.resolve(
+    //   rootDir,
+    //   'package',
+    //   'opt',
+    //   'zextras',
+    //   'admin',
+    //   'iris',
+    //   carbonioName,
+    // );
+    //
+    // // Clean package directory before writing
+    // if (existsSync(packageDir)) {
+    //   rmSync(packageDir, { recursive: true, force: true });
+    //   colorLog(`Cleaned ${packageDir}`, 'blue');
+    // }
+    //
+    // // Ensure package directory exists
+    // mkdirSync(packageDir, { recursive: true });
+    //
+    // const distSourceDir = join(projectRoot, 'dist', 'source');
+    // // Copy all files from dist to package directory
+    // copyRecursive(distSourceDir, packageDir);
+    // colorLog(`✅ Copied to ${packageDir}`, 'green');
+    //
+    // colorLog(`\n🎉 Build and packaging completed successfully!`, 'green');
+    // colorLog(`Output directory: ${distPath}`, 'gray');
+    // colorLog(`Package directory: ${packageDir}`, 'gray');
   });
 };
 
