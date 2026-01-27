@@ -1,14 +1,14 @@
-/* eslint-disable no-console */
+ 
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { colorLog, getWorkspaceRoot, getSharedDependencyPaths } from './utils';
+import { colorLog, getSharedDependencyPaths,getWorkspaceRoot } from './utils';
 
 const cwd = process.cwd();
 const rootDir = getWorkspaceRoot(cwd);

@@ -5,7 +5,7 @@
   "description": "Admin module for Zextras Carbonio",
   "main": "src/app.tsx",
   "scripts": {
-    "build": "pnpm exec tsx ../../scripts/build-app.ts",
+    "build": "vite build",
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint --quiet",
