@@ -48,7 +48,7 @@ export function createModuleRollupOptions(options: ESMModuleRollupOptions): Roll
 
   const output: OutputOptions = {
     exports: 'default',
-    entryFileNames: '[name].[hash].mjs',
+    entryFileNames: 'index.mjs',
     chunkFileNames: '[name].[hash].chunk.mjs',
     inlineDynamicImports: false, // Enable code splitting
     assetFileNames: (assetInfo) => {
