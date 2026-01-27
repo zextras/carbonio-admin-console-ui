@@ -6,6 +6,7 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { getOptimizedDeps } from '../../vite-config/optimized-deps';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -92,6 +93,9 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       sourcemap: isDev,
       rollupOptions: createBootstrapRollupOptions(isDev),
+    },
+    optimizeDeps: {
+      include: getOptimizedDeps(),
     },
     base: isDev ? '/carbonioAdmin/' : basePath,
     publicDir: 'assets',

@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { getWorkspaceRoot, getCommitHash } from './scripts/utils';
-import { defineConfig } from 'vite';
+import { getOptimizedDeps } from './vite-config/optimized-deps';
 
 import { createModuleRollupOptions } from './vite.rollup.config';
 
@@ -59,6 +58,9 @@ export function createAppViteConfig(): UserConfig {
       sourcemap: true,
       minify: mode === 'development' ? false : 'esbuild',
       target: 'es2020',
+    },
+    optimizeDeps: {
+      include: getOptimizedDeps(),
     },
   };
 }
