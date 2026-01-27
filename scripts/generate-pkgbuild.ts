@@ -6,14 +6,23 @@
 import { readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { colorLog, getWorkspaceRoot, getCommitHash } from '../utils';
+import { colorLog, getWorkspaceRoot, getCommitHash } from './utils';
+import { execSync } from 'child_process';
 
-export const genratePkgbuild = (pkgVersion: string): void => {
+function getLastTag() {
+  return execSync('git describe --tags --abbrev=0', {
+    encoding: 'utf-8',
+    stdio: 'pipe',
+  }).trim();
+}
+
+const main = (): void => {
   const rootDir = getWorkspaceRoot();
   const commitHash = getCommitHash();
   const packageDir = join(rootDir, 'package');
+  const pkgVersion = getLastTag().replace(/^v/, '');
   const appsDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
-  const componentList = readdirSync(appsDir);
+  const componentList = readdirSync(appsDir).join(' ');
 
   colorLog('Creating PKGBUILD...', 'blue');
 
@@ -96,3 +105,5 @@ postinst() {
 
   colorLog('PKGBUILD created', 'green');
 };
+
+main();
