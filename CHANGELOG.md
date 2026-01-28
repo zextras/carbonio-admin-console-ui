@@ -1,3 +1,9 @@
+## [0.12.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.18...v0.12.0-devel.19) (2026-01-28)
+
+### Features
+
+* replace moment.js with date-fns for date formatting in EditMail… ([#1047](https://github.com/zextras/carbonio-admin-console-ui/issues/1047)) ([46e5433](https://github.com/zextras/carbonio-admin-console-ui/commit/46e543391c2b5b72704f450166718723c025cc95))
+
 ## [0.12.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.17...v0.12.0-devel.18) (2026-01-27)
 
 ### Features
