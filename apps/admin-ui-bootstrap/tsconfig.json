@@ -1,5 +1,5 @@
 {
 	"extends": "../../tsconfig.base.json",
-	"include": ["src/**/*", "**/types/**/*", "translations/**/*", "*.ts", "*.js", "*.d.ts"],
+	"include": ["src/**/*", "**/types/**/*", "translations/**/*", "*.ts", "*.js", "*.d.ts", "vite-config/shared-deps-config.ts", "vite-config/shared-deps-constants.ts", "vite-config/vite-plugin-app-registry.ts", "vite-config/vite-plugin-build-shared-deps.ts"],
 	"exclude": ["node_modules", "dist", "build"]
 }

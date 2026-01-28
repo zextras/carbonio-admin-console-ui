@@ -9,21 +9,19 @@ import { join } from 'node:path';
 
 import type { Plugin } from 'vite';
 
-import type { AppManifest } from './src/apps/types';
+import type { AppManifest } from '../src/apps/types';
 
 /**
  * Scan apps directory and build app manifests
- * @returns Array of AppManifest sorted by priority
  */
 function scanAppsDir(): Array<AppManifest> {
-  const appsDir = join(__dirname, '../../apps');
-  const adminUiDirs = readdirSync(appsDir).filter(
+  const adminUiDirs = readdirSync(__dirname).filter(
     (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
   );
 
   return adminUiDirs
     .map((dir): AppManifest | null => {
-      const packageJsonPath = join(appsDir, dir, 'package.json');
+      const packageJsonPath = join(__dirname, dir, 'package.json');
       try {
         const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
         const carbonio = packageJson.carbonio;
@@ -50,8 +48,6 @@ function scanAppsDir(): Array<AppManifest> {
 
 /**
  * Generate state objects for apps and appContexts
- * @param apps - Array of app manifests
- * @returns Object string representation for use in generated code
  */
 function buildStateObjects(apps: Array<AppManifest>): { apps: string; appContexts: string } {
   const appsObject = apps.reduce(
@@ -174,7 +170,6 @@ function generateLoadAllAppsCode(apps: Array<AppManifest>): string {
 
 /**
  * Vite plugin to generate app registry module
- * @returns Vite plugin
  */
 export function appRegistryPlugin(): Plugin {
   const virtualModuleId = 'virtual:app-registry';

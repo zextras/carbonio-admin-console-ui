@@ -5,15 +5,21 @@
  */
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getOptimizedDeps } from '../../vite-config/optimized-deps';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
-import { appRegistryPlugin } from './vite-plugin-app-registry';
+import { appRegistryPlugin } from './vite-config/vite-plugin-app-registry';
+import { postBuildPlugin } from '../../scripts/vite-plugin-post-build';
+import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 
 // IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
 const commitHash =
@@ -47,6 +53,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      buildSharedDepsPlugin({ isDev }),
+      postBuildPlugin(),
       appRegistryPlugin(),
       react({
         babel: {

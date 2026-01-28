@@ -15,10 +15,6 @@ export type DepConfig = {
   external?: string[];
 };
 
-/**
- * Build configuration for each shared dependency
- * We use Vite to bundle them into browser-compatible ESM
- */
 export function sharedDepsConfig(nodeModulesDir: string): DepConfig[] {
   return [
     {
