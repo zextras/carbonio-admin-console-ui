@@ -14,7 +14,6 @@ import { create } from 'zustand';
 
 import { CarbonioModule } from '../../../types/apps';
 import { SHELL_APP_ID } from '../../constants';
-import { queryClient } from '../../providers/react-query-provider';
 
 type I18nState = {
   instances: Record<string, i18n>;
@@ -40,20 +39,9 @@ const addShell = (apps: Array<CarbonioModule>): Array<CarbonioModule> => [
   },
 ];
 
-const getDefaultSettings = (): any => {
-  try {
-    return queryClient.getQueryData(['account', 'settings']);
-  } catch {
-    return null;
-  }
-};
-
-const settings = getDefaultSettings();
-
-const defaultLng =
-  (settings?.prefs?.zimbraPrefLocale as string) ??
-  (settings?.attrs?.zimbraLocale as string) ??
-  'en';
+// Default to 'en' at initialization. The actual locale will be set
+// after account settings are fetched via syncLocale in init.ts
+const defaultLng = 'en';
 
 const defaultI18n = i18next.createInstance({ lng: defaultLng });
 
