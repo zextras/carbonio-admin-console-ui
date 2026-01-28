@@ -32,10 +32,7 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
       const rootDir = getWorkspaceRoot();
       const commitHash = getCommitHash();
       const nodeModulesDir = join(rootDir, 'node_modules');
-      const sharedDepsParentDir = join(
-        rootDir,
-        'package/opt/zextras/admin/iris/shared-dependencies',
-      );
+      const sharedDepsParentDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
       const outputDir = join(sharedDepsParentDir, commitHash);
 
       if (existsSync(sharedDepsParentDir)) {

@@ -7,7 +7,7 @@ import { execSync } from 'child_process';
 import { readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { colorLog, getCommitHash,getWorkspaceRoot } from './utils';
+import { colorLog, getCommitHash, getWorkspaceRoot } from './utils';
 
 function getLastTag() {
   return execSync('git describe --tags --abbrev=0', {
@@ -19,7 +19,7 @@ function getLastTag() {
 const main = (): void => {
   const rootDir = getWorkspaceRoot();
   const commitHash = getCommitHash();
-  const packageDir = join(rootDir, 'package');
+  const packageDir = join(rootDir, 'dist');
   const pkgVersion = getLastTag().replace(/^v/, '');
   const appsDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
   const componentList = readdirSync(appsDir).join(' ');

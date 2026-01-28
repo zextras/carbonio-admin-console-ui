@@ -67,7 +67,7 @@ export function postBuildPlugin(): Plugin {
       config.logger.info('Copying built files to package directory...');
       const packageDir = resolve(
         rootDir,
-        'package',
+        'dist',
         'opt',
         'zextras',
         'admin',

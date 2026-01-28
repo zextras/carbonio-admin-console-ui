@@ -246,7 +246,7 @@ pipeline {
                     script {
                         sh 'pnpm build'
                     }
-                    stash includes: 'package/**,yap.json', name: 'staging'
+                    stash includes: 'dist/**,yap.json', name: 'staging'
                 }
             }
         }

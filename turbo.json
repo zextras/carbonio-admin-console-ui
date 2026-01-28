@@ -6,15 +6,8 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", "package/**"],
+      "outputs": ["dist/**"],
       "env": ["NODE_ENV"],
-      "cache": true,
-      "passThroughEnv": ["NODE_ENV"]
-    },
-    "build:unified": {
-      "dependsOn": [],
-      "inputs": ["apps/**", "scripts/**", "package.json"],
-      "outputs": ["package/**"],
       "cache": true,
       "passThroughEnv": ["NODE_ENV"]
     },

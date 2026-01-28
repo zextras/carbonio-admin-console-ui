@@ -37,16 +37,7 @@ export function createAppViteConfig(): UserConfig {
       'process.env.NODE_ENV': JSON.stringify(mode),
     },
     build: {
-      outDir: resolve(
-        rootDir,
-        'package',
-        'opt',
-        'zextras',
-        'admin',
-        'iris',
-        packageName,
-        commitHash,
-      ),
+      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName, commitHash),
 
       emptyOutDir: true,
       lib: {
