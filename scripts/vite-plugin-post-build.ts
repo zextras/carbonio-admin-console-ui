@@ -64,7 +64,7 @@ export function postBuildPlugin(): Plugin {
       writeFileSync(commitFilePath, commitHash);
       config.logger.info('Generated commit file');
 
-      config.logger.info('Copying built files to package directory...');
+      config.logger.info('Copying built files to dist directory...');
       const packageDir = resolve(
         rootDir,
         'dist',

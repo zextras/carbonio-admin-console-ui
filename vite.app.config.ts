@@ -18,23 +18,26 @@ export interface AppViteConfigOptions {
   additionalAliases?: Record<string, string>;
 }
 
-export function createAppViteConfig(): UserConfig {
+export const createAppViteConfig = (
+  options?: AppViteConfigOptions & { mode: string },
+): UserConfig => {
   const commitHash = getCommitHash();
   const rootDir = getWorkspaceRoot();
   const packageJson = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'));
   const packageName = packageJson.carbonio.name;
-  const mode = process.env.NODE_ENV || 'production';
+  const mode = options?.mode || 'production';
+  const isDev = mode === 'development';
 
   return {
-    mode,
     plugins: [react()],
     resolve: {
       alias: {
         'app-entrypoint': resolve(process.cwd(), 'src/app.tsx'),
+        ...(options?.additionalAliases || {}),
       },
     },
     define: {
-      'process.env.NODE_ENV': JSON.stringify(mode),
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
     },
     build: {
       outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName, commitHash),
@@ -47,11 +50,11 @@ export function createAppViteConfig(): UserConfig {
       rollupOptions: createModuleRollupOptions({ packageName }),
       cssCodeSplit: false,
       sourcemap: true,
-      minify: mode === 'development' ? false : 'esbuild',
+      minify: isDev ? false : 'esbuild',
       target: 'es2020',
     },
     optimizeDeps: {
       include: getOptimizedDeps(),
     },
   };
-}
+};

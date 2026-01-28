@@ -42,7 +42,7 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
 
       config.logger.info(`Building shared dependencies to: ${outputDir}`);
 
-      const depConfig = sharedDepsConfig(nodeModulesDir);
+      const depConfig = sharedDepsConfig(nodeModulesDir, isDev);
 
       const buildPromises = depConfig.map(async (dep) => {
         config.logger.info(`Building ${dep.name}...`);
@@ -89,6 +89,9 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean
     minify: !isDev,
     platform: 'browser',
     external: dep.external || [],
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+    },
   });
 }
 

@@ -12,13 +12,14 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "build:dev": "turbo run build:dev",
+    "build": "turbo run build --force",
+    "build:dev": "turbo run build:dev --force",
     "postbuild": "pnpm exec tsx scripts/generate-pkgbuild.ts",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "deploy": "pnpm exec tsx scripts/deploy.ts",
+    "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "type-check": "turbo run type-check",

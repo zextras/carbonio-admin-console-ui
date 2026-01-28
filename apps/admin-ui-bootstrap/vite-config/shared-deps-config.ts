@@ -15,17 +15,17 @@ export type DepConfig = {
   external?: string[];
 };
 
-export function sharedDepsConfig(nodeModulesDir: string): DepConfig[] {
+export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepConfig[] {
   return [
     {
       name: 'react',
-      entry: resolve(nodeModulesDir, 'react/cjs/react.production.js'),
+      entry: resolve(nodeModulesDir, isDev ? 'react/cjs/react.development.js' : 'react/cjs/react.production.js'),
       outputName: 'index.mjs',
       type: 'wrap-cjs',
     },
     {
       name: 'react-dom',
-      entry: resolve(nodeModulesDir, 'react-dom/cjs/react-dom.production.js'),
+      entry: resolve(nodeModulesDir, isDev ? 'react-dom/cjs/react-dom.development.js' : 'react-dom/cjs/react-dom.production.js'),
       outputName: 'client.mjs',
       type: 'wrap-cjs',
     },

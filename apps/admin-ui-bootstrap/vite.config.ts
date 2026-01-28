@@ -72,6 +72,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     define: {
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       COMMIT_ID: JSON.stringify(commitHash),
       BASE_PATH: JSON.stringify(isDev ? '/carbonioAdmin/' : basePath),
     },
