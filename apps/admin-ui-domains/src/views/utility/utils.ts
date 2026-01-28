@@ -1111,6 +1111,21 @@ export const getDateFromStr = (serverStr: string): any => {
   return d;
 };
 
+/**
+ * Parses Zimbra timestamp format (YYYYMMDDHHmmss.SSSZ) to Date object
+ * Example input: 20240628065319.511Z
+ */
+export const getDateTimeFromStr = (serverStr: string): Date | null => {
+  if (serverStr === null || serverStr === undefined) return null;
+  const yyyy = parseInt(serverStr.substring(0, 4), 10);
+  const MM = parseInt(serverStr.substring(4, 6), 10);
+  const dd = parseInt(serverStr.substring(6, 8), 10);
+  const hh = parseInt(serverStr.substring(8, 10), 10);
+  const mm = parseInt(serverStr.substring(10, 12), 10);
+  const ss = parseInt(serverStr.substring(12, 14), 10);
+  return new Date(yyyy, MM - 1, dd, hh, mm, ss);
+};
+
 export const getFormatedDate = (date: Date): any => {
   if (date === null || date === undefined) return null;
   const dd = date.getDate();
