@@ -5,7 +5,6 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
-import { colorLog } from './scripts/utils';
 
 /**
  * Shared external dependencies for ESM microfrontend modules.
