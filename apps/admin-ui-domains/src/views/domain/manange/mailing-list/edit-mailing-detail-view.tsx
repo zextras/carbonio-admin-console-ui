@@ -24,8 +24,8 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/ui-components';
+import { format, isValid } from 'date-fns';
 import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
-import moment from 'moment';
 import React, { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -175,7 +175,10 @@ const EditMailingListView: FC<any> = ({
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
-				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - HH:mm')
+							 ? (() => {
+									 const date = getDateFromStr(zimbraCreateTimestamp);
+									 return isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
+								 })()
 				: '',
 		[zimbraCreateTimestamp]
 	);
