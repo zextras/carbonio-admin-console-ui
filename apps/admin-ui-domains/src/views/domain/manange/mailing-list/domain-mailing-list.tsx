@@ -119,7 +119,7 @@ const DomainMailingList: FC = () => {
 					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
 					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
 				],
-				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				 
 				onChange: (e: any) => {
 					if (e?.length > 0) {
 						let statusQuery = '';
@@ -244,8 +244,8 @@ const DomainMailingList: FC = () => {
 								>
 									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-											? t('label.can_send_receiver', 'Can Receive')
-											: t('label.cant_send_receiver', "Can't Receive")}
+											? t('domain.mailingList.canReceive', 'Can Receive')
+											: t('domain.mailingList.cantReceive', "Can't Receive")}
 									</Text>
 								</Container>,
 								<Container
@@ -388,7 +388,7 @@ const DomainMailingList: FC = () => {
 				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
 				.then((data: any) => {
 					setIsUpdateRecord(true);
-					// eslint-disable-next-line no-shadow
+					 
 					let isError = false;
 					let errorMessage = '';
 					data.forEach((item: any) => {
