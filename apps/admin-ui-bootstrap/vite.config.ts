@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       COMMIT_ID: JSON.stringify(commitHash),
-      BASE_PATH: JSON.stringify(isDev ? '/carbonioAdmin/' : basePath),
+      BASE_PATH: JSON.stringify(basePath),
     },
     resolve: {
       alias: {
@@ -104,11 +104,12 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: getOptimizedDeps(),
     },
-    base: isDev ? '/carbonioAdmin/' : basePath,
+    base: basePath,
     publicDir: 'assets',
     server: {
       port: 3000,
       strictPort: false,
+      base: '/carbonioAdmin/',
       proxy: {
         '/carbonioAdmin/static': {
           target: proxyTarget,
