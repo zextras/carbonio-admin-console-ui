@@ -1,4 +1,3 @@
- 
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -8,7 +7,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { colorLog, getSharedDependencyPaths,getWorkspaceRoot } from './utils';
+import { colorLog, getSharedDependencyPaths, getWorkspaceRoot } from '../../../scripts/utils';
 
 const cwd = process.cwd();
 const rootDir = getWorkspaceRoot(cwd);

@@ -5,12 +5,8 @@
  */
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import { getOptimizedDeps } from '../../vite-config/optimized-deps';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -18,28 +14,19 @@ import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
 import { appRegistryPlugin } from './vite-config/vite-plugin-app-registry';
-import { postBuildPlugin } from '../../scripts/vite-plugin-post-build';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
+import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
+import { getCommitHash, getWorkspaceRoot } from '../../scripts/utils';
 
-// IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
-const commitHash =
-  process.env.COMMIT_HASH ||
-  /* @__PURE__ */ (() => {
-    try {
-      return /* @__PURE__ */ require('child_process')
-        .execSync('git rev-parse HEAD')
-        .toString()
-        .trim();
-    } catch {
-      return 'unknown';
-    }
-  })();
+const rootDir = getWorkspaceRoot();
+const commitHash = getCommitHash();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/${commitHash}/`;
-const appsDir = join(__dirname, '../../apps');
+const appsDir = resolve(rootDir, 'apps');
 const apps = readdirSync(appsDir).filter(
   (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
 );
+const outDir = resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName, commitHash);
 
 function getProxyTarget(): string {
   const target = process.env.VITE_TARGET || 'localhost';
@@ -95,14 +82,25 @@ export default defineConfig(({ mode }) => {
         }, {}),
       },
       extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
-      dedupe: ['react', 'react-dom', 'styled-components'],
+      dedupe: [
+        'react',
+        'react-dom',
+        'lodash-es',
+        'styled-components',
+        'i18next',
+        'react-i18next',
+        '@tanstack/react-query',
+        'react-router-dom',
+        'zustand',
+      ],
     },
     build: {
-      outDir: `dist/source/${commitHash}`,
+      outDir,
       emptyOutDir: true,
       sourcemap: isDev,
-      rollupOptions: createBootstrapRollupOptions(isDev),
+      rollupOptions: createBootstrapRollupOptions(),
     },
+    logLevel: 'warn',
     optimizeDeps: {
       include: getOptimizedDeps(),
     },

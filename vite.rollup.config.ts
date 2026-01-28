@@ -5,6 +5,7 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
+import { colorLog } from './scripts/utils';
 
 /**
  * Shared external dependencies for ESM microfrontend modules.
@@ -73,13 +74,10 @@ export function createModuleRollupOptions(options: ESMModuleRollupOptions): Roll
  * The shell externalizes shared dependencies - they are loaded via import maps
  * which point to separately built shared-deps bundles.
  * This ensures a single instance of React/styled-components/etc across shell and sub-apps.
- *
- * @param isDev - Whether this is a development build
- * @returns RollupOptions configured for the ESM shell
  */
-export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
+export function createBootstrapRollupOptions(): RollupOptions {
   const output: OutputOptions = {
-    entryFileNames: isDev ? 'shell.mjs' : 'shell.[hash].mjs',
+    entryFileNames: 'shell.mjs',
     chunkFileNames: '[name].[hash].chunk.mjs',
     assetFileNames: (assetInfo) => {
       const fileName = assetInfo.names?.[0] || assetInfo.name || '';
@@ -111,7 +109,3 @@ export function createBootstrapRollupOptions(isDev: boolean): RollupOptions {
     output,
   };
 }
-
-// Re-export for backwards compatibility during migration
-export { createModuleRollupOptions as createESMModuleRollupOptions };
-export { createBootstrapRollupOptions as createESMBootstrapRollupOptions };

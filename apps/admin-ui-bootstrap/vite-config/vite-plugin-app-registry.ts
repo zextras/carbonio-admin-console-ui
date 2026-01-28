@@ -9,19 +9,23 @@ import { join } from 'node:path';
 
 import type { Plugin } from 'vite';
 
+import { getWorkspaceRoot } from '../../../scripts/utils';
 import type { AppManifest } from '../src/apps/types';
 
 /**
  * Scan apps directory and build app manifests
  */
 function scanAppsDir(): Array<AppManifest> {
-  const adminUiDirs = readdirSync(__dirname).filter(
+  const rootDir = getWorkspaceRoot();
+  const appsDir = join(rootDir, 'apps');
+
+  const adminUiDirs = readdirSync(appsDir).filter(
     (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
   );
 
   return adminUiDirs
     .map((dir): AppManifest | null => {
-      const packageJsonPath = join(__dirname, dir, 'package.json');
+      const packageJsonPath = join(appsDir, dir, 'package.json');
       try {
         const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
         const carbonio = packageJson.carbonio;

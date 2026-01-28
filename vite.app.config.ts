@@ -53,6 +53,7 @@ export const createAppViteConfig = (
       minify: isDev ? false : 'esbuild',
       target: 'es2020',
     },
+    logLevel: 'warn',
     optimizeDeps: {
       include: getOptimizedDeps(),
     },
