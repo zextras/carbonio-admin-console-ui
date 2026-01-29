@@ -27,3 +27,9 @@
 .tableRow.clickable {
 	cursor: pointer;
 }
+
+.tableRowCell {
+	height: 2.5rem;
+	cursor: pointer;
+	color: #414141;
+}

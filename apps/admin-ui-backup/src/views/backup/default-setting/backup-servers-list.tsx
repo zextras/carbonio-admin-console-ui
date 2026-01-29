@@ -5,13 +5,20 @@
  */
 
 import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Row, Table, Text, Tooltip } from '@zextras/ui-components';
+import {
+  Container,
+  HoverableRowFactory,
+  Icon,
+  Row,
+  Table,
+  Text,
+  Tooltip,
+} from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -203,7 +210,7 @@ const BackupServersListTable: FC<{
       multiSelect={false}
       selectedRows={selectedRows}
       onSelectionChange={onSelectionChange}
-      RowFactory={CustomRowFactory}
+      RowFactory={HoverableRowFactory}
       HeaderFactory={CustomHeaderFactory}
     />
   );

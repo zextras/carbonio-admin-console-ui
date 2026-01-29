@@ -5,6 +5,7 @@
  */
 // import module augmentations to make ts use them while generating types definitions
 import './styled-components';
+import './css-modules';
 
 // global definitions
 export * from './global';
@@ -55,6 +56,7 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
+export { type TRow as HoverableRow, default as HoverableRowFactory, type HoverableRowProps } from './components/custom/hoverable-row-factory';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/overlay-division';
 
