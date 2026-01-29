@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from "@zextras/ui-components";
-import { find, map } from "lodash-es";
-import { useMemo } from "react";
-import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { Container } from '@zextras/ui-components';
+import { find, map } from 'lodash-es';
+import { useMemo } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-import AppContextProvider from "../boot/app/app-context-provider";
-import { useAppList, useAppStore, useRoutes } from "../store/app";
-import styles from "./app-view-container.module.css";
+import AppContextProvider from '../boot/app/app-context-provider';
+import { useAppList, useAppStore, useRoutes } from '../store/app';
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
@@ -21,7 +20,7 @@ const FirstAppRedirect = () => {
     () => find(routes, (r) => apps[0]?.name === r.app)?.route,
     [apps, routes],
   );
-  return mainRoute && location?.pathname === "/" ? (
+  return mainRoute && location?.pathname === '/' ? (
     <Redirect exact strict from="/" to={`/${mainRoute}`} />
   ) : null;
 };
@@ -42,7 +41,15 @@ export default function AppViewContainer() {
   );
 
   return (
-    <Container className={styles.boardsRouterContainer}>
+    <Container
+      style={{
+        flexGrow: 1,
+        flexBasis: 0,
+        minWidth: '1px',
+        maxHeight: 'calc(100vh - 60px)',
+        overflowY: 'auto',
+      }}
+    >
       <Container mainAlignment="flex-start">
         <Switch>{routes}</Switch>
         <FirstAppRedirect />

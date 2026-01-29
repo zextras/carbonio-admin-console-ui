@@ -12,12 +12,25 @@ import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
-import styles from './shell-view.module.css';
+
+function getDivStyle() {
+  return {
+    background: 'var(--color-gray6-regular)',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    minHeight: '100%',
+    maxHeight: '100%',
+    width: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+  } as const;
+}
 
 function Shell() {
   const activeRoute = useCurrentRoute();
   return (
-    <div className={styles.background}>
+    <div style={getDivStyle()}>
       <ShellHeader
         // @ts-expect-error - needs a fix
         activeRoute={activeRoute}

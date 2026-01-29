@@ -12,7 +12,6 @@ import { CARBONIO_LOGO_URL } from '../constants';
 import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
-import styles from './shell-header.module.css';
 
 const ShellHeader: FC<{
   activeRoute: AppRoute;
@@ -57,7 +56,11 @@ const ShellHeader: FC<{
         >
           <Container width="auto" height={32} crossAlignment="flex-start">
             <a target="_blank" href={logoUrl} rel="noreferrer">
-              {logoSrc ? <img src={logoSrc} alt="logo" className={styles.customImg} /> : <Logo height="2rem" />}
+              {logoSrc ? (
+                <img src={logoSrc} alt="logo" style={{ height: '2rem' }} />
+              ) : (
+                <Logo height="2rem" />
+              )}
             </a>
           </Container>
 

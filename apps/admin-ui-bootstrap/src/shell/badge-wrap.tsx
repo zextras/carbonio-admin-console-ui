@@ -7,7 +7,6 @@ import { Container, Text } from '@zextras/ui-components';
 import React from 'react';
 
 import { BadgeInfo } from '../../types';
-import styles from './badge-wrap.module.css';
 
 type BadgeWrapProps = {
   badge: BadgeInfo;
@@ -15,6 +14,23 @@ type BadgeWrapProps = {
   children?: React.ReactNode;
   ref?: React.Ref<Element>;
 };
+
+function getBadgeStyle(badgeColor: string | undefined) {
+  return {
+    position: 'absolute',
+    bottom: '25%',
+    right: '25%',
+    transform: 'translate(30%, 30%)',
+    background: `var(--color-${badgeColor ?? 'primary'}-regular)`,
+    minWidth: '12px',
+    minHeight: '12px',
+    lineHeight: '12px',
+    borderRadius: '8px',
+    userSelect: 'none',
+    cursor: 'pointer',
+    pointerEvents: 'none',
+  };
+}
 
 const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
   <Container
@@ -24,14 +40,7 @@ const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
     ref={ref}
   >
     {badge.show && (
-      <Container
-        className={styles.miniBadge}
-        height="fit"
-        width="fit"
-        style={{
-          background: `var(--color-${badge?.color ?? 'primary'}-regular)`,
-        }}
-      >
+      <Container height="fit" width="fit" style={getBadgeStyle(badge.color)}>
         {badge.showCount ? (
           <Text size="extrasmall" style={{ padding: '2px 4px', fontSize: '10px' }} color="gray6">
             {badge.count ?? 0}
