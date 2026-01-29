@@ -3,8 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-// import module augmentations to make ts use them while generating types definitions
-import './styled-components';
+/* eslint-disable-next-line @typescript-eslint/triple-slash-reference */
+/// <reference path="./styled-components.ts" />
+/* eslint-disable-next-line @typescript-eslint/triple-slash-reference */
+/// <reference path="./css-modules.d.ts" />
 
 // global definitions
 export * from './global';
