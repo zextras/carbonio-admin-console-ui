@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   CustomTextArea,
+  HoverableRowFactory,
   Icon,
   Input,
   Modal,
@@ -32,7 +33,6 @@ import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -731,7 +731,7 @@ const CosGeneralInformation: FC = () => {
                 overflow: 'auto',
                 height: '100%',
               }}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
             {isDomainRequestInProgress && (
@@ -842,7 +842,7 @@ const CosGeneralInformation: FC = () => {
                 overflow: 'auto',
                 height: '100%',
               }}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
             {isAccountRequestInProgress && (
