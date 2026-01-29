@@ -1,3 +1,9 @@
+## [0.12.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.19...v0.12.0-devel.20) (2026-01-29)
+
+### Bug Fixes
+
+* tooltip fix ([#1050](https://github.com/zextras/carbonio-admin-console-ui/issues/1050)) ([161e76b](https://github.com/zextras/carbonio-admin-console-ui/commit/161e76b1ffec3e85d8d16ccfd2d187f5919d43f1))
+
 ## [0.12.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.18...v0.12.0-devel.19) (2026-01-28)
 
 ### Features
