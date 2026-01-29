@@ -5,7 +5,6 @@
  */
 // import module augmentations to make ts use them while generating types definitions
 import './styled-components';
-import './css-modules';
 
 // global definitions
 export * from './global';
