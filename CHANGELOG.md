@@ -1,3 +1,33 @@
+## [0.12.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.19...v0.12.0-devel.20) (2026-01-29)
+
+### Bug Fixes
+
+* tooltip fix ([#1050](https://github.com/zextras/carbonio-admin-console-ui/issues/1050)) ([161e76b](https://github.com/zextras/carbonio-admin-console-ui/commit/161e76b1ffec3e85d8d16ccfd2d187f5919d43f1))
+
+## [0.12.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.18...v0.12.0-devel.19) (2026-01-28)
+
+### Features
+
+* replace moment.js with date-fns for date formatting in EditMail… ([#1047](https://github.com/zextras/carbonio-admin-console-ui/issues/1047)) ([46e5433](https://github.com/zextras/carbonio-admin-console-ui/commit/46e543391c2b5b72704f450166718723c025cc95))
+
+## [0.12.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.17...v0.12.0-devel.18) (2026-01-27)
+
+### Features
+
+* added create account browser test ([fcefa3b](https://github.com/zextras/carbonio-admin-console-ui/commit/fcefa3b5444e475eb48bcc8055de8154446530cf))
+* added create account browser test ([f6417ec](https://github.com/zextras/carbonio-admin-console-ui/commit/f6417ec02257d12cb07af7400ef9c7654f2e69e3))
+* added create account browser test ([cd216b8](https://github.com/zextras/carbonio-admin-console-ui/commit/cd216b8e18b949a280269c330b1c8075aa3414bd))
+* fix test ([b9ceb72](https://github.com/zextras/carbonio-admin-console-ui/commit/b9ceb725d6bd038db42c80d943aa3352874a35e5))
+* tests ([243f19a](https://github.com/zextras/carbonio-admin-console-ui/commit/243f19a14923e9dee276900655f7e38e2f3ea643))
+* tests on services ([b46a4e0](https://github.com/zextras/carbonio-admin-console-ui/commit/b46a4e02ad5c0c74f31e5cf8deee4a396559f25f))
+* tests on services refs: CO-3021 ([a005e62](https://github.com/zextras/carbonio-admin-console-ui/commit/a005e6234632b23a3f542a534b1ad6b640c31e34))
+
+### Bug Fixes
+
+* deleted unit tests and created browser tests ([46a7988](https://github.com/zextras/carbonio-admin-console-ui/commit/46a798867fa7d20437568b9dad16e837f8ea8378))
+* fix tests ([55271a1](https://github.com/zextras/carbonio-admin-console-ui/commit/55271a15b05c1f67bcbf3fe5ac3dfe1b45056762))
+* fix type ([fc10fdd](https://github.com/zextras/carbonio-admin-console-ui/commit/fc10fdd2fafac56bad8a20855374ba6934ad6085))
+
 ## [0.12.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.16...v0.12.0-devel.17) (2026-01-26)
 
 ### Features

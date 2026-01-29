@@ -24,8 +24,8 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/ui-components';
+import { format, isValid } from 'date-fns';
 import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
-import moment from 'moment';
 import React, { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -53,7 +53,7 @@ import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
+import { getAllEmailFromString, getDateTimeFromStr, isValidEmail } from '../../../utility/utils';
 
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
@@ -172,13 +172,13 @@ const EditMailingListView: FC<any> = ({
 	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
 	const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
-	const dlCreateDate = useMemo(
-		() =>
-			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
-				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - HH:mm')
-				: '',
-		[zimbraCreateTimestamp]
-	);
+	const dlCreateDate = useMemo(() => {
+		if (!zimbraCreateTimestamp || zimbraCreateTimestamp === '') {
+			return '';
+		}
+		const date = getDateTimeFromStr(zimbraCreateTimestamp);
+		return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
+	}, [zimbraCreateTimestamp]);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
