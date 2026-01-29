@@ -7,6 +7,7 @@ import {
   Button,
   Container,
   DropDownInput,
+  HoverableRowFactory,
   Icon,
   Input,
   Padding,
@@ -23,7 +24,6 @@ import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { isValidEmail } from '../../../utility/utils';
@@ -304,7 +304,7 @@ export const SendInviteAccounts: FC<any> = ({
                 setSendInviteDeleteBtnDisabled(true);
               }
             }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>

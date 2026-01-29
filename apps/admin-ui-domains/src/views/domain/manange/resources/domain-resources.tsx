@@ -4,27 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore  } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Icon,  Input,  Padding,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
-import {  format, parse  } from "date-fns";
-import {  debounce  } from "lodash-es";
-import {  FC, useCallback, useEffect, useMemo, useRef, useState  } from "react";
-import {  Trans, useTranslation  } from "react-i18next";
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  HoverableRowFactory,
+  Icon,
+  Input,
+  Padding,
+  Row,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format, parse } from 'date-fns';
+import { debounce } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import logo from "../../../../assets/gardian.svg";
-import {  ASC, DESC, RECORD_DISPLAY_LIMIT  } from "../../../../constants";
-import {  createResource  } from "../../../../services/create-cal-resource-service";
-import {  createSignature  } from "../../../../services/create-signature-service";
-import {  modifyCalendarResource  } from "../../../../services/modify-cal-resource-service";
-import {  searchDirectory  } from "../../../../services/search-directory-service";
-import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
-import CustomRowFactory from "../../../app/shared/customTableRowFactory";
-import TrackNumberPerPage from "../../../app/shared/track-number-per-page";
-import Paging from "../../../components/paging";
-import ScrollContainer from "../../../components/scrollComponent";
-import {  generateSnackbarFromError  } from "../../../error/generate-snackbar-error";
-import CreateResource from "./create-resource";
-import ResourceEditDetailView from "./resource-edit-detail-view";
+import logo from '../../../../assets/gardian.svg';
+import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { createResource } from '../../../../services/create-cal-resource-service';
+import { createSignature } from '../../../../services/create-signature-service';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
+import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import CreateResource from './create-resource';
+import ResourceEditDetailView from './resource-edit-detail-view';
 
 const DomainResources: FC = () => {
   const [t] = useTranslation();
@@ -34,20 +44,17 @@ const DomainResources: FC = () => {
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [totalAccount, setTotalAccount] = useState<number>(0);
   const domainName = useDomainStore((state) => state.domain?.name);
-  const [searchString, setSearchString] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchString, setSearchString] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedResourceList, setSelectedResourceList] = useState<any>({});
-  const [showResourceEditDetailView, setShowResourceEditDetailView] =
-    useState<boolean>(false);
+  const [showResourceEditDetailView, setShowResourceEditDetailView] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
-  const [showCreateResourceView, setShowCreateResourceView] =
-    useState<boolean>(false);
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const [isRequestInProgress, setIsRequestInProgress] =
-    useState<boolean>(false);
+  const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
+  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const timer = useRef<number>(0);
-  const [sortedColumn, setSortedColumn] = useState<string>("displayName");
+  const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const tableRef = useRef<HTMLTableElement>(null);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -56,12 +63,12 @@ const DomainResources: FC = () => {
   const resourceStatusFilter: any[] = useMemo(
     () => [
       {
-        label: t("label.active", "Active"),
-        value: "(&(zimbraAccountStatus=active))",
+        label: t('label.active', 'Active'),
+        value: '(&(zimbraAccountStatus=active))',
       },
       {
-        label: t("label.closed", "Closed"),
-        value: "(&(zimbraAccountStatus=closed))",
+        label: t('label.closed', 'Closed'),
+        value: '(&(zimbraAccountStatus=closed))',
       },
     ],
     [t],
@@ -70,9 +77,9 @@ const DomainResources: FC = () => {
   const headers: any[] = useMemo(
     () => [
       {
-        id: "displayName",
-        label: t("label.resource", "Resource"),
-        width: "15%",
+        id: 'displayName',
+        label: t('label.resource', 'Resource'),
+        width: '15%',
         bold: true,
         sortable: true,
         onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
@@ -81,9 +88,9 @@ const DomainResources: FC = () => {
         },
       },
       {
-        id: "name",
-        label: t("label.email", "Email"),
-        width: "25%",
+        id: 'name',
+        label: t('label.email', 'Email'),
+        width: '25%',
         bold: true,
         sortable: true,
         onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
@@ -92,10 +99,10 @@ const DomainResources: FC = () => {
         },
       },
       {
-        id: "status",
-        label: t("label.status", "Status"),
-        width: "10%",
-        i18nAllLabel: t("label.all", "All"),
+        id: 'status',
+        label: t('label.status', 'Status'),
+        width: '10%',
+        i18nAllLabel: t('label.all', 'All'),
         bold: true,
         items: [
           {
@@ -110,7 +117,7 @@ const DomainResources: FC = () => {
 
         onChange: (e: any) => {
           if (e?.length > 0) {
-            let statusQuery = "";
+            let statusQuery = '';
             e.forEach((item: { value: string }) => {
               statusQuery += item.value;
             });
@@ -119,20 +126,20 @@ const DomainResources: FC = () => {
             }
             setStatusFilter(statusQuery);
           } else {
-            setStatusFilter("");
+            setStatusFilter('');
           }
         },
       },
       {
-        id: "last_access",
-        label: t("label.last_access", "Last Access"),
-        width: "15%",
+        id: 'last_access',
+        label: t('label.last_access', 'Last Access'),
+        width: '15%',
         bold: true,
       },
       {
-        id: "description",
-        label: t("label.description", "Description"),
-        width: "35%",
+        id: 'description',
+        label: t('label.description', 'Description'),
+        width: '35%',
         bold: true,
       },
     ],
@@ -170,20 +177,11 @@ const DomainResources: FC = () => {
       sortAsceding: typeof ASC | typeof DESC,
     ): void => {
       const attrs =
-        "displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus";
-      const types = "resources";
+        'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
+      const types = 'resources';
       const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
       setIsRequestInProgress(true);
-      searchDirectory(
-        attrs,
-        types,
-        zimbraDomainName,
-        query,
-        offset,
-        limit,
-        sortBy,
-        sortAsceding,
-      )
+      searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, sortBy, sortAsceding)
         .then((data) => {
           const resourceListResponse = data?.calresource || [];
           if (resourceListResponse && Array.isArray(resourceListResponse)) {
@@ -202,16 +200,8 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text
-                      size="small"
-                      weight="light"
-                      key={item?.id}
-                      color="gray0"
-                    >
-                      {
-                        item?.a?.find((a: any) => a?.n === "displayName")
-                          ?._content
-                      }
+                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                      {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
                     </Text>
                   </Container>,
                   <Container
@@ -223,12 +213,7 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text
-                      size="small"
-                      weight="light"
-                      key={item?.id}
-                      color="gray0"
-                    >
+                    <Text size="small" weight="light" key={item?.id} color="gray0">
                       {item?.name}
                     </Text>
                   </Container>,
@@ -241,17 +226,8 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text
-                      size="small"
-                      weight="light"
-                      key={item?.id}
-                      color="gray0"
-                    >
-                      {
-                        item?.a?.find(
-                          (a: any) => a?.n === "zimbraAccountStatus",
-                        )?._content
-                      }
+                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                      {item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
                     </Text>
                   </Container>,
                   <Container
@@ -263,26 +239,18 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text
-                      size="small"
-                      weight="light"
-                      key={item?.id}
-                      color="gray0"
-                    >
-                      {item?.a?.find(
-                        (a: any) => a?.n === "zimbraLastLogonTimestamp",
-                      )?._content
+                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                      {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
-                              item?.a?.find(
-                                (a: any) => a?.n === "zimbraLastLogonTimestamp",
-                              )?._content,
-                              "yyyyMMddHHmmss.X",
+                              item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
+                                ?._content,
+                              'yyyyMMddHHmmss.X',
                               new Date(),
                             ),
-                            "yy/MM/dd | hh:mm",
+                            'yy/MM/dd | hh:mm',
                           )
-                        : t("label.never_logged_in", "Never logged In")}
+                        : t('label.never_logged_in', 'Never logged In')}
                     </Text>
                   </Container>,
                   <Container
@@ -294,16 +262,8 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text
-                      size="small"
-                      weight="light"
-                      key={item?.id}
-                      color="gray0"
-                    >
-                      {
-                        item?.a?.find((a: any) => a?.n === "description")
-                          ?._content
-                      }
+                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                      {item?.a?.find((a: any) => a?.n === 'description')?._content}
                     </Text>
                   </Container>,
                 ],
@@ -333,31 +293,21 @@ const DomainResources: FC = () => {
     if (isUpdateRecord) {
       getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
     }
-  }, [
-    isUpdateRecord,
-    getResourceList,
-    domainName,
-    searchQuery,
-    sortedColumn,
-    sortOrder,
-  ]);
+  }, [isUpdateRecord, getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
 
-  const generateSearchFilterQuery = useCallback(
-    (searchStr: string, sfilter: string): string => {
-      let filterQuery = "";
-      if (sfilter) {
-        filterQuery += sfilter;
-      }
-      if (searchStr) {
-        filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-      }
-      if (sfilter && searchStr) {
-        return `(&${filterQuery})`;
-      }
-      return filterQuery;
-    },
-    [],
-  );
+  const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
+    let filterQuery = '';
+    if (sfilter) {
+      filterQuery += sfilter;
+    }
+    if (searchStr) {
+      filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+    }
+    if (sfilter && searchStr) {
+      return `(&${filterQuery})`;
+    }
+    return filterQuery;
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchResourceQuery = useCallback(
@@ -374,11 +324,11 @@ const DomainResources: FC = () => {
   const successSnackBar = useCallback(
     (resourceName: any): void => {
       createSnackbar({
-        key: "success",
-        severity: "success",
-        label: t("label.create_resource_success_msg", {
+        key: 'success',
+        severity: 'success',
+        label: t('label.create_resource_success_msg', {
           resourceName,
-          defaultValue: "{{resourceName}} has been created successfully",
+          defaultValue: '{{resourceName}} has been created successfully',
         }),
         autoHideTimeout: 3000,
         hideButton: true,
@@ -391,14 +341,10 @@ const DomainResources: FC = () => {
   const errorSnackBar = useCallback(
     (text?: any): void => {
       createSnackbar({
-        key: "error",
-        severity: "error",
+        key: 'error',
+        severity: 'error',
         label:
-          text ||
-          t(
-            "label.something_wrong_error_msg",
-            "Something went wrong. Please try again.",
-          ),
+          text || t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -425,21 +371,15 @@ const DomainResources: FC = () => {
             if (signatureList && signatureList.length > 0) {
               const requests: any[] = [];
               signatureList.forEach((item: any) => {
-                requests.push(
-                  createSignature(
-                    resourceId,
-                    item?.name,
-                    item?.content[0]?._content,
-                  ),
-                );
+                requests.push(createSignature(resourceId, item?.name, item?.content[0]?._content));
               });
               Promise.all(requests)
                 .then((responses) => Promise.all(responses))
                 .then((resData) => {
                   if (
-                    zimbraPrefCalendarAutoAcceptSignatureId?.value === "" &&
-                    zimbraPrefCalendarAutoDeclineSignatureId?.value === "" &&
-                    zimbraPrefCalendarAutoDenySignatureId?.value === ""
+                    zimbraPrefCalendarAutoAcceptSignatureId?.value === '' &&
+                    zimbraPrefCalendarAutoDeclineSignatureId?.value === '' &&
+                    zimbraPrefCalendarAutoDenySignatureId?.value === ''
                   ) {
                     setShowCreateResourceView(false);
                     successSnackBar(resourceName);
@@ -447,35 +387,30 @@ const DomainResources: FC = () => {
                   } else {
                     const signatureRes: any[] = [];
                     resData.forEach((res: any) => {
-                      signatureRes.push(
-                        res?.Body?.CreateSignatureResponse?.signature[0],
-                      );
+                      signatureRes.push(res?.Body?.CreateSignatureResponse?.signature[0]);
                     });
                     const signtureAttr: any = {
                       zimbraPrefCalendarAutoAcceptSignatureId:
                         zimbraPrefCalendarAutoAcceptSignatureId?.value
                           ? signatureRes.filter(
                               (item: any) =>
-                                item.name ===
-                                zimbraPrefCalendarAutoAcceptSignatureId?.label,
+                                item.name === zimbraPrefCalendarAutoAcceptSignatureId?.label,
                             )[0]?.id
-                          : "",
+                          : '',
                       zimbraPrefCalendarAutoDeclineSignatureId:
                         zimbraPrefCalendarAutoDeclineSignatureId?.value
                           ? signatureRes.filter(
                               (item: any) =>
-                                item.name ===
-                                zimbraPrefCalendarAutoDeclineSignatureId?.label,
+                                item.name === zimbraPrefCalendarAutoDeclineSignatureId?.label,
                             )[0]?.id
-                          : "",
+                          : '',
                       zimbraPrefCalendarAutoDenySignatureId:
                         zimbraPrefCalendarAutoDenySignatureId?.value
                           ? signatureRes.filter(
                               (item: any) =>
-                                item.name ===
-                                zimbraPrefCalendarAutoDenySignatureId?.label,
+                                item.name === zimbraPrefCalendarAutoDenySignatureId?.label,
                             )[0]?.id
-                          : "",
+                          : '',
                     };
                     const attrList: { n: string; _content: string }[] = [];
                     Object.keys(signtureAttr).forEach((ele: any) =>
@@ -536,7 +471,7 @@ const DomainResources: FC = () => {
 
   return (
     <Container
-      padding={{ top: "large", left: "large", right: "large" }}
+      padding={{ top: 'large', left: 'large', right: 'large' }}
       mainAlignment="flex-start"
       background="gray6"
     >
@@ -547,18 +482,14 @@ const DomainResources: FC = () => {
           background="gray6"
           height="3.625rem"
         >
-          <Row orientation="horizontal" width="100%" padding={{ all: "large" }}>
-            <Row
-              mainAlignment="flex-start"
-              width="30%"
-              crossAlignment="flex-start"
-            >
+          <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+            <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
               <Text size="medium" weight="bold" color="gray0">
-                {t("label.resources", "Resources")}
+                {t('label.resources', 'Resources')}
               </Text>
             </Row>
             <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-              <Padding all={"0"}>
+              <Padding all={'0'}>
                 <Button
                   color="primary"
                   icon="Plus"
@@ -580,40 +511,32 @@ const DomainResources: FC = () => {
         mainAlignment="flex-start"
         width="100%"
         style={{
-          position: "relative",
-          overflow: "auto",
+          position: 'relative',
+          overflow: 'auto',
         }}
       >
         <Row
           mainAlignment="flex-start"
           width="100%"
-          padding={{ top: "small", left: "small", right: "small" }}
+          padding={{ top: 'small', left: 'small', right: 'small' }}
         >
-          <Container
-            height="fit"
-            crossAlignment="flex-start"
-            background="gray6"
-          >
+          <Container height="fit" crossAlignment="flex-start" background="gray6">
             <Row
               orientation="horizontal"
               mainAlignment="space-between"
               crossAlignment="flex-start"
               width="fill"
-              padding={{ bottom: "large" }}
+              padding={{ bottom: 'large' }}
             >
               <Container>
                 <Input
-                  disabled={
-                    resourceList.length === 0 && searchString.length === 0
-                  }
+                  disabled={resourceList.length === 0 && searchString.length === 0}
                   backgroundColor="gray5"
-                  label={t("label.search_dot", "Search…")}
+                  label={t('label.search_dot', 'Search…')}
                   onChange={(e: any): any => {
                     setSearchString(e.target.value);
                   }}
-                  CustomIcon={(): any => (
-                    <Icon icon="FunnelOutline" size="large" color="primary" />
-                  )}
+                  CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
                 />
               </Container>
             </Row>
@@ -630,13 +553,10 @@ const DomainResources: FC = () => {
                 showCheckbox
                 ref={tableRef}
                 style={{
-                  overflow: "auto",
-                  height:
-                    isRequestInProgress || resourceList.length === 0
-                      ? "50%"
-                      : "100%",
+                  overflow: 'auto',
+                  height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={CustomRowFactory}
+                RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
               {isRequestInProgress && (
@@ -644,7 +564,7 @@ const DomainResources: FC = () => {
                   crossAlignment="center"
                   mainAlignment="center"
                   height="auto"
-                  padding={{ top: "medium" }}
+                  padding={{ top: 'medium' }}
                 >
                   <Button
                     type="ghost"
@@ -656,42 +576,28 @@ const DomainResources: FC = () => {
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (
-                <Container
-                  orientation="column"
-                  crossAlignment="center"
-                  mainAlignment="center"
-                >
+                <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
                     <img src={logo} alt="logo" />
                   </Row>
                   <Row
-                    padding={{ top: "extralarge" }}
+                    padding={{ top: 'extralarge' }}
                     orientation="vertical"
                     crossAlignment="center"
-                    style={{ textAlign: "center" }}
+                    style={{ textAlign: 'center' }}
                   >
-                    <Text
-                      weight="light"
-                      color="#828282"
-                      size="large"
-                      overflow="break-word"
-                    >
-                      {t("label.this_list_is_empty", "This list is empty.")}
+                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                      {t('label.this_list_is_empty', 'This list is empty.')}
                     </Text>
                   </Row>
                   <Row
                     orientation="vertical"
                     crossAlignment="center"
-                    style={{ textAlign: "center" }}
-                    padding={{ top: "small" }}
+                    style={{ textAlign: 'center' }}
+                    padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text
-                      weight="light"
-                      color="#828282"
-                      size="large"
-                      overflow="break-word"
-                    >
+                    <Text weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_resource_msg"
                         defaults="You can create a new resource by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
@@ -706,8 +612,8 @@ const DomainResources: FC = () => {
             {resourceList && resourceList.length > 0 && (
               <Container
                 style={{
-                  position: "sticky",
-                  bottom: isTableTooTall ? "0" : "-4rem",
+                  position: 'sticky',
+                  bottom: isTableTooTall ? '0' : '-4rem',
                 }}
               >
                 <ScrollContainer isVisible={isTableTooTall} />
@@ -716,21 +622,17 @@ const DomainResources: FC = () => {
                   mainAlignment="space-between"
                   background="gray6"
                   width="100%"
-                  padding={{ right: "extralarge" }}
+                  padding={{ right: 'extralarge' }}
                   height="auto"
                 >
                   <Container crossAlignment="flex-start">
-                    <Paging
-                      totalItem={totalAccount}
-                      setOffset={setOffset}
-                      pageSize={limit}
-                    />
+                    <Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
                   </Container>
                   <Container
                     crossAlignment="flex-end"
                     orientation="horizontal"
                     mainAlignment="flex-end"
-                    padding={{ top: "small" }}
+                    padding={{ top: 'small' }}
                   >
                     <TrackNumberPerPage setPageSize={setLimit} />
                   </Container>
