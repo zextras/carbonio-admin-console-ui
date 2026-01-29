@@ -5,13 +5,12 @@
  */
 
 import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Table, Text } from '@zextras/ui-components';
+import { Button, Container, HoverableRowFactory, Icon, Table, Text } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
 
 const VersionText = styled(Text)`
@@ -173,7 +172,7 @@ const DashboardServerList: FC<{
             showCheckbox={false}
             multiSelect={false}
             style={{ overflow: 'auto', height: '100%' }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
