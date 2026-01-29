@@ -9,6 +9,7 @@ import { getAccount } from '../network/get-account';
 import { loginConfig } from '../network/login-config';
 import { queryClient } from '../providers/react-query-provider';
 import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
+import { fetchAccountSettings } from '../services/account-api';
 import { useAppStore } from '../store/app/store';
 import { useI18nStore } from '../store/i18n/store';
 
@@ -34,20 +35,22 @@ function getLocaleFromSettings(settings: AccountSettings | undefined): string {
   return rawLocale?.split('_')[0] ?? 'en';
 }
 
-function syncLocale(i18nFactory: I18nFactory): void {
-  const currentLocale = useI18nStore.getState().locale;
-
-  if (currentLocale !== 'en') {
-    i18nFactory.setLocale(currentLocale);
-    return;
-  }
-
-  const settings = queryClient.getQueryData<AccountSettings>(['account', 'settings']);
-  const fallbackLocale = getLocaleFromSettings(settings);
-
-  if (fallbackLocale !== 'en') {
-    i18nFactory.setLocale(fallbackLocale);
-    useI18nStore.getState().setLocale(fallbackLocale);
+async function initLocale(i18nFactory: I18nFactory): Promise<void> {
+  try {
+    // Fetch account settings to get the user's preferred locale
+    const settings = await fetchAccountSettings();
+    
+    // Cache settings in query client for later use
+    queryClient.setQueryData(['account', 'settings'], settings);
+    
+    const locale = getLocaleFromSettings(settings);
+    
+    if (locale !== 'en') {
+      i18nFactory.setLocale(locale);
+      useI18nStore.getState().setLocale(locale);
+    }
+  } catch {
+    // If settings fetch fails, continue with default 'en' locale
   }
 }
 
@@ -62,10 +65,13 @@ export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
     if (advancedSupport?.supported) {
       await loginConfig();
     }
+
+    // Fetch locale from account settings before loading apps and translations
+    await initLocale(i18nFactory);
+
     await loadAllApps();
     await getAccount();
 
-    syncLocale(i18nFactory);
     loadAppTranslations();
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Unknown error' };
