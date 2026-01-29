@@ -11,7 +11,7 @@ import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin, type ResolvedConfig } from 'vite';
 
 import { DepConfig, sharedDepsConfig } from '../../../config/shared-deps-config';
-import { getCommitHash, getWorkspaceRoot } from '../../../scripts/utils';
+import { getWorkspaceRoot } from '../../../scripts/utils';
 
 const REACT_EXPORTS = [
   'Children',

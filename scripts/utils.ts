@@ -78,6 +78,3 @@ export function copyRecursive(src: string, dest: string) {
     }
   }
 }
-
-export const getCommitHash = (): string =>
-  process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();

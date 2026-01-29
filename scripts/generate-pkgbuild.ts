@@ -7,7 +7,7 @@ import { execSync } from 'child_process';
 import { readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { colorLog, getCommitHash, getWorkspaceRoot } from './utils';
+import { colorLog, getWorkspaceRoot } from './utils';
 
 function getLastTag() {
   return execSync('git describe --tags --abbrev=0', {
