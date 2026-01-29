@@ -74,11 +74,11 @@ const DomainMailingList: FC = () => {
 	const mailingListStatusFilter: any = useMemo(
 		() => [
 			{
-				label: t('label.can_send_receiver', 'Can Send & Receive'),
+				label: t('domain.mailingList.canReceive', 'Can Receive'),
 				value: '(&(zimbraMailStatus=enabled))'
 			},
 			{
-				label: t('label.cant_send_receiver', "Can't Send & Receive"),
+				label: t('domain.mailingList.cantReceive', "Can't Receive"),
 				value: '(&(zimbraMailStatus=disabled))'
 			}
 		],
