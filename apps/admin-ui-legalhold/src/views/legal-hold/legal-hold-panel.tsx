@@ -4,23 +4,45 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  getSoapFetchRequest, useDomainInformation  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  DropDownInput,  Icon,  Input,  OverlayDivision,  Padding,  Row,  Switch,  Table,  Text,  useScreenMode,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  debounce  } from 'lodash-es';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  DropDownInput,
+  HoverableRowFactory,
+  Icon,
+  Input,
+  OverlayDivision,
+  Padding,
+  Row,
+  Switch,
+  Table,
+  Text,
+  useScreenMode,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import {  BackupAccountItem, DomainResponse  } from '../../../types';
+import { BackupAccountItem, DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import {   ERROR_LABLE,  MAX_DOMAIN_DISPLAY,  MOBILE,  RECORD_DISPLAY_LIMIT,  SET,  TRUE,  UNSET } from '../../constants';
-import {  getDomainList  } from '../../services/search-domain-service';
-import {  setUnsetLegalHold  } from '../../services/set-unset-legalhold';
+import {
+  ERROR_LABLE,
+  MAX_DOMAIN_DISPLAY,
+  MOBILE,
+  RECORD_DISPLAY_LIMIT,
+  SET,
+  TRUE,
+  UNSET,
+} from '../../constants';
+import { getDomainList } from '../../services/search-domain-service';
+import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import Paging from '../components/paging';
-import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
 
@@ -763,7 +785,7 @@ const LegalHoldPanel: FC = () => {
                           height: '100%',
                         }}
                         selectedRows={selectedAccountRows}
-                        RowFactory={CustomRowFactory}
+                        RowFactory={HoverableRowFactory}
                         HeaderFactory={CustomHeaderFactory}
                       />
                     </Row>

@@ -4,20 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  postSoapFetchRequest, soapFetch  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  DateTimePicker,  DropDownInput,  Input,  Padding,  Row,  Switch,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  cloneDeep, debounce, unionBy  } from 'lodash-es';
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  DateTimePicker,
+  DropDownInput,
+  HoverableRowFactory,
+  Input,
+  Padding,
+  Row,
+  Switch,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { cloneDeep, debounce, unionBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import {  BackupAccountItem  } from '../../../../types';
-import {   ERROR_LABLE,  RECORD_DISPLAY_LIMIT,  SUCCESS_LABLE,  ZIMBRA_ADMIN_URN } from '../../../constants';
-import {  accountListDirectory  } from '../../../services/account-list-directory-service';
-import {  doRestoreOnNewLegalHoldAccount  } from '../../../services/restore_new_legal_hold_account';
+import { BackupAccountItem } from '../../../../types';
+import {
+  ERROR_LABLE,
+  RECORD_DISPLAY_LIMIT,
+  SUCCESS_LABLE,
+  ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+import { accountListDirectory } from '../../../services/account-list-directory-service';
+import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import {  formatedErrorMessage  } from '../../utility/utils';
+import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
   legalHoldAccount: BackupAccountItem | undefined;
@@ -701,7 +718,7 @@ const RestoreAccountView: FC<{
               showCheckbox={false}
               multiSelect={false}
               selectedRows={selectedRow}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
