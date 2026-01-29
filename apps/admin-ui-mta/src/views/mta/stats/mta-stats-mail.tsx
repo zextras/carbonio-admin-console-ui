@@ -4,20 +4,40 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Button,  Container,  DefaultTabBarItem,  Row,  TabBar,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
+import {
+  Button,
+  Container,
+  DefaultTabBarItem,
+  HoverableRowFactory,
+  Row,
+  TabBar,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import {  MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats  } from '../../../../types';
+import { MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
-import {   ACTIVE,  CORRUPT,  DEFERRED,  DELETE,  HOLD,  INCOMING,  RECORD_DISPLAY_LIMIT,  RELEASE,  REQUEUE,  ZIMBRA_ADMIN_URN } from '../../../constants';
-import {  batchService  } from '../../../services/batch-service';
-import {  getMailQueue  } from '../../../services/get-mail-queue';
-import {  getMailqueueInformation  } from '../../../services/get-mail-queue-info';
+import {
+  ACTIVE,
+  CORRUPT,
+  DEFERRED,
+  DELETE,
+  HOLD,
+  INCOMING,
+  RECORD_DISPLAY_LIMIT,
+  RELEASE,
+  REQUEUE,
+  ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+import { batchService } from '../../../services/batch-service';
+import { getMailQueue } from '../../../services/get-mail-queue';
+import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 
@@ -616,7 +636,7 @@ const MTAStatsMail: FC<{
               setSelectedRow(selected);
             }}
             style={{ overflow: 'auto', height: '100%', width: '100%' }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
           {isMailQueueLoading && (
