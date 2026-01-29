@@ -5,7 +5,6 @@
  */
 
 import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
-import styled from 'styled-components';
 
 import { useCurrentRoute } from '../history/hooks';
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
@@ -13,23 +12,12 @@ import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
-
-const Background = styled.div`
-  background: ${({ theme }) => theme.palette.gray6.regular};
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 100%;
-  max-height: 100%;
-  width: 100%;
-  min-width: 100%;
-  max-width: 100%;
-`;
+import styles from './shell-view.module.css';
 
 function Shell() {
   const activeRoute = useCurrentRoute();
   return (
-    <Background>
+    <div className={styles.background}>
       <ShellHeader
         // @ts-expect-error - needs a fix
         activeRoute={activeRoute}
@@ -42,7 +30,7 @@ function Shell() {
         <AppViewContainer activeRoute={activeRoute} />
         <ShellUtilityPanel />
       </Row>
-    </Background>
+    </div>
   );
 }
 

@@ -8,43 +8,13 @@ import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-compo
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { AppRoute, PrimaryBarView } from '../../types';
 import { useAppStore } from '../store/app';
 import { useUtilityBarStore } from '../utility-bar';
 import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
-
-const PrimaryBarContainer = styled(Container)`
-  min-width: 48px;
-  max-width: 192px;
-  width: ${({ sidebarIsOpen }): number => (sidebarIsOpen ? 192 : 48)}px;
-  transition: width 300ms;
-  overflow-x: hidden;
-`;
-
-const PrimaryBarRow = styled(Row)<{ active: boolean }>`
-  background-color: ${({ theme, active }): string =>
-    active ? theme.palette.highlight.regular : 'gray6'};
-  cursor: pointer;
-  &:hover {
-    background: ${({ theme, active }): string => theme.palette[active ? 'gray4' : 'gray6'].hover};
-  }
-`;
-
-const PrimaryBarButton = styled(Button)`
-  &:hover {
-    background: transparent;
-  }
-`;
-
-const CustomText = styled(Text)`
-  width: 75%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-`;
+import styles from './shell-primary-bar.module.css';
 
 type PrimaryBarItemProps = {
   view: PrimaryBarView;
@@ -64,15 +34,21 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
         onMouseLeave={(): void => setOpen(false)}
         height="52px"
       >
-        <PrimaryBarRow width="fill" mainAlignment="flex-start" active={active}>
+        <Row
+          width="fill"
+          mainAlignment="flex-start"
+          className={styles.primaryBarRow}
+          data-active={active}
+        >
           <BadgeWrap badge={view.badge} isExpanded={isExpanded}>
             {typeof view.component === 'string' ? (
-              <PrimaryBarButton
+              <Button
                 type="ghost"
                 color={'text'}
                 icon={view.component}
                 onClick={onClick}
                 size={'extralarge'}
+                className={styles.primaryBarButton}
               />
             ) : (
               <Text onClick={onClick}>
@@ -81,11 +57,16 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
             )}
           </BadgeWrap>
           {isExpanded && (
-            <CustomText color="text" weight="bold" onClick={onClick}>
+            <Text
+              color="text"
+              weight="bold"
+              onClick={onClick}
+              className={styles.customText}
+            >
               {view.label}
-            </CustomText>
+            </Text>
           )}
-        </PrimaryBarRow>
+        </Row>
       </Container>
 
       <Popper
@@ -176,8 +157,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 
   return (
     <>
-      <PrimaryBarContainer
-        sidebarIsOpen={isOpen}
+      <Container
+        className={styles.primaryBarContainer}
+        data-sidebarIsOpen={isOpen}
         role="menu"
         height="fill"
         background="gray6"
@@ -241,7 +223,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
           )}
         </Container>
         <Container mainAlignment="flex-end" height="fit"></Container>
-      </PrimaryBarContainer>
+      </Container>
       <Collapser onClick={onCollapserClick} open={isOpen} />
     </>
   );

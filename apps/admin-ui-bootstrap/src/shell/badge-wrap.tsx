@@ -5,24 +5,9 @@
  */
 import { Container, Text } from '@zextras/ui-components';
 import React from 'react';
-import styled from 'styled-components';
 
 import { BadgeInfo } from '../../types';
-
-const MiniBadge = styled(Container)<{ badge: BadgeInfo }>`
-  position: absolute;
-  bottom: 25%;
-  right: 25%;
-  transform: translate(30%, 30%);
-  background: ${({ badge, theme }): string => theme.palette[badge?.color ?? 'primary'].regular};
-  min-width: 12px;
-  min-height: 12px;
-  line-height: 12px;
-  border-radius: 8px;
-  user-select: none;
-  cursor: pointer;
-  pointer-events: none;
-`;
+import styles from './badge-wrap.module.css';
 
 type BadgeWrapProps = {
   badge: BadgeInfo;
@@ -39,13 +24,20 @@ const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
     ref={ref}
   >
     {badge.show && (
-      <MiniBadge badge={badge} height="fit" width="fit">
+      <Container
+        className={styles.miniBadge}
+        height="fit"
+        width="fit"
+        style={{
+          background: `var(--color-${badge?.color ?? 'primary'}-regular)`,
+        }}
+      >
         {badge.showCount ? (
           <Text size="extrasmall" style={{ padding: '2px 4px', fontSize: '10px' }} color="gray6">
             {badge.count ?? 0}
           </Text>
         ) : null}
-      </MiniBadge>
+      </Container>
     )}
     {children}
   </Container>

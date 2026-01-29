@@ -8,18 +8,10 @@ import { Container } from "@zextras/ui-components";
 import { find, map } from "lodash-es";
 import { useMemo } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
-import styled from "styled-components";
 
 import AppContextProvider from "../boot/app/app-context-provider";
 import { useAppList, useAppStore, useRoutes } from "../store/app";
-
-const _BoardsRouterContainer = styled(Container)`
-  flex-grow: 1;
-  flex-basis: 0;
-  min-width: 1px;
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-`;
+import styles from "./app-view-container.module.css";
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
@@ -50,11 +42,11 @@ export default function AppViewContainer() {
   );
 
   return (
-    <_BoardsRouterContainer>
+    <Container className={styles.boardsRouterContainer}>
       <Container mainAlignment="flex-start">
         <Switch>{routes}</Switch>
         <FirstAppRedirect />
       </Container>
-    </_BoardsRouterContainer>
+    </Container>
   );
 }
