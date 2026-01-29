@@ -95,44 +95,46 @@ export default defineConfig(({ mode }) => {
     },
     base: basePath,
     publicDir: 'assets',
-    server: {
-      port: 3000,
-      strictPort: false,
-      base: '/carbonioAdmin/',
-      proxy: {
-        '/carbonioAdmin/static': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
-          followRedirects: true,
-        },
-        '/service': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
-        },
-        '/logout': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
-        },
-        '/zx': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
-        },
-        '/services': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
-        },
-        '/login': {
-          target: proxyTarget,
-          changeOrigin: true,
-          secure: false,
+    ...(isDev ? {
+      server: {
+        port: 3000,
+        strictPort: false,
+        base: '/carbonioAdmin/',
+        proxy: {
+          '/carbonioAdmin/static': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+            rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
+            followRedirects: true,
+          },
+          '/service': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+          },
+          '/logout': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+          },
+          '/zx': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+          },
+          '/services': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+          },
+          '/login': {
+            target: proxyTarget,
+            changeOrigin: true,
+            secure: false,
+          },
         },
       },
-    },
+    } : {}),
   };
 });
