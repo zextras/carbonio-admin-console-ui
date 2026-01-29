@@ -18,7 +18,6 @@ function getLastTag() {
 
 const main = (): void => {
   const rootDir = getWorkspaceRoot();
-  const commitHash = getCommitHash();
   const packageDir = join(rootDir, 'dist');
   const pkgVersion = getLastTag().replace(/^v/, '');
   const appsDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
@@ -76,26 +75,11 @@ preinst() {
 }
 
 postinst() {
-  # Define commit hash (injected at build time)
-  commitHash="${commitHash}"
-
-  # Copy index.html files to current directory for carbonio-admin-ui
-  if [ -d "/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
-    mkdir -p "/opt/zextras/admin/iris/carbonio-admin-ui/current"
-    for commit_dir in /opt/zextras/admin/iris/carbonio-admin-ui/*; do
-      if [ -d "\${commit_dir}" ] && [ "\\$(basename "\${commit_dir}")" != "current" ]; then
-        cd "\${commit_dir}"
-        find . -name "*.html" -exec cp --parents {} /opt/zextras/admin/iris/carbonio-admin-ui/current/ \\; 2>/dev/null || true
-        break  # Only process the first (most recent) commit
-      fi
-    done
-  fi
-
-  # Create i18n symlinks for all components with specific commit hash
+  # Create i18n symlinks for all components
   # Using POSIX-compatible loop (no bash arrays)
   for component in ${componentList}; do
-    if [ -d "/opt/zextras/admin/iris/\${component}/\${commitHash}" ]; then
-      ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/\${commitHash}/i18n"
+    if [ -d "/opt/zextras/admin/iris/\${component}" ]; then
+      ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/i18n"
     fi
   done
 }

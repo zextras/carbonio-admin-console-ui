@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { getWorkspaceRoot, getCommitHash } from './scripts/utils';
+import { getWorkspaceRoot } from './scripts/utils';
 import { getOptimizedDeps } from './vite-config/optimized-deps';
 
 import { createModuleRollupOptions } from './vite.rollup.config';
@@ -21,10 +21,10 @@ export interface AppViteConfigOptions {
 export const createAppViteConfig = (
   options?: AppViteConfigOptions & { mode: string },
 ): UserConfig => {
-  const commitHash = getCommitHash();
   const rootDir = getWorkspaceRoot();
   const packageJson = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'));
   const packageName = packageJson.carbonio.name;
+  const basePath = `/static/iris/${packageName}/`;
   const mode = options?.mode || 'production';
   const isDev = mode === 'development';
 
@@ -38,9 +38,10 @@ export const createAppViteConfig = (
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+      BASE_PATH: JSON.stringify(basePath),
     },
     build: {
-      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName, commitHash),
+      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
 
       emptyOutDir: true,
       lib: {

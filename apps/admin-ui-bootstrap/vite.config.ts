@@ -16,17 +16,16 @@ import { createBootstrapRollupOptions } from '../../vite.rollup.config';
 import { appRegistryPlugin } from './vite-config/vite-plugin-app-registry';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
-import { getCommitHash, getWorkspaceRoot } from '../../scripts/utils';
+import { getWorkspaceRoot } from '../../scripts/utils';
 
 const rootDir = getWorkspaceRoot();
-const commitHash = getCommitHash();
 const packageName = 'carbonio-admin-ui';
-const basePath = `/static/iris/${packageName}/${commitHash}/`;
+const basePath = `/static/iris/${packageName}/`;
 const appsDir = resolve(rootDir, 'apps');
 const apps = readdirSync(appsDir).filter(
   (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
 );
-const outDir = resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName, commitHash);
+const outDir = resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName);
 
 function getProxyTarget(): string {
   const target = process.env.VITE_TARGET || 'localhost';
@@ -60,7 +59,6 @@ export default defineConfig(({ mode }) => {
     ],
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
-      COMMIT_ID: JSON.stringify(commitHash),
       BASE_PATH: JSON.stringify(basePath),
     },
     resolve: {
@@ -84,7 +82,7 @@ export default defineConfig(({ mode }) => {
       extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
     },
     build: {
-      outDir,
+      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
       emptyOutDir: true,
       sourcemap: isDev,
       rollupOptions: createBootstrapRollupOptions(),

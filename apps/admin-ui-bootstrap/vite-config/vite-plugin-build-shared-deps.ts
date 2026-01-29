@@ -85,13 +85,11 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
     },
     async closeBundle() {
       const rootDir = getWorkspaceRoot();
-      const commitHash = getCommitHash();
       const nodeModulesDir = join(rootDir, 'node_modules');
-      const sharedDepsParentDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
-      const outputDir = join(sharedDepsParentDir, commitHash);
+      const outputDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
 
-      if (existsSync(sharedDepsParentDir)) {
-        rmSync(sharedDepsParentDir, { recursive: true, force: true });
+      if (existsSync(outputDir)) {
+        rmSync(outputDir, { recursive: true, force: true });
       }
       mkdirSync(outputDir, { recursive: true });
 

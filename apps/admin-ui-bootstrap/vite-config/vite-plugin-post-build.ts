@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import type { Plugin, ResolvedConfig } from 'vite';
 
-import { colorLog, getCommitHash, getWorkspaceRoot } from '../../../scripts/utils';
+import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { generateImportMap } from './generate-import-map';
 
 export function postBuildPlugin(): Plugin {
@@ -23,7 +23,6 @@ export function postBuildPlugin(): Plugin {
     },
     async closeBundle() {
       const rootDir = getWorkspaceRoot();
-      const commitHash = getCommitHash();
       const targetDir = resolve(
         rootDir,
         'dist',
@@ -34,16 +33,12 @@ export function postBuildPlugin(): Plugin {
         'carbonio-admin-ui',
       );
 
-      const commitHashDir = resolve(targetDir, commitHash);
-      const currentDir = resolve(targetDir, 'current');
-      mkdirSync(currentDir, { recursive: true });
+      mkdirSync(targetDir, { recursive: true });
 
-      const importMap = generateImportMap(commitHash);
+      const importMap = generateImportMap();
       colorLog('Generated import map object', 'green');
 
-      const indexHtmlPath = resolve(commitHashDir, 'index.html');
-
-      const indexHtmlCurrentDest = resolve(currentDir, 'index.html');
+      const indexHtmlPath = resolve(targetDir, 'index.html');
 
       if (existsSync(indexHtmlPath)) {
         let indexHtml = readFileSync(indexHtmlPath, 'utf8');
@@ -59,13 +54,16 @@ export function postBuildPlugin(): Plugin {
         );
 
         writeFileSync(indexHtmlPath, indexHtml);
-        writeFileSync(indexHtmlCurrentDest, indexHtml);
         colorLog('Injected import map into index.html', 'green');
       }
 
-      const commitFilePath = resolve(commitHashDir, 'commit');
-      writeFileSync(commitFilePath, commitHash);
-      colorLog('Generated commit file', 'green');
+      const currentDir = resolve(targetDir, 'current');
+      mkdirSync(currentDir, { recursive: true });
+
+      if (existsSync(indexHtmlPath)) {
+        copyFileSync(indexHtmlPath, resolve(currentDir, 'index.html'));
+        colorLog('Created current directory with index.html', 'green');
+      }
     },
   };
 }
