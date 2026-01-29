@@ -76,5 +76,17 @@ export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepCon
       type: 'build-vite',
       external: ['react', 'react-dom'],
     },
+    {
+      name: 'posthog-js',
+      entry: resolve(nodeModulesDir, 'posthog-js/dist/array.full.no-external.js'),
+      outputName: 'posthog.mjs',
+      type: 'build-vite',
+    },
+    {
+      name: 'date-fns',
+      entry: resolve(nodeModulesDir, 'date-fns/index.js'),
+      outputName: 'date-fns.mjs',
+      type: 'build-vite',
+    },
   ];
 }

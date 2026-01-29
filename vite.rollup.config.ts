@@ -21,6 +21,8 @@ export const SHARED_EXTERNALS = [
   '@tanstack/react-query',
   'react-router-dom',
   'zustand',
+  'posthog-js',
+  'date-fns',
   '@zextras/admin-ui-bootstrap',
   'msw',
 ] as const;
@@ -101,6 +103,8 @@ export function createBootstrapRollupOptions(): RollupOptions {
     '@tanstack/react-query',
     'react-router-dom',
     'zustand',
+    'posthog-js',
+    'date-fns',
   ];
 
   return {

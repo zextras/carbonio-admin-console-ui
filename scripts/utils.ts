@@ -19,6 +19,8 @@ const VENDORABLE_DEPS: Record<string, string> = {
   '@tanstack/react-query': 'react-query.mjs',
   'react-router-dom': 'react-router-dom.mjs',
   zustand: 'zustand.mjs',
+  'posthog-js': 'posthog.mjs',
+  'date-fns': 'date-fns.mjs',
 };
 
 export function getSharedDependencyPaths(commitHash: string): Record<string, string> {

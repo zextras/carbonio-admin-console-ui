@@ -92,6 +92,8 @@ export default defineConfig(({ mode }) => {
         '@tanstack/react-query',
         'react-router-dom',
         'zustand',
+        'posthog-js',
+        'date-fns',
       ],
     },
     build: {
