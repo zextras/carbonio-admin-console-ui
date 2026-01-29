@@ -78,22 +78,45 @@ describe('AppView', () => {
     await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
   });
 
-  it('should render CosListPanel on matching route', async () => {
+  it('should render CosListPanel and CosDetailPanel on list route', async () => {
+    const mockCosListResponse = {
+      cos: [
+        {
+          name: 'default',
+          id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+          a: [
+            { n: 'cn', _content: 'default' },
+            { n: 'description', _content: 'Default COS' },
+          ],
+        },
+      ],
+      searchTotal: 1,
+      more: false,
+    };
+
     const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const searchDirectoryInterceptor = createBrowserSoapAPIInterceptor('SearchDirectory', {});
+    const searchDirectoryInterceptor = createBrowserSoapAPIInterceptor(
+      'SearchDirectory',
+      mockCosListResponse
+    );
     const getAccountInterceptor = createBrowserSoapAPIInterceptor('GetAccount', {});
 
     setupBrowserTest(<AppView />, {
-      initialRouterEntry: `/manage/cos`,
+      initialRouterEntry: `/manage/cos/cos_list`,
       queryClient,
     });
     await getInfoInterceptor;
     await searchDirectoryInterceptor;
     await getAccountInterceptor;
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    await expect.element(page.getByText(/General/i)).toBeVisible();
+    // Verify CosListPanel renders with action buttons
+    await expect.element(page.getByText('General', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Details')).toBeVisible();
+
+    // Verify "COS List" appears twice (in CosListPanel and CosDetailPanel)
+    const cosListElements = page.getByText('COS List').all();
+    expect(cosListElements).toHaveLength(2);
+    await expect.element(cosListElements[0]).toBeVisible();
+    await expect.element(cosListElements[1]).toBeVisible();
   });
 });
