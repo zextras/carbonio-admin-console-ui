@@ -5,13 +5,10 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
+
 import { getSharedDepNames } from './config/shared-deps-config';
 
-export const SHARED_EXTERNALS = [
-  ...getSharedDepNames(),
-  '@zextras/admin-ui-bootstrap',
-  'msw',
-] as const;
+export const SHARED_EXTERNALS = [...getSharedDepNames(), '@zextras/admin-ui-bootstrap'] as const;
 
 /**
  * Configuration options for ESM module rollup
