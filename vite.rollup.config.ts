@@ -5,24 +5,10 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
+import { getSharedDepNames } from './config/shared-deps-config';
 
-/**
- * Shared external dependencies for ESM microfrontend modules.
- * These will be resolved via import maps at runtime.
- * Only include packages that can be successfully vendored for offline use.
- */
 export const SHARED_EXTERNALS = [
-  'react',
-  'react-dom',
-  'lodash-es',
-  'styled-components',
-  'i18next',
-  'react-i18next',
-  '@tanstack/react-query',
-  'react-router-dom',
-  'zustand',
-  'posthog-js',
-  'date-fns',
+  ...getSharedDepNames(),
   '@zextras/admin-ui-bootstrap',
   'msw',
 ] as const;
@@ -39,9 +25,6 @@ export interface ESMModuleRollupOptions {
 /**
  * Creates standardized rollup options for microfrontend ESM modules.
  * All dependencies are resolved via import maps - no globals needed.
- *
- * @param options - Configuration for the module
- * @returns RollupOptions configured for ESM output
  */
 export function createModuleRollupOptions(options: ESMModuleRollupOptions): RollupOptions {
   const { externals = [], includeDefaults = true } = options;
@@ -61,7 +44,6 @@ export function createModuleRollupOptions(options: ESMModuleRollupOptions): Roll
       return '[name].[hash][extname]';
     },
     interop: 'auto',
-    // No globals - ESM uses import maps
   };
 
   return {
@@ -93,19 +75,7 @@ export function createBootstrapRollupOptions(): RollupOptions {
 
   // Shell must externalize shared deps to use the same instances as sub-apps via import maps
   // This prevents "multiple React instances" errors with hooks
-  const sharedExternals = [
-    'react',
-    'react-dom',
-    'lodash-es',
-    'styled-components',
-    'i18next',
-    'react-i18next',
-    '@tanstack/react-query',
-    'react-router-dom',
-    'zustand',
-    'posthog-js',
-    'date-fns',
-  ];
+  const sharedExternals = getSharedDepNames();
 
   return {
     external: sharedExternals,

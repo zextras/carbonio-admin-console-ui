@@ -9,29 +9,6 @@ import { execSync } from 'child_process';
 import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 
-const VENDORABLE_DEPS: Record<string, string> = {
-  react: 'index.mjs',
-  'react-dom': 'client.mjs',
-  'lodash-es': 'lodash.mjs',
-  'styled-components': 'styled-components.browser.esm.mjs',
-  i18next: 'i18next.mjs',
-  'react-i18next': 'react-i18next.mjs',
-  '@tanstack/react-query': 'react-query.mjs',
-  'react-router-dom': 'react-router-dom.mjs',
-  zustand: 'zustand.mjs',
-  'posthog-js': 'posthog.mjs',
-  'date-fns': 'date-fns.mjs',
-};
-
-export function getSharedDependencyPaths(commitHash: string): Record<string, string> {
-  return Object.fromEntries(
-    Object.entries(VENDORABLE_DEPS).map(([name, file]) => [
-      name,
-      `/static/iris/shared-dependencies/${commitHash}/${file}`,
-    ]),
-  );
-}
-
 // Helper to convert Hex to ANSI 24-bit color sequence
 const hexToAnsi = (hex: string) => {
   const r = parseInt(hex.slice(1, 3), 16);

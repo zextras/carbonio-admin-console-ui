@@ -19,13 +19,19 @@ export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepCon
   return [
     {
       name: 'react',
-      entry: resolve(nodeModulesDir, isDev ? 'react/cjs/react.development.js' : 'react/cjs/react.production.js'),
+      entry: resolve(
+        nodeModulesDir,
+        isDev ? 'react/cjs/react.development.js' : 'react/cjs/react.production.js',
+      ),
       outputName: 'index.mjs',
       type: 'wrap-cjs',
     },
     {
       name: 'react-dom',
-      entry: resolve(nodeModulesDir, isDev ? 'react-dom/cjs/react-dom.development.js' : 'react-dom/cjs/react-dom.production.js'),
+      entry: resolve(
+        nodeModulesDir,
+        isDev ? 'react-dom/cjs/react-dom.development.js' : 'react-dom/cjs/react-dom.production.js',
+      ),
       outputName: 'client.mjs',
       type: 'wrap-cjs',
     },
@@ -89,4 +95,12 @@ export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepCon
       type: 'build-vite',
     },
   ];
+}
+
+export function getSharedDepNames(): Array<string> {
+  return sharedDepsConfig('', false).map((dep) => dep.name);
+}
+
+export function getSharedDepPaths(): Record<string, string> {
+  return Object.fromEntries(sharedDepsConfig('', false).map((dep) => [dep.name, dep.outputName]));
 }

@@ -10,9 +10,64 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin, type ResolvedConfig } from 'vite';
 
+import { DepConfig, sharedDepsConfig } from '../../../config/shared-deps-config';
 import { getCommitHash, getWorkspaceRoot } from '../../../scripts/utils';
-import { DepConfig, sharedDepsConfig } from './shared-deps-config';
-import { REACT_DOM_EXPORTS, REACT_EXPORTS } from './shared-deps-constants';
+
+const REACT_EXPORTS = [
+  'Children',
+  'Component',
+  'Fragment',
+  'Profiler',
+  'PureComponent',
+  'StrictMode',
+  'Suspense',
+  '__COMPILER_RUNTIME',
+  'cache',
+  'cacheSignal',
+  'cloneElement',
+  'createContext',
+  'createElement',
+  'createRef',
+  'forwardRef',
+  'isValidElement',
+  'lazy',
+  'memo',
+  'startTransition',
+  'unstable_useCacheRefresh',
+  'use',
+  'useActionState',
+  'useCallback',
+  'useContext',
+  'useDebugValue',
+  'useDeferredValue',
+  'useEffect',
+  'useEffectEvent',
+  'useId',
+  'useImperativeHandle',
+  'useInsertionEffect',
+  'useLayoutEffect',
+  'useMemo',
+  'useOptimistic',
+  'useReducer',
+  'useRef',
+  'useState',
+  'useSyncExternalStore',
+  'useTransition',
+  'version',
+] as const;
+
+const REACT_DOM_EXPORTS = [
+  'createPortal',
+  'findDOMNode',
+  'flushSync',
+  'hydrate',
+  'render',
+  'unstable_batchedUpdates',
+  'unstable_flushDiscreteUpdates',
+  'unstable_renderSubtreeIntoContainer',
+  'unstable_runWithPriority',
+  'version',
+] as const;
 
 interface BuildSharedDepsPluginOptions {
   isDev?: boolean;

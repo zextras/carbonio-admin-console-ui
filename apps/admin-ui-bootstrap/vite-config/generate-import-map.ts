@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
@@ -7,7 +8,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { colorLog, getSharedDependencyPaths, getWorkspaceRoot } from '../../../scripts/utils';
+import { getSharedDepPaths } from '../../../config/shared-deps-config';
+import { getWorkspaceRoot } from '../../../scripts/utils';
 
 const cwd = process.cwd();
 const rootDir = getWorkspaceRoot(cwd);
@@ -26,7 +28,10 @@ function getModuleEntry(dir: string, commitHash: string): [string, string] | nul
 
     return [pkg.name, buildArtifacUrl(pkg.carbonio.name, commitHash)];
   } catch (error) {
-    colorLog(`⚠️  Failed to read package.json for ${dir}: ${(error as Error).message}`, 'yellow');
+    console.log(
+      `⚠️  Failed to read package.json for ${dir}: ${(error as Error).message}`,
+      'yellow',
+    );
     return null;
   }
 }
@@ -41,9 +46,17 @@ export function generateImportMap(commitHash: string) {
     .map((dir) => getModuleEntry(dir, commitHash))
     .filter((entry): entry is [string, string] => entry !== null);
 
+  const depPaths = getSharedDepPaths();
+  const sharedDepPaths = Object.fromEntries(
+    Object.entries(depPaths).map(([name, file]) => [
+      name,
+      `/static/iris/shared-dependencies/${commitHash}/${file}`,
+    ]),
+  );
+
   return {
     imports: {
-      ...getSharedDependencyPaths(commitHash),
+      ...sharedDepPaths,
       ...Object.fromEntries(moduleEntries),
     },
   };
