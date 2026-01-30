@@ -16,13 +16,13 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/index.ts"
     },
     {
       "name": "carbonio-admin-ui-domains",
       "packageName": "@zextras/admin-ui-domains",
       "displayName": "Manage",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
       "name": "carbonio-admin-ui-backup",
@@ -31,7 +31,7 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
       "name": "carbonio-admin-ui-cos",
@@ -40,7 +40,7 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
       "name": "carbonio-admin-ui-legalhold",
@@ -49,7 +49,7 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
       "name": "carbonio-admin-ui-mta",
@@ -58,7 +58,7 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
       "name": "carbonio-admin-ui-notifications",
@@ -67,12 +67,43 @@
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",
-      "entryPoint": "src/index.ts.tsx"
+      "entryPoint": "src/app.tsx"
     },
     {
-      "name": "corrected entryPoint"
+      "name": "carbonio-admin-ui-operations",
+      "packageName": "@zextras/admin-ui-operations",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/app.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-subscription",
+      "packageName": "@zextras/admin-ui-subscription",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/app.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-privacy",
+      "packageName": "@zextras/admin-ui-privacy",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/app.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-storage",
+      "packageName": "@zextras/admin-ui-storage",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/app.tsx"
     }
-  ]
-}
   ]
 }

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { getOptimizedDeps } from '../../vite-config/optimized-deps';
 
@@ -21,10 +21,8 @@ import { getWorkspaceRoot } from '../../scripts/utils';
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/`;
-const appsDir = resolve(rootDir, 'apps');
-const apps = readdirSync(appsDir).filter(
-  (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
-);
+const manifest = JSON.parse(readFileSync(resolve(rootDir, 'app-manifest.json'), 'utf8'));
+const apps = manifest.apps || [];
 const outDir = resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName);
 
 function getProxyTarget(): string {
@@ -64,17 +62,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         path: 'path-browserify',
-        ...apps.reduce((acc: Record<string, string>, dir: string) => {
-          const packageJsonPath = join(appsDir, dir, 'package.json');
-          try {
-            const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-            if (packageJson.name) {
-              const indexPath = join(appsDir, dir, 'src/index.ts');
-              const appPath = join(appsDir, dir, 'src/app.tsx');
-              acc[packageJson.name] = existsSync(indexPath) ? indexPath : appPath;
-            }
-          } catch {
-            // Skip if package.json cannot be read
+        ...apps.reduce((acc: Record<string, string>, app: any) => {
+          if (app.packageName) {
+            const dirName = app.packageName.replace('@zextras/', '');
+            const appDir = resolve(rootDir, 'apps', dirName);
+            const indexPath = resolve(appDir, app.entryPoint);
+            acc[app.packageName] = indexPath;
           }
           return acc;
         }, {}),

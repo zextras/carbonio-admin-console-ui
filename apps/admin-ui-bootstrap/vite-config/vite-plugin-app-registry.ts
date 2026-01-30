@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 import type { Plugin } from 'vite';
 
@@ -13,41 +13,25 @@ import { getWorkspaceRoot } from '../../../scripts/utils';
 import type { AppManifest } from '../src/apps/types';
 
 /**
- * Scan apps directory and build app manifests
+ * Read app-manifest.json and extract app manifests
  */
-function scanAppsDir(): Array<AppManifest> {
+function loadAppManifests(): Array<AppManifest> {
   const rootDir = getWorkspaceRoot();
-  const appsDir = join(rootDir, 'apps');
-
-  const adminUiDirs = readdirSync(appsDir).filter(
-    (dir) => dir.startsWith('admin-ui-') && dir !== 'admin-ui-bootstrap',
-  );
-
-  return adminUiDirs
-    .map((dir): AppManifest | null => {
-      const packageJsonPath = join(appsDir, dir, 'package.json');
-      try {
-        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
-        const carbonio = packageJson.carbonio;
-
-        if (carbonio && carbonio.type === 'carbonioAdmin') {
-          const manifest: AppManifest = {
-            name: carbonio.name,
-            packageName: packageJson.name,
-            displayName: carbonio.display,
-            priority: carbonio.priority ?? 99,
-            icon: carbonio.icon,
-            entryPoint: packageJson.name,
-          };
-          return manifest;
-        }
-      } catch {
-        // Skip if package.json cannot be read
-      }
-      return null;
-    })
-    .filter((app): app is AppManifest => app !== null)
-    .sort((a, b) => a.priority - b.priority);
+  const manifestPath = resolve(rootDir, 'app-manifest.json');
+  
+  try {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    return (manifest.apps || []).map((app: any): AppManifest => ({
+      name: app.name,
+      packageName: app.packageName,
+      displayName: app.displayName,
+      priority: app.priority ?? 99,
+      icon: app.icon,
+      entryPoint: app.entryPoint,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -173,7 +157,7 @@ function generateLoadAllAppsCode(apps: Array<AppManifest>): string {
 }
 
 /**
- * Vite plugin to generate app registry module
+ * Vite plugin to generate app registry module from app-manifest.json
  */
 export function appRegistryPlugin(): Plugin {
   const virtualModuleId = 'virtual:app-registry';
@@ -188,7 +172,7 @@ export function appRegistryPlugin(): Plugin {
     },
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
-        const apps = scanAppsDir();
+        const apps = loadAppManifests();
         const functionCode = generateLoadAllAppsCode(apps);
 
         return `/*
