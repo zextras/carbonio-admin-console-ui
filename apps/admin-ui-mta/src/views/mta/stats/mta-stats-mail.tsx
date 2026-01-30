@@ -18,7 +18,6 @@ import {
 import { format } from 'date-fns';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
@@ -40,13 +39,6 @@ import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
-
-const TableContainer = styled(Table)`
-  width: auto;
-  table {
-    width: auto;
-  }
-`;
 
 const ReusedDefaultTabBar: FC<{
   item: any;
@@ -628,14 +620,14 @@ const MTAStatsMail: FC<{
             position: 'relative',
           }}
         >
-          <TableContainer
+          <Table
             selectedRows={selectedRow}
             rows={mailRows}
             headers={headers}
             onSelectionChange={(selected: Array<string>): void => {
               setSelectedRow(selected);
             }}
-            style={{ overflow: 'auto', height: '100%', width: '100%' }}
+            style={{ overflow: 'auto', height: '100%', width: 'auto' }}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
