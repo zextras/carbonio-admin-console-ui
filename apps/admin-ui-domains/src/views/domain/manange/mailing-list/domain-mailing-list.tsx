@@ -73,91 +73,91 @@ const DomainMailingList: FC = () => {
   const [isTableTooTall, setIsTableTooTall] = useState(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-  const mailingListStatusFilter: any = useMemo(
-    () => [
-      {
-        label: t('label.can_send_receiver', 'Can Send & Receive'),
-        value: '(&(zimbraMailStatus=enabled))',
-      },
-      {
-        label: t('label.cant_send_receiver', "Can't Send & Receive"),
-        value: '(&(zimbraMailStatus=disabled))',
-      },
-    ],
-    [t],
-  );
+	const mailingListStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('domain.mailingList.canReceive', 'Can Receive'),
+				value: '(&(zimbraMailStatus=enabled))'
+			},
+			{
+				label: t('domain.mailingList.cantReceive', "Can't Receive"),
+				value: '(&(zimbraMailStatus=disabled))'
+			}
+		],
+		[t]
+	);
 
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'displayName',
-        label: t('label.display_name', 'DisplayName'),
-        width: '20%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'name',
-        label: t('label.address', 'Address'),
-        width: '20%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '15%',
-        i18nAllLabel: t('label.all', 'All'),
-        bold: true,
-        items: [
-          { label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
-          { label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value },
-        ],
-         
-        onChange: (e: any) => {
-          if (e?.length > 0) {
-            let statusQuery = '';
-            e.forEach((item: { value: string }) => {
-              statusQuery += item.value;
-            });
-            if (e?.length > 1) {
-              statusQuery = `(|${statusQuery})`;
-            }
-            setStatusFilter(statusQuery);
-          } else {
-            setStatusFilter('');
-          }
-        },
-      },
-      {
-        id: 'dynamic',
-        label: t('label.dynamic', 'Dynamic'),
-        width: '7%',
-        bold: true,
-      },
-      {
-        id: 'gal',
-        label: t('label.gal', 'GAL'),
-        width: '7%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('label.description', 'Description'),
-        width: '15%',
-        bold: true,
-      },
-    ],
-    [mailingListStatusFilter, t],
-  );
+	const headers: any[] = useMemo(
+		() => [
+			{
+				id: 'displayName',
+				label: t('label.display_name', 'DisplayName'),
+				width: '20%',
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
+			},
+			{
+				id: 'name',
+				label: t('label.address', 'Address'),
+				width: '20%',
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
+			},
+			{
+				id: 'status',
+				label: t('label.status', 'Status'),
+				width: '15%',
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
+					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
+				],
+				 
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
+			},
+			{
+				id: 'dynamic',
+				label: t('label.dynamic', 'Dynamic'),
+				width: '7%',
+				bold: true
+			},
+			{
+				id: 'gal',
+				label: t('label.gal', 'GAL'),
+				width: '7%',
+				bold: true
+			},
+			{
+				id: 'description',
+				label: t('label.description', 'Description'),
+				width: '15%',
+				bold: true
+			}
+		],
+		[mailingListStatusFilter, t]
+	);
 
   const doClickAction = useCallback((): void => {
     setShowMailingListDetailView(true);
@@ -180,158 +180,156 @@ const DomainMailingList: FC = () => {
     [doClickAction, doDoubleClickAction],
   );
 
-  const getMailingList = useCallback((): void => {
-    const attrs =
-      'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
-    const types = 'distributionlists,dynamicgroups';
-    const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
-    setIsRequestInProgress(true);
-    searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
-      .then((data) => {
-        const dlList = data?.dl;
-        if (dlList) {
-          if (data?.searchTotal) {
-            setTotalAccount(data?.searchTotal);
-          }
-          const mList: any[] = [];
-          dlList.forEach((item: any, index: number) => {
-            mList.push({
-              id: item?.id,
-              columns: [
-                <Container
-                  crossAlignment="flex-start"
-                  key={item?.id}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text
-                    size="small"
-                    weight="regular"
-                    key={`${item?.id}display-child`}
-                    color="gray0"
-                  >
-                    {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                  </Text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-address`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
-                    {item?.name}
-                  </Text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-status`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-                    {item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-                      ? t('label.can_send_receiver', 'Can Receive')
-                      : t('label.cant_send_receiver', "Can't Receive")}
-                  </Text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-dynamic`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
-                    {item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
-                  </Text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-gal`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-                    {item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE'
-                      ? t('label.no', 'No')
-                      : t('label.yes', 'Yes')}
-                  </Text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-description`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    setSelectedFromRow(item);
-                    handleClick(e);
-                  }}
-                >
-                  <Text
-                    size="small"
-                    weight="light"
-                    key={`${item?.id}description-child`}
-                    color="gray0"
-                  >
-                    {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                  </Text>
-                </Container>,
-              ],
-            });
-          });
-          setMailingList(mList);
-          setMailingListItem(dlList);
-          setIsUpdateRecord(false);
-        } else {
-          setTotalAccount(0);
-          setMailingList([]);
-          setIsUpdateRecord(false);
-        }
-        setIsRequestInProgress(false);
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-        setIsRequestInProgress(false);
-        setHasError(true);
-      });
-  }, [
-    searchQuery,
-    domainName,
-    offset,
-    limit,
-    sortedColumn,
-    sortOrder,
-    t,
-    handleClick,
-    createSnackbar,
-  ]);
+	const getMailingList = useCallback((): void => {
+		const attrs =
+			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
+		const types = 'distributionlists,dynamicgroups';
+		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
+		setIsRequestInProgress(true);
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
+			.then((data) => {
+				const dlList = data?.dl;
+				if (dlList) {
+					if (data?.searchTotal) {
+						setTotalAccount(data?.searchTotal);
+					}
+					const mList: any[] = [];
+					dlList.forEach((item: any, index: number) => {
+						mList.push({
+							id: item?.id,
+							columns: [
+								<Container
+									crossAlignment="flex-start"
+									key={item?.id}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text
+										size="small"
+										weight="regular"
+										key={`${item?.id}display-child`}
+										color="gray0"
+									>
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-address`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
+										{item?.name}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-status`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
+											? t('domain.mailingList.canReceive', 'Can Receive')
+											: t('domain.mailingList.cantReceive', "Can't Receive")}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-dynamic`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
+										{item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-gal`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
+										{(item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE') ? t('label.no', 'No') : t('label.yes', 'Yes')}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-description`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedMailingList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text
+										size="small"
+										weight="light"
+										key={`${item?.id}description-child`}
+										color="gray0"
+									>
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+									</Text>
+								</Container>
+							]
+						});
+					});
+					setMailingList(mList);
+					setMailingListItem(dlList);
+					setIsUpdateRecord(false);
+				} else {
+					setTotalAccount(0);
+					setMailingList([]);
+					setIsUpdateRecord(false);
+				}
+				setIsRequestInProgress(false);
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+				setIsRequestInProgress(false);
+				setHasError(true);
+			});
+	}, [
+		searchQuery,
+		domainName,
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		t,
+		handleClick,
+		createSnackbar
+	]);
 
   useEffect(() => {
     getMailingList();
@@ -386,38 +384,38 @@ const DomainMailingList: FC = () => {
     setShowCreateMailingListView(true);
   }, []);
 
-  const callAllRequest = useCallback(
-    (requests: any): void => {
-      Promise.all(requests)
-        .then((response: any) => Promise.all(response.map((res: any) => res.json())))
-        .then((data: any) => {
-          setIsUpdateRecord(true);
-           
-          let isError = false;
-          let errorMessage = '';
-          data.forEach((item: any) => {
-            if (item?.Body?.Fault) {
-              isError = true;
-              errorMessage = item?.Body?.Fault?.Reason?.Text;
-            }
-          });
-          if (isError) {
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label: errorMessage,
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          }
-        })
-        .catch((error) => {
-          setIsUpdateRecord(true);
-        });
-    },
-    [createSnackbar],
-  );
+	const callAllRequest = useCallback(
+		(requests: any): void => {
+			Promise.all(requests)
+				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
+				.then((data: any) => {
+					setIsUpdateRecord(true);
+					 
+					let isError = false;
+					let errorMessage = '';
+					data.forEach((item: any) => {
+						if (item?.Body?.Fault) {
+							isError = true;
+							errorMessage = item?.Body?.Fault?.Reason?.Text;
+						}
+					});
+					if (isError) {
+						createSnackbar({
+							key: 'error',
+							severity: 'error',
+							label: errorMessage,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+				})
+				.catch((error) => {
+					setIsUpdateRecord(true);
+				});
+		},
+		[createSnackbar]
+	);
 
   const getOwnerType = useCallback((ownersList: any, email?: string): any => {
     let type = 'email';

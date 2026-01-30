@@ -1173,224 +1173,224 @@ const ManageAccounts: FC = () => {
     }
   };
 
-  return (
-    <Container
-      padding={{ top: 'large', left: 'large', right: 'large' }}
-      mainAlignment="flex-start"
-      background="gray6"
-    >
-      <Row mainAlignment="flex-start" width="100%">
-        <Container
-          orientation="vertical"
-          mainAlignment="space-around"
-          background="gray6"
-          height="3.625rem"
-        >
-          <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-            <Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
-                {t('domain.account_list', 'Accounts List')}
-              </Text>
-            </Row>
-            <Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
-              <Text size="medium" overflow="break-word">
-                {t('domain.total_accounts', 'Total Accounts')} : {totalAccountCreated}
-              </Text>
-            </Row>
-            <Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
-              <Padding all={'0'}>
-                <Button
-                  color="primary"
-                  icon="Plus"
-                  onClick={(): void => setShowCreateAccountView(true)}
-                />
-              </Padding>
-            </Row>
-          </Row>
-        </Container>
-      </Row>
-      <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
-      </Row>
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        width="100%"
-        style={{
-          position: 'relative',
-          overflow: 'auto',
-          minHeight: '10rem',
-        }}
-        padding={{ top: 'small', left: 'small', right: 'small' }}
-      >
-        <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-          <Container height="fit" crossAlignment="flex-start" background="gray6">
-            <Row
-              orientation="horizontal"
-              mainAlignment="space-between"
-              crossAlignment="flex-start"
-              width="fill"
-              padding={{ bottom: 'large' }}
-            >
-              <Container>
-                <Input
-                  label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
-                  disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
-                  value={searchString}
-                  backgroundColor="gray5"
-                  onChange={handleInputChange}
-                  CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-                />
-              </Container>
-            </Row>
-            <Row
-              orientation="horizontal"
-              mainAlignment="space-between"
-              crossAlignment="flex-start"
-              width="fill"
-              style={{
-                position: 'relative',
-              }}
-            >
-              <Table
-                rows={!isRequestInProgress ? accountList : []}
-                headers={headers}
-                showCheckbox={false}
-                multiSelect={false}
-                ref={tableRef}
-                style={{
-                  overflow: 'auto',
-                  height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%',
-                }}
-                RowFactory={HoverableRowFactory}
-                HeaderFactory={CustomHeaderFactory}
-              />
-              {isRequestInProgress && (
-                <Container
-                  crossAlignment="center"
-                  mainAlignment="center"
-                  height="auto"
-                  padding={{ top: 'medium' }}
-                >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
-                </Container>
-              )}
-              {accountList.length === 0 && !isRequestInProgress && (
-                <Container orientation="column" crossAlignment="center" mainAlignment="center">
-                  <Row>
-                    <img src={logo} alt="logo" />
-                  </Row>
-                  <Row
-                    padding={{ top: 'extralarge' }}
-                    orientation="vertical"
-                    crossAlignment="center"
-                    style={{ textAlign: 'center' }}
-                  >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
-                      {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
-                  </Row>
-                  <Row
-                    orientation="vertical"
-                    crossAlignment="center"
-                    style={{ textAlign: 'center' }}
-                    padding={{ top: 'small' }}
-                    width="53%"
-                  >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
-                      <Trans
-                        i18nKey="label.create_account_list_msg"
-                        defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
-                        components={{ bold: <strong /> }}
-                      />
-                    </Text>
-                  </Row>
-                </Container>
-              )}
-              {accountList.length !== 0 && (
-                <Container
-                  style={{
-                    position: 'sticky',
-                    bottom: isTableTooTall ? '0' : '-4rem',
-                  }}
-                >
-                  <ScrollContainer isVisible={isTableTooTall} />
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    background="gray6"
-                    width="100%"
-                    padding={{ right: 'extralarge' }}
-                    height="auto"
-                  >
-                    <Container crossAlignment="flex-start">
-                      <Paging
-                        totalItem={totalAccount}
-                        setOffset={setOffset}
-                        pageSize={limit}
-                        currentPageProp={accountSearchCurrentPage}
-                        onPageChange={setAccountSearchCurrentPage}
-                      />
-                    </Container>
-                    <Container
-                      crossAlignment="flex-end"
-                      orientation="horizontal"
-                      mainAlignment="flex-end"
-                      padding={{ top: 'small' }}
-                    >
-                      <TrackNumberPerPage setPageSize={setLimit} />
-                    </Container>
-                  </Container>
-                </Container>
-              )}
-              <AccountContext.Provider value={accountContextValue}>
-                {showEditAccountView && (
-                  <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
-                    <EditAccount
-                      setShowEditAccountView={setShowEditAccountView}
-                      setIsAccountDeleted={setIsAccountDeleted}
-                      selectedAccount={selectedAccount}
-                      getAccountList={getAccountList}
-                      signatureList={signatureList}
-                      signatureItems={signatureItems}
-                      getAccountDetail={getAccountDetail}
-                      defaultTab={defaultTab}
-                      setDefaultTab={setDefaultTab}
-                      showModal={showModal}
-                      setShowModal={setShowModal}
-                      isDirty={isDirty}
-                      setIsDirty={setIsDirty}
-                      STATUS_COLOR={STATUS_COLOR}
-                    />
-                  </ModalOverlay>
-                )}
-              </AccountContext.Provider>
-            </Row>
-          </Container>
-        </Row>
-      </Container>
-      {showCreateAccountView && (
-        <ModalOverlay open={showCreateAccountView} maxWidth="58.75rem">
-          <CreateAccount
-            setShowCreateAccountView={setShowCreateAccountView}
-            setIsAccountCreated={setIsAccountCreated}
-            getAccountList={getAccountList}
-            setShowEditAccountView={setShowEditAccountView}
-            openDetailView={openDetailView}
-            setShowAccountDetailView={setShowAccountDetailView}
-            setDefaultTab={setDefaultTab}
-          />
-        </ModalOverlay>
-      )}
-    </Container>
-  );
+	return (
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
+			<Row mainAlignment="flex-start" width="100%">
+				<Container
+					orientation="vertical"
+					mainAlignment="space-around"
+					background="gray6"
+					height="3.625rem"
+				>
+					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('domain.account_list', 'Accounts List')}
+							</Text>
+						</Row>
+						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
+							<Text size="medium" overflow="break-word">
+								{t('domain.accounts.totalAccounts', 'Total Accounts')} : {totalAccountCreated}
+							</Text>
+						</Row>
+						<Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
+							<Padding all={'0'}>
+								<Button
+									color="primary"
+									icon="Plus"
+									onClick={(): void => setShowCreateAccountView(true)}
+								/>
+							</Padding>
+						</Row>
+					</Row>
+				</Container>
+			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<divider-wc></divider-wc>
+			</Row>
+			<Container
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				width="100%"
+				style={{
+					position: 'relative',
+					overflow: 'auto',
+					minHeight: '10rem'
+				}}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
+			>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+					<Container height="fit" crossAlignment="flex-start" background="gray6">
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							padding={{ bottom: 'large' }}
+						>
+							<Container>
+								<Input
+									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
+									disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
+									value={searchString}
+									backgroundColor="gray5"
+									onChange={handleInputChange}
+									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+								/>
+							</Container>
+						</Row>
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							style={{
+								position: 'relative'
+							}}
+						>
+							<Table
+								rows={!isRequestInProgress ? accountList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								ref={tableRef}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										color="primary"
+										label=""
+										loading
+										onClick={(): null => null}
+									/>
+								</Container>
+							)}
+							{accountList.length === 0 && !isRequestInProgress && (
+								<Container orientation="column" crossAlignment="center" mainAlignment="center">
+									<Row>
+										<img src={logo} alt="logo" />
+									</Row>
+									<Row
+										padding={{ top: 'extralarge' }}
+										orientation="vertical"
+										crossAlignment="center"
+										style={{ textAlign: 'center' }}
+									>
+										<Text weight="light" color="#828282" size="large" overflow="break-word">
+											{t('label.this_list_is_empty', 'This list is empty.')}
+										</Text>
+									</Row>
+									<Row
+										orientation="vertical"
+										crossAlignment="center"
+										style={{ textAlign: 'center' }}
+										padding={{ top: 'small' }}
+										width="53%"
+									>
+										<Text weight="light" color="#828282" size="large" overflow="break-word">
+											<Trans
+												i18nKey="label.create_account_list_msg"
+												defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+												components={{ bold: <strong /> }}
+											/>
+										</Text>
+									</Row>
+								</Container>
+							)}
+							{accountList.length !== 0 && (
+								<Container
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
+								>
+									<ScrollContainer isVisible={isTableTooTall} />
+									<Container
+										orientation="horizontal"
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
+									>
+										<Container crossAlignment="flex-start">
+											<Paging
+												totalItem={totalAccount}
+												setOffset={setOffset}
+												pageSize={limit}
+												currentPageProp={accountSearchCurrentPage}
+												onPageChange={setAccountSearchCurrentPage}
+											/>
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
+									</Container>
+								</Container>
+							)}
+							<AccountContext.Provider value={accountContextValue}>
+								{showEditAccountView && (
+									<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
+										<EditAccount
+											setShowEditAccountView={setShowEditAccountView}
+											setIsAccountDeleted={setIsAccountDeleted}
+											selectedAccount={selectedAccount}
+											getAccountList={getAccountList}
+											signatureList={signatureList}
+											signatureItems={signatureItems}
+											getAccountDetail={getAccountDetail}
+											defaultTab={defaultTab}
+											setDefaultTab={setDefaultTab}
+											showModal={showModal}
+											setShowModal={setShowModal}
+											isDirty={isDirty}
+											setIsDirty={setIsDirty}
+											STATUS_COLOR={STATUS_COLOR}
+										/>
+									</ModalOverlay>
+								)}
+							</AccountContext.Provider>
+						</Row>
+					</Container>
+				</Row>
+			</Container>
+			{showCreateAccountView && (
+				<ModalOverlay open={showCreateAccountView} maxWidth="58.75rem">
+					<CreateAccount
+						setShowCreateAccountView={setShowCreateAccountView}
+						setIsAccountCreated={setIsAccountCreated}
+						getAccountList={getAccountList}
+						setShowEditAccountView={setShowEditAccountView}
+						openDetailView={openDetailView}
+						setShowAccountDetailView={setShowAccountDetailView}
+						setDefaultTab={setDefaultTab}
+					/>
+				</ModalOverlay>
+			)}
+		</Container>
+	);
 };
 
 export default ManageAccounts;

@@ -29,7 +29,7 @@ const EditAccountContactsSection: FC = () => {
 	);
 
 	const phoneTooltipLabel = t(
-		'label.accounts.phoneNumber.tooltip',
+		'domain.accounts.phoneNumber.tooltip',
 		'allowed chars are whitespaces, numbers and symbols -+()/,.'
 	);
 	return (
