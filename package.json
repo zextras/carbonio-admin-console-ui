@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "pnpm --filter @zextras/admin-ui-bootstrap build",
-
+    "build:dev": "pnpm --filter @zextras/admin-ui-bootstrap build:dev",
     "postbuild": "pnpm exec tsx scripts/generate-pkgbuild.ts",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
     "release": "semantic-release",

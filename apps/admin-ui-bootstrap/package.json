@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:dev": "vite build --mode='development'",
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint --cache --quiet",
