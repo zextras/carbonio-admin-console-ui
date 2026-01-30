@@ -170,7 +170,7 @@ const Tooltip = ({
 				ref: combinedTriggerRef as React.RefObject<HTMLElement>
 			} as Partial<React.HTMLAttributes<HTMLElement>>)}
 			<Portal show={open && !disabled} disablePortal={disablePortal}>
-				<TooltipWrapperWithCss open={open} $maxWidth={maxWidth} {...rest}>
+				<TooltipWrapperWithCss ref={tooltipRef} open={open} $maxWidth={maxWidth} {...rest}>
 					{label}
 				</TooltipWrapperWithCss>
 			</Portal>
