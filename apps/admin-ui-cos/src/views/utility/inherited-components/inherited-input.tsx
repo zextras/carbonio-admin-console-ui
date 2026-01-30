@@ -7,6 +7,8 @@ import { IconCheckbox, Input, Padding, Row, Text, Tooltip } from '@zextras/ui-co
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import styles from './inherited-input.module.css';
+
 interface InheritedInputProps {
   label: any;
   subValue: any;
@@ -25,12 +27,6 @@ interface InheritedInputProps {
   description?: any;
   focus?: boolean;
   highlighted?: boolean;
-}
-
-function getHighlightedInputStyle(highlighted: boolean, background: any) {
-  return highlighted
-    ? { backgroundColor: '#D5E3F6', transition: 'background-color 3s ease' }
-    : { backgroundColor: background };
 }
 
 const InheritedInput: FC<InheritedInputProps> = ({
@@ -85,12 +81,14 @@ const InheritedInput: FC<InheritedInputProps> = ({
     }
   }, [focus, inputRef]);
 
+  const inputClassName = highlight ? styles.highlighted : undefined;
+
   return (
     <Input
       data-testid={`inherited-${inputName}`}
       label={label}
       value={subValue === undefined ? inheritedValue || '' : subValue}
-      background={highlighted ? undefined : background}
+      background={background}
       inputName={inputName}
       onChange={onChange}
       disabled={disabled}
@@ -139,8 +137,7 @@ const InheritedInput: FC<InheritedInputProps> = ({
       description={description}
       {...pref}
       inputRef={inputRef}
-      highlighted={undefined}
-      style={getHighlightedInputStyle(highlight, background)}
+      className={inputClassName}
     />
   );
 };
