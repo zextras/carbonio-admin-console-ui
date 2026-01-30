@@ -8,7 +8,9 @@ import type { OutputOptions, RollupOptions } from 'rollup';
 
 import { getSharedDepNames } from './config/shared-deps-config';
 
-export const SHARED_EXTERNALS = [...getSharedDepNames(), '@zextras/admin-ui-bootstrap'] as const;
+// Shared dependencies that are externalized from all builds
+// These are loaded via import maps pointing to pre-built shared-dependencies bundles
+export const SHARED_EXTERNALS = [...getSharedDepNames()] as const;
 
 /**
  * Configuration options for ESM module rollup
@@ -54,6 +56,8 @@ export function createModuleRollupOptions(options: ESMModuleRollupOptions): Roll
  * The shell externalizes shared dependencies - they are loaded via import maps
  * which point to separately built shared-deps bundles.
  * This ensures a single instance of React/styled-components/etc across shell and sub-apps.
+ * 
+ * Sub-apps are imported via static dynamic imports and code-split into separate chunks.
  */
 export function createBootstrapRollupOptions(): RollupOptions {
   const output: OutputOptions = {
@@ -66,8 +70,8 @@ export function createBootstrapRollupOptions(): RollupOptions {
       }
       return '[name].[hash][extname]';
     },
-    // Bootstrap can inline its code but should keep app imports dynamic
-    inlineDynamicImports: true,
+    // Allow code splitting for sub-apps
+    inlineDynamicImports: false,
   };
 
   // Shell must externalize shared deps to use the same instances as sub-apps via import maps

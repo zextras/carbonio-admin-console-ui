@@ -12,8 +12,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build --force",
-    "build:dev": "turbo run build:dev --force",
+    "build": "pnpm --filter @zextras/admin-ui-bootstrap build",
+
     "postbuild": "pnpm exec tsx scripts/generate-pkgbuild.ts",
     "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
     "release": "semantic-release",

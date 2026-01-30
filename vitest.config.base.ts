@@ -9,11 +9,10 @@ import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
 import { optimizeDepsInclude } from './vitest.config.utils';
-import { appRegistryPlugin } from './apps/admin-ui-bootstrap/vite-config/vite-plugin-app-registry';
 
 function jsdomProjectConfig() {
   return {
-    plugins: [appRegistryPlugin()],
+    plugins: [],
     test: {
       name: 'unit',
       environment: 'jsdom',
@@ -96,7 +95,6 @@ function browserProjectConfig() {
       hookTimeout: 15_000,
     },
     plugins: [
-      appRegistryPlugin(),
       react(),
       svgr({
         svgrOptions: {

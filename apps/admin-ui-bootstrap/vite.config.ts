@@ -13,7 +13,6 @@ import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from '../../vite.rollup.config';
-import { appRegistryPlugin } from './vite-config/vite-plugin-app-registry';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from '../../scripts/utils';
@@ -39,7 +38,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       buildSharedDepsPlugin({ isDev }),
       postBuildPlugin(),
-      appRegistryPlugin(),
       react({
         babel: {
           plugins: ['babel-plugin-styled-components'],

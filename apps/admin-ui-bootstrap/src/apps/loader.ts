@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { loadAllApps as loadAllAppsFromRegistry } from 'virtual:app-registry';
+import { loadAllApps as loadAllAppsFromRegistry } from './app-registry';
 
 import { useAppStore } from '../store/app';
 import type { AppManifest } from './types';
