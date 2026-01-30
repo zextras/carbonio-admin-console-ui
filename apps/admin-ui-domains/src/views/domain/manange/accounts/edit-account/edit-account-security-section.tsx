@@ -19,6 +19,7 @@ import {
   Switch,
   Table,
   Text,
+  useSnackbar,
 } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';

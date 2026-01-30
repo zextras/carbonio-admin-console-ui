@@ -23,6 +23,7 @@ import {
   Table,
   Text,
   Tooltip,
+  useSnackbar,
 } from '@zextras/ui-components';
 import { debounce, map } from 'lodash-es';
 import React, {
@@ -1461,7 +1462,7 @@ const EditAccountGeneralSection: FC<{
             multiSelect={false}
             HeaderFactory={CustomHeaderFactory}
             RowFactory={HoverableRowFactory}
-          ></Table>
+          />
         </Row>
 
         <Row

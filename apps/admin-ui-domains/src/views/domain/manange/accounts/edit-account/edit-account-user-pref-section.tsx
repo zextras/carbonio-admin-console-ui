@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput, Container, Row, Text } from '@zextras/ui-components';
+import { ChipInput, Container, InheritedInput, Row, Text } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

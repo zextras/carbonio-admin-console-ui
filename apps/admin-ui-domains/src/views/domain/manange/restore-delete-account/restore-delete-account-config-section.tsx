@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 
 import { getDomainList } from '../../../../services/search-domain-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { getDatePickerContainerStyle } from '../../../utility/datepicker-utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteAccountConfigSection: FC = () => {
@@ -82,7 +81,7 @@ const RestoreDeleteAccountConfigSection: FC = () => {
             />
           </Padding>
         </Row>
-        <Container style={getDatePickerContainerStyle()}>
+        <Container>
           <DateTimePicker label="Date" width="100%" onChange={noop} />
         </Container>
       </Container>
