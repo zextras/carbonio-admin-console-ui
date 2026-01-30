@@ -4,42 +4,71 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   soapFetch,  useIsAdvanced,  useStickyBarStore } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Input,  Link,  Modal,  OverlayDivision,  Padding,  Radio,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from "@zextras/ui-components";
-import {  isEmpty  } from "lodash-es";
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {  Trans, useTranslation  } from "react-i18next";
-import styled from "styled-components";
+import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  Input,
+  Link,
+  Modal,
+  OverlayDivision,
+  Padding,
+  Radio,
+  Row,
+  Select,
+  Switch,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { isEmpty } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {   Bucket,  BucketVolume,  objectType,  Volume,  VolumeType } from "../../../../../../types";
-import {   ALIBABA,  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,  CEPH,  CLOUDIAN,  CUSTOM_S3,  EMC,  FILEBLOB,  INDEX,  MINIO,  OPENIO,  PRIMARY,  PRIMARY_TYPE_VALUE,  S3,  SCALITYS3,  SECONDARY,  SECONDARY_TYPE_VALUE,  SWIFT,  UNUSED,  USAGE_IN_EXTERNAL_BACKUP,  ZIMBRA_ADMIN_URN } from "../../../../../constants";
-import {  fetchSoap  } from "../../../../../services/bucket-service";
-import {  useBucketVolumeStore  } from "../../../../../store/bucket-volume/store";
-import Displayer from "../../../../components/displayer";
-import ListRow from "../../../../list/list-row";
-import {   BucketTypeItems,  volumeAllocationList,  volumeTypeList } from "../../../../utility/utils";
+import { Bucket, BucketVolume, objectType, Volume, VolumeType } from '../../../../../../types';
+import {
+  ALIBABA,
+  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  CEPH,
+  CLOUDIAN,
+  CUSTOM_S3,
+  EMC,
+  FILEBLOB,
+  INDEX,
+  MINIO,
+  OPENIO,
+  PRIMARY,
+  PRIMARY_TYPE_VALUE,
+  S3,
+  SCALITYS3,
+  SECONDARY,
+  SECONDARY_TYPE_VALUE,
+  SWIFT,
+  UNUSED,
+  USAGE_IN_EXTERNAL_BACKUP,
+  ZIMBRA_ADMIN_URN,
+} from '../../../../../constants';
+import { fetchSoap } from '../../../../../services/bucket-service';
+import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
+import Displayer from '../../../../components/displayer';
+import ListRow from '../../../../list/list-row';
+import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 39.4rem;
-  top: 0rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+const overlayStyle = {
+  position: 'fixed' as const,
+  width: '39.4rem',
+  top: '0rem',
+  right: 0,
+  bottom: 0,
+  height: 'auto',
+  maxHeight: '100%',
+  overflow: 'hidden' as const,
+  background: '#0d0d0d',
+  opacity: 0.4,
+  zIndex: 11,
+  paddingTop: '2rem',
+};
 
 const ModifyVolume: FC<{
   volumeId: any;
@@ -68,21 +97,19 @@ const ModifyVolume: FC<{
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const [isDirty, setIsDirty] = useState(false);
   const [volumeDetail, setVolumeDetail] = useState<any>({
-    name: "",
+    name: '',
     id: 0,
     type: 0,
     compressBlobs: false,
     isCurrent: false,
-    rootpath: "",
-    compressionThreshold: "",
+    rootpath: '',
+    compressionThreshold: '',
   });
   const [name, setName] = useState<string>(volumeDetail?.name);
   const [type, setType] = useState<any>();
   const [id, setId] = useState<string>(volumeDetail?.id);
   const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
-  const [compressBlobs, setCompressBlobs] = useState<boolean>(
-    volumeDetail?.compressBlobs,
-  );
+  const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
   const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
   const isCurrentRef = useRef<HTMLDivElement>(null);
   const [compressionThreshold, setCompressionThreshold] = useState<string>(
@@ -92,30 +119,29 @@ const ModifyVolume: FC<{
   const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
   const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
   const [allocation, setAllocation] = useState<any>();
-  const [bucketName, setBucketName] = useState("");
-  const [storeType, setStoreType] = useState<string | undefined>("");
-  const [bucketConfigurationId, setBucketConfigurationId] = useState<
-    string | undefined
-  >();
+  const [bucketName, setBucketName] = useState('');
+  const [storeType, setStoreType] = useState<string | undefined>('');
+  const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
   const [bucketS3, setBucketS3] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [volumePrefix, setVolumePrefix] = useState<string | undefined>(
     externalVolDetail?.volumePrefix,
   );
-  const [useInfrequentAccess, setUseInfrequentAccess] = useState<
-    boolean | undefined
-  >(externalVolDetail?.useInfrequentAccess);
-  const [useIntelligentTiering, setUseIntelligentTiering] = useState<
-    boolean | undefined
-  >(externalVolDetail?.useIntelligentTiering);
+  const [useInfrequentAccess, setUseInfrequentAccess] = useState<boolean | undefined>(
+    externalVolDetail?.useInfrequentAccess,
+  );
+  const [useIntelligentTiering, setUseIntelligentTiering] = useState<boolean | undefined>(
+    externalVolDetail?.useIntelligentTiering,
+  );
   const [infrequentAccessThreshold, setInfrequentAccessThreshold] = useState<
     number | string | undefined
   >(externalVolDetail?.infrequentAccessThreshold);
   const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
   const [currentVolume, setCurrentVolume] = useState<Volume>();
   const createSnackbar = useSnackbar();
-  const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } =
-    useBucketVolumeStore((state) => state);
+  const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
+    (state) => state,
+  );
   const { isSticky, setIsSticky } = useStickyBarStore();
 
   const labelMap: Record<number | string, string> = {
@@ -162,8 +188,8 @@ const ModifyVolume: FC<{
       const obj: { [key: string]: string | boolean | number | undefined } = {};
 
       obj._jsns = ZIMBRA_ADMIN_URN;
-      obj.module = "ZxPowerstore";
-      obj.action = "doUpdateVolume";
+      obj.module = 'ZxPowerstore';
+      obj.action = 'doUpdateVolume';
       obj.targetServers = selectedServerName;
       obj.currentVolumeName = volumeDetail?.name;
       obj.volumeName = name;
@@ -177,17 +203,13 @@ const ModifyVolume: FC<{
         obj.volumeThreshold = compressionThreshold || 0;
       } else {
         if (
-          externalVolDetail?.storeType?.toUpperCase() ===
-            ALIBABA?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
           externalVolDetail?.storeType?.toUpperCase() === CEPH?.toUpperCase() ||
-          externalVolDetail?.storeType?.toUpperCase() ===
-            CLOUDIAN?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === CLOUDIAN?.toUpperCase() ||
           externalVolDetail?.storeType?.toUpperCase() === EMC?.toUpperCase() ||
-          externalVolDetail?.storeType?.toUpperCase() ===
-            SCALITYS3?.toUpperCase() ||
+          externalVolDetail?.storeType?.toUpperCase() === SCALITYS3?.toUpperCase() ||
           externalVolDetail?.storeType?.toUpperCase() === MINIO ||
-          externalVolDetail?.storeType?.toUpperCase() ===
-            CUSTOM_S3?.toUpperCase()
+          externalVolDetail?.storeType?.toUpperCase() === CUSTOM_S3?.toUpperCase()
         ) {
           obj.volumePrefix = volumePrefix;
           obj.bucketConfigurationId = bucketConfigurationId;
@@ -199,69 +221,59 @@ const ModifyVolume: FC<{
           obj.infrequentAccessThreshold = infrequentAccessThreshold;
           obj.useIntelligentTiering = useIntelligentTiering;
         }
-        if (
-          externalVolDetail?.storeType?.toUpperCase() ===
-          FILEBLOB?.toUpperCase()
-        ) {
+        if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
           obj.volumePath = rootpath;
           obj.volumeCompressed = compressBlobs;
           obj.volumeThreshold = compressionThreshold || 0;
         }
-        if (
-          externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()
-        ) {
-          obj.url = "";
-          obj.account = "";
-          obj.namespace = "";
+        if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
+          obj.url = '';
+          obj.account = '';
+          obj.namespace = '';
           obj.proxyPort = 1;
           obj.accountPort = 1;
         }
-        if (
-          externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()
-        ) {
-          obj.url = "";
-          obj.username = "";
-          obj.password = "";
-          obj.authenticationMethod = "";
-          obj.authenticationMethodScope = "";
-          obj.tenantId = "";
-          obj.tenantName = "";
-          obj.domain = "";
-          obj.proxyHost = "";
+        if (externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
+          obj.url = '';
+          obj.username = '';
+          obj.password = '';
+          obj.authenticationMethod = '';
+          obj.authenticationMethodScope = '';
+          obj.tenantId = '';
+          obj.tenantName = '';
+          obj.domain = '';
+          obj.proxyHost = '';
           obj.proxyPort = 10;
-          obj.proxyUsername = "";
-          obj.proxyPassword = "";
-          obj.publicHost = "";
-          obj.privateHost = "";
-          obj.region = "";
+          obj.proxyUsername = '';
+          obj.proxyPassword = '';
+          obj.publicHost = '';
+          obj.privateHost = '';
+          obj.region = '';
           obj.maxDeleteObjectsCount = 10;
         }
       }
 
-      await fetchSoap("zextras", obj)
+      await fetchSoap('zextras', obj)
         .then((res) => {
           const result = JSON.parse(res?.Body?.response?.content);
           const updateResponse = result?.response?.[selectedServerName];
 
           if (updateResponse?.ok) {
             createSnackbar({
-              key: "1",
-              severity: "success",
-              label: t(
-                "label.volume_detail_success",
-                "All changes have been saved successfully",
-              ),
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_detail_success', 'All changes have been saved successfully'),
             });
             getAllVolumesRequest();
             setmodifyVolumeToggle(false);
             setIsLoading(false);
           } else {
             createSnackbar({
-              key: "error",
-              severity: "error",
+              key: 'error',
+              severity: 'error',
 
-              label: t("label.volume_detail_error", "{{message}}", {
-                message: "Something went wrong, please try again",
+              label: t('label.volume_detail_error', '{{message}}', {
+                message: 'Something went wrong, please try again',
               }),
               autoHideTimeout: 5000,
             });
@@ -271,10 +283,10 @@ const ModifyVolume: FC<{
         })
         .catch(() => {
           createSnackbar({
-            key: "error",
-            severity: "error",
-            label: t("label.volume_detail_error", "{{message}}", {
-              message: "Something went wrong, please try again",
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
             }),
             autoHideTimeout: 5000,
           });
@@ -283,11 +295,11 @@ const ModifyVolume: FC<{
         });
     } else {
       await soapFetch(
-        "ModifyVolume",
+        'ModifyVolume',
         {
           _jsns: ZIMBRA_ADMIN_URN,
-          module: "ZxCore",
-          action: "ModifyVolumeRequest",
+          module: 'ZxCore',
+          action: 'ModifyVolumeRequest',
           id,
           volume: {
             id,
@@ -304,11 +316,11 @@ const ModifyVolume: FC<{
         .then(() => {
           if (isCurrent) {
             soapFetch(
-              "SetCurrentVolume",
+              'SetCurrentVolume',
               {
                 _jsns: ZIMBRA_ADMIN_URN,
-                module: "ZxCore",
-                action: "SetCurrentVolumeRequest",
+                module: 'ZxCore',
+                action: 'SetCurrentVolumeRequest',
                 id,
                 type: type?.value,
               },
@@ -317,10 +329,10 @@ const ModifyVolume: FC<{
               },
             ).catch(() => {
               createSnackbar({
-                key: "error",
-                severity: "error",
-                label: t("label.volume_detail_error", "{{message}}", {
-                  message: "Something went wrong, please try again",
+                key: 'error',
+                severity: 'error',
+                label: t('label.volume_detail_error', '{{message}}', {
+                  message: 'Something went wrong, please try again',
                 }),
                 autoHideTimeout: 5000,
               });
@@ -328,12 +340,9 @@ const ModifyVolume: FC<{
             });
           }
           createSnackbar({
-            key: "1",
-            severity: "success",
-            label: t(
-              "label.volume_detail_success",
-              "All changes have been saved successfully",
-            ),
+            key: '1',
+            severity: 'success',
+            label: t('label.volume_detail_success', 'All changes have been saved successfully'),
           });
           getAllVolumesRequest();
           setmodifyVolumeToggle(false);
@@ -341,10 +350,10 @@ const ModifyVolume: FC<{
         })
         .catch(() => {
           createSnackbar({
-            key: "error",
-            severity: "error",
-            label: t("label.volume_detail_error", "{{message}}", {
-              message: "Something went wrong, please try again",
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
             }),
             autoHideTimeout: 5000,
           });
@@ -356,15 +365,11 @@ const ModifyVolume: FC<{
   };
 
   const onUndo = (): void => {
-    previousDetail?.name
-      ? setName(previousDetail?.name)
-      : setName(volumeDetail?.name);
+    previousDetail?.name ? setName(previousDetail?.name) : setName(volumeDetail?.name);
     const volumeTypeObject = volTypeList?.find(
       (item: VolumeType) => item?.value === volumeDetail?.type,
     );
-    previousDetail?.type
-      ? setType(previousDetail?.type)
-      : setType(volumeTypeObject);
+    previousDetail?.type ? setType(previousDetail?.type) : setType(volumeTypeObject);
     previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
     previousDetail?.rootpath
       ? setRootpath(previousDetail?.rootpath)
@@ -386,9 +391,7 @@ const ModifyVolume: FC<{
       : setVolumePrefix(externalVolDetail?.volumePrefix);
     previousDetail?.infrequentAccessThreshold
       ? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
-      : setInfrequentAccessThreshold(
-          externalVolDetail?.infrequentAccessThreshold,
-        );
+      : setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
     previousDetail?.useInfrequentAccess
       ? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
       : setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
@@ -409,17 +412,17 @@ const ModifyVolume: FC<{
   );
   const buttons = [
     {
-      align: "right",
-      color: "error",
-      label: t("label.delete", "delete"),
+      align: 'right',
+      color: 'error',
+      label: t('label.delete', 'delete'),
       loading: !volumeDetail?.id,
       onClick: (): void => {
         setOpen(true);
       },
     },
     {
-      align: "left",
-      icon: isSticky ? "Pin3Outline" : "Unpin3Outline",
+      align: 'left',
+      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
       },
@@ -427,19 +430,18 @@ const ModifyVolume: FC<{
   ];
 
   const getAllBuckets = useCallback(() => {
-    fetchSoap("zextras", {
+    fetchSoap('zextras', {
       _jsns: ZIMBRA_ADMIN_URN,
-      module: "ZxCore",
-      action: "listBuckets",
-      type: "all",
+      module: 'ZxCore',
+      action: 'listBuckets',
+      type: 'all',
       targetServer: selectedServerName,
       showSecrets: true,
     }).then((res) => {
       const response = JSON.parse(res.Body.response.content);
       if (response.ok) {
         const bucName = response.response.values.find(
-          (b: objectType) =>
-            b?.uuid === externalVolDetail?.bucketConfigurationId,
+          (b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId,
         )?.bucketName;
         setBucketName(bucName);
         setStoreType(externalVolDetail?.storeType);
@@ -447,13 +449,10 @@ const ModifyVolume: FC<{
 
         const volUnusedBucketList: object[] = [];
         const allData = response?.response?.values
-          ?.filter(
-            (items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
-          )
+          ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
           .map((items: objectType) => {
             const volumeObject: string | undefined = bucketTypeItems?.find(
-              (s) =>
-                s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
+              (s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
             )?.label;
             volUnusedBucketList.push({
               label: `${volumeObject} | ${items?.label}`,
@@ -510,10 +509,7 @@ const ModifyVolume: FC<{
   }, [volumeDetail, rootpath]);
 
   useEffect(() => {
-    if (
-      volumeDetail !== undefined &&
-      volumeDetail?.compressBlobs !== compressBlobs
-    ) {
+    if (volumeDetail !== undefined && volumeDetail?.compressBlobs !== compressBlobs) {
       setIsDirty(true);
     }
   }, [volumeDetail, compressBlobs]);
@@ -525,19 +521,13 @@ const ModifyVolume: FC<{
   }, [volumeDetail, isCurrent]);
 
   useEffect(() => {
-    if (
-      volumeDetail !== undefined &&
-      volumeDetail?.compressionThreshold !== compressionThreshold
-    ) {
+    if (volumeDetail !== undefined && volumeDetail?.compressionThreshold !== compressionThreshold) {
       setIsDirty(true);
     }
   }, [volumeDetail, compressionThreshold]);
 
   useEffect(() => {
-    if (
-      externalVolDetail !== undefined &&
-      externalVolDetail?.volumePrefix !== volumePrefix
-    ) {
+    if (externalVolDetail !== undefined && externalVolDetail?.volumePrefix !== volumePrefix) {
       setIsDirty(true);
     }
   }, [externalVolDetail, volumePrefix]);
@@ -647,9 +637,7 @@ const ModifyVolume: FC<{
           setExternalVolDetail({});
         }
 
-        const volume = volumeList?.secondaries?.find(
-          (v: Volume) => v?.isCurrent,
-        );
+        const volume = volumeList?.secondaries?.find((v: Volume) => v?.isCurrent);
         setCurrentVolume(volume);
       }
       if (volumeDetail?.type === 10) {
@@ -686,10 +674,10 @@ const ModifyVolume: FC<{
     (volId: string): void => {
       setIsLoading(true);
       soapFetch(
-        "GetVolume",
+        'GetVolume',
         {
           _jsns: ZIMBRA_ADMIN_URN,
-          module: "ZxPowerstore",
+          module: 'ZxPowerstore',
           id: volId,
         },
         {
@@ -705,10 +693,10 @@ const ModifyVolume: FC<{
         })
         .catch(() => {
           createSnackbar({
-            key: "error",
-            severity: "error",
-            label: t("label.volume_detail_error", "{{message}}", {
-              message: "Something went wrong, please try again",
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
             }),
             autoHideTimeout: 5000,
           });
@@ -732,57 +720,38 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <OverlayDivision ovelayStyle={overlayStyle} />}
       <Container
         background="gray6"
         mainAlignment="flex-start"
         orientation="vertical"
-        style={{ overflowY: "auto" }}
+        style={{ overflowY: 'auto' }}
       >
-        <Row
-          mainAlignment="flex-start"
-          crossAlignment="center"
-          width="100%"
-          height="4.15rem"
-        >
-          <Row
-            mainAlignment="flex-start"
-            padding={{ all: "large" }}
-            takeAvailableSpace
-          >
+        <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
+          <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
             <Text size="extralarge" weight="bold">
-              {t("label.volume_detail_page_title", "{{message}} Details", {
+              {t('label.volume_detail_page_title', '{{message}} Details', {
                 message: volumeDetail?.name,
               })}
             </Text>
           </Row>
           <Row
-            padding={{ all: "small" }}
+            padding={{ all: 'small' }}
             width="50%"
             mainAlignment="flex-end"
             crossAlignment="flex-end"
           >
             <Padding right="small">
               {isDirty && (
-                <Button
-                  label={t("label.cancel", "Cancel")}
-                  color="secondary"
-                  onClick={onUndo}
-                />
+                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
               )}
             </Padding>
-            {isDirty && (
-              <Button
-                label={t("label.save", "Save")}
-                color="primary"
-                onClick={onSave}
-              />
-            )}
+            {isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
           </Row>
-          <Row padding={{ horizontal: "small" }}>
+          <Row padding={{ horizontal: 'small' }}>
             <Button
               type="ghost"
-              color={"text"}
+              color={'text'}
               icon="CloseOutline"
               onClick={(): void => setmodifyVolumeToggle(false)}
             />
@@ -792,13 +761,13 @@ const ModifyVolume: FC<{
         <Displayer buttons={buttons} pinIcon={isSticky} />
         {Object.keys(externalVolDetail)?.length === 0 ? (
           <Container
-            padding={{ horizontal: "large", bottom: "large" }}
+            padding={{ horizontal: 'large', bottom: 'large' }}
             mainAlignment="flex-start"
             crossAlignment="flex-start"
           >
-            <Row padding={{ top: "small" }} width="100%">
+            <Row padding={{ top: 'small' }} width="100%">
               <Input
-                label={t("label.volume_name", "Volume Name")}
+                label={t('label.volume_name', 'Volume Name')}
                 value={name}
                 backgroundColor="gray5"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -806,30 +775,28 @@ const ModifyVolume: FC<{
                 }
               />
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Select
                 items={volTypeList}
                 background="gray5"
-                label={t("label.volume_main", "Volume Main")}
+                label={t('label.volume_main', 'Volume Main')}
                 selection={type}
                 showCheckbox={false}
                 onChange={onVolumeTypeChange}
                 disabled
               />
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Input
-                label={t("label.volume_id", "Volume ID")}
+                label={t('label.volume_id', 'Volume ID')}
                 value={id}
                 backgroundColor="gray6"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                  setId(e?.target?.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setId(e?.target?.value)}
               />
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Input
-                label={t("label.path", "Path")}
+                label={t('label.path', 'Path')}
                 value={rootpath}
                 backgroundColor="gray5"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -840,22 +807,22 @@ const ModifyVolume: FC<{
             <Padding top="extrasmall">
               <Text color="secondary" overflow="break-word" size="extrasmall">
                 {t(
-                  "the_change_will_not_move_the_data",
+                  'the_change_will_not_move_the_data',
 
-                  "The change will not move the data",
+                  'The change will not move the data',
                 )}
               </Text>
             </Padding>
             <Row
-              padding={{ top: "large" }}
+              padding={{ top: 'large' }}
               width="100%"
               mainAlignment="center"
               crossAlignment="center"
               background="gray6"
             >
-              <Row width={isAdvanced ? "48%" : "100%"}>
+              <Row width={isAdvanced ? '48%' : '100%'}>
                 <Radio
-                  label={t("label.primary_volume", "This is a Primary Volume")}
+                  label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
                   onClick={(): void => {
@@ -867,10 +834,7 @@ const ModifyVolume: FC<{
               {isAdvanced && (
                 <Row width="48%">
                   <Radio
-                    label={t(
-                      "label.secondary_volume",
-                      "This is a Secondary Volume",
-                    )}
+                    label={t('label.secondary_volume', 'This is a Secondary Volume')}
                     value={SECONDARY_TYPE_VALUE}
                     checked={type?.value === 2}
                     onClick={(): void => {
@@ -881,32 +845,21 @@ const ModifyVolume: FC<{
                 </Row>
               )}
             </Row>
-            <Row
-              mainAlignment="flex-start"
-              padding={{ top: "large" }}
-              width="100%"
-            >
+            <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
               {volumeDetail?.type !== 10 && (
                 <>
                   <Row width="48%" mainAlignment="flex-start">
                     <Switch
                       value={compressBlobs}
-                      label={t(
-                        "label.enable_compression",
-                        "Enable Compression",
-                      )}
+                      label={t('label.enable_compression', 'Enable Compression')}
                       onClick={(): void => setCompressBlobs(!compressBlobs)}
                       iconColor="primary"
                     />
                     <Padding top="extrasmall">
-                      <Text
-                        color="secondary"
-                        overflow="break-word"
-                        size="extrasmall"
-                      >
+                      <Text color="secondary" overflow="break-word" size="extrasmall">
                         {t(
-                          "this_will_not_affect_data_already_stored",
-                          "This will not affect data already stored",
+                          'this_will_not_affect_data_already_stored',
+                          'This will not affect data already stored',
                         )}
                       </Text>
                     </Padding>
@@ -918,8 +871,8 @@ const ModifyVolume: FC<{
                 <Tooltip
                   placement="top"
                   label={t(
-                    "warning.is_current",
-                    "Firstly, you have to set another volume as the current one.",
+                    'warning.is_current',
+                    'Firstly, you have to set another volume as the current one.',
                   )}
                   maxWidth="auto"
                   disabled={!isCurrent}
@@ -927,7 +880,7 @@ const ModifyVolume: FC<{
                   <Switch
                     ref={isCurrentRef}
                     value={isCurrent}
-                    label={t("label.enable_current", "Enable as Current")}
+                    label={t('label.enable_current', 'Enable as Current')}
                     onClick={(): void => {
                       !isCurrent && setIsCurrentToggle(true);
                     }}
@@ -938,12 +891,9 @@ const ModifyVolume: FC<{
             </Row>
             {volumeDetail?.type !== 10 && (
               <>
-                <Row padding={{ top: "small" }} width="50%">
+                <Row padding={{ top: 'small' }} width="50%">
                   <Input
-                    label={t(
-                      "label.compression_threshold",
-                      "Compression Threshold",
-                    )}
+                    label={t('label.compression_threshold', 'Compression Threshold')}
                     value={compressionThreshold}
                     backgroundColor="gray6"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -953,14 +903,10 @@ const ModifyVolume: FC<{
                   />
                 </Row>
                 <Padding top="extrasmall">
-                  <Text
-                    color="secondary"
-                    overflow="break-word"
-                    size="extrasmall"
-                  >
+                  <Text color="secondary" overflow="break-word" size="extrasmall">
                     {t(
-                      "this_will_not_affect_data_already_stored",
-                      "This will not affect data already stored",
+                      'this_will_not_affect_data_already_stored',
+                      'This will not affect data already stored',
                     )}
                   </Text>
                 </Padding>
@@ -969,23 +915,23 @@ const ModifyVolume: FC<{
           </Container>
         ) : (
           <Container
-            padding={{ horizontal: "large", bottom: "large" }}
+            padding={{ horizontal: 'large', bottom: 'large' }}
             mainAlignment="flex-start"
             crossAlignment="flex-start"
           >
-            <Row padding={{ top: "small" }} width="100%">
+            <Row padding={{ top: 'small' }} width="100%">
               <Input
                 inputName="server"
-                label={t("label.volume_server_name", "Server")}
+                label={t('label.volume_server_name', 'Server')}
                 value={selectedServerName}
                 backgroundColor="gray5"
               />
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Select
                 items={volAllocationList}
                 background="gray5"
-                label={t("label.storage_type", "Storage Type")}
+                label={t('label.storage_type', 'Storage Type')}
                 showCheckbox={false}
                 selection={allocation}
                 disabled
@@ -994,9 +940,9 @@ const ModifyVolume: FC<{
                 }}
               />
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Input
-                label={t("label.volume_name", "Volume Name")}
+                label={t('label.volume_name', 'Volume Name')}
                 value={name}
                 backgroundColor="gray6"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -1006,13 +952,13 @@ const ModifyVolume: FC<{
             </Row>
             {backupUnusedBucketList?.length !== 0 && (
               <>
-                <Row padding={{ top: "large" }} width="100%">
+                <Row padding={{ top: 'large' }} width="100%">
                   <Select
                     items={backupUnusedBucketList}
                     background="gray5"
                     label={t(
-                      "label.volume_available_unused_Buckets_list_in_backup",
-                      "Available Buckets List (that are not in use in the backup)",
+                      'label.volume_available_unused_Buckets_list_in_backup',
+                      'Available Buckets List (that are not in use in the backup)',
                     )}
                     showCheckbox={false}
                     selection={backupUnusedBucketList?.find(
@@ -1022,15 +968,8 @@ const ModifyVolume: FC<{
                   />
                 </Row>
                 <Padding top="extrasmall">
-                  <Text
-                    color="secondary"
-                    overflow="break-word"
-                    size="extrasmall"
-                  >
-                    {t(
-                      "the_change_will_not_move_the_data",
-                      "The change will not move the data",
-                    )}
+                  <Text color="secondary" overflow="break-word" size="extrasmall">
+                    {t('the_change_will_not_move_the_data', 'The change will not move the data')}
                   </Text>
                 </Padding>
               </>
@@ -1039,10 +978,10 @@ const ModifyVolume: FC<{
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
-                padding={{ top: "large", right: "large" }}
+                padding={{ top: 'large', right: 'large' }}
               >
                 <Input
-                  label={t("label.bucket_name", "Bucket Name")}
+                  label={t('label.bucket_name', 'Bucket Name')}
                   backgroundColor="gray6"
                   value={bucketName}
                 />
@@ -1050,28 +989,24 @@ const ModifyVolume: FC<{
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
-                padding={{ top: "large", right: "large" }}
+                padding={{ top: 'large', right: 'large' }}
               >
-                <Input
-                  label={t("label.type", "Type")}
-                  backgroundColor="gray6"
-                  value={storeType}
-                />
+                <Input label={t('label.type', 'Type')} backgroundColor="gray6" value={storeType} />
               </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
-                padding={{ top: "large" }}
+                padding={{ top: 'large' }}
               >
                 <Input
-                  label={t("label.ID", "ID")}
+                  label={t('label.ID', 'ID')}
                   backgroundColor="gray6"
                   value={bucketConfigurationId}
                 />
               </Container>
             </ListRow>
             <Row
-              padding={{ top: "large" }}
+              padding={{ top: 'large' }}
               width="100%"
               mainAlignment="center"
               crossAlignment="center"
@@ -1079,7 +1014,7 @@ const ModifyVolume: FC<{
             >
               <Row width="48%">
                 <Radio
-                  label={t("label.primary_volume", "This is a Primary Volume")}
+                  label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
                   onClick={(): void => {
@@ -1090,10 +1025,7 @@ const ModifyVolume: FC<{
               </Row>
               <Row width="48%">
                 <Radio
-                  label={t(
-                    "label.secondary_volume",
-                    "This is a Secondary Volume",
-                  )}
+                  label={t('label.secondary_volume', 'This is a Secondary Volume')}
                   value={SECONDARY_TYPE_VALUE}
                   checked={type?.value === 2}
                   onClick={(): void => {
@@ -1103,12 +1035,12 @@ const ModifyVolume: FC<{
                 />
               </Row>
             </Row>
-            <Row padding={{ top: "large" }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%">
               <Input
                 inputName="prefix"
                 label={t(
-                  "label.prefix_name",
-                  "Prefix - all objects will have this prefix in their name",
+                  'label.prefix_name',
+                  'Prefix - all objects will have this prefix in their name',
                 )}
                 value={volumePrefix}
                 backgroundColor="gray5"
@@ -1119,23 +1051,20 @@ const ModifyVolume: FC<{
             </Row>
             <Padding top="extrasmall">
               <Text color="secondary" overflow="break-word" size="extrasmall">
-                {t(
-                  "the_change_will_not_move_the_data",
-                  "The change will not move the data",
-                )}
+                {t('the_change_will_not_move_the_data', 'The change will not move the data')}
               </Text>
             </Padding>
             {bucketS3 && (
               <>
                 <Row
-                  padding={{ top: "large" }}
+                  padding={{ top: 'large' }}
                   mainAlignment="flex-start"
                   width="100%"
                   background="gray6"
                 >
                   <Input
                     inputName="infrequentAccessThreshold"
-                    label={t("label.size_threshold", "Size Threshold")}
+                    label={t('label.size_threshold', 'Size Threshold')}
                     backgroundColor="gray5"
                     value={infrequentAccessThreshold}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -1143,29 +1072,16 @@ const ModifyVolume: FC<{
                     }
                   />
                 </Row>
-                <Row
-                  padding={{ top: "large" }}
-                  mainAlignment="flex-start"
-                  width="100%"
-                >
+                <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
                   <Row mainAlignment="flex-start" width="100%">
                     <Switch
                       value={useInfrequentAccess}
-                      label={t(
-                        "label.use_infraquent_access",
-                        "Use infrequent access",
-                      )}
-                      onClick={(): void =>
-                        setUseInfrequentAccess(!useInfrequentAccess)
-                      }
+                      label={t('label.use_infraquent_access', 'Use infrequent access')}
+                      onClick={(): void => setUseInfrequentAccess(!useInfrequentAccess)}
                       iconColor="primary"
                     />
                   </Row>
-                  <Row
-                    mainAlignment="flex-start"
-                    width="100%"
-                    padding={{ left: "extralarge" }}
-                  >
+                  <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
                     <Link
                       color="secondary"
                       href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
@@ -1180,28 +1096,15 @@ const ModifyVolume: FC<{
                     </Link>
                   </Row>
                 </Row>
-                <Row
-                  padding={{ top: "large" }}
-                  mainAlignment="flex-start"
-                  width="100%"
-                >
+                <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
                   <Switch
                     value={useIntelligentTiering}
-                    label={t(
-                      "label.use_intelligent_tiering",
-                      "Use intelligent tiering",
-                    )}
-                    onClick={(): void =>
-                      setUseIntelligentTiering(!useIntelligentTiering)
-                    }
+                    label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+                    onClick={(): void => setUseIntelligentTiering(!useIntelligentTiering)}
                     iconColor="primary"
                   />
                 </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{ left: "extralarge" }}
-                >
+                <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
                   <Link
                     color="secondary"
                     href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
@@ -1217,16 +1120,12 @@ const ModifyVolume: FC<{
                 </Row>
               </>
             )}
-            <Row
-              padding={{ top: "large" }}
-              mainAlignment="flex-start"
-              width="100%"
-            >
+            <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
               <Tooltip
                 placement="top"
                 label={t(
-                  "warning.is_current",
-                  "Firstly, you have to set another volume as the current one.",
+                  'warning.is_current',
+                  'Firstly, you have to set another volume as the current one.',
                 )}
                 maxWidth="auto"
                 disabled={!isCurrent}
@@ -1234,7 +1133,7 @@ const ModifyVolume: FC<{
                 <Switch
                   ref={isCurrentRef}
                   value={isCurrent}
-                  label={t("label.enable_current", "Enable as Current")}
+                  label={t('label.enable_current', 'Enable as Current')}
                   onClick={(): void => {
                     !isCurrent && setIsCurrentToggle(true);
                   }}
@@ -1242,15 +1141,11 @@ const ModifyVolume: FC<{
                 />
               </Tooltip>
             </Row>
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              padding={{ left: "extralarge" }}
-            >
+            <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
               <Text color="secondary">
                 {t(
-                  "label.enable_current_helptext",
-                  "Enabling this option will disable the current active volume.",
+                  'label.enable_current_helptext',
+                  'Enabling this option will disable the current active volume.',
                 )}
               </Text>
             </Row>
@@ -1259,8 +1154,8 @@ const ModifyVolume: FC<{
         <Modal
           open={isCurrentToggle && !isCurrent}
           title={t(
-            "modal.iscurrent_confirm.title",
-            "You are setting {{name}} as the current volume",
+            'modal.iscurrent_confirm.title',
+            'You are setting {{name}} as the current volume',
             {
               name,
             },
@@ -1270,15 +1165,9 @@ const ModifyVolume: FC<{
             setIsCurrent(true);
             setIsCurrentToggle(false);
           }}
-          confirmLabel={t(
-            "modal.iscurrent_confirm.confirm_label",
-            "YES, PROCEED",
-          )}
+          confirmLabel={t('modal.iscurrent_confirm.confirm_label', 'YES, PROCEED')}
           onSecondaryAction={(): void => setIsCurrentToggle(false)}
-          secondaryActionLabel={t(
-            "modal.iscurrent_confirm.secondary_label",
-            "NO, GO BACK",
-          )}
+          secondaryActionLabel={t('modal.iscurrent_confirm.secondary_label', 'NO, GO BACK')}
           showCloseIcon
         >
           <Padding vertical="small">

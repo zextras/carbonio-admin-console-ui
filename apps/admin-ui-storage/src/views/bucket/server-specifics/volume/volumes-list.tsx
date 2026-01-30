@@ -24,7 +24,6 @@ import {
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { objectType, Volume } from '../../../../../types';
 import {
@@ -57,10 +56,6 @@ import { VolumeContext } from './create-volume/volume-context';
 import DeleteVolumeModel from './delete-volume-model';
 import IndexerVolumeTable from './indexer-volume-table';
 import ModifyVolume from './modify-volume/modify-volume';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
@@ -727,11 +722,11 @@ const VolumesDetailPanel: FC = () => {
         </ModalOverlay>
       )}
 
-      <RelativeContainer
+      <Container
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflowY: 'auto' }}
+        style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
         {open && (
@@ -871,7 +866,7 @@ const VolumesDetailPanel: FC = () => {
             </Row>
           </Container>
         </Container>
-      </RelativeContainer>
+      </Container>
     </>
   );
 };

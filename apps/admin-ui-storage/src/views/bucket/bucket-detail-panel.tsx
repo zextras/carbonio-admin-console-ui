@@ -21,7 +21,6 @@ import { TFunction } from 'i18next';
 import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { objectType, TestConnectionObjectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
@@ -33,10 +32,6 @@ import ListRow from '../list/list-row';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const headers = (t: TFunction): any => [
   {
@@ -339,11 +334,11 @@ const BucketDetailPanel: FC = () => {
           />
         </ModalOverlay>
       )}
-      <RelativeContainer
+      <Container
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflowY: 'auto' }}
+        style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
@@ -411,7 +406,7 @@ const BucketDetailPanel: FC = () => {
             }}
           />
         </Row>
-      </RelativeContainer>
+      </Container>
     </>
   );
 };

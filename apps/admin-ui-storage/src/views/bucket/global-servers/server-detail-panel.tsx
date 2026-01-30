@@ -21,7 +21,6 @@ import {
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import {
   DESCRIPTION,
@@ -32,10 +31,6 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { headerAdvanced } from '../../utility/utils';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const ServersListTable: FC<{
   volumes: Array<any>;
@@ -331,11 +326,11 @@ const ServerDetailPanel: FC = () => {
 
   return (
     <>
-      <RelativeContainer
+      <Container
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflowY: 'auto' }}
+        style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
@@ -388,7 +383,7 @@ const ServerDetailPanel: FC = () => {
             />
           </Row>
         </Container>
-      </RelativeContainer>
+      </Container>
     </>
   );
 };

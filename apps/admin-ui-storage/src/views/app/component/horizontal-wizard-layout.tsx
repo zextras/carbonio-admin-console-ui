@@ -1,4 +1,3 @@
- 
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
@@ -6,24 +5,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Icon, Padding, Row, RowProps, Text } from '@zextras/ui-components';
+import { Button, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
-const StepContainer = styled(Row)``;
-const StepView = styled(Row)``;
-
-interface RowExtendProps extends RowProps {
-  isActive: boolean;
-}
-
-const RowContainer = styled(Row)<RowExtendProps>`
-  border-bottom: ${({ isActive, theme }): string =>
-    isActive ? `2px solid ${theme.palette.primary.regular}` : ''};
-  cursor: pointer;
-`;
+import styles from './horizontal-wizard-layout.module.css';
 
 const StepNavigator: FC<{
   isDone: boolean;
@@ -38,17 +25,7 @@ const StepNavigator: FC<{
   currentStepIndex: any;
   canGoToStep: any;
   isFirstStep: any;
-}> = ({
-  step,
-  isDone,
-  isActive,
-  isLastStep,
-  onClick,
-  stepIndex,
-  currentStepIndex,
-  isFirstStep,
-  steps,
-}) => {
+}> = ({ step, isDone, isActive, isLastStep, onClick, stepIndex, currentStepIndex, steps }) => {
   const color = useMemo(() => {
     if (isActive) return 'primary';
     return isDone ? 'secondary' : 'gray1';
@@ -70,7 +47,11 @@ const StepNavigator: FC<{
   );
 
   return (
-    <RowContainer width={renderElement ? '100%' : '50%'} isActive={isActive}>
+    <Row
+      width={renderElement ? '100%' : '50%'}
+      className={styles.rowContainer}
+      data-is-active={isActive}
+    >
       <Row wrap="nowrap" onClick={onClick} width="80%">
         <Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
           <Icon icon={step.icon} color={color} size="large" />
@@ -86,7 +67,7 @@ const StepNavigator: FC<{
       <Row wrap="nowrap" style={{ cursor: 'pointer' }} width={'20%'}>
         {!isLastStep && <Icon icon="ChevronRight" color={color} size={'large'} />}
       </Row>
-    </RowContainer>
+    </Row>
   );
 };
 
@@ -150,14 +131,12 @@ export const HorizontalWizardLayout = ({
   externalData,
   toggleNextBtn,
   setToggleNextBtn,
-  sectionRef,
   activeRef,
 }: Props): React.ReactElement => {
   const { t } = useTranslation();
   const stepsToRender = useMemo(
     () =>
       map(steps, (step, stepIndex) => {
-        const View = steps[stepIndex].view;
         const isDone = stepIndex < currentStepIndex;
         const isActive = currentStep === step.name;
 
@@ -174,7 +153,7 @@ export const HorizontalWizardLayout = ({
           );
 
         return (
-          <StepContainer
+          <Row
             key={step.name}
             height="auto"
             minWidth={renderElement() ? '120px' : '50px'}
@@ -198,7 +177,7 @@ export const HorizontalWizardLayout = ({
               isFirstStep={isFirstStep}
               steps={steps}
             />
-          </StepContainer>
+          </Row>
         );
       }),
     [
@@ -245,7 +224,7 @@ export const HorizontalWizardLayout = ({
           const isDone = stepIndex < currentStepIndex;
           const isActive = currentStep === step.name;
           return (
-            <StepView>
+            <Row>
               {View && isDone && isActive && (
                 <View
                   step={step}
@@ -275,7 +254,7 @@ export const HorizontalWizardLayout = ({
                   setToggleWizardSection={setToggleWizardSection}
                 />
               )}
-            </StepView>
+            </Row>
           );
         })}
       </div>
