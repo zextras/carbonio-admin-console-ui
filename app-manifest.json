@@ -1,0 +1,78 @@
+{
+  "shell": {
+    "name": "carbonio-admin-ui",
+    "displayName": "Admin Shell",
+    "priority": -1,
+    "icon": "CubeOutline",
+    "type": "shell",
+    "packageName": "@zextras/admin-ui-bootstrap",
+    "entryPoint": "src/index.tsx"
+  },
+  "apps": [
+    {
+      "name": "carbonio-admin-ui-dashboard",
+      "packageName": "@zextras/admin-ui-dashboard",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-domains",
+      "packageName": "@zextras/admin-ui-domains",
+      "displayName": "Manage",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-backup",
+      "packageName": "@zextras/admin-ui-backup",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-cos",
+      "packageName": "@zextras/admin-ui-cos",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-legalhold",
+      "packageName": "@zextras/admin-ui-legalhold",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-mta",
+      "packageName": "@zextras/admin-ui-mta",
+      "displayName": "I'm sorry but that is unacceptable.",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.tsx"
+    },
+    {
+      "name": "carbonio-admin-ui-notifications",
+      "packageName": "@zextras/admin-ui-notifications",
+      "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
+      "entryPoint": "src/index.ts.tsx"
+    },
+    {
+      "name": "corrected entryPoint"
+    }
+  ]
+}
+  ]
+}
