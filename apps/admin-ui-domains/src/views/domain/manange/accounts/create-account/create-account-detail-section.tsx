@@ -50,7 +50,7 @@ const CreateAccountDetailSection: FC = () => {
   const [t] = useTranslation();
 
   const phoneTooltipLabel = t(
-		'label.accounts.phoneNumber.tooltip',
+		'domain.accounts.phoneNumber.tooltip',
 		'allowed chars are whitespaces, numbers and symbols -+()/,.'
 	);
   const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
