@@ -7,7 +7,7 @@
 import { HorizontalWizardLayout } from '@zextras/ui-components';
 import React, { useRef } from 'react';
 
-import useWizard from '../hooks/usewizard';
+import { useWizard } from '../hooks/usewizard';
 
 type Props = {
   data: any;

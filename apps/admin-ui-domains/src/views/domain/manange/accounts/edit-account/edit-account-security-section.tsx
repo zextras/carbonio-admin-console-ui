@@ -9,6 +9,7 @@ import {
   Button,
   ChipInput,
   Container,
+  HorizontalWizard,
   HoverableRowFactory,
   Icon,
   InheritedInput,
@@ -31,7 +32,6 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';

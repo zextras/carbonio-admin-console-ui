@@ -11,6 +11,7 @@ import {
   ChipInput,
   ChipInputProps,
   Container,
+  HorizontalWizard,
   HoverableRowFactory,
   Padding,
   Row,
@@ -42,7 +43,6 @@ import {
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';
