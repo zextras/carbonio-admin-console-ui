@@ -18,9 +18,9 @@ function getLastTag() {
 
 const main = (): void => {
   const rootDir = getWorkspaceRoot();
-  const packageDir = join(rootDir, 'dist');
+  const distDir = join(rootDir, 'dist');
   const pkgVersion = getLastTag().replace(/^v/, '');
-  const appsDir = join(packageDir, 'opt', 'zextras', 'admin', 'iris');
+  const appsDir = join(distDir, 'opt', 'zextras', 'admin', 'iris');
   const componentList = readdirSync(appsDir).join(' ');
 
   colorLog('Creating PKGBUILD...', 'blue');
@@ -85,7 +85,7 @@ postinst() {
 }
 `;
 
-  writeFileSync(join(packageDir, 'PKGBUILD'), pkgbuildContent);
+  writeFileSync(join(distDir, 'PKGBUILD'), pkgbuildContent);
 
   colorLog('PKGBUILD created', 'green');
 };
