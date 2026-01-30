@@ -8,19 +8,20 @@ import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap'
 import { Button, Container, HoverableRowFactory, Icon, Table, Text } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import ListRow from '../list/list-row';
 
-const VersionText = styled(Text)`
-  background: ${({ theme }): string => theme.palette.primary.regular};
-  width: 4.813rem;
-  border-radius: 3.125rem;
-  padding: 0.188rem 0 0 0;
-  height: 1.188rem;
-  text-align: center;
-`;
+function getVersionTextStyle(): React.CSSProperties {
+  return {
+    background: 'var(--color-primary-regular)',
+    width: '4.813rem',
+    borderRadius: '3.125rem',
+    padding: '0.188rem 0 0 0',
+    height: '1.188rem',
+    textAlign: 'center',
+  };
+}
 
 const DashboardServerList: FC<{
   goToMailStoreServerList: () => void;
@@ -47,29 +48,31 @@ const DashboardServerList: FC<{
           >
             {item?.name}
           </Text>,
-          <VersionText
+          <Text
             size="small"
             weight="regular"
             color="gray6"
             key={item?.name}
+            style={getVersionTextStyle()}
             onClick={(event: { stopPropagation: () => void }): void => {
               event.stopPropagation();
             }}
           >
             {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
-          </VersionText>,
+          </Text>,
           isAdvanced ? (
-            <VersionText
+            <Text
               size="small"
               weight="regular"
               color="gray6"
               key={item?.name}
+              style={getVersionTextStyle()}
               onClick={(event: { stopPropagation: () => void }): void => {
                 event.stopPropagation();
               }}
             >
               {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
-            </VersionText>
+            </Text>
           ) : (
             ''
           ),

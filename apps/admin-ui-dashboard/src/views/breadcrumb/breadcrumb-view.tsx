@@ -3,19 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLastLoginTimestamp,useUserSettings } from '@zextras/admin-ui-bootstrap';
+
+import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
+import styles from './breadcrumb-view.module.css';
 
-const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
-  color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
-  cursor: pointer;
-`;
 const BreadCrumb: FC = () => {
   const [t] = useTranslation();
   const loc = useLocation();
@@ -83,10 +80,13 @@ const BreadCrumb: FC = () => {
       >
         {splitRoutes.map((item: any, index) => (
           <Row key={item?.path}>
-            <BreadCrumbText
+            <Text
               size="medium"
               weight="regular"
-              isLast={splitRoutes.length - 1 === index}
+              className={styles.breadCrumbText}
+              style={{
+                color: splitRoutes.length - 1 === index ? '#CCCCCC' : 'var(--color-gray0-regular)',
+              }}
               onClick={(): void => {
                 if (splitRoutes.length - 1 !== index) {
                   navigationClick(item, index);
@@ -94,13 +94,18 @@ const BreadCrumb: FC = () => {
               }}
             >
               {item?.label}
-            </BreadCrumbText>
+            </Text>
 
             {index !== splitRoutes.length - 1 && (
               <Padding left="extrasmall" right="extrasmall">
-                <BreadCrumbText size="medium" weight="regular" isLast={false}>
+                <Text
+                  size="medium"
+                  weight="regular"
+                  className={styles.breadCrumbText}
+                  style={{ color: '#CCCCCC' }}
+                >
                   &nbsp;/&nbsp;
-                </BreadCrumbText>
+                </Text>
               </Padding>
             )}
           </Row>

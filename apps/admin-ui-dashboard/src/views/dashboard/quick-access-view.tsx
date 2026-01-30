@@ -4,24 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  Container, ContainerProps, Icon, Text  } from '@zextras/ui-components';
-import {  FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { Container, Icon, Text } from '@zextras/ui-components';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ListRow from '../list/list-row';
 
-interface ContainerExtendProps extends ContainerProps {
-  bgColor: string;
-}
-
-const ActionContainer = styled(Container)<ContainerExtendProps>`
-  background: ${({ theme, bgColor }): string => theme.avatarColors[bgColor as keyof typeof theme.avatarColors]};
-`;
-
-const OperationContainer = styled(Container)`
-  cursor: pointer;
-`;
+const operationContainerStyle: React.CSSProperties = {
+  cursor: 'pointer',
+};
 
 const QuickAccess: FC<{
   openOperationView: (operation: string) => void;
@@ -88,13 +79,12 @@ const QuickAccess: FC<{
             padding={{ left: 'extralarge' }}
             key={item?.operation}
           >
-            <ActionContainer
+            <Container
               height={'8.75rem'}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               width={'21.75rem'}
-              bgColor={item?.bgColor}
-              style={{ borderRadius: '0.5rem' }}
+              style={{ borderRadius: '0.5rem', background: `var(--${item?.bgColor})` }}
             >
               <ListRow>
                 <Container padding={{ all: 'large' }}>
@@ -123,10 +113,11 @@ const QuickAccess: FC<{
                 </Container>
               </ListRow>
               <ListRow>
-                <OperationContainer
+                <Container
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
                   padding={{ all: 'large' }}
+                  style={operationContainerStyle}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
@@ -134,19 +125,20 @@ const QuickAccess: FC<{
                   <Text color="gray6" overflow="break-word" weight="light" size="medium">
                     {item?.bottomText}
                   </Text>
-                </OperationContainer>
-                <OperationContainer
+                </Container>
+                <Container
                   mainAlignment="flex-end"
                   crossAlignment="flex-end"
                   padding={{ all: 'large' }}
+                  style={operationContainerStyle}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
                   <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
-                </OperationContainer>
+                </Container>
               </ListRow>
-            </ActionContainer>
+            </Container>
           </Container>
         ))}
       </Container>
