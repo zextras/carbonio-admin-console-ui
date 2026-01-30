@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useRef } from "react";
+import { HorizontalWizardLayout } from '@zextras/ui-components';
+import React, { useRef } from 'react';
 
-import useWizard from "../hooks/usewizard";
-import { HorizontalWizardLayout } from "./horizontal-wizard-layout";
+import useWizard from '../hooks/usewizard';
 
 type Props = {
   data: any;

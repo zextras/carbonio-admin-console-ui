@@ -57,6 +57,7 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
+export * from './components/custom/horizontal-wizard-layout';
 export {
   type TRow as HoverableRow,
   default as HoverableRowFactory,
