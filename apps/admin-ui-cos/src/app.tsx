@@ -15,8 +15,8 @@ import { find } from 'lodash-es';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
+import styles from './app.module.css';
 import {
   APP_ID,
   COS,
@@ -41,14 +41,6 @@ const AppView: FC = (props) => (
     <LazyAppView {...props} />
   </Suspense>
 );
-const PrimaryBarIcon = styled(Icon)`
-  &:hover {
-    background: transparent;
-  }
-  @media (max-width: 60rem) {
-    padding: 0 0 0 0.188rem;
-  }
-`;
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -117,14 +109,16 @@ const App: FC = () => {
 
   const cosPrimaryBar = useCallback(
     () => (
-      <PrimaryBarIcon
+      <Icon
         icon={SettingsModOutline}
         size="large"
         onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
+        className={styles.primaryBarIcon}
       />
     ),
     [history],
   );
+
   useEffect(() => {
     if (showCOS) {
       addRoute({
