@@ -14,7 +14,6 @@ import {
   Input,
   Modal,
   ModalOverlay,
-  OverlayDivision,
   Padding,
   Row,
   Table,
@@ -26,7 +25,6 @@ import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../assets/ninja_robo.svg';
 import { batchService } from '../../services/batch-service';
@@ -44,21 +42,7 @@ import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 58.75rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+import styles from './quarantine-list.module.css';
 
 type AttachmentPart = {
   part?: string;
@@ -1363,7 +1347,7 @@ const QuarantineList: FC = () => {
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+          {messageViewLoading && <div className={styles.overlayStyle} />}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"

@@ -12,6 +12,7 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Icon,
+  InheritedInput,
   Input,
   Modal,
   Padding,
@@ -22,7 +23,6 @@ import {
   Table,
   Text,
   Tooltip,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { debounce, map } from 'lodash-es';
 import React, {
@@ -48,7 +48,6 @@ import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import {
   ABQStatus,

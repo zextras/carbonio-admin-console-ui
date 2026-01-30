@@ -11,6 +11,7 @@ import {
   Container,
   HoverableRowFactory,
   Icon,
+  InheritedInput,
   Input,
   Padding,
   Row,
@@ -18,7 +19,6 @@ import {
   Switch,
   Table,
   Text,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
@@ -35,7 +35,6 @@ import { Section } from '../../../../app/component/section-component';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';
 import ListRow from '../../../../list/list-row';
-import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
