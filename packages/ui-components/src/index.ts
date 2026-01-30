@@ -28,10 +28,10 @@ export * from './components/layout/Row';
 /** Inputs components */
 export * from './components/inputs/Checkbox';
 export {
-	ChipInput,
-	type ChipInputProps,
-	type ChipInputType,
-	type ChipItem
+  ChipInput,
+  type ChipInputProps,
+  type ChipInputType,
+  type ChipItem,
 } from './components/inputs/chipInput/ChipInput';
 export * from './components/inputs/DateTimePicker';
 export * from './components/inputs/IconCheckbox';
@@ -41,12 +41,12 @@ export * from './components/inputs/PasswordInput';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
 export {
-	type LabelFactoryProps,
-	type MultipleSelectionOnChange,
-	Select,
-	type SelectItem,
-	type SelectProps,
-	type SingleSelectionOnChange
+  type LabelFactoryProps,
+  type MultipleSelectionOnChange,
+  Select,
+  type SelectItem,
+  type SelectProps,
+  type SingleSelectionOnChange,
 } from './components/inputs/Select';
 export * from './components/inputs/Switch';
 export * from './components/inputs/TextArea';
@@ -57,7 +57,12 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
-export { type TRow as HoverableRow, default as HoverableRowFactory, type HoverableRowProps } from './components/custom/hoverable-row-factory';
+export {
+  type TRow as HoverableRow,
+  default as HoverableRowFactory,
+  type HoverableRowProps,
+} from './components/custom/hoverable-row-factory';
+export * from './components/custom/inherited-input';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/overlay-division';
 
@@ -68,14 +73,14 @@ export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';
 export {
-	DefaultHeaderFactory,
-	DefaultRowFactory,
-	Table,
-	type TableProps,
-	type THeader,
-	type THeaderProps,
-	type TRow,
-	type TRowProps
+  DefaultHeaderFactory,
+  DefaultRowFactory,
+  Table,
+  type TableProps,
+  type THeader,
+  type THeaderProps,
+  type TRow,
+  type TRowProps,
 } from './components/display/Table';
 export * from './components/display/Tooltip';
 
