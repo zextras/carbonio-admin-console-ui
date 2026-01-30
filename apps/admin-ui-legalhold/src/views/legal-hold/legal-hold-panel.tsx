@@ -25,7 +25,6 @@ import { format } from 'date-fns';
 import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { BackupAccountItem, DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
@@ -46,27 +45,27 @@ import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
 
-const ovelayStyle = styled(Container)`
-  width: 20rem;
-  right: 0;
-  bottom: 0;
-  height: 8rem;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-`;
+const ovelayStyle = {
+  width: '20rem',
+  right: 0,
+  bottom: 0,
+  height: '8rem',
+  overflow: 'hidden',
+  background: '#0d0d0d',
+  opacity: 0.4,
+  zIndex: 11,
+};
 
-const AbsoluteContainerItem = styled(Container)`
-  position: absolute;
-  z-index: 1;
-  top: 8rem;
-`;
+const absoluteContainerItemStyle: React.CSSProperties = {
+  position: 'absolute',
+  zIndex: 1,
+  top: '8rem',
+};
 
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
+const customIconStyle = {
+  width: '1.25rem',
+  height: '1.25rem',
+};
 
 const LegalHoldPanel: FC = () => {
   const [t] = useTranslation();
@@ -520,7 +519,7 @@ const LegalHoldPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <Icon icon="InfoOutline" style={customIconStyle}></Icon>
                   </Padding>
                 </Row>
                 <Row
@@ -725,11 +724,12 @@ const LegalHoldPanel: FC = () => {
                 style={{ position: 'relative' }}
               >
                 {isRequestInProgress && (
-                  <AbsoluteContainerItem
+                  <Container
                     crossAlignment="center"
                     mainAlignment="center"
                     height="auto"
                     padding={{ top: 'medium' }}
+                    style={absoluteContainerItemStyle}
                   >
                     <Button
                       type="ghost"
@@ -738,7 +738,7 @@ const LegalHoldPanel: FC = () => {
                       loading
                       onClick={(): null => null}
                     />
-                  </AbsoluteContainerItem>
+                  </Container>
                 )}
 
                 {accountRows.length === 0 && (
