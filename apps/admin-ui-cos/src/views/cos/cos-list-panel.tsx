@@ -31,9 +31,7 @@ import {
   MAX_COS_DISPLAY,
   PREFERENCES,
   SERVER_POOLS,
-  WSC,
-  COS,
-  CREATE_NEW_COS_ROUTE_ID
+  WSC
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
