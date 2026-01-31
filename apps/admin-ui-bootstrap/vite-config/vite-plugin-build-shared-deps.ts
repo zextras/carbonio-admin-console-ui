@@ -4,70 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, mkdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
+import { init, parse } from 'cjs-module-lexer';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin } from 'vite';
 
 import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { DepConfig, getSharedDepsConfig } from './utils';
 
-const REACT_EXPORTS = [
-  'Children',
-  'Component',
-  'Fragment',
-  'Profiler',
-  'PureComponent',
-  'StrictMode',
-  'Suspense',
-  '__COMPILER_RUNTIME',
-  'cache',
-  'cacheSignal',
-  'cloneElement',
-  'createContext',
-  'createElement',
-  'createRef',
-  'forwardRef',
-  'isValidElement',
-  'lazy',
-  'memo',
-  'startTransition',
-  'unstable_useCacheRefresh',
-  'use',
-  'useActionState',
-  'useCallback',
-  'useContext',
-  'useDebugValue',
-  'useDeferredValue',
-  'useEffect',
-  'useEffectEvent',
-  'useId',
-  'useImperativeHandle',
-  'useInsertionEffect',
-  'useLayoutEffect',
-  'useMemo',
-  'useOptimistic',
-  'useReducer',
-  'useRef',
-  'useState',
-  'useSyncExternalStore',
-  'useTransition',
-  'version',
-] as const;
-
-const REACT_DOM_EXPORTS = [
-  'createPortal',
-  'findDOMNode',
-  'flushSync',
-  'hydrate',
-  'render',
-  'unstable_batchedUpdates',
-  'unstable_flushDiscreteUpdates',
-  'unstable_renderSubtreeIntoContainer',
-  'unstable_runWithPriority',
-  'version',
-] as const;
+/**
+ * Automatically detects named exports from a CJS module using cjs-module-lexer.
+ * This is the same approach Node.js uses internally for CJS-to-ESM interop.
+ */
+async function detectCjsExports(entryPath: string): Promise<string[]> {
+  const code = readFileSync(entryPath, 'utf-8');
+  const { exports } = parse(code);
+  return exports;
+}
 
 export function buildSharedDepsPlugin({ isDev }: { isDev: boolean }): Plugin {
   return {
@@ -75,6 +30,10 @@ export function buildSharedDepsPlugin({ isDev }: { isDev: boolean }): Plugin {
     enforce: 'post',
     async closeBundle() {
       colorLog('\n📦 Starting shared dependencies build...', 'blue');
+
+      // Initialize cjs-module-lexer once before processing any CJS deps
+      await init();
+
       const rootDir = getWorkspaceRoot();
       const nodeModulesDir = join(rootDir, 'node_modules');
       const outputDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
@@ -108,7 +67,11 @@ export function buildSharedDepsPlugin({ isDev }: { isDev: boolean }): Plugin {
 }
 
 async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean) {
-  const exportsList = dep.name === 'react' ? REACT_EXPORTS : REACT_DOM_EXPORTS;
+  const exportsList = await detectCjsExports(dep.entry);
+
+  if (exportsList.length === 0) {
+    throw new Error(`No exports detected for ${dep.name} at ${dep.entry}`);
+  }
 
   const virtualEntry = `
     import Lib from '${dep.entry.replace(/\\/g, '/')}';
