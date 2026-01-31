@@ -22,6 +22,9 @@
       "name": "carbonio-admin-ui-domains",
       "packageName": "@zextras/admin-ui-domains",
       "displayName": "Manage",
+      "priority": 3,
+      "icon": "List",
+      "type": "carbonioAdmin",
       "entryPoint": "src/app.tsx"
     },
     {
@@ -54,7 +57,7 @@
     {
       "name": "carbonio-admin-ui-mta",
       "packageName": "@zextras/admin-ui-mta",
-      "displayName": "I'm sorry but that is unacceptable.",
+      "displayName": "Manage",
       "priority": 3,
       "icon": "List",
       "type": "carbonioAdmin",

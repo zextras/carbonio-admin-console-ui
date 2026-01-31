@@ -37,7 +37,6 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      // Include build plugins only when running vite build (not dev server)
       ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
       react({
         babel: {

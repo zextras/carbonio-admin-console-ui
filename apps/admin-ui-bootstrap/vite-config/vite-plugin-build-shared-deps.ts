@@ -8,7 +8,7 @@ import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 import { build as esbuild } from 'esbuild';
-import { build as viteBuild, type Plugin, type ResolvedConfig } from 'vite';
+import { build as viteBuild, type Plugin } from 'vite';
 
 import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { DepConfig, getSharedDepsConfig } from './utils';
@@ -69,32 +69,20 @@ const REACT_DOM_EXPORTS = [
   'version',
 ] as const;
 
-interface BuildSharedDepsPluginOptions {
-  isDev?: boolean;
-}
-
-export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}): Plugin {
-  let config: ResolvedConfig;
-  const { isDev = false } = options;
-
+export function buildSharedDepsPlugin({ isDev }: { isDev: boolean }): Plugin {
   return {
     name: 'build-shared-deps',
     enforce: 'post',
-    configResolved(resolvedConfig) {
-      config = resolvedConfig;
-    },
     async closeBundle() {
       colorLog('\n📦 Starting shared dependencies build...', 'blue');
       const rootDir = getWorkspaceRoot();
       const nodeModulesDir = join(rootDir, 'node_modules');
       const outputDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
 
-      colorLog(`Output directory: ${outputDir}`, 'cyan');
       if (existsSync(outputDir)) {
         rmSync(outputDir, { recursive: true, force: true });
       }
       mkdirSync(outputDir, { recursive: true });
-      colorLog('Created output directory', 'gray');
 
       const depConfig = getSharedDepsConfig(nodeModulesDir, isDev);
 
