@@ -3,24 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import type { Plugin, ResolvedConfig } from 'vite';
+import type { Plugin } from 'vite';
 
 import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { generateImportMap } from './utils';
 
 export function postBuildPlugin(): Plugin {
-  let config: ResolvedConfig;
-
   return {
     name: 'post-build',
     enforce: 'post',
-    configResolved(resolvedConfig) {
-      config = resolvedConfig;
-    },
     async closeBundle() {
       colorLog('\n🔨 Starting post-build tasks...', 'blue');
 
@@ -44,19 +38,17 @@ export function postBuildPlugin(): Plugin {
       const indexHtmlPath = resolve(targetDir, 'index.html');
 
       if (existsSync(indexHtmlPath)) {
-        let indexHtml = readFileSync(indexHtmlPath, 'utf8');
+        const originalIndexHtml = readFileSync(indexHtmlPath, 'utf8');
         const importMapScript = `<script type="importmap">${JSON.stringify(
           importMap,
           null,
           2,
         )}</script>`;
-
-        indexHtml = indexHtml.replace(
+        const updatedIndexHtml = originalIndexHtml.replace(
           /(<script type="module"[^>]*shell(?:\.[^"']+)?\.mjs")/,
           `${importMapScript}\n  $1`,
         );
-
-        writeFileSync(indexHtmlPath, indexHtml);
+        writeFileSync(indexHtmlPath, updatedIndexHtml);
         colorLog('Injected import map into index.html', 'green');
       }
 
