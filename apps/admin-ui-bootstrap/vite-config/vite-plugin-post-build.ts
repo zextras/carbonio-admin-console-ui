@@ -22,6 +22,8 @@ export function postBuildPlugin(): Plugin {
       config = resolvedConfig;
     },
     async closeBundle() {
+      colorLog('\n🔨 Starting post-build tasks...', 'blue');
+
       const rootDir = getWorkspaceRoot();
       const targetDir = resolve(
         rootDir,
@@ -33,6 +35,7 @@ export function postBuildPlugin(): Plugin {
         'carbonio-admin-ui',
       );
 
+      colorLog(`Target directory: ${targetDir}`, 'cyan');
       mkdirSync(targetDir, { recursive: true });
 
       const importMap = generateImportMap();
@@ -62,8 +65,10 @@ export function postBuildPlugin(): Plugin {
 
       if (existsSync(indexHtmlPath)) {
         copyFileSync(indexHtmlPath, resolve(currentDir, 'index.html'));
-        colorLog('Created current directory with index.html', 'green');
+        colorLog('Copied index.html to current directory', 'green');
       }
+
+      colorLog('✅ Post-build tasks completed!\n', 'green');
     },
   };
 }

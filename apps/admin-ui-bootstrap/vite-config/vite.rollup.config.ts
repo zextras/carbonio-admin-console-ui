@@ -5,6 +5,8 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
+
+import { colorLog } from '../../../scripts/utils';
 import { getSharedDepNames } from './utils';
 
 /**
@@ -30,9 +32,10 @@ export function createBootstrapRollupOptions(): RollupOptions {
     inlineDynamicImports: false,
   };
 
-  // Shell must externalize shared deps to use the same instances as sub-apps via import maps
-  // This prevents "multiple React instances" errors with hooks
   const sharedExternals = getSharedDepNames();
+
+  colorLog(`Externalizing ${sharedExternals.length} shared dependencies`, 'cyan');
+  colorLog(`Externals: ${sharedExternals.join(', ')}`, 'gray');
 
   return {
     external: sharedExternals,

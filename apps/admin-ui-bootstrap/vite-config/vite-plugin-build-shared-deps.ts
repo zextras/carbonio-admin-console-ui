@@ -10,7 +10,7 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin, type ResolvedConfig } from 'vite';
 
-import { getWorkspaceRoot } from '../../../scripts/utils';
+import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { DepConfig, getSharedDepsConfig } from './utils';
 
 const REACT_EXPORTS = [
@@ -84,21 +84,21 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
       config = resolvedConfig;
     },
     async closeBundle() {
+      colorLog('\n📦 Starting shared dependencies build...', 'blue');
       const rootDir = getWorkspaceRoot();
       const nodeModulesDir = join(rootDir, 'node_modules');
       const outputDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
 
+      colorLog(`Output directory: ${outputDir}`, 'cyan');
       if (existsSync(outputDir)) {
         rmSync(outputDir, { recursive: true, force: true });
       }
       mkdirSync(outputDir, { recursive: true });
-
-      config.logger.info(`Building shared dependencies to: ${outputDir}`);
+      colorLog('Created output directory', 'gray');
 
       const depConfig = getSharedDepsConfig(nodeModulesDir, isDev);
 
       const buildPromises = depConfig.map(async (dep) => {
-        config.logger.info(`Building ${dep.name}...`);
         try {
           if (dep.type === 'wrap-cjs') {
             await buildWrappedCJS(dep, outputDir, isDev);
@@ -106,15 +106,15 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
             await buildWithVite(dep, outputDir, isDev, nodeModulesDir);
           }
 
-          config.logger.info(`  ✓ Built ${dep.name}`);
+          colorLog(`  ✓ Built ${dep.name}`, 'green');
         } catch (error) {
-          config.logger.error(`  ✗ Failed to build ${dep.name}`);
+          colorLog(`  ✗ Failed to build ${dep.name}`, 'red');
           throw error;
         }
       });
 
       await Promise.all(buildPromises);
-      config.logger.info('✅ Shared dependencies build completed!');
+      colorLog('✅ Shared dependencies build completed!\n', 'green');
     },
   };
 }
