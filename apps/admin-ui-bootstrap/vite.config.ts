@@ -24,17 +24,21 @@ const apps = manifest.apps || [];
 
 function getProxyTarget(): string {
   const target = process.env.VITE_TARGET || 'localhost';
-  console.log('Proxy target:', `https://${target}:6071`);
   return `https://${target}:6071`;
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
+  const isServeCommand = command === 'serve';
   const isDev = mode === 'development';
   const proxyTarget = getProxyTarget();
+  if (isServeCommand) {
+    console.log('Proxy target:', `https://${proxyTarget}:6071`);
+  }
 
   return {
     plugins: [
-      ...(!isDev ? [buildSharedDepsPlugin({ isDev }), postBuildPlugin()] : []),
+      // Include build plugins only when running vite build (not dev server)
+      ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
       react({
         babel: {
           plugins: ['babel-plugin-styled-components'],
@@ -75,7 +79,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: isDev,
       rollupOptions: createBootstrapRollupOptions(),
     },
-    base: basePath,
+    base: isServeCommand ? '/carbonioAdmin/' : basePath,
     publicDir: 'assets',
     ...(isDev
       ? {
