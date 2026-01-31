@@ -13,6 +13,4 @@ deploy:
 	pnpm run deploy ${TEST_HOST}
 
 deploy-dev:
-	pnpm run deploy ${TEST_HOST}
-
-all: build-admin-ui-bootstrap build-admin-ui-dashboard build-admin-ui-subscription deploy-admin-ui-bootstrap deploy-admin-ui-subscription deploy-admin-ui-dashboard
+	pnpm run deploy:dev ${TEST_HOST}
