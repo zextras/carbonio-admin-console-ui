@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { loadAllApps } from '../apps/loader';
+import { loadAllAppsFromRegistry } from '../apps/app-registry';
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
 import { loginConfig } from '../network/login-config';
@@ -39,12 +39,12 @@ async function initLocale(i18nFactory: I18nFactory): Promise<void> {
   try {
     // Fetch account settings to get the user's preferred locale
     const settings = await fetchAccountSettings();
-    
+
     // Cache settings in query client for later use
     queryClient.setQueryData(['account', 'settings'], settings);
-    
+
     const locale = getLocaleFromSettings(settings);
-    
+
     if (locale !== 'en') {
       i18nFactory.setLocale(locale);
       useI18nStore.getState().setLocale(locale);
@@ -69,7 +69,7 @@ export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
     // Fetch locale from account settings before loading apps and translations
     await initLocale(i18nFactory);
 
-    await loadAllApps();
+    await loadAllAppsFromRegistry();
     await getAccount();
 
     loadAppTranslations();

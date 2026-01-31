@@ -5,8 +5,7 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
-
-import { getSharedDepNames } from './config/shared-deps-config';
+import { getSharedDepNames } from './utils';
 
 /**
  * Creates standardized rollup options for the ESM bootstrap application (shell).

@@ -5,8 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execSync } from 'child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
+import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
 // Helper to convert Hex to ANSI 24-bit color sequence
@@ -46,35 +45,4 @@ export function getWorkspaceRoot(dir: string = process.cwd()): string {
     throw new Error('Could not find workspace root (pnpm-workspace.yaml not found)');
   }
   return getWorkspaceRoot(parentDir);
-}
-
-export function execCommand(command: string, options = {}) {
-  try {
-    return execSync(command, {
-      stdio: 'inherit',
-      encoding: 'utf-8',
-      ...options,
-    });
-  } catch (error) {
-    colorLog(`Error executing command: ${command} - ${(error as Error).message}`, 'red');
-    process.exit(1);
-  }
-}
-
-export function copyRecursive(src: string, dest: string) {
-  if (!existsSync(src)) {
-    colorLog(`Error: Source directory does not exist: ${src}`, 'red');
-    process.exit(1);
-  }
-  mkdirSync(dest, { recursive: true });
-  const entries = readdirSync(src, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = join(src, entry.name);
-    const destPath = join(dest, entry.name);
-    if (entry.isDirectory()) {
-      copyRecursive(srcPath, destPath);
-    } else {
-      copyFileSync(srcPath, destPath);
-    }
-  }
 }

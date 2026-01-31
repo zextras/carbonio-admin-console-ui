@@ -11,7 +11,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from '../../vite.rollup.config';
+import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from '../../scripts/utils';

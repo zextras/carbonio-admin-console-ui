@@ -1,8 +1,9 @@
 /*
- * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { resolve } from 'path';
 
 type DepType = 'build-vite' | 'wrap-cjs';
@@ -15,7 +16,7 @@ export type DepConfig = {
   external?: string[];
 };
 
-export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepConfig[] {
+export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepConfig[] {
   return [
     {
       name: 'react',
@@ -98,9 +99,31 @@ export function sharedDepsConfig(nodeModulesDir: string, isDev: boolean): DepCon
 }
 
 export function getSharedDepNames(): Array<string> {
-  return sharedDepsConfig('', false).map((dep) => dep.name);
+  return getSharedDepsConfig('', false).map((dep) => dep.name);
 }
 
-export function getSharedDepPaths(): Record<string, string> {
-  return Object.fromEntries(sharedDepsConfig('', false).map((dep) => [dep.name, dep.outputName]));
+function getSharedDepPaths(): Record<string, string> {
+  return Object.fromEntries(
+    getSharedDepsConfig('', false).map((dep) => [dep.name, dep.outputName]),
+  );
+}
+/**
+ * Generates import map for shared dependencies only.
+ * Sub-apps are now bundled into the shell via static imports,
+ * so they no longer need import map entries.
+ */
+export function generateImportMap() {
+  const depPaths = getSharedDepPaths();
+  const sharedDepPaths = Object.fromEntries(
+    Object.entries(depPaths).map(([name, file]) => [
+      name,
+      `/static/iris/shared-dependencies/${file}`,
+    ]),
+  );
+
+  return {
+    imports: {
+      ...sharedDepPaths,
+    },
+  };
 }

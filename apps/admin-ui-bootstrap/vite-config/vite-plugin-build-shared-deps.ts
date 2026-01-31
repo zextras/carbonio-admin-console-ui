@@ -10,8 +10,8 @@ import { dirname, join, resolve } from 'node:path';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin, type ResolvedConfig } from 'vite';
 
-import { DepConfig, sharedDepsConfig } from '../../../config/shared-deps-config';
 import { getWorkspaceRoot } from '../../../scripts/utils';
+import { DepConfig, getSharedDepsConfig } from './utils';
 
 const REACT_EXPORTS = [
   'Children',
@@ -95,7 +95,7 @@ export function buildSharedDepsPlugin(options: BuildSharedDepsPluginOptions = {}
 
       config.logger.info(`Building shared dependencies to: ${outputDir}`);
 
-      const depConfig = sharedDepsConfig(nodeModulesDir, isDev);
+      const depConfig = getSharedDepsConfig(nodeModulesDir, isDev);
 
       const buildPromises = depConfig.map(async (dep) => {
         config.logger.info(`Building ${dep.name}...`);

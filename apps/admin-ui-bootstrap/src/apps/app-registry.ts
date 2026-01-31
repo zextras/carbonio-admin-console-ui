@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ComponentType } from 'react';
+import { StoreApi, UseBoundStore } from 'zustand';
+
+import { AppState } from '../../types';
 import type { AppManifest } from './types';
 
 /**
@@ -120,22 +124,12 @@ const appImporters: Record<string, () => Promise<{ default: unknown }>> = {
   '@zextras/admin-ui-storage': () => import('@zextras/admin-ui-storage'),
 };
 
-type AppStoreType = {
-  setState: (
-    updater: (state: { entryPoints: Record<string, unknown> }) => Partial<{
-      apps: Record<string, object>;
-      appContexts: Record<string, object>;
-      entryPoints: Record<string, unknown>;
-    }>,
-  ) => void;
-};
-
 /**
  * Load all apps from the registry and register them in the store.
  * Uses static imports that Vite code-splits at build time.
  */
-export async function loadAllApps(
-  useAppStore: AppStoreType,
+export async function loadAllAppsFromRegistry(
+  useAppStore: UseBoundStore<StoreApi<AppState>>,
   appContextMap: Map<string, AppManifest | undefined>,
 ): Promise<void> {
   // Initialize app state
@@ -160,10 +154,13 @@ export async function loadAllApps(
     {},
   );
 
-  useAppStore.setState(() => ({
-    apps: { ...appsObject },
-    appContexts: { ...appContextsObject },
-  }));
+  useAppStore.setState(
+    () =>
+      ({
+        apps: { ...appsObject },
+        appContexts: { ...appContextsObject },
+      } as Partial<AppState>),
+  );
 
   // Load all apps in parallel using static imports
   const loadPromises = APP_REGISTRY.map(async (app) => {
@@ -180,13 +177,13 @@ export async function loadAllApps(
       useAppStore.setState((state) => ({
         entryPoints: {
           ...state.entryPoints,
-          [app.name]: Component,
+          [app.name]: Component as ComponentType<unknown>,
         },
       }));
 
       appContextMap.set(
         app.packageName,
-        APP_REGISTRY.find((a) => a.packageName === app.packageName),
+        APP_REGISTRY.find((a) => a.packageName === app.packageName) as AppManifest,
       );
 
       // eslint-disable-next-line no-console

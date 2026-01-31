@@ -10,7 +10,7 @@ import { resolve } from 'node:path';
 import type { Plugin, ResolvedConfig } from 'vite';
 
 import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
-import { generateImportMap } from './generate-import-map';
+import { generateImportMap } from './utils';
 
 export function postBuildPlugin(): Plugin {
   let config: ResolvedConfig;

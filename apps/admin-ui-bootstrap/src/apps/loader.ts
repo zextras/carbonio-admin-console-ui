@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { loadAllApps as loadAllAppsFromRegistry } from './app-registry';
-
 import { useAppStore } from '../store/app';
+import { loadAllAppsFromRegistry } from './app-registry';
 import type { AppManifest } from './types';
 
 const appContextMap = new Map<string, AppManifest>();
