@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 type DepType = 'build-vite' | 'wrap-cjs';
 
@@ -24,7 +24,7 @@ export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): Dep
         nodeModulesDir,
         isDev ? 'react/cjs/react.development.js' : 'react/cjs/react.production.js',
       ),
-      outputName: 'index.mjs',
+      outputName: 'react.mjs',
       type: 'wrap-cjs',
     },
     {
@@ -33,7 +33,7 @@ export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): Dep
         nodeModulesDir,
         isDev ? 'react-dom/cjs/react-dom.development.js' : 'react-dom/cjs/react-dom.production.js',
       ),
-      outputName: 'client.mjs',
+      outputName: 'react-dom.mjs',
       type: 'wrap-cjs',
     },
     {
