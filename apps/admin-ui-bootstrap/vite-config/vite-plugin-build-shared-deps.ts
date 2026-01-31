@@ -14,6 +14,17 @@ import { build as viteBuild, type Plugin } from 'vite';
 import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
 import { DepConfig, getSharedDepsConfig } from './utils';
 
+function createSharedBuildConfig(dep: DepConfig, isDev: boolean) {
+  return {
+    isDev,
+    target: 'esnext',
+    external: dep.external || [],
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+    },
+  };
+}
+
 /**
  * Automatically detects named exports from a CJS module using cjs-module-lexer.
  * This is the same approach Node.js uses internally for CJS-to-ESM interop.
@@ -73,8 +84,10 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean
     throw new Error(`No exports detected for ${dep.name} at ${dep.entry}`);
   }
 
+  const config = createSharedBuildConfig(dep, isDev);
+
   const virtualEntry = `
-    import Lib from '${dep.entry.replace(/\\/g, '/')}';
+    import Lib from ${JSON.stringify(dep.entry)};
     export default Lib;
     export const { ${exportsList.join(', ')} } = Lib;
   `;
@@ -89,13 +102,11 @@ async function buildWrappedCJS(dep: DepConfig, outputDir: string, isDev: boolean
     bundle: true,
     format: 'esm',
     outfile: join(outputDir, dep.outputName),
-    target: 'esnext',
-    minify: !isDev,
+    target: config.target,
+    minify: !config.isDev,
     platform: 'browser',
-    external: dep.external || [],
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
-    },
+    external: config.external,
+    define: config.define,
   });
 }
 
@@ -105,11 +116,12 @@ async function buildWithVite(
   isDev: boolean,
   nodeModulesDir: string,
 ) {
+  const config = createSharedBuildConfig(dep, isDev);
   const outputBaseName = dep.outputName.replace(/\.mjs$/, '');
 
   await viteBuild({
     configFile: false,
-    mode: isDev ? 'development' : 'production',
+    mode: config.isDev ? 'development' : 'production',
     logLevel: 'silent',
     build: {
       lib: {
@@ -120,19 +132,17 @@ async function buildWithVite(
       },
       outDir: outputDir,
       emptyOutDir: false,
-      sourcemap: isDev,
+      sourcemap: config.isDev,
       rollupOptions: {
-        external: dep.external || [],
+        external: config.external,
         output: {
           entryFileNames: `${outputBaseName}.mjs`,
         },
       },
-      target: 'esnext',
-      minify: !isDev,
+      target: config.target,
+      minify: !config.isDev,
     },
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
-    },
+    define: config.define,
     resolve: {
       alias: {
         'react-dom': resolve(nodeModulesDir, 'react-dom'),
