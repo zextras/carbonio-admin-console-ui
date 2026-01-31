@@ -5,8 +5,7 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { getOptimizedDeps } from '../../vite-config/optimized-deps';
+import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -22,7 +21,6 @@ const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/`;
 const manifest = JSON.parse(readFileSync(resolve(rootDir, 'app-manifest.json'), 'utf8'));
 const apps = manifest.apps || [];
-const outDir = resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName);
 
 function getProxyTarget(): string {
   const target = process.env.VITE_TARGET || 'localhost';
@@ -36,8 +34,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      buildSharedDepsPlugin({ isDev }),
-      postBuildPlugin(),
+      ...(!isDev ? [buildSharedDepsPlugin({ isDev }), postBuildPlugin()] : []),
       react({
         babel: {
           plugins: ['babel-plugin-styled-components'],
@@ -78,52 +75,49 @@ export default defineConfig(({ mode }) => {
       sourcemap: isDev,
       rollupOptions: createBootstrapRollupOptions(),
     },
-    logLevel: 'warn',
-    optimizeDeps: {
-      include: getOptimizedDeps(),
-    },
     base: basePath,
     publicDir: 'assets',
-    ...(isDev ? {
-      server: {
-        port: 3000,
-        strictPort: false,
-        base: '/carbonioAdmin/',
-        proxy: {
-          '/carbonioAdmin/static': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-            rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
-            followRedirects: true,
+    ...(isDev
+      ? {
+          server: {
+            port: 3000,
+            strictPort: false,
+            proxy: {
+              '/carbonioAdmin/static': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
+                followRedirects: true,
+              },
+              '/service': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/logout': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/zx': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/services': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/login': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+            },
           },
-          '/service': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-          },
-          '/logout': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-          },
-          '/zx': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-          },
-          '/services': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-          },
-          '/login': {
-            target: proxyTarget,
-            changeOrigin: true,
-            secure: false,
-          },
-        },
-      },
-    } : {}),
+        }
+      : {}),
   };
 });
