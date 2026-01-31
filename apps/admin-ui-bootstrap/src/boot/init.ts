@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { loadAllAppsFromRegistry } from '../apps/app-registry';
+import { loadAllApps } from '../apps/loader';
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
 import { loginConfig } from '../network/login-config';
@@ -69,7 +69,7 @@ export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
     // Fetch locale from account settings before loading apps and translations
     await initLocale(i18nFactory);
 
-    await loadAllAppsFromRegistry();
+    await loadAllApps();
     await getAccount();
 
     loadAppTranslations();
