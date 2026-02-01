@@ -4,45 +4,58 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   soapFetch,  useDomainStore,  useUserSettings } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  ModalOverlay,  Padding,  Row,  Text,  useSnackbar } from "@zextras/ui-components";
-import {  isEqual, mapValues, reduce  } from "lodash-es";
-import {  FC, useCallback, useEffect, useState  } from "react";
-import {  useTranslation  } from "react-i18next";
-import {  useParams  } from "react-router-dom";
+import { soapFetch, useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  ModalOverlay,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { isEqual, mapValues, reduce } from 'lodash-es';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
-import {  objectType  } from "../../../../../types";
-import {   TRUE,  ZIMBRA_ADMIN_URN,  ZIMBRA_DOMAIN_NAME,  ZIMBRA_ID,  ZIMBRA_SSL_CERTIFICATE,  ZIMBRA_SSL_PRIVATE_KEY,  ZIMBRA_VIRTUAL_HOSTNAME } from "../../../../constants";
-import {  flushCache  } from "../../../../services/flush-cache-service";
-import {  modifyDomain  } from "../../../../services/modify-domain-service";
-import {  RouteLeavingGuard  } from "../../../ui-extras/nav-guard";
-import {  AlertBanner  } from "./alert-banner";
-import {  CertificateView  } from "./certificate-view";
-import DeleteCertificateModel from "./delete-certificate-model";
-import {  LoadVerifyCertificateWizard  } from "./load-verify-certificate-wizard";
-import {  VirtualHostSection  } from "./virtual-host-section";
+import { objectType } from '../../../../../types';
+import {
+  TRUE,
+  ZIMBRA_ADMIN_URN,
+  ZIMBRA_DOMAIN_NAME,
+  ZIMBRA_ID,
+  ZIMBRA_SSL_CERTIFICATE,
+  ZIMBRA_SSL_PRIVATE_KEY,
+  ZIMBRA_VIRTUAL_HOSTNAME,
+} from '../../../../constants';
+import { flushCache } from '../../../../services/flush-cache-service';
+import { modifyDomain } from '../../../../services/modify-domain-service';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { AlertBanner } from './alert-banner';
+import { CertificateView } from './certificate-view';
+import DeleteCertificateModel from './delete-certificate-model';
+import { LoadVerifyCertificateWizard } from './load-verify-certificate-wizard';
+import { VirtualHostSection } from './virtual-host-section';
 
 export const DomainVirtualHosts: FC = () => {
   const [t] = useTranslation();
-  const { domainId }: { domainId: string } = useParams();
+  const { domainId } = useParams();
   const createSnackbar = useSnackbar();
   const domainInformation: any = useDomainStore((state) => state.domain?.a);
   const setDomain = useDomainStore((state) => state.setDomain);
   const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
   const [items, setItems] = useState<any>([]);
   const [defaultItems, setDefaultItems] = useState<any>([]);
-  const [domainName, setDomainName] = useState<string>("");
+  const [domainName, setDomainName] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [zimbraId, setZimbraId] = useState("");
-  const [toggleLoadVerifyCertWizard, setToggleLoadVerifyCertWizard] =
-    useState(false);
+  const [zimbraId, setZimbraId] = useState('');
+  const [toggleLoadVerifyCertWizard, setToggleLoadVerifyCertWizard] = useState(false);
   const [domainCertificate, setDomainCertificate] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [alertToggle, setAlertToggle] = useState(false);
   const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
-  const setIsCertificateAvailbale = useDomainStore(
-    (state) => state.setIsCertificateAvailbale,
-  );
+  const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const userSetting = useUserSettings();
 
@@ -77,16 +90,14 @@ export const DomainVirtualHosts: FC = () => {
         (domainData: any) => domainData.n === ZIMBRA_VIRTUAL_HOSTNAME,
       );
       if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
-        const virtualHostItems = domainVirtualHostArray.map(
-          (domainData: any, index: any) => ({
-            id: (index + 1)?.toString(),
-            columns: [
-              <Text key={index + 1} color="gray0" weight="regular">
-                {domainData._content}
-              </Text>,
-            ],
-          }),
-        );
+        const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
+          id: (index + 1)?.toString(),
+          columns: [
+            <Text key={index + 1} color="gray0" weight="regular">
+              {domainData._content}
+            </Text>,
+          ],
+        }));
         setItems(virtualHostItems);
         setDefaultItems(virtualHostItems);
       } else {
@@ -134,27 +145,20 @@ export const DomainVirtualHosts: FC = () => {
     if (attributes?.length === 0) {
       attributes.push({
         n: ZIMBRA_VIRTUAL_HOSTNAME,
-        _content: "",
+        _content: '',
       });
     }
     body.a = attributes;
     modifyDomain(body)
       .then((data) => {
-        if (
-          data?.warning &&
-          Array.isArray(data.warning) &&
-          data.warning.length > 0
-        ) {
+        if (data?.warning && Array.isArray(data.warning) && data.warning.length > 0) {
           data.warning.forEach((warning: any) => {
             createSnackbar({
               key: `warning-${warning.type ?? Date.now()}`,
-              severity: "warning",
+              severity: 'warning',
               label:
                 warning.message ??
-                t(
-                  "label.warning_message",
-                  "A warning occurred during the operation",
-                ),
+                t('label.warning_message', 'A warning occurred during the operation'),
               autoHideTimeout: 5000,
               hideButton: true,
               replace: false,
@@ -163,18 +167,15 @@ export const DomainVirtualHosts: FC = () => {
         }
 
         createSnackbar({
-          key: "success",
-          severity: "success",
-          label: t(
-            "label.change_save_success_msg",
-            "The change has been saved successfully",
-          ),
+          key: 'success',
+          severity: 'success',
+          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: false,
         });
         if (isGlobalAdmin) {
-          flushCache("domain", "id", zimbraId);
+          flushCache('domain', 'id', zimbraId);
         }
         const domainData: any = data?.domain?.[0];
         if (domainData) {
@@ -183,14 +184,11 @@ export const DomainVirtualHosts: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -203,7 +201,7 @@ export const DomainVirtualHosts: FC = () => {
   };
 
   const getAllCertiDetailsAPICall = useCallback((): void => {
-    soapFetch("GetDomainCert", {
+    soapFetch('GetDomainCert', {
       _jsns: ZIMBRA_ADMIN_URN,
       domain: domainId,
     })
@@ -222,14 +220,12 @@ export const DomainVirtualHosts: FC = () => {
       });
     const zimbraData =
       domainInformation &&
-      domainInformation.filter(
-        (item: objectType) => item.n === ZIMBRA_DOMAIN_NAME,
-      )[0]?._content;
+      domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
     soapFetch(`GetDomain`, {
       _jsns: ZIMBRA_ADMIN_URN,
-      attrs: "zimbraSSLCertificate,zimbraSSLPrivateKey",
+      attrs: 'zimbraSSLCertificate,zimbraSSLPrivateKey',
       domain: {
-        by: "name",
+        by: 'name',
         _content: zimbraData,
       },
     })
@@ -247,26 +243,17 @@ export const DomainVirtualHosts: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
       });
-  }, [
-    createSnackbar,
-    domainId,
-    domainInformation,
-    setIsCertificateAvailbale,
-    t,
-  ]);
+  }, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
 
   const deleteHandler = (): void => {
     const body: {
@@ -279,29 +266,26 @@ export const DomainVirtualHosts: FC = () => {
     body._jsns = ZIMBRA_ADMIN_URN;
     attributes.push({
       n: ZIMBRA_SSL_CERTIFICATE,
-      _content: "",
+      _content: '',
     });
     attributes.push({
       n: ZIMBRA_SSL_PRIVATE_KEY,
-      _content: "",
+      _content: '',
     });
     body.a = attributes;
     modifyDomain(body)
       .then(() => {
         setDomainCertificate(null);
         createSnackbar({
-          key: "success",
-          severity: "success",
-          label: t(
-            "domain.certificate_removed",
-            `The certificates has been removed`,
-          ),
+          key: 'success',
+          severity: 'success',
+          label: t('domain.certificate_removed', `The certificates has been removed`),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
         if (isGlobalAdmin) {
-          flushCache("domain", "id", zimbraId);
+          flushCache('domain', 'id', zimbraId);
         }
         setOpen(false);
         getAllCertiDetailsAPICall();
@@ -311,14 +295,11 @@ export const DomainVirtualHosts: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -341,11 +322,7 @@ export const DomainVirtualHosts: FC = () => {
   };
 
   return (
-    <Container
-      padding={{ vertical: "large" }}
-      background="gray6"
-      mainAlignment="flex-start"
-    >
+    <Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
       {toggleLoadVerifyCertWizard && (
         <ModalOverlay open={toggleLoadVerifyCertWizard}>
           <LoadVerifyCertificateWizard
@@ -368,24 +345,20 @@ export const DomainVirtualHosts: FC = () => {
           />
         )}
         <Row mainAlignment="flex-start" width="100%">
-          <Container
-            orientation="vertical"
-            mainAlignment="space-around"
-            height="56px"
-          >
+          <Container orientation="vertical" mainAlignment="space-around" height="56px">
             <Row orientation="horizontal" width="100%">
               <Row
-                padding={{ all: "large" }}
+                padding={{ all: 'large' }}
                 mainAlignment="flex-start"
                 width="50%"
                 crossAlignment="flex-start"
               >
                 <Text size="medium" weight="bold" color="gray0">
-                  {t("label.virtual_hosts", "Virtual Hosts")}
+                  {t('label.virtual_hosts', 'Virtual Hosts')}
                 </Text>
               </Row>
               <Row
-                padding={{ all: "large" }}
+                padding={{ all: 'large' }}
                 width="50%"
                 mainAlignment="flex-end"
                 crossAlignment="flex-end"
@@ -393,18 +366,14 @@ export const DomainVirtualHosts: FC = () => {
                 <Padding right="small">
                   {isDirty && (
                     <Button
-                      label={t("label.cancel", "Cancel")}
+                      label={t('label.cancel', 'Cancel')}
                       color="secondary"
                       onClick={onCancel}
                     />
                   )}
                 </Padding>
                 {isDirty && (
-                  <Button
-                    label={t("label.save", "Save")}
-                    color="primary"
-                    onClick={onSave}
-                  />
+                  <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
                 )}
               </Row>
             </Row>
@@ -415,7 +384,7 @@ export const DomainVirtualHosts: FC = () => {
           orientation="column"
           crossAlignment="flex-start"
           mainAlignment="flex-start"
-          style={{ overflow: "auto" }}
+          style={{ overflow: 'auto' }}
           width="100%"
           height="calc(100vh - 150px)"
           padding="extrasmall"
@@ -424,7 +393,7 @@ export const DomainVirtualHosts: FC = () => {
             <VirtualHostSection items={items} setItems={setItems} />
           </Container>
           {alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
-          <Row width="100%" padding={{ horizontal: "large" }}>
+          <Row width="100%" padding={{ horizontal: 'large' }}>
             <divider-wc></divider-wc>
           </Row>
           <CertificateView
@@ -444,16 +413,11 @@ export const DomainVirtualHosts: FC = () => {
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
         <Text>
           {t(
-            "label.unsaved_changes_line1",
-            "Are you sure you want to leave this page without saving?",
+            'label.unsaved_changes_line1',
+            'Are you sure you want to leave this page without saving?',
           )}
         </Text>
-        <Text>
-          {t(
-            "label.unsaved_changes_line2",
-            "All your unsaved changes will be lost",
-          )}
-        </Text>
+        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
       </RouteLeavingGuard>
     </Container>
   );
