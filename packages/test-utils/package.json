@@ -27,11 +27,10 @@
   ],
   "devDependencies": {
     "@testing-library/user-event": "^14.6.1",
-    "@types/react-router-dom": "^5.3.3",
     "@vitest/browser": "^4.0.5",
     "eslint": "^9.34.0",
     "msw": "^2.12.2",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.28.0",
     "styled-components": "^5.3.11",
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"

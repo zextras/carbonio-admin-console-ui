@@ -166,8 +166,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -208,9 +208,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -299,8 +296,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -344,9 +341,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -441,8 +435,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -480,9 +474,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -583,8 +574,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -625,9 +616,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -731,8 +719,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -776,9 +764,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -879,8 +864,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -921,9 +906,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1024,8 +1006,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1066,9 +1048,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1166,8 +1145,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1211,9 +1190,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1311,8 +1287,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1353,9 +1329,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1456,8 +1429,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1498,9 +1471,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1598,8 +1568,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1640,9 +1610,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1743,8 +1710,8 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1785,9 +1752,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.10)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/styled-components':
         specifier: ^5.1.26
         version: 5.1.36
@@ -1852,9 +1816,6 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@10.4.1)
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.7(@types/node@22.19.7)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1865,8 +1826,8 @@ importers:
         specifier: ^2.12.2
         version: 2.12.7(@types/node@22.19.7)(typescript@5.9.3)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@19.2.4)
+        specifier: ^6.28.0
+        version: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -3211,6 +3172,10 @@ packages:
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
 
+  '@remix-run/router@1.23.2':
+    resolution: {integrity: sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==}
+    engines: {node: '>=14.0.0'}
+
   '@rolldown/pluginutils@1.0.0-beta.53':
     resolution: {integrity: sha512-vENRlFU4YbrwVqNDZ7fLvy+JR1CRkyr01jhSiDpE1u6py3OMzQfztQU2jxykW3ALNxO4kSlqIDeYyD0Y9RcQeQ==}
 
@@ -3650,9 +3615,6 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/history@4.7.11':
-    resolution: {integrity: sha512-qjDJRrmvBMiTx+jyLxvLfJU7UznFuokDv4f3WRuriHKERccVpFU+8XMQUAbDzoiJCsmexxRExQeMwwCdamSKDA==}
-
   '@types/hoist-non-react-statics@3.3.7':
     resolution: {integrity: sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==}
     peerDependencies:
@@ -3692,12 +3654,6 @@ packages:
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
       '@types/react': ^19.2.0
-
-  '@types/react-router-dom@5.3.3':
-    resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
-
-  '@types/react-router@5.1.20':
-    resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
 
   '@types/react@19.2.10':
     resolution: {integrity: sha512-WPigyYuGhgZ/cTPRXB2EwUw+XvsRA3GqHlsP4qteqrnnjDrApbS7MxcGr/hke5iUoeB7E/gQtrs9I37zAJ0Vjw==}
@@ -5013,9 +4969,6 @@ packages:
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
 
-  history@4.10.1:
-    resolution: {integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==}
-
   history@5.3.0:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
 
@@ -5301,9 +5254,6 @@ packages:
   is-windows@1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
     engines: {node: '>=0.10.0'}
-
-  isarray@0.0.1:
-    resolution: {integrity: sha512-D2S+3GLxWH+uhrNEcoh/fnmYeP8E8/zHl644d/jdA0g2uyXvy3sb0qxotE+ne0LtccHknQzWwZEzhak7oJ0COQ==}
 
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
@@ -5968,9 +5918,6 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  path-to-regexp@1.9.0:
-    resolution: {integrity: sha512-xIp7/apCFJuUHdDLWe8O1HIkb0kQrOMb/0u6FXQjemHn/ii5LrIzU6bdECnsiTF/GjZkMEKg1xdiZwNqDYlZ6g==}
-
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
@@ -6160,15 +6107,18 @@ packages:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
     engines: {node: '>=0.10.0'}
 
-  react-router-dom@5.3.4:
-    resolution: {integrity: sha512-m4EqFMHv/Ih4kpcBCONHbkT68KoAeHN4p3lAGoNryfHi0dMy0kCzEZakiKRsvg5wHZ/JLrLW8o8KomWiz/qbYQ==}
+  react-router-dom@6.30.3:
+    resolution: {integrity: sha512-pxPcv1AczD4vso7G4Z3TKcvlxK7g7TNt3/FNGMhfqyntocvYKj+GCatfigGDjbLozC4baguJ0ReCigoDJXb0ag==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
-      react: '>=15'
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
-  react-router@5.3.4:
-    resolution: {integrity: sha512-Ys9K+ppnJah3QuaRiLxk+jDWOR1MekYQrlytiXxC1RyfbdsZkS5pvKAzCCr031xHixZwpnsYNT5xysdFHQaYsA==}
+  react-router@6.30.3:
+    resolution: {integrity: sha512-XRnlbKMTmktBkjCLE8/XcZFlnHvr2Ltdr1eJX4idL55/9BbORzyZEaIkBFDhFGCEWBBItsVrDxwx3gnisMitdw==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
-      react: '>=15'
+      react: '>=16.8'
 
   react@19.2.4:
     resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
@@ -6252,9 +6202,6 @@ packages:
   resolve-from@5.0.0:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
-
-  resolve-pathname@3.0.0:
-    resolution: {integrity: sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==}
 
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
@@ -6627,12 +6574,6 @@ packages:
     resolution: {integrity: sha512-75voc/9G4rDIJleOo4jPvN4/YC4GRZrY8yy1uU4lwrB3XEQbWve8zXoO5No4eFrGcTAMYyoY67p8jRQdtA1HbA==}
     engines: {node: '>=12'}
 
-  tiny-invariant@1.3.3:
-    resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
-
-  tiny-warning@1.0.3:
-    resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
-
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -6903,9 +6844,6 @@ packages:
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
-
-  value-equal@1.0.1:
-    resolution: {integrity: sha512-NOJ6JZCAWr0zlxZt+xqCHNTEKOsrks2HQd4MqhP1qy4z1SkbEP467eNx6TgDKXMvUOb+OENfJCZwM+16n7fRfw==}
 
   vite-plugin-svgr@4.5.0:
     resolution: {integrity: sha512-W+uoSpmVkSmNOGPSsDCWVW/DDAyv+9fap9AZXBvWiQqrboJ08j2vh0tFxTD/LjwqwAd3yYSVJgm54S/1GhbdnA==}
@@ -8575,6 +8513,8 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
+  '@remix-run/router@1.23.2': {}
+
   '@rolldown/pluginutils@1.0.0-beta.53': {}
 
   '@rollup/pluginutils@5.3.0(rollup@4.57.1)':
@@ -9033,8 +8973,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/history@4.7.11': {}
-
   '@types/hoist-non-react-statics@3.3.7(@types/react@19.2.10)':
     dependencies:
       '@types/react': 19.2.10
@@ -9076,17 +9014,6 @@ snapshots:
 
   '@types/react-dom@19.2.3(@types/react@19.2.10)':
     dependencies:
-      '@types/react': 19.2.10
-
-  '@types/react-router-dom@5.3.3':
-    dependencies:
-      '@types/history': 4.7.11
-      '@types/react': 19.2.10
-      '@types/react-router': 5.1.20
-
-  '@types/react-router@5.1.20':
-    dependencies:
-      '@types/history': 4.7.11
       '@types/react': 19.2.10
 
   '@types/react@19.2.10':
@@ -10722,15 +10649,6 @@ snapshots:
 
   highlight.js@10.7.3: {}
 
-  history@4.10.1:
-    dependencies:
-      '@babel/runtime': 7.28.6
-      loose-envify: 1.4.0
-      resolve-pathname: 3.0.0
-      tiny-invariant: 1.3.3
-      tiny-warning: 1.0.3
-      value-equal: 1.0.1
-
   history@5.3.0:
     dependencies:
       '@babel/runtime': 7.28.6
@@ -10990,8 +10908,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   is-windows@1.0.2: {}
-
-  isarray@0.0.1: {}
 
   isarray@1.0.0: {}
 
@@ -11624,10 +11540,6 @@ snapshots:
 
   path-parse@1.0.7: {}
 
-  path-to-regexp@1.9.0:
-    dependencies:
-      isarray: 0.0.1
-
   path-to-regexp@6.3.0: {}
 
   path-type@4.0.0: {}
@@ -11811,29 +11723,17 @@ snapshots:
 
   react-refresh@0.18.0: {}
 
-  react-router-dom@5.3.4(react@19.2.4):
+  react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      '@babel/runtime': 7.28.6
-      history: 4.10.1
-      loose-envify: 1.4.0
-      prop-types: 15.8.1
+      '@remix-run/router': 1.23.2
       react: 19.2.4
-      react-router: 5.3.4(react@19.2.4)
-      tiny-invariant: 1.3.3
-      tiny-warning: 1.0.3
+      react-dom: 19.2.4(react@19.2.4)
+      react-router: 6.30.3(react@19.2.4)
 
-  react-router@5.3.4(react@19.2.4):
+  react-router@6.30.3(react@19.2.4):
     dependencies:
-      '@babel/runtime': 7.28.6
-      history: 4.10.1
-      hoist-non-react-statics: 3.3.2
-      loose-envify: 1.4.0
-      path-to-regexp: 1.9.0
-      prop-types: 15.8.1
+      '@remix-run/router': 1.23.2
       react: 19.2.4
-      react-is: 16.13.1
-      tiny-invariant: 1.3.3
-      tiny-warning: 1.0.3
 
   react@19.2.4: {}
 
@@ -11940,8 +11840,6 @@ snapshots:
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
-
-  resolve-pathname@3.0.0: {}
 
   resolve-pkg-maps@1.0.0: {}
 
@@ -12431,10 +12329,6 @@ snapshots:
     dependencies:
       convert-hrtime: 5.0.0
 
-  tiny-invariant@1.3.3: {}
-
-  tiny-warning@1.0.3: {}
-
   tinybench@2.9.0: {}
 
   tinyexec@1.0.2: {}
@@ -12673,8 +12567,6 @@ snapshots:
     dependencies:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
-
-  value-equal@1.0.1: {}
 
   vite-plugin-svgr@4.5.0(rollup@4.57.1)(typescript@5.9.3)(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(tsx@4.21.0)):
     dependencies:
