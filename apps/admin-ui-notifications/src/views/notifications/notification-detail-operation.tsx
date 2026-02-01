@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FC } from "react";
-import { useParams } from "react-router-dom";
+import { FC } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { LIST } from "../../constants";
-import NotificationListView from "./notification-list-view";
+import { LIST } from '../../constants';
+import NotificationListView from './notification-list-view';
 
 const NotificationDetailOperation: FC = () => {
-  const { operation }: { operation: string } = useParams();
+  const { operation } = useParams();
   return (
     <>
-      {((): any => {
+      {(() => {
         switch (operation) {
           case LIST:
             return <NotificationListView />;

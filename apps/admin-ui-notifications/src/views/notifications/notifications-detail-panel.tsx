@@ -6,27 +6,28 @@
 
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import NotificationDetailOperation from './notification-detail-operation';
 
 const NotificationsDetailPanel: FC = () => {
-	const { path } = useRouteMatch();
-	return (
-		<Container
-			orientation="column"
-			crossAlignment="center"
-			mainAlignment="flex-start"
-			style={{ overflowY: 'hidden' }}
-			background="gray6"
-		>
-			<Switch>
-				<Route exact path={`${path}/:operation`}>
-					<NotificationDetailOperation />
-				</Route>
-			</Switch>
-		</Container>
-	);
+  const location = useLocation();
+  const path = location.pathname;
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="center"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'hidden' }}
+      background="gray6"
+    >
+      <Routes>
+        <Route path={`${path}/:operation`}>
+          <NotificationDetailOperation />
+        </Route>
+      </Routes>
+    </Container>
+  );
 };
 
 export default NotificationsDetailPanel;
