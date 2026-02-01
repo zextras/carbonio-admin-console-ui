@@ -16,73 +16,73 @@ import { VolumeContext } from './server-specifics/volume/create-volume/volume-co
 import VolumesDetailPanel from './server-specifics/volume/volumes-list';
 
 interface ContainerExtendProps extends ContainerProps {
-	isPrimaryBarExpanded?: boolean;
+  isPrimaryBarExpanded?: boolean;
 }
 
 const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-	transition: width 300ms;
+  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
+  transition: width 300ms;
 `;
 
 interface VolumeDetailObj {
-	id: string;
-	volumeName: string;
-	volumeMain: number;
-	path: string;
-	isCurrent: boolean;
-	isCompression: boolean;
-	compressionThreshold: number;
-	volumeAllocation: number;
+  id: string;
+  volumeName: string;
+  volumeMain: number;
+  path: string;
+  isCurrent: boolean;
+  isCompression: boolean;
+  compressionThreshold: number;
+  volumeAllocation: number;
 }
 
 const BucketOperation: FC = () => {
-	const { operation }: { operation: string } = useParams();
-	const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
-		id: '',
-		volumeName: '',
-		volumeMain: 1,
-		path: '',
-		isCurrent: false,
-		isCompression: false,
-		compressionThreshold: 0,
-		volumeAllocation: 0
-	});
+  const { operation } = useParams();
+  const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
+    id: '',
+    volumeName: '',
+    volumeMain: 1,
+    path: '',
+    isCurrent: false,
+    isCompression: false,
+    compressionThreshold: 0,
+    volumeAllocation: 0,
+  });
 
-	return (
-		<>
-			{((): any => {
-				switch (operation) {
-					case SERVERS_LIST:
-						return (
-							<DetailViewContainer>
-								<ServersDetailPanel />
-							</DetailViewContainer>
-						);
-					case BUCKET_LIST:
-						return (
-							<DetailViewContainer>
-								<BucketDetailPanel />
-							</DetailViewContainer>
-						);
-					case DATA_VOLUMES:
-						return (
-							<DetailViewContainer>
-								<VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
-									<VolumesDetailPanel />
-								</VolumeContext.Provider>
-							</DetailViewContainer>
-						);
-					case HSM_SETTINGS:
-						return (
-							<DetailViewContainer>
-								<HSMsettingPanel />
-							</DetailViewContainer>
-						);
-					default:
-						return null;
-				}
-			})()}
-		</>
-	);
+  return (
+    <>
+      {((): any => {
+        switch (operation) {
+          case SERVERS_LIST:
+            return (
+              <DetailViewContainer>
+                <ServersDetailPanel />
+              </DetailViewContainer>
+            );
+          case BUCKET_LIST:
+            return (
+              <DetailViewContainer>
+                <BucketDetailPanel />
+              </DetailViewContainer>
+            );
+          case DATA_VOLUMES:
+            return (
+              <DetailViewContainer>
+                <VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
+                  <VolumesDetailPanel />
+                </VolumeContext.Provider>
+              </DetailViewContainer>
+            );
+          case HSM_SETTINGS:
+            return (
+              <DetailViewContainer>
+                <HSMsettingPanel />
+              </DetailViewContainer>
+            );
+          default:
+            return null;
+        }
+      })()}
+    </>
+  );
 };
 export default BucketOperation;
