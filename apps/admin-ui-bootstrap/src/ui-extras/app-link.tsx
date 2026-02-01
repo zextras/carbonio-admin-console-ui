@@ -13,7 +13,6 @@ type AppLinkProps = LinkProps & {
   route?: string;
 };
 export const AppLink: FC<AppLinkProps> = ({ to, route, ...rest }) => {
-  //@ts-expect-error - fix this
   const _to = useMemo(() => parseParams({ path: to, route }), [route, to]);
   return <RRLink style={{ textDecoration: 'none' }} to={_to} {...rest} />;
 };
