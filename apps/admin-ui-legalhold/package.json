@@ -31,7 +31,7 @@
     "react": "^19.1.0",
     "react-csv": "^2.2.2",
     "react-i18next": "^12.3.1",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.28.0",
     "styled-components": "^5.3.11",
     "zustand": "^4.5.7"
   },
@@ -47,7 +47,6 @@
     "@types/lodash-es": "^4.14.197",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
     "@vitest/browser": "^4.0.5",
     "@vitest/coverage-istanbul": "^4.0.5",
