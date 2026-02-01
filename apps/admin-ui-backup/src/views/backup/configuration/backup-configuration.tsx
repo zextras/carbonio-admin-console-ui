@@ -65,7 +65,7 @@ const ovelayStyle = styled(Container)`
 `;
 
 const BackupConfiguration: FC = () => {
-  const { server }: { server: string } = useParams();
+  const { server } = useParams();
   const [t] = useTranslation();
   const { data: allServers = [] } = useAllServers();
   const createSnackbar = useSnackbar();

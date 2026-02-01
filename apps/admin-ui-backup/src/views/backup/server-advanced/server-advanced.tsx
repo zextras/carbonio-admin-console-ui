@@ -31,7 +31,7 @@ import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
-  const { server }: { server: string } = useParams();
+  const { server } = useParams();
   const { data: allServers = [] } = useAllServers();
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
