@@ -9,7 +9,6 @@ import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { BACKUP_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
@@ -30,7 +29,7 @@ const AppView: FC = () => {
       <BreadCrumb />
       <Routes>
         <Route
-          path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}
+          path={'/*'}
           element={
             <Container
               orientation="horizontal"
