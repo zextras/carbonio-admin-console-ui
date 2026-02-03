@@ -31,7 +31,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import logo from '../../../../../assets/gardian.svg';
+import logo from '../../../../../assets/gardian.svg?url';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
@@ -582,7 +582,7 @@ const EditAccountSecuritySection: FC = () => {
 	return (
 		<Container
 			mainAlignment="flex-start"
-			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			padding={{ right: 'extralarge', bottom: 'large' }}
 			style={{ overflow: 'auto' }}
 		>
 			{isAdvanced && <ServicesPassphrase />}
@@ -677,7 +677,7 @@ const EditAccountSecuritySection: FC = () => {
 										/>
 									)}
 									{otpList.length === 0 && (
-										<Container orientation="column" crossAlignment="center" mainAlignment="center">
+										<Container orientation="column" crossAlignment="center" mainAlignment="center" padding={{ bottom: 'large' }}>
 											<Row>
 												<img src={logo} alt="logo" />
 											</Row>
@@ -709,6 +709,7 @@ const EditAccountSecuritySection: FC = () => {
 										</Container>
 									)}
 								</Row>
+								<divider-wc></divider-wc>
 							</Row>
 						</Row>
 					)}
