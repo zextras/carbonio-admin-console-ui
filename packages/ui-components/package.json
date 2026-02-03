@@ -63,6 +63,7 @@
     "lit": "^3.3.2",
     "lodash-es": "^4.17.21",
     "polished": "^4.2.2",
-    "react-datepicker": "^4.25.0"
+    "react-datepicker": "^9.1.0",
+    "clsx": "^2.1.1"
   }
 }
