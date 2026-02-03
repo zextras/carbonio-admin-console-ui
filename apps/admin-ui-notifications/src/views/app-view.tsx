@@ -9,7 +9,6 @@ import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
@@ -30,7 +29,7 @@ const AppView: FC = () => {
       <BreadCrumb />
       <Routes>
         <Route
-          path={`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`}
+          path="/*"
           element={
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '265px' }}>

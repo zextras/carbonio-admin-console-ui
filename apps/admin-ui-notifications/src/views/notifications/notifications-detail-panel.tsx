@@ -6,13 +6,11 @@
 
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import NotificationDetailOperation from './notification-detail-operation';
 
 const NotificationsDetailPanel: FC = () => {
-  const location = useLocation();
-  const path = location.pathname;
   return (
     <Container
       orientation="column"
@@ -22,9 +20,7 @@ const NotificationsDetailPanel: FC = () => {
       background="gray6"
     >
       <Routes>
-        <Route path={`${path}/:operation`}>
-          <NotificationDetailOperation />
-        </Route>
+        <Route path={'/:operation'} element={<NotificationDetailOperation />} />
       </Routes>
     </Container>
   );
