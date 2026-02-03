@@ -5,13 +5,11 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import BucketOperation from './bucket-detail-operation';
 
 const BucketRoutePanel: FC = () => {
-  const location = useLocation();
-  const path = location.pathname;
   return (
     <Container
       orientation="column"
@@ -21,8 +19,8 @@ const BucketRoutePanel: FC = () => {
       background="gray6"
     >
       <Routes>
-        <Route path={`${path}/:operation`} element={<BucketOperation />} />
-        <Route path={`${path}/:server/:operation`} element={<BucketOperation />} />
+        <Route path={`/:operation`} element={<BucketOperation />} />
+        <Route path={`/server/:server/:operation`} element={<BucketOperation />} />
       </Routes>
     </Container>
   );
