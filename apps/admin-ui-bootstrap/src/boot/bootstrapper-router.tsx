@@ -11,7 +11,7 @@ import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
 import { BASENAME } from '../constants';
 import ShellView from '../shell/shell-view';
 import { useBridge } from '../store/context-bridge';
-import AppLoaderMounter from './app/app-loader-mounter';
+import { AppLoaderMounter } from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {
   const navigate = useNavigate();
@@ -43,12 +43,10 @@ const ContextBridge: FC = () => {
   return null;
 };
 
-const BootstrapperRouter: FC = () => (
+export const BootstrapperRouter: FC = () => (
   <BrowserRouter basename={BASENAME}>
     <ContextBridge />
     <AppLoaderMounter />
     <ShellView />
   </BrowserRouter>
 );
-
-export default BootstrapperRouter;
