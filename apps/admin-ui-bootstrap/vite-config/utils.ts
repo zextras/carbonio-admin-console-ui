@@ -71,7 +71,7 @@ export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): Dep
     },
     {
       name: 'react-router-dom',
-      entry: resolve(nodeModulesDir, 'react-router-dom/esm/react-router-dom.js'),
+      entry: resolve(nodeModulesDir, 'react-router-dom/dist/index.js'),
       outputName: 'react-router-dom.mjs',
       type: 'build-vite',
       external: ['react', 'react-dom'],
