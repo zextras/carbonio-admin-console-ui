@@ -9,42 +9,41 @@ import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { MANAGE_APP_ID, PRIVACY_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import PrivacyView from './privacy/privacy-view';
 
 interface ContainerExtendProps extends ContainerProps {
-	isPrimaryBarExpanded?: boolean;
+  isPrimaryBarExpanded?: boolean;
 }
 
 const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-	transition: width 300ms;
+  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
+  transition: width 300ms;
 `;
 
 const AppView: FC = () => {
-	const isPrimaryBarExpanded = usePrimaryBarState();
-	return (
-		<Container height={'fit'}>
-			<BreadCrumb />
-			<Routes>
-				<Route
-					path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}
-					element={
-						<Container orientation="horizontal" mainAlignment="flex-start">
-							<Container style={{ maxWidth: '100%' }}>
-								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-									<Suspense fallback={<spinner-wc />}>
-										<PrivacyView />
-									</Suspense>
-								</DetailViewContainer>
-							</Container>
-						</Container>
-					}
-				/>
-			</Routes>
-		</Container>
-	);
+  const isPrimaryBarExpanded = usePrimaryBarState();
+  return (
+    <Container height={'fit'}>
+      <BreadCrumb />
+      <Routes>
+        <Route
+          path={'/'}
+          element={
+            <Container orientation="horizontal" mainAlignment="flex-start">
+              <Container style={{ maxWidth: '100%' }}>
+                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+                  <Suspense fallback={<spinner-wc />}>
+                    <PrivacyView />
+                  </Suspense>
+                </DetailViewContainer>
+              </Container>
+            </Container>
+          }
+        />
+      </Routes>
+    </Container>
+  );
 };
 
 export default AppView;
