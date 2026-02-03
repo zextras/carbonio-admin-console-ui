@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import { addRoute } from '@zextras/admin-ui-bootstrap';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -15,50 +14,49 @@ import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<spinner-wc />}>
-		<LazyAppView {...props} />
-	</Suspense>
+  <Suspense fallback={<spinner-wc />}>
+    <LazyAppView {...props} />
+  </Suspense>
 );
 
 const App: FC = () => {
-	const [t] = useTranslation();
+  const [t] = useTranslation();
 
-	const homeTooltipItems = useMemo(
-		() => [
-			{
-				header: (
-					<Trans
-						i18nKey="label.dashboard"
-						defaults="<bold>Dashboard</bold>"
-						components={{ bold: <strong /> }}
-						t={t}
-					/>
-				),
-				options: []
-			}
-		],
-		[t]
-	);
+  const homeTooltipItems = useMemo(
+    () => [
+      {
+        header: (
+          <Trans
+            i18nKey="label.dashboard"
+            defaults="<bold>Dashboard</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        ),
+        options: [],
+      },
+    ],
+    [t],
+  );
 
-	const HomeTooltipView: FC = useCallback(
-		() => <PrimaryBarTooltip items={homeTooltipItems} />,
-		[homeTooltipItems]
-	);
+  const HomeTooltipView: FC = useCallback(
+    () => <PrimaryBarTooltip items={homeTooltipItems} />,
+    [homeTooltipItems],
+  );
+  useEffect(() => {
+    addRoute({
+      route: DASHBOARD,
+      position: 1,
+      visible: true,
+      label: t('label.dashboard', 'Dashboard') || '',
+      primaryBar: 'HomeOutline',
+      appView: AppView,
+      tooltip: HomeTooltipView,
+      trackerLabel: PRIMARY_BAR_DASHBOARD,
+    });
+  }, [HomeTooltipView, t]);
 
-	useEffect(() => {
-		addRoute({
-			route: DASHBOARD,
-			position: 1,
-			visible: true,
-			label: t('label.dashboard', 'Dashboard') || '',
-			primaryBar: 'HomeOutline',
-			appView: AppView,
-			tooltip: HomeTooltipView,
-			trackerLabel: PRIMARY_BAR_DASHBOARD
-		});
-	}, [HomeTooltipView, t]);
-
-	return null;
+  return null;
 };
 
 export default App;

@@ -72,7 +72,7 @@ const Dashboard: FC = () => {
         }
       }
     },
-    [domainInformation, setDomain, setDomainView, setIsQuickAccess, history],
+    [domainInformation, setDomain, setIsQuickAccess, setDomainView, navigate],
   );
 
   useEffect(() => {
@@ -85,11 +85,11 @@ const Dashboard: FC = () => {
 
   const goToMailStoreServerList = useCallback(() => {
     navigate(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
-  }, [history]);
+  }, [navigate]);
 
   const goToMailNotificationt = useCallback(() => {
     navigate(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
-  }, [history]);
+  }, [navigate]);
 
   useEffect(() => {
     if (rights && rights.length > 0) {
