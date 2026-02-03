@@ -6,14 +6,15 @@
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';
 import BackupDetailOperation from './backup-detail-operation';
 
 const BackupDetailPanel: FC = () => {
-	const { path } = useRouteMatch();
+	const location = useLocation();
+	const path = location.pathname;
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
 	const [t] = useTranslation();
@@ -55,14 +56,10 @@ const BackupDetailPanel: FC = () => {
 					</Row>
 				</Row>
 			) : (
-				<Switch>
-					<Route exact path={`${path}/:operation`}>
-						<BackupDetailOperation />
-					</Route>
-					<Route exact path={`${path}/:server/:operation`}>
-						<BackupDetailOperation />
-					</Route>
-				</Switch>
+				<Routes>
+					<Route path={`${path}/:operation`} element={<BackupDetailOperation />} />
+					<Route path={`${path}/:server/:operation`} element={<BackupDetailOperation />} />
+				</Routes>
 			)}
 		</Container>
 	);

@@ -5,7 +5,7 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { DASHBOARD } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
@@ -15,18 +15,23 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${DASHBOARD}`}>
-        <Container
-          orientation="horizontal"
-          mainAlignment="flex-start"
-          background="gray5"
-          height="auto"
-        >
-          <Suspense fallback={<spinner-wc />}>
-            <Dashboard />
-          </Suspense>
-        </Container>
-      </Route>
+      <Routes>
+        <Route
+          path={`/${DASHBOARD}`}
+          element={
+            <Container
+              orientation="horizontal"
+              mainAlignment="flex-start"
+              background="gray5"
+              height="auto"
+            >
+              <Suspense fallback={<spinner-wc />}>
+                <Dashboard />
+              </Suspense>
+            </Container>
+          }
+        />
+      </Routes>
     </Container>
   );
 };

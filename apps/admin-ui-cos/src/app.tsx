@@ -14,7 +14,7 @@ import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
@@ -52,7 +52,7 @@ const PrimaryBarIcon = styled(Icon)`
 
 const App: FC = () => {
   const [t] = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { setCosView } = useCosStore();
   const { data: rights } = useCurrentUserRights();
@@ -120,10 +120,10 @@ const App: FC = () => {
       <PrimaryBarIcon
         icon={SettingsModOutline}
         size="large"
-        onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
+        onClick={(): void => navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
       />
     ),
-    [history],
+    [navigate],
   );
   useEffect(() => {
     if (showCOS) {
@@ -150,7 +150,7 @@ const App: FC = () => {
         label: t('label.create_new_cos', 'Create New COS'),
         icon: '',
         onClick: (): void => {
-          history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
+          navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
           setCosView(CREATE_NEW_COS_ROUTE_ID);
         },
         disabled: !createCosRight,
@@ -160,7 +160,7 @@ const App: FC = () => {
       id: 'new-cos',
       type: 'new',
     });
-    history.push(`/${DASHBOARD}`);
+    navigate(`/${DASHBOARD}`);
   }, [createCosRight, history, setCosView, t]);
 
   return null;

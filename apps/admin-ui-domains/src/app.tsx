@@ -13,7 +13,7 @@ import {
 import { find } from 'lodash-es';
 import { FC, lazy, memo, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   APP_ID,
@@ -39,7 +39,7 @@ const MemoizedAppView = memo(AppView);
 
 const App: FC = () => {
   const [t] = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
   const setDomainView = useDomainStore((state) => state.setDomainView);
@@ -111,7 +111,7 @@ const App: FC = () => {
         label: t('label.create_new_domain', 'Create New Domain'),
         icon: '',
         onClick: (): void => {
-          history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
+          navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
           setDomain({});
           setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
         },

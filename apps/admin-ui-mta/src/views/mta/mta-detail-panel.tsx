@@ -5,12 +5,13 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import MTADetailOperationPanel from './mta-detail-operation-panel';
 
 const MTADetailPanel: FC = () => {
-	const { path } = useRouteMatch();
+	const location = useLocation();
+	const path = location.pathname;
 
 	return (
 		<Container
@@ -20,14 +21,10 @@ const MTADetailPanel: FC = () => {
 			style={{ overflowY: 'hidden' }}
 			background="gray6"
 		>
-			<Switch>
-				<Route exact path={`${path}/:operation`}>
-					<MTADetailOperationPanel />
-				</Route>
-				<Route exact path={`${path}/:server/:operation`}>
-					<MTADetailOperationPanel />
-				</Route>
-			</Switch>
+			<Routes>
+				<Route path={`${path}/:operation`} element={<MTADetailOperationPanel />} />
+				<Route path={`${path}/:server/:operation`} element={<MTADetailOperationPanel />} />
+			</Routes>
 		</Container>
 	);
 };

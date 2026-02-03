@@ -6,7 +6,7 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
@@ -28,22 +28,27 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-        <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
-          <Container style={{ maxWidth: '265px' }}>
-            <Suspense fallback={<spinner-wc />}>
-              <DomainListPanel />
-            </Suspense>
-          </Container>
-          <Container style={{ maxWidth: '100%' }}>
-            <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-              <Suspense fallback={<spinner-wc />}>
-                <DomainDetailPanel />
-              </Suspense>
-            </DetailViewContainer>
-          </Container>
-        </Container>
-      </Route>
+      <Routes>
+        <Route
+          path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}
+          element={
+            <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
+              <Container style={{ maxWidth: '265px' }}>
+                <Suspense fallback={<spinner-wc />}>
+                  <DomainListPanel />
+                </Suspense>
+              </Container>
+              <Container style={{ maxWidth: '100%' }}>
+                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+                  <Suspense fallback={<spinner-wc />}>
+                    <DomainDetailPanel />
+                  </Suspense>
+                </DetailViewContainer>
+              </Container>
+            </Container>
+          }
+        />
+      </Routes>
     </Container>
   );
 };

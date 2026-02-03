@@ -6,7 +6,7 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MANAGE_APP_ID, MTA_ROUTE_ID } from '../constants';
@@ -28,22 +28,27 @@ const AppView: FC = () => {
 	return (
 		<Container height={'fit'}>
 			<BreadCrumb />
-			<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container style={{ maxWidth: '16.563rem' }}>
-						<Suspense fallback={<spinner-wc />}>
-							<MTAListPanel />
-						</Suspense>
-					</Container>
-					<Container style={{ maxWidth: '100%' }}>
-						<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-							<Suspense fallback={<spinner-wc />}>
-								<MTADetailPanel />
-							</Suspense>
-						</DetailViewContainer>
-					</Container>
-				</Container>
-			</Route>
+			<Routes>
+				<Route
+					path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}
+					element={
+						<Container orientation="horizontal" mainAlignment="flex-start">
+							<Container style={{ maxWidth: '16.563rem' }}>
+								<Suspense fallback={<spinner-wc />}>
+									<MTAListPanel />
+								</Suspense>
+							</Container>
+							<Container style={{ maxWidth: '100%' }}>
+								<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+									<Suspense fallback={<spinner-wc />}>
+										<MTADetailPanel />
+									</Suspense>
+								</DetailViewContainer>
+							</Container>
+						</Container>
+					}
+				/>
+			</Routes>
 		</Container>
 	);
 };

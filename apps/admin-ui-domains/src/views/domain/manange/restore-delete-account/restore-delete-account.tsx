@@ -8,25 +8,26 @@ import { Container, useSnackbar } from "@zextras/ui-components";
 import { noop } from "lodash-es";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { doRestoreDeleteAccount } from "../../../../services/restore-delete-account-service";
 import RestoreAccountWizard from "./restore-delete-account-wizard";
 
 const RestoreDeleteAccount: FC = () => {
   const [t] = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const createSnackbar = useSnackbar();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
 
   const backToFirstTab = useCallback(() => {
-    const lastloc = history?.location?.pathname;
-    history.push(lastloc.replace("/restore_account", ""));
+    const lastloc = location?.pathname;
+    navigate(lastloc.replace("/restore_account", ""));
     setTimeout(() => {
-      history.push(lastloc);
+      navigate(lastloc);
     }, 10);
-  }, [history]);
+  }, [location, navigate]);
 
   useMemo(() => {
     if (isSuccess) {

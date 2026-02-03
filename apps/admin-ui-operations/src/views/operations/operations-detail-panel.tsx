@@ -6,12 +6,13 @@
 
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import OperationsDetailOperation from './operations-detail-operation';
 
 const OperationsDetailPanel: FC = () => {
-	const { path } = useRouteMatch();
+	const location = useLocation();
+	const path = location.pathname;
 	return (
 		<Container
 			orientation="column"
@@ -20,11 +21,9 @@ const OperationsDetailPanel: FC = () => {
 			style={{ overflowY: 'hidden' }}
 			background="gray6"
 		>
-			<Switch>
-				<Route exact path={`${path}/:operation`}>
-					<OperationsDetailOperation />
-				</Route>
-			</Switch>
+			<Routes>
+				<Route path={`${path}/:operation`} element={<OperationsDetailOperation />} />
+			</Routes>
 		</Container>
 	);
 };

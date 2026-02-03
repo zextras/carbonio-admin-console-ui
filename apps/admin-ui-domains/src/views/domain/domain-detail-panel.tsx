@@ -8,7 +8,7 @@ import { Button, Container, Icon,Padding, Row, Text } from '@zextras/ui-componen
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect,useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Switch, useLocation,useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import logo from '../../assets/ninja_robo.svg';
 import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
@@ -20,8 +20,8 @@ import GlobalOperations from './global-operation';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const { path } = useRouteMatch();
 	const location = useLocation();
+	const path = location.pathname;
 	const domain = useDomainStore((state) => state.domain);
 	const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
 	const setCloseDomainBanner = useDomainStore((state) => state.setCloseDomainBanner);
@@ -111,61 +111,56 @@ const DomainDetailPanel: FC = () => {
 			) : (
 				<></>
 			)}
-			<Switch>
-				<Route exact path={`${path}/${GLOBAL_ROUTE}`}>
-					<GlobalDetailPanel />
-				</Route>
-				<Route exact path={`${path}/${GLOBAL_ROUTE}/:operation`}>
-					<GlobalOperations />
-				</Route>
-				<Route exact path={`${path}/:domainId/:operation`}>
-					<DomainOperations />
-				</Route>
-				<Route exact path={`${path}/${CREATE_NEW_DOMAIN_ROUTE_ID}`}>
-					<CreateDomain />
-				</Route>
-				<Route exact path={`${path}`}>
-					<Container>
-						<Text
-							overflow="break-word"
-							weight="regular"
-							size="large"
-							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-						>
-							<img src={logo} alt="logo" />
-						</Text>
-						<Padding all="medium" width="47%">
+			<Routes>
+				<Route path={`${path}/${GLOBAL_ROUTE}`} element={<GlobalDetailPanel />} />
+				<Route path={`${path}/${GLOBAL_ROUTE}/:operation`} element={<GlobalOperations />} />
+				<Route path={`${path}/:domainId/:operation`} element={<DomainOperations />} />
+				<Route path={`${path}/${CREATE_NEW_DOMAIN_ROUTE_ID}`} element={<CreateDomain />} />
+				<Route
+					path={`${path}`}
+					element={
+						<Container>
 							<Text
-								color="gray1"
 								overflow="break-word"
 								weight="regular"
 								size="large"
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
-								{t(
-									'select_domain_or_create_new',
-									'Please select a domain from the menu on the left or click on the "Create" button to create a new one.'
-								)}
+								<img src={logo} alt="logo" />
 							</Text>
-						</Padding>
-						<Padding all="medium">
-							<Text
-								size="small"
-								overflow="break-word"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-							>
-								<Button
-									type="outlined"
-									label={t('label.create_new_domain', 'Creat New Domain')}
-									icon="Plus"
-									color="primary"
-									onClick={createNewDomain}
-								/>
-							</Text>
-						</Padding>
-					</Container>
-				</Route>
-			</Switch>
+							<Padding all="medium" width="47%">
+								<Text
+									color="gray1"
+									overflow="break-word"
+									weight="regular"
+									size="large"
+									style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+								>
+									{t(
+										'select_domain_or_create_new',
+										'Please select a domain from the menu on the left or click on "Create" button to create a new one.'
+									)}
+								</Text>
+							</Padding>
+							<Padding all="medium">
+								<Text
+									size="small"
+									overflow="break-word"
+									style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+								>
+									<Button
+										type="outlined"
+										label={t('label.create_new_domain', 'Creat New Domain')}
+										icon="Plus"
+										color="primary"
+										onClick={createNewDomain}
+									/>
+								</Text>
+							</Padding>
+						</Container>
+					}
+				/>
+			</Routes>
 		</Container>
 	);
 };

@@ -9,7 +9,7 @@ import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { MANAGE_APP_ID,SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import ListRow from '../list/list-row';
@@ -91,7 +91,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 	);
 
 	const onClose = () => setIsLicenseBannerOpen(false);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	return licenseBannerShouldBeDisplayed ? (
 		<ListRow padding={redirectButtonHasToAppear ? '1.5rem' : { top: '1.5rem' }}>
@@ -145,7 +145,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 						backgroundColor="transparent"
 						color="gray6"
 						label={detailsButton}
-						onClick={() => history.push(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`)}
+						onClick={() => navigate(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`)}
 					/>
 				)}
 			</Container>

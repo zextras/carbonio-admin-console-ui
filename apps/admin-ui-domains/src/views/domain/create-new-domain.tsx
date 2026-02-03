@@ -9,7 +9,7 @@ import {   Button,  ChipInput,  Container,  CustomTextArea,  Input,  OverlayDivi
 import {  map, some  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import {  useTranslation  } from 'react-i18next';
-import {  useHistory  } from 'react-router-dom';
+import {  useNavigate  } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {  Attribute, DomainResponse, objectType, SelectItem  } from '../../../types';
@@ -47,7 +47,7 @@ const GAL_MODE = {
 const CreateDomain: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const history = useHistory();
+  const navigate = useNavigate();
   const setDomain = useDomainStore((state) => state.setDomain);
   const setDomainView = useDomainStore((state) => state.setDomainView);
   const setIsDomainSupportDelegatedAdmin = useDomainStore(
@@ -348,7 +348,7 @@ const CreateDomain: FC = () => {
   };
 
   const onCancel = (): void => {
-    history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
+    navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
   };
 
   useEffect(() => {
