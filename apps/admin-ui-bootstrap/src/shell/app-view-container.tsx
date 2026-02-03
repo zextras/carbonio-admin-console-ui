@@ -39,7 +39,7 @@ export default function AppViewContainer() {
       ...map(appViews, (view) => (
         <Route
           key={view.id}
-          path={`/${view.route}`}
+          path={`/${view.route}/*`}
           element={
             <AppContextProvider key={view.app} pkg={view.app}>
               <view.component />

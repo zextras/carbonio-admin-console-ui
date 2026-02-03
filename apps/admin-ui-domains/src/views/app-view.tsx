@@ -9,7 +9,6 @@ import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
@@ -30,9 +29,13 @@ const AppView: FC = () => {
       <BreadCrumb />
       <Routes>
         <Route
-          path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}
+          path="*"
           element={
-            <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
+            <Container
+              orientation="horizontal"
+              mainAlignment="flex-start"
+              height="calc(100vh - 105px)"
+            >
               <Container style={{ maxWidth: '265px' }}>
                 <Suspense fallback={<spinner-wc />}>
                   <DomainListPanel />
