@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
-import {  Container,Row, Text  } from '@zextras/ui-components';
+import {  Container,Padding,Row, Text  } from '@zextras/ui-components';
 import {  FC, useCallback  } from 'react';
 import {  useTranslation  } from 'react-i18next';
 
@@ -87,33 +87,49 @@ export const Features: FC<{
 						</Row>
 					)}
 				</Container>
-				{cosLevelFeatures && (
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="50%"
-						orientation="vertical"
-						padding={{ bottom: 'large' }}
-					>
-						<Text size="extralarge" weight="bold">
-							{t('label.two_factor_auth', 'Second Factor Authentication')}
-						</Text>
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
-								onChange={changeSwitchOption}
-								label={t('label.one_time_password_management', 'One Time Password management')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
-								fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
-								inputName={'carbonioFeatureOTPMgmtEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureOTPMgmtEnabled')}
-								disabled={readonlyFeatures}
-							/>
-						</Row>
-					</Container>
-				)}
+				<divider-wc></divider-wc>
 			</Row>
+			{cosLevelFeatures && (<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('cos.features.twoFactorAuthenticator', 'Two-Factor authenticator')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
+							onChange={changeSwitchOption}
+							label={t(
+								'cos.features.allowUsersToConfigure2FA',
+								'Allow users to configure 2FA'
+							)}
+							iconColor="primary"
+							inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+							inputName={'carbonioFeatureOTPMgmtEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureOTPMgmtEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+					<Padding left={'extralarge'}>
+						<Row padding={{ left: 'small' }}>
+							<Text color="gray1" size='small' overflow="break-word">
+								{t('cos.features.allowUsersToConfigure2FAInfo', 'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.')}
+							</Text>
+						</Row>
+					</Padding>
+				</Container>
+				<divider-wc></divider-wc>
+			</Row>)}
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
