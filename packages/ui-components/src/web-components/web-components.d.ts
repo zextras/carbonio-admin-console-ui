@@ -13,6 +13,15 @@ declare global {
       interface IntrinsicElements {
         'spinner-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+        'icon-wc': React.DetailedHTMLProps<
+          React.HTMLAttributes<HTMLElement> & {
+            'icon-name'?: string;
+            color?: string;
+            size?: 'small' | 'medium' | 'large';
+            disabled?: boolean;
+          },
+          HTMLElement
+        >;
       }
     }
   }
