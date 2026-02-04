@@ -13,6 +13,7 @@
   --color-primary-active: #1e5092;
   --color-primary-focus: #225ca8;
   --color-primary-disabled: #aac8ee;
+  --color-primary-highlight: #d5e3f6;
 
   /* Secondary palette - matches Theme.palette.secondary */
   --color-secondary: #828282;

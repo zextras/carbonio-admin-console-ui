@@ -1,43 +1,43 @@
 .primaryBarContainer {
-	min-width: 48px;
-	max-width: 192px;
-	width: 48px;
-	transition: width 300ms;
-	overflow-x: hidden;
+  min-width: 48px;
+  max-width: 192px;
+  width: 48px;
+  transition: width 300ms;
+  overflow-x: hidden;
 }
 
 .primaryBarContainer[data-sidebarisopen='true'] {
- 	width: 192px;
- }
+  width: 192px;
+}
 
 .primaryBarRow {
-	background-color: var(--color-gray6-regular);
-	cursor: pointer;
+  background-color: var(--color-gray6-regular);
+  cursor: pointer;
 }
 
 .primaryBarRow:hover {
-	background: var(--color-gray6-hover);
+  background: var(--color-gray6-hover);
 }
 
 .primaryBarRow[data-active='true'] {
-	background-color: var(--color-highlight-regular);
+  background-color: var(--color-primary-highlight);
 }
 
 .primaryBarRow[data-active='true']:hover {
-	background: var(--color-gray4-hover);
+  background: var(--color-gray4-hover);
 }
 
 .primaryBarButton {
-	background: transparent;
+  background: transparent;
 }
 
 .primaryBarButton:hover {
-	background: transparent;
+  background: transparent;
 }
 
 .customText {
-	width: 75%;
-	height: 100%;
-	display: flex;
-	align-items: center;
+  width: 75%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
