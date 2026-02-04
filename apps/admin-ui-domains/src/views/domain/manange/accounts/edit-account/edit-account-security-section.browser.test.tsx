@@ -637,6 +637,35 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
     });
 
+    it('should call setAccountDetail when carbonioFeatureOTPMgmtEnabled reset is clicked', async () => {
+      const mockSetAccountDetail = vi.fn();
+      const testContext = {
+        ...mockContextValue,
+        setAccountDetail: mockSetAccountDetail,
+        accountDetail: {
+          ...mockContextValue.accountDetail,
+          carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        },
+        accSpecificDetail: {
+          ...mockContextValue.accSpecificDetail,
+          carbonioFeatureOTPMgmtEnabled: 'FALSE',
+        },
+        cosDetail: {
+          ...mockContextValue.cosDetail,
+          carbonioFeatureOTPMgmtEnabled: 'FALSE',
+        },
+      };
+      setupEditAccountSecurityTest(
+        <AccountContext.Provider value={testContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+      const resetButton = page.getByTestId('reset-carbonioFeatureOTPMgmtEnabled');
+      await expect.element(resetButton).toBeVisible();
+      await resetButton.click();
+      expect(mockSetAccountDetail).toHaveBeenCalled();
+    });
+
     it('should call setAccountDetail when reset button is clicked', async () => {
       const mockSetAccountDetail = vi.fn();
       const testContext = {
