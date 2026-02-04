@@ -69,7 +69,7 @@ export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
     // Fetch locale from account settings before loading apps and translations
     await initLocale(i18nFactory);
 
-    await loadAllApps();
+    loadAllApps();
     await getAccount();
 
     loadAppTranslations();

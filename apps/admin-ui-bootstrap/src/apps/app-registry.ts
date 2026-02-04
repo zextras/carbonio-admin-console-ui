@@ -4,6 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import Backup from '@zextras/admin-ui-backup';
+import Cos from '@zextras/admin-ui-cos';
+import Dashboard from '@zextras/admin-ui-dashboard';
+import Domains from '@zextras/admin-ui-domains';
+import Legalhold from '@zextras/admin-ui-legalhold';
+import Mta from '@zextras/admin-ui-mta';
+import Notifications from '@zextras/admin-ui-notifications';
+import Operations from '@zextras/admin-ui-operations';
+import Privacy from '@zextras/admin-ui-privacy';
+import Storage from '@zextras/admin-ui-storage';
+import Subscription from '@zextras/admin-ui-subscription';
 import { ComponentType } from 'react';
 import { StoreApi, UseBoundStore } from 'zustand';
 
@@ -106,32 +117,31 @@ export const APP_REGISTRY: ReadonlyArray<AppManifest> = [
 ];
 
 /**
- * Static import map - Vite can analyze these literal imports and code-split them.
- * Each app is loaded via dynamic import() but with a literal string path
- * that Vite can statically analyze at build time.
+ * Static module map - all apps are imported at build time.
+ * No runtime dynamic imports - everything is bundled together.
  */
-const appImporters: Record<string, () => Promise<{ default: unknown }>> = {
-  '@zextras/admin-ui-dashboard': () => import('@zextras/admin-ui-dashboard'),
-  '@zextras/admin-ui-domains': () => import('@zextras/admin-ui-domains'),
-  '@zextras/admin-ui-backup': () => import('@zextras/admin-ui-backup'),
-  '@zextras/admin-ui-cos': () => import('@zextras/admin-ui-cos'),
-  '@zextras/admin-ui-legalhold': () => import('@zextras/admin-ui-legalhold'),
-  '@zextras/admin-ui-mta': () => import('@zextras/admin-ui-mta'),
-  '@zextras/admin-ui-notifications': () => import('@zextras/admin-ui-notifications'),
-  '@zextras/admin-ui-operations': () => import('@zextras/admin-ui-operations'),
-  '@zextras/admin-ui-subscription': () => import('@zextras/admin-ui-subscription'),
-  '@zextras/admin-ui-privacy': () => import('@zextras/admin-ui-privacy'),
-  '@zextras/admin-ui-storage': () => import('@zextras/admin-ui-storage'),
+const appModules: Record<string, ComponentType<object>> = {
+  '@zextras/admin-ui-dashboard': Dashboard,
+  '@zextras/admin-ui-domains': Domains,
+  '@zextras/admin-ui-backup': Backup,
+  '@zextras/admin-ui-cos': Cos,
+  '@zextras/admin-ui-legalhold': Legalhold,
+  '@zextras/admin-ui-mta': Mta,
+  '@zextras/admin-ui-notifications': Notifications,
+  '@zextras/admin-ui-operations': Operations,
+  '@zextras/admin-ui-subscription': Subscription,
+  '@zextras/admin-ui-privacy': Privacy,
+  '@zextras/admin-ui-storage': Storage,
 };
 
 /**
  * Load all apps from the registry and register them in the store.
- * Uses static imports that Vite code-splits at build time.
+ * All apps are statically imported and bundled at build time - no async loading.
  */
-export async function loadAllAppsFromRegistry(
+export function loadAllAppsFromRegistry(
   useAppStore: UseBoundStore<StoreApi<AppState>>,
   appContextMap: Map<string, AppManifest | undefined>,
-): Promise<void> {
+): void {
   // Initialize app state
   const appsObject = APP_REGISTRY.reduce<Record<string, object>>(
     (acc, app) => ({
@@ -162,39 +172,30 @@ export async function loadAllAppsFromRegistry(
       } as Partial<AppState>),
   );
 
-  // Load all apps in parallel using static imports
-  const loadPromises = APP_REGISTRY.map(async (app) => {
-    const importer = appImporters[app.packageName];
-    if (!importer) {
-      console.error(`No importer found for ${app.packageName}`);
+  // Register all apps synchronously - no runtime loading
+  APP_REGISTRY.forEach((app) => {
+    const Component = appModules[app.packageName];
+    if (!Component) {
+      console.error(`No module found for ${app.packageName}`);
       return;
     }
 
-    try {
-      const module = await importer();
-      const Component = module.default;
+    useAppStore.setState((state) => ({
+      entryPoints: {
+        ...state.entryPoints,
+        [app.name]: Component,
+      },
+    }));
 
-      useAppStore.setState((state) => ({
-        entryPoints: {
-          ...state.entryPoints,
-          [app.name]: Component as ComponentType<unknown>,
-        },
-      }));
+    appContextMap.set(
+      app.packageName,
+      APP_REGISTRY.find((a) => a.packageName === app.packageName) as AppManifest,
+    );
 
-      appContextMap.set(
-        app.packageName,
-        APP_REGISTRY.find((a) => a.packageName === app.packageName) as AppManifest,
-      );
-
-      // eslint-disable-next-line no-console
-      console.info(
-        `%c loaded ${app.name}`,
-        'color: white; background: #539507;padding: 4px 8px 2px 4px; font-family: sans-serif; border-radius: 12px; width: 100%',
-      );
-    } catch (error) {
-      console.error(`Failed to load app ${app.name}:`, error);
-    }
+    // eslint-disable-next-line no-console
+    console.info(
+      `%c loaded ${app.name}`,
+      'color: white; background: #539507;padding: 4px 8px 2px 4px; font-family: sans-serif; border-radius: 12px; width: 100%',
+    );
   });
-
-  await Promise.all(loadPromises);
 }

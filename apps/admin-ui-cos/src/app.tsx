@@ -12,7 +12,7 @@ import {
 } from '@zextras/admin-ui-bootstrap';
 import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
-import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
@@ -33,14 +33,9 @@ import {
 } from './constants';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useCosStore } from './store/cos/store';
+import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
-const LazyAppView = lazy(() => import('./views/app-view'));
-const AppView: FC = (props) => (
-  <Suspense fallback={<spinner-wc />}>
-    <LazyAppView {...props} />
-  </Suspense>
-);
 const PrimaryBarIcon = styled(Icon)`
   &:hover {
     background: transparent;

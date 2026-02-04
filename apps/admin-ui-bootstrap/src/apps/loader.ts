@@ -13,6 +13,6 @@ const appContextMap = new Map<string, AppManifest>();
 export const getAppContext = (packageName: string): AppManifest | undefined =>
   appContextMap.get(packageName);
 
-export async function loadAllApps(): Promise<void> {
-  await loadAllAppsFromRegistry(useAppStore, appContextMap);
+export function loadAllApps(): void {
+  loadAllAppsFromRegistry(useAppStore, appContextMap);
 }

@@ -28,7 +28,6 @@ export function createBootstrapRollupOptions(): RollupOptions {
       }
       return '[name].[hash][extname]';
     },
-    // Allow code splitting for sub-apps
     inlineDynamicImports: false,
   };
 

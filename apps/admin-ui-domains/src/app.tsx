@@ -11,7 +11,7 @@ import {
   useDomainStore,
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash-es';
-import { FC, lazy, memo, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, memo, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -25,15 +25,8 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
+import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const LazyAppView = lazy(() => import('./views/app-view'));
-
-const AppView: FC = (props) => (
-  <Suspense fallback={<spinner-wc />}>
-    <LazyAppView {...props} />
-  </Suspense>
-);
 
 const MemoizedAppView = memo(AppView);
 
