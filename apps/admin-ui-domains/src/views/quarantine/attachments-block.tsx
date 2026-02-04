@@ -211,7 +211,7 @@ const calcColor = (label: string, theme: any): string => {
     sum += label.charCodeAt(i);
   }
 
-  return theme.avatarColors[`avatar_${(sum % 50) + 1}` as keyof typeof theme.avatarColors];
+  return theme.avatarColors[`avatar-${(sum % 50) + 1}` as keyof typeof theme.avatarColors];
 };
 const getLocationOrigin = (): string => window.location.origin;
 const getAttachmentsLink = ({
