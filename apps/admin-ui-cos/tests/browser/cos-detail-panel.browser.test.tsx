@@ -5,100 +5,100 @@
  */
 
 import {
-	createBrowserSoapAPIInterceptor,
-	grantUserConfigRights,
-	setupBrowserTest
+  createBrowserSoapAPIInterceptor,
+  grantUserConfigRights,
+  setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { Route, Routes } from 'react-router';
-import { afterEach,beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useCosStore } from '../../src/store/cos/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
 
 const mockApiResponse = {
-	cos: [
-		{
-			name: 'firstCOS',
-			id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-			isDefaultCos: true,
-			a: [
-				{ n: 'cn', _content: 'firstCOS' },
-				{ n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-				{ n: 'objectClass', _content: 'zimbraCos' }
-			]
-		},
-		{
-			name: 'secondCOS',
-			id: 'f27456a8-0c00-11d9-280a-286d93afea2g',
-			isDefaultCos: true,
-			a: [
-				{ n: 'cn', _content: 'secondCOS' },
-				{ n: 'zimbraId', _content: 'f27456a8-0c00-11d9-280a-286d93afea2g' },
-				{ n: 'objectClass', _content: 'zimbraCos' }
-			]
-		}
-	],
-	searchTotal: 2,
-	more: false
+  cos: [
+    {
+      name: 'firstCOS',
+      id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+      isDefaultCos: true,
+      a: [
+        { n: 'cn', _content: 'firstCOS' },
+        { n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+        { n: 'objectClass', _content: 'zimbraCos' },
+      ],
+    },
+    {
+      name: 'secondCOS',
+      id: 'f27456a8-0c00-11d9-280a-286d93afea2g',
+      isDefaultCos: true,
+      a: [
+        { n: 'cn', _content: 'secondCOS' },
+        { n: 'zimbraId', _content: 'f27456a8-0c00-11d9-280a-286d93afea2g' },
+        { n: 'objectClass', _content: 'zimbraCos' },
+      ],
+    },
+  ],
+  searchTotal: 2,
+  more: false,
 };
 
 describe('CosDetailPanel', () => {
-	beforeEach(async () => {
-		await grantUserConfigRights();
-	});
+  beforeEach(async () => {
+    await grantUserConfigRights();
+  });
 
-	afterEach(() => {
-		useCosStore.getState().reset();
-	});
+  afterEach(() => {
+    useCosStore.getState().reset();
+  });
 
-	it('should render the COS detail panel with basic structure', async () => {
-		createBrowserSoapAPIInterceptor('SearchDirectory', {});
+  it('should render the COS detail panel with basic structure', async () => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-		setupBrowserTest(
-			<Routes>
-				<Route path="/cos/*" element={<CosDetailPanel />} />
-			</Routes>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+    await setupBrowserTest(
+      <Routes>
+        <Route path="/cos/*" element={<CosDetailPanel />} />
+      </Routes>,
+      { initialRouterEntry: '/cos/cos_list' },
+    );
 
-		await expect.element(page.getByText('COS List')).toBeVisible();
-	});
-	it('should show the list of COS elements', async () => {
-		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+    await expect.element(page.getByText('COS List')).toBeVisible();
+  });
+  it('should show the list of COS elements', async () => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		await setupBrowserTest(
-			<Routes>
-				<Route path="/cos/*" element={<CosDetailPanel />} />
-			</Routes>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
+    await setupBrowserTest(
+      <Routes>
+        <Route path="/cos/*" element={<CosDetailPanel />} />
+      </Routes>,
+      { initialRouterEntry: '/cos/cos_list' },
+    );
 
-		await expect.element(page.getByText('firstCOS')).toBeVisible();
-		await expect.element(page.getByText('secondCOS')).toBeVisible();
-	});
-	it('should change the number of visible COS', async () => {
-		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+    await expect.element(page.getByText('firstCOS')).toBeVisible();
+    await expect.element(page.getByText('secondCOS')).toBeVisible();
+  });
+  it('should change the number of visible COS', async () => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
-		await setupBrowserTest(
-			<Routes>
-				<Route path="/cos/*" element={<CosDetailPanel />} />
-			</Routes>,
-			{ initialRouterEntry: '/cos/cos_list' }
-		);
-		await expect.element(page.getByText('Showing')).toBeVisible();
-		await expect.element(page.getByText('items per page')).toBeVisible();
-		await page.getByText('10').click();
-		await expect.element(page.getByText('15')).toBeVisible();
-		await expect.element(page.getByText('25')).toBeVisible();
-		await expect.element(page.getByText('50')).toBeVisible();
-		await expect.element(page.getByText('100')).toBeVisible();
+    await setupBrowserTest(
+      <Routes>
+        <Route path="/cos/*" element={<CosDetailPanel />} />
+      </Routes>,
+      { initialRouterEntry: '/cos/cos_list' },
+    );
+    await expect.element(page.getByText('Showing')).toBeVisible();
+    await expect.element(page.getByText('items per page')).toBeVisible();
+    await page.getByText('10').click();
+    await expect.element(page.getByText('15')).toBeVisible();
+    await expect.element(page.getByText('25')).toBeVisible();
+    await expect.element(page.getByText('50')).toBeVisible();
+    await expect.element(page.getByText('100')).toBeVisible();
 
-		const listOfElements = page.getByText('10').elements();
-		expect(listOfElements[1]).toHaveStyle({ fontWeight: 'bold' });
+    const listOfElements = page.getByText('10').elements();
+    await expect.element(listOfElements[1]).toHaveStyle({ fontWeight: 'bold' });
 
-		await page.getByText('15').click();
-		expect(page.getByText('10').elements()).toHaveLength(0);
-		expect(page.getByText('15').elements()).toHaveLength(1);
-	});
+    await page.getByText('15').click();
+    expect(page.getByText('10').elements()).toHaveLength(0);
+    expect(page.getByText('15').elements()).toHaveLength(1);
+  });
 });
