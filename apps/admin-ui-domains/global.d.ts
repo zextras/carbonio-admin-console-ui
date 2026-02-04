@@ -4,12 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/// <reference types="vite/client" />
+
 import '@zextras/ui-components';
 
 declare module '*.jsx';
 declare module '*.module.css' {
   const classes: { [key: string]: string };
   export default classes;
+}
+
+declare module '*.svg' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.svg?url' {
+  const content: string;
+  export default content;
 }
 
 declare global {
