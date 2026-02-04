@@ -8,7 +8,7 @@ import {  replaceHistory  } from '@zextras/admin-ui-bootstrap';
 import {   Button,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from '@zextras/ui-components';
 import {  ChangeEvent, FC, useState  } from 'react';
 import {  useTranslation  } from 'react-i18next';
-import {  useNavigate  } from 'react-router-dom';
+import {  useNavigate  } from 'react-router';
 import styled from 'styled-components';
 
 import {  COS_ROUTE_ID, MANAGE  } from '../../constants';

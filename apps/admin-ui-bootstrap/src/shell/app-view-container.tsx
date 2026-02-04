@@ -7,7 +7,7 @@
 import { Container } from '@zextras/ui-components';
 import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import styled from 'styled-components';
 
 import AppContextProvider from '../boot/app/app-context-provider';

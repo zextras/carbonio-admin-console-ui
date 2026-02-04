@@ -8,7 +8,7 @@ import { Button, Container, Icon, Padding, Row, Text } from '@zextras/ui-compone
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import logo from '../../assets/ninja_robo.svg';
 import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../../constants';

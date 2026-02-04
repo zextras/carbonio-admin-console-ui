@@ -7,7 +7,7 @@ import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootst
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';

@@ -9,7 +9,7 @@ import {
 	grantUserConfigRights,
 	setupBrowserTest
 } from 'admin-ui-test-utils';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import { afterEach,beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -56,11 +56,9 @@ describe('CosDetailPanel', () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
 		setupBrowserTest(
-			<Switch>
-				<Route path="/cos">
-					<CosDetailPanel />
-				</Route>
-			</Switch>,
+			<Routes>
+				<Route path="/cos/*" element={<CosDetailPanel />} />
+			</Routes>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
 
@@ -70,11 +68,9 @@ describe('CosDetailPanel', () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		await setupBrowserTest(
-			<Switch>
-				<Route path="/cos">
-					<CosDetailPanel />
-				</Route>
-			</Switch>,
+			<Routes>
+				<Route path="/cos/*" element={<CosDetailPanel />} />
+			</Routes>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
 
@@ -85,11 +81,9 @@ describe('CosDetailPanel', () => {
 		createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
 
 		await setupBrowserTest(
-			<Switch>
-				<Route path="/cos">
-					<CosDetailPanel />
-				</Route>
-			</Switch>,
+			<Routes>
+				<Route path="/cos/*" element={<CosDetailPanel />} />
+			</Routes>,
 			{ initialRouterEntry: '/cos/cos_list' }
 		);
 		await expect.element(page.getByText('Showing')).toBeVisible();

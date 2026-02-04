@@ -13,7 +13,7 @@ import {
 import { find } from 'lodash-es';
 import { FC, lazy, memo, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import {
   APP_ID,

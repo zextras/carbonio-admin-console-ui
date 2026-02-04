@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import {
   ACTIVE_SYNC,

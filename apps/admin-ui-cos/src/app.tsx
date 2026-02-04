@@ -14,7 +14,7 @@ import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import {
@@ -120,7 +120,9 @@ const App: FC = () => {
       <PrimaryBarIcon
         icon={SettingsModOutline}
         size="large"
-        onClick={(): void => navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
+        onClick={(): void => {
+          navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`);
+        }}
       />
     ),
     [navigate],

@@ -8,7 +8,7 @@ import { useAllServers } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';

@@ -16,7 +16,7 @@ import {
 } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import {
   ACCOUNTS,

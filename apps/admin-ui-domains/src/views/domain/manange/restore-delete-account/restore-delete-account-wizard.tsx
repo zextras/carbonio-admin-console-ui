@@ -7,7 +7,7 @@
 import { Button,Container } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section-component';

@@ -9,7 +9,7 @@ import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { MANAGE_APP_ID,SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import ListRow from '../list/list-row';

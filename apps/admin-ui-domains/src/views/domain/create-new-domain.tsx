@@ -9,7 +9,7 @@ import {   Button,  ChipInput,  Container,  CustomTextArea,  Input,  OverlayDivi
 import {  map, some  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import {  useTranslation  } from 'react-i18next';
-import {  useNavigate  } from 'react-router-dom';
+import {  useNavigate  } from 'react-router';
 import styled from 'styled-components';
 
 import {  Attribute, DomainResponse, objectType, SelectItem  } from '../../../types';

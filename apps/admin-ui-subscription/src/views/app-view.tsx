@@ -6,7 +6,7 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container, ContainerProps } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import styled from 'styled-components';
 
 import BreadCrumb from './breadcrumb/breadcrumb-view';

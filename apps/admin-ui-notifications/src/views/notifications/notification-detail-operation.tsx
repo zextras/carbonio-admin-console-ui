@@ -5,7 +5,7 @@
  */
 
 import { FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { LIST } from '../../constants';
 import NotificationListView from './notification-list-view';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
 import CosOperations from './cos-detail-operation';

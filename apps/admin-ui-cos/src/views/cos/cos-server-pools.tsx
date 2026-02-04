@@ -20,7 +20,7 @@ import {
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';

@@ -10,7 +10,7 @@ import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-compon
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
 const getAppI18n = (): i18n => {
   const newI18n = i18next.createInstance();

@@ -5,7 +5,7 @@
  */
 
 import { FC, useMemo } from 'react';
-import { Link as RRLink, LinkProps } from 'react-router-dom';
+import { Link as RRLink, LinkProps } from 'react-router';
 
 import { parseParams } from '../history/hooks';
 

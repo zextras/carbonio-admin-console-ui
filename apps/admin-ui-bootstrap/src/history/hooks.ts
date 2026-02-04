@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { To } from 'history';
 import { find, replace, startsWith, trim } from 'lodash-es';
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { type To,useLocation } from 'react-router';
 
 import { AppRoute, HistoryParams } from '../../types';
 import { getRoutes, useRoutes } from '../store/app';

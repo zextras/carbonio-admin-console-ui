@@ -6,7 +6,7 @@
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router';
 
 import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';

@@ -5,7 +5,7 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import Dashboard from './dashboard/dashboard-view';

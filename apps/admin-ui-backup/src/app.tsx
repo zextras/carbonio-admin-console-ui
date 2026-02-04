@@ -8,7 +8,7 @@ import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/
 import { Button } from '@zextras/ui-components';
 import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
@@ -86,7 +86,9 @@ const App: FC = () => {
         type="ghost"
         size={'extralarge'}
         color={'text'}
-        onClick={(): void => navigate(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
+        onClick={(): void => {
+          navigate(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`);
+        }}
       />
     ),
     [navigate],
