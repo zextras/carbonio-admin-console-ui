@@ -128,4 +128,101 @@
   --icon-size-small: 0.75rem;
   --icon-size-medium: 1rem;
   --icon-size-large: 1.5rem;
+
+  /* Font sizes - matches Theme.sizes.font */
+  --font-size-extrasmall: 0.75rem;
+  --font-size-small: 0.875rem;
+  --font-size-medium: 1rem;
+  --font-size-large: 1.125rem;
+  --font-size-extralarge: 1.25rem;
+
+  /* Padding sizes - matches Theme.sizes.padding */
+  --padding-size-extrasmall: 0.25rem;
+  --padding-size-small: 0.5rem;
+  --padding-size-medium: 0.75rem;
+  --padding-size-large: 1rem;
+  --padding-size-extralarge: 1.5rem;
+
+  /* Avatar sizes - matches Theme.sizes.avatar */
+  --avatar-small-diameter: 1rem;
+  --avatar-small-font: 0.3125rem;
+  --avatar-medium-diameter: 2rem;
+  --avatar-medium-font: 0.75rem;
+  --avatar-large-diameter: 3rem;
+  --avatar-large-font: 1.125rem;
+  --avatar-extralarge-diameter: 4rem;
+  --avatar-extralarge-font: 1.75rem;
+
+  /* Border radius - matches Theme.borderRadius */
+  --border-radius: 0.125rem;
+
+  /* Font family - matches Theme.fonts */
+  --font-family: 'Roboto', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Highlight palette - matches Theme.palette.highlight */
+  --color-highlight-regular: '';
+  --color-highlight-hover: '';
+  --color-highlight-active: '';
+  --color-highlight-focus: '';
+  --color-highlight-disabled: '';
+
+  /* Avatar colors - matches Theme.avatarColors */
+  --color-avatar-1: #EF9A9A;
+  --color-avatar-2: #F48FB1;
+  --color-avatar-3: #CE93D8;
+  --color-avatar-4: #B39DDB;
+  --color-avatar-5: #9FA8DA;
+  --color-avatar-6: #90CAF9;
+  --color-avatar-7: #81D4FA;
+  --color-avatar-8: #80DEEA;
+  --color-avatar-9: #80CBC4;
+  --color-avatar-10: #A5D6A7;
+  --color-avatar-11: #C5E1A5;
+  --color-avatar-12: #E6EE9C;
+  --color-avatar-13: #FFE082;
+  --color-avatar-14: #FFCC80;
+  --color-avatar-15: #FFAB91;
+  --color-avatar-16: #BCAAA4;
+  --color-avatar-17: #E57373;
+  --color-avatar-18: #F06292;
+  --color-avatar-19: #BA68C8;
+  --color-avatar-20: #9575CD;
+  --color-avatar-21: #7986CB;
+  --color-avatar-22: #64B5F6;
+  --color-avatar-23: #4FC3F7;
+  --color-avatar-24: #4DD0E1;
+  --color-avatar-25: #4DB6AC;
+  --color-avatar-26: #81C784;
+  --color-avatar-27: #AED581;
+  --color-avatar-28: #DCE775;
+  --color-avatar-29: #FFD54F;
+  --color-avatar-30: #FFB74D;
+  --color-avatar-31: #FF8A65;
+  --color-avatar-32: #A1887F;
+  --color-avatar-33: #0097A7;
+  --color-avatar-34: #EF5350;
+  --color-avatar-35: #EC407A;
+  --color-avatar-36: #AB47BC;
+  --color-avatar-37: #7E57C2;
+  --color-avatar-38: #5C6BC0;
+  --color-avatar-39: #42A5F5;
+  --color-avatar-40: #29B6F6;
+  --color-avatar-41: #26C6DA;
+  --color-avatar-42: #26A69A;
+  --color-avatar-43: #66BB6A;
+  --color-avatar-44: #9CCC65;
+  --color-avatar-45: #D4E157;
+  --color-avatar-46: #FFCA28;
+  --color-avatar-47: #FFA726;
+  --color-avatar-48: #FF7043;
+  --color-avatar-49: #8D6E63;
+  --color-avatar-50: #0288D1;
+
+  /* Shadows - matches Theme.shadows */
+  --shadow-regular: 0 0 0.25rem 0 rgba(166, 166, 166, 0.5);
+  --shadow-snackbar: -2px 2px 5px 0 rgba(0, 0, 0, 0.25);
 }
