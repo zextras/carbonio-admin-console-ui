@@ -168,9 +168,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -437,9 +434,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -574,9 +568,6 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
@@ -721,9 +712,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -866,9 +854,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1008,9 +993,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1145,9 +1127,6 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
@@ -1289,9 +1268,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1431,9 +1407,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1568,9 +1541,6 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
@@ -1712,9 +1682,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
@@ -1831,9 +1798,6 @@ importers:
       msw:
         specifier: ^2.12.2
         version: 2.12.8(@types/node@22.19.8)(typescript@5.9.3)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
         specifier: 5.3.11
         version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
