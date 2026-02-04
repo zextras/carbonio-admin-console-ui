@@ -576,7 +576,7 @@ const EditAccountSecuritySection: FC = () => {
   return (
     <Container
       mainAlignment="flex-start"
-      padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+      padding={{ right: 'extralarge', bottom: 'large' }}
       style={{ overflow: 'auto' }}
     >
       {isAdvanced && <ServicesPassphrase />}
@@ -584,20 +584,51 @@ const EditAccountSecuritySection: FC = () => {
         <>
           {!showCreateOTP && (
             <Row mainAlignment="flex-start" width="100%">
-              <Row
-                padding={{ top: 'large', left: 'large' }}
-                width="100%"
-                mainAlignment="space-between"
-              >
-                <Text size="small" color="gray0" weight="bold">
-                  {t('label.two_factor_auth', 'Second Factor Authentication')}
-                </Text>
+              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
+                <Container
+                  height="fit"
+                  crossAlignment="flex-start"
+                  background="gray6"
+                  padding={{ top: 'large' }}
+                >
+                  <ListRow>
+                    <Container crossAlignment="flex-start">
+                      <Text size="extralarge" color="gray0" weight="bold">
+                        {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
+                      </Text>
+                      <Row padding={{ top: 'large' }}></Row>
+                      <InheritedSwitch
+                        subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
+                        onChange={changeSwitchOption}
+                        label={t(
+                          'domain.accounts.allowUsersToConfigure2FA',
+                          'Allow users to configure 2FA',
+                        )}
+                        iconColor="primary"
+                        inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
+                        fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+                        inputName={'carbonioFeatureOTPMgmtEnabled'}
+                        onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
+                      />
+                      <Padding left={'extralarge'}>
+                        <Row padding={{ left: 'small' }}>
+                          <Text color="gray1" size="small" overflow="break-word">
+                            {t(
+                              'domain.accounts.allowUsersToConfigure2FAInfo',
+                              'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
+                            )}
+                          </Text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                </Container>
               </Row>
               <Row
                 width="100%"
                 mainAlignment="flex-end"
                 crossAlignment="flex-end"
-                padding={{ right: 'large' }}
+                padding={{ right: 'large', top: 'large' }}
               >
                 <Padding right="large">
                   <Button
@@ -629,7 +660,6 @@ const EditAccountSecuritySection: FC = () => {
                   mainAlignment="space-between"
                   crossAlignment="flex-start"
                   width="fill"
-                  // height="calc(100vh - 340px)"
                 >
                   {otpList.length !== 0 && (
                     <Table
@@ -643,7 +673,12 @@ const EditAccountSecuritySection: FC = () => {
                     />
                   )}
                   {otpList.length === 0 && (
-                    <Container orientation="column" crossAlignment="center" mainAlignment="center">
+                    <Container
+                      orientation="column"
+                      crossAlignment="center"
+                      mainAlignment="center"
+                      padding={{ bottom: 'large' }}
+                    >
                       <Row>
                         <img src={logo} alt="logo" />
                       </Row>
@@ -675,32 +710,7 @@ const EditAccountSecuritySection: FC = () => {
                     </Container>
                   )}
                 </Row>
-              </Row>
-              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
-                <Container
-                  height="fit"
-                  crossAlignment="flex-start"
-                  background="gray6"
-                  padding={{ top: 'large' }}
-                >
-                  <ListRow>
-                    <Container crossAlignment="flex-start">
-                      <InheritedSwitch
-                        subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
-                        onChange={changeSwitchOption}
-                        label={t(
-                          'label.one_time_password_management',
-                          'One Time Password management',
-                        )}
-                        iconColor="primary"
-                        inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
-                        fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
-                        inputName={'carbonioFeatureOTPMgmtEnabled'}
-                        onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
-                      />
-                    </Container>
-                  </ListRow>
-                </Container>
+                <divider-wc></divider-wc>
               </Row>
             </Row>
           )}
@@ -1241,677 +1251,6 @@ const EditAccountSecuritySection: FC = () => {
       )}
     </Container>
   );
-	return (
-		<Container
-			mainAlignment="flex-start"
-			padding={{ right: 'extralarge', bottom: 'large' }}
-			style={{ overflow: 'auto' }}
-		>
-			{isAdvanced && <ServicesPassphrase />}
-			{isAdvanced && (
-				<>
-					{!showCreateOTP && (
-						<Row mainAlignment="flex-start" width="100%">
-							<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
-								<Container
-									height="fit"
-									crossAlignment="flex-start"
-									background="gray6"
-									padding={{ top: 'large' }}
-								>
-									<ListRow>
-										<Container crossAlignment="flex-start">
-											<Text size="extralarge" color="gray0" weight="bold" >
-												{t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
-											</Text>
-											<Row padding={{ top: 'large' }}></Row>
-											<InheritedSwitch
-												subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
-												onChange={changeSwitchOption}
-												label={t(
-													'domain.accounts.allowUsersToConfigure2FA',
-													'Allow users to configure 2FA'
-												)}
-												iconColor="primary"
-												inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
-												fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
-												inputName={'carbonioFeatureOTPMgmtEnabled'}
-												onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
-											/>
-											<Padding left={'extralarge'}>
-												<Row padding={{ left: 'small' }}>
-													<Text  color="gray1" size='small' overflow="break-word">
-														{t('domain.accounts.allowUsersToConfigure2FAInfo', 'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.')}
-													</Text>
-												</Row>
-											</Padding>
-										</Container>
-									</ListRow>
-								</Container>
-							</Row>
-							<Row
-								width="100%"
-								mainAlignment="flex-end"
-								crossAlignment="flex-end"
-								padding={{ right: 'large', top: 'large' }}
-							>
-								<Padding right="large">
-									<Button
-										type="outlined"
-										label={t('label.NEW_OTP', 'NEW OTP')}
-										icon="PlusOutline"
-										iconPlacement="right"
-										color="primary"
-										onClick={(): void => handleOnGenerateOTP()}
-									/>
-								</Padding>
-								<Button
-									type="outlined"
-									label={t('label.DELETE', 'DELETE')}
-									icon="CloseOutline"
-									iconPlacement="right"
-									color="error"
-									disabled={!selectedRows?.length}
-									onClick={(): void => handleDeleteOTP()}
-								/>
-							</Row>
-							<Row
-								padding={{ top: 'large', left: 'large', right: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-							>
-								<Row
-									orientation="horizontal"
-									mainAlignment="space-between"
-									crossAlignment="flex-start"
-									width="fill"
-									// height="calc(100vh - 340px)"
-								>
-									{otpList.length !== 0 && (
-										<Table
-											rows={otpList}
-											headers={headers}
-											multiSelect={false}
-											onSelectionChange={setSelectedRows}
-											style={{ overflow: 'auto', height: '100%' }}
-											RowFactory={CustomRowFactory}
-											HeaderFactory={CustomHeaderFactory}
-										/>
-									)}
-									{otpList.length === 0 && (
-										<Container orientation="column" crossAlignment="center" mainAlignment="center" padding={{ bottom: 'large' }}>
-											<Row>
-												<img src={logo} alt="logo" />
-											</Row>
-											<Row
-												padding={{ top: 'extralarge' }}
-												orientation="vertical"
-												crossAlignment="center"
-												style={{ textAlign: 'center' }}
-											>
-												<Text weight="light" color="#828282" size="large" overflow="break-word">
-													{t('label.this_list_is_empty', 'This list is empty.')}
-												</Text>
-											</Row>
-											<Row
-												orientation="vertical"
-												crossAlignment="center"
-												style={{ textAlign: 'center' }}
-												padding={{ top: 'small' }}
-												width="53%"
-											>
-												<Text weight="light" color="#828282" size="large" overflow="break-word">
-													<Trans
-														i18nKey="label.create_otp_list_msg"
-														defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
-														components={{ bold: <strong /> }}
-													/>
-												</Text>
-											</Row>
-										</Container>
-									)}
-								</Row>
-								<divider-wc></divider-wc>
-							</Row>
-						</Row>
-					)}
-					{showCreateOTP && (
-						<>
-							<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-								<HorizontalWizard
-									steps={wizardSteps}
-									Wrapper={WizardInSection}
-									setToggleWizardSection={setShowCreateOTP}
-								/>
-							</Row>
-						</>
-					)}
-				</>
-			)}
-			{isAdvanced && (
-				<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-					<Text size="extralarge" weight="bold">
-						{t('label.backup', 'Backup')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start">
-									<Switch
-										value={accountDetail?.backupSelfUndeleteAllowed}
-										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
-										label={t('label.allow_restore_message', 'Allow user to restore messages')}
-										iconColor="primary"
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-				</Row>
-			)}
-			{!showCreateOTP && (
-				<Row mainAlignment="flex-start" width="100%">
-					<Row
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large', left: 'large', right: 'large' }}
-					>
-						<Container
-							orientation="horizontal"
-							width="100%"
-							crossAlignment="center"
-							mainAlignment="space-between"
-							background="#D3EBF8"
-							padding={{
-								all: 'large'
-							}}
-							style={{ borderRadius: '2px 2px 0px 0px' }}
-						>
-							<Row mainAlignment="flex-start">
-								<Padding horizontal="small">
-									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
-								</Padding>
-							</Row>
-							<Row
-								mainAlignment="flex-start"
-								width="100%"
-								padding={{
-									all: 'small'
-								}}
-							>
-								<Text overflow="break-word">
-									{t(
-										'label.account_password_setting_note_for_external_authentication',
-										'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.'
-									)}
-								</Text>
-							</Row>
-						</Container>
-					</Row>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extralarge" weight="bold">
-							{t('cos.password', 'Password')}
-						</Text>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container crossAlignment="flex-start">
-										<InheritedSwitch
-											subValue={accountDetail?.zimbraPasswordLocked}
-											onChange={changeSwitchOption}
-											label={t(
-												'cos.prevent_user_from_changing_password',
-												'Prevent user from changing password'
-											)}
-											iconColor="primary"
-											inheritedValue={cosDetail.zimbraPasswordLocked}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLocked}
-											inputName={'zimbraPasswordLocked'}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordLocked')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t('cos.minimum_password_length', 'Minimum password length')}
-											subValue={accountDetail.zimbraPasswordMinLength}
-											inheritedValue={cosDetail.zimbraPasswordMinLength}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinLength}
-											background="gray5"
-											inputName="zimbraPasswordMinLength"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLength')}
-										/>
-									</Container>
-									<Container padding={{ left: 'small' }}>
-										<InheritedInput
-											label={t('cos.maximum_password_length', 'Maximum password length')}
-											subValue={accountDetail.zimbraPasswordMaxLength}
-											inheritedValue={cosDetail.zimbraPasswordMaxLength}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMaxLength}
-											background="gray5"
-											inputName="zimbraPasswordMaxLength"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxLength')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t(
-												'cos.minimum_upper_case_characters',
-												'Minimum upper case characters'
-											)}
-											subValue={accountDetail.zimbraPasswordMinUpperCaseChars}
-											inheritedValue={cosDetail.zimbraPasswordMinUpperCaseChars}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinUpperCaseChars}
-											background="gray5"
-											inputName="zimbraPasswordMinUpperCaseChars"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinUpperCaseChars')}
-										/>
-									</Container>
-									<Container padding={{ left: 'small' }}>
-										<InheritedInput
-											label={t(
-												'cos.minimum_lower_case_characters',
-												'Minimum lower case characters'
-											)}
-											subValue={accountDetail.zimbraPasswordMinLowerCaseChars}
-											inheritedValue={cosDetail.zimbraPasswordMinLowerCaseChars}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinLowerCaseChars}
-											background="gray5"
-											inputName="zimbraPasswordMinLowerCaseChars"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLowerCaseChars')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
-											subValue={accountDetail.zimbraPasswordMinPunctuationChars}
-											inheritedValue={cosDetail.zimbraPasswordMinPunctuationChars}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinPunctuationChars}
-											background="gray5"
-											inputName="zimbraPasswordMinPunctuationChars"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinPunctuationChars')}
-										/>
-									</Container>
-									<Container padding={{ left: 'small' }}>
-										<InheritedInput
-											label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-											subValue={accountDetail.zimbraPasswordMinNumericChars}
-											inheritedValue={cosDetail.zimbraPasswordMinNumericChars}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinNumericChars}
-											background="gray5"
-											inputName="zimbraPasswordMinNumericChars"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinNumericChars')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-											subValue={accountDetail.zimbraPasswordMinAge}
-											inheritedValue={cosDetail.zimbraPasswordMinAge}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinAge}
-											background="gray5"
-											inputName="zimbraPasswordMinAge"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinAge')}
-										/>
-									</Container>
-									<Container padding={{ left: 'small' }}>
-										<InheritedInput
-											label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-											subValue={accountDetail.zimbraPasswordMaxAge}
-											inheritedValue={cosDetail.zimbraPasswordMaxAge}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMaxAge}
-											background="gray5"
-											inputName="zimbraPasswordMaxAge"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxAge')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t(
-												'cos.minimum_numeric_characters_or_punctuation_symbols',
-												'Minimum numeric characters or punctuation symbols'
-											)}
-											subValue={accountDetail.zimbraPasswordMinDigitsOrPuncs}
-											inheritedValue={cosDetail.zimbraPasswordMinDigitsOrPuncs}
-											fromSubValue={accSpecificDetail?.zimbraPasswordMinDigitsOrPuncs}
-											background="gray5"
-											inputName="zimbraPasswordMinDigitsOrPuncs"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinDigitsOrPuncs')}
-										/>
-									</Container>
-									<Container padding={{ left: 'small' }}>
-										<InheritedInput
-											label={t(
-												'cos.minimum_number_of_unique_password_history',
-												'Minimum number of unique passwords history'
-											)}
-											subValue={accountDetail.zimbraPasswordEnforceHistory}
-											inheritedValue={cosDetail.zimbraPasswordEnforceHistory}
-											fromSubValue={accSpecificDetail?.zimbraPasswordEnforceHistory}
-											background="gray5"
-											inputName="zimbraPasswordEnforceHistory"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordEnforceHistory')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container height="fit" crossAlignment="flex-start" background="gray6">
-								<ListRow>
-									<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
-										<InheritedSwitch
-											subValue={accountDetail?.zimbraPasswordBlockCommonEnabled}
-											onChange={changeSwitchOption}
-											label={t('cos.reject_common_passwords', 'Reject common passwords')}
-											iconColor="primary"
-											inheritedValue={cosDetail.zimbraPasswordBlockCommonEnabled}
-											fromSubValue={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
-											inputName={'zimbraPasswordBlockCommonEnabled'}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordBlockCommonEnabled')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-					</Row>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extralarge" weight="bold">
-							{t('label.forgotten_password', 'Forgotten Password')}
-						</Text>
-						<Row mainAlignment="center" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
-										<Switch
-											value={accountDetail?.zimbraFeatureResetPasswordStatus === 'enabled'}
-											onClick={(): void => changeRecoverOption('zimbraFeatureResetPasswordStatus')}
-											label={t(
-												'label.user_can_ask_for_forgotten_password_token',
-												'User can ask for a forgotten password token'
-											)}
-											iconColor="primary"
-										/>
-									</Container>
-									<Container width="40%" padding={{ right: 'small', left: 'small' }}>
-										<Input
-											backgroundColor="gray5"
-											label={t('label.user_recovery_email', 'User Recovery Email')}
-											defaultValue={accountDetail?.zimbraPrefPasswordRecoveryAddress || ''}
-											onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-												if (isValidEmail(e?.target?.value)) {
-													changeValue(e);
-													setRecoveryEmailError(false);
-												} else {
-													setRecoveryEmailError(true);
-												}
-											}}
-											inputName="zimbraPrefPasswordRecoveryAddress"
-											description={t(
-												'label.enter_valid_email_address',
-												'Enter valid email Address'
-											)}
-											hasError={recoveryEmailError}
-										/>
-									</Container>
-									<Container width="30%" padding={{ left: 'small' }}>
-										<Select
-											items={recoveryStatus}
-											background="gray5"
-											label={t('label.status', 'Status')}
-											showCheckbox={false}
-											onChange={onRecoveryStatusChange}
-											defaultSelection={recoveryStatus.find(
-												// eslint-disable-next-line @typescript-eslint/no-explicit-any
-												(item: any) =>
-													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
-											)}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-					</Row>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extralarge" weight="bold">
-							{t('cos.failed_login_policy', 'Failed Login Policy')}
-						</Text>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container crossAlignment="flex-start">
-										<InheritedSwitch
-											subValue={accountDetail?.zimbraPasswordLockoutEnabled}
-											onChange={changeSwitchOption}
-											label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-											iconColor="primary"
-											inheritedValue={cosDetail.zimbraPasswordLockoutEnabled}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutEnabled}
-											inputName={'zimbraPasswordLockoutEnabled'}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutEnabled')}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container crossAlignment="flex-start">
-										<InheritedInput
-											label={t(
-												'cos.number_of_consecutive_failed_login_allowed',
-												'Number of consecutive failed logins allowed'
-											)}
-											subValue={accountDetail.zimbraPasswordLockoutMaxFailures}
-											inheritedValue={cosDetail.zimbraPasswordLockoutMaxFailures}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
-											background="gray5"
-											inputName="zimbraPasswordLockoutMaxFailures"
-											onChange={changeValue}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
-											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large' }}
-							>
-								<ListRow>
-									<Container width="75%" padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-											subValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
-											inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
-											background="gray5"
-											inputName="zimbraPasswordLockoutDuration"
-											onChange={onZimbraPasswordLockoutDurationNumChange}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
-											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-										/>
-									</Container>
-									<Container width="25%" padding={{ left: 'small' }}>
-										<InheritedSelect
-											label={t('cos.time_range', 'Time Range')}
-											items={timeItems}
-											subValue={accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-											inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
-											background="gray5"
-											selectName="zimbraPasswordLockoutDuration"
-											onChange={onZimbraPasswordLockoutDurationTypeChange}
-											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
-											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-						<Row mainAlignment="flex-start" width="100%">
-							<Container
-								height="fit"
-								crossAlignment="flex-start"
-								background="gray6"
-								padding={{ top: 'large', bottom: 'large' }}
-							>
-								<ListRow>
-									<Container width="75%" padding={{ right: 'small' }}>
-										<InheritedInput
-											label={t(
-												'cos.time_window_failed_logins_must_occur_to_lock_account',
-												'Time window in which the failed logins must occur to lock the account:'
-											)}
-											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
-											background="gray5"
-											inputName="zimbraPasswordLockoutFailureLifetime"
-											onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-											onChangeReset={(): void =>
-												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
-											}
-											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-										/>
-									</Container>
-									<Container width="25%" padding={{ left: 'small' }}>
-										<InheritedSelect
-											label={t('cos.time_range', 'Time Range')}
-											items={timeItems}
-											subValue={
-												accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
-											}
-											inheritedValue={
-												cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
-											}
-											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
-											background="gray5"
-											selectName="zimbraPasswordLockoutFailureLifetime"
-											onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-											onChangeReset={(): void =>
-												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
-											}
-											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						</Row>
-					</Row>
-				</Row>
-			)}
-		</Container>
-	);
 };
 
 export default EditAccountSecuritySection;
