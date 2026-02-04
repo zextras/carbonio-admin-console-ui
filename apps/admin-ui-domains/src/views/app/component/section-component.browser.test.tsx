@@ -37,7 +37,7 @@ describe('Section component', () => {
     const onCloseMock = vi.fn();
 
     await setupBrowserTest(
-      <Section title="" divider={false} onClose={vi.fn()}>
+      <Section title="" divider={false} showClose onClose={onCloseMock}>
         <div>Test Child</div>
       </Section>,
     );
