@@ -31,7 +31,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import logo from '../../../../../assets/gardian.svg';
+import logo from '../../../../../assets/gardian.svg?url';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
@@ -582,7 +582,7 @@ const EditAccountSecuritySection: FC = () => {
 	return (
 		<Container
 			mainAlignment="flex-start"
-			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			padding={{ right: 'extralarge', bottom: 'large' }}
 			style={{ overflow: 'auto' }}
 		>
 			{isAdvanced && <ServicesPassphrase />}
@@ -590,20 +590,48 @@ const EditAccountSecuritySection: FC = () => {
 				<>
 					{!showCreateOTP && (
 						<Row mainAlignment="flex-start" width="100%">
-							<Row
-								padding={{ top: 'large', left: 'large' }}
-								width="100%"
-								mainAlignment="space-between"
-							>
-								<Text size="small" color="gray0" weight="bold">
-									{t('label.two_factor_auth', 'Second Factor Authentication')}
-								</Text>
+							<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
+								<Container
+									height="fit"
+									crossAlignment="flex-start"
+									background="gray6"
+									padding={{ top: 'large' }}
+								>
+									<ListRow>
+										<Container crossAlignment="flex-start">
+											<Text size="extralarge" color="gray0" weight="bold" >
+												{t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
+											</Text>
+											<Row padding={{ top: 'large' }}></Row>
+											<InheritedSwitch
+												subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
+												onChange={changeSwitchOption}
+												label={t(
+													'domain.accounts.allowUsersToConfigure2FA',
+													'Allow users to configure 2FA'
+												)}
+												iconColor="primary"
+												inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
+												fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+												inputName={'carbonioFeatureOTPMgmtEnabled'}
+												onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
+											/>
+											<Padding left={'extralarge'}>
+												<Row padding={{ left: 'small' }}>
+													<Text  color="gray1" size='small' overflow="break-word">
+														{t('domain.accounts.allowUsersToConfigure2FAInfo', 'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.')}
+													</Text>
+												</Row>
+											</Padding>
+										</Container>
+									</ListRow>
+								</Container>
 							</Row>
 							<Row
 								width="100%"
 								mainAlignment="flex-end"
 								crossAlignment="flex-end"
-								padding={{ right: 'large' }}
+								padding={{ right: 'large', top: 'large' }}
 							>
 								<Padding right="large">
 									<Button
@@ -649,7 +677,7 @@ const EditAccountSecuritySection: FC = () => {
 										/>
 									)}
 									{otpList.length === 0 && (
-										<Container orientation="column" crossAlignment="center" mainAlignment="center">
+										<Container orientation="column" crossAlignment="center" mainAlignment="center" padding={{ bottom: 'large' }}>
 											<Row>
 												<img src={logo} alt="logo" />
 											</Row>
@@ -681,32 +709,7 @@ const EditAccountSecuritySection: FC = () => {
 										</Container>
 									)}
 								</Row>
-							</Row>
-							<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
-								<Container
-									height="fit"
-									crossAlignment="flex-start"
-									background="gray6"
-									padding={{ top: 'large' }}
-								>
-									<ListRow>
-										<Container crossAlignment="flex-start">
-											<InheritedSwitch
-												subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
-												onChange={changeSwitchOption}
-												label={t(
-													'label.one_time_password_management',
-													'One Time Password management'
-												)}
-												iconColor="primary"
-												inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
-												fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
-												inputName={'carbonioFeatureOTPMgmtEnabled'}
-												onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
-											/>
-										</Container>
-									</ListRow>
-								</Container>
+								<divider-wc></divider-wc>
 							</Row>
 						</Row>
 					)}
