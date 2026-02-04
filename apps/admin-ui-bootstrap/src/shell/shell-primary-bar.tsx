@@ -159,7 +159,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
     <>
       <Container
         className={styles.primaryBarContainer}
-        data-sidebarIsOpen={isOpen}
+        data-sidebarisopen={isOpen}
         role="menu"
         height="fill"
         background="gray6"

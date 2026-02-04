@@ -6,9 +6,9 @@
 	overflow-x: hidden;
 }
 
-.primaryBarContainer[data-sidebarIsOpen='true'] {
-	width: 192px;
-}
+.primaryBarContainer[data-sidebarisopen='true'] {
+ 	width: 192px;
+ }
 
 .primaryBarRow {
 	background-color: var(--color-gray6-regular);
