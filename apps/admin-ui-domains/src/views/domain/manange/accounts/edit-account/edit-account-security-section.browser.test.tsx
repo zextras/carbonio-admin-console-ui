@@ -552,7 +552,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('One Time Password management')).toBeVisible();
+      await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
     });
 
     it('should render with backup self undelete allowed', async () => {
