@@ -158,7 +158,7 @@ const App: FC = () => {
       type: 'new',
     });
     navigate(`/${DASHBOARD}`);
-  }, [createCosRight, history, setCosView, t]);
+  }, [createCosRight, navigate, setCosView, t]);
 
   return null;
 };
