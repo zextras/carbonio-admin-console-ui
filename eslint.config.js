@@ -21,13 +21,10 @@ export default tseslint.config(
   {
     ignores: [
       '**/node_modules/**',
-      '**/dist/**',
+      'dist/**',
       '**/build/**',
       'coverage/**',
-      'scripts/**',
-      'package/**',
       '**/*vitest*',
-      '**/*webpack*',
       '**/*.config.*',
       '**/.prettierrc.js',
       '**/.reuse/template.js',

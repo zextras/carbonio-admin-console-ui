@@ -21,7 +21,7 @@ import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash-es';
 import React, { type ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import { ModalManager } from '../components/utilities/ModalManager';
 import { SnackbarManager } from '../components/utilities/SnackbarManager';

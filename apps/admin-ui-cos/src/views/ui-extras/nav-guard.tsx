@@ -6,30 +6,32 @@
 
 
 import { Modal } from '@zextras/ui-components';
-import { Location } from 'history';
-import React, { FC, useEffect, useMemo,useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Prompt, useHistory } from 'react-router-dom';
+import { type Location,useLocation, useNavigate } from 'react-router';
 
 export const RouteLeavingGuard: FC<{
 	when?: boolean;
 	onSave: () => void;
 	children?: React.ReactNode;
 }> = ({ children, when, onSave }) => {
-	const history = useHistory();
-	const lastLocationInitial = useMemo(() => history.location, [history]) as Location;
+	const navigate = useNavigate();
+	const location = useLocation();
+	const lastLocationInitial = useMemo(() => location, []);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
 	const [confirmedNavigation, setConfirmedNavigation] = useState(false);
 	const [t] = useTranslation();
+
 	const onClose = (): void => {
 		setModalVisible(false);
 		setConfirmedNavigation(true);
 	};
+
 	const handleBlockedNavigation = (nextLocation: Location): boolean => {
 		if (
 			!confirmedNavigation &&
-			nextLocation.pathname !== (lastLocation?.pathname || lastLocationInitial)
+			nextLocation.pathname !== (lastLocation?.pathname || lastLocationInitial.pathname)
 		) {
 			setModalVisible(true);
 			setLastLocation(nextLocation);
@@ -37,20 +39,35 @@ export const RouteLeavingGuard: FC<{
 		}
 		return true;
 	};
+
 	const onConfirm = (): void => {
 		setModalVisible(false);
 		onSave();
 		setConfirmedNavigation(true);
 	};
+
+	useEffect(() => {
+		if (when && !confirmedNavigation) {
+			if (
+				location.pathname !== lastLocationInitial.pathname &&
+				location.pathname !== lastLocation?.pathname
+			) {
+				const shouldBlock = handleBlockedNavigation(location as any);
+				if (!shouldBlock) {
+					navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
+				}
+			}
+		}
+	}, [location, when, confirmedNavigation, lastLocation, lastLocationInitial, navigate]);
+
 	useEffect(() => {
 		if (confirmedNavigation && lastLocation) {
-			// Navigate to the previous blocked location with your navigate function
-			history.push(lastLocation.pathname);
+			navigate(lastLocation.pathname);
 		}
-	}, [confirmedNavigation, history, lastLocation]);
+	}, [confirmedNavigation, lastLocation, navigate]);
+
 	return (
 		<>
-			<Prompt when={when} message={handleBlockedNavigation as any} />
 			{/* Your own alert/dialog/modal component */}
 			<Modal
 				open={modalVisible}

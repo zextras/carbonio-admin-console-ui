@@ -12,6 +12,7 @@
     "apps/**/src/**/*",
     "apps/**/types/**/*",
     "apps/**/translations/**/*",
+    "scripts/**/*",
     "packages/test-utils/**/*",
     "packages/ui-components/**/*"
   ],

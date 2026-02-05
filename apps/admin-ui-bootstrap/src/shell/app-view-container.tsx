@@ -7,7 +7,7 @@
 import { Container } from '@zextras/ui-components';
 import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import AppContextProvider from '../boot/app/app-context-provider';
 import { useAppList, useAppStore, useRoutes } from '../store/app';
@@ -20,9 +20,7 @@ const FirstAppRedirect = () => {
     () => find(routes, (r) => apps[0]?.name === r.app)?.route,
     [apps, routes],
   );
-  return mainRoute && location?.pathname === '/' ? (
-    <Redirect exact strict from="/" to={`/${mainRoute}`} />
-  ) : null;
+  return mainRoute && location?.pathname === '/' ? <Navigate to={`/${mainRoute}`} replace /> : null;
 };
 
 export default function AppViewContainer() {
@@ -30,11 +28,15 @@ export default function AppViewContainer() {
   const routes = useMemo(
     () => [
       ...map(appViews, (view) => (
-        <Route key={view.id} path={`/${view.route}`}>
-          <AppContextProvider key={view.app} pkg={view.app}>
-            <view.component />
-          </AppContextProvider>
-        </Route>
+        <Route
+          key={view.id}
+          path={`/${view.route}/*`}
+          element={
+            <AppContextProvider key={view.app} pkg={view.app}>
+              <view.component />
+            </AppContextProvider>
+          }
+        />
       )),
     ],
     [appViews],
@@ -51,7 +53,7 @@ export default function AppViewContainer() {
       }}
     >
       <Container mainAlignment="flex-start">
-        <Switch>{routes}</Switch>
+        <Routes>{routes}</Routes>
         <FirstAppRedirect />
       </Container>
     </Container>

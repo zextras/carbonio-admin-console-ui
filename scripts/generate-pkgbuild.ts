@@ -3,21 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { writeFileSync } from 'fs';
+import { execSync } from 'child_process';
+import { readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { colorLog } from '../utils';
-import { Component } from './types';
+import { colorLog, getWorkspaceRoot } from './utils';
 
-export const genratePkgbuild = (
-  components: Array<Component>,
-  pkgVersion: string,
-  packageDir: string,
-  commitHash: string,
-): void => {
+function getLastTag() {
+  return execSync('git describe --tags --abbrev=0', {
+    encoding: 'utf-8',
+    stdio: 'pipe',
+  }).trim();
+}
+
+const main = (): void => {
+  const rootDir = getWorkspaceRoot();
+  const distDir = join(rootDir, 'dist');
+  const pkgVersion = getLastTag().replace(/^v/, '');
+  const appsDir = join(distDir, 'opt', 'zextras', 'admin', 'iris');
+  const componentList = readdirSync(appsDir).join(' ');
+
   colorLog('Creating PKGBUILD...', 'blue');
-
-  const componentList = components.map((c) => c.target).join(' ');
 
   const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
@@ -69,32 +75,19 @@ preinst() {
 }
 
 postinst() {
-  # Define commit hash (injected at build time)
-  commitHash="${commitHash}"
-
-  # Copy index.html files to current directory for carbonio-admin-ui
-  if [ -d "/opt/zextras/admin/iris/carbonio-admin-ui" ]; then
-    mkdir -p "/opt/zextras/admin/iris/carbonio-admin-ui/current"
-    for commit_dir in /opt/zextras/admin/iris/carbonio-admin-ui/*; do
-      if [ -d "\${commit_dir}" ] && [ "\\$(basename "\${commit_dir}")" != "current" ]; then
-        cd "\${commit_dir}"
-        find . -name "*.html" -exec cp --parents {} /opt/zextras/admin/iris/carbonio-admin-ui/current/ \\; 2>/dev/null || true
-        break  # Only process the first (most recent) commit
-      fi
-    done
-  fi
-
-  # Create i18n symlinks for all components with specific commit hash
+  # Create i18n symlinks for all components
   # Using POSIX-compatible loop (no bash arrays)
   for component in ${componentList}; do
-    if [ -d "/opt/zextras/admin/iris/\${component}/\${commitHash}" ]; then
-      ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/\${commitHash}/i18n"
+    if [ -d "/opt/zextras/admin/iris/\${component}" ]; then
+      ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/i18n"
     fi
   done
 }
 `;
 
-  writeFileSync(join(packageDir, 'PKGBUILD'), pkgbuildContent);
+  writeFileSync(join(distDir, 'PKGBUILD'), pkgbuildContent);
 
   colorLog('PKGBUILD created', 'green');
 };
+
+main();

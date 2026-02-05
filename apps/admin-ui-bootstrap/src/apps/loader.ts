@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { loadAllApps as loadAllAppsFromRegistry } from 'virtual:app-registry';
-
 import { useAppStore } from '../store/app';
+import { loadAllAppsFromRegistry } from './app-registry';
 import type { AppManifest } from './types';
 
 const appContextMap = new Map<string, AppManifest>();
@@ -14,6 +13,6 @@ const appContextMap = new Map<string, AppManifest>();
 export const getAppContext = (packageName: string): AppManifest | undefined =>
   appContextMap.get(packageName);
 
-export async function loadAllApps(): Promise<void> {
-  await loadAllAppsFromRegistry(useAppStore, appContextMap);
+export function loadAllApps(): void {
+  loadAllAppsFromRegistry(useAppStore, appContextMap);
 }

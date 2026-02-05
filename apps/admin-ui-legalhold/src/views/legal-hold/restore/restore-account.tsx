@@ -55,7 +55,7 @@ const RestoreAccountView: FC<{
   const limit = RECORD_DISPLAY_LIMIT;
   const [tableRows, setTableRows] = useState<any[]>([]);
   const [selectedRow, setSelectedRow] = useState<any>([]);
-  const [fromDate, setFromDate] = useState<Date | null>();
+  const [fromDate, setFromDate] = useState<Date | null>(null);
   const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
     new Date(legalHoldAccount?.creationTimestamp ?? ''),
   );
@@ -589,7 +589,6 @@ const RestoreAccountView: FC<{
             <Container crossAlignment="flex-start">
               <DateTimePicker
                 className="fffff"
-                width="fill"
                 label={t('label.account_status_on ', 'Account status on')}
                 onChange={handleFromDateChange}
                 dateFormat="dd/MM/yyyy"
@@ -634,7 +633,6 @@ const RestoreAccountView: FC<{
               <Container crossAlignment="flex-start">
                 <DateTimePicker
                   className="fffff"
-                  width="fill"
                   isClearable
                   label={t('label.include_items_deleted_after', 'Include items deleted after')}
                   onChange={handleUndeleteFromDateChange}
@@ -642,7 +640,7 @@ const RestoreAccountView: FC<{
                   includeTime={false}
                   selected={undeleteFromDate}
                   minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-                  maxDate={fromDate}
+                  maxDate={fromDate as Date}
                 />
               </Container>
             </Container>

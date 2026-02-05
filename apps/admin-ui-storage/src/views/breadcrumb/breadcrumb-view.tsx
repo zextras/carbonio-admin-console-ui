@@ -7,7 +7,7 @@ import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootst
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD } from '../../constants';
 import styles from './breadcrumb-view.module.css';
@@ -15,7 +15,7 @@ import styles from './breadcrumb-view.module.css';
 const BreadCrumb: FC = () => {
   const [t] = useTranslation();
   const loc = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
   const userSetting = useUserSettings();
   const { data: lastLoginTimestamp } = useLastLoginTimestamp({
@@ -60,12 +60,12 @@ const BreadCrumb: FC = () => {
   const navigationClick = useCallback(
     (item: any, index: number) => {
       if (index === 0) {
-        history.push(item?.homePath);
+        navigate(item?.homePath);
       } else {
-        history.push(item?.path);
+        navigate(item?.path);
       }
     },
-    [history],
+    [navigate],
   );
   return (
     <Container height="fit" crossAlignment="baseline" mainAlignment="baseline">

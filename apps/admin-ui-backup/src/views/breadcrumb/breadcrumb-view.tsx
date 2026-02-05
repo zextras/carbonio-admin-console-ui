@@ -7,7 +7,7 @@ import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootst
 import { Container, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD } from '../../constants';
 
@@ -18,15 +18,15 @@ function getBreadCrumbTextStyle(isLast: boolean) {
   };
 }
 const BreadCrumb: FC = () => {
-  const [t] = useTranslation();
-  const loc = useLocation();
-  const history = useHistory();
-  const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-  const userSetting = useUserSettings();
-  const { data: lastLoginTimestamp } = useLastLoginTimestamp({
-    accountId: userSetting?.attrs?.zimbraId?.toString(),
-    enabled: Boolean(userSetting?.attrs?.zimbraId),
-  });
+	const [t] = useTranslation();
+	const loc = useLocation();
+	const navigate = useNavigate();
+	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
+	const userSetting = useUserSettings();
+	const { data: lastLoginTimestamp } = useLastLoginTimestamp({
+		accountId: userSetting?.attrs?.zimbraId?.toString(),
+		enabled: Boolean(userSetting?.attrs?.zimbraId)
+	});
 
   useEffect(() => {
     if (loc?.pathname) {
@@ -62,41 +62,40 @@ const BreadCrumb: FC = () => {
     }
   }, [loc, t]);
 
-  const navigationClick = useCallback(
-    (item: any, index: number) => {
-      if (index === 0) {
-        history.push(item?.homePath);
-      } else {
-        history.push(item?.path);
-      }
-    },
-    [history],
-  );
-  return (
-    <Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
-      <Container
-        orientation="horizontal"
-        background="gray5"
-        crossAlignment="center"
-        mainAlignment="flex-start"
-        height="44px"
-        padding={{ left: 'large', right: 'large' }}
-      >
-        {splitRoutes.map((item: any, index) => (
-          <Row key={item?.path}>
-            <Text
-              size="medium"
-              weight="regular"
+	const navigationClick = useCallback(
+		(item: any, index: number) => {
+			if (index === 0) {
+				navigate(item?.homePath);
+			} else {
+				navigate(item?.path);
+			}
+		},
+		[navigate]
+	);
+	return (
+		<Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
+			<Container
+				orientation="horizontal"
+				background="gray5"
+				crossAlignment="center"
+				mainAlignment="flex-start"
+				height="44px"
+				padding={{ left: 'large', right: 'large' }}
+			>
+				{splitRoutes.map((item: any, index) => (
+					<Row key={item?.path}>
+						<Text
+							size="medium"
+							weight="regular"
               style={getBreadCrumbTextStyle(splitRoutes.length - 1 === index)}
-              onClick={(): void => {
-                if (splitRoutes.length - 1 !== index) {
-                  navigationClick(item, index);
-                }
-              }}
-            >
-              {item?.label}
-            </Text>
-
+							onClick={(): void => {
+								if (splitRoutes.length - 1 !== index) {
+									navigationClick(item, index);
+								}
+							}}
+						>
+							{item?.label}
+						</Text>
             {index !== splitRoutes.length - 1 && (
               <Padding left="extrasmall" right="extrasmall">
                 <Text size="medium" weight="regular" style={getBreadCrumbTextStyle(false)}>

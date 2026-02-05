@@ -7,7 +7,7 @@
 import { Button, Container, HorizontalWizard, Padding } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { Section } from '../../../app/component/section-component';
 import { HSMContext } from '../hsm-context/hsm-context';
@@ -28,7 +28,7 @@ interface hsmDetailObj {
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
   const { t } = useTranslation();
-  const { server }: { operation: string; server: string } = useParams();
+  const { server } = useParams();
 
   return (
     <Section

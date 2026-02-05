@@ -28,7 +28,7 @@ import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useSta
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import logo from '../../../../../assets/gardian.svg?url';
+import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';

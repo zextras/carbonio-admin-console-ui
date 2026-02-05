@@ -21,7 +21,7 @@ import {
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { IpRangeValue, MtaServerGeneral } from '../../../../../types';
 import {
@@ -52,7 +52,7 @@ import { validateIpAddress } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {
   const [t] = useTranslation();
-  const { server }: { server: string } = useParams();
+  const { server } = useParams();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
@@ -474,7 +474,7 @@ const MTAServerGeneral: FC = () => {
   ]);
 
   const getServerSpecificInformation = useCallback(() => {
-    getServerInformationByName(server, true).then((data) => {
+    getServerInformationByName(server as string, true).then((data) => {
       if (data?.server && Array.isArray(data?.server)) {
         const serverItem = data?.server[0];
         if (serverItem?.a) {
@@ -485,7 +485,7 @@ const MTAServerGeneral: FC = () => {
   }, [server]);
 
   const getServerData = useCallback(() => {
-    getServerInformationByName(server).then((data) => {
+    getServerInformationByName(server as string).then((data) => {
       if (data?.server && Array.isArray(data?.server)) {
         const serverItem = data?.server[0];
         if (serverItem?.a) {

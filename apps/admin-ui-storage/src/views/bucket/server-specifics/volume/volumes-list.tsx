@@ -23,7 +23,8 @@ import {
 } from '@zextras/ui-components';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
+import styled from 'styled-components';
 
 import { objectType, Volume } from '../../../../../types';
 import {
@@ -173,7 +174,7 @@ const VolumeListTable: FC<{
 };
 
 const VolumesDetailPanel: FC = () => {
-  const { server }: { operation: string; server: string } = useParams();
+  const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(VolumeContext);
   const { setVolumeDetail } = context;

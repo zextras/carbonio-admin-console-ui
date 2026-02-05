@@ -21,7 +21,7 @@ import {
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
@@ -34,7 +34,7 @@ import { PageLayout } from '../page-layout';
 
 const CosServerPools: FC = () => {
   const [t] = useTranslation();
-  const { cosId }: { cosId: string } = useParams();
+  const { cosId } = useParams();
   const cosInformation = useCosStore((state) => state.cos?.a);
   const [zimbraMailHostPool, setZimbraMailHostPool] = useState<boolean>(true);
   const [serverList, setServerList] = useState<Array<any>>([]);
@@ -321,7 +321,7 @@ const CosServerPools: FC = () => {
         },
       ],
       id: {
-        _content: cosId,
+        _content: cosId as string,
       },
     };
     onModifyCOS(body);

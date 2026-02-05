@@ -6,11 +6,10 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
-import { MANAGE_APP_ID, MTA_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
-import MTADetailPanel from './mta/mta-detail-panel';
+import { MTADetailPanel } from './mta/mta-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
 
 const AppView: FC = () => {
@@ -19,24 +18,29 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
-        <Container orientation="horizontal" mainAlignment="flex-start">
-          <Container style={{ maxWidth: '16.563rem' }}>
-            <Suspense fallback={<spinner-wc />}>
-              <MTAListPanel />
-            </Suspense>
-          </Container>
-          <Container style={{ maxWidth: '100%' }}>
-            <Container
-              style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
-            >
-              <Suspense fallback={<spinner-wc />}>
-                <MTADetailPanel />
-              </Suspense>
+      <Routes>
+        <Route
+          path={'/*'}
+          element={
+            <Container orientation="horizontal" mainAlignment="flex-start">
+              <Container style={{ maxWidth: '16.563rem' }}>
+                <Suspense fallback={<spinner-wc />}>
+                  <MTAListPanel />
+                </Suspense>
+              </Container>
+              <Container style={{ maxWidth: '100%' }}>
+                <Container
+                  style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
+                >
+                  <Suspense fallback={<spinner-wc />}>
+                    <MTADetailPanel />
+                  </Suspense>
+                </Container>
+              </Container>
             </Container>
-          </Container>
-        </Container>
-      </Route>
+          }
+        />
+      </Routes>
     </Container>
   );
 };

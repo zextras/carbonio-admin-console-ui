@@ -20,7 +20,7 @@ import {
 } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import {
   APPOINTMENT,
@@ -40,7 +40,7 @@ import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 
 const HSMsettingPanel: FC = () => {
-  const { operation, server }: { operation: string; server: string } = useParams();
+  const { server } = useParams() as { server: string };
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [policies, setPolicies] = useState<any>([]);

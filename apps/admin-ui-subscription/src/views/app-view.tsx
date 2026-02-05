@@ -6,9 +6,8 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
-import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import { Subscription } from './subscription/subscription';
 
@@ -18,23 +17,27 @@ function getContainerStyle(isPrimaryBarExpanded: boolean) {
     transition: 'width 300ms',
   };
 }
-
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
-        <Container orientation="horizontal" mainAlignment="flex-start">
-          <Container style={{ maxWidth: '100%' }}>
-            <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-              <Suspense fallback={<spinner-wc />}>
-                <Subscription />
-              </Suspense>
+      <Routes>
+        <Route
+          path={'/'}
+          element={
+            <Container orientation="horizontal" mainAlignment="flex-start">
+              <Container style={{ maxWidth: '100%' }}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                  <Suspense fallback={<spinner-wc />}>
+                    <Subscription />
+                  </Suspense>
+                </Container>
+              </Container>
             </Container>
-          </Container>
-        </Container>
-      </Route>
+          }
+        />
+      </Routes>
     </Container>
   );
 };

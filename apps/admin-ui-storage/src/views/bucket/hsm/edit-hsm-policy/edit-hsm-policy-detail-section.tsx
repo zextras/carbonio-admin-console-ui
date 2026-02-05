@@ -17,7 +17,7 @@ import {
 import { cloneDeep } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
@@ -27,7 +27,7 @@ const EditHsmPolicyDetailSection: FC<{
   currentPolicy: any;
   setIsDirty: any;
 }> = ({ currentPolicy, setIsDirty }) => {
-  const { server }: { operation: string; server: string } = useParams();
+  const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { hsmDetail, setHsmDetail } = context;

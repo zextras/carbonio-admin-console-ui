@@ -6,9 +6,8 @@
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
-import { BACKUP_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
@@ -25,26 +24,32 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-        <Container
-          orientation="horizontal"
-          mainAlignment="flex-start"
-          style={{ overflow: 'hidden' }}
-        >
-          <Container style={{ maxWidth: '265px' }}>
-            <Suspense fallback={<spinner-wc />}>
-              <BackupListPanel />
-            </Suspense>
-          </Container>
-          <Container style={{ maxWidth: '100%' }}>
-            <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-              <Suspense fallback={<spinner-wc />}>
-                <BackupDetailPanel />
-              </Suspense>
+     <Routes>
+        <Route
+          path={'/*'}
+          element={
+            <Container
+              orientation="horizontal"
+              mainAlignment="flex-start"
+              style={{ overflow: 'hidden' }}
+            >
+              <Container style={{ maxWidth: '265px' }}>
+                <Suspense fallback={<spinner-wc ></spinner-wc>}>
+                  <BackupListPanel />
+                </Suspense>
+              </Container>
+              <Container style={{ maxWidth: '100%' }}>
+                {/* <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}> */}
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                  <Suspense fallback={<spinner-wc ></spinner-wc>}>
+                    <BackupDetailPanel />
+                  </Suspense>
+                </Container>
+              </Container>
             </Container>
-          </Container>
-        </Container>
-      </Route>
+          }
+        />
+      </Routes>
     </Container>
   );
 };

@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-components';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import {
   AccountDataType,
@@ -148,7 +148,7 @@ const DomainGalSettings: FC = () => {
   const createSnackbar = useSnackbar();
   const domain: { name?: string } = useDomainStore((state) => state.domain);
   const { data: allMailstoreList = [] } = useMailstoreServers();
-  const { domainId }: { domainId: string } = useParams();
+  const { domainId } = useParams();
 
   const [open, setOpen] = useState<boolean>(false);
   const [domainInformation, setDomainInformation] = useState(
@@ -950,7 +950,7 @@ const DomainGalSettings: FC = () => {
             replace: true,
           });
         }
-        getSelectedDomainInformation(domainId);
+        getSelectedDomainInformation(domainId as string);
         setOpenAccModel(false);
       })
       .catch((error) => {
@@ -988,7 +988,7 @@ const DomainGalSettings: FC = () => {
             replace: true,
           });
         }
-        getSelectedDomainInformation(domainId);
+        getSelectedDomainInformation(domainId as string);
         setOpenDistroyModel(false);
       })
       .catch((error) => {

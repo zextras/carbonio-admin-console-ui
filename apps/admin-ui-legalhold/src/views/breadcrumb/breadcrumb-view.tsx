@@ -7,10 +7,9 @@ import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootst
 import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD } from '../../constants';
-
 function getBreadCrumbTextStyle(isLast: boolean) {
   return {
     color: isLast ? 'var(--color-gray0-regular)' : '#CCCCCC',
@@ -21,8 +20,8 @@ function getBreadCrumbTextStyle(isLast: boolean) {
 const BreadCrumb: FC = () => {
   const [t] = useTranslation();
   const loc = useLocation();
-  const history = useHistory();
-  const [splitRoutes, setSplitRoutes] = useState<Array<any>>([]);
+  const navigate = useNavigate();
+  const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
   const userSetting = useUserSettings();
   const { data: lastLoginTimestamp } = useLastLoginTimestamp({
     accountId: userSetting?.attrs?.zimbraId?.toString(),
@@ -33,7 +32,7 @@ const BreadCrumb: FC = () => {
     if (loc?.pathname) {
       const currentRoute = loc?.pathname.substring(1);
       const splitRoute = currentRoute?.split('/');
-      const _storeTempRoute: Array<any> = [];
+      const _storeTempRoute: any[] = [];
       splitRoute.forEach((item: any, index: number) => {
         if (index === 0) {
           _storeTempRoute.push({
@@ -66,12 +65,12 @@ const BreadCrumb: FC = () => {
   const navigationClick = useCallback(
     (item: any, index: number) => {
       if (index === 0) {
-        history.push(item?.homePath);
+        navigate(item?.homePath);
       } else {
-        history.push(item?.path);
+        navigate(item?.path);
       }
     },
-    [history],
+    [navigate],
   );
   return (
     <Container height="fit" crossAlignment="baseline" mainAlignment="baseline">

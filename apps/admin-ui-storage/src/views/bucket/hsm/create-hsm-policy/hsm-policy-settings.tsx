@@ -20,14 +20,14 @@ import {
 } from '@zextras/ui-components';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 const HSMpolicySettings: FC<any> = () => {
-  const { operation, server }: { operation: string; server: string } = useParams();
+  const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { hsmDetail, setHsmDetail } = context;
