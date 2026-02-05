@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
@@ -19,8 +18,6 @@ import { getWorkspaceRoot } from '../../scripts/utils';
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
 const basePath = `/static/iris/${packageName}/`;
-const manifest = JSON.parse(readFileSync(resolve(rootDir, 'app-manifest.json'), 'utf8'));
-const apps = manifest.apps || [];
 
 function getProxyTarget(): string {
   const target = process.env.VITE_TARGET || 'localhost';
@@ -56,21 +53,6 @@ export default defineConfig(({ command, mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       BASE_PATH: JSON.stringify(basePath),
-    },
-    resolve: {
-      alias: {
-        path: 'path-browserify',
-        ...apps.reduce((acc: Record<string, string>, app: any) => {
-          if (app.packageName) {
-            const dirName = app.packageName.replace('@zextras/', '');
-            const appDir = resolve(rootDir, 'apps', dirName);
-            const indexPath = resolve(appDir, app.entryPoint);
-            acc[app.packageName] = indexPath;
-          }
-          return acc;
-        }, {}),
-      },
-      extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts'],
     },
     build: {
       outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
