@@ -8,25 +8,19 @@ import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
 
-function getContainerMaxWidth(isPrimaryBarExpanded: boolean): {
-  maxWidth: string;
-  transition: string;
-} {
+function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
     maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
     transition: 'width 300ms',
   };
 }
-
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
-  const containerStyle = getContainerMaxWidth(isPrimaryBarExpanded);
 
   return (
     <Container height={'fit'}>
@@ -46,11 +40,11 @@ const AppView: FC = () => {
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
                   <Suspense fallback={<spinner-wc />}>
                     <DomainDetailPanel />
                   </Suspense>
-                </DetailViewContainer>
+                </Container>
               </Container>
             </Container>
           }

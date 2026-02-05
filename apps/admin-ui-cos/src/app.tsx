@@ -15,9 +15,7 @@ import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
-import styles from './app.module.css';
 import {
   APP_ID,
   COS,
@@ -36,15 +34,6 @@ import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useCosStore } from './store/cos/store';
 import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const PrimaryBarIcon = styled(Icon)`
-  &:hover {
-    background: transparent;
-  }
-  @media (max-width: 60rem) {
-    padding: 0 0 0 0.188rem;
-  }
-`;
 
 const App: FC = () => {
   const [t] = useTranslation();

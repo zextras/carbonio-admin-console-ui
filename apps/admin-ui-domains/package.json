@@ -32,7 +32,6 @@
     "react-csv": "^2.2.2",
     "react-i18next": "^12.3.1",
     "react-router": "^7.13.0",
-    "styled-components": "^5.3.11",
     "tinymce": "^6.8.4",
     "zustand": "^4.5.7"
   },

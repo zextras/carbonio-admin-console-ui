@@ -6,7 +6,6 @@
 import { Container } from '@zextras/ui-components';
 import { FC, useState } from 'react';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';

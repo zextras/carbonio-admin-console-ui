@@ -13,10 +13,10 @@ import BackupListPanel from './backup/backup-list-panel';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
-	return {
-		maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-		transition: 'width 300ms'
-	};
+  return {
+    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
+    transition: 'width 300ms',
+  };
 }
 
 const AppView: FC = () => {
@@ -24,7 +24,7 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-     <Routes>
+      <Routes>
         <Route
           path={'/*'}
           element={
@@ -34,14 +34,13 @@ const AppView: FC = () => {
               style={{ overflow: 'hidden' }}
             >
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<spinner-wc ></spinner-wc>}>
+                <Suspense fallback={<spinner-wc></spinner-wc>}>
                   <BackupListPanel />
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                {/* <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}> */}
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<spinner-wc ></spinner-wc>}>
+                  <Suspense fallback={<spinner-wc></spinner-wc>}>
                     <BackupDetailPanel />
                   </Suspense>
                 </Container>
