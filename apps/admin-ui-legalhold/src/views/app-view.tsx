@@ -5,31 +5,35 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
-import { LEGAL_HOLD_ROUTE_ID, SERVICES_ROUTE_ID } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 
 const AppView: FC = () => {
-	return (
-		<Container height={'fit'}>
-			<BreadCrumb />
-			<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
-				<Container
-					orientation="horizontal"
-					mainAlignment="flex-start"
-					style={{ overflow: 'hidden' }}
-				>
-					<Container style={{ maxWidth: '100%' }}>
-						<Suspense fallback={<spinner-wc />}>
-							<LegalHoldPanel />
-						</Suspense>
-					</Container>
-				</Container>
-			</Route>
-		</Container>
-	);
+  return (
+    <Container height={'fit'}>
+      <BreadCrumb />
+      <Routes>
+        <Route
+          path={'/*'}
+          element={
+            <Container
+              orientation="horizontal"
+              mainAlignment="flex-start"
+              style={{ overflow: 'hidden' }}
+            >
+              <Container style={{ maxWidth: '100%' }}>
+                <Suspense fallback={<spinner-wc />}>
+                  <LegalHoldPanel />
+                </Suspense>
+              </Container>
+            </Container>
+          }
+        />
+      </Routes>
+    </Container>
+  );
 };
 
 export default AppView;

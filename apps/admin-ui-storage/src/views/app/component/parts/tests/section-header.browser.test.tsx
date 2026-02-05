@@ -12,15 +12,13 @@ import { SectionHeader } from '../section-header';
 describe('SectionHeader', () => {
 	const onCloseMock = vi.fn();
 	const title = 'Test Title';
-	it('renders title correctly', () => {
-		setupBrowserTest(<SectionHeader title={title} onClose={onCloseMock} />);
-		const titleElement = page.getByText(title).element();
-		expect(titleElement).toBeTruthy();
-		expect(titleElement).toBeInstanceOf(HTMLElement);
+	it('renders title correctly', async () => {
+		await setupBrowserTest(<SectionHeader title={title} onClose={onCloseMock} />);
+		await expect.element(page.getByText(title)).toBeVisible();
 	});
 
 	test('renders close button when showClose is true', async () => {
-		setupBrowserTest(<SectionHeader showClose title={title} onClose={onCloseMock} />);
+		await setupBrowserTest(<SectionHeader showClose title={title} onClose={onCloseMock} />);
 		const closeButton = page.getByTestId('close-button');
 		await closeButton.click();
 		expect(onCloseMock).toHaveBeenCalled();

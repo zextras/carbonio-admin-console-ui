@@ -10,7 +10,7 @@ import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-compon
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter, useHistory } from 'react-router-dom';
+import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
 const getAppI18n = (): i18n => {
   const newI18n = i18next.createInstance();
@@ -61,9 +61,23 @@ export const BootstrapBridgeProvider = ({
 }: {
   children: React.ReactNode;
 }): React.JSX.Element => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const createSnackbar = () => ({});
   const createModal = () => {};
+
+  const history = useMemo(
+    () => ({
+      push: (to: string) => navigate(to),
+      replace: (to: string) => navigate(to, { replace: true }),
+      goBack: () => navigate(-1),
+      go: (delta: number) => navigate(delta),
+      location,
+      createHref: (to: string) => to,
+      listen: () => () => {},
+    }),
+    [navigate, location],
+  );
 
   // Initialize the context bridge immediately and synchronously
   const { add } = useContextBridge.getState();

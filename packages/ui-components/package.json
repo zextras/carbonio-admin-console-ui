@@ -33,7 +33,6 @@
     "@svgr/cli": "^8.0.1",
     "@types/lodash": "^4.14.196",
     "@types/react": "^19.1.0",
-    "@types/react-datepicker": "^4.15.0",
     "@types/react-dom": "^19.1.0",
     "@types/styled-components": "^5.1.26",
     "create-index": "2.6.0",
@@ -59,10 +58,12 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
+    "clsx": "^2.1.1",
     "core-js": "^3.38.1",
     "lit": "^3.3.2",
     "lodash-es": "^4.17.21",
     "polished": "^4.2.2",
-    "react-datepicker": "^4.25.0"
+    "react-datepicker": "^9.1.0",
+    "react-router": "^7.13.0"
   }
 }

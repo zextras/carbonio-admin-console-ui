@@ -4,24 +4,43 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   useAppConfigStore,  useCurrentUserRights } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Input,  Padding,  Radio,  RadioGroup,  Row,  Select,  Switch,  Text,  useSnackbar } from "@zextras/ui-components";
-import {  find, isEqual  } from "lodash-es";
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {  useTranslation  } from "react-i18next";
+import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  Input,
+  Padding,
+  Radio,
+  RadioGroup,
+  Row,
+  Select,
+  Switch,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { find, isEqual } from 'lodash-es';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  MtaAdvanced  } from "../../../../types";
-import {   CONFIG,  ZIMBRA_AMAVIS_LOG_LEVEL,  ZIMBRA_AMAVIS_SA_LOG_LEVEL,  ZIMBRA_CLAM_AV_MAX_THREADS,  ZIMBRA_LMTP_NUM_THREADS,  ZIMBRA_MILTER_MAX_CONNECTIONS,  ZIMBRA_MITER_NUM_THREADS,  ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,  ZIMBRA_MTA_MESSAGE_SIZE,  ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,  ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,  ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,  ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL } from "../../../constants";
-import {  modifyConfig  } from "../../../services/modify-config";
-import ListRow from "../../list/list-row";
-import {  bytesToMB, isValidProxy, mbToBytes  } from "../../utility/utils";
+import { type MtaAdvanced } from '../../../../types';
+import {
+  CONFIG,
+  ZIMBRA_AMAVIS_LOG_LEVEL,
+  ZIMBRA_AMAVIS_SA_LOG_LEVEL,
+  ZIMBRA_CLAM_AV_MAX_THREADS,
+  ZIMBRA_LMTP_NUM_THREADS,
+  ZIMBRA_MILTER_MAX_CONNECTIONS,
+  ZIMBRA_MITER_NUM_THREADS,
+  ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+  ZIMBRA_MTA_MESSAGE_SIZE,
+  ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
+  ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
+  ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+  ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+} from '../../../constants';
+import { modifyConfig } from '../../../services/modify-config';
+import ListRow from '../../list/list-row';
+import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {
   const [t] = useTranslation();
@@ -30,14 +49,13 @@ const MTAAdvanced: FC = () => {
   const configInformation = useAppConfigStore((state) => state.config);
   const updateConfig = useAppConfigStore((state) => state.updateConfig);
 
-  const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] =
-    useState<MtaAdvanced>();
+  const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
   const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
 
-  const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] =
-    useState<boolean>(false);
-  const [zimbraMtaMaxMessageSizeState, setZimbraMtaMaxMessageSizeState] =
-    useState<number | string>(0);
+  const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] = useState<boolean>(false);
+  const [zimbraMtaMaxMessageSizeState, setZimbraMtaMaxMessageSizeState] = useState<number | string>(
+    0,
+  );
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
     setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -47,8 +65,7 @@ const MTAAdvanced: FC = () => {
     setMtaAdvancedDetail((prev: any) => ({ ...prev, [key]: value }));
   }, []);
 
-  const [limitMaxMessageSize, setLimitMaxMessageSize] =
-    useState<boolean>(false);
+  const [limitMaxMessageSize, setLimitMaxMessageSize] = useState<boolean>(false);
 
   const setInitialAndCurrentValue = useCallback(
     (key: string, value: unknown) => {
@@ -62,28 +79,28 @@ const MTAAdvanced: FC = () => {
   const amavisLogLevelOptions = useMemo(
     () => [
       {
-        label: t("mta.zero", "0"),
-        value: "0",
+        label: t('mta.zero', '0'),
+        value: '0',
       },
       {
-        label: t("mta.one", "1"),
-        value: "1",
+        label: t('mta.one', '1'),
+        value: '1',
       },
       {
-        label: t("mta.two", "2"),
-        value: "2",
+        label: t('mta.two', '2'),
+        value: '2',
       },
       {
-        label: t("mta.three", "3"),
-        value: "3",
+        label: t('mta.three', '3'),
+        value: '3',
       },
       {
-        label: t("mta.four", "4"),
-        value: "4",
+        label: t('mta.four', '4'),
+        value: '4',
       },
       {
-        label: t("mta.five", "5"),
-        value: "5",
+        label: t('mta.five', '5'),
+        value: '5',
       },
     ],
     [t],
@@ -92,12 +109,12 @@ const MTAAdvanced: FC = () => {
   const amavisSALogLevelOptions = useMemo(
     () => [
       {
-        label: t("mta.info", "Info"),
-        value: "0",
+        label: t('mta.info', 'Info'),
+        value: '0',
       },
       {
-        label: t("mta.all", "All"),
-        value: "1",
+        label: t('mta.all', 'All'),
+        value: '1',
       },
     ],
     [t],
@@ -106,20 +123,20 @@ const MTAAdvanced: FC = () => {
   const zimbraMtaSmtpdLoglevelOptions = useMemo(
     () => [
       {
-        label: t("mta.one", "1"),
-        value: "1",
+        label: t('mta.one', '1'),
+        value: '1',
       },
       {
-        label: t("mta.two", "2"),
-        value: "2",
+        label: t('mta.two', '2'),
+        value: '2',
       },
       {
-        label: t("mta.three", "3"),
-        value: "3",
+        label: t('mta.three', '3'),
+        value: '3',
       },
       {
-        label: t("mta.four", "4"),
-        value: "4",
+        label: t('mta.four', '4'),
+        value: '4',
       },
     ],
     [t],
@@ -128,24 +145,24 @@ const MTAAdvanced: FC = () => {
   const zimbraMtaLmtpTlsLoglevelOptions = useMemo(
     () => [
       {
-        label: t("mta.zero", "0"),
-        value: "0",
+        label: t('mta.zero', '0'),
+        value: '0',
       },
       {
-        label: t("mta.one", "1"),
-        value: "1",
+        label: t('mta.one', '1'),
+        value: '1',
       },
       {
-        label: t("mta.two", "2"),
-        value: "2",
+        label: t('mta.two', '2'),
+        value: '2',
       },
       {
-        label: t("mta.three", "3"),
-        value: "3",
+        label: t('mta.three', '3'),
+        value: '3',
       },
       {
-        label: t("mta.four", "4"),
-        value: "4",
+        label: t('mta.four', '4'),
+        value: '4',
       },
     ],
     [t],
@@ -161,17 +178,13 @@ const MTAAdvanced: FC = () => {
 
   const setAdavanceLogAndThread = useCallback(() => {
     const zimbraMtaSmtpdClientPortLogging = configInformation.filter(
-      (item: Record<string, string>) =>
-        item?.n === ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
     );
 
-    if (
-      zimbraMtaSmtpdClientPortLogging &&
-      zimbraMtaSmtpdClientPortLogging[0]?._content
-    ) {
+    if (zimbraMtaSmtpdClientPortLogging && zimbraMtaSmtpdClientPortLogging[0]?._content) {
       setInitialAndCurrentValue(
         ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-        zimbraMtaSmtpdClientPortLogging[0]?._content === "yes",
+        zimbraMtaSmtpdClientPortLogging[0]?._content === 'yes',
       );
     }
 
@@ -180,10 +193,7 @@ const MTAAdvanced: FC = () => {
     );
 
     if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_AMAVIS_LOG_LEVEL,
-        zimbraAmavisLogLevel?._content,
-      );
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
     }
 
     const zimbraAmavisSALogLevel = configInformation.find(
@@ -191,15 +201,11 @@ const MTAAdvanced: FC = () => {
     );
 
     if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-        zimbraAmavisSALogLevel?._content,
-      );
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
     }
 
     const zimbraMtaSmtpdTlsLoglevel = configInformation.find(
-      (item: Record<string, string>) =>
-        item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
     );
 
     if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
@@ -210,15 +216,11 @@ const MTAAdvanced: FC = () => {
     }
 
     const zimbraMtaLmtpTlsLoglevel = configInformation.find(
-      (item: Record<string, string>) =>
-        item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
     );
 
     if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-        zimbraMtaLmtpTlsLoglevel?._content,
-      );
+      setInitialAndCurrentValue(ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, zimbraMtaLmtpTlsLoglevel?._content);
     }
 
     const zimbraClamAVMaxThreads = configInformation.find(
@@ -226,10 +228,7 @@ const MTAAdvanced: FC = () => {
     );
 
     if (zimbraClamAVMaxThreads && zimbraClamAVMaxThreads?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_CLAM_AV_MAX_THREADS,
-        zimbraClamAVMaxThreads?._content,
-      );
+      setInitialAndCurrentValue(ZIMBRA_CLAM_AV_MAX_THREADS, zimbraClamAVMaxThreads?._content);
     }
 
     const zimbraMilterNumThreads = configInformation.find(
@@ -237,22 +236,15 @@ const MTAAdvanced: FC = () => {
     );
 
     if (zimbraMilterNumThreads && zimbraMilterNumThreads?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MITER_NUM_THREADS,
-        zimbraMilterNumThreads?._content,
-      );
+      setInitialAndCurrentValue(ZIMBRA_MITER_NUM_THREADS, zimbraMilterNumThreads?._content);
     }
   }, [configInformation, setInitialAndCurrentValue]);
 
   const setSMTPDProxySetting = useCallback(() => {
     const zimbraMtaSmtpdSenderLoginMaps = configInformation.find(
-      (item: Record<string, string>) =>
-        item?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
     );
-    if (
-      zimbraMtaSmtpdSenderLoginMaps &&
-      zimbraMtaSmtpdSenderLoginMaps?._content
-    ) {
+    if (zimbraMtaSmtpdSenderLoginMaps && zimbraMtaSmtpdSenderLoginMaps?._content) {
       setInitialAndCurrentValue(
         ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
         zimbraMtaSmtpdSenderLoginMaps?._content,
@@ -272,25 +264,16 @@ const MTAAdvanced: FC = () => {
       );
 
       if (zimbraLmtpNumThreads && zimbraLmtpNumThreads?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_LMTP_NUM_THREADS,
-          zimbraLmtpNumThreads?._content,
-        );
+        setInitialAndCurrentValue(ZIMBRA_LMTP_NUM_THREADS, zimbraLmtpNumThreads?._content);
       }
       if (zimbraMtaMaxMessageSize && zimbraMtaMaxMessageSize?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_MTA_MESSAGE_SIZE,
-          zimbraMtaMaxMessageSize?._content,
-        );
-        setZimbraMtaMaxMessageSizeState(
-          bytesToMB(Number(zimbraMtaMaxMessageSize?._content)),
-        );
+        setInitialAndCurrentValue(ZIMBRA_MTA_MESSAGE_SIZE, zimbraMtaMaxMessageSize?._content);
+        setZimbraMtaMaxMessageSizeState(bytesToMB(Number(zimbraMtaMaxMessageSize?._content)));
         setLimitMaxMessageSize(true);
       }
 
       const zimbraMilterMaxConnections = configInformation.find(
-        (item: Record<string, string>) =>
-          item?.n === ZIMBRA_MILTER_MAX_CONNECTIONS,
+        (item: Record<string, string>) => item?.n === ZIMBRA_MILTER_MAX_CONNECTIONS,
       );
 
       if (zimbraMilterMaxConnections && zimbraMilterMaxConnections?._content) {
@@ -301,32 +284,20 @@ const MTAAdvanced: FC = () => {
       }
 
       const zimbraMtaSmtpSaslAuthEnable = configInformation.filter(
-        (item: Record<string, string>) =>
-          item?.n === ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
+        (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
       );
-      if (
-        zimbraMtaSmtpSaslAuthEnable &&
-        zimbraMtaSmtpSaslAuthEnable[0]?._content
-      ) {
+      if (zimbraMtaSmtpSaslAuthEnable && zimbraMtaSmtpSaslAuthEnable[0]?._content) {
         setInitialAndCurrentValue(
           ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-          zimbraMtaSmtpSaslAuthEnable[0]?._content === "yes",
+          zimbraMtaSmtpSaslAuthEnable[0]?._content === 'yes',
         );
       }
       setSMTPDProxySetting();
     }
-  }, [
-    configInformation,
-    setInitialAndCurrentValue,
-    setAdavanceLogAndThread,
-    setSMTPDProxySetting,
-  ]);
+  }, [configInformation, setInitialAndCurrentValue, setAdavanceLogAndThread, setSMTPDProxySetting]);
 
   useEffect(() => {
-    if (
-      mtaAdvancedDetail &&
-      !isEqual(mtaAdvancedDetail, mtaAdvancedInitialDetail)
-    ) {
+    if (mtaAdvancedDetail && !isEqual(mtaAdvancedDetail, mtaAdvancedInitialDetail)) {
       setIsDirty(true);
     } else {
       setIsDirty(false);
@@ -374,16 +345,10 @@ const MTAAdvanced: FC = () => {
         updateConfig(ele?.n, ele._content);
       });
       setTimeout(() => {
-        if (
-          attributes?.find(
-            (ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-          )
-        ) {
+        if (attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)) {
           updateConfig(
             ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-            attributes?.find(
-              (ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-            )?._content,
+            attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)?._content,
           );
         }
       }, 10);
@@ -396,12 +361,9 @@ const MTAAdvanced: FC = () => {
       modifyConfig(attributes)
         .then(() => {
           createSnackbar({
-            key: "success",
-            severity: "success",
-            label: t(
-              "label.change_save_success_msg",
-              "The change has been saved successfully",
-            ),
+            key: 'success',
+            severity: 'success',
+            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -410,14 +372,11 @@ const MTAAdvanced: FC = () => {
         })
         .catch((error) => {
           createSnackbar({
-            key: "error",
-            severity: "error",
+            key: 'error',
+            severity: 'error',
             label: error?.message
               ? error?.message
-              : t(
-                  "label.something_wrong_error_msg",
-                  "Something went wrong. Please try again.",
-                ),
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -431,9 +390,7 @@ const MTAAdvanced: FC = () => {
     const attributes: Array<Record<string, string>> = [];
     attributes.push({
       n: ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-      _content: mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging
-        ? "yes"
-        : "no",
+      _content: mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging ? 'yes' : 'no',
     });
     if (mtaAdvancedDetail?.zimbraAmavisLogLevel) {
       attributes.push({
@@ -481,14 +438,12 @@ const MTAAdvanced: FC = () => {
     if (limitMaxMessageSize === false) {
       attributes.push({
         n: ZIMBRA_MTA_MESSAGE_SIZE,
-        _content: "",
+        _content: '',
       });
     } else if (mtaAdvancedDetail?.zimbraMtaMaxMessageSize) {
       attributes.push({
         n: ZIMBRA_MTA_MESSAGE_SIZE,
-        _content: mbToBytes(
-          Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize),
-        ).toString(),
+        _content: mbToBytes(Number(mtaAdvancedDetail?.zimbraMtaMaxMessageSize)).toString(),
       });
     }
 
@@ -501,23 +456,20 @@ const MTAAdvanced: FC = () => {
 
     attributes.push({
       n: ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-      _content: mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable ? "yes" : "no",
+      _content: mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable ? 'yes' : 'no',
     });
 
     attributes.push({
       n: ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
       _content: mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps
         ? mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps
-        : "",
+        : '',
     });
     if (isErrorInSmtpdProxy) {
       createSnackbar({
-        key: "error",
-        severity: "error",
-        label: t(
-          "mta.smtpd_not_valid_error",
-          "Smtpd sender login maps is not valid",
-        ),
+        key: 'error',
+        severity: 'error',
+        label: t('mta.smtpd_not_valid_error', 'Smtpd sender login maps is not valid'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -558,9 +510,7 @@ const MTAAdvanced: FC = () => {
     [setValue],
   );
   const hasErrorMaxMessageSize = useMemo(
-    () =>
-      Number(zimbraMtaMaxMessageSizeState) <= 0 ||
-      isNaN(Number(zimbraMtaMaxMessageSizeState)),
+    () => Number(zimbraMtaMaxMessageSizeState) <= 0 || isNaN(Number(zimbraMtaMaxMessageSizeState)),
     [zimbraMtaMaxMessageSizeState],
   );
   return (
@@ -573,10 +523,10 @@ const MTAAdvanced: FC = () => {
         width="fill"
         height="56px"
       >
-        <Row padding={{ horizontal: "small" }}></Row>
+        <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
           <Text size="medium" overflow="ellipsis" weight="bold">
-            {t("label.advanced", "Advanced")}
+            {t('label.advanced', 'Advanced')}
           </Text>
         </Row>
         <Row>
@@ -590,7 +540,7 @@ const MTAAdvanced: FC = () => {
               <Padding right="small">
                 {isDirty && (
                   <Button
-                    label={t("label.cancel", "Cancel")}
+                    label={t('label.cancel', 'Cancel')}
                     color="secondary"
                     onClick={onCancel}
                   />
@@ -598,11 +548,7 @@ const MTAAdvanced: FC = () => {
               </Padding>
               <Padding right="small">
                 {isDirty && (
-                  <Button
-                    label={t("label.save", "Save")}
-                    color="primary"
-                    onClick={onSave}
-                  />
+                  <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
                 )}
               </Padding>
             </Container>
@@ -614,31 +560,27 @@ const MTAAdvanced: FC = () => {
       </ListRow>
 
       <Container
-        padding={{ all: "extralarge" }}
+        padding={{ all: 'extralarge' }}
         mainAlignment="flex-start"
         crossAlignment="flex-start"
         height="calc(100vh - 10.5rem)"
-        style={{ overflow: "auto" }}
+        style={{ overflow: 'auto' }}
       >
-        <Container
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="auto"
-        >
+        <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
           <Text size="medium" overflow="ellipsis" weight="bold">
-            {t("mta.logging", "Logging")}
+            {t('mta.logging', 'Logging')}
           </Text>
         </Container>
         <Container
           crossAlignment="flex-start"
           mainAlignment="flex-start"
           height="auto"
-          padding={{ top: "large", bottom: "extralarge" }}
+          padding={{ top: 'large', bottom: 'extralarge' }}
         >
           <Switch
             label={t(
-              "mta.enable_logging_of_remote_smtp_client_port",
-              "Enable logging of the remote SMTP client port",
+              'mta.enable_logging_of_remote_smtp_client_port',
+              'Enable logging of the remote SMTP client port',
             )}
             value={mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging}
             onClick={(): void =>
@@ -656,13 +598,13 @@ const MTAAdvanced: FC = () => {
           mainAlignment="space-between"
           crossAlignment="flex-start"
           height="auto"
-          padding={{ bottom: "extralarge" }}
+          padding={{ bottom: 'extralarge' }}
         >
           <Container crossAlignment="flex-start">
             <Select
               items={amavisLogLevelOptions}
               background="gray5"
-              label={t("mta.log_level_for_amavis", "Log level for Amavis")}
+              label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
               showCheckbox={false}
               selection={
                 amavisLogLevelOptions.find(
@@ -675,14 +617,11 @@ const MTAAdvanced: FC = () => {
             />
           </Container>
 
-          <Container crossAlignment="flex-start" padding={{ left: "medium" }}>
+          <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Select
               items={amavisSALogLevelOptions}
               background="gray5"
-              label={t(
-                "mta.sas_log_level_for_amavis",
-                "SAS Log level for Amavis",
-              )}
+              label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
               showCheckbox={false}
               selection={amavisSALogLevelOptions.find(
                 (item: Record<string, string>) =>
@@ -699,7 +638,7 @@ const MTAAdvanced: FC = () => {
           orientation="horizontal"
           mainAlignment="space-between"
           crossAlignment="flex-start"
-          padding={{ bottom: "extralarge" }}
+          padding={{ bottom: 'extralarge' }}
           height="auto"
         >
           <Container crossAlignment="flex-start">
@@ -707,8 +646,8 @@ const MTAAdvanced: FC = () => {
               items={zimbraMtaSmtpdLoglevelOptions}
               background="gray5"
               label={t(
-                "mta.smtp_client_logging_of_tls_activity",
-                "SMTP client logging of TLS Activity",
+                'mta.smtp_client_logging_of_tls_activity',
+                'SMTP client logging of TLS Activity',
               )}
               showCheckbox={false}
               selection={zimbraMtaSmtpdLoglevelOptions.find(
@@ -721,13 +660,13 @@ const MTAAdvanced: FC = () => {
             />
           </Container>
 
-          <Container crossAlignment="flex-start" padding={{ left: "medium" }}>
+          <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Select
               items={zimbraMtaLmtpTlsLoglevelOptions}
               background="gray5"
               label={t(
-                "mta.lmtp_client_logging_of_tls_activity",
-                "LMTP client logging of TLS activity",
+                'mta.lmtp_client_logging_of_tls_activity',
+                'LMTP client logging of TLS activity',
               )}
               showCheckbox={false}
               selection={zimbraMtaLmtpTlsLoglevelOptions.find(
@@ -740,13 +679,9 @@ const MTAAdvanced: FC = () => {
             />
           </Container>
         </Container>
-        <Container
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="auto"
-        >
+        <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
           <Text size="medium" overflow="ellipsis" weight="bold">
-            {t("mta.tuning", "Tuning")}
+            {t('mta.tuning', 'Tuning')}
           </Text>
         </Container>
 
@@ -754,15 +689,12 @@ const MTAAdvanced: FC = () => {
           orientation="horizontal"
           mainAlignment="space-between"
           crossAlignment="flex-start"
-          padding={{ bottom: "extralarge", top: "large" }}
+          padding={{ bottom: 'extralarge', top: 'large' }}
           height="auto"
         >
           <Container crossAlignment="flex-start">
             <Input
-              label={t(
-                "mta.max_antivirus_threads",
-                "Max antivirus threads (value)",
-              )}
+              label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraClamAVMaxThreads}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -772,9 +704,9 @@ const MTAAdvanced: FC = () => {
             />
           </Container>
 
-          <Container crossAlignment="flex-start" padding={{ left: "medium" }}>
+          <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
-              label={t("mta.lmtp_threads", "LMTP threads (Value)")}
+              label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraLmtpNumThreads}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -783,9 +715,9 @@ const MTAAdvanced: FC = () => {
               disabled={!allowSetMTA}
             />
           </Container>
-          <Container crossAlignment="flex-start" padding={{ left: "medium" }}>
+          <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
-              label={t("mta.milter_threads", "MILTER threads (value)")}
+              label={t('mta.milter_threads', 'MILTER threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraMilterNumThreads}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -800,15 +732,15 @@ const MTAAdvanced: FC = () => {
           orientation="horizontal"
           mainAlignment="space-between"
           crossAlignment="flex-start"
-          padding={{ bottom: "extralarge" }}
+          padding={{ bottom: 'extralarge' }}
           height="auto"
           width="100%"
         >
           <Container crossAlignment="flex-start" height="auto">
             <Input
               label={t(
-                "mta.reject_concurrent_milter_connection_above",
-                "Reject concurrent MILTER connections above (value)",
+                'mta.reject_concurrent_milter_connection_above',
+                'Reject concurrent MILTER connections above (value)',
               )}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraMilterMaxConnections}
@@ -820,13 +752,9 @@ const MTAAdvanced: FC = () => {
           </Container>
         </Container>
 
-        <Container
-          crossAlignment="flex-start"
-          padding={{ bottom: "large" }}
-          height="auto"
-        >
+        <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
           <Input
-            label={t("mta.smtpd_sender_login_maps", "Smtpd sender login maps")}
+            label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
             backgroundColor="gray5"
             value={mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps}
             onChange={onSenderLoginMapsChange}
@@ -835,15 +763,11 @@ const MTAAdvanced: FC = () => {
           />
         </Container>
 
-        <Container
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="auto"
-        >
+        <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
           <Switch
             label={t(
-              "mta.enable_simple_authentication_and_security_layer",
-              "Enable simple authentication and security layer",
+              'mta.enable_simple_authentication_and_security_layer',
+              'Enable simple authentication and security layer',
             )}
             value={!!mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable}
             onClick={(): void =>
@@ -858,34 +782,30 @@ const MTAAdvanced: FC = () => {
         <Container
           crossAlignment="flex-start"
           mainAlignment="flex-start"
-          padding={{ top: "large" }}
+          padding={{ top: 'large' }}
         >
           <Text size="medium" overflow="ellipsis" weight="bold">
-            {t("mta.advanced.mail_messages_size", "Mail messages size")}
+            {t('mta.advanced.mail_messages_size', 'Mail messages size')}
           </Text>
-          <Container
-            crossAlignment="flex-start"
-            padding={{ top: "large" }}
-            height="auto"
-          >
+          <Container crossAlignment="flex-start" padding={{ top: 'large' }} height="auto">
             <Row width="100%" mainAlignment="flex-start">
               <RadioGroup value={limitMaxMessageSize.toString()}>
                 <Radio
                   label={t(
-                    "mta.advanced.no_size_limit_for_mail_messages",
-                    "No size limit for mail messages",
+                    'mta.advanced.no_size_limit_for_mail_messages',
+                    'No size limit for mail messages',
                   )}
-                  value={"false"}
+                  value={'false'}
                   onClick={(): void => {
                     setLimitMaxMessageSize(false);
-                    setValue(ZIMBRA_MTA_MESSAGE_SIZE, "");
+                    setValue(ZIMBRA_MTA_MESSAGE_SIZE, '');
                   }}
                   iconColor="primary"
                 />
                 <Radio
                   label={t(
-                    "mta.advanced.custom_max_size_mail_messages",
-                    "Custom max size mail messages (MB)",
+                    'mta.advanced.custom_max_size_mail_messages',
+                    'Custom max size mail messages (MB)',
                   )}
                   value="true"
                   onClick={(): void => {
@@ -899,12 +819,12 @@ const MTAAdvanced: FC = () => {
               <Container
                 crossAlignment="flex-start"
                 mainAlignment="flex-start"
-                padding={{ left: "extralarge", top: "large" }}
+                padding={{ left: 'extralarge', top: 'large' }}
               >
                 <Input
                   label={t(
-                    "mta.advanced.max_size_for_mail_messages",
-                    "Max size for mail messages (MB)",
+                    'mta.advanced.max_size_for_mail_messages',
+                    'Max size for mail messages (MB)',
                   )}
                   backgroundColor="gray5"
                   value={zimbraMtaMaxMessageSizeState}
@@ -917,8 +837,8 @@ const MTAAdvanced: FC = () => {
                   description={
                     hasErrorMaxMessageSize
                       ? t(
-                          "mta.advanced.value_0_disables_email_sending",
-                          "Value 0 disables email sending: enter a value greater than 0",
+                          'mta.advanced.value_0_disables_email_sending',
+                          'Value 0 disables email sending: enter a value greater than 0',
                         )
                       : undefined
                   }

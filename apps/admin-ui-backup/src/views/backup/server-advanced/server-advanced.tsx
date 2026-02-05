@@ -22,7 +22,7 @@ import {
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
@@ -31,7 +31,7 @@ import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
-  const { server }: { server: string } = useParams();
+  const { server } = useParams();
   const { data: allServers = [] } = useAllServers();
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();

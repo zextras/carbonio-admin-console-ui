@@ -10,8 +10,8 @@ import I18nFactory from '../i18n/i18n-factory';
 import { ReactQueryProvider } from '../providers/react-query-provider';
 import { useBridge } from '../store/context-bridge';
 import { TrackerProvider } from '../tracker/provider';
-import BootstrapperContextProvider from './bootstrapper-provider';
-import BootstrapperRouter from './bootstrapper-router';
+import { BootstrapperContextProvider } from './bootstrapper-provider';
+import { BootstrapperRouter } from './bootstrapper-router';
 import { ErrorPage } from './error-page';
 import { init } from './init';
 import { ThemeProvider } from './theme-provider';
@@ -29,7 +29,7 @@ const TBridge: FC<{ i18nFactory: I18nFactory }> = ({ i18nFactory }) => {
   return null;
 };
 
-const BootstrapperContent: FC = () => {
+export const Bootstrapper = () => {
   const initResult = use(initPromise);
 
   if (initResult && 'error' in initResult) {
@@ -37,27 +37,19 @@ const BootstrapperContent: FC = () => {
   }
 
   return (
-    <SnackbarManager>
-      <ModalManager>
-        <TrackerProvider>
-          <BootstrapperContextProvider i18nFactory={i18nFactory}>
-            <TBridge i18nFactory={i18nFactory} />
-            <BootstrapperRouter />
-          </BootstrapperContextProvider>
-        </TrackerProvider>
-      </ModalManager>
-    </SnackbarManager>
-  );
-};
-
-const Bootstrapper = () => {
-  return (
     <ReactQueryProvider>
       <ThemeProvider>
-        <BootstrapperContent />
+        <SnackbarManager>
+          <ModalManager>
+            <TrackerProvider>
+              <BootstrapperContextProvider i18nFactory={i18nFactory}>
+                <TBridge i18nFactory={i18nFactory} />
+                <BootstrapperRouter />
+              </BootstrapperContextProvider>
+            </TrackerProvider>
+          </ModalManager>
+        </SnackbarManager>
       </ThemeProvider>
     </ReactQueryProvider>
   );
 };
-
-export default Bootstrapper;

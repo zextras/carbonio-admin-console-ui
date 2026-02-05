@@ -7,7 +7,7 @@
 import { Button,Container } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section-component';
@@ -34,13 +34,14 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-const RestoreDeleteAccountWizard: FC<{
+	const RestoreDeleteAccountWizard: FC<{
 	setShowRestoreAccountWizard: any;
 	restoreAccountRequest: any;
 	isRequestWorkInProgress: any;
 }> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress }) => {
 	const { t } = useTranslation();
-	const history = useHistory();
+	const navigate = useNavigate();
+	const location = useLocation();
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
 	interface AccountDetailObj {
 		name: string;
@@ -92,12 +93,12 @@ const RestoreDeleteAccountWizard: FC<{
 	}, [restoreAccountDetail, restoreAccountRequest]);
 
 	const backToFirstTab = useCallback(() => {
-		const lastloc = history?.location?.pathname;
-		history.push(lastloc.replace('/restore_account', ''));
+		const lastloc = location?.pathname;
+		navigate(lastloc.replace('/restore_account', ''));
 		setTimeout(() => {
-			history.push(lastloc);
+			navigate(lastloc);
 		}, 100);
-	}, [history]);
+	}, [location, navigate]);
 
 	useEffect(() => {
 		if (isRequestWorkInProgress === false) {

@@ -6,22 +6,15 @@
 
 import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Button } from '@zextras/ui-components';
-import { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
+import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const LazyAppView = lazy(() => import('./views/app-view'));
-
-const AppView: FC = (props) => (
-  <Suspense fallback={<spinner-wc />}>
-    <LazyAppView {...props} />
-  </Suspense>
-);
 
 const PrimaryBarIconButton = styled(Button)`
   &:hover {
@@ -34,7 +27,7 @@ const PrimaryBarIconButton = styled(Button)`
 
 const App: FC = () => {
   const [t] = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isAdvanced = useIsAdvanced();
   const hasAllConfigRights = useHasAllRights();
 
@@ -86,10 +79,12 @@ const App: FC = () => {
         type="ghost"
         size={'extralarge'}
         color={'text'}
-        onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
+        onClick={(): void => {
+          navigate(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`);
+        }}
       />
     ),
-    [history],
+    [navigate],
   );
 
   useEffect(() => {

@@ -5,28 +5,26 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
-import { DASHBOARD } from '../constants';
 import BreadCrumb from './breadcrumb/breadcrumb-view';
 import Dashboard from './dashboard/dashboard-view';
+
+const DashboardComponent = () => (
+  <Container orientation="horizontal" mainAlignment="flex-start" background="gray5" height="auto">
+    <Suspense fallback={<spinner-wc />}>
+      <Dashboard />
+    </Suspense>
+  </Container>
+);
 
 const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <BreadCrumb />
-      <Route path={`/${DASHBOARD}`}>
-        <Container
-          orientation="horizontal"
-          mainAlignment="flex-start"
-          background="gray5"
-          height="auto"
-        >
-          <Suspense fallback={<spinner-wc />}>
-            <Dashboard />
-          </Suspense>
-        </Container>
-      </Route>
+      <Routes>
+        <Route path={'/*'} element={<DashboardComponent />} />
+      </Routes>
     </Container>
   );
 };

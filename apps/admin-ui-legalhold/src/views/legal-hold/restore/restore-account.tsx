@@ -4,20 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  postSoapFetchRequest, soapFetch  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  DateTimePicker,  DropDownInput,  Input,  Padding,  Row,  Switch,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  cloneDeep, debounce, unionBy  } from 'lodash-es';
+import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  DateTimePicker,
+  DropDownInput,
+  Input,
+  Padding,
+  Row,
+  Switch,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { cloneDeep, debounce, unionBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import {  BackupAccountItem  } from '../../../../types';
-import {   ERROR_LABLE,  RECORD_DISPLAY_LIMIT,  SUCCESS_LABLE,  ZIMBRA_ADMIN_URN } from '../../../constants';
-import {  accountListDirectory  } from '../../../services/account-list-directory-service';
-import {  doRestoreOnNewLegalHoldAccount  } from '../../../services/restore_new_legal_hold_account';
+import { BackupAccountItem } from '../../../../types';
+import {
+  ERROR_LABLE,
+  RECORD_DISPLAY_LIMIT,
+  SUCCESS_LABLE,
+  ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+import { accountListDirectory } from '../../../services/account-list-directory-service';
+import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import {  formatedErrorMessage  } from '../../utility/utils';
+import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
   legalHoldAccount: BackupAccountItem | undefined;
@@ -38,7 +55,7 @@ const RestoreAccountView: FC<{
   const limit = RECORD_DISPLAY_LIMIT;
   const [tableRows, setTableRows] = useState<any[]>([]);
   const [selectedRow, setSelectedRow] = useState<any>([]);
-  const [fromDate, setFromDate] = useState<Date | null>();
+  const [fromDate, setFromDate] = useState<Date | null>(null);
   const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
     new Date(legalHoldAccount?.creationTimestamp ?? ''),
   );
@@ -572,7 +589,6 @@ const RestoreAccountView: FC<{
             <Container crossAlignment="flex-start">
               <DateTimePicker
                 className="fffff"
-                width="fill"
                 label={t('label.account_status_on ', 'Account status on')}
                 onChange={handleFromDateChange}
                 dateFormat="dd/MM/yyyy"
@@ -617,7 +633,6 @@ const RestoreAccountView: FC<{
               <Container crossAlignment="flex-start">
                 <DateTimePicker
                   className="fffff"
-                  width="fill"
                   isClearable
                   label={t('label.include_items_deleted_after', 'Include items deleted after')}
                   onChange={handleUndeleteFromDateChange}
@@ -625,7 +640,7 @@ const RestoreAccountView: FC<{
                   includeTime={false}
                   selected={undeleteFromDate}
                   minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-                  maxDate={fromDate}
+                  maxDate={fromDate as Date}
                 />
               </Container>
             </Container>

@@ -7,7 +7,7 @@
 import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { AppRoute, PrimaryBarView } from '../../types';
@@ -126,7 +126,8 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
   const primarybarSections = useAppStore((s) => s.views.primarybarSections);
   const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
   const [routes, setRoutes] = useState<Record<string, string>>({});
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     setRoutes((r) =>
@@ -138,9 +139,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
   }, [primaryBarViews]);
   useEffect(() => {
     if (activeRoute) {
-      setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(history.location.pathname, '/') }));
+      setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(location.pathname, '/') }));
     }
-  }, [activeRoute, history.location.pathname, primaryBarViews]);
+  }, [activeRoute, location.pathname, primaryBarViews]);
 
   useEffect(() => {
     let allPrimaryBarView = [];
@@ -195,7 +196,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
                 {view?.section === undefined && (
                   <PrimaryBarElement
                     key={view?.id}
-                    onClick={(): void => history.push(`/${routes[view?.id]}`)}
+                    onClick={(): void => {
+                      navigate(`/${routes[view?.id]}`);
+                    }}
                     view={view}
                     isExpanded={isOpen}
                     active={activeRoute?.id === view?.id}
@@ -229,7 +232,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
                     <PrimaryBarElement
                       key={item?.id}
                       onClick={(): void => {
-                        history.push(`/${routes[item?.id]}`);
+                        navigate(`/${routes[item?.id]}`);
                       }}
                       view={item}
                       isExpanded={isOpen}

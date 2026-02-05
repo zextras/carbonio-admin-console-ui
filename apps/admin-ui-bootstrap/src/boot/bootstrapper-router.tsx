@@ -5,35 +5,48 @@
  */
 
 import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
-import { FC, useContext } from 'react';
-import { BrowserRouter, useHistory } from 'react-router-dom';
+import { FC, useContext, useMemo } from 'react';
+import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
 import { BASENAME } from '../constants';
 import ShellView from '../shell/shell-view';
 import { useBridge } from '../store/context-bridge';
-import AppLoaderMounter from './app/app-loader-mounter';
+import { AppLoaderMounter } from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {
-	const history = useHistory();
-	const createSnackbar = useSnackbar();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const createSnackbar = useSnackbar();
 
-	const createModal = useContext(ModalManagerContext) as Function;
-	useBridge({
-		functions: {
-			getHistory: () => history,
-			createSnackbar,
-			createModal
-		}
-	});
-	return null;
+  const createModal = useContext(ModalManagerContext) as Function;
+
+  const history = useMemo(
+    () => ({
+      push: (to: string) => navigate(to),
+      replace: (to: string) => navigate(to, { replace: true }),
+      goBack: () => navigate(-1),
+      go: (delta: number) => navigate(delta),
+      location,
+      createHref: (to: string) => to,
+      listen: () => () => {},
+    }),
+    [navigate, location],
+  );
+
+  useBridge({
+    functions: {
+      getHistory: () => history,
+      createSnackbar,
+      createModal,
+    },
+  });
+  return null;
 };
 
-const BootstrapperRouter: FC = () => (
-	<BrowserRouter basename={BASENAME}>
-		<ContextBridge />
-		<AppLoaderMounter />
-		<ShellView />
-	</BrowserRouter>
+export const BootstrapperRouter: FC = () => (
+  <BrowserRouter basename={BASENAME}>
+    <ContextBridge />
+    <AppLoaderMounter />
+    <ShellView />
+  </BrowserRouter>
 );
-
-export default BootstrapperRouter;

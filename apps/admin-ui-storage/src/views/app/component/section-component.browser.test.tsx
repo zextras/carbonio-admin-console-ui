@@ -10,8 +10,8 @@ import { page } from 'vitest/browser';
 import { Section } from './section-component';
 
 describe('Section component', () => {
-	test('renders children correctly', () => {
-		setupBrowserTest(
+	test('renders children correctly', async () => {
+		await setupBrowserTest(
 			<Section
 				children={<div>Test Child</div>}
 				title={'section title'}
@@ -19,16 +19,14 @@ describe('Section component', () => {
 				onClose={vi.fn()}
 			/>
 		);
-		const childElement = page.getByText('Test Child').element();
-		expect(childElement).toBeTruthy();
-		expect(childElement).toBeInstanceOf(HTMLElement);
+		await expect.element(page.getByText('Test Child')).toBeVisible();
 	});
 
-	test('renders title and footer correctly', () => {
+	test('renders title and footer correctly', async () => {
 		const title = 'Test Title';
 		const footer = <div>Test Footer</div>;
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<Section
 				title={title}
 				footer={footer}
@@ -38,19 +36,14 @@ describe('Section component', () => {
 			/>
 		);
 
-		const titleElement = page.getByText(title).element();
-		const footerElement = page.getByText('Test Footer').element();
-
-		expect(titleElement).toBeTruthy();
-		expect(titleElement).toBeInstanceOf(HTMLElement);
-		expect(footerElement).toBeTruthy();
-		expect(footerElement).toBeInstanceOf(HTMLElement);
+		await expect.element(page.getByText(title)).toBeVisible();
+		await expect.element(page.getByText('Test Footer')).toBeVisible();
 	});
 
 	test('calls onClose when close button is clicked', async () => {
 		const onCloseMock = vi.fn();
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<Section showClose onClose={onCloseMock} title="" divider={false} children={undefined} />
 		);
 

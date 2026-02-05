@@ -73,7 +73,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-// eslint-disable-next-line no-empty-pattern
+ 
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
 	createMailingListReq: any;

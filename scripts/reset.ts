@@ -6,12 +6,12 @@
 
 import { execSync } from 'child_process';
 
-import { colorLog,findWorkspaceRoot } from './utils';
+import { colorLog, getWorkspaceRoot } from './utils';
 
 function reset() {
   colorLog('Resetting monorepo... ', 'blue');
   try {
-    const rootDir = findWorkspaceRoot();
+    const rootDir = getWorkspaceRoot();
     // Use the rootDir explicitly for every command
     const execOptions = { stdio: 'inherit' as const, cwd: rootDir };
 
