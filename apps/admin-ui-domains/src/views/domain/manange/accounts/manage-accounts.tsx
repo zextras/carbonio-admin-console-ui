@@ -1154,7 +1154,7 @@ const ManageAccounts: FC = () => {
 						</Row>
 						<Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
 							<Text size="medium" overflow="break-word">
-								{t('domain.total_accounts', 'Total Accounts')} : {totalAccountCreated}
+								{t('domain.accounts.totalAccounts', 'Total Accounts')} : {totalAccountCreated}
 							</Text>
 						</Row>
 						<Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
