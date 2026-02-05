@@ -148,7 +148,6 @@ const App: FC = () => {
       id: 'new-cos',
       type: 'new',
     });
-    navigate(`/${DASHBOARD}`);
   }, [createCosRight, navigate, setCosView, t]);
 
   return null;
