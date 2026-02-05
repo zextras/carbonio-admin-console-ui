@@ -34,7 +34,7 @@ export class IconWC extends LitElement {
   `;
 
   static override properties = {
-    iconName: { type: String, reflect: true },
+    iconName: { type: String, reflect: true, attribute: 'icon-name' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
     disabled: { type: Boolean, reflect: true },
@@ -45,6 +45,14 @@ export class IconWC extends LitElement {
   size: IconSize = 'medium';
   disabled = false;
 
+  override attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
+    super.attributeChangedCallback(name, _old, value);
+
+    if (name === 'icon-name' && value !== null && value !== this.iconName) {
+      this.iconName = value as IconName;
+    }
+  }
+
   private getColorVariable(color: string): string {
     return `var(--color-${color}, var(--color-text, #333333))`;
   }
@@ -54,8 +62,7 @@ export class IconWC extends LitElement {
   }
 
   private getIconSvg(iconName: IconName): TemplateResult {
-    const svgContent = iconRegistry[iconName] || iconRegistry.AlertTriangleOutline;
-    return html`<div class="icon" data-testid="icon: ${iconName}">${svgContent}</div>`;
+    return html`<div class="icon" data-testid="icon: ${iconName}"></div>`;
   }
 
   override render(): TemplateResult {
@@ -66,8 +73,10 @@ export class IconWC extends LitElement {
     super.updated(changedProperties);
 
     const iconElement = this.shadowRoot?.querySelector('.icon') as HTMLElement;
+    const svgContent = iconRegistry[this.iconName] || iconRegistry.AlertTriangleOutline;
 
     if (iconElement) {
+      iconElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${svgContent}</svg>`;
       iconElement.style.setProperty('--icon-color', this.getColorVariable(this.color));
       iconElement.style.setProperty('--icon-size', this.getSizeVariable(this.size));
     }
