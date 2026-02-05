@@ -69,7 +69,6 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
         anchorEl={containerRef}
         placement="right"
         onClose={(): void => setOpen(false)}
-        disableRestoreFocus
       >
         {!view?.tooltip ? (
           <Container
