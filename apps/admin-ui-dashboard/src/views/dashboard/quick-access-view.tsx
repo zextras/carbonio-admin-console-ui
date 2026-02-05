@@ -68,78 +68,75 @@ const QuickAccess: FC<{
         crossAlignment="flex-start"
         padding={{ bottom: 'large', right: 'medium', left: 'medium', top: 'large' }}
       >
-        {quickAccessItems.map((item) => {
-          console.log('Rendering quick access item:', { item });
-          return (
+        {quickAccessItems.map((item) => (
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ left: 'extralarge' }}
+            key={item?.operation}
+          >
             <Container
+              height={'8.75rem'}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
-              padding={{ left: 'extralarge' }}
-              key={item?.operation}
+              width={'21.75rem'}
+              style={{ borderRadius: '0.5rem', background: `var(--color-${item?.bgColor})` }}
             >
-              <Container
-                height={'8.75rem'}
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                width={'21.75rem'}
-                style={{ borderRadius: '0.5rem', background: `var(--color-${item?.bgColor})` }}
-              >
-                <ListRow>
-                  <Container padding={{ all: 'large' }}>
-                    <Container mainAlignment="flex-start" crossAlignment="flex-start">
-                      <Text color="gray6" overflow="break-word" weight="light" size="medium">
-                        {item?.upperText}
-                      </Text>
-                    </Container>
-                    <Container
-                      mainAlignment="flex-start"
-                      crossAlignment="flex-start"
-                      padding={{ top: 'extrasmall' }}
-                    >
-                      <Text color="gray6" overflow="break-word" weight="bold" size="large">
-                        {item?.operationText}
-                      </Text>
-                    </Container>
-                  </Container>
-                  <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                    <Icon color="gray6" icon={item?.operationIcon} size="large" />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ left: 'large', right: 'large' }}>
-                    <divider-wc color="var(--color-gray0-regular)"></divider-wc>
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    padding={{ all: 'large' }}
-                    style={{ cursor: 'pointer' }}
-                    onClick={(): void => {
-                      handleClickedQuickAccess(item?.operation);
-                    }}
-                  >
+              <ListRow>
+                <Container padding={{ all: 'large' }}>
+                  <Container mainAlignment="flex-start" crossAlignment="flex-start">
                     <Text color="gray6" overflow="break-word" weight="light" size="medium">
-                      {item?.bottomText}
+                      {item?.upperText}
                     </Text>
                   </Container>
                   <Container
-                    mainAlignment="flex-end"
-                    crossAlignment="flex-end"
-                    padding={{ all: 'large' }}
-                    style={{ cursor: 'pointer' }}
-                    onClick={(): void => {
-                      handleClickedQuickAccess(item?.operation);
-                    }}
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    padding={{ top: 'extrasmall' }}
                   >
-                    <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
+                    <Text color="gray6" overflow="break-word" weight="bold" size="large">
+                      {item?.operationText}
+                    </Text>
                   </Container>
-                </ListRow>
-              </Container>
+                </Container>
+                <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
+                  <Icon color="gray6" icon={item?.operationIcon} size="large" />
+                </Container>
+              </ListRow>
+              <ListRow>
+                <Container padding={{ left: 'large', right: 'large' }}>
+                  <divider-wc color="var(--color-gray0-regular)"></divider-wc>
+                </Container>
+              </ListRow>
+              <ListRow>
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
+                  onClick={(): void => {
+                    handleClickedQuickAccess(item?.operation);
+                  }}
+                >
+                  <Text color="gray6" overflow="break-word" weight="light" size="medium">
+                    {item?.bottomText}
+                  </Text>
+                </Container>
+                <Container
+                  mainAlignment="flex-end"
+                  crossAlignment="flex-end"
+                  padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
+                  onClick={(): void => {
+                    handleClickedQuickAccess(item?.operation);
+                  }}
+                >
+                  <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
+                </Container>
+              </ListRow>
             </Container>
-          );
-        })}
+          </Container>
+        ))}
       </Container>
     </Container>
   );
