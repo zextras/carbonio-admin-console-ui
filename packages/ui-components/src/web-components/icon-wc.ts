@@ -3,22 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import './theme.css';
 
-import { css, html, LitElement, TemplateResult } from 'lit';
+import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
 import { type IconName, iconRegistry } from './icon-registry';
 
-type IconSize = 'small' | 'medium' | 'large';
+const ICON_SIZES = ['small', 'medium', 'large'] as const;
+type IconSize = (typeof ICON_SIZES)[number];
+
+const DEFAULT_ICON: IconName = 'AlertTriangleOutline';
 
 export class IconWC extends LitElement {
   static override styles = css`
     :host {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .icon {
+    svg {
       display: block;
       fill: currentColor;
       color: var(--icon-color, var(--color-text, #333333));
@@ -27,9 +32,8 @@ export class IconWC extends LitElement {
       transition: color 0.2s ease;
     }
 
-    :host([disabled]) .icon {
+    :host([disabled]) svg {
       color: var(--icon-color-disabled, var(--color-text-disabled, #cccccc));
-      opacity: 1;
     }
   `;
 
@@ -40,46 +44,61 @@ export class IconWC extends LitElement {
     disabled: { type: Boolean, reflect: true },
   };
 
-  iconName: IconName = 'AlertTriangleOutline';
+  iconName: IconName = DEFAULT_ICON;
   color = 'text';
   size: IconSize = 'medium';
   disabled = false;
 
-  override attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
-    super.attributeChangedCallback(name, _old, value);
-
-    if (name === 'icon-name' && value !== null && value !== this.iconName) {
-      this.iconName = value as IconName;
-    }
-  }
-
   private getColorVariable(color: string): string {
-    return `var(--color-${color}, var(--color-text, #333333))`;
+    // Sanitize color to prevent CSS injection
+    const sanitized = color.replace(/[^a-zA-Z0-9-]/g, '');
+    return `var(--color-${sanitized}, var(--color-text, #333333))`;
   }
 
   private getSizeVariable(size: IconSize): string {
-    return `var(--icon-size-${size}, var(--icon-size-medium, 1rem))`;
+    // Validate size is one of allowed values
+    const validSize = ICON_SIZES.includes(size) ? size : 'medium';
+    return `var(--icon-size-${validSize}, var(--icon-size-medium, 1rem))`;
   }
 
-  private getIconSvg(iconName: IconName): TemplateResult {
-    return html`<div class="icon" data-testid="icon: ${iconName}"></div>`;
+  private getSvgContent(): string {
+    return iconRegistry[this.iconName] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
-  override render(): TemplateResult {
-    return html` ${this.getIconSvg(this.iconName)} `;
-  }
-
-  override updated(changedProperties: Map<string | number | symbol, unknown>): void {
-    super.updated(changedProperties);
-
-    const iconElement = this.shadowRoot?.querySelector('.icon') as HTMLElement;
-    const svgContent = iconRegistry[this.iconName] || iconRegistry.AlertTriangleOutline;
-
-    if (iconElement) {
-      iconElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${svgContent}</svg>`;
-      iconElement.style.setProperty('--icon-color', this.getColorVariable(this.color));
-      iconElement.style.setProperty('--icon-size', this.getSizeVariable(this.size));
+  protected override willUpdate(changedProperties: Map<PropertyKey, unknown>): void {
+    if (changedProperties.has('color') || changedProperties.has('size')) {
+      this.updateStyles();
     }
+  }
+
+  private updateStyles(): void {
+    this.style.setProperty('--icon-color', this.getColorVariable(this.color));
+    this.style.setProperty('--icon-size', this.getSizeVariable(this.size));
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.updateStyles();
+  }
+
+  override render(): TemplateResult | typeof nothing {
+    const svgContent = this.getSvgContent();
+
+    if (!svgContent) {
+      return nothing;
+    }
+
+    return html`
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        role="img"
+        data-testid="icon:${this.iconName}"
+      >
+        ${unsafeSVG(svgContent)}
+      </svg>
+    `;
   }
 }
 
