@@ -35,7 +35,7 @@ const DisableDelegateAdminModel: FC<{
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-expect-error - needs a fix
 								label={
 									<Trans
@@ -50,7 +50,7 @@ const DisableDelegateAdminModel: FC<{
 								onClick={removeAllACLs}
 							/>
 							<Button
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								 
 								// @ts-expect-error - needs a fix
 								label={
 									<Trans

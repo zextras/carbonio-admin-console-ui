@@ -8,11 +8,10 @@ const __dirname = dirname(__filename);
 const noticeRule = {
   ignores: [
     '**/node_modules/**',
-    '**/dist/**',
+    'dist/**',
     '**/build/**',
     'coverage/**',
     'scripts/**',
-    'package/**',
     '**/notice.template.ts',
   ],
   plugins: {

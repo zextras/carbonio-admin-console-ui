@@ -4,4 +4,4 @@
 
 FROM backplane/jq:latest
 
-COPY package/opt/zextras/admin/iris/ /opt/zextras/admin/iris/
+COPY dist/opt/zextras/admin/iris/ /opt/zextras/admin/iris/
