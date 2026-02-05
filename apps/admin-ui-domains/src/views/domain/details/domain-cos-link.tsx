@@ -20,7 +20,6 @@ import {
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
@@ -34,13 +33,6 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 const DomainCosLink: FC<{
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
@@ -570,7 +562,7 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <Icon icon="InfoOutline" style={{ width: '1.25rem', height: '1.25rem' }}></Icon>
                   </Padding>
                 </Row>
                 <Row
@@ -595,7 +587,7 @@ const DomainCosLink: FC<{
           id: cos.id,
           label: cos.name,
           customComponent: (
-            <SelectItem
+            <Row
               style={{
                 display: 'block',
                 textAlign: 'left',
@@ -608,7 +600,7 @@ const DomainCosLink: FC<{
               }}
             >
               {cos?.name}
-            </SelectItem>
+            </Row>
           ),
         }));
 

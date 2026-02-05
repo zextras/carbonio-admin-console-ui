@@ -38,7 +38,6 @@ import React, {
   useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import {
@@ -84,21 +83,6 @@ export enum TRUE_FALSE {
   TRUE = 'TRUE',
   FALSE = 'FALSE',
 }
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 39.4rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const EditMailingListView: FC<any> = ({
   selectedMailingList,
@@ -2366,7 +2350,24 @@ const EditMailingListView: FC<any> = ({
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && (
+        <OverlayDivision
+          ovelayStyle={{
+            position: 'fixed',
+            width: '39.4rem',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            height: 'auto',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            background: '#0d0d0d',
+            opacity: '0.4',
+            zIndex: '11',
+            paddingTop: '2rem',
+          }}
+        />
+      )}
       <Container
         background="gray5"
         mainAlignment="flex-start"

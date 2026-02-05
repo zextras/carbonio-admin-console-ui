@@ -36,7 +36,6 @@ import React, {
   useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute, objectType } from '../../../../../../types';
 import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
@@ -70,13 +69,6 @@ type UserSession = {
   ip: string;
   service: string;
 };
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
 
 const ZimbraAuthMethod = {
   INTERNAL: 'zimbra',
@@ -456,7 +448,7 @@ const EditAccountGeneralSection: FC<{
             <>
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" />
+                  <Icon icon="InfoOutline" style={{ width: '20px', height: '20px' }} />
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
@@ -477,7 +469,7 @@ const EditAccountGeneralSection: FC<{
       id: domain.id,
       label: domain.name,
       customComponent: (
-        <SelectItem
+        <Row
           style={{
             display: 'block',
             textAlign: 'left',
@@ -488,7 +480,7 @@ const EditAccountGeneralSection: FC<{
           onClick={(): void => selectedDomain(domain?.name)}
         >
           {domain?.name}
-        </SelectItem>
+        </Row>
       ),
     }));
   }, [domainList, selectedDomain, t]);

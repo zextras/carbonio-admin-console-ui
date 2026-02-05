@@ -15,7 +15,6 @@ import {
 } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
@@ -24,33 +23,6 @@ import { Section } from '../../../../app/component/section-component';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 39.4rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
-
-const AccountDetailContainer = styled(Container)`
-  z-index: 10;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  transition: left 0.2s ease-in-out;
-  max-height: 100%;
-  overflow: hidden;
-  box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);
-`;
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
   const { t } = useTranslation();
@@ -505,8 +477,39 @@ const CreateAccount: FC<{
   );
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
-      <AccountDetailContainer background="gray5" mainAlignment="flex-start">
+      {isLoading && (
+        <OverlayDivision
+          ovelayStyle={{
+            position: 'fixed',
+            width: '39.4rem',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            height: 'auto',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            background: '#0d0d0d',
+            opacity: '0.4',
+            zIndex: '11',
+            paddingTop: '2rem',
+          }}
+        />
+      )}
+      <Container
+        background="gray5"
+        mainAlignment="flex-start"
+        style={{
+          zIndex: '10',
+          position: 'absolute',
+          top: '0',
+          right: '0',
+          bottom: '0',
+          transition: 'left 0.2s ease-in-out',
+          maxHeight: '100%',
+          overflow: 'hidden',
+          boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <AccountContext.Provider
           value={{ accountDetail, setAccountDetail, setShowCreateAccountView }}
         >
@@ -518,7 +521,7 @@ const CreateAccount: FC<{
             setToggleWizardSection={setShowCreateAccountView}
           />
         </AccountContext.Provider>
-      </AccountDetailContainer>
+      </Container>
     </>
   );
 };

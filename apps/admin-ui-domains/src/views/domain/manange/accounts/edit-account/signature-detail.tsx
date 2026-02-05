@@ -18,7 +18,6 @@ import {
 } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
 import Composer from '../../../../../composer/composer';
@@ -27,13 +26,7 @@ import { deleteSignature } from '../../../../../services/delete-signature-servic
 import { modifySignature } from '../../../../../services/modify-signature-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../../list/list-row';
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
+import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
@@ -471,14 +464,14 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <EditorWrapper>
+              <div className={editorWrapperStyles['editor-wrapper']}>
                 <Composer
                   value={defaultSignatureContent}
                   onEditorChange={(ev: any): void => {
                     setSignatureContent(ev[1]);
                   }}
                 />
-              </EditorWrapper>
+              </div>
             </Container>
           </Container>
         </Modal>

@@ -8,7 +8,6 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, HorizontalWizard, OverlayDivision } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { LDAP, PUB } from '../../../../constants';
 import { Section } from '../../../app/component/section-component';
@@ -17,21 +16,6 @@ import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
 import { MailingListContext } from './mailinglist-context';
 import MailingListCreateSection from './mailinglist-create-section';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 39.4rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 interface MailingListDetailObj {
   name: string;
@@ -408,7 +392,24 @@ const CreateMailingList: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && (
+        <OverlayDivision
+          ovelayStyle={{
+            position: 'fixed',
+            width: '39.4rem',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            height: 'auto',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            background: '#0d0d0d',
+            opacity: '0.4',
+            zIndex: '11',
+            paddingTop: '2rem',
+          }}
+        />
+      )}
       <Container
         background="gray5"
         mainAlignment="flex-start"

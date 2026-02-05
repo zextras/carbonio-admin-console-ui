@@ -20,7 +20,6 @@ import {
 } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../assets/ninja_robo.svg';
 import {
@@ -41,11 +40,6 @@ type SamlAttribute = {
   attribute: string;
   value: unknown;
 };
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 
 const DomainSaml: FC = () => {
   const [t] = useTranslation();
@@ -445,7 +439,11 @@ const DomainSaml: FC = () => {
                 >
                   <Row width="5%" mainAlignment="flex-start">
                     <Padding horizontal="small">
-                      <CustomIcon icon="CheckmarkCircle2Outline" color="#2196D3"></CustomIcon>
+                      <Icon
+                        icon="CheckmarkCircle2Outline"
+                        style={{ width: '1.25rem', height: '1.25rem' }}
+                        color="#2196D3"
+                      ></Icon>
                     </Padding>
                   </Row>
                   <Row
