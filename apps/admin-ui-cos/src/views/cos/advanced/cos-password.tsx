@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Icon, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -85,11 +85,11 @@ const COSPassword: FC<COSPasswordProps> = ({
         >
           <Row mainAlignment="flex-start">
             <Padding horizontal="small">
-              <Icon
-                icon="InfoOutline"
+              <icon-wc
+                icon-name="InfoOutline"
                 color="primary"
                 style={{ width: '1.25rem', height: '1.25rem' }}
-              ></Icon>
+              ></icon-wc>
             </Padding>
           </Row>
           <Row

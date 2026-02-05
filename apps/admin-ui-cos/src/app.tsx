@@ -10,7 +10,6 @@ import {
   removeRoute,
   useCurrentUserRights,
 } from '@zextras/admin-ui-bootstrap';
-import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,7 +21,6 @@ import {
   COS_ROUTE_ID,
   CREATE_COS,
   CREATE_NEW_COS_ROUTE_ID,
-  DASHBOARD,
   GLOBAL,
   LIST_COS,
   MANAGE,
@@ -30,7 +28,6 @@ import {
   PRIMARY_BAR_COS,
   SERVICES_ROUTE_ID,
 } from './constants';
-import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useCosStore } from './store/cos/store';
 import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
@@ -102,13 +99,13 @@ const App: FC = () => {
 
   const cosPrimaryBar = useCallback(
     () => (
-      <Icon
-        icon={SettingsModOutline}
+      <icon-wc
+        icon-name="SettingsModOutline"
         size="large"
         onClick={(): void => {
           navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`);
         }}
-      />
+      ></icon-wc>
     ),
     [navigate],
   );
