@@ -6,7 +6,7 @@
 
 import '../../web-components/divider-wc';
 
-import { flip, limitShift, Placement, shift, VirtualElement } from '@floating-ui/dom';
+import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import React, {
   HTMLAttributes,
   useCallback,
@@ -17,7 +17,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation, ThemeContext } from 'styled-components';
+import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import {
@@ -56,9 +56,7 @@ type ListItemContentProps = {
   label: string;
   selected?: boolean;
   disabled?: boolean;
-  itemIconSize: React.ComponentPropsWithRef<typeof Icon>['size'];
   itemTextSize: React.ComponentProps<typeof Text>['size'];
-  itemPaddingBetween: keyof DefaultTheme['sizes']['padding'];
   tooltipLabel?: string;
 };
 
@@ -67,19 +65,17 @@ function ListItemContent({
   label,
   selected,
   disabled,
-  itemIconSize,
   itemTextSize,
-  itemPaddingBetween,
   tooltipLabel,
 }: Readonly<ListItemContentProps>): React.JSX.Element {
   return (
     <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
       <Container orientation="horizontal" mainAlignment="flex-start">
         {icon && (
-          <Padding right={itemPaddingBetween}>
+          <Padding right="small">
             <Icon
               icon={icon}
-              size={itemIconSize}
+              size="medium"
               color={disabled ? 'secondary' : 'text'}
               style={{ pointerEvents: 'none' }}
             />
@@ -114,10 +110,8 @@ function PopperListItem({
   customComponent,
   disabled = false,
   selectedBackgroundColor,
-  itemIconSize,
   itemTextSize,
   keepOpen,
-  itemPaddingBetween,
   tooltipLabel,
   ...rest
 }: Readonly<PopperListItemProps>): React.JSX.Element {
@@ -143,9 +137,7 @@ function PopperListItem({
           label={label}
           selected={selected}
           disabled={disabled}
-          itemIconSize={itemIconSize}
           itemTextSize={itemTextSize}
-          itemPaddingBetween={itemPaddingBetween}
           tooltipLabel={tooltipLabel}
         />
       )}
@@ -153,8 +145,7 @@ function PopperListItem({
   );
 }
 
-type NestListItemProps = PopperListItemProps &
-  Pick<DropdownProps, 'onOpen' | 'onClose' | 'dropdownListRef' | 'items'>;
+type NestListItemProps = PopperListItemProps & Pick<DropdownProps, 'onOpen' | 'onClose' | 'items'>;
 
 function NestListItem({
   icon,
@@ -165,11 +156,8 @@ function NestListItem({
   disabled = false,
   items,
   selectedBackgroundColor,
-  itemIconSize,
   itemTextSize,
-  itemPaddingBetween,
   keepOpen,
-  dropdownListRef = null,
   tooltipLabel,
   onOpen,
   onClose,
@@ -180,19 +168,9 @@ function NestListItem({
   const [innerDropdownListElement, setInnerDropdownListElement] = useState<HTMLDivElement | null>(
     null,
   );
-  const setDropdownListRef = useCallback<React.RefCallback<HTMLDivElement>>(
-    (node) => {
-      setInnerDropdownListElement(node);
-      if (dropdownListRef) {
-        if (typeof dropdownListRef === 'function') {
-          dropdownListRef(node);
-        } else {
-          dropdownListRef.current = node;
-        }
-      }
-    },
-    [dropdownListRef],
-  );
+  const setDropdownListRef = useCallback<React.RefCallback<HTMLDivElement>>((node) => {
+    setInnerDropdownListElement(node);
+  }, []);
   const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
 
   useEffect(
@@ -308,10 +286,7 @@ function NestListItem({
         items={items}
         forceOpen={open}
         placement="right-start"
-        selectedBackgroundColor={selectedBackgroundColor}
-        itemIconSize={itemIconSize}
         itemTextSize={itemTextSize}
-        itemPaddingBetween={itemPaddingBetween}
         dropdownListRef={setDropdownListRef}
         disablePortal
       >
@@ -326,13 +301,11 @@ function NestListItem({
               label={label}
               selected={selected}
               disabled={disabled}
-              itemIconSize={itemIconSize}
               itemTextSize={itemTextSize}
-              itemPaddingBetween={itemPaddingBetween}
               tooltipLabel={tooltipLabel}
             />
           )}
-          <Icon size={itemIconSize} icon="ChevronRight" />
+          <Icon size="medium" icon="ChevronRight" />
         </Container>
       </Dropdown>
     </ContainerEl>
@@ -427,8 +400,6 @@ type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
   disableAutoFocus?: boolean;
   /** whether user can select multiple items of dropdown aka do not close popover on item click */
   multiple?: boolean;
-  /** Open dropdown on right click at cursor position */
-  contextMenu?: boolean;
   /** Callback for opened Dropdown */
   onOpen?: () => void;
   /** Callback for closed Dropdown */
@@ -445,14 +416,8 @@ type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
   forceOpen?: boolean;
   /** Whether to preventDefault on Dropdown click */
   preventDefault?: boolean;
-  /** Customize selected background color */
-  selectedBackgroundColor?: AnyColor;
-  /** Item Icon size */
-  itemIconSize?: React.ComponentPropsWithRef<typeof Icon>['size'];
   /** Item Text size */
   itemTextSize?: React.ComponentPropsWithRef<typeof Text>['size'];
-  /** Item Padding Between */
-  itemPaddingBetween?: keyof DefaultTheme['sizes']['padding'];
   /** Ref assign to the dropdown list popper container */
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
@@ -470,17 +435,12 @@ const Dropdown = ({
   disableRestoreFocus = false,
   disableAutoFocus = false,
   multiple = false,
-  contextMenu = false,
   onOpen,
   onClose,
   children,
   triggerRef = null,
   disablePortal = false,
-  preventDefault = true,
-  selectedBackgroundColor,
-  itemIconSize = 'medium',
   itemTextSize = 'medium',
-  itemPaddingBetween = 'small',
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
@@ -492,7 +452,6 @@ const Dropdown = ({
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const startSentinelRef = useRef<HTMLDivElement | null>(null);
   const endSentinelRef = useRef<HTMLDivElement | null>(null);
-  const [position, setPosition] = useState<VirtualElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
   useEffect(() => {
@@ -549,36 +508,12 @@ const Dropdown = ({
     [children, toggleOpen],
   );
 
-  const triggerComponentRightClickHandler = useCallback<React.MouseEventHandler<HTMLElement>>(
-    (e) => {
-      e.preventDefault();
-      const virtualElement: VirtualElement = {
-        getBoundingClientRect: () => ({
-          width: 0,
-          height: 0,
-          top: e.clientY,
-          right: e.clientX,
-          bottom: e.clientY,
-          left: e.clientX,
-          x: e.clientX,
-          y: e.clientY,
-        }),
-      };
-      setPosition(virtualElement);
-      if (!disabled && !openRef.current) {
-        openPopper();
-      }
-    },
-    [disabled, openPopper],
-  );
-
   const clickOutsidePopper = useCallback(
     (e: Event) => {
       const clickedOnDropdown =
         dropdownRef.current &&
         (e.target === dropdownRef.current || dropdownRef.current.contains(e.target as Node | null));
       const clickedOnTrigger =
-        !contextMenu &&
         innerTriggerRef.current &&
         (e.target === innerTriggerRef.current ||
           innerTriggerRef.current?.contains(e.target as Node | null));
@@ -597,7 +532,7 @@ const Dropdown = ({
         closePopper();
       }
     },
-    [closePopper, contextMenu, dropdownRef, innerTriggerRef],
+    [closePopper, dropdownRef, innerTriggerRef],
   );
 
   const onStartSentinelFocus = useCallback(() => {
@@ -699,7 +634,7 @@ const Dropdown = ({
   useLayoutEffect(() => {
     let cleanup: ReturnType<typeof setupFloating>;
     if (open) {
-      const popperReference = contextMenu ? position : innerTriggerRef.current;
+      const popperReference = innerTriggerRef.current;
       if (popperReference && dropdownRef.current) {
         cleanup = setupFloating(popperReference, dropdownRef.current, {
           placement,
@@ -711,7 +646,7 @@ const Dropdown = ({
     return (): void => {
       cleanup?.();
     };
-  }, [open, placement, contextMenu, position, dropdownRef, innerTriggerRef]);
+  }, [open, placement, dropdownRef, innerTriggerRef]);
 
   const setPopperItemsRefAndFocus = useCallback<React.RefCallback<HTMLDivElement | null>>(
     (node) => {
@@ -729,14 +664,13 @@ const Dropdown = ({
   useEffect(() => {
     if (open) {
       windowObj.document.addEventListener('click', clickOutsidePopper, true);
-      contextMenu && windowObj.document.addEventListener('contextmenu', clickOutsidePopper, true);
     }
 
     return (): void => {
       windowObj.document.removeEventListener('click', clickOutsidePopper, true);
       windowObj.document.removeEventListener('contextmenu', clickOutsidePopper, true);
     };
-  }, [open, closePopper, clickOutsidePopper, contextMenu, windowObj.document]);
+  }, [open, closePopper, clickOutsidePopper, windowObj.document]);
 
   useEffect(() => {
     const startSentinelRefElement = startSentinelRef.current;
@@ -810,11 +744,7 @@ const Dropdown = ({
                 customComponent={customComponent}
                 disabled={itemDisabled}
                 items={subItems}
-                selectedBackgroundColor={selectedBackgroundColor}
-                itemIconSize={itemIconSize}
                 itemTextSize={itemTextSize}
-                itemPaddingBetween={itemPaddingBetween}
-                dropdownListRef={nestedRef}
                 {...itemProps}
               />
             )) || (
@@ -827,10 +757,7 @@ const Dropdown = ({
                 key={id}
                 customComponent={customComponent}
                 disabled={itemDisabled}
-                selectedBackgroundColor={selectedBackgroundColor}
-                itemIconSize={itemIconSize}
                 itemTextSize={itemTextSize}
-                itemPaddingBetween={itemPaddingBetween}
                 {...itemProps}
               />
             )
@@ -839,41 +766,23 @@ const Dropdown = ({
       );
     }
     return null;
-  }, [
-    items,
-    listItemClickHandler,
-    selectedBackgroundColor,
-    itemIconSize,
-    itemTextSize,
-    itemPaddingBetween,
-  ]);
+  }, [items, listItemClickHandler, itemTextSize]);
 
   const popperListPreventDefaultHandler = useCallback<React.MouseEventHandler>((event) => {
     event?.preventDefault?.();
   }, []);
 
   const triggerComponent = useMemo(() => {
-    const props = contextMenu
-      ? { onContextMenu: triggerComponentRightClickHandler }
-      : { onClick: triggerComponentLeftClickHandler };
+    const props = { onClick: triggerComponentLeftClickHandler };
     return React.cloneElement(children, {
       ref: innerTriggerRef,
       ...props,
     } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
-  }, [
-    children,
-    innerTriggerRef,
-    contextMenu,
-    triggerComponentLeftClickHandler,
-    triggerComponentRightClickHandler,
-  ]);
+  }, [children, innerTriggerRef, triggerComponentLeftClickHandler]);
 
   const popperListProps = useMemo(
-    () =>
-      contextMenu
-        ? { onContextMenu: popperListPreventDefaultHandler }
-        : { onClick: popperListPreventDefaultHandler },
-    [contextMenu, popperListPreventDefaultHandler],
+    () => ({ onClick: popperListPreventDefaultHandler }),
+    [popperListPreventDefaultHandler],
   );
 
   return (
