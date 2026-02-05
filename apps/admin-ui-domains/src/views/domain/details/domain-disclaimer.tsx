@@ -33,9 +33,8 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
 import ListRow from '../../list/list-row';
-import editorWrapperStyles from '../../styles/editor-wrapper.module.css';
-import textAreaEditorStyles from '../../styles/text-area-editor.module.css';
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();
@@ -382,8 +381,8 @@ const DomainDisclaimer: FC = () => {
             }}
           >
             <TextArea
-              className={textAreaEditorStyles['text-area-editor']}
               label={''}
+              minHeight="20.5rem"
               value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
               // @ts-expect-error - needs a fix
               onChange={(event: ChangeEvent<HTMLInputElement>): void => {

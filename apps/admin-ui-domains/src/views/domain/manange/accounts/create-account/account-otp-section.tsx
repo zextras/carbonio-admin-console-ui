@@ -20,9 +20,9 @@ import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { sendMail } from '../../../../../services/send-mail-service';
+import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
-import staticCodesStyles from '../../../styles/static-codes.module.css';
 import { AccountContext } from './account-context';
 import { emailContent } from './email-content';
 const AccountOtpSection: FC<{

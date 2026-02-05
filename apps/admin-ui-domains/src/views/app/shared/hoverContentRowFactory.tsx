@@ -7,7 +7,7 @@
 import { Checkbox, Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import styles from '../../styles/hover-row.module.css';
+import styles from '../../../styles/hover-row.module.css';
 
 type TRow = {
   id: string;

@@ -24,9 +24,9 @@ import Composer from '../../../../../composer/composer';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
+import editorWrapperStyles from '../../../../../styles/editor-wrapper.module.css';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../../list/list-row';
-import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
