@@ -27,7 +27,6 @@ import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import styled from 'styled-components';
 
 import { DomainResponse } from '../../../types';
 import {

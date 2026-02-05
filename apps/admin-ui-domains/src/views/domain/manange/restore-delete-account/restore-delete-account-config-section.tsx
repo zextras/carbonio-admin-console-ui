@@ -82,7 +82,7 @@ const RestoreDeleteAccountConfigSection: FC = () => {
           </Padding>
         </Row>
         <Container>
-          <DateTimePicker label="Date" width="100%" onChange={noop} />
+          <DateTimePicker label="Date" onChange={noop} />
         </Container>
       </Container>
     </Container>
