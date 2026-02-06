@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, HoverableRowFactory, Icon, Row, Table, Text } from '@zextras/ui-components';
+import { Container, HoverableRowFactory, Row, Table, Text } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,11 +63,13 @@ export const OperationsTable: FC<{
             }}
           >
             {v?.type === EXCEPTION && (
-              <Icon icon="StopCircleOutline" size="medium" color="secondary" />
+              <icon-wc icon-name="StopCircleOutline" size="medium" color="secondary"></icon-wc>
             )}
-            {v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+            {v?.type === FINISHED && (
+              <icon-wc icon-name="CloseCircleOutline" size="medium" color="error"></icon-wc>
+            )}
             {v?.type === STARTED && (
-              <Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
+              <icon-wc icon-name="CheckmarkCircleOutline" size="medium" color="success"></icon-wc>
             )}
           </Row>,
           <Row
