@@ -326,7 +326,6 @@ const attrsAttrsMock = {
   zimbraWebClientOfflineSyncMaxDays: '30',
   zimbraFeatureConversationsEnabled: 'TRUE',
   zimbraFeatureDistributionListExpandMembersEnabled: 'TRUE',
-  carbonioFeatureTeamEnabled: 'FALSE',
   zimbraFeatureNewMailNotificationEnabled: 'TRUE',
   zimbraPasswordMinLength: '6',
   carbonioFeatureOTPMgmtEnabled: 'TRUE',

@@ -21,30 +21,29 @@ import { Subscription } from '../subscription';
 
 // Mock data that matches what the React Query hooks expect (after parsing)
 const mockLicenseData = {
-  response: {
-    subType: 'PERPETUAL',
-    expired: false,
-    dateStart: 1652140800000,
-    dateEnd: 1855526400000,
-    maintenanceEndDate: 1750272000000, // 18 Jun 2025
-    maintenanceStatus: 'expired' as const,
-    type: 'Purchased',
-    customer: 'Test Customer',
-    accountCount: 7,
-    licensedUsers: '99',
-    notYetValid: false,
-    infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
-    authenticationToken: 'PERPETUAL_LIC',
-    endUser: 'Test End User',
-    features: [
-      { name: 'backup_realtime', quantity: 'unlimited', enabled: true },
-      { name: 'chats_recording', quantity: 'unlimited', enabled: true },
-      { name: 'files_basic', quantity: 'unlimited', enabled: true },
-      { name: 'storages_basic', quantity: 'unlimited', enabled: true },
-      { name: 'admins_basic', quantity: 'unlimited', enabled: true },
-    ],
-  },
-  ok: true,
+	response: {
+		subType: 'PERPETUAL',
+		expired: false,
+		dateStart: 1652140800000,
+		dateEnd: 1855526400000,
+		maintenanceEndDate: 1750272000000, // 18 Jun 2025
+		maintenanceStatus: 'expired' as const,
+		type: 'Purchased',
+		customer: 'Test Customer',
+		accountCount: 7,
+		licensedUsers: '99',
+		notYetValid: false,
+		infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
+		authenticationToken: 'PERPETUAL_LIC',
+		endUser: 'Test End User',
+		features: [
+			{ name: 'backup_realtime', quantity: 'unlimited', enabled: true },
+			{ name: 'files_basic', quantity: 'unlimited', enabled: true },
+			{ name: 'storages_basic', quantity: 'unlimited', enabled: true },
+			{ name: 'admins_basic', quantity: 'unlimited', enabled: true }
+		]
+	},
+	ok: true
 };
 
 const mockVersionData = {

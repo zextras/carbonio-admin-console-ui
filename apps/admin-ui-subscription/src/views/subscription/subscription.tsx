@@ -40,7 +40,6 @@ const TIME_FORMAT = 'dd MMM yyyy HH:mm';
 
 const moduleName: ModuleName = {
 	backup_realtime: { value: 'Realtime', label: 'Backup' },
-	chats_recording: { value: 'Video recording', label: 'Chats' },
 	files_basic: { value: 'Basics', label: 'Files' },
 	admins_basic: { value: 'Delegated Administration', label: 'Admin' },
 	storages_basic: { value: 'Basic', label: 'Storages' },
@@ -51,17 +50,15 @@ const moduleName: ModuleName = {
 	storages_centralized: { value: 'Centralized Volumes', label: 'Storages' },
 	appmail_advanced: { value: 'Advanced', label: 'MailApp' },
 	activesync_shared_folder: { value: 'Shared Folder', label: 'ActiveSync' },
-	chats_basic: { value: 'Basic', label: 'Chats' },
 	auth_2fa: { value: '2FA and Policies', label: 'Auth' },
 	storages_hsm: { value: 'HSM', label: 'Storages' },
-	chats_rooms: { value: 'Meeting Rooms', label: 'Chats' },
 	files_docs_balancing: { value: 'Docs Connector', label: 'Files' },
 	auth_saml: { value: 'SAML', label: 'Auth' },
 	backup_ext_volume: { value: 'Export on External', label: 'Backup' },
 	storages_conn_sproxyd: { value: 'Scality SproxyD Connector', label: 'Storages' },
 	activesync_basic: { value: '', label: 'ActiveSync' },
 	backup_import_external: { value: 'Import External', label: 'Backup' },
-	wsc_basic: { value: 'WSC Chat', label: 'Chats' }
+	wsc_basic: { value: 'Basic', label: 'Chats' }
 };
 
 const getGapColorForLabel = (label: React.Key | null | undefined): string => {
