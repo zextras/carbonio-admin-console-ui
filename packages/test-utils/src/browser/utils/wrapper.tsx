@@ -10,7 +10,7 @@ import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-compon
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter, useLocation, useNavigate } from 'react-router';
+import { createMemoryRouter, RouterProvider, useLocation, useNavigate } from 'react-router';
 
 const getAppI18n = (): i18n => {
   const newI18n = i18next.createInstance();
@@ -29,6 +29,7 @@ const getAppI18n = (): i18n => {
 export type WrapperProps = {
   children?: React.ReactNode;
   queryClient?: QueryClient;
+  initialRouterEntry?: string;
 };
 
 export const getQueryClient = (): QueryClient => {
@@ -95,23 +96,38 @@ export const BootstrapBridgeProvider = ({
 export const Wrapper = ({
   children,
   queryClient: providedQueryClient,
-}: WrapperProps): React.JSX.Element => {
+  initialRouterEntry,
+}: WrapperProps) => {
   const defaultQueryClient = useMemo(() => getQueryClient(), []);
   const queryClient = providedQueryClient ?? defaultQueryClient;
 
-  return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <SnackbarManager>
-            <I18NextTestProvider>
-              <ModalManager>
-                <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
-              </ModalManager>
-            </I18NextTestProvider>
-          </SnackbarManager>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+  const router = useMemo(
+    () =>
+      createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <QueryClientProvider client={queryClient}>
+                <ThemeProvider>
+                  <SnackbarManager>
+                    <I18NextTestProvider>
+                      <ModalManager>
+                        <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+                      </ModalManager>
+                    </I18NextTestProvider>
+                  </SnackbarManager>
+                </ThemeProvider>
+              </QueryClientProvider>
+            ),
+          },
+        ],
+        {
+          initialEntries: [initialRouterEntry ?? '/'],
+        },
+      ),
+    [children, queryClient, initialRouterEntry],
   );
+
+  return <RouterProvider router={router} />;
 };

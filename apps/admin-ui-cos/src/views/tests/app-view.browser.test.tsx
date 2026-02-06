@@ -43,8 +43,8 @@ describe('AppView', () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
     createBrowserSoapAPIInterceptor('GetAccount', {});
 
-    setupBrowserTest(<AppView />, {
-      initialRouterEntry: `/manage/cos/cos_list`,
+    await setupBrowserTest(<AppView />, {
+      initialRouterEntry: `/cos_list`,
       queryClient,
     });
 
@@ -56,8 +56,8 @@ describe('AppView', () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
     createBrowserSoapAPIInterceptor('GetAccount', {});
 
-    setupBrowserTest(<AppView />, {
-      initialRouterEntry: `/manage/cos`,
+    await setupBrowserTest(<AppView />, {
+      initialRouterEntry: '',
       queryClient,
     });
 
@@ -69,7 +69,7 @@ describe('AppView', () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
     createBrowserSoapAPIInterceptor('GetAccount', {});
 
-    setupBrowserTest(<AppView />, {
+    await setupBrowserTest(<AppView />, {
       initialRouterEntry: '/different/route',
       queryClient,
     });
@@ -97,12 +97,13 @@ describe('AppView', () => {
     const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
     const searchDirectoryInterceptor = createBrowserSoapAPIInterceptor(
       'SearchDirectory',
-      mockCosListResponse
+      mockCosListResponse,
     );
+
     const getAccountInterceptor = createBrowserSoapAPIInterceptor('GetAccount', {});
 
-    setupBrowserTest(<AppView />, {
-      initialRouterEntry: `/manage/cos/cos_list`,
+    await setupBrowserTest(<AppView />, {
+      initialRouterEntry: `/cos_list`,
       queryClient,
     });
     await getInfoInterceptor;

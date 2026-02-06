@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
   DropDownInput,
@@ -31,7 +31,7 @@ import {
   MAX_COS_DISPLAY,
   PREFERENCES,
   SERVER_POOLS,
-  WSC
+  WSC,
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
@@ -51,7 +51,6 @@ export const CosListPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { pathname } = useLocation();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
   const [searchCosName, setSearchCosName] = useState('');
   const [isCosSelect, setIsCosSelect] = useState(false);
   const [cosList, setCosList] = useState([]);
@@ -245,52 +244,52 @@ export const CosListPanel: FC = () => {
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-        {
-          customComponent: (
-            <>
-              <Row mainAlignment="flex-start">
-                <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline"></CustomIcon>
-                </Padding>
-              </Row>
-              <Row
-                mainAlignment="flex-start"
-                width="100%"
-                padding={{
-                  all: 'small',
-                }}
-              >
-                <Text overflow="break-word">
-                  {t(
-                    'many_cos_info_msg',
-                    'So many COSes! Which one would you like to see? Start typing to filter.',
-                  )}
-                </Text>
-              </Row>
-            </>
-          ),
-        },
-      ]
+          {
+            customComponent: (
+              <>
+                <Row mainAlignment="flex-start">
+                  <Padding horizontal="small">
+                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                  </Padding>
+                </Row>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  padding={{
+                    all: 'small',
+                  }}
+                >
+                  <Text overflow="break-word">
+                    {t(
+                      'many_cos_info_msg',
+                      'So many COSes! Which one would you like to see? Start typing to filter.',
+                    )}
+                  </Text>
+                </Row>
+              </>
+            ),
+          },
+        ]
       : cosList.map((cosData: any) => ({
-        id: cosData.id,
-        label: cosData.name,
-        customComponent: (
-          <SelectItem
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '3px',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              selectedCos(cosData);
-            }}
-          >
-            {cosData?.name}
-          </SelectItem>
-        ),
-      }));
+          id: cosData.id,
+          label: cosData.name,
+          customComponent: (
+            <SelectItem
+              style={{
+                display: 'block',
+                textAlign: 'left',
+                height: 'inherit',
+                padding: '3px',
+                width: 'inherit',
+              }}
+              onClick={(): void => {
+                selectedCos(cosData);
+              }}
+            >
+              {cosData?.name}
+            </SelectItem>
+          ),
+        }));
 
   useEffect(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
