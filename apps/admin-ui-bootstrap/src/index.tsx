@@ -9,6 +9,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+import '@zextras/ui-components/web-components';
+
 import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 
