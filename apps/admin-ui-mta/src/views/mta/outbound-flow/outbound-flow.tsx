@@ -12,6 +12,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -47,7 +48,6 @@ import {
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 import { validateIpAddress } from '../../utility/utils';

@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DefaultTabBarItem,
   HoverableRowFactory,
   Row,
@@ -36,7 +37,6 @@ import {
 import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 

@@ -8,6 +8,7 @@ import { useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   ModalOverlay,
   Row,
@@ -24,7 +25,6 @@ import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import ListRow from '../../list/list-row';
 import MTAStatsMail from './mta-stats-mail';
 
