@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -140,7 +139,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
           gap="0.5rem"
         >
           <Row padding={{ right: '0.5rem' }}>
-            <Icon size="large" icon="AlertTriangleOutline" color="gray6" />
+            <icon-wc size="large" icon-name="AlertTriangleOutline" color="gray6"></icon-wc>
           </Row>
           <Container
             width="fill"
