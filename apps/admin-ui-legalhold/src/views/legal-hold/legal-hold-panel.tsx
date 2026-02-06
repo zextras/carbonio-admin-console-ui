@@ -8,6 +8,7 @@ import { getSoapFetchRequest, useDomainInformation } from '@zextras/admin-ui-boo
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
   HoverableRowFactory,
   Input,
@@ -38,7 +39,6 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';

@@ -8,6 +8,7 @@ import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DateTimePicker,
   DropDownInput,
   HoverableRowFactory,
@@ -33,7 +34,6 @@ import {
 } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
