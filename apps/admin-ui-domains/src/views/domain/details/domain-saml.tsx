@@ -7,6 +7,7 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -32,7 +33,6 @@ import { generateSignedCertificate } from '../../../services/generate-signed-cer
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
 
 type SamlAttribute = {

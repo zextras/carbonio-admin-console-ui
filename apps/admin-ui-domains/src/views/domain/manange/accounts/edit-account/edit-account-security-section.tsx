@@ -9,6 +9,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomHeaderFactory,
   HorizontalWizard,
   HoverableRowFactory,
   InheritedInput,
@@ -32,7 +33,6 @@ import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import { Section } from '../../../../app/component/section-component';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';
 import ListRow from '../../../../list/list-row';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';

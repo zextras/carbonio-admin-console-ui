@@ -6,6 +6,7 @@
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
   HoverableRowFactory,
   Input,
@@ -21,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 
 import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';

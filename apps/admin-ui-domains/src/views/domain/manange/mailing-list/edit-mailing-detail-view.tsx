@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
   DefaultTabBarItem,
   DropDownInput,
@@ -64,7 +65,6 @@ import { renameDistributionList } from '../../../../services/rename-distribution
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ManageAliases from '../../../components/manageAliases';
 import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';

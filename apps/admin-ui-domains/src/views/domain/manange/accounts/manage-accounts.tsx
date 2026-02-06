@@ -13,6 +13,7 @@ import {
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   ModalOverlay,
@@ -61,7 +62,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';

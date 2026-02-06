@@ -14,6 +14,7 @@ import {
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   ModalOverlay,
   Row,
@@ -51,7 +52,6 @@ import { InitDomainForDelegation } from '../../../../services/init-domain-for-de
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';

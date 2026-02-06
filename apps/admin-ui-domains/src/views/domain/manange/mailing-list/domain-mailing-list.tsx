@@ -7,6 +7,7 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   ModalOverlay,
@@ -36,7 +37,6 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';

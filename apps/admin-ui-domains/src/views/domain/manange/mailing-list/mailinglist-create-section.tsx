@@ -5,6 +5,7 @@
  */
 import {
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
   HoverableRowFactory,
   Input,
@@ -16,17 +17,15 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { MailingListContext } from './mailinglist-context';
 
 const MailingListCreateSection: FC<any> = () => {
   const { t } = useTranslation();
   const context = useContext(MailingListContext);
-  const { mailingListDetail, setMailingListDetail } = context;
+  const { mailingListDetail } = context;
   const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
   const [memberList, setMemberList] = useState<Array<any>>([]);
-  const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
   const [grantEmailType, setGrantEmailType] = useState<string>('');
   const [grantEmailsList, setGrantEmailsList] = useState<Array<any>>([]);
 
@@ -110,21 +109,6 @@ const MailingListCreateSection: FC<any> = () => {
       setGrantEmailsList(allRows);
     }
   }, [mailingListDetail?.owners]);
-
-  useEffect(() => {
-    const member = mailingListDetail?.ldapQueryMembers;
-    if (member && member.length > 0) {
-      const allRows = member.map((item: any) => ({
-        id: item?.id,
-        columns: [
-          <Text size="medium" weight="light" key={item?.id} color="#828282">
-            {item?.name}
-          </Text>,
-        ],
-      }));
-      setLdapQueryMembers(allRows);
-    }
-  }, [mailingListDetail?.ldapQueryMembers]);
 
   useEffect(() => {
     if (mailingListDetail?.ownerGrantEmailType?.value === PUB) {

@@ -8,6 +8,7 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -25,7 +26,6 @@ import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
 import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {

@@ -8,6 +8,7 @@ import { postSoapFetchRequest, useIsAdvanced } from '@zextras/admin-ui-bootstrap
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   ModalOverlay,
   Row,
@@ -33,7 +34,6 @@ import { getAccountMembershipRequest } from '../../services/get-account-membersh
 import { getSessions } from '../../services/get-sessions';
 import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';

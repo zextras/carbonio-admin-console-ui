@@ -8,6 +8,7 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -27,7 +28,6 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';

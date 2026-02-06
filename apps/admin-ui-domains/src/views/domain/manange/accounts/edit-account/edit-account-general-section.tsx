@@ -8,6 +8,7 @@ import {
   Button,
   ChipInput,
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
   DropDownInput,
   HoverableRowFactory,
@@ -42,7 +43,6 @@ import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';

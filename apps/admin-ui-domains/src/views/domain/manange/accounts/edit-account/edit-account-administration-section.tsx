@@ -8,6 +8,7 @@ import { useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   Dropdown,
   HoverableRowFactory,
   Input,
@@ -32,7 +33,6 @@ import {
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';

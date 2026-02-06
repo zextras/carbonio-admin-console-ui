@@ -8,6 +8,7 @@ import { useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/a
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   Dropdown,
   DropdownItem,
   HoverableRowFactory,
@@ -54,7 +55,6 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
@@ -62,6 +62,7 @@ import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
 const RANGE = {
+  CustomHeaderFactory,
   DAYS: 'd',
   HOURS: 'h',
   MINUTES: 'm',

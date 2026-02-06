@@ -7,6 +7,7 @@ import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Row,
@@ -21,7 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 import ScrollContainer from '../../components/scrollComponent';

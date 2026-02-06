@@ -8,6 +8,7 @@ import { getSoapFetchRequest, useDomainStore } from '@zextras/admin-ui-bootstrap
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Row,
@@ -19,7 +20,6 @@ import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import Paging from '../../../components/paging';
 import ListRow from '../../../list/list-row';
 import { getFormatedShortDate } from '../../../utility/utils';

@@ -8,6 +8,7 @@ import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/admin-u
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -38,7 +39,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import DownloadCSV from '../../app/shared/download-csv';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';

@@ -11,6 +11,7 @@ import {
   ChipInput,
   ChipInputProps,
   Container,
+  CustomHeaderFactory,
   HorizontalWizard,
   HoverableRowFactory,
   Padding,
@@ -44,7 +45,6 @@ import {
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
 import { Section } from '../../../../app/component/section-component';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomChip from '../../../../components/customChip';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
