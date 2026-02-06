@@ -1,3 +1,5 @@
+## [0.12.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.21...v0.12.0-devel.22) (2026-02-06)
+
 ## [0.12.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.20...v0.12.0-devel.21) (2026-02-06)
 
 ### Bug Fixes
