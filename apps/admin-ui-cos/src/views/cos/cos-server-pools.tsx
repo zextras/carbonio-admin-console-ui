@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Modal,
   Padding,
@@ -474,7 +473,7 @@ const CosServerPools: FC = () => {
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
                         CustomIcon={(): any => (
-                          <Icon icon="FunnelOutline" size="large" color="primary" />
+                          <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                         )}
                         onChange={(e: any): any => {
                           setSearchServer(e.target.value);

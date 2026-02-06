@@ -10,7 +10,6 @@ import {
   Collapse,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Modal,
   ModalOverlay,
@@ -1392,7 +1391,6 @@ const QuarantineList: FC = () => {
                   size="large"
                   weight="bold"
                   // @ts-expect-error - needs a fix
-
                   color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
                   style={{ display: 'flex', paddingLeft: '0.25rem' }}
                 >
@@ -1400,15 +1398,14 @@ const QuarantineList: FC = () => {
                 </Text>
                 <Tooltip placement="top" label={message.reason}>
                   <Text style={{ paddingLeft: '0.25rem' }}>
-                    <Icon
+                    <icon-wc
                       color={
                         // @ts-expect-error - needs a fix
-
                         message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
                       }
                       size="large"
-                      icon={'QuestionMarkCircleOutline'}
-                    />
+                      icon-name={'QuestionMarkCircleOutline'}
+                    ></icon-wc>
                   </Text>
                 </Tooltip>
               </Row>

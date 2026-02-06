@@ -11,7 +11,6 @@ import {
   Container,
   HorizontalWizard,
   HoverableRowFactory,
-  Icon,
   InheritedInput,
   Input,
   Padding,
@@ -758,11 +757,11 @@ const EditAccountSecuritySection: FC = () => {
             >
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <Icon
-                    icon="InfoOutline"
+                  <icon-wc
+                    icon-name="InfoOutline"
                     color="primary"
                     style={{ width: '20px', height: '20px' }}
-                  ></Icon>
+                  ></icon-wc>
                 </Padding>
               </Row>
               <Row

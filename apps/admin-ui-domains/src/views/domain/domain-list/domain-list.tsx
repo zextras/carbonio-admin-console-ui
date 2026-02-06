@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Row,
   Table,
@@ -319,7 +318,7 @@ const DomainList: FC = () => {
                     setSearchString(e.target.value);
                   }}
                   CustomIcon={(): React.ReactElement => (
-                    <Icon icon="FunnelOutline" size="large" color="primary" />
+                    <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                   )}
                 />
               </Container>

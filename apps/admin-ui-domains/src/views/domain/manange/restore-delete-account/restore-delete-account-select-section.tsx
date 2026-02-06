@@ -9,7 +9,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Row,
   Table,
@@ -32,7 +31,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const [accountRows, setAccountRows] = useState<Array<any>>([]);
   const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
   const [accountOffset, setAccountOffset] = useState<number>(0);
-  const [accountLimit, setAccountLimit] = useState<number>(10);
   const domainName = useDomainStore((state) => state.domain?.name);
   const createSnackbar = useSnackbar();
   const context = useContext(RestoreDeleteAccountContext);
@@ -41,6 +39,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const [totalItem, setTotalItem] = useState(1);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const accountLimit = 10;
 
   const accountHeader: any[] = useMemo(
     () => [
@@ -289,7 +288,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
                   setSearchString(e.target.value);
                 }}
                 label={t('label.filter_account_list', 'Filter Account List')}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
               />
             </Container>
             <ListRow>

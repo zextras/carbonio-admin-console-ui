@@ -7,7 +7,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   ModalOverlay,
   Padding,
@@ -380,7 +379,7 @@ const BucketDetailPanel: FC = () => {
             backgroundColor="gray5"
             label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
             CustomIcon={(): React.ReactElement => (
-              <Icon icon="FunnelOutline" size="large" color="primary" />
+              <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
             )}
             onChange={filterBucketList}
           />

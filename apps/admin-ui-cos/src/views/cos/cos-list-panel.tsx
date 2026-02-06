@@ -5,15 +5,7 @@
  */
 
 import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  DropDownInput,
-  Icon,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Container, DropDownInput, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -249,7 +241,10 @@ export const CosListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <Icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></Icon>
+                    <icon-wc
+                      icon-name="InfoOutline"
+                      style={{ width: '20px', height: '20px' }}
+                    ></icon-wc>
                   </Padding>
                 </Row>
                 <Row

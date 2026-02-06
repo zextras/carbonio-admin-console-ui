@@ -14,7 +14,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   ModalOverlay,
   Padding,
@@ -1240,7 +1239,9 @@ const ManageAccounts: FC = () => {
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={handleInputChange}
-                  CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                  CustomIcon={(): any => (
+                    <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                  )}
                 />
               </Container>
             </Row>

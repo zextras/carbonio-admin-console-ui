@@ -4,33 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Checkbox,
-  Container,
-  Icon,
-  Row,
-  Select,
-  Text,
-} from "@zextras/ui-components";
-import { isEmpty } from "lodash-es";
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Checkbox, Container, Row, Select, Text } from '@zextras/ui-components';
+import { isEmpty } from 'lodash-es';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import ChevronSortEmptyOutline from "../../../icons/outline/ChevronSortEmptyOutline";
 
-const ASC = "asc";
-const DESC = "desc";
+const ASC = 'asc';
+const DESC = 'desc';
 
 type THeader = {
   id: string;
   label: string;
-  align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>["align"];
+  align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>['align'];
   width?: string;
   i18nAllLabel?: string;
   bold?: boolean;
@@ -50,7 +35,7 @@ const CustomHeaderFactory: FC<any> = ({
 }): React.JSX.Element => {
   const trRef = useRef<HTMLTableRowElement>(null);
   const [showCkb, setShowCkb] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState<string>("");
+  const [sortedColumn, setSortedColumn] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
   const handleSortChange = useCallback(
@@ -71,12 +56,12 @@ const CustomHeaderFactory: FC<any> = ({
     (column: THeader) => {
       if (column.id === sortedColumn) {
         return sortOrder === ASC ? (
-          <Icon icon="ChevronSortUpOutline" size="large" />
+          <icon-wc icon-name="ChevronSortUpOutline" size="large"></icon-wc>
         ) : (
-          <Icon icon="ChevronSortDownOutline" size="large" />
+          <icon-wc icon-name="ChevronSortDownOutline" size="large"></icon-wc>
         );
       }
-      return <Icon icon={ChevronSortEmptyOutline} size="large" />;
+      return <icon-wc icon-name="ChevronSortEmptyOutline" size="large"></icon-wc>;
     },
     [sortedColumn, sortOrder],
   );
@@ -90,30 +75,30 @@ const CustomHeaderFactory: FC<any> = ({
         mainAlignment="space-between"
         borderRadius="half"
         padding={{
-          vertical: "small",
+          vertical: 'small',
         }}
       >
         <Row
           takeAvailableSpace
           mainAlignment="unset"
-          style={{ display: "inline-table" }}
+          style={{ display: 'inline-table' }}
           width="auto"
         >
           <Text
-            size={size || "medium"}
-            weight={bold ? "bold" : "regular"}
-            color={open || focus ? "primary" : "text"}
+            size={size || 'medium'}
+            weight={bold ? 'bold' : 'regular'}
+            color={open || focus ? 'primary' : 'text'}
           >
             {label}
           </Text>
         </Row>
         <Container>
-          <Icon
+          <icon-wc
             size="medium"
-            icon={open ? "ChevronUpOutline" : "ChevronDownOutline"}
-            color={open || focus ? "primary" : "text"}
-            style={{ alignSelf: "center" }}
-          />
+            icon-name={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+            color={open || focus ? 'primary' : 'text'}
+            style={{ alignSelf: 'center' }}
+          ></icon-wc>
         </Container>
       </Container>
     ),
@@ -131,17 +116,17 @@ const CustomHeaderFactory: FC<any> = ({
   useEffect(() => {
     const refSave = trRef.current;
     if (refSave && showCheckbox) {
-      refSave.addEventListener("mouseenter", displayCheckbox);
-      refSave.addEventListener("mouseleave", hideCheckbox);
-      refSave.addEventListener("focus", displayCheckbox);
-      refSave.addEventListener("blur", hideCheckbox);
+      refSave.addEventListener('mouseenter', displayCheckbox);
+      refSave.addEventListener('mouseleave', hideCheckbox);
+      refSave.addEventListener('focus', displayCheckbox);
+      refSave.addEventListener('blur', hideCheckbox);
     }
     return (): void => {
       if (refSave) {
-        refSave.removeEventListener("mouseenter", displayCheckbox);
-        refSave.removeEventListener("mouseleave", hideCheckbox);
-        refSave.removeEventListener("focus", displayCheckbox);
-        refSave.removeEventListener("blur", hideCheckbox);
+        refSave.removeEventListener('mouseenter', displayCheckbox);
+        refSave.removeEventListener('mouseleave', hideCheckbox);
+        refSave.removeEventListener('focus', displayCheckbox);
+        refSave.removeEventListener('blur', hideCheckbox);
       }
     };
   }, [displayCheckbox, hideCheckbox, showCheckbox]);
@@ -154,11 +139,9 @@ const CustomHeaderFactory: FC<any> = ({
         return (
           <th
             key={column.id}
-            align={column.align || "left"}
-            style={{ width: column?.width, height: "2.625rem" }}
-            onClick={
-              isSortable ? (): void => handleSortChange(column.id) : undefined
-            }
+            align={column.align || 'left'}
+            style={{ width: column?.width, height: '2.625rem' }}
+            onClick={isSortable ? (): void => handleSortChange(column.id) : undefined}
           >
             {hasItems && (
               <Container width="4rem">
@@ -166,20 +149,20 @@ const CustomHeaderFactory: FC<any> = ({
                   label={column.label}
                   multiple
                   items={column.items}
-                  i18nAllLabel={column.i18nAllLabel || "All"}
+                  i18nAllLabel={column.i18nAllLabel || 'All'}
                   dropdownWidth="auto"
                   onChange={column.onChange}
-                  display={column.align ? "inline-block" : "block"}
+                  display={column.align ? 'inline-block' : 'block'}
                   LabelFactory={(props: any): React.JSX.Element =>
-                    LabelFactory({ ...props, bold: column.bold, size: "small" })
+                    LabelFactory({ ...props, bold: column.bold, size: 'small' })
                   }
                 />
               </Container>
             )}
             {!hasItems && (
-              <Text weight={column.bold ? "bold" : "regular"} size="small">
+              <Text weight={column.bold ? 'bold' : 'regular'} size="small">
                 <Container orientation="horizontal" mainAlignment="flex-start">
-                  <Row style={{ cursor: isSortable ? "pointer" : "default" }}>
+                  <Row style={{ cursor: isSortable ? 'pointer' : 'default' }}>
                     {column.label}
                     {isSortable && renderSortingIcon(column)}
                   </Row>
@@ -192,18 +175,16 @@ const CustomHeaderFactory: FC<any> = ({
     [headers, renderSortingIcon, handleSortChange, LabelFactory],
   );
   return (
-    <tr ref={trRef} style={{ height: "3rem" }}>
-      <th align="center" style={{ width: "30px" }}>
-        {showCheckbox &&
-          multiSelect &&
-          (showCkb || selectionMode || allSelected) && (
-            <Checkbox
-              size="small"
-              value={allSelected}
-              onClick={onChange}
-              iconColor={selectionMode ? "primary" : "text"}
-            />
-          )}
+    <tr ref={trRef} style={{ height: '3rem' }}>
+      <th align="center" style={{ width: '30px' }}>
+        {showCheckbox && multiSelect && (showCkb || selectionMode || allSelected) && (
+          <Checkbox
+            size="small"
+            value={allSelected}
+            onClick={onChange}
+            iconColor={selectionMode ? 'primary' : 'text'}
+          />
+        )}
       </th>
       {headerData}
     </tr>

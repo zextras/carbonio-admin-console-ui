@@ -9,7 +9,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -414,7 +413,9 @@ const ActiveSync: FC = () => {
                 onChange={(e: any): any => {
                   setSearchString(e.target.value);
                 }}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
               />
             </Container>
             <Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">

@@ -5,15 +5,7 @@
  */
 
 import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  HoverableRowFactory,
-  Icon,
-  Row,
-  Table,
-  Text,
-  Tooltip,
-} from '@zextras/ui-components';
+import { Container, HoverableRowFactory, Row, Table, Text, Tooltip } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -155,7 +147,7 @@ const BackupServersListTable: FC<{
             {s?.description}
           </Text>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <icon-wc icon-name="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -176,7 +168,7 @@ const BackupServersListTable: FC<{
             </Row>
           </Row>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <icon-wc icon-name="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"

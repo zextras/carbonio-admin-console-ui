@@ -11,7 +11,6 @@ import {
   Dropdown,
   DropdownItem,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -1303,11 +1302,11 @@ const DomainGalSettings: FC = () => {
                             label={EXTERNAL_SERVER_EXAMPLE}
                           >
                             <Text>
-                              <Icon
-                                icon="InfoOutline"
+                              <icon-wc
+                                icon-name="InfoOutline"
                                 size="large"
                                 color={hasFocus ? 'primary' : 'text'}
-                              />
+                              ></icon-wc>
                             </Text>
                           </Tooltip>
                         )}
@@ -1348,11 +1347,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_FILTER_LABEL}
                         >
                           <Text>
-                            <Icon
-                              icon="InfoOutline"
+                            <icon-wc
+                              icon-name="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            />
+                            ></icon-wc>
                           </Text>
                         </Tooltip>
                       )}
@@ -1378,11 +1377,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_SEARCH_BASE_LABEL}
                         >
                           <Text>
-                            <Icon
-                              icon="InfoOutline"
+                            <icon-wc
+                              icon-name="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            />
+                            ></icon-wc>
                           </Text>
                         </Tooltip>
                       )}
@@ -1451,11 +1450,11 @@ const DomainGalSettings: FC = () => {
                         label={LDAP_BIND_DN_LABLE}
                       >
                         <Text>
-                          <Icon
-                            icon="InfoOutline"
+                          <icon-wc
+                            icon-name="InfoOutline"
                             size="large"
                             color={hasFocus ? 'primary' : 'text'}
-                          />
+                          ></icon-wc>
                         </Text>
                       </Tooltip>
                     )}

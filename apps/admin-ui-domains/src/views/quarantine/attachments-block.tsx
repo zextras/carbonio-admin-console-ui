@@ -7,7 +7,6 @@
 import {
   Button,
   Container,
-  Icon,
   Link,
   Padding,
   Row,
@@ -552,7 +551,7 @@ const AttachmentsBlock: FC<{
                     {`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
                   </Text>
                 </Padding>
-                <Icon icon="ArrowIosUpward" color="primary" />
+                <icon-wc icon-name="ArrowIosUpward" color="primary"></icon-wc>
               </Row>
             ) : (
               <Row
@@ -568,7 +567,7 @@ const AttachmentsBlock: FC<{
                     )}`}
                   </Text>
                 </Padding>
-                <Icon icon="ArrowIosDownward" color="primary" />
+                <icon-wc icon-name="ArrowIosDownward" color="primary"></icon-wc>
               </Row>
             ))}{' '}
         </Padding>

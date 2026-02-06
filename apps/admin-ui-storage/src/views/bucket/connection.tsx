@@ -6,7 +6,6 @@
 import {
   Button,
   Container,
-  Icon,
   Input,
   Padding,
   PasswordInput,
@@ -555,12 +554,12 @@ const Connection: FC<{
           style={{ marginTop: '1rem' }}
         >
           <Row width="10%" mainAlignment="flex-start">
-            <Icon
-              icon="AlertTriangleOutline"
+            <icon-wc
+              icon-name="AlertTriangleOutline"
               color="gray6"
               size="large"
               style={{ height: '2rem', width: '2rem' }}
-            />
+            ></icon-wc>
           </Row>
           <Row width="86%" mainAlignment="flex-end">
             <Text overflow="break-word" color="gray6">

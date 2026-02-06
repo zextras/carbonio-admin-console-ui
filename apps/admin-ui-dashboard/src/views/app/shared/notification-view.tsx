@@ -8,7 +8,6 @@ import {
   Container,
   DefaultTabBarItem,
   HoverableRowFactory,
-  Icon,
   ModalOverlay,
   TabBar,
   Table,
@@ -61,12 +60,7 @@ const ReusedDefaultTabBar: FC<{
       width="fill"
     >
       <Container width="2rem" padding={{ right: 'small' }}>
-        <Icon
-          icon={item?.icon}
-          height={'1rem'}
-          width="1rem"
-          color={selected ? 'primary' : 'gray'}
-        />
+        <icon-wc icon-name={item?.icon} color={selected ? 'primary' : 'gray'}></icon-wc>
       </Container>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
         <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>

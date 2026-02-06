@@ -9,7 +9,6 @@ import {
   Container,
   CustomTextArea,
   HoverableRowFactory,
-  Icon,
   Input,
   Modal,
   Padding,
@@ -530,7 +529,7 @@ const CosGeneralInformation: FC = () => {
                           {t('label.default_cos', 'Default COS')}
                         </Text>
                       </Padding>
-                      <Icon icon="Star" color="primary" />
+                      <icon-wc icon-name="Star" color="primary"></icon-wc>
                     </Row>
                   )}
                 </Container>,
@@ -706,7 +705,9 @@ const CosGeneralInformation: FC = () => {
               onChange={(e: any): any => {
                 setSearchDomainString(e.target.value);
               }}
-              CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+              CustomIcon={(): any => (
+                <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+              )}
             />
           </Container>
         </Row>
@@ -816,7 +817,9 @@ const CosGeneralInformation: FC = () => {
               onChange={(e: any): any => {
                 setSearchAccountString(e.target.value);
               }}
-              CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+              CustomIcon={(): any => (
+                <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+              )}
             />
           </Container>
         </Row>

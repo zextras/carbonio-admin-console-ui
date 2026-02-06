@@ -10,7 +10,6 @@ import {
   Container,
   DropDownInput,
   HoverableRowFactory,
-  Icon,
   Input,
   OverlayDivision,
   Padding,
@@ -519,7 +518,7 @@ const LegalHoldPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <Icon icon="InfoOutline" style={customIconStyle}></Icon>
+                    <icon-wc icon-name="InfoOutline" style={customIconStyle}></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -580,7 +579,7 @@ const LegalHoldPanel: FC = () => {
   }, [selectedAccountRows, t]);
 
   const customIcon = useCallback(
-    () => <Icon icon="FunnelOutline" size="large" color="primary" />,
+    () => <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>,
     [],
   );
 

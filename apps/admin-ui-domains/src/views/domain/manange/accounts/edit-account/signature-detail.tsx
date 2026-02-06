@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Modal,
   Padding,
@@ -325,7 +325,9 @@ export const SignatureDetail: FC<any> = ({
                 label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"
                 value={searchSignatureName}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
                 }}

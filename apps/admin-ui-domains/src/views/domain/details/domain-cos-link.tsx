@@ -9,7 +9,6 @@ import {
   Button,
   Container,
   DropDownInput,
-  Icon,
   Input,
   Padding,
   Row,
@@ -478,7 +477,7 @@ const DomainCosLink: FC<{
                         {t('label.default_cos', 'Default COS')}
                       </Text>
                     </Padding>
-                    <Icon icon="Star" color="primary" />
+                    <icon-wc icon-name="Star" color="primary"></icon-wc>
                   </Row>
                 )}
               </Container>,
@@ -491,23 +490,23 @@ const DomainCosLink: FC<{
                       <Text>{t('label.set_as_default', 'Set as Default')}</Text>
                     </Padding>
                     <Padding right="small">
-                      <Icon
-                        icon="StarOutline"
+                      <icon-wc
+                        icon-name="StarOutline"
                         color="primary"
                         onClick={(event: { stopPropagation: () => void }): void => {
                           event.stopPropagation();
                           markAsDefaultCosToDomain(item?.id);
                         }}
-                      />
+                      ></icon-wc>
                     </Padding>
-                    <Icon
-                      icon="Close"
+                    <icon-wc
+                      icon-name="Close"
                       color="primary"
                       onClick={(event: { stopPropagation: () => void }): void => {
                         event.stopPropagation();
                         removeCosLinkRows(item);
                       }}
-                    />
+                    ></icon-wc>
                   </Row>
                 </Container>
               ) : (
@@ -562,7 +561,10 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <Icon icon="InfoOutline" style={{ width: '1.25rem', height: '1.25rem' }}></Icon>
+                    <icon-wc
+                      icon-name="InfoOutline"
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                    ></icon-wc>
                   </Padding>
                 </Row>
                 <Row

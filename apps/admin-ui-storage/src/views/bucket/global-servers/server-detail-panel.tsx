@@ -12,7 +12,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Row,
   Table,
@@ -362,7 +361,7 @@ const ServerDetailPanel: FC = () => {
                     label={t('label.search_for_a_Server', `Search for a Server`)}
                     backgroundColor="gray5"
                     CustomIcon={(): any => (
-                      <Icon icon="FunnelOutline" size="large" color="primary" />
+                      <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                     )}
                     value={searchServer}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void => {

@@ -8,7 +8,6 @@ import {
   Container,
   CustomTextArea,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -264,7 +263,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large', right: 'small' }}
             width="fit"
           >
-            <Icon icon="AtOutline" size="large" />
+            <icon-wc icon-name="AtOutline" size="large"></icon-wc>
           </Container>
           <Container
             mainAlignment="flex-start"
@@ -361,13 +360,13 @@ const MailingListSection: FC<any> = () => {
                   onChange={changeLdapDetail}
                   hasError={!isValidQuery}
                   CustomIcon={(): any => (
-                    <Icon
-                      icon="CheckmarkOutline"
+                    <icon-wc
+                      icon-name="CheckmarkOutline"
                       size="large"
                       color="grey"
                       onClick={getMemberFromLdapQuery}
                       style={{ cursor: 'pointer' }}
-                    />
+                    ></icon-wc>
                   )}
                 />
               </Container>
@@ -407,7 +406,7 @@ const MailingListSection: FC<any> = () => {
                       backgroundColor="gray5"
                       onChange={handleInputChangeMember}
                       CustomIcon={(): any => (
-                        <Icon icon="FunnelOutline" size="large" color="primary" />
+                        <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                       )}
                     />
                     <Container padding={{ bottom: 'small' }}>

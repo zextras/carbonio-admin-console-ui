@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Row,
   Table,
@@ -317,7 +316,7 @@ const CosList: FC = () => {
                     setSearchString(e.target.value);
                   }}
                   CustomIcon={(): React.JSX.Element => (
-                    <Icon icon="FunnelOutline" size="large" color="primary" />
+                    <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                   )}
                 />
               </Container>

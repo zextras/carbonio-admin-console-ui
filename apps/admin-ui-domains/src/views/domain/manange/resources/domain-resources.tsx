@@ -9,7 +9,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -536,7 +535,9 @@ const DomainResources: FC = () => {
                   onChange={(e: any): any => {
                     setSearchString(e.target.value);
                   }}
-                  CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                  CustomIcon={(): any => (
+                    <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                  )}
                 />
               </Container>
             </Row>

@@ -5,15 +5,7 @@
  */
 
 import { useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  Icon,
-  Input,
-  ModalOverlay,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Container, Input, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { find, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -153,7 +145,7 @@ const DoneDetailPanel: FC = () => {
                   setSearchOperation(e.target.value);
                 }}
                 CustomIcon={(): React.ReactElement => (
-                  <Icon icon="FunnelOutline" size="large" color="primary" />
+                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
                 )}
               />
             </Container>

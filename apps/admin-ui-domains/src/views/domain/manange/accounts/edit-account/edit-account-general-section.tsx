@@ -11,7 +11,6 @@ import {
   CustomTextArea,
   DropDownInput,
   HoverableRowFactory,
-  Icon,
   InheritedInput,
   Input,
   Modal,
@@ -448,7 +447,10 @@ const EditAccountGeneralSection: FC<{
             <>
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <Icon icon="InfoOutline" style={{ width: '20px', height: '20px' }} />
+                  <icon-wc
+                    icon-name="InfoOutline"
+                    style={{ width: '20px', height: '20px' }}
+                  ></icon-wc>
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
@@ -841,7 +843,7 @@ const EditAccountGeneralSection: FC<{
             />
           </Row>
           <Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
-            <Icon icon="AtOutline" size="large" />
+            <icon-wc icon-name="AtOutline" size="large"></icon-wc>
           </Row>
           <Row width="47%" mainAlignment="flex-start">
             <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
@@ -884,13 +886,13 @@ const EditAccountGeneralSection: FC<{
               label={t('label.type', 'Type')}
               value={accountUserType}
               CustomIcon={(): any => (
-                <Icon
-                  icon="DiagonalArrowRightUp"
+                <icon-wc
+                  icon-name="DiagonalArrowRightUp"
                   onClick={(): void => setChange(ADMINISTRATION)}
                   style={{ cursor: 'pointer' }}
                   size="large"
                   onChange={(): null => null}
-                />
+                ></icon-wc>
               )}
             />
           </Row>

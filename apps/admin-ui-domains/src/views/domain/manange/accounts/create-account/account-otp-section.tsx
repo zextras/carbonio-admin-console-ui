@@ -4,16 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  ChipInput,
-  Container,
-  Icon,
-  Padding,
-  Row,
-  Switch,
-  Text,
-} from '@zextras/ui-components';
+import { Button, ChipInput, Container, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import { FC, useContext, useEffect, useState } from 'react';
@@ -66,11 +57,11 @@ const AccountOtpSection: FC<{
           >
             <Row mainAlignment="center" width="100%">
               <Padding horizontal="small">
-                <Icon
-                  icon="InfoOutline"
+                <icon-wc
+                  icon-name="InfoOutline"
                   color="success"
                   style={{ width: '20px', height: '20px' }}
-                ></Icon>
+                ></icon-wc>
               </Padding>
               <Text overflow="break-word">
                 {t(

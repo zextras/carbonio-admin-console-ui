@@ -13,7 +13,6 @@ import {
   DefaultTabBarItem,
   DropDownInput,
   HoverableRowFactory,
-  Icon,
   Input,
   Modal,
   OverlayDivision,
@@ -2806,7 +2805,11 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChange}
                           CustomIcon={(): any => (
-                            <Icon icon="FunnelOutline" size="large" color="primary" />
+                            <icon-wc
+                              icon-name="FunnelOutline"
+                              size="large"
+                              color="primary"
+                            ></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3127,7 +3130,11 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeGrantEmail}
                           CustomIcon={(): any => (
-                            <Icon icon="FunnelOutline" size="large" color="primary" />
+                            <icon-wc
+                              icon-name="FunnelOutline"
+                              size="large"
+                              color="primary"
+                            ></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3275,7 +3282,11 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeSendEmail}
                           CustomIcon={(): any => (
-                            <Icon icon="FunnelOutline" size="large" color="primary" />
+                            <icon-wc
+                              icon-name="FunnelOutline"
+                              size="large"
+                              color="primary"
+                            ></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>

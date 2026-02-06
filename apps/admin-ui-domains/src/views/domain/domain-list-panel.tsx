@@ -17,7 +17,6 @@ import {
 import {
   Container,
   DropDownInput,
-  Icon,
   Padding,
   Row,
   Text,
@@ -500,7 +499,7 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <Icon className={styles.customIcon} icon="InfoOutline"></Icon>
+                    <icon-wc className={styles.customIcon} icon-name="InfoOutline"></icon-wc>
                   </Padding>
                 </Row>
                 <Row

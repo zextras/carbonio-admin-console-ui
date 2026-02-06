@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -439,11 +438,11 @@ const DomainSaml: FC = () => {
                 >
                   <Row width="5%" mainAlignment="flex-start">
                     <Padding horizontal="small">
-                      <Icon
-                        icon="CheckmarkCircle2Outline"
+                      <icon-wc
+                        icon-name="CheckmarkCircle2Outline"
                         style={{ width: '1.25rem', height: '1.25rem' }}
                         color="#2196D3"
-                      ></Icon>
+                      ></icon-wc>
                     </Padding>
                   </Row>
                   <Row
@@ -721,7 +720,11 @@ const DomainSaml: FC = () => {
                     CustomIcon={(): any =>
                       samlAttrKey && (
                         <Container onClick={() => setSamlAttrKey('')} style={{ cursor: 'pointer' }}>
-                          <Icon icon="CloseOutline" size="large" color="secondary" />
+                          <icon-wc
+                            icon-name="CloseOutline"
+                            size="large"
+                            color="secondary"
+                          ></icon-wc>
                         </Container>
                       )
                     }
@@ -755,7 +758,11 @@ const DomainSaml: FC = () => {
                           onClick={() => setSamlAttrValue('')}
                           style={{ cursor: 'pointer' }}
                         >
-                          <Icon icon="CloseOutline" size="large" color="secondary" />
+                          <icon-wc
+                            icon-name="CloseOutline"
+                            size="large"
+                            color="secondary"
+                          ></icon-wc>
                         </Container>
                       )
                     }

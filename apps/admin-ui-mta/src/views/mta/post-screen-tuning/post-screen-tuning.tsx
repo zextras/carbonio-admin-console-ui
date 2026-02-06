@@ -7,7 +7,6 @@ import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
-  Icon,
   Input,
   Padding,
   Row,
@@ -794,11 +793,11 @@ const MTAPostScreenTuning: FC = () => {
             >
               <Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
                 <Padding horizontal="small">
-                  <Icon
-                    icon="InfoOutline"
+                  <icon-wc
+                    icon-name="InfoOutline"
                     color="#2196D3"
                     style={{ width: '1.25rem', height: '1.25rem' }}
-                  ></Icon>
+                  ></icon-wc>
                 </Padding>
               </Container>
               <Container

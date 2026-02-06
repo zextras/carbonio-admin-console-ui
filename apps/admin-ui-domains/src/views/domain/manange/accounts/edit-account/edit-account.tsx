@@ -14,7 +14,6 @@ import {
   Button,
   Container,
   DefaultTabBarItem,
-  Icon,
   Modal,
   OverlayDivision,
   Padding,
@@ -1166,11 +1165,11 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <Icon
-                icon="AlertTriangleOutline"
+              <icon-wc
+                icon-name="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              />
+              ></icon-wc>
             </Row>
           </Container>
         </Modal>

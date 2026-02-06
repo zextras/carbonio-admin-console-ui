@@ -8,7 +8,6 @@ import {
   Container,
   DropDownInput,
   HoverableRowFactory,
-  Icon,
   Input,
   Padding,
   Row,
@@ -274,7 +273,9 @@ export const SendInviteAccounts: FC<any> = ({
                 label={t('label.search_an_account', 'Search for an account')}
                 backgroundColor="gray5"
                 value={searchAccountName}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
                 onChange={(e: any): any => {
                   setSearchAccountName(e.target.value);
                 }}

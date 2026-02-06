@@ -7,7 +7,6 @@ import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/admin-u
 import {
   Button,
   Container,
-  Icon,
   Input,
   Padding,
   PasswordInput,
@@ -704,7 +703,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setLdapUrlOpen(true)}
                         onMouseLeave={(): void => setLdapUrlOpen(false)}
                       >
-                        <Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
+                        <icon-wc
+                          icon-name="QuestionMarkCircleOutline"
+                          size="large"
+                          color="secondary"
+                        ></icon-wc>
                       </Container>
                     )}
                   />
@@ -750,7 +753,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setFilterOpen(true)}
                         onMouseLeave={(): void => setFilterOpen(false)}
                       >
-                        <Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
+                        <icon-wc
+                          icon-name="QuestionMarkCircleOutline"
+                          size="large"
+                          color="secondary"
+                        ></icon-wc>
                       </Container>
                     )}
                   />
