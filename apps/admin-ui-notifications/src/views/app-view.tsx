@@ -8,7 +8,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
@@ -23,7 +23,7 @@ const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <BreadcrumbWrapper />
 
       <Routes>
         <Route

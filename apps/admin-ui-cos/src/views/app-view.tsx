@@ -8,7 +8,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import { BreadCrumb } from './breadcrumb/breadcrumb-view';
+import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 
@@ -23,8 +23,7 @@ const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container>
-      <BreadCrumb />
-
+      <BreadcrumbWrapper />
       <Routes>
         <Route
           path={'/*'}

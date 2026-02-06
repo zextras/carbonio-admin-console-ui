@@ -8,7 +8,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
 import { MTADetailPanel } from './mta/mta-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
 
@@ -17,7 +17,7 @@ const AppView: FC = () => {
   const detailViewMaxWidth = isPrimaryBarExpanded ? 981 : 1125;
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <BreadcrumbWrapper />
       <Routes>
         <Route
           path={'/*'}

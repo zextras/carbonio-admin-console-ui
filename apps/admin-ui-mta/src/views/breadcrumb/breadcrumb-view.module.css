@@ -1,7 +1,0 @@
-.breadCrumbText {
-  cursor: pointer;
-}
-
-.breadCrumbText[data-is-last='false'] {
-  color: #cccccc;
-}

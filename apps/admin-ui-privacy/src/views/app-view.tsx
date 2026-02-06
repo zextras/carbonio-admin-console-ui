@@ -8,7 +8,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
 import PrivacyView from './privacy/privacy-view';
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
@@ -22,7 +22,7 @@ const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <BreadcrumbWrapper />
       <Routes>
         <Route
           path={'/'}

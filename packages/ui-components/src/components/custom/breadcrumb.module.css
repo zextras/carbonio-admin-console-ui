@@ -4,10 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.breadCrumbText {
+.breadcrumbText {
   cursor: pointer;
 }
 
-.breadCrumbText[data-is-last="false"] {
-  color: #CCCCCC;
+.breadcrumbText[data-is-last='false'] {
+  color: #cccccc;
+}
+
+.lastBreadcrumbText {
+  color: var(--color-gray0-regular);
 }

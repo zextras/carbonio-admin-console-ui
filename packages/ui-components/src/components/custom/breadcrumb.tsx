@@ -3,37 +3,41 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container, Padding, Row, Text } from '@zextras/ui-components';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
-import { DASHBOARD } from '../../constants';
-import styles from './breadcrumb-view.module.css';
+import styles from './breadcrumb.module.css';
 
-const BreadCrumb: FC = () => {
+type BreadcrumbItem = {
+  label: string | React.ReactNode;
+  path: string;
+  homePath: string;
+};
+
+type BreadcrumbProps = {
+  dashboardRoute: string;
+  lastLoginTimestamp?: string;
+};
+
+export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: BreadcrumbProps) => {
   const [t] = useTranslation();
   const loc = useLocation();
   const navigate = useNavigate();
-  const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-  const userSetting = useUserSettings();
-  const { data: lastLoginTimestamp } = useLastLoginTimestamp({
-    accountId: userSetting?.attrs?.zimbraId?.toString(),
-    enabled: Boolean(userSetting?.attrs?.zimbraId),
-  });
+  const [splitRoutes, setSplitRoutes] = useState<Array<BreadcrumbItem>>([]);
 
   useEffect(() => {
     if (loc?.pathname) {
       const currentRoute = loc?.pathname.substring(1);
       const splitRoute = currentRoute?.split('/');
-      const _storeTempRoute: any[] = [];
-      splitRoute.forEach((item: any, index: number) => {
+      const _storeTempRoute: Array<BreadcrumbItem> = [];
+      splitRoute.forEach((item: string, index: number) => {
         if (index === 0) {
           _storeTempRoute.push({
             label: <icon-wc icon-name="HomeOutline" size="large"></icon-wc>,
             path: `/${item}`,
-            homePath: `/${DASHBOARD}`,
+            homePath: `/${dashboardRoute}`,
           });
         } else {
           const path = _storeTempRoute.map((i) => i?.path);
@@ -41,7 +45,7 @@ const BreadCrumb: FC = () => {
             /* i18next-extract-disable-next-line */
             label: t(`label.${item}`),
             path: `${path[index - 1]}/${item}`,
-            homePath: `/${DASHBOARD}`,
+            homePath: `/${dashboardRoute}`,
           });
           if (
             _storeTempRoute.find(
@@ -55,10 +59,10 @@ const BreadCrumb: FC = () => {
 
       setSplitRoutes(_storeTempRoute);
     }
-  }, [loc, t]);
+  }, [loc, t, dashboardRoute]);
 
   const navigationClick = useCallback(
-    (item: any, index: number) => {
+    (item: BreadcrumbItem, index: number) => {
       if (index === 0) {
         navigate(item?.homePath);
       } else {
@@ -67,6 +71,9 @@ const BreadCrumb: FC = () => {
     },
     [navigate],
   );
+
+  const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
+
   return (
     <Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
       <Container
@@ -77,28 +84,32 @@ const BreadCrumb: FC = () => {
         height="44px"
         padding={{ left: 'large', right: 'large' }}
       >
-        {splitRoutes.map((item: any, index) => (
+        {splitRoutes.map((item: BreadcrumbItem, index) => (
           <Row key={item?.path}>
-            <Text
-              size="medium"
-              weight="regular"
-              className={styles.breadCrumbText}
-              data-is-last={splitRoutes.length - 1 === index}
-              onClick={(): void => {
-                if (splitRoutes.length - 1 !== index) {
+            {isLast(index) ? (
+              <Text size="medium" weight="regular" className={styles.lastBreadcrumbText}>
+                {item?.label}
+              </Text>
+            ) : (
+              <Text
+                size="medium"
+                weight="regular"
+                className={styles.breadcrumbText}
+                data-is-last="false"
+                onClick={(): void => {
                   navigationClick(item, index);
-                }
-              }}
-            >
-              {item?.label}
-            </Text>
+                }}
+              >
+                {item?.label}
+              </Text>
+            )}
 
             {index !== splitRoutes.length - 1 && (
               <Padding left="extrasmall" right="extrasmall">
                 <Text
                   size="medium"
                   weight="regular"
-                  className={styles.breadCrumbText}
+                  className={styles.breadcrumbText}
                   data-is-last="false"
                 >
                   &nbsp;/&nbsp;
@@ -129,5 +140,3 @@ const BreadCrumb: FC = () => {
     </Container>
   );
 };
-
-export default BreadCrumb;
