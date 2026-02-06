@@ -6,6 +6,7 @@
 
 import {
   Container,
+  CustomHeaderFactory,
   DefaultTabBarItem,
   HoverableRowFactory,
   ModalOverlay,
@@ -29,7 +30,6 @@ import {
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import ListRow from '../../list/list-row';
-import CustomHeaderFactory from './customTableHeaderFactory';
 import NotificationDetail from './notification-detail-view';
 
 const copyTextToClipboard = (text: string): void => {
