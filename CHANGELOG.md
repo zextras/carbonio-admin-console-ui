@@ -1,3 +1,9 @@
+## [0.12.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.20...v0.12.0-devel.21) (2026-02-06)
+
+### Bug Fixes
+
+* remove redirect to dashboard ([#1053](https://github.com/zextras/carbonio-admin-console-ui/issues/1053)) ([9e85e95](https://github.com/zextras/carbonio-admin-console-ui/commit/9e85e959362e8fadbfbae2d176acb33509bae8f3))
+
 ## [0.12.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.19...v0.12.0-devel.20) (2026-01-29)
 
 ### Bug Fixes
