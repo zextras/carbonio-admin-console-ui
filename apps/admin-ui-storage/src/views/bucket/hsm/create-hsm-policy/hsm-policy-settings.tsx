@@ -8,6 +8,7 @@ import {
   Button,
   Checkbox,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -22,7 +23,6 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 

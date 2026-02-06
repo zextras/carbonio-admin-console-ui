@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Padding,
@@ -24,7 +26,6 @@ import { TestConnectionObjectType } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import Displayer from '../components/displayer';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 

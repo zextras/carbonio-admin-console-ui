@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   ModalOverlay,
@@ -26,7 +28,6 @@ import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import ListRow from '../list/list-row';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';

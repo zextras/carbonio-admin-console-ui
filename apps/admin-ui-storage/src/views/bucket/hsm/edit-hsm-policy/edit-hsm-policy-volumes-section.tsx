@@ -3,8 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Padding,
   Switch,
@@ -15,7 +17,6 @@ import {
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 

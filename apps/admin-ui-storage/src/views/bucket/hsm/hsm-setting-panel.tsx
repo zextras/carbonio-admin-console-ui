@@ -8,6 +8,7 @@ import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   ModalOverlay,
@@ -33,7 +34,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';

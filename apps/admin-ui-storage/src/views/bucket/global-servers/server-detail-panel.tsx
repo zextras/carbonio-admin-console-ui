@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   getSoapFetchRequest,
   useIsAdvanced,
@@ -11,6 +12,7 @@ import {
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Row,
@@ -28,7 +30,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { headerAdvanced } from '../../utility/utils';
 
 const ServersListTable: FC<{

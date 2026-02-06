@@ -13,6 +13,7 @@ import {
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   ModalOverlay,
   Row,
@@ -48,7 +49,6 @@ import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
