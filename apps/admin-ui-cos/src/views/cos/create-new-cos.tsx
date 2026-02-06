@@ -4,11 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  replaceHistory  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  ChangeEvent, FC, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import {  useNavigate  } from 'react-router';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Input,
+  OverlayDivision,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { ChangeEvent, FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
@@ -65,6 +75,7 @@ const CreateCos: FC = () => {
         name: cos?.name,
       });
       setCosView('general_information');
+      replaceHistory(`/${cos.id}/general_information`);
     } else {
       replaceHistory(`/`);
     }

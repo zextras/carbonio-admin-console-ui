@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
@@ -142,6 +143,7 @@ const CosList: FC = () => {
         name: Cos?.name,
       });
       setCosView(GENERAL_INFORMATION);
+      replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
     },
     [setCos, setCosView],
   );
