@@ -422,9 +422,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -459,9 +456,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -555,9 +549,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -595,9 +586,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -827,9 +815,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -867,9 +852,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -963,9 +945,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -1003,9 +982,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1226,9 +1202,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -1266,9 +1239,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1362,9 +1332,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -1402,9 +1369,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1495,9 +1459,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -1535,9 +1496,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1631,9 +1589,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.13)(immer@10.2.0)(react@19.2.4)
@@ -1671,9 +1626,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.13)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.8(@types/node@22.19.9)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.9)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
