@@ -391,7 +391,7 @@ const Button = ({
       >
         {loading && (
           <StyledLoadingContainer>
-            <spinner-wc></spinner-wc>
+            <spinner-wc color="currentColor"></spinner-wc>
           </StyledLoadingContainer>
         )}
         {icon && (
