@@ -5,7 +5,7 @@
  */
 
 import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
@@ -32,7 +32,7 @@ const BreadCrumb: FC = () => {
       splitRoute.forEach((item: any, index: number) => {
         if (index === 0) {
           _storeTempRoute.push({
-            label: <Icon icon="HomeOutline" size="large" />,
+            label: <icon-wc icon-name="HomeOutline" size="large"></icon-wc>,
             path: `/${item}`,
             homePath: `/${DASHBOARD}`,
           });
