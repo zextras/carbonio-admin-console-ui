@@ -56,6 +56,7 @@ export * from './components/navigation/TabBar';
 
 /** custom components */
 export * from './components/custom/breadcrumb';
+export * from './components/custom/custom-table-header-factory';
 export * from './components/custom/custom-text-area';
 export * from './components/custom/dropdown-input';
 export * from './components/custom/horizontal-wizard-layout';
