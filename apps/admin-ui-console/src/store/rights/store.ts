@@ -54,7 +54,7 @@ export const useRightsStore = create<RightsState>()(
 );
 
 export const hasAllRights = (state: RightsState): boolean => {
-	const rightsConfig: Right = state.rights.find((r) => r.type === CONFIG) || {
+	const rightsConfig: Right = state?.rights?.find((r) => r.type === CONFIG) || {
 		all: [],
 		type: CONFIG
 	};

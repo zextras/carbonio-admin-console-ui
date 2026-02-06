@@ -161,8 +161,8 @@ export const getSoapFetch =
 				.then((res) => res?.json())
 				.then((res: SoapResponse<Response>) => handleResponse(api, res))
 				.catch((e) => {
-					report(app)(e);
-					throw e;
+					//report(app)(e);
+					console.log(`Error in ${api}Request:`, e);
 				});
 
 		return retry(fetchFn);
