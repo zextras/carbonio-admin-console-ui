@@ -10,7 +10,7 @@ import { Route, Routes } from 'react-router';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
-import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
@@ -23,7 +23,7 @@ const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadcrumbWrapper />
+      <Breadcrumb />
       <Routes>
         <Route
           path={'/*'}

@@ -5,13 +5,11 @@
  */
 import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { BreadcrumbComponent } from '@zextras/ui-components';
-import { FC } from 'react';
 
 import { DASHBOARD } from '../../constants';
 
-export const BreadcrumbWrapper: FC = () => {
+export const Breadcrumb = () => {
   const userSetting = useUserSettings();
-
   const { data: lastLoginTimestamp } = useLastLoginTimestamp({
     accountId: userSetting?.attrs?.zimbraId?.toString(),
     enabled: Boolean(userSetting?.attrs?.zimbraId),

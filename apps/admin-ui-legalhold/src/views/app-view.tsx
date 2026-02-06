@@ -7,13 +7,13 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 
 const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <BreadcrumbWrapper />
+      <Breadcrumb />
       <Routes>
         <Route
           path={'/*'}

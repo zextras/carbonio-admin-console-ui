@@ -7,7 +7,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import { BreadcrumbWrapper } from './breadcrumb/breadcrumb-wrapper';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import BucketListPanel from './bucket/bucket-list-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
 
@@ -29,7 +29,7 @@ const BucketComponent = () => (
 const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <BreadcrumbWrapper />
+      <Breadcrumb />
       <Routes>
         <Route path={`/*`} element={<BucketComponent />} />
       </Routes>
