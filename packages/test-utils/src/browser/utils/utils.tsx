@@ -8,6 +8,7 @@ import { type QueryClient } from '@tanstack/react-query';
 import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
 import { clone, cloneDeep, map } from 'lodash-es';
 import { type ReactElement } from 'react';
+import { useLocation } from 'react-router';
 import { render, type RenderResult } from 'vitest-browser-react';
 
 import { allConfigBaseResponseMock } from '../../api-mocks/get-all-config-response-mock';
@@ -15,18 +16,17 @@ import { getAllConfigRightsBaseResponseMock } from '../../api-mocks/get-all-conf
 import { getInfoResponseBaseMock } from '../../api-mocks/get-info-response-mock';
 import { getQueryClient, Wrapper, WrapperProps } from './wrapper';
 
+export const LocationDisplay = () => {
+  const location = useLocation();
+  return <div data-testid="location">{location.pathname}</div>;
+};
+
 export const setupBrowserTest = (
   ui: ReactElement,
   options?: { initialRouterEntry?: string; queryClient?: QueryClient },
 ): Promise<RenderResult> => {
-  if (options?.initialRouterEntry) {
-    window.history.replaceState({}, '', options.initialRouterEntry);
-  }
-
-  // Always create a fresh QueryClient unless explicitly provided
   const effectiveQueryClient = options?.queryClient ?? getQueryClient();
 
-  // Copy essential data from global queryClient to maintain compatibility
   if (!options?.queryClient) {
     const globalCache = queryClient.getQueryCache().getAll();
     globalCache.forEach((query) => {
@@ -38,7 +38,9 @@ export const setupBrowserTest = (
 
   return render(ui, {
     wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
-      <Wrapper queryClient={effectiveQueryClient}>{children}</Wrapper>
+      <Wrapper queryClient={effectiveQueryClient} initialRouterEntry={options?.initialRouterEntry}>
+        {children}
+      </Wrapper>
     ),
   });
 };
