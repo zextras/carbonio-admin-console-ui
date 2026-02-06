@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Modal,
@@ -27,7 +29,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import ListRow from '../list/list-row';
 import { PageLayout } from '../page-layout';
 

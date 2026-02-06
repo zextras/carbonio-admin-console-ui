@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Row,
@@ -22,7 +23,6 @@ import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';

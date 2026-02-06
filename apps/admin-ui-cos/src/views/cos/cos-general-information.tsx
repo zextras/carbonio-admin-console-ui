@@ -7,6 +7,7 @@ import { replaceHistory, useCurrentUserRights } from '@zextras/admin-ui-bootstra
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
   HoverableRowFactory,
   Input,
@@ -31,7 +32,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
