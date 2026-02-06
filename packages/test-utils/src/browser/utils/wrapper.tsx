@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '@zextras/ui-components/web-components';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
