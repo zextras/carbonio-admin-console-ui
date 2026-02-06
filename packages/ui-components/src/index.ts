@@ -13,7 +13,7 @@ export * from './global';
 
 // Web components setup (imports theme CSS)
 export * from './web-components';
-
+export { type IconName } from './web-components/icon-registry';
 /** Basic components */
 export * from './components/basic/button/Button';
 export { Icon, type IconProps } from './components/basic/icon/Icon';

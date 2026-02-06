@@ -50,9 +50,17 @@ export class IconWC extends LitElement {
   disabled = false;
 
   private getColorVariable(color: string): string {
-    // Sanitize color to prevent CSS injection
-    const sanitized = color.replace(/[^a-zA-Z0-9-]/g, '');
-    return `var(--color-${sanitized}, var(--color-text, #333333))`;
+    const trimmed = color.trim();
+
+    // Check if it's a hex color (3, 4, 6, or 8 digit formats)
+    const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+    if (hexPattern.test(trimmed)) {
+      return trimmed;
+    }
+
+    // For named colors, sanitize and return as CSS variable
+    const sanitized = trimmed.replace(/[^a-zA-Z0-9-]/g, '');
+    return `var(--color-${sanitized}-regular, var(--color-text-regular))`;
   }
 
   private getSizeVariable(size: IconSize): string {
