@@ -56,7 +56,6 @@ const mockLicenseData = {
 		endUser: 'Test End User',
 		features: [
 			{ name: 'backup_realtime', quantity: 'unlimited', enabled: true },
-			{ name: 'chats_recording', quantity: 'unlimited', enabled: true },
 			{ name: 'files_basic', quantity: 'unlimited', enabled: true },
 			{ name: 'storages_basic', quantity: 'unlimited', enabled: true },
 			{ name: 'admins_basic', quantity: 'unlimited', enabled: true }

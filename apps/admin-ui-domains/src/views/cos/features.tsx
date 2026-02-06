@@ -170,46 +170,6 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				{isAdvanced && (
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="50%"
-						orientation="vertical"
-						padding={{ bottom: 'large' }}
-					>
-						<Text size="extralarge" weight="bold">
-							{t('label.chats', 'Chats')}
-						</Text>
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.carbonioFeatureTeamEnabled}
-								onChange={changeSwitchOption}
-								
-								label={t('label.web_feature', 'Web Feature')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioFeatureTeamEnabled}
-								fromSubValue={accSpecificDetail?.carbonioFeatureTeamEnabled}
-								inputName={'carbonioFeatureTeamEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureTeamEnabled')}
-								disabled={readonlyFeatures}
-							/>
-						</Row>
-						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<InheritedSwitch
-								subValue={featuresDetail?.carbonioFeatureChatsAppEnabled}
-								onChange={changeSwitchOption}
-								label={t('label.mobile_app', 'Mobile App')}
-								iconColor="primary"
-								inheritedValue={cosDetail?.carbonioFeatureChatsAppEnabled}
-								fromSubValue={accSpecificDetail?.carbonioFeatureChatsAppEnabled}
-								inputName={'carbonioFeatureChatsAppEnabled'}
-								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureChatsAppEnabled')}
-								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures}
-							/>
-						</Row>
-					</Container>
-				)}
 				<divider-wc></divider-wc>
 			</Row>
 			<Row
