@@ -23,7 +23,6 @@ import {
   COS_ROUTE_ID,
   CREATE_COS,
   CREATE_NEW_COS_ROUTE_ID,
-  DASHBOARD,
   GLOBAL,
   LIST_COS,
   MANAGE,
@@ -157,7 +156,6 @@ const App: FC = () => {
       id: 'new-cos',
       type: 'new',
     });
-    navigate(`/${DASHBOARD}`);
   }, [createCosRight, navigate, setCosView, t]);
 
   return null;
