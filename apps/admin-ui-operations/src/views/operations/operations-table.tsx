@@ -3,12 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, HoverableRowFactory, Row, Table, Text } from '@zextras/ui-components';
+import {
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Row,
+  Table,
+  Text,
+} from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
