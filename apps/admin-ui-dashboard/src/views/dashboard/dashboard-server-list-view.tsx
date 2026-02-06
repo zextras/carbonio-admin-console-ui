@@ -5,11 +5,17 @@
  */
 
 import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, HoverableRowFactory, Table, Text } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Table,
+  Text,
+} from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import ListRow from '../list/list-row';
 
 function getVersionTextStyle(): React.CSSProperties {
