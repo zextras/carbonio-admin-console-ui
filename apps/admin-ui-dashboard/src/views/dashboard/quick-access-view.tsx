@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Icon, Text } from '@zextras/ui-components';
+import { Container, IconName, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,8 +20,8 @@ const QuickAccess: FC<{
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.accounts', 'Accounts'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'PersonOutline',
-      bottomIcon: 'ChevronRightOutline',
+      operationIcon: 'PersonOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
       bgColor: 'avatar-39',
       operation: 'account',
     },
@@ -29,8 +29,8 @@ const QuickAccess: FC<{
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.distribution_list', 'Distribution List'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'DistributionListOutline',
-      bottomIcon: 'ChevronRightOutline',
+      operationIcon: 'DistributionListOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
       bgColor: 'avatar-21',
       operation: 'malinglist',
     },
@@ -53,7 +53,7 @@ const QuickAccess: FC<{
       >
         <ListRow>
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <Icon size="large" icon="FlashOutline" />
+            <icon-wc size="large" icon-name="FlashOutline"></icon-wc>
           </Container>
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
             <Text color="gray0" overflow="break-word" weight="bold" size="medium">
@@ -100,7 +100,7 @@ const QuickAccess: FC<{
                   </Container>
                 </Container>
                 <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <Icon color="gray6" icon={item?.operationIcon} size="large" />
+                  <icon-wc color="gray6" icon-name={item?.operationIcon} size="large"></icon-wc>
                 </Container>
               </ListRow>
               <ListRow>
@@ -131,7 +131,7 @@ const QuickAccess: FC<{
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
+                  <icon-wc icon-name={item?.bottomIcon} size="medium" color="gray6"></icon-wc>
                 </Container>
               </ListRow>
             </Container>

@@ -5,7 +5,7 @@
  */
 
 import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, HoverableRowFactory, Icon, Table, Text } from '@zextras/ui-components';
+import { Button, Container, HoverableRowFactory, Table, Text } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -137,7 +137,7 @@ const DashboardServerList: FC<{
         >
           <ListRow>
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
-              <Icon icon="HardDriveOutline" height={'1.5rem'} width="1.5rem" />
+              <icon-wc icon-name="HardDriveOutline" size="large"></icon-wc>
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
               <Text size="medium" color="gray0" weight="bold">
