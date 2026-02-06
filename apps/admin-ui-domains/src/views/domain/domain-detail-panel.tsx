@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -64,7 +64,7 @@ const DomainDetailPanel: FC = () => {
       {isDomainClosed && showDomainClose ? (
         <Row background="warning" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <Icon icon="CloseCircleOutline" size="large" color="white" />
+            <icon-wc icon-name="CloseCircleOutline" size="large" color="white"></icon-wc>
             <Padding left="large">
               <Trans
                 i18nKey="label.this_domain_is_closed"
@@ -94,8 +94,8 @@ const DomainDetailPanel: FC = () => {
                 }}
               />
             </Padding>
-            <Icon
-              icon="Close"
+            <icon-wc
+              icon-name="Close"
               size="large"
               color="white"
               style={{ cursor: 'pointer' }}
@@ -103,7 +103,7 @@ const DomainDetailPanel: FC = () => {
                 setShowDomainClose(false);
                 setCloseDomainNameBanner(domain?.name || '');
               }}
-            />
+            ></icon-wc>
           </Row>
         </Row>
       ) : (

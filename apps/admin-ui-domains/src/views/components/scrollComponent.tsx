@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Icon, Padding, Text } from '@zextras/ui-components';
+import { Container, Padding, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ const ScrollContainer: FC<ScrollContainerProps> = ({ isVisible = false }) => {
   return isVisible ? (
     <Container style={containerStyle}>
       <Container orientation="horizontal" padding={{ top: 'large' }} width="100%">
-        <Icon color="gray" icon="ArrowheadDown" size="large" />
+        <icon-wc color="gray" icon-name="ArrowheadDown" size="large"></icon-wc>
         <Padding left="small">
           <Text size="large" weight="light" color="gray">
             {t('label.scroll_down_to_view_other_items', 'Scroll down to view other items')}

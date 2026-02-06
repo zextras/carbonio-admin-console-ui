@@ -5,7 +5,7 @@
  */
 
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -353,7 +353,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
             }}
           >
             <Padding right="large">
-              <Icon icon="AlertTriangleOutline" color="warning" size="large" />
+              <icon-wc icon-name="AlertTriangleOutline" color="warning" size="large"></icon-wc>
             </Padding>
             <Text overflow="break-word" size="small">
               {t(
