@@ -5,7 +5,7 @@
  */
 
 import { useUserAccounts, useDomainInformation } from '@zextras/admin-ui-bootstrap';
-import { Container, Divider } from '@zextras/carbonio-design-system';
+import { Container, Divider, useSnackbar } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -34,6 +34,10 @@ import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import { LicenseBanner } from './license-banner';
 import QuickAccess from './quick-access-view';
+import { getDomainList } from '../../services/search-domain-service';
+import { DomainResponse } from '../../../types';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import { useTranslation } from 'react-i18next';
 
 const Dashboard: FC = () => {
 	const history = useHistory();
@@ -49,29 +53,78 @@ const Dashboard: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+
+	const [domainList, setDomainList] = useState<
+		{
+			name: string;
+			id: string;
+			a: { n: string; _content: string }[];
+		}[]
+	>([]);
+
+	const getDomainLists = useCallback(
+		(domainName: string): void => {
+			getDomainList(domainName, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+						setDomainList([]);
+					} else {
+						setDomainList([]);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
+
+	useEffect(() => {
+		getDomainLists('');
+	}, [getDomainLists]);
+
 	const openOperationView = useCallback(
 		(operation: string) => {
-			if (domainInformation && domainInformation?.id) {
-				setDomain({
-					a: domainInformation?.a,
-					id: domainInformation?.id,
-					name: domainInformation?.name
-				});
-				setIsQuickAccess(true);
-				if (operation === 'account') {
-					setDomainView(ACCOUNTS);
-					setDomainView(ACCOUNTS);
-					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
-				} else if (operation === 'malinglist') {
-					setDomainView(DISTRIBUTION_LIST);
-					setDomainView(DISTRIBUTION_LIST);
-					history.push(
-						`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${DISTRIBUTION_LIST}`
-					);
+
+			let selectedDomain = false;
+
+			//verify if domainInformation is present in domainList
+			domainList.forEach((domain) => {
+				if (domain?.id === domainInformation?.id && domainInformation && domainInformation?.id) {
+					selectedDomain = true;
+					setDomain({
+						a: domainInformation?.a,
+						id: domainInformation?.id,
+						name: domainInformation?.name
+					});
+					setIsQuickAccess(true);
+					if (operation === 'account') {
+						setDomainView(ACCOUNTS);
+						setDomainView(ACCOUNTS);
+						history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
+					} else if (operation === 'malinglist') {
+						setDomainView(DISTRIBUTION_LIST);
+						setDomainView(DISTRIBUTION_LIST);
+						history.push(
+							`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${DISTRIBUTION_LIST}`
+						);
+					}
 				}
+			});
+
+			if ( !selectedDomain ) {
+				setIsQuickAccess(false);
+				history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/global/domains`); //redirect to domain list if domainInformation is not present in domainList
 			}
+
 		},
-		[domainInformation, setDomain, setDomainView, setIsQuickAccess, history]
+		[domainInformation, domainList, setDomain, setDomainView, setIsQuickAccess, history]
 	);
 
 	useEffect(() => {
