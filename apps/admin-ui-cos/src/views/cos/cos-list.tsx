@@ -5,7 +5,17 @@
  */
 
 import { replaceHistory } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Input, Row, Table, Text, useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Input,
+  Row,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -125,18 +135,18 @@ const CosList: FC = () => {
     [t],
   );
 
-	const onCosSelect = useCallback(
-		(Cos: ZimbraCosEntry) => {
-			setCos({
-				a: Cos?.a,
-				id: Cos?.id,
-				name: Cos?.name
-			});
-			setCosView(GENERAL_INFORMATION);
-			replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
-		},
-		[setCos, setCosView]
-	);
+  const onCosSelect = useCallback(
+    (Cos: ZimbraCosEntry) => {
+      setCos({
+        a: Cos?.a,
+        id: Cos?.id,
+        name: Cos?.name,
+      });
+      setCosView(GENERAL_INFORMATION);
+      replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
+    },
+    [setCos, setCosView],
+  );
 
   const getAllcosList = useCallback((): void => {
     setIsRequestInProgress(true);
