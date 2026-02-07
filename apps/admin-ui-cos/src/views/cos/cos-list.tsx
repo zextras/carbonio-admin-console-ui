@@ -151,7 +151,7 @@ const CosList: FC = () => {
   const getAllcosList = useCallback((): void => {
     setIsRequestInProgress(true);
     getCosList(searchQuery, limit, offset)
-      .then((data: any) => {
+      .then((data) => {
         const cosListResponse: ZimbraCosResponse = data?.cos || [];
         if (cosListResponse && Array.isArray(cosListResponse)) {
           const cosListArr: {
@@ -238,7 +238,7 @@ const CosList: FC = () => {
   }, [offset, searchcosList, searchString]);
 
   useEffect(() => {
-    const table: any = tableRef.current;
+    const table = tableRef.current;
 
     const handleResize = debounce((): void => {
       if (table) {
