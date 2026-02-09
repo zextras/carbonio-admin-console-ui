@@ -70,21 +70,30 @@ describe('TwoFactorAuthencationConfig', () => {
       await setupBrowserTest(<TwoFactorAuthencationConfig {...defaultProps} />);
       const dropdown = page.getByText('What to trust?');
       await dropdown.click();
-      await expect.element(page.getByText('Trust the device')).toBeVisible();
+      const dropdownOption = page.getByText('Trust the device');
+      await dropdownOption.click();
+      const newValue = page.getByText('Trust the device');
+      await expect.element(newValue).toBeVisible();
     });
 
     it('displays "Trust the IP" option in dropdown', async () => {
       await setupBrowserTest(<TwoFactorAuthencationConfig {...defaultProps} />);
       const dropdown = page.getByText('What to trust?');
       await dropdown.click();
-      await expect.element(page.getByText('Trust the IP')).toBeVisible();
+      const dropdownOption = page.getByText('Trust the IP');
+      await dropdownOption.click();
+      const newValue = page.getByText('Trust the IP');
+      await expect.element(newValue).toBeVisible();
     });
 
     it('displays "Disable 2FA" option in dropdown', async () => {
       await setupBrowserTest(<TwoFactorAuthencationConfig {...defaultProps} />);
       const dropdown = page.getByText('What to trust?');
       await dropdown.click();
-      await expect.element(page.getByText('Disable 2FA')).toBeVisible();
+      const dropdownOption = page.getByText('Disable 2FA');
+      await dropdownOption.click();
+      const newValue = page.getByText('Disable 2FA');
+      await expect.element(newValue).toBeVisible();
     });
 
     it('calls modifyPolicies when Apply to All button is clicked', async () => {
