@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
-
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
@@ -234,7 +232,7 @@ const SelectComponent = function SelectFn<T = string>({
   const updateSingleSelection = useCallback(
     (item: SelectItem<T>) => {
       if (!isControlled) {
-        setSelected(item.value ? [item] : []);
+        setSelected(item.value != null ? [item] : []);
       }
       (onChange as SingleSelectionOnChange<T>)(item.value);
     },
