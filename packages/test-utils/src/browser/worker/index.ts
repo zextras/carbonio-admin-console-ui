@@ -123,3 +123,35 @@ export const getAllConfigRequestApiForBrowser = async (
   supplier: () => HttpResponse<DefaultBodyType>,
 ): Promise<BrowserAPIInterceptor> =>
   await createBrowserAPIInterceptor('post', '/service/admin/soap/GetAllConfigRequest', supplier);
+
+export const delayedSoapApiForBrowser = <RequestParamsType, ResponseType = never>(
+  apiAction: string,
+  response: ResponseType,
+  delayMs: number = 100,
+): BrowserAPIInterceptor => {
+  let calledTimes = 0;
+  const requests: Array<StrictRequest<DefaultBodyType>> = [];
+
+  worker.use(
+    http.post<never, HandlerRequest<RequestParamsType>>(
+      `/service/admin/soap/${apiAction}Request`,
+      async ({ request }) => {
+        calledTimes += 1;
+        requests.push(request);
+
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+
+        return HttpResponse.json({
+          Body: {
+            [`${apiAction}Response`]: response || {},
+          },
+        });
+      },
+    ),
+  );
+
+  return {
+    getLastRequest: () => requests[requests.length - 1],
+    getCalledTimes: () => calledTimes,
+  };
+};

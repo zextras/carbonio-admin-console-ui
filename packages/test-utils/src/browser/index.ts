@@ -5,4 +5,5 @@
  */
 
 export * from './utils';
+export * from './utils/wrapper';
 export * from './worker';
