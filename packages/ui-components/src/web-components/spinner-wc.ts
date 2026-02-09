@@ -41,10 +41,14 @@ export class SpinnerWC extends LitElement {
 
   color = 'primary';
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.dataset.testid = 'spinner';
+  }
+
   override render() {
     return html`
       <div
-        data-testid="spinner"
         class="spinner"
         style="border-color: var(--color-${this.color}); border-right-color: transparent;"
         role="status"
