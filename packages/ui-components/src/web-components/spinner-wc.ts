@@ -43,7 +43,7 @@ export class SpinnerWC extends LitElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('data-testid', 'spinner');
+    this.dataset.testid = 'spinner';
   }
 
   override render() {
