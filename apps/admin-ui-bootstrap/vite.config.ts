@@ -48,6 +48,7 @@ export default defineConfig(({ command, mode }) => {
           exportType: 'default',
         },
         include: '**/*.svg',
+        exclude: '**/src/assets/**/*.svg',
       }),
     ],
     define: {
