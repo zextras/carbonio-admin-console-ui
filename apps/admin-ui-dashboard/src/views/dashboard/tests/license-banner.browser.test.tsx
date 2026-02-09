@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
+import { getQueryClient, LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
@@ -95,9 +95,16 @@ describe('LicenseBanner', () => {
   });
 
   it('should redirect when View Subscription Details button is clicked', async () => {
-    await setupLicenseBannerTest(<LicenseBanner redirectButtonHasToAppear />, 'expired');
+    await setupLicenseBannerTest(
+      <>
+        <LicenseBanner redirectButtonHasToAppear />
+        <LocationDisplay />
+      </>,
+      'expired',
+    );
     const button = page.getByRole('button', { name: 'View Subscription Details' });
     await button.click();
-    expect(globalThis.location.pathname).toBe(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`);
+    const location = page.getByTestId('location');
+    await expect.element(location).toHaveTextContent(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`);
   });
 });
