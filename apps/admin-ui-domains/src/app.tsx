@@ -11,7 +11,7 @@ import {
   useDomainStore,
 } from '@zextras/admin-ui-bootstrap';
 import { find } from 'lodash-es';
-import { FC, memo, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -27,8 +27,6 @@ import {
 } from './constants';
 import AppView from './views/app-view';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const MemoizedAppView = memo(AppView);
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -90,7 +88,7 @@ const App: FC = () => {
       visible: true,
       label: t('label.domains', 'Domains') || '',
       primaryBar: 'AtOutline',
-      appView: MemoizedAppView,
+      appView: AppView,
       primarybarSection: managementSection,
       tooltip: DomainTooltipView,
       trackerLabel: PRIMARY_BAR_DOMAINS,
