@@ -116,7 +116,7 @@ const App: FC = () => {
       type: 'new',
     };
     registerActions(actionConfig);
-  }, [createDomainRight, history, setDomain, setDomainView, t]);
+  }, [createDomainRight, navigate, setDomain, setDomainView, t]);
 
   return null;
 };

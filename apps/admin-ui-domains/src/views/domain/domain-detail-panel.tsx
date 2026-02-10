@@ -11,7 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 
 import logo from '../../assets/ninja_robo.svg';
-import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../../constants';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 import { useLocalStorage } from '../utility/utils';
 import CreateDomain from './create-new-domain';
 import DomainOperations from './domain-detail-operation';
@@ -110,12 +110,12 @@ const DomainDetailPanel: FC = () => {
         <></>
       )}
       <Routes>
-        <Route path={'/'} element={<GlobalDetailPanel />} />
-        <Route path={`/:operation`} element={<GlobalOperations />} />
-        <Route path={`/:domainId/:operation`} element={<DomainOperations />} />
-        <Route path={`/${CREATE_NEW_DOMAIN_ROUTE_ID}`} element={<CreateDomain />} />
+        <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
+        <Route path={`${GLOBAL_ROUTE}/:operation`} element={<GlobalOperations />} />
+        <Route path={`:domainId/:operation`} element={<DomainOperations />} />
+        <Route path={CREATE_NEW_DOMAIN_ROUTE_ID} element={<CreateDomain />} />{' '}
         <Route
-          path={'/'}
+          index
           element={
             <Container>
               <Text

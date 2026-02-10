@@ -29,7 +29,7 @@ const AppView: FC = () => {
       <BreadCrumb />
       <Routes>
         <Route
-          path="*"
+          path="/*"
           element={
             <Container
               orientation="horizontal"
