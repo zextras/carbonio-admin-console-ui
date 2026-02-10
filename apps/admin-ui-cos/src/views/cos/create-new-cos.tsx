@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  replaceHistory  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  ChangeEvent, FC, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import {  useHistory  } from 'react-router-dom';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { Button, Container, CustomTextArea, Input, OverlayDivision, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { ChangeEvent, FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import {  COS_ROUTE_ID, MANAGE  } from '../../constants';
-import {  createCos  } from '../../services/create-cos';
-import {  useCosStore  } from '../../store/cos/store';
+import { COS_ROUTE_ID, MANAGE } from '../../constants';
+import { createCos } from '../../services/create-cos';
+import { useCosStore } from '../../store/cos/store';
 import ListRow from '../list/list-row';
 
 const ovelayStyle = styled(Container)`
@@ -34,7 +34,7 @@ const ovelayStyle = styled(Container)`
 const CreateCos: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [cosName, setCosName] = useState<string>('');
@@ -64,6 +64,7 @@ const CreateCos: FC = () => {
         name: cos?.name,
       });
       setCosView('general_information');
+      replaceHistory(`/${cos.id}/general_information`);
     } else {
       replaceHistory(`/`);
     }
@@ -109,7 +110,7 @@ const CreateCos: FC = () => {
   };
 
   const onCancel = (): void => {
-    history.push(`/${MANAGE}/${COS_ROUTE_ID}`);
+    navigate(`/${MANAGE}/${COS_ROUTE_ID}`);
   };
 
   return (

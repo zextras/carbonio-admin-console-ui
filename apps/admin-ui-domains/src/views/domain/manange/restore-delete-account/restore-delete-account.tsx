@@ -4,29 +4,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, useSnackbar } from "@zextras/ui-components";
-import { noop } from "lodash-es";
-import { FC, useCallback, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { Container, useSnackbar } from '@zextras/ui-components';
+import { noop } from 'lodash-es';
+import { FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router';
 
-import { doRestoreDeleteAccount } from "../../../../services/restore-delete-account-service";
-import RestoreAccountWizard from "./restore-delete-account-wizard";
+import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
+import RestoreAccountWizard from './restore-delete-account-wizard';
 
 const RestoreDeleteAccount: FC = () => {
   const [t] = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const createSnackbar = useSnackbar();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
 
   const backToFirstTab = useCallback(() => {
-    const lastloc = history?.location?.pathname;
-    history.push(lastloc.replace("/restore_account", ""));
+    const lastloc = location?.pathname;
+    navigate(lastloc.replace('/restore_account', ''));
     setTimeout(() => {
-      history.push(lastloc);
+      navigate(lastloc);
     }, 10);
-  }, [history]);
+  }, [location, navigate]);
 
   useMemo(() => {
     if (isSuccess) {
@@ -56,11 +57,11 @@ const RestoreDeleteAccount: FC = () => {
         obeyHSM: hsmApply,
         // restoreDatasources: dataSource
       };
-      if (notificationReceiver !== "" && isEmailNotificationEnable) {
+      if (notificationReceiver !== '' && isEmailNotificationEnable) {
         body.notificationMails = [notificationReceiver];
       }
-      if (copyAccount !== "") {
-        body.dstAccountName = `${copyAccount.split("@")[0]}@${copyDomain}`;
+      if (copyAccount !== '') {
+        body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
       }
       if (dateTime) {
         body.date = new Date(dateTime).getTime();
@@ -74,16 +75,13 @@ const RestoreDeleteAccount: FC = () => {
           let error = data?.error?.details?.cause || data?.error?.message;
           const success = data?.operationId;
           if (error === undefined && data?.status !== 200) {
-            error = t(
-              "label.something_wrong_error_msg",
-              "Something went wrong. Please try again.",
-            );
+            error = t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
           }
           setIsRequestWorkInProgress(false);
           if (error) {
             createSnackbar({
-              key: "error",
-              severity: "error",
+              key: 'error',
+              severity: 'error',
               label: error,
               autoHideTimeout: 3000,
               hideButton: true,
@@ -92,11 +90,11 @@ const RestoreDeleteAccount: FC = () => {
           }
           if (success) {
             createSnackbar({
-              key: "success",
-              severity: "success",
+              key: 'success',
+              severity: 'success',
               label: t(
-                "label.restore_account_has_added_operation_queue",
-                "The restore of the account has been added to the operation queue successfully",
+                'label.restore_account_has_added_operation_queue',
+                'The restore of the account has been added to the operation queue successfully',
               ),
               autoHideTimeout: 3000,
               hideButton: true,
@@ -107,14 +105,11 @@ const RestoreDeleteAccount: FC = () => {
         })
         .catch((error: any) => {
           createSnackbar({
-            key: "error",
-            severity: "error",
+            key: 'error',
+            severity: 'error',
             label: error?.message
               ? error?.message
-              : t(
-                  "label.something_wrong_error_msg",
-                  "Something went wrong. Please try again.",
-                ),
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,

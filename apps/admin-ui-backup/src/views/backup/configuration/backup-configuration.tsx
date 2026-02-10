@@ -27,7 +27,7 @@ import {
 import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import styled from 'styled-components';
 
 import {
@@ -65,7 +65,7 @@ const ovelayStyle = styled(Container)`
 `;
 
 const BackupConfiguration: FC = () => {
-  const { server }: { server: string } = useParams();
+  const { server } = useParams();
   const [t] = useTranslation();
   const { data: allServers = [] } = useAllServers();
   const createSnackbar = useSnackbar();

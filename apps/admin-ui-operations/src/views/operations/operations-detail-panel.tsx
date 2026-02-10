@@ -6,27 +6,24 @@
 
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import OperationsDetailOperation from './operations-detail-operation';
 
 const OperationsDetailPanel: FC = () => {
-	const { path } = useRouteMatch();
-	return (
-		<Container
-			orientation="column"
-			crossAlignment="center"
-			mainAlignment="flex-start"
-			style={{ overflowY: 'hidden' }}
-			background="gray6"
-		>
-			<Switch>
-				<Route exact path={`${path}/:operation`}>
-					<OperationsDetailOperation />
-				</Route>
-			</Switch>
-		</Container>
-	);
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="center"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'hidden' }}
+      background="gray6"
+    >
+      <Routes>
+        <Route path={'/:operation'} element={<OperationsDetailOperation />} />
+      </Routes>
+    </Container>
+  );
 };
 
 export default OperationsDetailPanel;

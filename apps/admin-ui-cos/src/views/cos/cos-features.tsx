@@ -104,8 +104,6 @@ const CosFeatures: FC = () => {
         setSwitchOptionValue('zimbraFeatureCalendarEnabled', obj?.zimbraFeatureCalendarEnabled);
         setSwitchOptionValue('carbonioFeatureFilesAppEnabled', obj?.carbonioFeatureFilesAppEnabled);
         setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
-        setSwitchOptionValue('carbonioFeatureTeamEnabled', obj?.carbonioFeatureTeamEnabled);
-        setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
         setSwitchOptionValue('carbonioFeatureTasksEnabled', obj?.carbonioFeatureTasksEnabled);
         setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
         setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);

@@ -8,10 +8,12 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import '@zextras/ui-components/web-components';
 
-import { StrictMode, Suspense, use } from 'react';
+import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { Bootstrapper } from './boot/bootstrapper';
 import LoadingView from './boot/splash';
 
 function shouldAllowContextMenu(ev: MouseEvent): boolean {
@@ -54,17 +56,10 @@ function getAppRoot(): HTMLElement {
 // Initialize
 setupContextMenuRestriction();
 
-const bootstrapperPromise = import('./boot/bootstrapper');
-
-function App() {
-  const { default: Bootstrapper } = use(bootstrapperPromise);
-  return <Bootstrapper />;
-}
-
 ReactDOM.createRoot(getAppRoot()).render(
   <StrictMode>
     <Suspense fallback={<LoadingView />}>
-      <App />
+      <Bootstrapper />
     </Suspense>
   </StrictMode>,
 );

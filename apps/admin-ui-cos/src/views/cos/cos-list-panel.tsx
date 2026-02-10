@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
   DropDownInput,
@@ -17,15 +17,13 @@ import {
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
 
 import {
   ADVANCED,
-  COS,
   COS_LIST,
   COS_ROUTE_ID,
-  CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
   IS_COS_DETAIL_LIST_EXPANDED,
@@ -52,8 +50,7 @@ const CustomIcon = styled(Icon)`
 export const CosListPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const locationService = useLocation();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
+  const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
   const [isCosSelect, setIsCosSelect] = useState(false);
   const [cosList, setCosList] = useState([]);
@@ -105,15 +102,15 @@ export const CosListPanel: FC = () => {
       setCosView(GENERAL_INFORMATION);
       if (cosInformation?.id) {
         setCos({ name: cosInformation?.name, id: cosInformation?.id });
+        replaceHistory(`/${cosInformation.id}/${GENERAL_INFORMATION}`);
       }
     }
   }, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
 
   useEffect(() => {
     if (
-      (locationService.pathname &&
-        locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
-      locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
+      (pathname && pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
+      pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
     ) {
       setCosList([]);
       setIsCosSelect(false);
@@ -121,8 +118,9 @@ export const CosListPanel: FC = () => {
       setIsCosListExpand(false);
       setCosView('');
       setCos({});
+      replaceHistory(`/${COS_LIST}`);
     }
-  }, [locationService, setCos, setCosView]);
+  }, [pathname, setCos, setCosView]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchCosCall = useCallback(
@@ -149,6 +147,16 @@ export const CosListPanel: FC = () => {
     setIsDetailListExpanded(!isDetailListExpanded);
   };
 
+  const navigateToCosView = useCallback(
+    (view: string) => {
+      if (isCosSelect && cos?.id) {
+        setCosView(view);
+        replaceHistory(`/${cos.id}/${view}`);
+      }
+    },
+    [isCosSelect, cos?.id, setCosView],
+  );
+
   const selectedCos = useCallback(
     (cosData: any) => {
       setIsCosSelect(true);
@@ -160,26 +168,10 @@ export const CosListPanel: FC = () => {
         name: cosData?.name,
       });
       setCosView(GENERAL_INFORMATION);
+      replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
     },
     [setCos, setCosView],
   );
-
-  useEffect(() => {
-    if (cosView === COS_LIST || cosView === '') {
-      replaceHistory(`/${COS_LIST}`);
-      setCosView(COS_LIST);
-    } else if (cosView === CREATE_NEW_COS_ROUTE_ID) {
-      replaceHistory(`/${cosView}`);
-    } else if (isCosSelect && cos?.id) {
-      if (cosView === COS) {
-        replaceHistory(`/cos_list`);
-      } else if (cosView) {
-        replaceHistory(`/${cos?.id}/${cosView}`);
-      } else {
-        replaceHistory(`/${cos?.id}/${GENERAL_INFORMATION}`);
-      }
-    }
-  }, [isCosSelect, cos, cosView, globalCarbonioSendAnalytics, setCosView]);
 
   const detailOptions = useMemo<
     {
@@ -358,7 +350,7 @@ export const CosListPanel: FC = () => {
         <ListItems
           items={detailOptions}
           selectedOperationItem={cosView}
-          setSelectedOperationItem={setCosView}
+          setSelectedOperationItem={navigateToCosView}
         />
       )}
     </Container>

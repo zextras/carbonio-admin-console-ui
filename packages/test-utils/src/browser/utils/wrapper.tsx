@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '@zextras/ui-components/web-components';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
 import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter, useHistory } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider, useLocation, useNavigate } from 'react-router';
 
 const getAppI18n = (): i18n => {
   const newI18n = i18next.createInstance();
@@ -29,6 +31,7 @@ const getAppI18n = (): i18n => {
 export type WrapperProps = {
   children?: React.ReactNode;
   queryClient?: QueryClient;
+  initialRouterEntry?: string;
 };
 
 export const getQueryClient = (): QueryClient => {
@@ -61,9 +64,23 @@ export const BootstrapBridgeProvider = ({
 }: {
   children: React.ReactNode;
 }): React.JSX.Element => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const createSnackbar = () => ({});
   const createModal = () => {};
+
+  const history = useMemo(
+    () => ({
+      push: (to: string) => navigate(to),
+      replace: (to: string) => navigate(to, { replace: true }),
+      goBack: () => navigate(-1),
+      go: (delta: number) => navigate(delta),
+      location,
+      createHref: (to: string) => to,
+      listen: () => () => {},
+    }),
+    [navigate, location],
+  );
 
   // Initialize the context bridge immediately and synchronously
   const { add } = useContextBridge.getState();
@@ -81,23 +98,38 @@ export const BootstrapBridgeProvider = ({
 export const Wrapper = ({
   children,
   queryClient: providedQueryClient,
-}: WrapperProps): React.JSX.Element => {
+  initialRouterEntry,
+}: WrapperProps) => {
   const defaultQueryClient = useMemo(() => getQueryClient(), []);
   const queryClient = providedQueryClient ?? defaultQueryClient;
 
-  return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <SnackbarManager>
-            <I18NextTestProvider>
-              <ModalManager>
-                <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
-              </ModalManager>
-            </I18NextTestProvider>
-          </SnackbarManager>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+  const router = useMemo(
+    () =>
+      createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <QueryClientProvider client={queryClient}>
+                <ThemeProvider>
+                  <SnackbarManager>
+                    <I18NextTestProvider>
+                      <ModalManager>
+                        <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+                      </ModalManager>
+                    </I18NextTestProvider>
+                  </SnackbarManager>
+                </ThemeProvider>
+              </QueryClientProvider>
+            ),
+          },
+        ],
+        {
+          initialEntries: [initialRouterEntry ?? '/'],
+        },
+      ),
+    [children, queryClient, initialRouterEntry],
   );
+
+  return <RouterProvider router={router} />;
 };

@@ -8,7 +8,7 @@ export const optimizeDepsInclude = [
   '@zextras/ui-components',
   'i18next',
   'react-i18next',
-  'react-router-dom',
+  'react-router',
   'ua-parser-js',
   'i18next-http-backend',
   'lodash-es',

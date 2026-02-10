@@ -5,29 +5,24 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 
 import BucketOperation from './bucket-detail-operation';
 
 const BucketRoutePanel: FC = () => {
-	const { path } = useRouteMatch();
-	return (
-		<Container
-			orientation="column"
-			crossAlignment="center"
-			mainAlignment="flex-start"
-			style={{ overflowY: 'hidden' }}
-			background="gray6"
-		>
-			<Switch>
-				<Route exact path={`${path}/:operation`}>
-					<BucketOperation />
-				</Route>
-				<Route exact path={`${path}/:server/:operation`}>
-					<BucketOperation />
-				</Route>
-			</Switch>
-		</Container>
-	);
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="center"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'hidden' }}
+      background="gray6"
+    >
+      <Routes>
+        <Route path={`/:operation`} element={<BucketOperation />} />
+        <Route path={`/server/:server/:operation`} element={<BucketOperation />} />
+      </Routes>
+    </Container>
+  );
 };
 export default BucketRoutePanel;

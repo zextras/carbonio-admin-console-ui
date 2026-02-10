@@ -8,7 +8,7 @@ import { useAllServers } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';
@@ -18,63 +18,63 @@ import QuededDetailPanel from './queued-detail-panel';
 import RunningDetailPanel from './running-detail-panel';
 
 const OperationsDetailOperation: FC = () => {
-	const [t] = useTranslation();
-	const createSnackbar = useSnackbar();
-	const { operation }: { operation: string } = useParams();
-	const { data: serverList = [] } = useAllServers();
-	const serverName = serverList[0]?.name;
-	const { setAlloperationDetail, setRunningData, setQueuedData } = useOperationStore(
-		(state) => state
-	);
+  const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
+  const { operation } = useParams();
+  const { data: serverList = [] } = useAllServers();
+  const serverName = serverList[0]?.name;
+  const { setAlloperationDetail, setRunningData, setQueuedData } = useOperationStore(
+    (state) => state,
+  );
 
-	const getAllOperationAPICallHandler = useCallback(() => {
-		getAllOperations()
-			.then((response: any) => {
-				const res = JSON.parse(response?.Body?.response?.content);
-				if (res?.response?.[`${serverName}`]?.ok) {
-					const result = res?.response?.[`${serverName}`]?.response?.operationList;
-					setAlloperationDetail(result);
-					const RunningOperationData = result?.filter((item: any) => item?.state === STARTED);
-					setRunningData(RunningOperationData);
-					const QueuedOperationData = result?.filter((item: any) => item?.state === QUEUED);
-					setQueuedData(QueuedOperationData);
-				}
-			})
-			.catch((err) => {
-				createSnackbar({
-					key: '1',
-					severity: 'error',
-					label: t('label.operation.get_all_operation_error', '{{name}}', {
-						name: err
-					})
-				});
-			});
-	}, [createSnackbar, serverName, setAlloperationDetail, setQueuedData, setRunningData, t]);
+  const getAllOperationAPICallHandler = useCallback(() => {
+    getAllOperations()
+      .then((response: any) => {
+        const res = JSON.parse(response?.Body?.response?.content);
+        if (res?.response?.[`${serverName}`]?.ok) {
+          const result = res?.response?.[`${serverName}`]?.response?.operationList;
+          setAlloperationDetail(result);
+          const RunningOperationData = result?.filter((item: any) => item?.state === STARTED);
+          setRunningData(RunningOperationData);
+          const QueuedOperationData = result?.filter((item: any) => item?.state === QUEUED);
+          setQueuedData(QueuedOperationData);
+        }
+      })
+      .catch((err) => {
+        createSnackbar({
+          key: '1',
+          severity: 'error',
+          label: t('label.operation.get_all_operation_error', '{{name}}', {
+            name: err,
+          }),
+        });
+      });
+  }, [createSnackbar, serverName, setAlloperationDetail, setQueuedData, setRunningData, t]);
 
-	useEffect(() => {
-		getAllOperationAPICallHandler();
-	}, [getAllOperationAPICallHandler]);
+  useEffect(() => {
+    getAllOperationAPICallHandler();
+  }, [getAllOperationAPICallHandler]);
 
-	return (
-		<>
-			{((): any => {
-				switch (operation) {
-					case RUNNING_ROUTE_ID:
-						return (
-							<RunningDetailPanel getAllOperationAPICallHandler={getAllOperationAPICallHandler} />
-						);
-					case QUEUED_ROUTE_ID:
-						return (
-							<QuededDetailPanel getAllOperationAPICallHandler={getAllOperationAPICallHandler} />
-						);
-					case DONE_ROUTE_ID:
-						return <DoneDetailPanel />;
-					default:
-						return null;
-				}
-			})()}
-		</>
-	);
+  return (
+    <>
+      {((): any => {
+        switch (operation) {
+          case RUNNING_ROUTE_ID:
+            return (
+              <RunningDetailPanel getAllOperationAPICallHandler={getAllOperationAPICallHandler} />
+            );
+          case QUEUED_ROUTE_ID:
+            return (
+              <QuededDetailPanel getAllOperationAPICallHandler={getAllOperationAPICallHandler} />
+            );
+          case DONE_ROUTE_ID:
+            return <DoneDetailPanel />;
+          default:
+            return null;
+        }
+      })()}
+    </>
+  );
 };
 
 export default OperationsDetailOperation;

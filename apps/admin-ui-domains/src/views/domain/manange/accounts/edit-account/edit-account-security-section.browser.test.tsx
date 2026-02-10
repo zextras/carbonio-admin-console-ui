@@ -552,7 +552,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('One Time Password management')).toBeVisible();
+      await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
     });
 
     it('should render with backup self undelete allowed', async () => {
@@ -582,7 +582,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+      await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
       await expect.element(page.getByText('This list is empty.')).toBeVisible();
     });
 
@@ -605,7 +605,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Second Factor Authentication')).toBeVisible();
+      await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
     });
 
     it('should render NEW OTP and DELETE buttons', async () => {
@@ -635,6 +635,35 @@ describe('EditAccountSecuritySection (browser)', () => {
       );
       const resetButton = page.getByTestId('reset-zimbraPasswordLocked');
       await expect.element(resetButton).toBeVisible();
+    });
+
+    it('should call setAccountDetail when carbonioFeatureOTPMgmtEnabled reset is clicked', async () => {
+      const mockSetAccountDetail = vi.fn();
+      const testContext = {
+        ...mockContextValue,
+        setAccountDetail: mockSetAccountDetail,
+        accountDetail: {
+          ...mockContextValue.accountDetail,
+          carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        },
+        accSpecificDetail: {
+          ...mockContextValue.accSpecificDetail,
+          carbonioFeatureOTPMgmtEnabled: 'FALSE',
+        },
+        cosDetail: {
+          ...mockContextValue.cosDetail,
+          carbonioFeatureOTPMgmtEnabled: 'FALSE',
+        },
+      };
+      setupEditAccountSecurityTest(
+        <AccountContext.Provider value={testContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+      const resetButton = page.getByTestId('reset-carbonioFeatureOTPMgmtEnabled');
+      await expect.element(resetButton).toBeVisible();
+      await resetButton.click();
+      expect(mockSetAccountDetail).toHaveBeenCalled();
     });
 
     it('should call setAccountDetail when reset button is clicked', async () => {
