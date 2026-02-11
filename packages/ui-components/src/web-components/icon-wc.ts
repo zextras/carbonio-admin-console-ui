@@ -38,13 +38,13 @@ export class IconWC extends LitElement {
   `;
 
   static override properties = {
-    iconName: { type: String, reflect: true, attribute: 'icon' },
+    icon: { type: String, reflect: true, attribute: 'icon' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
     disabled: { type: Boolean, reflect: true },
   };
 
-  iconName: IconName = DEFAULT_ICON;
+  icon: IconName = DEFAULT_ICON;
   color = 'text';
   size: IconSize = 'medium';
   disabled = false;
@@ -70,7 +70,7 @@ export class IconWC extends LitElement {
   }
 
   private getSvgContent(): string {
-    return iconRegistry[this.iconName] ?? iconRegistry[DEFAULT_ICON] ?? '';
+    return iconRegistry[this.icon] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
   protected override willUpdate(changedProperties: Map<PropertyKey, unknown>): void {
@@ -102,7 +102,7 @@ export class IconWC extends LitElement {
         viewBox="0 0 24 24"
         aria-hidden="true"
         role="img"
-        data-testid="icon:${this.iconName}"
+        data-testid="icon:${this.icon}"
       >
         ${unsafeSVG(svgContent)}
       </svg>
