@@ -4,102 +4,103 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+    createBrowserSoapAPIInterceptor,
+    getGetInfoResponseMock,
+    getQueryClient,
+    grantUserConfigRights,
+    setupBrowserTest
+} from 'admin-ui-test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
-import { Container } from '@zextras/ui-components';
-import { Suspense } from 'react';
-import { Route } from 'react-router-dom';
 
 import { DASHBOARD } from '../../constants';
 import AppView from '../app-view';
 
-// Mock only the internal components that have complex dependencies
-// This allows us to test AppView's structure and routing without dealing with
-// Dashboard and BreadCrumb's internal complexities
-vi.mock('../breadcrumb/breadcrumb-view', () => ({
-    default: () => <div data-testid="breadcrumb">BreadCrumb</div>
-}));
-
-vi.mock('../dashboard/dashboard-view', () => ({
-    default: () => <div data-testid="dashboard">Dashboard Content</div>
-}));
-
 describe('AppView', () => {
-    // Suppress unhandled rejection errors
-    let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
+    let queryClient: ReturnType<typeof getQueryClient>;
 
-    beforeAll(() => {
-        unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
-            event.preventDefault();
-        };
-        globalThis.addEventListener('unhandledrejection', unhandledRejectionHandler);
+    beforeEach(() => {
+        queryClient = getQueryClient();
+        grantUserConfigRights();
     });
 
-    afterAll(() => {
-        if (unhandledRejectionHandler) {
-            globalThis.removeEventListener('unhandledrejection', unhandledRejectionHandler);
-        }
-    });
-
-    function setupAppViewTest(initialRoute?: string) {
-        const queryClient = getQueryClient();
-
-        // Minimal data setup - not testing child components' data requirements
-        queryClient.setQueryData(['account', 'info'], {
-            id: 'test-user-id',
-            name: 'test@example.com'
+    async function setupAppViewTest(initialRoute?: string) {
+        // Setup API interceptors
+        const getInfoInterceptor = createBrowserSoapAPIInterceptor(
+            'GetInfo',
+            getGetInfoResponseMock()
+        );
+        createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+            grantee: { id: 'test-id', name: 'admin@test.com' },
+            target: []
         });
+        createBrowserSoapAPIInterceptor('GetAllServers', {
+            server: [
+                {
+                    id: 'server-1',
+                    name: 'mailstore1.test.com',
+                    a: [
+                        { n: 'zimbraServiceHostname', _content: 'mailstore1.test.com' },
+                        { n: 'description', _content: 'Primary mailstore' }
+                    ]
+                }
+            ]
+        });
+        createBrowserSoapAPIInterceptor('GetDomain', {
+            domain: {
+                id: 'domain-1',
+                name: 'test.com',
+                a: [{ n: 'zimbraDomainName', _content: 'test.com' }]
+            }
+        });
+        createBrowserSoapAPIInterceptor('GetVersionInfo', {
+            info: { majorversion: '24', minorversion: '5', microversion: '0' }
+        });
+        createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-        return setupBrowserTest(<AppView />, {
+        await setupBrowserTest(<AppView />, {
             initialRouterEntry: initialRoute || `/${DASHBOARD}`,
             queryClient
         });
+
+        await getInfoInterceptor;
     }
 
-    it('renders without crashing', () => {
-        setupAppViewTest();
-
-        // Verify the component renders
-        const body = document.body;
-        expect(body).toBeTruthy();
-        expect(body.querySelector('div')).toBeTruthy();
+    it('renders BreadCrumb with home icon', async () => {
+        await setupAppViewTest();
+        await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
     });
 
-    it('renders BreadCrumb component', async () => {
-        setupAppViewTest();
-
-        // Check that BreadCrumb is rendered
-        await expect.element(page.getByTestId('breadcrumb')).toBeVisible();
+    it('renders Welcome section with username', async () => {
+        await setupAppViewTest();
+        await expect.element(page.getByText(/Welcome/i)).toBeVisible();
+        await expect.element(page.getByText('test')).toBeVisible();
     });
 
-    it('renders Dashboard when on dashboard route', async () => {
-        setupAppViewTest(`/${DASHBOARD}`);
+    it('renders Quick Access section with all elements', async () => {
+        await setupAppViewTest();
+        // Section title and icon
+        await expect.element(page.getByText(/Quick Access/i)).toBeVisible();
+        await expect.element(page.getByTestId('icon: FlashOutline')).toBeVisible();
 
-        // Check that Dashboard is rendered on the correct route
-        await expect.element(page.getByTestId('dashboard')).toBeVisible();
-    });
+        // Accounts card
+        await expect.element(page.getByText(/Accounts/i)).toBeVisible();
+        await expect.element(page.getByTestId('icon: PersonOutline')).toBeVisible();
 
-    it('has correct container structure with Suspense', async () => {
-        setupAppViewTest(`/${DASHBOARD}`);
+        // Distribution List card
+        await expect.element(page.getByText(/Distribution List/i)).toBeVisible();
+        await expect.element(page.getByTestId('icon: DistributionListOutline')).toBeVisible();
 
-        // Verify both breadcrumb and dashboard are present
-        await expect.element(page.getByTestId('breadcrumb')).toBeVisible();
-        await expect.element(page.getByTestId('dashboard')).toBeVisible();
-    });
+        // Domain labels (at least 1)
+        const domainsElements = page.getByText(/Domains/i).all();
+        expect(domainsElements.length).toBeGreaterThanOrEqual(1);
 
-    it('does not render Dashboard when not on dashboard route', () => {
-        setupAppViewTest('/other-route');
+        // Open labels and chevron icons (at least 2 each)
+        const openElements = page.getByText(/^Open$/i).all();
+        expect(openElements.length).toBeGreaterThanOrEqual(2);
 
-        // Dashboard should not be present on other routes
-        const dashboard = page.getByTestId('dashboard').query();
-        expect(dashboard).toBeNull();
-    });
-
-    it('correctly handles route changes', async () => {
-        setupAppViewTest(`/${DASHBOARD}`);
-
-        // Verify we're on the dashboard route
-        expect(globalThis.location.pathname).toContain(DASHBOARD);
+        const chevronIcons = page.getByTestId('icon: ChevronRightOutline').all();
+        expect(chevronIcons.length).toBeGreaterThanOrEqual(2);
     });
 });
