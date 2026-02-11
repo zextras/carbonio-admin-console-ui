@@ -22,7 +22,7 @@ export type BrowserAPIInterceptor = {
 };
 
 export const startMockWorker = async () => {
-  await worker.start({ onUnhandledRequest: 'warn' });
+  await worker.start({ onUnhandledRequest: 'warn', quiet: true });
 };
 
 export const stopMockWorker = () => {
