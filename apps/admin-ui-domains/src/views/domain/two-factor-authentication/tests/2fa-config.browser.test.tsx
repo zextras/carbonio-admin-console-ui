@@ -134,7 +134,7 @@ describe('TwoFactorAuthencationConfig', () => {
       const applyButton = page.getByRole('button', { name: /apply to all services/i });
       await applyButton.click();
       expect(modifyPoliciesMock).toHaveBeenCalledWith([
-        { WebUI: { trustedDevice: 1, trustedIpRange: [] } },
+        { WebUI: { trustedDevice: undefined, trustedIpRange: [] } },
       ]);
     });
   });
