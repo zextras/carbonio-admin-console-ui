@@ -143,7 +143,7 @@ const DashboardServerList: FC<{
         >
           <ListRow>
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
-              <icon-wc icon-name="HardDriveOutline" size="large"></icon-wc>
+              <icon-wc icon="HardDriveOutline" size="large"></icon-wc>
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
               <Text size="medium" color="gray0" weight="bold">

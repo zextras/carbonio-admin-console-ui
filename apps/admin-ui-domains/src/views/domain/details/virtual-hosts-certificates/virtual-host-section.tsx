@@ -159,7 +159,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
         <Row mainAlignment="flex-start" takeAvailableSpace>
           {hoveredRow === 'header' || selectedRows.length > 0 ? (
             <icon-wc
-              icon-name={
+              icon={
                 selectedRows.length === items.length && items.length > 0
                   ? 'CheckmarkSquareOutline'
                   : 'SquareOutline'
@@ -211,7 +211,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
                       >
                         {hoveredRow === item.id || selectedRows.includes(item.id) ? (
                           <icon-wc
-                            icon-name={
+                            icon={
                               selectedRows.includes(item.id)
                                 ? 'CheckmarkSquareOutline'
                                 : 'SquareOutline'

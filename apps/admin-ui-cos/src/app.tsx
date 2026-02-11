@@ -100,7 +100,7 @@ const App: FC = () => {
   const cosPrimaryBar = useCallback(
     () => (
       <icon-wc
-        icon-name="SettingsModOutline"
+        icon="SettingsModOutline"
         size="large"
         onClick={(): void => {
           navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`);

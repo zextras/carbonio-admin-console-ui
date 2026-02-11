@@ -289,7 +289,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
                 }}
                 label={t('label.filter_account_list', 'Filter Account List')}
                 CustomIcon={(): any => (
-                  <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                 )}
               />
             </Container>

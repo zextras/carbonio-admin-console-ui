@@ -58,7 +58,7 @@ const AccountOtpSection: FC<{
             <Row mainAlignment="center" width="100%">
               <Padding horizontal="small">
                 <icon-wc
-                  icon-name="InfoOutline"
+                  icon="InfoOutline"
                   color="success"
                   style={{ width: '20px', height: '20px' }}
                 ></icon-wc>

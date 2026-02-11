@@ -518,7 +518,7 @@ const LegalHoldPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc icon-name="InfoOutline" style={customIconStyle}></icon-wc>
+                    <icon-wc icon="InfoOutline" style={customIconStyle}></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -579,7 +579,7 @@ const LegalHoldPanel: FC = () => {
   }, [selectedAccountRows, t]);
 
   const customIcon = useCallback(
-    () => <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>,
+    () => <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>,
     [],
   );
 

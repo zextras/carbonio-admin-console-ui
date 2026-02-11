@@ -448,7 +448,7 @@ const EditAccountGeneralSection: FC<{
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
                   <icon-wc
-                    icon-name="InfoOutline"
+                    icon="InfoOutline"
                     style={{ width: '20px', height: '20px' }}
                   ></icon-wc>
                 </Padding>
@@ -843,7 +843,7 @@ const EditAccountGeneralSection: FC<{
             />
           </Row>
           <Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
-            <icon-wc icon-name="AtOutline" size="large"></icon-wc>
+            <icon-wc icon="AtOutline" size="large"></icon-wc>
           </Row>
           <Row width="47%" mainAlignment="flex-start">
             <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
@@ -887,7 +887,7 @@ const EditAccountGeneralSection: FC<{
               value={accountUserType}
               CustomIcon={(): any => (
                 <icon-wc
-                  icon-name="DiagonalArrowRightUp"
+                  icon="DiagonalArrowRightUp"
                   onClick={(): void => setChange(ADMINISTRATION)}
                   style={{ cursor: 'pointer' }}
                   size="large"

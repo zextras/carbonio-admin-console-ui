@@ -14,7 +14,7 @@ export const Collapser: FunctionComponent<{ open: boolean; onClick: () => void }
 }) => (
   <div className={styles.verticalDivider}>
     <div className={styles.bubble} onClick={onClick} data-open={open}>
-      <icon-wc size="medium" icon-name="ChevronLeft"></icon-wc>
+      <icon-wc size="medium" icon="ChevronLeft"></icon-wc>
     </div>
   </div>
 );

@@ -38,7 +38,7 @@ export class IconWC extends LitElement {
   `;
 
   static override properties = {
-    iconName: { type: String, reflect: true, attribute: 'icon-name' },
+    iconName: { type: String, reflect: true, attribute: 'icon' },
     color: { type: String, reflect: true },
     size: { type: String, reflect: true },
     disabled: { type: Boolean, reflect: true },

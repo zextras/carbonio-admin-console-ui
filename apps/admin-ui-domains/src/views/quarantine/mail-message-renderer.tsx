@@ -353,7 +353,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
             }}
           >
             <Padding right="large">
-              <icon-wc icon-name="AlertTriangleOutline" color="warning" size="large"></icon-wc>
+              <icon-wc icon="AlertTriangleOutline" color="warning" size="large"></icon-wc>
             </Padding>
             <Text overflow="break-word" size="small">
               {t(

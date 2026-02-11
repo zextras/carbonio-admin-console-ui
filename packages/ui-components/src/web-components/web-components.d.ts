@@ -17,7 +17,7 @@ declare global {
         'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'icon-wc': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {
-            'icon-name'?: IconName;
+            'icon'?: IconName;
             color?: string;
             size?: 'small' | 'medium' | 'large';
             disabled?: boolean;

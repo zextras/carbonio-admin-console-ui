@@ -301,7 +301,7 @@ const ResourceDetailSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <icon-wc icon-name="AtOutline" color="gray0" size="large"></icon-wc>
+              <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
             </Row>
             <Row width="45%">
               <Input

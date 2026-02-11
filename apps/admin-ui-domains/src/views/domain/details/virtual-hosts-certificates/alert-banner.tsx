@@ -32,7 +32,7 @@ export const AlertBanner: FC<AlertBannerProps> = ({ onClose }) => {
         }}
       >
         <Row>
-          <icon-wc icon-name="AlertTriangleOutline" size="large" color="info"></icon-wc>
+          <icon-wc icon="AlertTriangleOutline" size="large" color="info"></icon-wc>
           <Padding left="large">
             <Text>
               {t(
@@ -43,7 +43,7 @@ export const AlertBanner: FC<AlertBannerProps> = ({ onClose }) => {
           </Padding>
         </Row>
         <icon-wc
-          icon-name="CloseOutline"
+          icon="CloseOutline"
           size="large"
           style={{ cursor: 'pointer' }}
           onClick={onClose}

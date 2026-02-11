@@ -55,12 +55,12 @@ const CustomHeaderFactory: FC<any> = ({
     (column: THeader) => {
       if (column.id === sortedColumn) {
         return sortOrder === ASC ? (
-          <icon-wc icon-name="ChevronSortUpOutline" size="large"></icon-wc>
+          <icon-wc icon="ChevronSortUpOutline" size="large"></icon-wc>
         ) : (
-          <icon-wc icon-name="ChevronSortDownOutline" size="large"></icon-wc>
+          <icon-wc icon="ChevronSortDownOutline" size="large"></icon-wc>
         );
       }
-      return <icon-wc icon-name="ChevronSortEmptyOutline" size="large"></icon-wc>;
+      return <icon-wc icon="ChevronSortEmptyOutline" size="large"></icon-wc>;
     },
     [sortedColumn, sortOrder],
   );
@@ -94,7 +94,7 @@ const CustomHeaderFactory: FC<any> = ({
         <Container>
           <icon-wc
             size="medium"
-            icon-name={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+            icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
             color={open || focus ? 'primary' : 'text'}
             style={{ alignSelf: 'center' }}
           ></icon-wc>

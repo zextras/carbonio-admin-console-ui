@@ -477,7 +477,7 @@ const DomainCosLink: FC<{
                         {t('label.default_cos', 'Default COS')}
                       </Text>
                     </Padding>
-                    <icon-wc icon-name="Star" color="primary"></icon-wc>
+                    <icon-wc icon="Star" color="primary"></icon-wc>
                   </Row>
                 )}
               </Container>,
@@ -491,7 +491,7 @@ const DomainCosLink: FC<{
                     </Padding>
                     <Padding right="small">
                       <icon-wc
-                        icon-name="StarOutline"
+                        icon="StarOutline"
                         color="primary"
                         onClick={(event: { stopPropagation: () => void }): void => {
                           event.stopPropagation();
@@ -500,7 +500,7 @@ const DomainCosLink: FC<{
                       ></icon-wc>
                     </Padding>
                     <icon-wc
-                      icon-name="Close"
+                      icon="Close"
                       color="primary"
                       onClick={(event: { stopPropagation: () => void }): void => {
                         event.stopPropagation();
@@ -562,7 +562,7 @@ const DomainCosLink: FC<{
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
                     <icon-wc
-                      icon-name="InfoOutline"
+                      icon="InfoOutline"
                       style={{ width: '1.25rem', height: '1.25rem' }}
                     ></icon-wc>
                   </Padding>

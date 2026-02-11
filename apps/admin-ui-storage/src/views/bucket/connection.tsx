@@ -555,7 +555,7 @@ const Connection: FC<{
         >
           <Row width="10%" mainAlignment="flex-start">
             <icon-wc
-              icon-name="AlertTriangleOutline"
+              icon="AlertTriangleOutline"
               color="gray6"
               size="large"
               style={{ height: '2rem', width: '2rem' }}

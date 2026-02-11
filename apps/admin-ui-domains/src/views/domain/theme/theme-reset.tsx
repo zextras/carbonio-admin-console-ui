@@ -64,7 +64,7 @@ export const ResetTheme: FC<{
         </Padding>
         <Row padding={{ bottom: 'large' }}>
           <icon-wc
-            icon-name="AlertTriangleOutline"
+            icon="AlertTriangleOutline"
             size="large"
             style={{ height: '48px', width: '48px' }}
           ></icon-wc>

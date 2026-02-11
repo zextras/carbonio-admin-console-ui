@@ -96,7 +96,7 @@ const EditHsmPolicy: FC<{
           <icon-wc
             size="medium"
             color={selected ? 'primary' : 'gray'}
-            icon-name={item.icon}
+            icon={item.icon}
           ></icon-wc>
         </Padding>
         <Text size="small" color={selected ? 'primary' : 'gray'}>

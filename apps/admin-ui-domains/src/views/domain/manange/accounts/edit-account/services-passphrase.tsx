@@ -344,7 +344,7 @@ export const ServicesPassphrase: FC = () => {
               value={createCredentialResponse.text_data?.password}
               CustomIcon={(): any => (
                 <icon-wc
-                  icon-name="CopyOutline"
+                  icon="CopyOutline"
                   size="large"
                   color="Gray0"
                   onClick={(e: React.MouseEvent): void => {

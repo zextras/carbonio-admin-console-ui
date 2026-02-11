@@ -704,7 +704,7 @@ const DomainAuthentication: FC = () => {
                         onMouseLeave={(): void => setLdapUrlOpen(false)}
                       >
                         <icon-wc
-                          icon-name="QuestionMarkCircleOutline"
+                          icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
                         ></icon-wc>
@@ -754,7 +754,7 @@ const DomainAuthentication: FC = () => {
                         onMouseLeave={(): void => setFilterOpen(false)}
                       >
                         <icon-wc
-                          icon-name="QuestionMarkCircleOutline"
+                          icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
                         ></icon-wc>

@@ -1304,7 +1304,7 @@ const DomainGalSettings: FC = () => {
                           >
                             <Text>
                               <icon-wc
-                                icon-name="InfoOutline"
+                                icon="InfoOutline"
                                 size="large"
                                 color={hasFocus ? 'primary' : 'text'}
                               ></icon-wc>
@@ -1349,7 +1349,7 @@ const DomainGalSettings: FC = () => {
                         >
                           <Text>
                             <icon-wc
-                              icon-name="InfoOutline"
+                              icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
                             ></icon-wc>
@@ -1379,7 +1379,7 @@ const DomainGalSettings: FC = () => {
                         >
                           <Text>
                             <icon-wc
-                              icon-name="InfoOutline"
+                              icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
                             ></icon-wc>
@@ -1452,7 +1452,7 @@ const DomainGalSettings: FC = () => {
                       >
                         <Text>
                           <icon-wc
-                            icon-name="InfoOutline"
+                            icon="InfoOutline"
                             size="large"
                             color={hasFocus ? 'primary' : 'text'}
                           ></icon-wc>

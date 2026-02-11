@@ -439,7 +439,7 @@ const DomainSaml: FC = () => {
                   <Row width="5%" mainAlignment="flex-start">
                     <Padding horizontal="small">
                       <icon-wc
-                        icon-name="CheckmarkCircle2Outline"
+                        icon="CheckmarkCircle2Outline"
                         style={{ width: '1.25rem', height: '1.25rem' }}
                         color="#2196D3"
                       ></icon-wc>
@@ -721,7 +721,7 @@ const DomainSaml: FC = () => {
                       samlAttrKey && (
                         <Container onClick={() => setSamlAttrKey('')} style={{ cursor: 'pointer' }}>
                           <icon-wc
-                            icon-name="CloseOutline"
+                            icon="CloseOutline"
                             size="large"
                             color="secondary"
                           ></icon-wc>
@@ -759,7 +759,7 @@ const DomainSaml: FC = () => {
                           style={{ cursor: 'pointer' }}
                         >
                           <icon-wc
-                            icon-name="CloseOutline"
+                            icon="CloseOutline"
                             size="large"
                             color="secondary"
                           ></icon-wc>

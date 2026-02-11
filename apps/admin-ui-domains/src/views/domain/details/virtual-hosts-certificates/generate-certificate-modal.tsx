@@ -106,7 +106,7 @@ export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
           orientation="horizontal"
           gap="0.5rem"
         >
-          <icon-wc icon-name="InfoOutline" color="gray1" size="medium"></icon-wc>
+          <icon-wc icon="InfoOutline" color="gray1" size="medium"></icon-wc>
           <Text size="small" color="gray1">
             {t(
               'label.certificate_available_after_proxy_restart',

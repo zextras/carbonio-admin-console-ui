@@ -245,7 +245,7 @@ const EditAccountConfigurationSection: FC = () => {
                 )}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
               >
                 <Text>
-                  <icon-wc icon-name="InfoOutline" size="large" color="secondary"></icon-wc>
+                  <icon-wc icon="InfoOutline" size="large" color="secondary"></icon-wc>
                 </Text>
               </Tooltip>
             )}

@@ -499,7 +499,7 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc className={styles.customIcon} icon-name="InfoOutline"></icon-wc>
+                    <icon-wc className={styles.customIcon} icon="InfoOutline"></icon-wc>
                   </Padding>
                 </Row>
                 <Row

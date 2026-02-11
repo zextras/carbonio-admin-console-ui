@@ -139,7 +139,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
           gap="0.5rem"
         >
           <Row padding={{ right: '0.5rem' }}>
-            <icon-wc size="large" icon-name="AlertTriangleOutline" color="gray6"></icon-wc>
+            <icon-wc size="large" icon="AlertTriangleOutline" color="gray6"></icon-wc>
           </Row>
           <Container
             width="fill"

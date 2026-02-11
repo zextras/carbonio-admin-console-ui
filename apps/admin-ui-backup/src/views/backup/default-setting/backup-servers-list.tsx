@@ -154,7 +154,7 @@ const BackupServersListTable: FC<{
             {s?.description}
           </Text>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <icon-wc icon-name="FolderOutline"></icon-wc>
+            <icon-wc icon="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -175,7 +175,7 @@ const BackupServersListTable: FC<{
             </Row>
           </Row>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <icon-wc icon-name="FolderOutline"></icon-wc>
+            <icon-wc icon="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"

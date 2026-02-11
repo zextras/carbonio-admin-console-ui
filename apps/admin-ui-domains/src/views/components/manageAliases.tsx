@@ -74,7 +74,7 @@ const ManageAliases: FC<{
             value={(listAliases?.length || 1) - 1}
             CustomIcon={() => (
               <icon-wc
-                icon-name="EditAsNewOutline"
+                icon="EditAsNewOutline"
                 onClick={(): void => setShowManageAliesModal(true)}
                 style={{ cursor: 'pointer' }}
                 size="large"
@@ -123,7 +123,7 @@ const ManageAliases: FC<{
               />
             </Container>
             <Container padding={{ top: 'large', left: 'small', right: 'small' }} width="10%">
-              <icon-wc icon-name="AtOutline" size="large"></icon-wc>
+              <icon-wc icon="AtOutline" size="large"></icon-wc>
             </Container>
             <Container
               mainAlignment="flex-start"

@@ -707,7 +707,7 @@ const DomainMailingList: FC = () => {
                     setSearchString(e.target.value);
                   }}
                   CustomIcon={(): any => (
-                    <icon-wc icon-name="FunnelOutline" size="large" color="primary"></icon-wc>
+                    <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                   )}
                 />
               </Container>

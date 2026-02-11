@@ -2806,7 +2806,7 @@ const EditMailingListView: FC<any> = ({
                           onChange={handleInputChange}
                           CustomIcon={(): any => (
                             <icon-wc
-                              icon-name="FunnelOutline"
+                              icon="FunnelOutline"
                               size="large"
                               color="primary"
                             ></icon-wc>
@@ -3131,7 +3131,7 @@ const EditMailingListView: FC<any> = ({
                           onChange={handleInputChangeGrantEmail}
                           CustomIcon={(): any => (
                             <icon-wc
-                              icon-name="FunnelOutline"
+                              icon="FunnelOutline"
                               size="large"
                               color="primary"
                             ></icon-wc>
@@ -3283,7 +3283,7 @@ const EditMailingListView: FC<any> = ({
                           onChange={handleInputChangeSendEmail}
                           CustomIcon={(): any => (
                             <icon-wc
-                              icon-name="FunnelOutline"
+                              icon="FunnelOutline"
                               size="large"
                               color="primary"
                             ></icon-wc>

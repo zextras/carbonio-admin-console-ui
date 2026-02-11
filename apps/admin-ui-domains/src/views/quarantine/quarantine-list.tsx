@@ -1404,7 +1404,7 @@ const QuarantineList: FC = () => {
                         message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
                       }
                       size="large"
-                      icon-name={'QuestionMarkCircleOutline'}
+                      icon={'QuestionMarkCircleOutline'}
                     ></icon-wc>
                   </Text>
                 </Tooltip>
