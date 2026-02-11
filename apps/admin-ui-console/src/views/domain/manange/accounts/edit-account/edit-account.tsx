@@ -826,13 +826,21 @@ const EditAccount: FC<{
 				inDomains: [],
 				type: ACCOUNT
 			};
+
+			// verify if in userSetting exist an attr called zimbraFeatureIMEnabled and if is true, if not return false
+			const isIMFeatureEnabled = userSetting?.attrs?.zimbraFeatureIMEnabled === 'TRUE';
+
+			if (isIMFeatureEnabled) {
+				return false;
+			}
+
 			return (
 				!!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
 				!!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
 					(right) => right?.n === ADMIN_LOGIN_AS
 				)
 			);
-		}, [rights]);
+		}, [rights,userSetting?.attrs]);
 		const closeHandler = useCallback(() => {
 			setIsOpenDeleteDialog(false);
 		}, []);

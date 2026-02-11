@@ -6,7 +6,7 @@
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
 
 import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -115,11 +115,15 @@ const DomainListPanel: FC = () => {
 	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
+	const [isShowDomainConfig, setIsShowDomainConfig] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const globalConfigInformation = useConfigStore((state) => state.config);
 	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
+
+	const userSetting = useUserSettings();
+	const isIMFeatureEnabled = userSetting?.attrs?.zimbraFeatureIMEnabled === 'TRUE';
 
 	useEffect(() => {
 		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
@@ -244,7 +248,7 @@ const DomainListPanel: FC = () => {
 			setSearchDomainName(domain?.name);
 			setIsDomainListExpand(false);
 			setDomainId(domain?.id);
-			setDomainView(GENERAL_SETTINGS);
+			setDomainView(ACCOUNTS);
 		},
 		[setDomainView]
 	);
@@ -262,7 +266,7 @@ const DomainListPanel: FC = () => {
 			if (domainView) {
 				replaceHistory(`/${domainId}/${domainView}`);
 			} else {
-				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
+				replaceHistory(`/${domainId}/${ACCOUNTS}`);
 			}
 		} else {
 			replaceHistory(`/${domainView}`);
@@ -324,6 +328,17 @@ const DomainListPanel: FC = () => {
 				id: DISCLAIMER,
 				name: t('label.disclaimer', 'Disclaimer'),
 				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
+			}
+		],
+		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
+	);
+
+	const detailOptionsDomainAdmin = useMemo(
+		() => [
+			{
+				id: MAILBOX_QUOTA,
+				name: t('label.mailbox_quota', 'Mailbox Quota'),
+				isSelected: isDomainSelect
 			}
 		],
 		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
@@ -645,12 +660,21 @@ const DomainListPanel: FC = () => {
 					setSelectedOperationItem={setDomainView}
 				/>
 			)}
+			{isIMFeatureEnabled && (
+			<ListItems
+					items={detailOptionsDomainAdmin}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+			{!isIMFeatureEnabled && (
 			<ListPanelItem
 				title={t('label.details', 'Details')}
 				isListExpanded={isDetailListExpanded}
 				setToggleView={toggleDetailView}
 			/>
-			{isDetailListExpanded && (
+			)}
+			{isDetailListExpanded && !isIMFeatureEnabled && (
 				<ListItems
 					items={detailItems}
 					selectedOperationItem={domainView}

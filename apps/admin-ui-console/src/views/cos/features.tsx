@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
+import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 
 export const Features: FC<{
 	featuresDetail: Record<string, string>;
@@ -30,6 +31,9 @@ export const Features: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const userSetting = useUserSettings();
+	const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount;
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
@@ -83,7 +87,7 @@ export const Features: FC<{
 								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
 								inputName={'zimbraFeatureMobileSyncEnabled'}
 								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
-								disabled={readonlyFeatures}
+								disabled={readonlyFeatures || !isGlobalAdmin}
 							/>
 						</Row>
 					)}
