@@ -228,7 +228,7 @@ describe('TwoFactorAuthencationConfig', () => {
   });
 
   describe('Integration Tests', () => {
-    it.only('updates multiple services with Apply to All', async () => {
+    it('updates multiple services with Apply to All', async () => {
       const mockPolicies = [
         { label: 'WebUI', keyToGet: 'WebUI' },
         { label: 'Admin API', keyToGet: 'WebAdminUI' },
