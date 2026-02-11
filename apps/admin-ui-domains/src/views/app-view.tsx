@@ -5,12 +5,11 @@
  */
 
 import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/ui-components';
+import { Container, Padding, Text } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import logo from '../assets/ninja_robo.svg';
 import {
   ACTIVE_SYNC,
@@ -24,7 +23,7 @@ import {
   TWO_FACTOR_AUTHENTICATION,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import CreateDomain from './domain/create-new-domain';
 import DomainOperations from './domain/domain-detail-operation';
 import DomainDetailPanel from './domain/domain-detail-panel';
@@ -77,7 +76,7 @@ const AppView: FC = () => {
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
         >
-          <Icon icon="Plus" size="large" color="primary" />
+          <icon-wc icon-name="Plus" size="large" color="primary"></icon-wc>
         </Text>
       </Padding>
     </Container>
@@ -85,7 +84,7 @@ const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<spinner-wc />}>
@@ -93,7 +92,7 @@ const AppView: FC = () => {
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
-          <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+          <Container style={getContainerStyle(isPrimaryBarExpanded)}>
             <Suspense fallback={<spinner-wc />}>
               <Routes>
                 <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
@@ -134,7 +133,7 @@ const AppView: FC = () => {
                 />
               </Routes>
             </Suspense>
-          </DetailViewContainer>
+          </Container>
         </Container>
       </Container>
     </Container>
