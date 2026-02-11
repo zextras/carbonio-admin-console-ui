@@ -12,15 +12,15 @@ import {
   Row,
   Select,
   Text,
-} from "@zextras/ui-components";
-import { map, some } from "lodash-es";
-import { FC, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+} from '@zextras/ui-components';
+import { map, some } from 'lodash-es';
+import { FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { IpRangeValue, TwoFactorAuthPolicyValues } from "../../../../types";
-import CustomChip from "../../components/customChip";
-import ListRow from "../../list/list-row";
-import { isValidIpRange, TwoFactorWhatToTrust } from "../../utility/utils";
+import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
+import CustomChip from '../../components/customChip';
+import ListRow from '../../list/list-row';
+import { isValidIpRange, twoFactorWhatToTrust } from '../../utility/utils';
 
 type TwoFactorPolicy = {
   label: string;
@@ -34,7 +34,7 @@ export const TwoFactorAuthencationConfig: FC<{
   twoFactorPolicyArray: Array<TwoFactorPolicy>;
 }> = ({ modifyPolicies, arrPoliciesToModify, twoFactorPolicyArray }) => {
   const [t] = useTranslation();
-  const WHAT_TO_TRUST: any = useMemo(() => TwoFactorWhatToTrust(t), [t]);
+  const whatToTrust: any = useMemo(() => twoFactorWhatToTrust(t), [t]);
 
   const [applyAllValues, setApplyAllValues] = useState<{
     whatToTrust?: object;
@@ -48,8 +48,7 @@ export const TwoFactorAuthencationConfig: FC<{
 
   const applyToAll = (): void => {
     const modifiedPolicy = map(arrPoliciesToModify, (policy) => {
-      let flatIpRange: Array<string> | undefined =
-        policy[Object.keys(policy)[0]].trustedIpRange;
+      let flatIpRange: Array<string> | undefined = policy[Object.keys(policy)[0]].trustedIpRange;
       if (applyAllValues.ipRange !== undefined) {
         flatIpRange = map(applyAllValues.ipRange, (ip: any) => ip.label);
       }
@@ -76,10 +75,7 @@ export const TwoFactorAuthencationConfig: FC<{
         }
         return {
           [key]: {
-            trustedDevice:
-              whatToTrust !== undefined
-                ? whatToTrust
-                : policy[key].trustedDevice,
+            trustedDevice: whatToTrust !== undefined ? whatToTrust : policy[key].trustedDevice,
             trustedIpRange: flatIpRange,
           },
         };
@@ -93,8 +89,7 @@ export const TwoFactorAuthencationConfig: FC<{
     some(
       map(
         arrPoliciesToModify.find(
-          (obj: TwoFactorAuthPolicyValues) =>
-            obj?.[cVal.keyToGet]?.trustedIpRange,
+          (obj: TwoFactorAuthPolicyValues) => obj?.[cVal.keyToGet]?.trustedIpRange,
         )?.[cVal.keyToGet]?.trustedIpRange,
         (ip: string) => ({ label: ip, error: !isValidIpRange(ip) }),
       ) || [],
@@ -106,35 +101,35 @@ export const TwoFactorAuthencationConfig: FC<{
       orientation="column"
       crossAlignment="flex-start"
       mainAlignment="flex-start"
-      style={{ overflow: "auto" }}
+      style={{ overflow: 'auto' }}
       width="100%"
       height="calc(100vh - 9.375rem)"
     >
-      <Row mainAlignment="flex-start" width="100%" padding={{ top: "small" }}>
+      <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
         <Container
-          padding={{ all: "small" }}
+          padding={{ all: 'small' }}
           height="fit"
           crossAlignment="flex-start"
           background="gray6"
         >
-          <ListRow padding={{ top: "large" }}>
+          <ListRow padding={{ top: 'large' }}>
             <Text size="medium" color="gray0" weight="bold">
-              {t("label.configuration_lbl", "Configuration")}
+              {t('label.configuration_lbl', 'Configuration')}
             </Text>
           </ListRow>
-          <ListRow padding={{ top: "large" }}>
+          <ListRow padding={{ top: 'large' }}>
             <Text size="small" color="gray1">
               {t(
-                "label.configuration_help_text",
-                "Setup the networks or the devices (IPs) that will not require the 2FA authentication",
+                'label.configuration_help_text',
+                'Setup the networks or the devices (IPs) that will not require the 2FA authentication',
               )}
             </Text>
           </ListRow>
-          <ListRow padding={{ top: "large" }}>
+          <ListRow padding={{ top: 'large' }}>
             <Padding right="large" width="30%">
               <Select
-                items={WHAT_TO_TRUST}
-                label={t("label.what_to_trust", "What to trust?")}
+                items={whatToTrust}
+                label={t('label.what_to_trust', 'What to trust?')}
                 onChange={(item: any): void => {
                   setApplyAllValues((prev) => ({ ...prev, whatToTrust: item }));
                 }}
@@ -144,14 +139,11 @@ export const TwoFactorAuthencationConfig: FC<{
             <Padding right="0" width="70%">
               <ChipInput
                 background="gray5"
-                placeholder={t(
-                  "label.trusted_network_ip",
-                  "Trusted Networks (IP ranges)",
-                )}
+                placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
                 onChange={(ips: Array<ChipItem>): void => {
                   const data: any = [];
                   map(ips, (ip: IpRangeValue) => {
-                    isValidIpRange(ip.label ?? "")
+                    isValidIpRange(ip.label ?? '')
                       ? data.push(ip)
                       : data.push({ ...ip, error: true });
                   });
@@ -161,22 +153,19 @@ export const TwoFactorAuthencationConfig: FC<{
                 value={applyAllValues.ipRange}
                 description={
                   some(applyAllValues.ipRange || [], { error: true })
-                    ? t(
-                        "error.one_or_more_ip_invalid",
-                        "One or more IP are invalid",
-                      )
-                    : ""
+                    ? t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+                    : ''
                 }
                 ChipComponent={CustomChip}
                 maxChips={null}
               />
             </Padding>
           </ListRow>
-          <ListRow padding={{ top: "large" }}>
+          <ListRow padding={{ top: 'large' }}>
             <Button
               width="fill"
               type="outlined"
-              label={t("label.apply_to_all", "APPLY TO ALL SERVICES")}
+              label={t('label.apply_to_all', 'APPLY TO ALL SERVICES')}
               color="primary"
               onClick={applyToAll}
             />
@@ -184,7 +173,7 @@ export const TwoFactorAuthencationConfig: FC<{
           {twoFactorPolicyArray?.map((cVal) => (
             <ListRow
               key={`${cVal.label}-${cVal.keyToGet}`}
-              padding={{ top: "large" }}
+              padding={{ top: 'large' }}
               orientation="horizontal"
               crossAlignment="center"
             >
@@ -199,18 +188,16 @@ export const TwoFactorAuthencationConfig: FC<{
 
               <Padding right="large" width="30%">
                 <Select
-                  items={WHAT_TO_TRUST}
-                  label={t("label.what_to_trust", "What to trust?")}
+                  items={whatToTrust}
+                  label={t('label.what_to_trust', 'What to trust?')}
                   onChange={(v: any): void => {
                     applyToIndividual(cVal.keyToGet, v);
                   }}
-                  selection={WHAT_TO_TRUST.find((item: any) => {
+                  selection={whatToTrust.find((item: any) => {
                     const tmpObj = arrPoliciesToModify.find((obj) =>
                       Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet),
                     );
-                    return (
-                      item.value === tmpObj?.[cVal.keyToGet]?.trustedDevice
-                    );
+                    return item.value === tmpObj?.[cVal.keyToGet]?.trustedDevice;
                   })}
                   showCheckbox={false}
                 />
@@ -218,14 +205,11 @@ export const TwoFactorAuthencationConfig: FC<{
               <Padding right="0" width="65%">
                 <ChipInput
                   background="gray5"
-                  placeholder={t(
-                    "label.trusted_network_ip",
-                    "Trusted Networks (IP ranges)",
-                  )}
+                  placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
                   onChange={(ips: Array<ChipItem>): void => {
                     const data: any = [];
                     map(ips, (ip: IpRangeValue) => {
-                      isValidIpRange(ip.label ?? "")
+                      isValidIpRange(ip.label ?? '')
                         ? data.push(ip)
                         : data.push({ ...ip, error: true });
                     });
@@ -233,16 +217,13 @@ export const TwoFactorAuthencationConfig: FC<{
                   }}
                   hasError={hasValidIpCheck(cVal)}
                   value={map(
-                    arrPoliciesToModify.find((obj: any) =>
-                      Object.hasOwn(obj, cVal.keyToGet),
-                    )?.[cVal.keyToGet]?.trustedIpRange,
+                    arrPoliciesToModify.find((obj: any) => Object.hasOwn(obj, cVal.keyToGet))?.[
+                      cVal.keyToGet
+                    ]?.trustedIpRange,
                     (ip: string) => ({ label: ip, error: !isValidIpRange(ip) }),
                   )}
                   {...(hasValidIpCheck(cVal) && {
-                    description: t(
-                      "error.one_or_more_ip_invalid",
-                      "One or more IP are invalid",
-                    ),
+                    description: t('error.one_or_more_ip_invalid', 'One or more IP are invalid'),
                   })}
                   ChipComponent={CustomChip}
                   maxChips={null}
