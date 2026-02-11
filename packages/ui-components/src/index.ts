@@ -68,6 +68,7 @@ export {
 export * from './components/custom/inherited-input';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/overlay-division';
+export * from './components/custom/primary-bar-tooltip';
 
 /** display components */
 export * from './components/display/Chip';

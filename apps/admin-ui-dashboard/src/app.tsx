@@ -5,13 +5,13 @@
  */
 
 import { addRoute } from '@zextras/admin-ui-bootstrap';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();

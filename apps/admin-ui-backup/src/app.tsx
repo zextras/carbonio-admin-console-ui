@@ -5,7 +5,7 @@
  */
 
 import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button } from '@zextras/ui-components';
+import { Button, PrimaryBarTooltip } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -14,7 +14,6 @@ import styles from './app.module.css';
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();
