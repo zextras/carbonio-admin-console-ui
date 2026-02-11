@@ -20,7 +20,7 @@ export class SpinnerWC extends LitElement {
     .spinner {
       width: 0.75rem;
       height: 0.75rem;
-      border: 0.125rem solid var(--color-primary, #2b73d2);
+      border: 0.125rem solid;
       border-right-color: transparent;
       border-radius: 50%;
       animation: spinner-rotate 0.75s linear infinite;
@@ -35,11 +35,22 @@ export class SpinnerWC extends LitElement {
     }
   `;
 
+  static override properties = {
+    color: { type: String, reflect: true },
+  };
+
+  color = 'primary';
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.dataset.testid = 'spinner';
+  }
+
   override render() {
     return html`
       <div
-        data-testid="spinner"
         class="spinner"
+        style="border-color: var(--color-${this.color}); border-right-color: transparent;"
         role="status"
         aria-busy="true"
         aria-label="Loading"

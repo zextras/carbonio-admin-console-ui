@@ -1454,18 +1454,18 @@ export const ServicesPassphraseStatus = (
   },
 ];
 
-export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value: number; label: string }> => [
+export const twoFactorWhatToTrust = (t: TFunction): Array<{ value: number; label: string }> => [
   {
     label: t('label.disable_2fa', 'Disable 2FA'),
-    value: 0,
-  },
-  {
-    label: t('label.trust_ip', 'Trust the IP'),
     value: 1,
   },
   {
+    label: t('label.trust_ip', 'Trust the IP'),
+    value: 0,
+  },
+  {
     label: t('label.trust_the_device', 'Trust the device'),
-    value: 2,
+    value: 3,
   },
 ];
 
