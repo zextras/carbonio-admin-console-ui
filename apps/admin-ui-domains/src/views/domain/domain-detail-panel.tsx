@@ -3,22 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router';
 
-import logo from '../../assets/ninja_robo.svg';
-import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../../constants';
 import { useLocalStorage } from '../utility/utils';
-import CreateDomain from './create-new-domain';
-import DomainOperations from './domain-detail-operation';
-import GlobalDetailPanel from './global/global-detail-panel';
-import GlobalOperations from './global-operation';
 
-const DomainDetailPanel: FC = () => {
+type DomainDetailPanelProps = {
+  children?: React.ReactNode;
+};
+
+const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
   const [t] = useTranslation();
   const domain = useDomainStore((state) => state.domain);
   const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
@@ -29,9 +26,6 @@ const DomainDetailPanel: FC = () => {
     domain.name ? !domainLocalValue[domain.name] : true,
   );
 
-  const createNewDomain = (): void => {
-    replaceHistory(`/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
-  };
   const isDomainClosed = useMemo(() => {
     const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
     return !!(
@@ -109,56 +103,7 @@ const DomainDetailPanel: FC = () => {
       ) : (
         <></>
       )}
-      <Routes>
-        <Route path={'/'} element={<GlobalDetailPanel />} />
-        <Route path={`/:operation`} element={<GlobalOperations />} />
-        <Route path={`/:domainId/:operation`} element={<DomainOperations />} />
-        <Route path={`/${CREATE_NEW_DOMAIN_ROUTE_ID}`} element={<CreateDomain />} />
-        <Route
-          path={'/'}
-          element={
-            <Container>
-              <Text
-                overflow="break-word"
-                weight="regular"
-                size="large"
-                style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-              >
-                <img src={logo} alt="logo" />
-              </Text>
-              <Padding all="medium" width="47%">
-                <Text
-                  color="gray1"
-                  overflow="break-word"
-                  weight="regular"
-                  size="large"
-                  style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-                >
-                  {t(
-                    'select_domain_or_create_new',
-                    'Please select a domain from the menu on the left or click on "Create" button to create a new one.',
-                  )}
-                </Text>
-              </Padding>
-              <Padding all="medium">
-                <Text
-                  size="small"
-                  overflow="break-word"
-                  style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-                >
-                  <Button
-                    type="outlined"
-                    label={t('label.create_new_domain', 'Creat New Domain')}
-                    icon="Plus"
-                    color="primary"
-                    onClick={createNewDomain}
-                  />
-                </Text>
-              </Padding>
-            </Container>
-          }
-        />
-      </Routes>
+      {children}
     </Container>
   );
 };
