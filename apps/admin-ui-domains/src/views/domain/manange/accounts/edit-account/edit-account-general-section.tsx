@@ -35,6 +35,7 @@ import InheritedSelect from '../../../../utility/inherited-components/inherited-
 import {   ABQStatus,  AccountStatus,  backupEnabledStatus,  BytesToGB,  formatZimbraDate,  GbToBytes,  isValidDecimalNumber,  localeList } from '../../../../utility/utils';
 import {  AccountContext  } from '../account-context';
 import {  AccountType  } from '../account-types/account-types';
+import { EditAccountQuotaBar } from './parts/edit-account-quota-bar';
 
 type UserSession = {
   name: string;
@@ -625,23 +626,6 @@ const EditAccountGeneralSection: FC<{
     [allUserSessionList, setUserSessionList],
   );
 
-  const calculatedFilesQuotaSizePercentage: number = useMemo(() => {
-    if (!initAccountDetail?.filesQuotaLimit) {
-      return 0;
-    }
-    if (initAccountDetail?.filesQuotaLimit == "9223372036854776000") {
-      return 0;
-    }
-    return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
-  }, [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed]);
-
-  const calculatedMailBoxQuotaSizePercentage: number = useMemo(() => {
-    if (!initAccountDetail?.zimbraMailQuota) {
-      return 0;
-    }
-    return (initAccountDetail.mailboxQuotaUsed / initAccountDetail.zimbraMailQuota) * 100;
-  }, [initAccountDetail?.zimbraMailQuota, initAccountDetail?.mailboxQuotaUsed]);
-
   const focusFileQuota = useCallback(() => {
     setFocusableFileQuota(true);
     setHighlightFileQuota(true);
@@ -652,33 +636,7 @@ const EditAccountGeneralSection: FC<{
     setHighlightMailboxQuota(true);
   }, []);
 
-  const calculatedFilesQuotaSize: string = useMemo(
-    () =>
-      initAccountDetail?.filesQuotaLimit > 0 && initAccountDetail?.filesQuotaLimit < 9223372036854776000
-        ? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
-            'label.of',
-            'Of',
-          )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
-        : `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
-            'label.unlimited',
-            'unlimited',
-          )}`,
-    [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed, t],
-  );
 
-  const calculatedMailboxQuotaSize: string = useMemo(
-    () =>
-      initAccountDetail?.zimbraMailQuota > 0
-        ? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t(
-            'label.of',
-            'Of',
-          )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
-        : `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
-            'label.unlimited',
-            'unlimited',
-          )}`,
-    [initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t],
-  );
 
   const renderQuotaRow = (
     label: string,
@@ -768,22 +726,8 @@ const EditAccountGeneralSection: FC<{
             {t('label.account', 'Account')}
           </Text>
         </Row>
-        <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          {renderQuotaRow(
-            t('label.mailbox_space_usage', 'Mailbox Space Usage'),
-            calculatedMailboxQuotaSize,
-            calculatedMailBoxQuotaSizePercentage,
-            focusMailBoxQuota,
-          )}
-          {isAdvanced &&
-            initAccountDetail?.filesQuotaLimit &&
-            renderQuotaRow(
-              t('label.files_space_usage', 'Files Space Usage'),
-              calculatedFilesQuotaSize,
-              calculatedFilesQuotaSizePercentage,
-              focusFileQuota,
-            )}
-        </Row>
+        
+          <EditAccountQuotaBar onClickMailboxQuota={focusMailBoxQuota} onClickFilesQuota={focusFileQuota} />
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           {renderInputRow({
             id: 'surname-input',
