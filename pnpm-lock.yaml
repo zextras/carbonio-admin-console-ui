@@ -32,11 +32,7 @@ importers:
         version: 14.1.8
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-<<<<<<< HEAD
-        version: 5.1.4(vite@7.3.1(@types/node@22.19.10)(jiti@2.6.1)(tsx@4.21.0))
-=======
         version: 5.1.4(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))
->>>>>>> origin/devel
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -156,11 +152,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -357,11 +349,7 @@ importers:
         version: 0.7.39
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-<<<<<<< HEAD
-        version: 5.1.4(vite@7.3.1(@types/node@22.19.10)(jiti@2.6.1)(tsx@4.21.0))
-=======
         version: 5.1.4(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))
->>>>>>> origin/devel
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -436,11 +424,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       react:
         specifier: ^19.1.0
         version: 19.2.4
@@ -570,11 +554,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -716,11 +696,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -862,11 +838,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1005,11 +977,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1145,11 +1113,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1288,11 +1252,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1431,11 +1391,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1571,11 +1527,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1714,11 +1666,7 @@ importers:
         version: 10.29.2
       posthog-js:
         specifier: ^1.261.0
-<<<<<<< HEAD
-        version: 1.345.2
-=======
         version: 1.345.3
->>>>>>> origin/devel
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -3170,19 +3118,11 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-<<<<<<< HEAD
-  '@posthog/core@1.21.0':
-    resolution: {integrity: sha512-0a2JUIX1vhduP2El/6/J8s5AeYAurIoufQGFgMiGnJE5ajd63o9LFocu2vFYYBnIOmy75y4ADNeW8zSl1keEQQ==}
-
-  '@posthog/types@1.345.2':
-    resolution: {integrity: sha512-VZ1I+bp1YbYG4pSN84YAYCfvUyG5PmKIHx0ucZ6HO23sRgMZw381LLzfBAtmsA4tQ9+uMLigCTIZ4sDMl4ADFw==}
-=======
   '@posthog/core@1.22.0':
     resolution: {integrity: sha512-WkmOnq95aAOu6yk6r5LWr5cfXsQdpVbWDCwOxQwxSne8YV6GuZET1ziO5toSQXgrgbdcjrSz2/GopAfiL6iiAA==}
 
   '@posthog/types@1.345.3':
     resolution: {integrity: sha512-2AvGxOULSkR75HJMnOChhRtnrbeFhESu9ctlbuCNY+EebRYag7J4NC+/t/mRcqZqVdpUSqIG0JqM+0XH/GUw3Q==}
->>>>>>> origin/devel
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -6017,13 +5957,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-<<<<<<< HEAD
-  posthog-js@1.345.2:
-    resolution: {integrity: sha512-5J0RfI6U11Sy76cL7QR5f+a/IqbQvcsF6XSItT6i+VPp0oX+XQE3eRnqkx1Ne8/PLegpn1xP3h6KSBMshwq0SQ==}
-=======
   posthog-js@1.345.3:
     resolution: {integrity: sha512-g0rtUfG+LaIWHFjpUMBTrYztY5gqU3yqmeweCp/Z6om1AUErapUMA4upXjKwacs+aCKet3tB87lFnWztX/b+Tg==}
->>>>>>> origin/devel
 
   preact@10.28.3:
     resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
@@ -8534,19 +8469,11 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-<<<<<<< HEAD
-  '@posthog/core@1.21.0':
-    dependencies:
-      cross-spawn: 7.0.6
-
-  '@posthog/types@1.345.2': {}
-=======
   '@posthog/core@1.22.0':
     dependencies:
       cross-spawn: 7.0.6
 
   '@posthog/types@1.345.3': {}
->>>>>>> origin/devel
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -9169,11 +9096,7 @@ snapshots:
       '@typescript-eslint/types': 8.55.0
       eslint-visitor-keys: 4.2.1
 
-<<<<<<< HEAD
-  '@vitejs/plugin-react@5.1.4(vite@7.3.1(@types/node@22.19.10)(jiti@2.6.1)(tsx@4.21.0))':
-=======
   '@vitejs/plugin-react@5.1.4(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))':
->>>>>>> origin/devel
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
@@ -11635,24 +11558,15 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-<<<<<<< HEAD
-  posthog-js@1.345.2:
-=======
   posthog-js@1.345.3:
->>>>>>> origin/devel
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
       '@opentelemetry/exporter-logs-otlp-http': 0.208.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 2.5.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
-<<<<<<< HEAD
-      '@posthog/core': 1.21.0
-      '@posthog/types': 1.345.2
-=======
       '@posthog/core': 1.22.0
       '@posthog/types': 1.345.3
->>>>>>> origin/devel
       core-js: 3.48.0
       dompurify: 3.3.1
       fflate: 0.4.8
