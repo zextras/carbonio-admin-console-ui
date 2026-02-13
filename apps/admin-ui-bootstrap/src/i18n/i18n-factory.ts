@@ -5,18 +5,18 @@
  */
 /* eslint-disable no-console */
 
-import i18next, { i18n } from "i18next";
-import Backend from "i18next-http-backend";
-import { dropRight, forEach } from "lodash-es";
+import { getShell } from '@zextras/ui-shared';
+import i18next, { i18n } from 'i18next';
+import Backend from 'i18next-http-backend';
+import { dropRight, forEach } from 'lodash-es';
 
-import { CarbonioModule, II18nFactory } from "../../types";
-import { SHELL_APP_ID } from "../constants";
-import { getShell } from "../store/app";
+import { CarbonioModule, II18nFactory } from '../../types';
+import { SHELL_APP_ID } from '../constants';
 
 export default class I18nFactory implements II18nFactory {
   _cache: { [pkg: string]: i18n } = {};
 
-  locale = "en";
+  locale = 'en';
 
   public getShellI18n(): i18n {
     return this.getAppI18n(getShell() ?? { name: SHELL_APP_ID });
@@ -31,9 +31,7 @@ export default class I18nFactory implements II18nFactory {
     }
   }
 
-  public getAppI18n(
-    appPkgDescription: CarbonioModule | { name: string },
-  ): i18n {
+  public getAppI18n(appPkgDescription: CarbonioModule | { name: string }): i18n {
     if (this._cache[appPkgDescription.name]) {
       return this._cache[appPkgDescription.name];
     }
@@ -41,13 +39,11 @@ export default class I18nFactory implements II18nFactory {
     const baseI18nPath =
       appPkgDescription.name === SHELL_APP_ID
         ? BASE_PATH
-        : dropRight(
-            (appPkgDescription as CarbonioModule).js_entrypoint.split("/"),
-          ).join("/");
+        : dropRight((appPkgDescription as CarbonioModule).js_entrypoint.split('/')).join('/');
     newI18n.use(Backend).init({
-      compatibilityJSON: "v4",
+      compatibilityJSON: 'v4',
       lng: this.locale,
-      fallbackLng: "en",
+      fallbackLng: 'en',
       debug: false,
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default

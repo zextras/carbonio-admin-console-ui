@@ -4,34 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAppStore, useCurrentRoute } from '@zextras/ui-shared';
 import { filter, intersection } from 'lodash-es';
 import { useMemo } from 'react';
 
 import { AppRoute, PrimaryAccessoryView, SecondaryAccessoryView, UtilityView } from '../../types';
-import { useCurrentRoute } from '../history/hooks';
-import { useAppStore } from '../store/app';
 
 const checkList = (l1: Array<string>, l2?: Array<string>): boolean =>
-	intersection(l1, l2).length > 0;
+  intersection(l1, l2).length > 0;
 
 const checkRoute = (
-	view: UtilityView | PrimaryAccessoryView | SecondaryAccessoryView,
-	activeRoute?: AppRoute
+  view: UtilityView | PrimaryAccessoryView | SecondaryAccessoryView,
+  activeRoute?: AppRoute,
 ): boolean => {
-	const activeRouteValues = Object.values(activeRoute ?? {});
-	if (view.blacklistRoutes) return !checkList(activeRouteValues, view.blacklistRoutes);
-	if (view.whitelistRoutes) return checkList(activeRouteValues, view.whitelistRoutes);
-	return true;
+  const activeRouteValues = Object.values(activeRoute ?? {});
+  if (view.blacklistRoutes) return !checkList(activeRouteValues, view.blacklistRoutes);
+  if (view.whitelistRoutes) return checkList(activeRouteValues, view.whitelistRoutes);
+  return true;
 };
 export const useUtilityViews = (): Array<UtilityView> => {
-	const utilityViews = useAppStore((s) => s.views.utilityBar);
+  const utilityViews = useAppStore((s) => s.views.utilityBar);
 
-	const activeRoute = useCurrentRoute();
-	return useMemo(
-		() => filter(utilityViews, (v) => checkRoute(v, activeRoute)),
-		[activeRoute, utilityViews]
-	);
+  const activeRoute = useCurrentRoute();
+  return useMemo(
+    () => filter(utilityViews, (v) => checkRoute(v, activeRoute)),
+    [activeRoute, utilityViews],
+  );
 };
 export const openLink = (link: string): void => {
-	window.open(link, '_blank');
+  window.open(link, '_blank');
 };

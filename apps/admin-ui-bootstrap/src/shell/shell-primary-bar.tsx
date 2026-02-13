@@ -5,14 +5,13 @@
  */
 
 import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
+import { useAppStore, useUtilityBarStore } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation,useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { AppRoute, PrimaryBarView } from '../../types';
-import { useAppStore } from '../store/app';
-import { useUtilityBarStore } from '../utility-bar';
 import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
 
@@ -115,7 +114,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
   );
 };
 
-const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
+const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRoute }) => {
   const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
   const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);

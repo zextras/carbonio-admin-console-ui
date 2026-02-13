@@ -1,11 +1,14 @@
 {
   "name": "admin-ui-test-utils",
+  "composite": true,
   "description": "admin-ui-test-utils",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "browser": "./src/index.browser.ts",
       "jsdom": "./src/index.node.ts",
-      "default": "./src/index.ts"
+      "default": "./src/index.ts",
+      "types": "./dist/index.d.ts"
     }
   },
   "engines": {

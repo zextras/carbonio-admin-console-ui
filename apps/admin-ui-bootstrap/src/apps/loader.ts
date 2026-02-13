@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppStore } from '../store/app';
+import { useAppStore } from '@zextras/ui-shared';
+
 import { loadAllAppsFromRegistry } from './app-registry';
 import type { AppManifest } from './types';
 

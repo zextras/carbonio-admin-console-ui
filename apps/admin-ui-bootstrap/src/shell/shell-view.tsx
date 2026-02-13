@@ -5,9 +5,10 @@
  */
 
 import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
+import { useCurrentRoute } from '@zextras/ui-shared';
 import styled from 'styled-components';
 
-import { useCurrentRoute } from '../history/hooks';
+import { AppRoute } from '../../types';
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';
@@ -30,10 +31,7 @@ function Shell() {
   const activeRoute = useCurrentRoute();
   return (
     <Background>
-      <ShellHeader
-        // @ts-expect-error - needs a fix
-        activeRoute={activeRoute}
-      >
+      <ShellHeader activeRoute={activeRoute as AppRoute}>
         <ShellUtilityBar />
       </ShellHeader>
       <Row crossAlignment="unset" style={{ position: 'relative', flexGrow: '1' }}>

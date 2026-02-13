@@ -3,15 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import {
+  fetchAccountSettings,
+  getAccount,
+  loginConfig,
+  queryFnIsAdvancedSupported,
+} from '@zextras/ui-shared';
+
+import { useAppStore } from '../../../../packages/ui-shared/src/store/app';
+import { useI18nStore } from '../../../../packages/ui-shared/src/store/i18n/store';
 import { loadAllApps } from '../apps/loader';
 import I18nFactory from '../i18n/i18n-factory';
-import { getAccount } from '../network/get-account';
-import { loginConfig } from '../network/login-config';
 import { queryClient } from '../providers/react-query-provider';
-import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
-import { fetchAccountSettings } from '../services/account-api';
-import { useAppStore } from '../store/app/store';
-import { useI18nStore } from '../store/i18n/store';
 
 type InitError = {
   error: string;

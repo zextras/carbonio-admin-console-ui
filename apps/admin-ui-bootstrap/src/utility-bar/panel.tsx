@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
+import { useUtilityBarStore } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import AppContextProvider from '../boot/app/app-context-provider';
-import { useUtilityBarStore } from './store';
 import { useUtilityViews } from './utils';
 
 const Panel: any = styled(Container)`
