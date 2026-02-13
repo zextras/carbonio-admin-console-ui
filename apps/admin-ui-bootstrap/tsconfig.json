@@ -13,6 +13,7 @@
     { "path": "../admin-ui-dashboard" },
     { "path": "../admin-ui-backup" },
     { "path": "../admin-ui-cos" },
+    { "path": "../admin-ui-domains" },
     { "path": "../admin-ui-legalhold" },
     { "path": "../admin-ui-mta" },
     { "path": "../admin-ui-notifications" },
