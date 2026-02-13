@@ -3,58 +3,77 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
+import { loadAllApps } from '../apps/loader';
 import I18nFactory from '../i18n/i18n-factory';
 import { getAccount } from '../network/get-account';
-import { getAllConfig } from '../network/get-all-config';
-import { getInfo } from '../network/get-info';
-import { getMinMaxAPIVersion } from '../network/get-min-max-api-version';
-import { isAdvancedSupported } from '../network/isAdvancedSupported';
 import { loginConfig } from '../network/login-config';
-import { useAccountStore } from '../store/account';
-import { useAppStore } from '../store/app';
+import { queryClient } from '../providers/react-query-provider';
+import { queryFnIsAdvancedSupported } from '../react-query/use-is-advanced-supported';
+import { fetchAccountSettings } from '../services/account-api';
+import { useAppStore } from '../store/app/store';
 import { useI18nStore } from '../store/i18n/store';
 
-import { loadApps } from './app/load-apps';
-
 type InitError = {
-	error: string;
+  error: string;
 };
-export const init = (_i18nFactory: I18nFactory): Promise<InitError | void> =>
-	isAdvancedSupported().then(async (response): Promise<InitError | void> => {
-		if ('errorMessage' in response) {
-			return { error: response.errorMessage };
-		}
-		let initialCalls;
-		if (response.supported) {
-			initialCalls = Promise.all([getInfo(), loginConfig(), getAllConfig(), getMinMaxAPIVersion()]);
-		} else {
-			initialCalls = Promise.all([getInfo(), getAllConfig()]);
-		}
-		return initialCalls
-			.then(() => {
-				// First get the admin account information for zimbraPrefLocale
-                               return getAccount();
-                       })
-                       .then(() => {
-                               // Fallback to GetInfo locale if GetAccount didn't provide one
-                               const currentLocale = useI18nStore.getState().locale;
-                               if (currentLocale === 'en') {
-                                       const fallbackLocale =
-                                               (
-                                                       (useAccountStore.getState().settings?.prefs?.zimbraPrefLocale as string) ??
-                                                       (useAccountStore.getState().settings?.attrs?.zimbraLocale as string)
-                                               )?.split?.('_')?.[0] ?? 'en';
 
-                                       if (fallbackLocale !== 'en') {
-                                               _i18nFactory.setLocale(fallbackLocale);
-                                               useI18nStore.getState().setLocale(fallbackLocale);
-                                       }
-                               } else {
-                                       // Update the old i18n factory to match the new store
-                                       _i18nFactory.setLocale(currentLocale);
-                               }
-				loadApps(Object.values(useAppStore.getState().apps));
-			})
-			.catch((error: Error) => ({ error: error.message }));
-	});
+type InitResult = InitError | void;
+
+type AccountSettings = {
+  prefs?: { zimbraPrefLocale?: string };
+  attrs?: { zimbraLocale?: string };
+};
+
+function loadAppTranslations(): void {
+  const apps = Object.values(useAppStore.getState().apps);
+  const { locale, addI18n } = useI18nStore.getState();
+  addI18n(apps, locale);
+}
+
+function getLocaleFromSettings(settings: AccountSettings | undefined): string {
+  const rawLocale = settings?.prefs?.zimbraPrefLocale ?? settings?.attrs?.zimbraLocale;
+  return rawLocale?.split('_')[0] ?? 'en';
+}
+
+async function initLocale(i18nFactory: I18nFactory): Promise<void> {
+  try {
+    // Fetch account settings to get the user's preferred locale
+    const settings = await fetchAccountSettings();
+
+    // Cache settings in query client for later use
+    queryClient.setQueryData(['account', 'settings'], settings);
+
+    const locale = getLocaleFromSettings(settings);
+
+    if (locale !== 'en') {
+      i18nFactory.setLocale(locale);
+      useI18nStore.getState().setLocale(locale);
+    }
+  } catch {
+    // If settings fetch fails, continue with default 'en' locale
+  }
+}
+
+export async function init(i18nFactory: I18nFactory): Promise<InitResult> {
+  try {
+    const advancedSupport = await queryFnIsAdvancedSupported();
+
+    if (!advancedSupport || 'errorMessage' in advancedSupport) {
+      return { error: 'Advanced is not supported' };
+    }
+
+    if (advancedSupport?.supported) {
+      await loginConfig();
+    }
+
+    // Fetch locale from account settings before loading apps and translations
+    await initLocale(i18nFactory);
+
+    loadAllApps();
+    await getAccount();
+
+    loadAppTranslations();
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}

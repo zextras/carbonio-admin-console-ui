@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Button, Container, Row, Text } from '@zextras/ui-components';
 import React from 'react';
-
-import { Button, Container, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import ErrorSVG from '../svg/carbonio-load-app-error.svg';

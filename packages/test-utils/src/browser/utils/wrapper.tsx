@@ -4,44 +4,132 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
+import '@zextras/ui-components/web-components';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useContextBridge } from '@zextras/admin-ui-bootstrap/testing';
+import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider, useLocation, useNavigate } from 'react-router';
 
 const getAppI18n = (): i18n => {
-	const newI18n = i18next.createInstance();
-	newI18n.init({
-		lng: 'en',
-		fallbackLng: 'en',
-		debug: false,
-		interpolation: {
-			escapeValue: false
-		},
-		resources: { en: { translation: {} } }
-	});
-	return newI18n;
+  const newI18n = i18next.createInstance();
+  newI18n.init({
+    lng: 'en',
+    fallbackLng: 'en',
+    debug: false,
+    interpolation: {
+      escapeValue: false,
+    },
+    resources: { en: { translation: {} } },
+  });
+  return newI18n;
 };
 
 export type WrapperProps = {
-	children?: React.ReactNode;
+  children?: React.ReactNode;
+  queryClient?: QueryClient;
+  initialRouterEntry?: string;
 };
 
-export const I18NextTestProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
-	const i18nInstance = useMemo(() => getAppI18n(), []);
-
-	return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
+export const getQueryClient = (): QueryClient => {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: 0,
+        staleTime: Infinity,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+    },
+  });
 };
 
-export const Wrapper = ({ children }: WrapperProps): JSX.Element => (
-	<BrowserRouter>
-		<ThemeProvider>
-			<SnackbarManager>
-				<I18NextTestProvider>
-					<ModalManager>{children}</ModalManager>
-				</I18NextTestProvider>
-			</SnackbarManager>
-		</ThemeProvider>
-	</BrowserRouter>
-);
+export const I18NextTestProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.JSX.Element => {
+  const i18nInstance = useMemo(() => getAppI18n(), []);
+
+  return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
+};
+
+export const BootstrapBridgeProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.JSX.Element => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const createSnackbar = () => ({});
+  const createModal = () => {};
+
+  const history = useMemo(
+    () => ({
+      push: (to: string) => navigate(to),
+      replace: (to: string) => navigate(to, { replace: true }),
+      goBack: () => navigate(-1),
+      go: (delta: number) => navigate(delta),
+      location,
+      createHref: (to: string) => to,
+      listen: () => () => {},
+    }),
+    [navigate, location],
+  );
+
+  // Initialize the context bridge immediately and synchronously
+  const { add } = useContextBridge.getState();
+  add({
+    functions: {
+      getHistory: () => history,
+      createSnackbar,
+      createModal,
+    },
+  });
+
+  return <>{children}</>;
+};
+
+export const Wrapper = ({
+  children,
+  queryClient: providedQueryClient,
+  initialRouterEntry,
+}: WrapperProps) => {
+  const defaultQueryClient = useMemo(() => getQueryClient(), []);
+  const queryClient = providedQueryClient ?? defaultQueryClient;
+
+  const router = useMemo(
+    () =>
+      createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <QueryClientProvider client={queryClient}>
+                <ThemeProvider>
+                  <SnackbarManager>
+                    <I18NextTestProvider>
+                      <ModalManager>
+                        <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+                      </ModalManager>
+                    </I18NextTestProvider>
+                  </SnackbarManager>
+                </ThemeProvider>
+              </QueryClientProvider>
+            ),
+          },
+        ],
+        {
+          initialEntries: [initialRouterEntry ?? '/'],
+        },
+      ),
+    [children, queryClient, initialRouterEntry],
+  );
+
+  return <RouterProvider router={router} />;
+};

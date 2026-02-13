@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, expect,it } from 'vitest';
 
 import { CosPrefAttributes } from '../../../../../../types/cos';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../../../constants';

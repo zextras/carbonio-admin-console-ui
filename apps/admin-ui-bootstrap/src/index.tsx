@@ -3,46 +3,63 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import './index.css';
-import React, { Suspense, lazy } from 'react';
-import ReactDOM from 'react-dom/client';
-
-import LoadingView from './boot/splash';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import '@zextras/ui-components/web-components';
 
-window.addEventListener('contextmenu', (ev) => {
-	if (
-		!(
-			['IMG', 'A'].find(
-				// @ts-ignore
-				(name) => ev?.target?.tagName === name
-			) ||
-			ev.view?.getSelection?.()?.type === 'Range' ||
-			// @ts-ignore
-			ev.path?.find((element) =>
-				element.classList?.find?.((cl: string) => cl === 'carbonio-bypass-context-menu')
-			)
-		)
-	)
-		ev.preventDefault();
-});
+import { StrictMode, Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
 
-// @ts-ignore works as intended, but it's tampering with the window
-window.__CARBONIO_DEV__ = !!new URL(window.location).searchParams.get('dev');
-const Bootstrapper = lazy(() => import('./boot/bootstrapper'));
+import { Bootstrapper } from './boot/bootstrapper';
+import LoadingView from './boot/splash';
 
-// Hot Module Replacement (only active during dev server, not in builds)
-if (import.meta.hot) {
-	import.meta.hot.accept();
+function shouldAllowContextMenu(ev: MouseEvent): boolean {
+  const target = ev.target as HTMLElement;
+
+  // Allow for images and links (including wrapped elements)
+  if (target.closest('img, a')) {
+    return true;
+  }
+
+  // Allow when text is selected
+  if (ev.view?.getSelection?.()?.type === 'Range') {
+    return true;
+  }
+
+  // Allow for elements with bypass class
+  if (target.closest('.carbonio-bypass-context-menu')) {
+    return true;
+  }
+
+  return false;
 }
 
-const root = ReactDOM.createRoot(document.getElementById('app')!);
-root.render(
-	<Suspense fallback={<LoadingView />}>
-		<Bootstrapper key="boot" />
-	</Suspense>
+function setupContextMenuRestriction(): void {
+  window.addEventListener('contextmenu', (ev) => {
+    if (!shouldAllowContextMenu(ev)) {
+      ev.preventDefault();
+    }
+  });
+}
+
+function getAppRoot(): HTMLElement {
+  const root = document.getElementById('app');
+  if (!root) {
+    throw new Error('Root element #app not found');
+  }
+  return root;
+}
+
+// Initialize
+setupContextMenuRestriction();
+
+ReactDOM.createRoot(getAppRoot()).render(
+  <StrictMode>
+    <Suspense fallback={<LoadingView />}>
+      <Bootstrapper />
+    </Suspense>
+  </StrictMode>,
 );

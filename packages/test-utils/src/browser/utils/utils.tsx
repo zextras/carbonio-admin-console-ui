@@ -4,20 +4,213 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { type ReactElement } from 'react';
+import { type QueryClient } from '@tanstack/react-query';
+import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
+import { clone, cloneDeep, map } from 'lodash-es';
+import { type ReactElement } from 'react';
+import { useLocation } from 'react-router';
 import { render, type RenderResult } from 'vitest-browser-react';
 
-import { WrapperProps, Wrapper } from './wrapper';
+import { allConfigBaseResponseMock } from '../../api-mocks/get-all-config-response-mock';
+import { getAllConfigRightsBaseResponseMock } from '../../api-mocks/get-all-config-rights-response';
+import { getInfoResponseBaseMock } from '../../api-mocks/get-info-response-mock';
+import { getQueryClient, Wrapper, WrapperProps } from './wrapper';
+
+export const LocationDisplay = () => {
+  const location = useLocation();
+  return <div data-testid="location">{location.pathname}</div>;
+};
 
 export const setupBrowserTest = (
-	ui: ReactElement,
-	options?: { initialRouterEntry: string }
+  ui: ReactElement,
+  options?: { initialRouterEntry?: string; queryClient?: QueryClient },
 ): Promise<RenderResult> => {
-	if (options?.initialRouterEntry) {
-		window.history.replaceState({}, '', options.initialRouterEntry);
-	}
+  const effectiveQueryClient = options?.queryClient ?? getQueryClient();
 
-	return render(ui, {
-		wrapper: ({ children }: Pick<WrapperProps, 'children'>) => <Wrapper>{children}</Wrapper>
-	});
+  if (!options?.queryClient) {
+    const globalCache = queryClient.getQueryCache().getAll();
+    globalCache.forEach((query) => {
+      if (query.queryKey[0] === 'account' || query.queryKey[0] === 'effective-rights') {
+        effectiveQueryClient.setQueryData(query.queryKey, query.state.data);
+      }
+    });
+  }
+
+  return render(ui, {
+    wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
+      <Wrapper queryClient={effectiveQueryClient} initialRouterEntry={options?.initialRouterEntry}>
+        {children}
+      </Wrapper>
+    ),
+  });
 };
+
+export async function setupAccount(queryClientParam?: QueryClient): Promise<void> {
+  // Use provided queryClient or fall back to global one
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
+  // Populate React Query cache with test data
+  effectiveQueryClient.setQueryData(['account', 'info'], {
+    id: 'test-user-id',
+    name: 'test@example.com',
+    displayName: '',
+    signatures: {
+      signature: [],
+    },
+    identities: undefined,
+    rights: { targets: [] },
+  });
+
+  effectiveQueryClient.setQueryData(['account', 'settings'], {
+    prefs: {},
+    attrs: {},
+    props: [],
+  });
+
+  effectiveQueryClient.setQueryData(['account', 'version'], '1.0.0');
+}
+
+export async function grantUserConfigRights(queryClientParam?: QueryClient): Promise<void> {
+  await setupAccount(queryClientParam);
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
+  const mockConfigRightsData = [
+    {
+      type: 'config',
+      all: [
+        {
+          setAttrs: [{ all: true }],
+          getAttrs: [{ all: true }],
+        },
+      ],
+    },
+  ];
+  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
+}
+
+export async function grantUserCosRights(queryClientParam?: QueryClient): Promise<void> {
+  await setupAccount(queryClientParam);
+  const effectiveQueryClient = queryClientParam ?? queryClient;
+
+  const mockCosRightsData = [
+    {
+      type: 'cos',
+      all: [
+        {
+          right: [
+            { n: 'assignCos' },
+            { n: 'deleteCos' },
+            { n: 'listCos' },
+            { n: 'manageZimlet' },
+            { n: 'renameCos' },
+          ],
+          setAttrs: [{ all: true }],
+          getAttrs: [{ all: true }],
+        },
+      ],
+    },
+  ];
+  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
+}
+type GetGetInfoResponseMockOptions = {
+  prefs?: typeof getInfoResponseBaseMock.prefs._attrs;
+  attrs?: typeof getInfoResponseBaseMock.attrs._attrs;
+};
+
+export function getGetInfoResponseMock(
+  options?: GetGetInfoResponseMockOptions,
+): typeof getInfoResponseBaseMock {
+  const overrides = {
+    ...(options?.prefs && {
+      prefs: {
+        _attrs: {
+          ...getInfoResponseBaseMock.prefs._attrs,
+          ...options.prefs,
+        },
+      },
+    }),
+    ...(options?.attrs && {
+      attrs: {
+        _attrs: {
+          ...getInfoResponseBaseMock.attrs._attrs,
+          ...options.attrs,
+        },
+      },
+    }),
+  };
+  return {
+    ...getInfoResponseBaseMock,
+    ...overrides,
+  };
+}
+
+type ConfigItem = { n: string; _content: string };
+type ConfigOverrides = Record<string, string>;
+
+export function getAllConfigResponseMock(
+  options?: ConfigOverrides,
+): typeof allConfigBaseResponseMock {
+  if (!options) {
+    return {
+      ...allConfigBaseResponseMock,
+      a: map(allConfigBaseResponseMock.a.map, clone),
+    };
+  }
+
+  const optionsArray: ConfigItem[] = Object.entries(options).map(([n, _content]) => ({
+    n,
+    _content,
+  }));
+
+  const updatedBaseConfig: ConfigItem[] = allConfigBaseResponseMock.a.map((item) => {
+    const overrideContent = options[item.n];
+    if (overrideContent !== undefined) {
+      return { ...item, _content: overrideContent };
+    }
+    return { ...item };
+  });
+
+  const baseNames = new Set(allConfigBaseResponseMock.a.map((item) => item.n));
+  const newConfigItems: ConfigItem[] = optionsArray.filter((option) => !baseNames.has(option.n));
+  const finalConfigArray: ConfigItem[] = [...updatedBaseConfig, ...newConfigItems];
+
+  return {
+    ...allConfigBaseResponseMock,
+    a: finalConfigArray,
+  };
+}
+
+export type RightOverrides = Record<string, string[]>;
+
+export function getAllConfigRightsResponseMock(
+  overrides?: RightOverrides,
+): typeof getAllConfigRightsBaseResponseMock {
+  const baseClone = cloneDeep(getAllConfigRightsBaseResponseMock);
+
+  if (!overrides) {
+    return baseClone;
+  }
+
+  const updatedTargets = baseClone.target.map((targetGroup) => {
+    const targetType = targetGroup.type;
+    const newRightsList = overrides[targetType];
+
+    if (newRightsList === undefined) {
+      return targetGroup;
+    }
+
+    return {
+      ...targetGroup,
+      all:
+        targetGroup.all?.map((allEntry) => ({
+          ...allEntry,
+          right: newRightsList.map((rightName) => ({ n: rightName })),
+        })) || targetGroup.all,
+    };
+  });
+
+  return {
+    ...baseClone,
+    target: updatedTargets,
+  };
+}

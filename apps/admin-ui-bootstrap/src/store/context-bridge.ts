@@ -5,9 +5,8 @@
  */
 
 
+import { reduce } from 'lodash-es';
 import { useEffect } from 'react';
-
-import { reduce } from 'lodash';
 import { create } from 'zustand';
 
 import { ContextBridgeState } from '../../types';
@@ -20,7 +19,7 @@ export const useContextBridge = create<ContextBridgeState>((set) => ({
 			packageDependentFunctions: reduce(
 				packageDependentFunctions ?? {},
 				(acc, f, key) => {
-					// eslint-disable-next-line no-param-reassign
+					 
 					acc[key] = f;
 					return acc;
 				},
@@ -29,7 +28,7 @@ export const useContextBridge = create<ContextBridgeState>((set) => ({
 			functions: reduce(
 				functions ?? {},
 				(acc, f, key) => {
-					// eslint-disable-next-line no-param-reassign
+					 
 					acc[key] = f;
 					return acc;
 				},

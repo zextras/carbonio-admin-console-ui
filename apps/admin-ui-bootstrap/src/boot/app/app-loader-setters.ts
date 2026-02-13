@@ -5,73 +5,18 @@
  */
 // The 'useXXX' functions actually return hooks
 
-import {
-	AppRouteDescriptor,
-	BoardView,
-	CarbonioModule,
-	PrimaryAccessoryView,
-	SearchView,
-	SecondaryAccessoryView,
-	UtilityView
-} from '../../../types';
+import { AppRouteDescriptor, CarbonioModule } from '../../../types';
 import { useAppStore } from '../../store/app';
-import {
-	normalizeRoute,
-	normalizeSearchView,
-	normalizeUtilityView,
-	normalizePrimaryAccessoryView,
-	normalizeSecondaryAccessoryView,
-	normalizeBoardView
-} from '../../store/app/utils';
+import { normalizeRoute } from '../../store/app/utils';
 import { useIntegrationsStore } from '../../store/integrations/store';
 
 export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => {
 	const appSetters = useAppStore.getState().setters;
 	const integrations = useIntegrationsStore.getState();
 	return {
-		updatePrimaryBadge: appSetters.updatePrimaryBadge,
-		updateUtilityBadge: appSetters.updateUtilityBadge,
 		addRoute: (route: Partial<AppRouteDescriptor>) =>
 			appSetters.addRoute(normalizeRoute(route, pkg)),
-		setRouteVisibility: (routeId: string, visible: boolean) =>
-			appSetters.setRouteVisibility(routeId, visible),
 		removeRoute: (routeId: string) => appSetters.removeRoute(routeId),
-		// add board
-		addBoardView: (data: Partial<BoardView>) =>
-			appSetters.addBoardView(normalizeBoardView(data, pkg)),
-		// remove board
-		removeBoardView: appSetters.removeBoardView,
-		//
-		// add search
-		addSearchView: (data: Partial<SearchView>) =>
-			appSetters.addSearchView(normalizeSearchView(data, pkg)),
-		// remove search
-		removeSearchView: appSetters.removeSearchView,
-		//
-		// add utility
-		addUtilityView: (data: Partial<UtilityView>) =>
-			appSetters.addUtilityView(normalizeUtilityView(data, pkg)),
-		// remove utility
-		removeUtilityView: appSetters.removeUtilityView,
-		//
-		// add primaryAccessory
-		addPrimaryAccessoryView: (data: Partial<PrimaryAccessoryView>) =>
-			appSetters.addPrimaryAccessoryView(normalizePrimaryAccessoryView(data, pkg)),
-		// remove primaryAccessory
-		removePrimaryAccessoryView: appSetters.removePrimaryAccessoryView,
-		//
-		// add secondaryAccessory
-		addSecondaryAccessoryView: (data: Partial<SecondaryAccessoryView>) =>
-			appSetters.addSecondaryAccessoryView(normalizeSecondaryAccessoryView(data, pkg)),
-		// remove secondaryAccessory
-		removeSecondaryAccessoryView: appSetters.removeSecondaryAccessoryView,
-		registerHooks: integrations.registerHooks,
-		removeHooks: integrations.removeHooks,
-		registerFunctions: integrations.registerFunctions,
-		removeFunctions: integrations.removeFunctions,
-		registerActions: integrations.registerActions,
-		removeActions: integrations.removeActions,
-		registerComponents: integrations.registerComponents(pkg.name),
-		removeComponents: integrations.removeComponents
+		registerActions: integrations.registerActions
 	};
 };

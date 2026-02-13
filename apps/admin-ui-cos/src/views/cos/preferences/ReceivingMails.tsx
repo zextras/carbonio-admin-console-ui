@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Select, SelectItem, Text } from '@zextras/carbonio-design-system';
+import { Container, Input, Row, Select, SelectItem, Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,7 @@ export const ReceivingMails = ({
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
-			// eslint-disable-next-line sonarjs/no-duplicate-string
+			
 			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
 			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
 		],

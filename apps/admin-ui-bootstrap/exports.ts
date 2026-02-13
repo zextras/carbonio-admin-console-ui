@@ -3,59 +3,130 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { getAppContext } from './src/apps/loader';
 import { pushHistory, replaceHistory } from './src/history/hooks';
 import {
-	getSoapFetch,
-	getSoapFetchRequest as getSoapFetchRequestFn,
-	postSoapFetchRequest as postSoapFetchRequestFn,
-	fetchExternalSoap as fetchExternalSoapFn
+	fetchExternalSoap,
+	getSoapFetchRequest,
+	postSoapFetchRequest,
+	soapFetch
 } from './src/network/fetch';
+import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
+import { useBackupServers } from './src/react-query/use-backup-servers';
+import { useAllConfig } from './src/react-query/use-config';
+import { useDomainInformation } from './src/react-query/use-domain-information';
+import {
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
+	useGlobalConfigValue,
+	useGlobalSettings
+} from './src/react-query/use-global-settings';
+import { useIsAdvanced } from './src/react-query/use-is-advanced-supported';
+import { useLastLoginTimestamp } from './src/react-query/use-last-login';
+import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
+import {
+	getAllRights,
+	getRights,
+	useCurrentUserRights,
+	useHasAllRights,
+	useRightsByType} from './src/react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
+import {
+	useActivateLicense,
+	useLicenseInfo,
+	useModuleLicenseInfo,
+	useRemoveLicense,
+	useVersion
+} from './src/react-query/use-subscription';
 import { usePrimaryBarState } from './src/shell/hooks';
-import { useUserAccount, useUserAccounts, useUserSettings } from './src/store/account/hooks';
-import { useIsAdvanced } from './src/store/advance';
 import { useAppStore } from './src/store/app/store';
 import { normalizeRoute } from './src/store/app/utils';
-import { useAllConfig } from './src/store/config';
-import { useDomainInformation } from './src/store/domain-information';
-import { getIntegratedFunction } from './src/store/integrations/getters';
-import { useIntegratedComponent } from './src/store/integrations/hooks';
+import { getLocale } from './src/store/i18n/hooks';
 import { useIntegrationsStore } from './src/store/integrations/store';
-import { getTags } from './src/store/tags';
-import { AppRouteDescriptor } from './types/apps';
+import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
+import { useDomainStore } from './src/store/shared/domains';
+import { useStickyBarStore } from './src/store/shared/sticky-bar';
+import { AppRouteDescriptor, CarbonioModule } from './types/apps';
 
-// NOTE: hardcoding CarbonioModule params specific to admin-ui-console,
-// as for the moment we do not need to load other apps with admin-ui-bootstrap.
-// the issue will be dealt with once bootstrapper is refactored
-// to make the admin panel a micro-frontend
-const pkg = { name: 'admin-ui-console', priority: 3, icon: 'List' };
+// Default fallback pkg for when app context cannot be determined
+const defaultPkg: Pick<CarbonioModule, 'name' | 'priority' | 'icon'> = {
+	name: 'carbonio-admin-ui',
+	priority: 99,
+	icon: 'List'
+};
 
-const soapFetch = getSoapFetch(pkg.name);
-const getSoapFetchRequest = getSoapFetchRequestFn(pkg.name);
-const postSoapFetchRequest = postSoapFetchRequestFn(pkg.name);
-const fetchExternalSoap = fetchExternalSoapFn(pkg.name);
+// Determine which app is calling by inspecting the call stack
+function getCallerPkg(): Pick<CarbonioModule, 'name' | 'priority' | 'icon'> {
+	const stack = new Error().stack;
+	if (!stack) {
+		return defaultPkg;
+	}
+
+	// The stack format varies by browser/runtime, but typically includes file paths
+	// Look for apps/admin-ui-{name}/ pattern in the stack
+	const match = stack.match(/apps[\\/]+admin-ui-((?:[^\\/]+))[\\/]+/);
+	if (match) {
+		const appName = match[1];
+		const packageName = `@zextras/admin-ui-${appName}`;
+		const appContext = getAppContext(packageName);
+
+		if (appContext) {
+			return {
+				name: appContext.name,
+				priority: appContext.priority,
+				icon: appContext.icon
+			};
+		}
+	}
+
+	return defaultPkg;
+}
+
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
-	useAppStore.getState().setters.addRoute(normalizeRoute(route, pkg));
+	useAppStore.getState().setters.addRoute(normalizeRoute(route, getCallerPkg()));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);
 const registerActions = useIntegrationsStore.getState().registerActions;
 
 export {
-	soapFetch,
+	addRoute,
+	fetchExternalSoap,
+	getAllRights,
+	getLocale,
+	getRights,
 	getSoapFetchRequest,
 	postSoapFetchRequest,
-	fetchExternalSoap,
-	addRoute,
-	removeRoute,
+	pushHistory,
 	registerActions,
+	removeRoute,
+	replaceHistory,
+	soapFetch,
+	useActivateLicense,
+	useAllConfig,
+	useAllServers,
+	useAppConfigStore,
+	useBackupServers,
+	useConfigurationAttribute,
+	useCurrentUserRights,
+	useDomainInformation,
+	useDomainStore,
+	useGlobalCarbonioSendAnalytics,
+	useGlobalConfigList,
+	useGlobalConfigValue,
+	useGlobalSettings,
+	useHasAllRights,
+	useIsAdvanced,
+	useLastLoginTimestamp,
+	useLicenseInfo,
+	useMailstoreServers,
+	useModuleLicenseInfo,
+	useMtaServers,
+	usePrimaryBarState,
+	useRemoveLicense,
+	useRightsByType,
+	useServersByService,
+	useStickyBarStore,
 	useUserAccount,
 	useUserAccounts,
-	getIntegratedFunction,
 	useUserSettings,
-	getTags,
-	replaceHistory,
-	usePrimaryBarState,
-	useAllConfig,
-	useDomainInformation,
-	useIsAdvanced,
-	useIntegratedComponent,
-	pushHistory
+	useVersion
 };

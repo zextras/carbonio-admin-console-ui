@@ -3,17 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
 import {
-	Switch,
-	Tooltip,
-	IconCheckbox,
-	Text,
-	Row,
 	Container,
-	Padding
-} from '@zextras/carbonio-design-system';
+	IconCheckbox,
+	Padding,
+	Row,
+	Switch,
+	Text,
+	Tooltip} from '@zextras/ui-components';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const InheritedSwitch: FC<{
@@ -52,7 +50,7 @@ const InheritedSwitch: FC<{
 					value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
 					onClick={(): void => onChange(inputName)}
 					label={label}
-					iconColor={iconColor}
+					iconColor={iconColor as 'primary' | 'text' | 'gray0' | 'error' | 'warning' | 'success'}
 					disabled={disabled}
 					onFocus={onFocus}
 				/>

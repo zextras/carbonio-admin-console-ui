@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach,describe, expect, it, vi } from 'vitest';
 
 import { retry } from '../utils';
 
@@ -223,7 +223,7 @@ describe('retry function', () => {
 
 		it('should handle functions that throw non-Error objects', async () => {
 			const throwStringFn = vi.fn().mockImplementation(() => {
-				// eslint-disable-next-line no-throw-literal
+				 
 				throw 'String error';
 			});
 

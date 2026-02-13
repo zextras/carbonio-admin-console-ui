@@ -4,12 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ComponentType } from 'react';
-
 import { type To } from 'history';
 import { type i18n } from 'i18next';
 
-import { DARK_READER_VALUES } from '../../src/constants';
 import { CarbonioModule, PanelMode } from '../apps';
 
 export interface II18nFactory {
@@ -22,21 +19,20 @@ export interface II18nFactory {
 
 export type DRPropValues = 'auto' | 'enabled' | 'disabled';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export type PackageDependentFunction = (app: string) => Function;
 
 export type ContextBridgeState = {
 	packageDependentFunctions: Record<string, PackageDependentFunction>;
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+
 	functions: Record<string, Function>;
 	add: (content: Partial<Omit<ContextBridgeState, 'add'>>) => void;
 };
 
-export type IShellWindow = Window & {
-	__ZAPP_SHARED_LIBRARIES__: { [name: string]: any };
-	__ZAPP_HMR_EXPORT__: { [pkgName: string]: (appClass: ComponentType) => void };
-	// __ZAPP_HMR_HANDLERS__: { [pkgName: string]: (handlers: RequestHandlersList) => void };
-};
+/**
+ * Extended Window type for the shell application.
+ * ESM modules use import maps for dependency sharing - no globals needed.
+ */
+export type IShellWindow = Window;
 
 export type LoadedAppRuntime = AppInjections & {
 	pkg: CarbonioModule;
@@ -144,14 +140,3 @@ export type CreateModalProps = {
 	type: string;
 	zIndex: number;
 };
-
-export type DarkReaderPropValues = (typeof DARK_READER_VALUES)[number];
-
-export function isDarkReaderPropValues(
-	maybeDarkReaderPropValue: unknown
-): maybeDarkReaderPropValue is DarkReaderPropValues {
-	return (
-		typeof maybeDarkReaderPropValue === 'string' &&
-		DARK_READER_VALUES.includes(maybeDarkReaderPropValue)
-	);
-}

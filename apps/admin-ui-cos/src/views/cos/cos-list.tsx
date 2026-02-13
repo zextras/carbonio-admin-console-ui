@@ -3,20 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
 
-import {
-	Container,
-	Input,
-	Row,
-	Text,
-	Table,
-	Divider,
-	Icon,
-	useSnackbar,
-	Button
-} from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
+import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { Button, Container, Icon, Input, Row, Table, Text, useSnackbar } from '@zextras/ui-components';
+import { debounce } from 'lodash-es';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
@@ -144,6 +135,7 @@ const CosList: FC = () => {
 				name: Cos?.name
 			});
 			setCosView(GENERAL_INFORMATION);
+			replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
 		},
 		[setCos, setCosView]
 	);
@@ -285,7 +277,7 @@ const CosList: FC = () => {
 				</Container>
 			</Row>
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
+				<divider-wc></divider-wc>
 			</Row>
 			<Container
 				orientation="column"
@@ -317,7 +309,7 @@ const CosList: FC = () => {
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setSearchString(e.target.value);
 									}}
-									CustomIcon={(): JSX.Element => (
+									CustomIcon={(): React.JSX.Element => (
 										<Icon icon="FunnelOutline" size="large" color="primary" />
 									)}
 								/>

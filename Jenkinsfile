@@ -5,13 +5,15 @@
  */
 
 library(
-    identifier: 'jenkins-lib-common@1.1.2',
+    identifier: 'jenkins-lib-common@1.2.1',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-lib-common.git',
         credentialsId: 'jenkins-integration-with-github-account'
     ])
 )
+
+properties(defaultPipelineProperties())
 
 pipeline {
     agent {
@@ -139,8 +141,8 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh '''
-                                npm install -g @sonar/scan
-                                sonar-scanner \
+                                npm install -g sonarqube-scanner
+                                npx sonar-scanner \
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             '''
@@ -242,9 +244,9 @@ pipeline {
             steps {
                 container('pnpm') {
                     script {
-                        sh 'node build_unified.js'
+                        sh 'pnpm build'
                     }
-                    stash includes: 'package/**', name: 'staging'
+                    stash includes: 'dist/**,yap.json', name: 'staging'
                 }
             }
         }
@@ -253,7 +255,7 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
-                        skipStash: false,
+                        skipStash: true,
                         stashName: 'staging',
                         buildDirs: ['.'],
                         ubuntuSinglePkg: true,
@@ -262,30 +264,16 @@ pipeline {
                 }
             }
         }
-        stage('Publish containers - devel') {
-            when {
-                anyOf {
-                    expression {
-                        isDevelBranch == true
-                    }
-                }
-            }
+        stage('Publish docker images') {
             steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        script {
-                            tags = ['latest', 'devel']
-                            dockerHelper.buildImage([
-                                imageName: 'registry.dev.zextras.com/dev/carbonio-admin-ui-console',
-                                imageTags: tags,
-                                ocLabels: [
-                                    title: 'Carbonio Admin Console UI',
-                                    description: 'Carbonio Admin Console UI Container'
-                                ]
-                            ])
-                        }
-                    }
-                }
+                dockerStage([
+                    dockerfile: 'Dockerfile',
+                    imageName: 'registry.dev.zextras.com/dev/carbonio-admin-console-ui',
+                    ocLabels: [
+                        title: 'Carbonio Admin Console UI',
+                        description: 'Carbonio Admin Console UI Container'
+                    ]
+                ])
             }
         }
         stage('Upload artifacts') {

@@ -4,62 +4,106 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execSync } from 'node:child_process';
+import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from '../../vite.rollup.config';
+import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
+import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
+import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
+import { getWorkspaceRoot } from '../../scripts/utils';
 
-
-// IMPORTANT: For production, always build with NODE_ENV=production and vite build --mode production
-const commitHash = process.env.COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
+const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
-const basePath = `/static/iris/${packageName}/${commitHash}/`;
+const basePath = `/static/iris/${packageName}/`;
 
-export default defineConfig(({ mode }) => {
-	const isDev = mode === 'development';
+function getProxyTarget(): string {
+  const target = process.env.VITE_TARGET || 'localhost';
+  return `https://${target}:6071`;
+}
 
-	return {
-		plugins: [
-			react({
-				babel: {
-					plugins: ['babel-plugin-styled-components']
-				}
-			}),
-			svgr({
-				svgrOptions: {
-					ref: true,
-					svgo: false,
-					titleProp: true,
-					exportType: 'default'
-				},
-				include: '**/*.svg'
-			})
-		],
-		define: {
-			COMMIT_ID: JSON.stringify(commitHash),
-			BASE_PATH: JSON.stringify(basePath),
-			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production')
-		},
-		resolve: {
-			alias: {
-				path: 'path-browserify'
-			},
-			extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.d.ts']
-		},
-			build: {
-				outDir: `dist/source/${commitHash}`,
-				emptyOutDir: true,
-				sourcemap: isDev, // Disable sourcemap in production for optimized build
-				rollupOptions: createBootstrapRollupOptions(isDev)
-			},
-		base: basePath,
-		publicDir: 'assets',
-		server: {
-			port: 3000,
-			strictPort: false
-		}
-	};
+export default defineConfig(({ command, mode }) => {
+  const isServeCommand = command === 'serve';
+  const isDev = mode === 'development';
+  const proxyTarget = getProxyTarget();
+  if (isServeCommand) {
+    console.log('Proxy target:', `https://${proxyTarget}:6071`);
+  }
+
+  return {
+    plugins: [
+      ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
+      react({
+        babel: {
+          plugins: ['babel-plugin-styled-components'],
+        },
+      }),
+      svgr({
+        svgrOptions: {
+          ref: true,
+          svgo: false,
+          titleProp: true,
+          exportType: 'default',
+        },
+        include: '**/*.svg',
+        exclude: '**/src/assets/**/*.svg',
+      }),
+    ],
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+      BASE_PATH: JSON.stringify(basePath),
+    },
+    build: {
+      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
+      emptyOutDir: true,
+      sourcemap: isDev,
+      rollupOptions: createBootstrapRollupOptions(),
+    },
+    base: isServeCommand ? '/carbonioAdmin/' : basePath,
+    publicDir: 'assets',
+    ...(isDev
+      ? {
+          server: {
+            port: 3000,
+            strictPort: false,
+            proxy: {
+              '/carbonioAdmin/static': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
+                followRedirects: true,
+              },
+              '/service': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/logout': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/zx': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/services': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+              '/login': {
+                target: proxyTarget,
+                changeOrigin: true,
+                secure: false,
+              },
+            },
+          },
+        }
+      : {}),
+  };
 });

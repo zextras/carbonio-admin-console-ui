@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-
-import { Container, Row, Switch, Text } from '@zextras/carbonio-design-system';
+import { Container, Row, Switch, Text } from '@zextras/ui-components';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../constants';
@@ -39,7 +38,7 @@ const COSGeneralOptions: FC<{
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+			<Text size="extralarge" weight="bold">
 				{labels.generalOptions}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">
@@ -74,7 +73,7 @@ const COSGeneralOptions: FC<{
 								<Switch
 									label={labels.backup.selfUndelete}
 									value={cosAdvancedBackupAttributes[BACKUP_SELF_UNDELETE_ALLOWED]}
-									// eslint-disable-next-line max-len
+									 
 									onClick={(): void => changeBackupAttribute(BACKUP_SELF_UNDELETE_ALLOWED)}
 									iconColor="primary"
 									disabled={readonlyCOS}
