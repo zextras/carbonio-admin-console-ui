@@ -1,10 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
-    "disableReferencedProjectLoad": true,
-    // "preserveSymlinks": true,
-    // "disableSolutionSearching": true,
     "paths": {
       "@zextras/admin-ui-dashboard": ["./src/apps/app-modules.d.ts"],
       "@zextras/admin-ui-domains": ["./src/apps/app-modules.d.ts"],
@@ -19,6 +15,19 @@
       "@zextras/admin-ui-storage": ["./src/apps/app-modules.d.ts"]
     }
   },
-  "include": ["src/**/*", "**/types/**/*", "translations/**/*", "*.ts", "*.js", "*.d.ts"],
+  "references": [
+    { "path": "../../packages/ui-shared" },
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/test-utils" }
+  ],
+  "include": [
+    "src/**/*",
+    "**/types/**/*",
+    "*.ts",
+    "*.js",
+    "*.d.ts",
+    "vite.config.ts",
+    "vite-config"
+  ],
   "exclude": ["node_modules", "dist", "build"]
 }

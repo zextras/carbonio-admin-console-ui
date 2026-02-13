@@ -11,9 +11,6 @@ import type { AppManifest } from './types';
 
 const appContextMap = new Map<string, AppManifest>();
 
-export const getAppContext = (packageName: string): AppManifest | undefined =>
-  appContextMap.get(packageName);
-
 export function loadAllApps(): void {
   loadAllAppsFromRegistry(useAppStore, appContextMap);
 }

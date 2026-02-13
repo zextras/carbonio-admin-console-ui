@@ -1895,9 +1895,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
-      '@zextras/ui-components':
-        specifier: workspace:*
-        version: link:../ui-components
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1992,9 +1989,6 @@ importers:
       '@vitest/coverage-istanbul':
         specifier: ^4.0.5
         version: 4.0.18(vitest@4.0.18)
-      admin-ui-test-utils:
-        specifier: workspace:*
-        version: link:../test-utils
       babel-plugin-i18next-extract:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.3)

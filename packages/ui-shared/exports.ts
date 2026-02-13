@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getAppContext } from './src/apps/loader';
 import { pushHistory, replaceHistory, useCurrentRoute } from './src/history/hooks';
 import {
   fetchExternalSoap,
