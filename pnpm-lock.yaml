@@ -1776,6 +1776,9 @@ importers:
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../ui-shared
       i18next:
         specifier: ^22.5.1
         version: 22.5.1

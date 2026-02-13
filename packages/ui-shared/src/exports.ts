@@ -3,63 +3,62 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { pushHistory, replaceHistory, useCurrentRoute } from './src/history/hooks';
+import { AppRouteDescriptor, CarbonioModule } from '../types';
+import { getAppContext } from './apps/loader';
+import { pushHistory, replaceHistory, useCurrentRoute } from './history/hooks';
 import {
   fetchExternalSoap,
   getSoapFetchRequest,
   postSoapFetchRequest,
   soapFetch,
-} from './src/network/fetch';
-import { getAccount } from './src/network/get-account';
-import { loginConfig } from './src/network/login-config';
-import { logout } from './src/network/logout';
-import { useUserAccount, useUserAccounts, useUserSettings } from './src/react-query/use-account';
-import { useBackupServers } from './src/react-query/use-backup-servers';
-import { useAllConfig, useConfigAttribute } from './src/react-query/use-config';
-import { useDomainInformation } from './src/react-query/use-domain-information';
+} from './network/fetch';
+import { getAccount } from './network/get-account';
+import { loginConfig } from './network/login-config';
+import { logout } from './network/logout';
+import { queryClient, ReactQueryProvider } from './providers/react-query-provider';
+import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/use-account';
+import { useBackupServers } from './react-query/use-backup-servers';
+import { useAllConfig, useConfigAttribute } from './react-query/use-config';
+import { useDomainInformation } from './react-query/use-domain-information';
 import {
   useGlobalCarbonioSendAnalytics,
   useGlobalConfigList,
   useGlobalConfigValue,
   useGlobalSettings,
-} from './src/react-query/use-global-settings';
-import {
-  queryFnIsAdvancedSupported,
-  useIsAdvanced,
-} from './src/react-query/use-is-advanced-supported';
-import { useLastLoginTimestamp } from './src/react-query/use-last-login';
-import { useMailstoreServers } from './src/react-query/use-mailstore-servers';
+} from './react-query/use-global-settings';
+import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
+import { useLastLoginTimestamp } from './react-query/use-last-login';
+import { useMailstoreServers } from './react-query/use-mailstore-servers';
 import {
   getAllRights,
   getRights,
   useCurrentUserRights,
   useHasAllRights,
   useRightsByType,
-} from './src/react-query/use-rights';
-import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
+} from './react-query/use-rights';
+import { useAllServers, useMtaServers, useServersByService } from './react-query/use-servers';
 import {
   useActivateLicense,
   useLicenseInfo,
   useModuleLicenseInfo,
   useRemoveLicense,
   useVersion,
-} from './src/react-query/use-subscription';
-import { fetchAccountSettings } from './src/services/account-api';
-import { usePrimaryBarState } from './src/shell/hooks';
-import { getApp, getShell, useAppList, useAppRoutes } from './src/store/app/hooks';
-import { useAppStore } from './src/store/app/store';
-import { normalizeRoute } from './src/store/app/utils';
-import { useBridge } from './src/store/context-bridge';
-import { getLocale } from './src/store/i18n/hooks';
-import { useI18nStore } from './src/store/i18n/store';
-import { useActions } from './src/store/integrations/hooks';
-import { useIntegrationsStore } from './src/store/integrations/store';
-import { useLoginConfigStore } from './src/store/login/store';
-import { useAppConfigStore, useConfigurationAttribute } from './src/store/shared/app-config/store';
-import { useDomainStore } from './src/store/shared/domains';
-import { useStickyBarStore } from './src/store/shared/sticky-bar';
-import { useUtilityBarStore } from './src/utility-bar/store';
-import { AppRouteDescriptor, CarbonioModule } from './types/apps';
+} from './react-query/use-subscription';
+import { fetchAccountSettings } from './services/account-api';
+import { usePrimaryBarState } from './shell/hooks';
+import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
+import { useAppStore } from './store/app/store';
+import { normalizeRoute } from './store/app/utils';
+import { useBridge, useContextBridge } from './store/context-bridge';
+import { getLocale } from './store/i18n/hooks';
+import { useI18nStore } from './store/i18n/store';
+import { useActions } from './store/integrations/hooks';
+import { useIntegrationsStore } from './store/integrations/store';
+import { useLoginConfigStore } from './store/login/store';
+import { useAppConfigStore, useConfigurationAttribute } from './store/shared/app-config/store';
+import { useDomainStore } from './store/shared/domains';
+import { useStickyBarStore } from './store/shared/sticky-bar';
+import { useUtilityBarStore } from './utility-bar/store';
 
 // Default fallback pkg for when app context cannot be determined
 const defaultPkg: Pick<CarbonioModule, 'name' | 'priority' | 'icon'> = {
@@ -116,7 +115,9 @@ export {
   normalizeRoute,
   postSoapFetchRequest,
   pushHistory,
+  queryClient,
   queryFnIsAdvancedSupported,
+  ReactQueryProvider,
   registerActions,
   removeRoute,
   replaceHistory,
@@ -133,6 +134,7 @@ export {
   useBridge,
   useConfigAttribute,
   useConfigurationAttribute,
+  useContextBridge,
   useCurrentRoute,
   useCurrentUserRights,
   useDomainInformation,

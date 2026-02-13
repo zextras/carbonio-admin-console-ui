@@ -2,11 +2,11 @@
   "name": "@zextras/ui-shared",
   "description": "shared stores and utils for Carbonio Admin Panel",
   "private": true,
-  "main": "./exports.ts",
+  "main": "./src/exports.ts",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "default": "./exports.ts",
+      "default": "./src/exports.ts",
       "types": "./dist/index.d.ts"
     }
   },
