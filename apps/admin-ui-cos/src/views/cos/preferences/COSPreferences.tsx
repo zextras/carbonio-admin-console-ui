@@ -3,29 +3,29 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
-import {  Container, useSnackbar  } from '@zextras/ui-components';
-import {  find  } from 'lodash-es';
+import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { Container, useSnackbar } from '@zextras/ui-components';
+import { find } from 'lodash-es';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import {  CosAttributes, CosPrefAttributes  } from '../../../../types/cos';
-import {  COS, ZIMBRA_ADMIN_URN  } from '../../../constants';
-import {  flushCache  } from '../../../services/flush-cache-service';
-import {  modifyCos, ModifyCosBody  } from '../../../services/modify-cos-service';
-import {  useCosStore  } from '../../../store/cos/store';
-import {  PageLayout  } from '../../page-layout';
-import {  localeList  } from '../../utility/utils';
-import {  DEFAULT_COS_PREF_ATTRIBUTES  } from '../constants';
-import {  AttributeValue  } from '../constants/types';
-import {  CalendarOptions  } from './CalendarOptions';
-import {  ContactOptions  } from './ContactOptions';
-import {  ForwardingOptions  } from './ForwardingOptions';
-import {  GeneralOptions  } from './GeneralOptions';
-import {  useHasUnsavedChanges  } from './hooks/useHasUnsavedChanges';
-import {  MailOptions  } from './MailOptions';
-import {  ReceivingMails  } from './ReceivingMails';
-import {  SendingMails  } from './SendingMails';
+import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
+import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { flushCache } from '../../../services/flush-cache-service';
+import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
+import { useCosStore } from '../../../store/cos/store';
+import { PageLayout } from '../../page-layout';
+import { localeList } from '../../utility/utils';
+import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
+import { AttributeValue } from '../constants/types';
+import { CalendarOptions } from './CalendarOptions';
+import { ContactOptions } from './ContactOptions';
+import { ForwardingOptions } from './ForwardingOptions';
+import { GeneralOptions } from './GeneralOptions';
+import { useHasUnsavedChanges } from './hooks/useHasUnsavedChanges';
+import { MailOptions } from './MailOptions';
+import { ReceivingMails } from './ReceivingMails';
+import { SendingMails } from './SendingMails';
 
 export const COSPreferences = (): React.JSX.Element => {
   const [t] = useTranslation();
