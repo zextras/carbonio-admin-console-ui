@@ -6,7 +6,7 @@
   "main": "src/app.tsx",
   "scripts": {
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --build",
     "lint": "eslint --quiet",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",

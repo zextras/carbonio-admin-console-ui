@@ -1,24 +1,25 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "paths": {
-      "@zextras/admin-ui-dashboard": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-domains": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-backup": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-cos": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-legalhold": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-mta": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-notifications": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-operations": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-subscription": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-privacy": ["./src/apps/app-modules.d.ts"],
-      "@zextras/admin-ui-storage": ["./src/apps/app-modules.d.ts"]
-    }
+    "composite": false,
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false
   },
   "references": [
     { "path": "../../packages/ui-shared" },
     { "path": "../../packages/ui-components" },
-    { "path": "../../packages/test-utils" }
+    { "path": "../../packages/test-utils" },
+    { "path": "../admin-ui-dashboard" },
+    { "path": "../admin-ui-backup" },
+    { "path": "../admin-ui-cos" },
+    { "path": "../admin-ui-legalhold" },
+    { "path": "../admin-ui-mta" },
+    { "path": "../admin-ui-notifications" },
+    { "path": "../admin-ui-operations" },
+    { "path": "../admin-ui-subscription" },
+    { "path": "../admin-ui-privacy" },
+    { "path": "../admin-ui-storage" }
   ],
   "include": [
     "src/**/*",
