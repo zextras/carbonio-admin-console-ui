@@ -194,3 +194,8 @@ export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
 export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+
+// Storages API constants\
+export const STORAGES_API_BASE_URL = '/services/storages/admin';
+export const STORAGES_API_VERSION = '2';
+export const STORAGES_API_VERSION_HEADER = 'X-API-Version';
