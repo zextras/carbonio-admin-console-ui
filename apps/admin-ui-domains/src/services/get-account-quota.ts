@@ -11,14 +11,21 @@ import {
 } from '../constants';
 
 export type GetAccountQuotaRawResponse = {
-  total_limit: number;
-  total_used: number;
+  total: {
+    used: number;
+    computedLimit: number;
+  };
+  modules: {
+    mailbox: { used: number };
+    files: { used: number };
+    wsc: { used: number };
+  };
 };
 
 type GetAccountQuotaResponse =
   | {
       type: 'success';
-      computedTotalLimit: number;
+      totalComputedLimit: number;
       totalUsed: number;
     }
   | {
@@ -37,26 +44,26 @@ export const getAccountQuota = async (accountId: string): Promise<GetAccountQuot
     'Content-Type': 'application/json',
     [STORAGES_API_VERSION_HEADER]: STORAGES_API_VERSION,
   };
-  
+
   return fetch(url, { headers })
     .then((response) => {
-	  if (!response.ok) {
-		throw new Error(`API request failed with status ${response.status}`);
-	  }
-	  return response.json() as Promise<GetAccountQuotaRawResponse>;
-	})
-	.then((data) => {
-	  const { total_limit, total_used } = data;
-	  return {
-		type: 'success',
-		computedTotalLimit: total_limit,
-		totalUsed: total_used,
-	  } satisfies GetAccountQuotaResponse;
-	})
-	.catch((error) => {
-	  return {
-		type: 'error',
-		error: error.message,
-	  } satisfies GetAccountQuotaResponse;
-	});
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      return response.json() as Promise<GetAccountQuotaRawResponse>;
+    })
+    .then((data) => {
+      const { total } = data;
+      return {
+        type: 'success',
+        totalComputedLimit: total.computedLimit,
+        totalUsed: total.used,
+      } satisfies GetAccountQuotaResponse;
+    })
+    .catch((error) => {
+      return {
+        type: 'error',
+        error: error.message,
+      } satisfies GetAccountQuotaResponse;
+    });
 };
