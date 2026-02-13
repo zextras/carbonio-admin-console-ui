@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Padding, Row, Text } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +54,7 @@ const StepNavigator: FC<{
     >
       <Row wrap="nowrap" onClick={onClick} width="80%">
         <Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
-          <Icon icon={step.icon} color={color} size="large" />
+          <icon-wc icon={step.icon} color={color} size="large"></icon-wc>
         </Row>
         {renderElement && (
           <Padding left="small">
@@ -65,7 +65,7 @@ const StepNavigator: FC<{
         )}
       </Row>
       <Row wrap="nowrap" style={{ cursor: 'pointer' }} width={'20%'}>
-        {!isLastStep && <Icon icon="ChevronRight" color={color} size={'large'} />}
+        {!isLastStep && <icon-wc icon="ChevronRight" color={color} size="large"></icon-wc>}
       </Row>
     </Row>
   );

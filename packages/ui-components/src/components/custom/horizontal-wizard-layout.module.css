@@ -8,6 +8,6 @@
   cursor: pointer;
 }
 
-.rowContainer[data-is-active="true"] {
-  border-bottom: 2px solid var(--primary-regular);
+.rowContainer[data-is-active='true'] {
+  border-bottom: 2px solid var(--color-primary-regular);
 }

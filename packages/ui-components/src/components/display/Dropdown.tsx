@@ -33,7 +33,7 @@ import {
 import { pseudoClasses } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
-import { Icon } from '../basic/icon/Icon';
+import { IconName } from '../../web-components/icon-registry';
 import { Text } from '../basic/text/Text';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
@@ -52,7 +52,7 @@ const ContainerEl = styled(Container)<{
 `;
 
 type ListItemContentProps = {
-  icon?: string;
+  icon?: IconName;
   label: string;
   selected?: boolean;
   disabled?: boolean;
@@ -73,12 +73,12 @@ function ListItemContent({
       <Container orientation="horizontal" mainAlignment="flex-start">
         {icon && (
           <Padding right="small">
-            <Icon
+            <icon-wc
               icon={icon}
               size="medium"
               color={disabled ? 'secondary' : 'text'}
               style={{ pointerEvents: 'none' }}
-            />
+            ></icon-wc>
           </Padding>
         )}
         <Text
@@ -305,7 +305,7 @@ function NestListItem({
               tooltipLabel={tooltipLabel}
             />
           )}
-          <Icon size="medium" icon="ChevronRight" />
+          <icon-wc size="medium" icon="ChevronRight"></icon-wc>
         </Container>
       </Dropdown>
     </ContainerEl>
@@ -369,7 +369,7 @@ interface DropdownItem {
   type?: 'divider';
   id: string;
   label?: string;
-  icon?: string;
+  icon?: IconName;
   onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
   selected?: boolean;
   customComponent?: React.ReactNode;
