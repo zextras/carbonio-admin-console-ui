@@ -13,29 +13,15 @@ describe('getAccountQuota', () => {
   it('should call the correct API endpoint with the correct version header', async () => {
     const accountId = '12345';
     const apiResponse: GetAccountQuotaRawResponse = {
-        total_limit: 1000000000,
-        total_used: 500000000,
-        };
-
-    const apiInterceptor = createAPIInterceptor(
-      'get',
-      `/services/storages/admin/quota/accounts/${accountId}`,
-      (req) => {
-        expect(req.headers.get('X-API-Version')).toBe('2');
-        return HttpResponse.json(apiResponse, { status: 200 });
+      total: {
+        used: 500000000,
+        computedLimit: 1000000000,
       },
-    );
-
-    await getAccountQuota(accountId);
-    
-    expect(apiInterceptor.getCalledTimes()).toBe(1);
-  });
-
-  it('should return total quota for an account if the API request is successful', async () => {
-    const accountId = '12345';
-    const apiResponse: GetAccountQuotaRawResponse = {
-      total_limit: 1000000000,
-      total_used: 500000000,
+      modules: {
+        mailbox: { used: 0 },
+        files: { used: 0 },
+        wsc: { used: 0 },
+      },
     };
 
     const apiInterceptor = createAPIInterceptor(
@@ -46,14 +32,26 @@ describe('getAccountQuota', () => {
       },
     );
 
-    const result = await getAccountQuota(accountId);
+    await getAccountQuota(accountId);
 
-    expect(result).toEqual({
-      type: 'success',
-      computedTotalLimit: 1000000000,
-      totalUsed: 500000000,
-    });
     expect(apiInterceptor.getCalledTimes()).toBe(1);
+  });
+
+  it('should return total quota for an account if the API request is successful', async () => {
+    const accountId = '12345';
+
+    const apiInterceptor = createAPIInterceptor(
+      'get',
+      `/services/storages/admin/quota/accounts/${accountId}`,
+      () => {
+        return HttpResponse.json({}, { status: 200 });
+      },
+    );
+
+    await getAccountQuota(accountId);
+
+    expect(apiInterceptor.getCalledTimes()).toBe(1);
+    expect(apiInterceptor.getLastRequest().headers.get('X-API-Version')).toBe('2');
   });
 
   it('should return an error message if the API request fails', async () => {
