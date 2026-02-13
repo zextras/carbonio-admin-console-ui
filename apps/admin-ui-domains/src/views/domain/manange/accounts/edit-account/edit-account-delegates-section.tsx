@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
+import {  useIsAdvanced  } from '@zextras/ui-shared';
 import { 	Button,	Checkbox,	ChipInput,	ChipInputProps,	Container,	Padding,	Row,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  cloneDeep, debounce, filter, find, findIndex, map, pullAt  } from 'lodash-es';
 import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useRef,	useState } from 'react';

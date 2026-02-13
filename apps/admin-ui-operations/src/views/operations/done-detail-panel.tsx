@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
+import {  useMailstoreServers  } from '@zextras/ui-shared';
 import { 	Container,	Icon,	Input,	ModalOverlay,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  find, map  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';

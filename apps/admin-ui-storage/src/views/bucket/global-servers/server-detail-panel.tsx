@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	getSoapFetchRequest,	useIsAdvanced,	useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { 	getSoapFetchRequest,	useIsAdvanced,	useMailstoreServers } from '@zextras/ui-shared';
 import { 	Button,	Container,	Icon,	Input,	Row,	Table,	Text } from '@zextras/ui-components';
 import {  TFunction  } from 'i18next';
 import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useState  } from 'react';

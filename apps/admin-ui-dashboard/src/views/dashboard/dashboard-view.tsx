@@ -13,7 +13,7 @@ import {
   useIsAdvanced,
   useUserAccounts,
   useVersion,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import { Container } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';

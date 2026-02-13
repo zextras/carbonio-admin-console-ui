@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { Button, Container, Icon, Table, Text } from '@zextras/ui-components';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

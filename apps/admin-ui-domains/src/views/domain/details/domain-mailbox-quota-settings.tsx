@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore,useIsAdvanced, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import {  useDomainStore,useIsAdvanced, useUserSettings  } from '@zextras/ui-shared';
 import { 	Button,	Container,	Input,	Padding,	Row,	Select,	Table,	Text,	THeader,	useSnackbar } from '@zextras/ui-components';
 import {  TFunction  } from 'i18next';
 import {  isEqual, reduce  } from 'lodash-es';

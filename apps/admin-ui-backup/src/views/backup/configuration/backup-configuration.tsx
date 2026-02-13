@@ -11,7 +11,7 @@ import {
   useAllServers,
   useCurrentUserRights,
   useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import {
   Button,
   Container,

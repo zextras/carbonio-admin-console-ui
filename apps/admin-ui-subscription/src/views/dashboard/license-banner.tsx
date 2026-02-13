@@ -5,7 +5,7 @@
  */
 
 
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
+import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';

@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@vitest/browser-preview": "^4.0.14",
-    "@zextras/admin-ui-bootstrap": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@zextras/ui-components": "workspace:*",
     "i18next": "^22.5.1",
     "immer": "^10.1.3",

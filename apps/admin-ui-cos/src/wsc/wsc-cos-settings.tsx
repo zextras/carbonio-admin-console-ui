@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap'
+import { useCurrentUserRights } from '@zextras/ui-shared'
 import { useSnackbar } from '@zextras/ui-components';
 import { find, forEach, isEqual, size } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {  useForm  } from '@tanstack/react-form';
-import {  soapFetch, useAllConfig, useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
+import {  soapFetch, useAllConfig, useCurrentUserRights  } from '@zextras/ui-shared';
 import {  Container, Row, Text, useSnackbar  } from '@zextras/ui-components';
 import {  find  } from 'lodash-es';
 import {  FC, useCallback, useMemo  } from 'react';

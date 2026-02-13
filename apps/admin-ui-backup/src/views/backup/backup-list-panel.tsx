@@ -10,7 +10,7 @@ import {
   useGlobalCarbonioSendAnalytics,
   useMailstoreServers,
   useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

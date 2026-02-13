@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { useUserSettings } from '@zextras/ui-shared';
 import {
 	Container,
   CustomTextArea,

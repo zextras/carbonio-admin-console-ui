@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory } from '@zextras/ui-shared';
 import { Button, Container, CustomTextArea, Input, OverlayDivision, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';

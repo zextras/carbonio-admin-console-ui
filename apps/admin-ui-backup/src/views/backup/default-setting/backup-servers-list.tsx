@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { Container, Icon, Row, Table, Text, Tooltip } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';

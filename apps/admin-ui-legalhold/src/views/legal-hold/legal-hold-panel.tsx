@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  getSoapFetchRequest, useDomainInformation  } from '@zextras/admin-ui-bootstrap';
+import {  getSoapFetchRequest, useDomainInformation  } from '@zextras/ui-shared';
 import {   Button,  Container,  DropDownInput,  Icon,  Input,  OverlayDivision,  Padding,  Row,  Switch,  Table,  Text,  useScreenMode,  useSnackbar } from '@zextras/ui-components';
 import {  format  } from 'date-fns';
 import {  debounce  } from 'lodash-es';

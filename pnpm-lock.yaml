@@ -132,12 +132,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -410,12 +410,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       i18next:
         specifier: ^22.5.1
         version: 22.5.1
@@ -531,12 +531,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -673,12 +673,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -815,12 +815,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -954,12 +954,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1090,12 +1090,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1232,12 +1232,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1371,12 +1371,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1507,12 +1507,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1643,12 +1643,12 @@ importers:
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
-      '@zextras/admin-ui-bootstrap':
-        specifier: workspace:*
-        version: link:../admin-ui-bootstrap
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-shared':
+        specifier: workspace:*
+        version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0

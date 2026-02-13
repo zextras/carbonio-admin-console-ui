@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
+import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { Container, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { FC, useEffect, useState } from 'react';
 

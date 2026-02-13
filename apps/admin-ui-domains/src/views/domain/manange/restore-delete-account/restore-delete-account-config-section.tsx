@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
+import {  useDomainStore  } from '@zextras/ui-shared';
 import { 	Container,	DateTimePicker,	Dropdown,	Icon,	Input,	Row,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  debounce  } from 'lodash-es';
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';

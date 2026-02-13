@@ -9,7 +9,7 @@ import {
   registerActions,
   removeRoute,
   useCurrentUserRights,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';

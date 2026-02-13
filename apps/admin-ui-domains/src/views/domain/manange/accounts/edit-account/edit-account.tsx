@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { 	useCurrentUserRights,	useDomainStore,	useIsAdvanced, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { 	useCurrentUserRights,	useDomainStore,	useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { 	Button,	Container,	DefaultTabBarItem,	Icon,	Modal,	OverlayDivision,	Padding,	Row,	TabBar,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  differenceBy, find,isEqual, reduce, remove  } from 'lodash-es';
 import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useState } from 'react';

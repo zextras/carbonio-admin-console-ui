@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

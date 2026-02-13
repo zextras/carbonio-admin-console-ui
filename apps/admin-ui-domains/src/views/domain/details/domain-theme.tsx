@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore,useDomainStore, useUserSettings  } from '@zextras/admin-ui-bootstrap';
+import {  useAppConfigStore,useDomainStore, useUserSettings  } from '@zextras/ui-shared';
 import { 	Button,	Container,	OverlayDivision,	Padding,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  cloneDeep, isEqual, reduce  } from 'lodash-es';
 import {  FC, useCallback, useEffect, useState  } from 'react';
