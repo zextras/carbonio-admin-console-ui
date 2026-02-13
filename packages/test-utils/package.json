@@ -16,6 +16,7 @@
     "pnpm": ">=10.15.0"
   },
   "scripts": {
+    "typecheck": "tsc --build",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet"
   },
