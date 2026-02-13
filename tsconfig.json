@@ -1,11 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
   "files": [],
-  "references": [
-    { "path": "./packages/test-utils/" },
-    { "path": "./packages/ui-components/" },
-    { "path": "./packages/ui-shared/" }
-  ],
   "include": ["*.*"],
   "exclude": ["node_modules", "dist", "build"]
 }
