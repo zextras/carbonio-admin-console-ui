@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useStickyBarStore  } from '@zextras/ui-shared';
 import {  Button,Container, Input, Row, Text  } from '@zextras/ui-components';
+import {  useStickyBarStore  } from '@zextras/ui-shared';
 import {  format  } from 'date-fns';
 import {  FC  } from 'react';
 import {  useTranslation  } from 'react-i18next';
