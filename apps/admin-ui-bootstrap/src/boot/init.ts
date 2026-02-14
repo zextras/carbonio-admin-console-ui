@@ -9,10 +9,10 @@ import {
   loginConfig,
   queryClient,
   queryFnIsAdvancedSupported,
+  useAppStore,
+  useI18nStore,
 } from '@zextras/ui-shared';
 
-import { useAppStore } from '../../../../packages/ui-shared/src/store/app';
-import { useI18nStore } from '../../../../packages/ui-shared/src/store/i18n/store';
 import { loadAllApps } from '../apps/loader';
 import I18nFactory from '../i18n/i18n-factory';
 
