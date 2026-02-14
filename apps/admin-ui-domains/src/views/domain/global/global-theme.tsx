@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore  } from "@zextras/ui-shared";
 import {   Button,  Container,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from "@zextras/ui-components";
+import {  useAppConfigStore  } from "@zextras/ui-shared";
 import {  isEqual  } from "lodash-es";
 import {  FC, useCallback, useEffect, useState  } from "react";
 import {  useTranslation  } from "react-i18next";

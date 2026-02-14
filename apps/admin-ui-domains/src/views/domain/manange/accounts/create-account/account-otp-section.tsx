@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/ui-shared'
 import {
 	Button,
 	ChipInput,
@@ -13,6 +12,7 @@ import {
 	Row,
 	Switch,
 	Text} from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared'
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import { FC, useContext, useEffect,useState } from 'react';

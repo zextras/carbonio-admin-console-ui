@@ -5,11 +5,6 @@
  */
 
 import {
-  getSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-} from '@zextras/ui-shared';
-import {
   Button,
   Container,
   Input,
@@ -19,6 +14,11 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  getSoapFetchRequest,
+  useAllServers,
+  useCurrentUserRights,
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

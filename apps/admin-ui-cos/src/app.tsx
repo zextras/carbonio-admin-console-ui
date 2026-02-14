@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Icon } from '@zextras/ui-components';
 import {
   addRoute,
   registerActions,
   removeRoute,
   useCurrentUserRights,
 } from '@zextras/ui-shared';
-import { Icon } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

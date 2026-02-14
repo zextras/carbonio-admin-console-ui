@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/ui-shared';
 import {
   Container,
   CustomTextArea,
@@ -16,6 +15,7 @@ import {
   Text,
   Tooltip
 } from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
 import { find, head } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

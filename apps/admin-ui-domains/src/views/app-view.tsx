@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/ui-shared';
 import { Container, ContainerProps, Icon, Padding, Text } from '@zextras/ui-components';
+import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';

@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useIsAdvanced  } from '@zextras/ui-shared';
 import {  Container,Row, Text  } from '@zextras/ui-components';
+import {  useIsAdvanced  } from '@zextras/ui-shared';
 import {  FC, useCallback  } from 'react';
 import {  useTranslation  } from 'react-i18next';
 

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights } from '@zextras/ui-shared';
 import { useSnackbar } from '@zextras/ui-components';
+import { useCurrentUserRights } from '@zextras/ui-shared';
 import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash-es';
 import {
 	ChangeEvent,

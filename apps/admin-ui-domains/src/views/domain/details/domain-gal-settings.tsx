@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -21,6 +20,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

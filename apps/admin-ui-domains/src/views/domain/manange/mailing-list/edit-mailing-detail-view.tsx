@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import {
 	Button,
 	Checkbox,
@@ -24,6 +23,7 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/ui-components';
+import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { debounce, differenceBy,isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
 import React, { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -15,6 +14,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   getSoapFetchRequest,  useDomainStore } from "@zextras/ui-shared";
 import {   Button,  Container,  Icon,  Input,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
+import {   getSoapFetchRequest,  useDomainStore } from "@zextras/ui-shared";
 import {  debounce  } from "lodash-es";
 import {   FC,  useCallback,  useContext,  useEffect,  useMemo,  useState } from "react";
 import {  Trans, useTranslation  } from "react-i18next";

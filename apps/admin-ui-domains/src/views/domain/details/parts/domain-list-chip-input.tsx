@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppConfigStore } from '@zextras/ui-shared';
 import {
 	ChipInput,
 	ChipInputProps,
@@ -12,6 +11,7 @@ import {
 	Row,
 	Tooltip
 } from '@zextras/ui-components';
+import { useAppConfigStore } from '@zextras/ui-shared';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { Button, Container, Icon, Row, Text } from '@zextras/ui-components';
+import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

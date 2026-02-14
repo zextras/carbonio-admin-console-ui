@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import {
   getRights,
   replaceHistory,
@@ -11,7 +12,6 @@ import {
   useMailstoreServers,
   useModuleLicenseInfo,
 } from '@zextras/ui-shared';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

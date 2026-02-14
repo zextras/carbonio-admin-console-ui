@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers } from '@zextras/ui-shared';
 import { useSnackbar } from '@zextras/ui-components';
+import { useAllServers } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

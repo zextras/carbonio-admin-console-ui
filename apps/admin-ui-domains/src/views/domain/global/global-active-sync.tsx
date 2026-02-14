@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useMailstoreServers  } from '@zextras/ui-shared';
 import { 	Button,	Container,	Input,	OverlayDivision,	Padding,	Row,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
+import {  useMailstoreServers  } from '@zextras/ui-shared';
 import {  ChangeEvent, FC, useEffect, useState  } from 'react';
 import {  useTranslation  } from 'react-i18next';
 import styled from 'styled-components';

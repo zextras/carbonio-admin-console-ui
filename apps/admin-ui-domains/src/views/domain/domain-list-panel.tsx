@@ -5,16 +5,6 @@
  */
 
 import {
-  getAllRights,
-  replaceHistory,
-  useAppConfigStore,
-  useBackupServers,
-  useCurrentUserRights,
-  useDomainStore,
-  useGlobalCarbonioSendAnalytics,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
-import {
   Container,
   DropDownInput,
   Icon,
@@ -24,6 +14,16 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  getAllRights,
+  replaceHistory,
+  useAppConfigStore,
+  useBackupServers,
+  useCurrentUserRights,
+  useDomainStore,
+  useGlobalCarbonioSendAnalytics,
+  useIsAdvanced,
+} from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

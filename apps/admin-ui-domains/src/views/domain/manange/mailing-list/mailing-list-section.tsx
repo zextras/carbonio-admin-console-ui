@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useUserSettings } from '@zextras/ui-shared';
 import {
 	Container,
   CustomTextArea,
@@ -15,6 +14,7 @@ import {
 	Table,
 	Text,
 	useSnackbar} from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
 import {
 	ChangeEvent,
 	FC,

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Container } from '@zextras/ui-components';
 import {
   getRights,
   useCurrentUserRights,
@@ -14,7 +15,6 @@ import {
   useUserAccounts,
   useVersion,
 } from '@zextras/ui-shared';
-import { Container } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
