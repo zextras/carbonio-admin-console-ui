@@ -6,6 +6,7 @@
 import {
   fetchAccountSettings,
   getAccount,
+  I18nFactory,
   loginConfig,
   queryClient,
   queryFnIsAdvancedSupported,
@@ -14,7 +15,6 @@ import {
 } from '@zextras/ui-shared';
 
 import { loadAllApps } from '../apps/loader';
-import I18nFactory from '../i18n/i18n-factory';
 
 type InitError = {
   error: string;

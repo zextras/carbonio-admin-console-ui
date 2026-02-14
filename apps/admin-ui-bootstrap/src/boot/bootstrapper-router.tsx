@@ -5,11 +5,10 @@
  */
 
 import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
-import { useBridge } from '@zextras/ui-shared';
+import { BASENAME, useBridge } from '@zextras/ui-shared';
 import { FC, useContext, useMemo } from 'react';
 import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
-import { BASENAME } from '../constants';
 import ShellView from '../shell/shell-view';
 import { AppLoaderMounter } from './app/app-loader-mounter';
 

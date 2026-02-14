@@ -5,13 +5,17 @@
  */
 
 import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
-import { useAppStore, useUtilityBarStore } from '@zextras/ui-shared';
+import {
+	type AppRoute,
+	type PrimaryBarView,
+	useAppStore,
+	useUtilityBarStore,
+} from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { AppRoute, PrimaryBarView } from '../../types';
 import BadgeWrap from './badge-wrap';
 import { Collapser } from './collapser';
 

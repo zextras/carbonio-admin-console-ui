@@ -5,8 +5,8 @@
  */
 
 import { Container } from '@zextras/ui-components';
+import type { AppRoute } from '@zextras/ui-shared';
 
-import { AppRoute } from '../../types';
 import ShellPrimaryBar from './shell-primary-bar';
 
 export default function ShellNavigationBar({ activeRoute }: { activeRoute: AppRoute | undefined }) {

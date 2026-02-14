@@ -5,12 +5,10 @@
  */
 
 import { Container, Padding, useScreenMode } from '@zextras/ui-components';
-import { useLoginConfigStore } from '@zextras/ui-shared';
+import { type AppRoute, CARBONIO_LOGO_URL, useLoginConfigStore } from '@zextras/ui-shared';
 import React, { FC, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { AppRoute } from '../../types';
-import { CARBONIO_LOGO_URL } from '../constants';
 import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
 

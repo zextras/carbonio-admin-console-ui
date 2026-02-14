@@ -5,16 +5,14 @@
  */
 
 import {
-  generateColorSet,
-  ThemeProvider as UIThemeProvider,
-  ThemeProviderProps as UIThemeProviderProps,
+	generateColorSet,
+	ThemeProvider as UIThemeProvider,
+	ThemeProviderProps as UIThemeProviderProps,
 } from '@zextras/ui-components';
-import { useUserSettings } from '@zextras/ui-shared';
+import { type ThemeExtension, useUserSettings } from '@zextras/ui-shared';
 import { reduce } from 'lodash-es';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { DefaultTheme } from 'styled-components';
-
-import { ThemeExtension } from '../../types';
 
 type CustomTheme = Partial<Omit<DefaultTheme, 'palette'>> & {
   palette?: Partial<DefaultTheme['palette']>;

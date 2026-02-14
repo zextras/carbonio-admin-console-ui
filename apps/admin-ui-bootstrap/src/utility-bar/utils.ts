@@ -4,11 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppStore, useCurrentRoute } from '@zextras/ui-shared';
+import {
+	type AppRoute,
+	type PrimaryAccessoryView,
+	type SecondaryAccessoryView,
+	useAppStore,
+	useCurrentRoute,
+	type UtilityView,
+} from '@zextras/ui-shared';
 import { filter, intersection } from 'lodash-es';
 import { useMemo } from 'react';
-
-import { AppRoute, PrimaryAccessoryView, SecondaryAccessoryView, UtilityView } from '../../types';
 
 const checkList = (l1: Array<string>, l2?: Array<string>): boolean =>
   intersection(l1, l2).length > 0;

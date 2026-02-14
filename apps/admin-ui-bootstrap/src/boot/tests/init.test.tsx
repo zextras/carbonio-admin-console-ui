@@ -5,17 +5,16 @@
  */
 
 import { renderHook, waitFor } from '@testing-library/react';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { I18nFactory, useIsAdvanced } from '@zextras/ui-shared';
 import {
-  advancedSupportedApi,
-  getInfoRequestApi,
-  loginConfigApi,
-  minMaxVersionApi,
+	advancedSupportedApi,
+	getInfoRequestApi,
+	loginConfigApi,
+	minMaxVersionApi,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
 
-import I18nFactory from '../../i18n/i18n-factory';
 import { init } from '../init';
 import * as mockGoToLogin from './go-to-login';
 

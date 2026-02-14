@@ -5,14 +5,17 @@
  */
 
 import { Button, Dropdown, MultiButton } from '@zextras/ui-components';
-import { useActions, useAppList } from '@zextras/ui-shared';
+import {
+	type Action,
+	ACTION_TYPES,
+	type AppRoute,
+	useActions,
+	useAppList,
+} from '@zextras/ui-shared';
 import { groupBy, reduce } from 'lodash-es';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-
-import { Action, AppRoute } from '../../types';
-import { ACTION_TYPES } from '../constants';
 
 const useSecondaryActions = (
   actions: Array<Action>,

@@ -5,9 +5,13 @@
  */
 // The 'useXXX' functions actually return hooks
 
-import { normalizeRoute, useAppStore, useIntegrationsStore } from '@zextras/ui-shared';
-
-import { AppRouteDescriptor, CarbonioModule } from '../../../types';
+import {
+	type AppRouteDescriptor,
+	type CarbonioModule,
+	normalizeRoute,
+	useAppStore,
+	useIntegrationsStore,
+} from '@zextras/ui-shared';
 
 export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => {
   const appSetters = useAppStore.getState().setters;
