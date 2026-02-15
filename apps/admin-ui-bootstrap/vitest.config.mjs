@@ -20,6 +20,13 @@ if (merged.test?.projects) {
 	}
 
 	const browserProject = merged.test.projects.find((p) => p.test?.name === 'browser');
+	// Add alias for @zextras/ui-shared to point to the source for browser tests
+	if (browserProject?.test?.alias) {
+		browserProject.test.alias['@zextras/ui-shared'] = path.resolve(
+			import.meta.dirname,
+			'../../packages/ui-shared/src/exports.ts'
+		);
+	}
 	if (browserProject?.test) {
 		browserProject.test.setupFiles = [
 			path.resolve(import.meta.dirname, './vitest-browser-setup.ts')
