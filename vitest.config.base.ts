@@ -13,6 +13,9 @@ import { optimizeDepsInclude } from './vitest.config.utils';
 function jsdomProjectConfig() {
   return {
     plugins: [],
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
     test: {
       name: 'unit',
       environment: 'jsdom',
@@ -44,6 +47,9 @@ function jsdomProjectConfig() {
 
 function browserProjectConfig() {
   return {
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
     test: {
       name: 'browser',
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],

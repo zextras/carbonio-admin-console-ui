@@ -88,6 +88,7 @@
   "msw": {
     "workerDirectory": [
       "./packages/test-utils/public",
+      "./packages/ui-shared/public",
       "./apps/admin-ui-bootstrap/public",
       "./apps/admin-ui-console/public",
       "./apps/admin-ui-dashboard/public",

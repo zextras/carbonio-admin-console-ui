@@ -8,8 +8,6 @@ import 'vitest-browser-react';
 import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
-vi.stubGlobal('BASE_PATH', '');
-
 // Mock TinyMCE global object to prevent errors during module imports
 vi.stubGlobal('tinymce', {
   PluginManager: {
