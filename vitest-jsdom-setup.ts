@@ -9,6 +9,8 @@ import { cleanup } from '@testing-library/react';
 import { noop } from 'lodash-es';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
+vi.mock('zustand')
+
 // Mock localStorage for jsdom
 const localStorageMock = (() => {
   let store: Record<string, string> = {};

@@ -25,10 +25,7 @@ function jsdomProjectConfig() {
       },
       alias: {
         'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
-        '@zextras/ui-shared': path.resolve(
-          __dirname,
-          './__mocks__/@zextras/ui-shared.js',
-        ),
+        '@zextras/ui-shared': path.resolve(__dirname, './__mocks__/@zextras/ui-shared.js'),
       },
       include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
@@ -92,6 +89,7 @@ function browserProjectConfig() {
         viewport: { width: 834, height: 2000 },
         headless: !!process.env.CI,
         screenshotFailures: !process.env.CI,
+        providerOptions: { launch: { timeout: 60_000 } },
       },
       exclude: ['dist/**', 'node_modules/**'],
       globals: true,
