@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Text } from '@zextras/ui-components';
-
-import ListRow from '../../list/list-row';
+import { Container, ListRow, Padding, Text } from '@zextras/ui-components';
 
 export const SwitchDescription = ({ label }: { label: string }) => (
   <ListRow>
