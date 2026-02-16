@@ -8,6 +8,7 @@ import {
   Button,
   Collapse,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
   Modal,
@@ -36,7 +37,6 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';

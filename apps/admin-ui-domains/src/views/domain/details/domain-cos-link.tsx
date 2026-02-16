@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
   Input,
   Padding,
@@ -28,7 +29,6 @@ import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
