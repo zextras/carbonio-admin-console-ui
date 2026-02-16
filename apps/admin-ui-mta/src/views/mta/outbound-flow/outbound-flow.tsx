@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -49,7 +50,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	Button,	ChipInput,	Container,	Padding,	Row,	Switch,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
+import { Button, ChipInput, Container, ListRow, Padding, Row, Switch, Text, Tooltip, useSnackbar } from '@zextras/ui-components';
 import {  useAppConfigStore, useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find, isEqual, uniq  } from 'lodash-es';
 import {  FC, useCallback, useEffect, useMemo,useState  } from 'react';
@@ -13,7 +13,7 @@ import {  MtaInboundSecurity  } from '../../../../types';
 import { 	_REJECT_UNKNOWN_CLIENT_HOSTNAME,	CONFIG,	FALSE,	REJECT_INVALID_HELO_HOSTNAME,	REJECT_NON_FQDN_HELO_HOSTNAME,	REJECT_NON_FQDN_SENDER,	REJECT_SENDER_LOGIN_MISMATCH,	REJECT_UNKNOWN_CLIENT_HOSTNAME,	REJECT_UNKNOWN_HELO_HOSTNAME,	REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,	REJECT_UNKNOWN_SENDER_DOMAIN,	TRUE,	ZIMBRA_MTA_BLOCKED_EXTENSION,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,	ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,	ZIMBRA_MTA_RESTRICTION,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS } from '../../../constants';
 import {  modifyConfig  } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
+
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();

@@ -9,6 +9,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -50,7 +51,6 @@ import {
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
