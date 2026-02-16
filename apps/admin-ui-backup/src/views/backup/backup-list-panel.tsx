@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+import {
+  Container,
+  DropDownInput,
+  ListItems,
+  type ListItemType,
+  Padding,
+  Row,
+  Text,
+} from '@zextras/ui-components';
 import {
   getRights,
   replaceHistory,
@@ -27,7 +35,6 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
-import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 
 const BackupListPanel: FC = () => {
@@ -79,8 +86,7 @@ const BackupListPanel: FC = () => {
     [t, isBackupModuleLicensed],
   );
 
-  const [defaultOptions, setDefaultOptions] =
-    useState<Array<Record<string, unknown>>>(defaultSettingsOptions);
+  const [defaultOptions, setDefaultOptions] = useState<Array<ListItemType>>(defaultSettingsOptions);
 
   useEffect(() => {
     if (!hasListServerRights) {
