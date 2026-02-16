@@ -11,6 +11,7 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Input,
+  ListRow,
   OverlayDivision,
   Padding,
   Row,
@@ -41,7 +42,6 @@ import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
 
 const overlayStyle = {
