@@ -14,6 +14,7 @@ import {
   ListRow,
   OverlayDivision,
   Padding,
+  Paging,
   Row,
   Switch,
   Table,
@@ -40,7 +41,6 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
-import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import RestoreAccountView from './restore/restore-account';
 
