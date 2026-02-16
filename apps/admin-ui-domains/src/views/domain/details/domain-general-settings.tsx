@@ -821,7 +821,7 @@ const DomainGeneralSettings: FC = () => {
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
       {isLoading && (
         <OverlayDivision
-          ovelayStyle={{
+          overlayStyle={{
             position: 'fixed',
             width: '70.35rem',
             top: '6.5rem',

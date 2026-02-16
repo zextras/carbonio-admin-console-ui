@@ -720,7 +720,7 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={overlayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={overlayStyle} />}
       <Container
         background="gray6"
         mainAlignment="flex-start"

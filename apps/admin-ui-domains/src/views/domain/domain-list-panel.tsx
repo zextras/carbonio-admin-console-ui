@@ -118,7 +118,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <div className={styles.ovelayStyle} />
+          <div className={styles.overlayStyle} />
         </Container>
       ),
     },

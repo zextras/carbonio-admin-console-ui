@@ -126,7 +126,7 @@ const CreateCos: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={getOverlayStyle()} />}
+      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

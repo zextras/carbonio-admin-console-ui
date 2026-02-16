@@ -261,7 +261,7 @@ const GlobalTheme: FC = () => {
     <>
       {isLoading && (
         <OverlayDivision
-          ovelayStyle={{
+          overlayStyle={{
             position: 'fixed',
             width: '70.35rem',
             top: '6.5rem',

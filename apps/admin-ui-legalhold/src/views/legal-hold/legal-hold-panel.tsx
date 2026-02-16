@@ -44,7 +44,7 @@ import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
 
-const ovelayStyle = {
+const overlayStyle = {
   width: '20rem',
   right: 0,
   bottom: 0,
@@ -118,7 +118,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision ovelayStyle={ovelayStyle} />
+          <OverlayDivision overlayStyle={overlayStyle} />
         </Container>
       ),
     },

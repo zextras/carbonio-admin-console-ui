@@ -376,7 +376,7 @@ const CreateDomain: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={styles.ovelayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={styles.overlayStyle} />}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

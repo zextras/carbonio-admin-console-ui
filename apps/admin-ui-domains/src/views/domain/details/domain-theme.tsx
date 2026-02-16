@@ -237,7 +237,7 @@ const DomainTheme: FC = () => {
     <>
       {isLoading && (
         <OverlayDivision
-          ovelayStyle={{
+          overlayStyle={{
             position: 'fixed',
             width: 'calc(100% - 19rem)',
             top: '6.5rem',

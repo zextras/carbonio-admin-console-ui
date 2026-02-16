@@ -891,7 +891,7 @@ const EditAccount: FC<{
     <>
       {(!accountDetail?.name || isLoading) && (
         <OverlayDivision
-          ovelayStyle={{
+          overlayStyle={{
             position: 'fixed',
             width: '58.75rem',
             top: '0',

@@ -2345,7 +2345,7 @@ const EditMailingListView: FC<any> = ({
     <>
       {isLoading && (
         <OverlayDivision
-          ovelayStyle={{
+          overlayStyle={{
             position: 'fixed',
             width: '39.4rem',
             top: '0',

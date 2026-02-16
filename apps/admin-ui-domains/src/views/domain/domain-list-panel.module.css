@@ -4,15 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.selectItem {
-}
-
 .customIcon {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.ovelayStyle {
+.overlayStyle {
   width: 20rem;
   right: 0;
   bottom: 0;

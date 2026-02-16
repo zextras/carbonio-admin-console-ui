@@ -29,12 +29,12 @@ const KeyFrameContainer = styled(Container)`
 `;
 
 type OverlayDivisionProps = {
-	ovelayStyle: any;
+	overlayStyle: any;
 };
 
-export const OverlayDivision: FC<OverlayDivisionProps> = ({ ovelayStyle }) => {
+export const OverlayDivision: FC<OverlayDivisionProps> = ({ overlayStyle }) => {
 	const [t] = useTranslation();
-	const OverlayContainer = ovelayStyle;
+	const OverlayContainer = overlayStyle;
 	return (
 		<OverlayContainer>
 			<KeyFrameContainer />

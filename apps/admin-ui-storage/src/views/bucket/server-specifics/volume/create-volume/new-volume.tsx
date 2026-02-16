@@ -146,7 +146,7 @@ const NewVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={overlayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={overlayStyle} />}
       <HorizontalWizard
         steps={wizardSteps}
         Wrapper={WizardInSection}

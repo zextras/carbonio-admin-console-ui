@@ -937,7 +937,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <OverlayDivision ovelayStyle={styles.overlay} />}
+      {isSaveRequestInProgress && <OverlayDivision overlayStyle={styles.overlay} />}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
