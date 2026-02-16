@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, DropDownInput, ListItems, Padding, Row, Text } from '@zextras/ui-components';
 import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
@@ -23,7 +23,6 @@ import {
   QUEUE,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
-import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 
 const MTAListPanel: FC = () => {
