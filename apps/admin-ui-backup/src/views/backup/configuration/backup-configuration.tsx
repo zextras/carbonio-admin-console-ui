@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  ListRow,
   OverlayDivision,
   Padding,
   Row,
@@ -45,7 +46,6 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import styles from './backup-configuration.module.css';
 

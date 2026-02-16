@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Select, Switch } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
-import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
