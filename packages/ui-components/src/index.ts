@@ -68,6 +68,7 @@ export {
 } from './components/custom/hoverable-row-factory';
 export * from './components/custom/inherited-input';
 export * from './components/custom/list-items';
+export * from './components/custom/list-panel-item';
 export * from './components/custom/list-row';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/notification-detail';
