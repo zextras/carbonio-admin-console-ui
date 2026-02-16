@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Select, SelectItem, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, SelectItem, Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 import { AttributeValue } from '../constants/types';
 import { findSelectItemWithFallback } from '../utils';
 

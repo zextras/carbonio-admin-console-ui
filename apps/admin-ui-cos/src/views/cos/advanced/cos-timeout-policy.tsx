@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	Container,	Input,	Row,	Select,	SingleSelectionOnChange,	Text } from '@zextras/ui-components';
-import {  ChangeEvent, FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange, Text } from '@zextras/ui-components';
+import { ChangeEvent, FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  TimeItems  } from '../../../../types/general';
-import ListRow from '../../list/list-row';
+import { TimeItems } from '../../../../types/general';
 
 type TimeoutPolicyProps = {
 	zimbraAdminAuthTokenLifetimeNum: string | undefined;

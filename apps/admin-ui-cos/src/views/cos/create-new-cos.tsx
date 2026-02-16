@@ -9,6 +9,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  ListRow,
   OverlayDivision,
   Padding,
   Row,
@@ -23,7 +24,7 @@ import { useNavigate } from 'react-router';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
-import ListRow from '../list/list-row';
+
 
 function getOverlayStyle() {
   return {

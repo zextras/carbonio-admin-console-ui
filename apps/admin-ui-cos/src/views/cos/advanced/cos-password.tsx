@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../types/account';
-import ListRow from '../../list/list-row';
+
 
 type COSPasswordProps = {
   cosAdvanced: AccountType;

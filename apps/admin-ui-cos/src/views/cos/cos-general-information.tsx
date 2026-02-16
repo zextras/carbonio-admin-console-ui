@@ -10,6 +10,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -35,7 +36,6 @@ import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
 import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 
