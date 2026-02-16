@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
@@ -28,7 +29,6 @@ import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import ListRow from '../list/list-row';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';

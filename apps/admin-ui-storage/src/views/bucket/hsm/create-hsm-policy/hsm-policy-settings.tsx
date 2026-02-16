@@ -11,6 +11,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -23,7 +24,6 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 const HSMpolicySettings: FC<any> = () => {

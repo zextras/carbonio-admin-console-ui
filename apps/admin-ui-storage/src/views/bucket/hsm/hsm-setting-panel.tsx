@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
@@ -34,7 +35,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';

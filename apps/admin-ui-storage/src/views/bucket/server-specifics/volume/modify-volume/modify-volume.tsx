@@ -7,8 +7,10 @@
 import {
   Button,
   Container,
+  Displayer,
   Input,
   Link,
+  ListRow,
   Modal,
   OverlayDivision,
   Padding,
@@ -51,8 +53,6 @@ import {
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import Displayer from '../../../../components/displayer';
-import ListRow from '../../../../list/list-row';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
 const overlayStyle = {
@@ -412,7 +412,7 @@ const ModifyVolume: FC<{
   );
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       color: 'error',
       label: t('label.delete', 'delete'),
       loading: !volumeDetail?.id,
@@ -421,7 +421,7 @@ const ModifyVolume: FC<{
       },
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);

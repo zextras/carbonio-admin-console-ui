@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   CustomHeaderFactory,
+  Displayer,
   HoverableRowFactory,
   Input,
   Padding,
@@ -26,7 +27,6 @@ import { TestConnectionObjectType } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import Displayer from '../components/displayer';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
 const DetailsHeaders = [
@@ -522,19 +522,9 @@ const EditBucketDetailPanel: FC<{
     setBucketType(bucketTypeValue);
   }, [bucketDetail, bucketRegions, bucketRegionsInAlibaba, bucketTypeItems]);
 
-  // useEffect(() => {
-  // 	if (bucketDetail.storeType !== '') {
-  // 		if (bucketDetail.storeType === undefined) {
-  // 			setShowPrefix(false);
-  // 		} else {
-  // 			setShowPrefix(true);
-  // 		}
-  // 	}
-  // }, [bucketType, bucketDetail]);
-
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       color: 'error',
       label: t('label.delete', 'delete'),
       onClick: (): void => {
