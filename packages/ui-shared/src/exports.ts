@@ -94,6 +94,7 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -163,6 +164,7 @@ export {
   fetchExternalSoap,
   FORUM_URL,
   getAccount,
+  getAllNotifications,
   getAllRights,
   getApp,
   getLocale,
@@ -179,6 +181,7 @@ export {
   queryClient,
   queryFnIsAdvancedSupported,
   ReactQueryProvider,
+  readUnreadNotification,
   registerActions,
   removeRoute,
   replaceHistory,
