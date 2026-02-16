@@ -8,6 +8,7 @@ import {
   Container,
   DefaultTabBarItem,
   InheritedInput,
+  InheritedSelect,
   ListRow,
   Padding,
   Row,
@@ -22,7 +23,6 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
-import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import AdminPanelThemeConfig from './admin-panel-theme-configs';
 import EndUserThemeConfigs from './end-user-theme-configs';
 

@@ -7,6 +7,7 @@ import {
   Button,
   Container,
   InheritedInput,
+  InheritedSelect,
   ListRow,
   Padding,
   Row,
@@ -46,7 +47,6 @@ import { getServerInformationByName } from '../../../../services/get-server-info
 import { modifyServer } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
-import InheritedSelect from '../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
 import { validateIpAddress } from '../../../utility/utils';
 

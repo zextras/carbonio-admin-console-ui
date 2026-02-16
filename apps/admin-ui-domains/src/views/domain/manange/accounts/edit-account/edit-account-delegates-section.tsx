@@ -13,6 +13,7 @@ import {
   CustomHeaderFactory,
   HorizontalWizard,
   HoverableRowFactory,
+  InheritedSelect,
   Padding,
   Row,
   Table,
@@ -47,7 +48,6 @@ import { batchService } from '../../../../../services/batch-service';
 import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';

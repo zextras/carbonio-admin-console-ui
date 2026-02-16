@@ -4,13 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput, Container, InheritedInput, Row, Text } from '@zextras/ui-components';
+import {
+  ChipInput,
+  Container,
+  InheritedInput,
+  InheritedSelect,
+  Row,
+  Text,
+} from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from '../../../../components/customChip';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import {
   appointmentReminder,

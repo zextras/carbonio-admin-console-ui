@@ -12,6 +12,7 @@ import {
   DropDownInput,
   HoverableRowFactory,
   InheritedInput,
+  InheritedSelect,
   Input,
   Modal,
   Padding,
@@ -47,7 +48,6 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import {
   ABQStatus,
   AccountStatus,
