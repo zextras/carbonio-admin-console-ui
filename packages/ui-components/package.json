@@ -58,6 +58,7 @@
     "styled-components": "^5.3.11"
   },
   "dependencies": {
+    "@zextras/ui-shared":"workspace:*",
     "@floating-ui/dom": "^1.5.3",
     "clsx": "^2.1.1",
     "core-js": "^3.38.1",
