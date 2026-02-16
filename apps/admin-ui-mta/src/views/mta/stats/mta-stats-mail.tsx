@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   DefaultTabBarItem,
   HoverableRowFactory,
+  Paging,
   Row,
   TabBar,
   Table,
@@ -38,7 +39,6 @@ import {
 import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import Paging from '../../components/paging';
 
 const ReusedDefaultTabBar: FC<{
   item: any;

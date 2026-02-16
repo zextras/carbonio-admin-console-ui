@@ -7,7 +7,6 @@
 export const ADVANCED = 'advanced';
 export const ACTIVE = 'active';
 export const MANAGE_APP_ID = 'manage';
-export const FIRST_PAGE = 1;
 export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
 export const FALSE = 'FALSE';
