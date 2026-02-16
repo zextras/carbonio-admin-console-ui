@@ -35,32 +35,6 @@ export const IS_COS_DETAIL_LIST_EXPANDED = 'isCosDetailListExpanded';
 export const IS_GENERAL_LIST_EXPANDED = 'isGeneralListExpanded';
 export const BACKUP_ENABLED = 'backupEnabled';
 export const BACKUP_SELF_UNDELETE_ALLOWED = 'backupSelfUndeleteAllowed';
-export const paginationItems: Array<{ label: string; value: number }> = [
-	{
-		label: '5',
-		value: 5
-	},
-	{
-		label: '10',
-		value: 10
-	},
-	{
-		label: '15',
-		value: 15
-	},
-	{
-		label: '25',
-		value: 25
-	},
-	{
-		label: '50',
-		value: 50
-	},
-	{
-		label: '100',
-		value: 100
-	}
-];
 export const PRIMARY_BAR_COS = 'pb_cos';
 export const GLOBAL = 'global';
 export const LIST_COS = 'listCos';

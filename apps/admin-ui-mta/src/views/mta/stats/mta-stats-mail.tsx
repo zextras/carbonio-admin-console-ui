@@ -14,6 +14,7 @@ import {
   TabBar,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { format } from 'date-fns';
@@ -37,7 +38,6 @@ import {
 import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 
 const ReusedDefaultTabBar: FC<{

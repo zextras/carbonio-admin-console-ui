@@ -16,6 +16,7 @@ import {
   Table,
   Text,
   Tooltip,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
@@ -32,7 +33,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';

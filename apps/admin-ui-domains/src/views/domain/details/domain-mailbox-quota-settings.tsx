@@ -16,6 +16,7 @@ import {
   Table,
   Text,
   THeader,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
@@ -40,7 +41,6 @@ import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import DownloadCSV from '../../app/shared/download-csv';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import Paging from '../../components/paging';
 import ListRow from '../../list/list-row';

@@ -149,32 +149,6 @@ export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
 export const ABQ_DISABLED = 'Disabled';
-export const paginationItems: Array<{ label: string; value: number }> = [
-	{
-		label: '5',
-		value: 5
-	},
-	{
-		label: '10',
-		value: 10
-	},
-	{
-		label: '15',
-		value: 15
-	},
-	{
-		label: '25',
-		value: 25
-	},
-	{
-		label: '50',
-		value: 50
-	},
-	{
-		label: '100',
-		value: 100
-	}
-];
 export const HELPDESK_ADMINS = '__helpdesk_admins';
 export const PRIMARY_BAR_DOMAINS = 'pb_domains';
 export const LDAP = 'ldap:///';

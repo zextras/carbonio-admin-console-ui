@@ -13,6 +13,7 @@ import {
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, useIsAdvanced } from '@zextras/ui-shared';
@@ -34,7 +35,6 @@ import { getAccountMembershipRequest } from '../../services/get-account-membersh
 import { getSessions } from '../../services/get-sessions';
 import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
-import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
