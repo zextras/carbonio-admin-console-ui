@@ -6,7 +6,7 @@
 export type { Account, AccountSettings } from '../types/account';
 export type {
 	AppRoute,
-	AppRouteData,
+AppRouteData,
 	AppRouteDescriptor,
 	AppState,
 	AppView,
