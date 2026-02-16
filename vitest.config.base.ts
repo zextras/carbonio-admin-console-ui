@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
-import { optimizeDepsInclude } from './vitest.config.utils';
+import { getOptimizeDepsInclude } from './vitest.config.utils';
 
 function jsdomProjectConfig() {
   return {
@@ -37,7 +37,7 @@ function jsdomProjectConfig() {
       testTimeout: !!process.env.ci ? 20_000 : 10_000,
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      include: getOptimizeDepsInclude(),
     },
   };
 }
@@ -117,7 +117,7 @@ function browserProjectConfig() {
       }),
     ],
     optimizeDeps: {
-      include: optimizeDepsInclude,
+      include: getOptimizeDepsInclude(),
     },
   };
 }
