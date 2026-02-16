@@ -9,6 +9,7 @@ import {
   DropDownInput,
   ListItems,
   type ListItemType,
+  ListPanelItem,
   Padding,
   Row,
   Text,
@@ -67,7 +68,6 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListPanelItem from '../list/list-panel-item';
 import styles from './domain-list-panel.module.css';
 import GlobalListPanel from './global-list-panel';
 

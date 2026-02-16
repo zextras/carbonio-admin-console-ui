@@ -8,6 +8,7 @@ import {
   DropDownInput,
   ListItems,
   type ListItemType,
+  ListPanelItem,
   Padding,
   Row,
   Text,
@@ -35,7 +36,6 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
-import ListPanelItem from '../list/list-panel-item';
 
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();

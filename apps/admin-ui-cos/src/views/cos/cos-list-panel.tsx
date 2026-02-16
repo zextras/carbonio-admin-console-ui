@@ -9,6 +9,7 @@ import {
   DropDownInput,
   ListItems,
   type ListItemType,
+  ListPanelItem,
   Padding,
   Row,
   Text,
@@ -36,7 +37,6 @@ import {
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListPanelItem from '../list/list-panel-item';
 import GeneralListPanel from './general-list-panel';
 
 export const CosListPanel: FC = () => {
