@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -15,6 +14,7 @@ import {
   TextArea,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
 import { isEqual } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';

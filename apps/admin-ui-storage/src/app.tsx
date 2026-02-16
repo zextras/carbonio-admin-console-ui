@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, getRights, useCurrentUserRights } from '@zextras/ui-shared';
 import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, getRights, useCurrentUserRights } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

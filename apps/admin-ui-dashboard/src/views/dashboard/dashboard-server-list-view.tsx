@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -13,6 +12,7 @@ import {
   Table,
   Text,
 } from '@zextras/ui-components';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

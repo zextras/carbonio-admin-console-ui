@@ -5,11 +5,6 @@
  */
 
 import {
-  getSoapFetchRequest,
-  useIsAdvanced,
-  useMailstoreServers,
-} from '@zextras/ui-shared';
-import {
   Button,
   Container,
   CustomHeaderFactory,
@@ -19,6 +14,11 @@ import {
   Table,
   Text,
 } from '@zextras/ui-components';
+import {
+  getSoapFetchRequest,
+  useIsAdvanced,
+  useMailstoreServers,
+} from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -10,7 +10,6 @@ import { FC, useEffect, useMemo } from 'react';
 
 import AppContextProvider from '../boot/app/app-context-provider';
 import styles from './panel.module.css';
-import { useUtilityBarStore } from './store';
 import { useUtilityViews } from './utils';
 
 export const ShellUtilityPanel: FC = () => {

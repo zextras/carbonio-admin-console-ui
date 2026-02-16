@@ -16,6 +16,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

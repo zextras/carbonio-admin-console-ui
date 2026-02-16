@@ -25,6 +25,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { debounce, differenceBy, isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
 import React, {
@@ -116,7 +117,7 @@ const EditMailingListView: FC<any> = ({
   const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
   const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  const [isRequstInProgress, setIsRequstInProgress] = useState<boolean>(false);
+  const isRequstInProgress=false;
   const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
   const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
   const [isShowError, setIsShowError] = useState<boolean>(false);
@@ -135,7 +136,6 @@ const EditMailingListView: FC<any> = ({
   const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
   const domainList = useDomainStore((state) => state.domainList);
   const setDomainListStore = useDomainStore((state) => state.setDomainList);
-  const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
@@ -2083,7 +2083,6 @@ const EditMailingListView: FC<any> = ({
   }, [grantEmailsList]);
 
   const handleClickDeleteEvent = useCallback(() => {
-    setIsDeleteBtnLoading(true);
     const getGrantBody: any = {};
     const grantee = {
       type: GRP,
@@ -2106,7 +2105,6 @@ const EditMailingListView: FC<any> = ({
           setGranteeTotalRights(granteeTotal);
         }
         setIsOpenDeleteDialog(true);
-        setIsDeleteBtnLoading(false);
       })
       .catch((error) => {
         createSnackbar({
@@ -2119,7 +2117,6 @@ const EditMailingListView: FC<any> = ({
           hideButton: true,
           replace: true,
         });
-        setIsDeleteBtnLoading(false);
       });
 
     // get grants' rights as target
@@ -2143,7 +2140,6 @@ const EditMailingListView: FC<any> = ({
           setTargetTotalRights(targetTotal);
         }
         setIsOpenDeleteDialog(true);
-        setIsDeleteBtnLoading(false);
       })
       .catch((error) => {
         createSnackbar({
@@ -2156,7 +2152,6 @@ const EditMailingListView: FC<any> = ({
           hideButton: true,
           replace: true,
         });
-        setIsDeleteBtnLoading(false);
       });
   }, [createSnackbar, selectedMailingList?.name, t]);
 

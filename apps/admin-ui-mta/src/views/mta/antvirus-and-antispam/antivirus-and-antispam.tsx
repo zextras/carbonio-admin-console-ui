@@ -4,11 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  useAppConfigStore,
-  useCurrentUserRights,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
-import {
   Button,
   Container,
   HoverableRowFactory,
@@ -23,6 +18,11 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  useAppConfigStore,
+  useCurrentUserRights,
+  useIsAdvanced,
+} from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

@@ -5,12 +5,6 @@
  */
 
 import {
-  useCurrentUserRights,
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from '@zextras/ui-shared';
-import {
   Button,
   Container,
   DefaultTabBarItem,
@@ -22,6 +16,12 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  useCurrentUserRights,
+  useDomainStore,
+  useIsAdvanced,
+  useUserSettings,
+} from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

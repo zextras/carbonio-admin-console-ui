@@ -5,21 +5,12 @@
  */
 
 import { Button, Container, Dropdown, Text, Tooltip } from '@zextras/ui-components';
+import { CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE, CARBONIO_CE_ADMIN_DOCUMENTATION_URL, logout, useConfigAttribute, useIsAdvanced, useUserAccount, useUtilityBarStore, UtilityView } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IconName } from '../../../../packages/ui-components/src/web-components/icon-registry';
-import { UtilityView } from '../../types/apps';
-import {
-  CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-  CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
-} from '../constants';
-import { logout } from '../network/logout';
-import { useUserAccount } from '../react-query/use-account';
-import { useConfigAttribute } from '../react-query/use-config';
-import { useIsAdvanced } from '../react-query/use-is-advanced-supported';
-import { useUtilityBarStore } from './store';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {

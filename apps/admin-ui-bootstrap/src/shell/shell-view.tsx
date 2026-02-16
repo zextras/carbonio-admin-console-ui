@@ -5,6 +5,7 @@
  */
 
 import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
+import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';

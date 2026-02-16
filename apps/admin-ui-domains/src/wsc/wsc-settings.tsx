@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { Banner, Container, InheritedInput, Padding } from '@zextras/ui-components';
+import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMailstoreServers } from '@zextras/ui-shared';
 import { Container, Input, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { useMailstoreServers } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

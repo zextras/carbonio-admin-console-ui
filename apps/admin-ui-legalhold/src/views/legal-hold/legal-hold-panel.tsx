@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -21,6 +20,7 @@ import {
   useScreenMode,
   useSnackbar,
 } from '@zextras/ui-components';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';

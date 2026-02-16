@@ -16,6 +16,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
 import { debounce } from 'lodash';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

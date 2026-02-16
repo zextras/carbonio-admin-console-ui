@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -21,6 +20,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/ui-shared';
 import {
   Button,
   Checkbox,
@@ -20,6 +19,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
 import {
   FC,

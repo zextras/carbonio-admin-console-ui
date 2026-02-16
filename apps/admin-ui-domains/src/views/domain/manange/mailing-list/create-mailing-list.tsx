@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import { Button, Container, HorizontalWizard, OverlayDivision } from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

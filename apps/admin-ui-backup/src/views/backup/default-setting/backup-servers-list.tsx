@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import {
   Container,
   CustomHeaderFactory,
@@ -14,6 +13,7 @@ import {
   Text,
   Tooltip,
 } from '@zextras/ui-components';
+import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

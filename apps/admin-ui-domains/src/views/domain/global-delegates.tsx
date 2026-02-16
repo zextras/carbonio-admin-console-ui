@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useIsAdvanced } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -16,6 +15,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { postSoapFetchRequest, useIsAdvanced } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';

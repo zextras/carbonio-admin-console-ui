@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import {
   Button,
   Container,
@@ -19,6 +18,7 @@ import {
   Tooltip as TooltipDefault,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
