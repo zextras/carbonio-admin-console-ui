@@ -40,7 +40,7 @@ interface ContainerExtendProps extends ContainerProps {
   isPrimaryBarExpanded?: boolean;
 }
 
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
+const DetailViewContainer = styled(Container) <ContainerExtendProps>`
   max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
   transition: width 300ms;
 `;
