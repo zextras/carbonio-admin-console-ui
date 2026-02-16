@@ -62,8 +62,8 @@ const EditAccountGeneralSection: FC<{
   setChange: any;
 }> = ({ setChange }) => {
   const createSnackbar = useSnackbar();
-  const context = useContext(AccountContext);
   const {
+    initAccountDetail,
     accountDetail,
     setAccountDetail,
     directMemberList,
@@ -79,7 +79,7 @@ const EditAccountGeneralSection: FC<{
     defaultCOS,
     setDefaultCOS,
     allowedDeletePassword,
-  } = context;
+  } = useContext(AccountContext);
   const domainInformation = useDomainStore((state) => state.domain?.a);
   const domainName = useDomainStore((state) => state.domain?.name);
   const cosList = useDomainStore((state) => state.cosList);
@@ -741,6 +741,9 @@ const EditAccountGeneralSection: FC<{
           </Row>
         )}
         <EditAccountQuotaInputs
+          accountDetail={accountDetail}
+          initAccountDetail={initAccountDetail}
+          setAccountDetail={setAccountDetail}
           focusableFileQuota={focusableFileQuota}
           highlightFileQuota={highlightFileQuota}
           focusableMailboxQuota={focusableMailboxQuota}

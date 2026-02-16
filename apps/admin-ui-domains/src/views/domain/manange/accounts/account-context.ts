@@ -3,22 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createContext } from 'react';
+import { createContext, Dispatch, SetStateAction } from 'react';
+
+import { TOTAL_COMPUTED_QUOTA_LIMIT } from '../../../../constants';
+
+export type AccountDetail = Record<string, any> & {
+	[TOTAL_COMPUTED_QUOTA_LIMIT]?: number;
+}
 
 type AccountContext = {
-	accountDetail: any;
-	cosDetail: any;
+	accountDetail: AccountDetail;
+	setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
+	initAccountDetail: AccountDetail;
+	setInitAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 	accSpecificDetail: any;
+	setAccSpecificDetail: (arg: any) => void;
+	cosDetail: any;
 	directMemberList: any[];
 	inDirectMemberList: any[];
 	setSignatureItems: (arg: any) => void;
 	setSignatureList: (arg: any) => void;
-	setAccountDetail: (arg: any) => void;
-	setAccSpecificDetail: (arg: any) => void;
 	setDirectMemberList: (arg: any) => void;
 	setInDirectMemberList: (arg: any) => void;
-	setInitAccountDetail: (arg: any) => void;
-	initAccountDetail: any;
 	otpList: any;
 	identitiesList: any[];
 	folderList: any[];

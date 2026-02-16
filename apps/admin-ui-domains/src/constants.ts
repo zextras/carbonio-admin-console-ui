@@ -186,6 +186,7 @@ export const GLOBAL_ADMINISTRATORS = 'global/administrators';
 export const ADMINISTRATORS = 'administrators';
 export const DISPLAYNAME = 'displayName';
 export const FETCH_DATA_LIMIT = 50;
+export const TOTAL_COMPUTED_QUOTA_LIMIT = 'totalComputedQuotaLimit';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';

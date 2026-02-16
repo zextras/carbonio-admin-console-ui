@@ -12,13 +12,28 @@ import {  ChangeEvent, FC, useCallback, useEffect, useMemo, useRef,useState  } f
 import {  Trans, useTranslation  } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
-import { 	ABQ_MODE,	ACCOUNT,	ASC,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	COS,	DESC,	FILES_QUOTA_LIMIT,	FILES_QUOTA_USED,	MAILBOX_QUOTA_USED,	RECORD_DISPLAY_LIMIT,	ZIMBRA_ADMIN_URN } from '../../../../constants';
+import {
+	ABQ_MODE,
+	ACCOUNT,
+	ASC,
+	BACKUP_ENABLED,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	COS,
+	DESC,
+	FILES_QUOTA_LIMIT,
+	FILES_QUOTA_USED,
+	MAILBOX_QUOTA_USED,
+	RECORD_DISPLAY_LIMIT,
+	TOTAL_COMPUTED_QUOTA_LIMIT,
+	ZIMBRA_ADMIN_URN,
+} from '../../../../constants';
 import { 	accountListDirectory,	getMailboxQuota } from '../../../../services/account-list-directory-service';
 import {  checkRightRequest  } from '../../../../services/check-right';
 import { 	CosA,	getCosGeneralInformation,	GetCosResponse } from '../../../../services/cos-general-information-service';
 import { countAccount } from '../../../../services/count-account-service';
 import {  getAccountRequest  } from '../../../../services/get-account';
 import {  getAccountMembershipRequest  } from '../../../../services/get-account-membership';
+import { getAccountQuota } from '../../../../services/get-account-quota';
 import {  getCoreAttributes  } from '../../../../services/get-core-attributes';
 import {  getFileQuotaById  } from '../../../../services/get-file-quota';
 import {  getSessions  } from '../../../../services/get-sessions';
@@ -30,8 +45,7 @@ import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import {  generateSnackbarFromError  } from '../../../error/generate-snackbar-error';
-import {  AccountContext  } from './account-context';
-import {  AccountType  } from './account-types/account-types';
+import { AccountContext, AccountDetail } from './account-context';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 
@@ -49,19 +63,18 @@ type CheckRightResponse = {
 };
 
 type Timer = ReturnType<typeof setTimeout>;
-
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const timer = useRef<Timer | undefined>(undefined);
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const [accountDetail, setAccountDetail] = useState<any>({});
+	const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
+	const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [defaultTab, setDefaultTab] = useState('general');
 	const [directMemberList, setDirectMemberList] = useState<any>([]);
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
-	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
@@ -439,30 +452,26 @@ const ManageAccounts: FC = () => {
 		];
 		getCoreAttributes(body).then((data) => {
 			if (data?.attributes) {
-				setAccountDetail((prev: AccountType) => ({
+				setAccountDetail((prev) => ({
 					...prev,
-					...{
-						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
-					}
+					abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+					backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+					backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 				}));
-				setInitAccountDetail((prev: AccountType) => ({
+				setInitAccountDetail((prev) => ({
 					...prev,
-					...{
-						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
-					}
+					abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+					backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+					backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 				}));
 			}
 		});
 	}, []);
 
 	const setAccDetailValue = useCallback(
-		(key: string, value: string): void => {
-			setAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
-			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		(key: string, value: unknown): void => {
+			setAccountDetail((prev: Record<string, unknown>) => ({ ...prev, [key]: value }));
+			setInitAccountDetail((prev: Record<string, unknown>) => ({ ...prev, [key]: value }));
 		},
 		[setAccountDetail, setInitAccountDetail]
 	);
@@ -506,6 +515,20 @@ const ManageAccounts: FC = () => {
 			);
 		},
 		[account?.name]
+	);
+
+	const retrieveAccountQuotaByAccountId = useCallback(
+		(accountId: string): void => {
+			getAccountQuota(accountId).then((res) => {
+				if (res.type === 'success') {
+					setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
+				}
+				else {
+					// handle
+				}
+			})
+		},
+		[setAccDetailValue]
 	);
 
 	const getAccountDetail = useCallback(
@@ -554,6 +577,7 @@ const ManageAccounts: FC = () => {
 					setDefaultCOS(!obj.zimbraCOSId);
 					getMailboxQuotaUsed(id);
 					if (isAdvanced) {
+						retrieveAccountQuotaByAccountId(id)
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);

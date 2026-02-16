@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
+import { AccountDetail } from '../../account-context';
 import { EditAccountQuotaInputsLegacy } from './edit-account-quota-inputs-legacy';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
 
@@ -18,6 +19,9 @@ type EditAccountQuotaInputsProps = {
   setHighlightFileQuota: (value: boolean) => void;
   setFocusableMailboxQuota: (value: boolean) => void;
   setHighlightMailboxQuota: (value: boolean) => void;
+  accountDetail: AccountDetail;
+  initAccountDetail: AccountDetail;
+  setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
 
 export const EditAccountQuotaInputs = ({
@@ -29,6 +33,9 @@ export const EditAccountQuotaInputs = ({
   setHighlightFileQuota,
   setFocusableMailboxQuota,
   setHighlightMailboxQuota,
+  accountDetail,
+  initAccountDetail,
+  setAccountDetail
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
 
   const isTotalQuotaActive = useTotalQuotaActive();
@@ -45,6 +52,6 @@ export const EditAccountQuotaInputs = ({
       setHighlightMailboxQuota={setHighlightMailboxQuota}
     />
   } else {
-    return <EditAccountQuotaInputsNew />
+    return <EditAccountQuotaInputsNew initAccountDetail={initAccountDetail} setAccountDetail={setAccountDetail} accountDetail={accountDetail} />
   }
 }
