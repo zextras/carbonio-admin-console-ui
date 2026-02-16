@@ -10,7 +10,7 @@ import {
   useIsAdvanced,
   useUserAccount,
   useUserSettings,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import {
   Button,
   Container,

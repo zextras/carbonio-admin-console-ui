@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest, useDomainStore } from '@zextras/ui-shared';
 import {
   Button,
   Container,

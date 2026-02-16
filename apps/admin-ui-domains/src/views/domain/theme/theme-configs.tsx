@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getAllRights, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
+import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
 import {
   Button,
   Container,

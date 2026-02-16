@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import {
   Button,
   Container,

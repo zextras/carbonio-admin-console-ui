@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useStickyBarStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
 import {
   Button,
   Container,

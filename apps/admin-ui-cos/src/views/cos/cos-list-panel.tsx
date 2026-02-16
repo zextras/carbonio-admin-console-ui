@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory } from '@zextras/ui-shared';
 import { Container, DropDownInput, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';

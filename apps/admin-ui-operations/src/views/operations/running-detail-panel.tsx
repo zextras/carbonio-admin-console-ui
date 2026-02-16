@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers } from '@zextras/admin-ui-bootstrap';
+import { useAllServers } from '@zextras/ui-shared';
 import { Container, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
+import { useDomainStore } from '@zextras/ui-shared';
 import { Button, ChipInput, Container, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';

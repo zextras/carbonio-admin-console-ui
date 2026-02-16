@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
+import { useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
 import { BreadcrumbComponent } from '@zextras/ui-components';
 
 import { DASHBOARD } from '../../constants';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/ui-shared';
 import {
   Button,
   ChipInput,
