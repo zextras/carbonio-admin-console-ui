@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PrimaryBarTooltip } from '@zextras/ui-components';
 import {
   addRoute,
   registerActions,
@@ -26,7 +27,6 @@ import {
   PRIMARY_BAR_DOMAINS,
 } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();

@@ -9,17 +9,8 @@ import { useAppList, useAppRoutes, useAppStore } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
-import styled from 'styled-components';
 
 import AppContextProvider from '../boot/app/app-context-provider';
-
-const _BoardsRouterContainer = styled(Container)`
-  flex-grow: 1;
-  flex-basis: 0;
-  min-width: 1px;
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-`;
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
@@ -52,11 +43,19 @@ export default function AppViewContainer() {
   );
 
   return (
-    <_BoardsRouterContainer>
+    <Container
+      style={{
+        flexGrow: 1,
+        flexBasis: 0,
+        minWidth: '1px',
+        maxHeight: 'calc(100vh - 60px)',
+        overflowY: 'auto',
+      }}
+    >
       <Container mainAlignment="flex-start">
         <Routes>{routes}</Routes>
         <FirstAppRedirect />
       </Container>
-    </_BoardsRouterContainer>
+    </Container>
   );
 }

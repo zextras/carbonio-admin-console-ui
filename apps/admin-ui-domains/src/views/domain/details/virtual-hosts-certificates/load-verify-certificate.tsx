@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   CustomTextArea,
-  Icon,
   Padding,
   Text,
   Tooltip,
@@ -314,7 +313,7 @@ export const LoadAndVerifyCert: FC<{
         width="fill"
       >
         <Container padding={{ right: '0.25rem' }} width="fit">
-          <Icon icon="InfoOutline" color="secondary" />
+          <icon-wc icon="InfoOutline" color="secondary"></icon-wc>
         </Container>
         <Text color="secondary">
           {t(

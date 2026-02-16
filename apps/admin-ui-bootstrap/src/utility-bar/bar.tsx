@@ -5,20 +5,12 @@
  */
 
 import { Button, Container, Dropdown, Text, Tooltip } from '@zextras/ui-components';
-import {
-	CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-	CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
-	logout,
-	useConfigAttribute,
-	useIsAdvanced,
-	useUserAccount,
-	useUtilityBarStore,
-	type UtilityView,
-} from '@zextras/ui-shared';
+import { CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE, CARBONIO_CE_ADMIN_DOCUMENTATION_URL, logout, useConfigAttribute, useIsAdvanced, useUserAccount, useUtilityBarStore, UtilityView } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { IconName } from '../../../../packages/ui-components/src/web-components/icon-registry';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
@@ -61,7 +53,7 @@ export const ShellUtilityBar: FC = () => {
         id: 'help',
         label: t('label.help_and_documentation', 'Help & Documentation'),
         onClick: () => openLink(helpDocumentationUrl),
-        icon: 'QuestionMarkOutline',
+        icon: 'QuestionMarkOutline' as IconName,
       },
       {
         id: 'logout',
@@ -69,7 +61,7 @@ export const ShellUtilityBar: FC = () => {
         onClick: (): void => {
           logout();
         },
-        icon: 'LogOut',
+        icon: 'LogOut' as IconName,
       },
     ],
     [helpDocumentationUrl, t],

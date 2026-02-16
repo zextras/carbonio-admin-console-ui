@@ -4,41 +4,57 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Button,  ChipInput,  ChipItem,  Container,  CustomTextArea,  Input,  Modal,  OverlayDivision,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
-import {   replaceHistory,  useDomainStore,  useIsAdvanced,  useUserSettings } from '@zextras/ui-shared';
-import {  cloneDeep, filter, find, isEqual, map, some  } from 'lodash-es';
+import {
+  Button,
+  ChipInput,
+  ChipItem,
+  Container,
+  CustomTextArea,
+  Input,
+  Modal,
+  OverlayDivision,
+  Padding,
+  Row,
+  Select,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import {
+  replaceHistory,
+  useDomainStore,
+  useIsAdvanced,
+  useUserSettings,
+} from '@zextras/ui-shared';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  CosMaxAccountValues, Domain, DomainsByFeature, objectType  } from '../../../../types';
-import {   ACTIVE,  CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,  CLOSED,  HTTP,  HTTPS,  LOCKED,  MAINTENANCE,  NOT_SET,  SUSPENDED,  TRUE,  ZIMBRA_ADMIN_URN,  ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS } from '../../../constants';
-import {  batchService  } from '../../../services/batch-service';
-import {  deleteDomain  } from '../../../services/delete-domain-service';
-import {  flushCache  } from '../../../services/flush-cache-service';
-import {  modifyDomain  } from '../../../services/modify-domain-service';
-import {  searchDirectory  } from '../../../services/search-directory-service';
-import {  generateSnackbarFromError  } from '../../error/generate-snackbar-error';
+import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
+import {
+  ACTIVE,
+  CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE,
+  CLOSED,
+  HTTP,
+  HTTPS,
+  LOCKED,
+  MAINTENANCE,
+  NOT_SET,
+  SUSPENDED,
+  TRUE,
+  ZIMBRA_ADMIN_URN,
+  ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
+} from '../../../constants';
+import { batchService } from '../../../services/batch-service';
+import { deleteDomain } from '../../../services/delete-domain-service';
+import { flushCache } from '../../../services/flush-cache-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { searchDirectory } from '../../../services/search-directory-service';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
-import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
-import {  getDateFromStr, getFormatedDate, isValidEmail, timeZoneList  } from '../../utility/utils';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { getDateFromStr, getFormatedDate, isValidEmail, timeZoneList } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
@@ -803,7 +819,24 @@ const DomainGeneralSettings: FC = () => {
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && (
+        <OverlayDivision
+          overlayStyle={{
+            position: 'fixed',
+            width: '70.35rem',
+            top: '6.5rem',
+            right: '0',
+            bottom: '0',
+            height: 'auto',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            background: '#0d0d0d',
+            opacity: '0.4',
+            zIndex: '11',
+            paddingTop: '2rem',
+          }}
+        />
+      )}
       <Row mainAlignment="flex-start" width="100%">
         <Container
           orientation="vertical"

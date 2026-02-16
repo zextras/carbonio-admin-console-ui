@@ -19,7 +19,6 @@ import { useAppConfigStore } from '@zextras/ui-shared';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
@@ -33,10 +32,6 @@ import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const GlobalDetailPanel: FC = () => {
   const [t] = useTranslation();
@@ -320,11 +315,11 @@ const GlobalDetailPanel: FC = () => {
   }, []);
 
   return (
-    <RelativeContainer
+    <Container
       orientation="column"
       crossAlignment="flex-start"
       mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
+      style={{ overflowY: 'auto', position: 'relative' }}
       background="white"
     >
       <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
@@ -460,6 +455,7 @@ const GlobalDetailPanel: FC = () => {
             />
           </Container>
         </ListRow>
+
         <ListRow>
           <Container
             crossAlignment="flex-start"
@@ -485,7 +481,7 @@ const GlobalDetailPanel: FC = () => {
           </Container>
         </ListRow>
       </Container>
-    </RelativeContainer>
+    </Container>
   );
 };
 

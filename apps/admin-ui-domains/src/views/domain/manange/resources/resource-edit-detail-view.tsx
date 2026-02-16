@@ -4,23 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Button,  Container,  CustomTextArea,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  useDomainStore, useStickyBarStore  } from '@zextras/ui-shared';
-import {  format, parse  } from 'date-fns';
-import {  isEqual  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Input,
+  Modal,
+  Padding,
+  Row,
+  Select,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
+import { format, parse } from 'date-fns';
+import { isEqual } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  deleteCalendarResource  } from '../../../../services/delete-cal-resource-service';
-import {  getCalenderResource  } from '../../../../services/get-cal-resource-service';
-import {  getDelegateAuthRequest  } from '../../../../services/get-delegate-auth-request';
-import {  modifyCalendarResource  } from '../../../../services/modify-cal-resource-service';
-import {  renameCalendarResource  } from '../../../../services/rename-cal-resource-service';
-import {  setPasswordRequest  } from '../../../../services/set-password-service';
+import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
+import { getCalenderResource } from '../../../../services/get-cal-resource-service';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
+import { setPasswordRequest } from '../../../../services/set-password-service';
 import Displayer from '../../../components/displayer';
 import ListRow from '../../../list/list-row';
-import {  RouteLeavingGuard  } from '../../../ui-extras/nav-guard';
-import {  SendInviteAccounts  } from './send-invite-accounts';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { SendInviteAccounts } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
   LOCATION: 'Location',
@@ -1188,11 +1199,11 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <Icon
+              <icon-wc
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              />
+              ></icon-wc>
             </Row>
           </Container>
         </Modal>

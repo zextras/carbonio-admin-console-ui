@@ -7,8 +7,10 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DateTimePicker,
   DropDownInput,
+  HoverableRowFactory,
   Input,
   Padding,
   Row,
@@ -32,8 +34,6 @@ import {
 } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
@@ -716,7 +716,7 @@ const RestoreAccountView: FC<{
               showCheckbox={false}
               multiSelect={false}
               selectedRows={selectedRow}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>

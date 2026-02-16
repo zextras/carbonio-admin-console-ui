@@ -62,7 +62,6 @@ export { default as PowerOutline } from './PowerOutline';
 export { default as QuestionMarkCircleOutline } from './QuestionMarkCircleOutline';
 export { default as QuestionMarkOutline } from './QuestionMarkOutline';
 export { default as RefreshOutline } from './RefreshOutline';
-export { default as SettingsModOutline } from './SettingsModOutline';
 export { default as ShieldOutline } from './ShieldOutline';
 export { default as SignatureOutline } from './SignatureOutline';
 export { default as SquareOutline } from './SquareOutline';

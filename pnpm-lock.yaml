@@ -168,9 +168,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -208,9 +205,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -223,9 +217,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -329,9 +320,6 @@ importers:
         specifier: ^12.3.1
         version: 12.3.1(i18next@22.5.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-router:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-router-dom:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       styled-components:
@@ -470,9 +458,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -507,9 +492,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -522,9 +504,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -606,9 +585,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -646,9 +622,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -661,9 +634,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -748,9 +718,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       tinymce:
         specifier: ^6.8.4
         version: 6.8.6
@@ -791,9 +758,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -806,9 +770,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -890,9 +851,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -930,9 +888,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -945,9 +900,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1029,9 +981,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1069,9 +1018,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1084,9 +1030,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1165,9 +1108,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1208,9 +1148,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1223,9 +1160,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1304,9 +1238,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1344,9 +1275,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1359,9 +1287,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1443,9 +1368,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1483,9 +1405,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1498,9 +1417,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1579,9 +1495,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1619,9 +1532,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1634,9 +1544,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -1718,9 +1625,6 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      styled-components:
-        specifier: 5.3.11
-        version: 5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)
       zustand:
         specifier: ^4.5.7
         version: 4.5.7(@types/react@19.2.14)(immer@10.2.0)(react@19.2.4)
@@ -1758,9 +1662,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.0
         version: 19.2.3(@types/react@19.2.14)
-      '@types/styled-components':
-        specifier: ^5.1.26
-        version: 5.1.36
       '@vitest/browser':
         specifier: ^4.0.5
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -1773,9 +1674,6 @@ importers:
       admin-ui-test-utils:
         specifier: workspace:*
         version: link:../../packages/test-utils
-      babel-plugin-styled-components:
-        specifier: ^2.1.4
-        version: 2.1.4(@babel/core@7.29.0)(styled-components@5.3.11(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4))(supports-color@5.5.0)
       eslint:
         specifier: ^9.34.0
         version: 9.39.2(jiti@2.6.1)
@@ -6707,8 +6605,8 @@ packages:
     resolution: {integrity: sha512-d79HhZya5Djd7am0q+W4RTsSU+D/aJzM+4Y4AGJGuGlgM2L6sx5ZvOYTmZjqPhrDrV6xJTtRSm1JCLj6V6LHLQ==}
     engines: {node: '>=14.16'}
 
-  text-decoder@1.2.6:
-    resolution: {integrity: sha512-27FeW5GQFDfw0FpwMQhMagB7BztOOlmjcSRi97t2oplhKVTZtp0DZbSegSaXS5IIC6mxMvBG4AR1Sgc6BX3CQg==}
+  text-decoder@1.2.7:
+    resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
 
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
@@ -12261,7 +12159,7 @@ snapshots:
     dependencies:
       events-universal: 1.0.1
       fast-fifo: 1.3.2
-      text-decoder: 1.2.6
+      text-decoder: 1.2.7
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
@@ -12437,7 +12335,7 @@ snapshots:
       type-fest: 2.19.0
       unique-string: 3.0.0
 
-  text-decoder@1.2.6:
+  text-decoder@1.2.7:
     dependencies:
       b4a: 1.7.4
     transitivePeerDependencies:

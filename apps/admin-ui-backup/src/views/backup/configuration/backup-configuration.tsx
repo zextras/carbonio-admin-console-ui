@@ -28,7 +28,6 @@ import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import {
   BACKUP_REALTIME,
@@ -48,21 +47,7 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+import styles from './backup-configuration.module.css';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -952,7 +937,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isSaveRequestInProgress && <OverlayDivision overlayStyle={styles.overlay} />}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"

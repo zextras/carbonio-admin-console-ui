@@ -7,9 +7,10 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   Dropdown,
   DropdownItem,
-  Icon,
+  HoverableRowFactory,
   Input,
   Padding,
   Row,
@@ -54,8 +55,6 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
@@ -63,6 +62,7 @@ import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 
 const RANGE = {
+  CustomHeaderFactory,
   DAYS: 'd',
   HOURS: 'h',
   MINUTES: 'm',
@@ -118,7 +118,7 @@ const ServerListTable: FC<{
             multiSelect={false}
             selectedRows={selectedRows}
             onSelectionChange={onSelectionChange}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
@@ -1303,11 +1303,11 @@ const DomainGalSettings: FC = () => {
                             label={EXTERNAL_SERVER_EXAMPLE}
                           >
                             <Text>
-                              <Icon
+                              <icon-wc
                                 icon="InfoOutline"
                                 size="large"
                                 color={hasFocus ? 'primary' : 'text'}
-                              />
+                              ></icon-wc>
                             </Text>
                           </Tooltip>
                         )}
@@ -1348,11 +1348,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_FILTER_LABEL}
                         >
                           <Text>
-                            <Icon
+                            <icon-wc
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            />
+                            ></icon-wc>
                           </Text>
                         </Tooltip>
                       )}
@@ -1378,11 +1378,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_SEARCH_BASE_LABEL}
                         >
                           <Text>
-                            <Icon
+                            <icon-wc
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            />
+                            ></icon-wc>
                           </Text>
                         </Tooltip>
                       )}
@@ -1451,11 +1451,11 @@ const DomainGalSettings: FC = () => {
                         label={LDAP_BIND_DN_LABLE}
                       >
                         <Text>
-                          <Icon
+                          <icon-wc
                             icon="InfoOutline"
                             size="large"
                             color={hasFocus ? 'primary' : 'text'}
-                          />
+                          ></icon-wc>
                         </Text>
                       </Tooltip>
                     )}

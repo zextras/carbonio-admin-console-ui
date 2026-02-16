@@ -4,18 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Button,  Container,  Icon,  Input,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
-import {   getSoapFetchRequest,  useDomainStore } from "@zextras/ui-shared";
-import {  debounce  } from "lodash-es";
-import {   FC,  useCallback,  useContext,  useEffect,  useMemo,  useState } from "react";
-import {  Trans, useTranslation  } from "react-i18next";
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Input,
+  Row,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { getSoapFetchRequest, useDomainStore } from '@zextras/ui-shared';
+import { debounce } from 'lodash-es';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
-import CustomRowFactory from "../../../app/shared/customTableRowFactory";
-import Paging from "../../../components/paging";
-import ListRow from "../../../list/list-row";
-import {  getFormatedShortDate  } from "../../../utility/utils";
-import {  RestoreDeleteAccountContext  } from "./restore-delete-account-context";
+import Paging from '../../../components/paging';
+import ListRow from '../../../list/list-row';
+import { getFormatedShortDate } from '../../../utility/utils';
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const { t } = useTranslation();
@@ -23,47 +31,46 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const [accountRows, setAccountRows] = useState<Array<any>>([]);
   const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
   const [accountOffset, setAccountOffset] = useState<number>(0);
-  const [accountLimit, setAccountLimit] = useState<number>(10);
   const domainName = useDomainStore((state) => state.domain?.name);
   const createSnackbar = useSnackbar();
   const context = useContext(RestoreDeleteAccountContext);
   const { setRestoreAccountDetail } = context;
   const [searchString, setSearchString] = useState<string>();
   const [totalItem, setTotalItem] = useState(1);
-  const [isRequestInProgress, setIsRequestInProgress] =
-    useState<boolean>(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const accountLimit = 10;
 
   const accountHeader: any[] = useMemo(
     () => [
       {
-        id: "account",
-        label: t("label.account", "Account"),
-        width: "30%",
+        id: 'account',
+        label: t('label.account', 'Account'),
+        width: '30%',
         bold: true,
       },
       {
-        id: "serverName",
-        label: t("label.server_name", "Server Name"),
-        width: "30%",
+        id: 'serverName',
+        label: t('label.server_name', 'Server Name'),
+        width: '30%',
         bold: true,
       },
       {
-        id: "hasBackup",
-        label: t("label.has_backup", "Has Backup"),
-        width: "10%",
+        id: 'hasBackup',
+        label: t('label.has_backup', 'Has Backup'),
+        width: '10%',
         bold: true,
       },
       {
-        id: "creat_date",
-        label: t("label.creation_date", "Creation Date"),
-        width: "10%",
+        id: 'creat_date',
+        label: t('label.creation_date', 'Creation Date'),
+        width: '10%',
         bold: true,
       },
       {
-        id: "delete_date",
-        label: t("label.deletion_date", "Deletion Date"),
-        width: "10%",
+        id: 'delete_date',
+        label: t('label.deletion_date', 'Deletion Date'),
+        width: '10%',
         bold: true,
       },
     ],
@@ -71,7 +78,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   );
 
   const getBackupAccounts = useCallback(
-    (searchText = "", offset = 0) => {
+    (searchText = '', offset = 0) => {
       setIsRequestInProgress(true);
       setAccounts([]);
       getSoapFetchRequest(
@@ -90,9 +97,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             const maxPageList: any[] = [];
             allServers.forEach((item: string) => {
               if (data[item]?.response?.accounts) {
-                allServerAccounts = allServerAccounts.concat(
-                  data[item]?.response?.accounts,
-                );
+                allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
               }
               if (data[item]?.response?.maxPage) {
                 maxPageList.push(data[item]?.response?.maxPage);
@@ -110,19 +115,15 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
           }
           if (error) {
             createSnackbar({
-              key: "error",
-              severity: "error",
+              key: 'error',
+              severity: 'error',
               label: error,
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
             });
           }
-          if (
-            backupAccounts &&
-            Array.isArray(backupAccounts) &&
-            backupAccounts.length > 0
-          ) {
+          if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
             setAccounts(backupAccounts);
           }
           if (page) {
@@ -174,12 +175,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text
-              size="small"
-              weight="light"
-              key={item?.serverName}
-              color="gray0"
-            >
+            <Text size="small" weight="light" key={item?.serverName} color="gray0">
               {item?.serverName}
             </Text>
           </Container>,
@@ -191,7 +187,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             crossAlignment="flex-start"
           >
             <Text size="small" weight="light" key={item?.status} color="gray0">
-              {item?.status === "Active" ? "Yes" : "No"}
+              {item?.status === 'Active' ? 'Yes' : 'No'}
             </Text>
           </Container>,
           <Container
@@ -201,12 +197,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text
-              size="small"
-              weight="light"
-              key={item?.creationTimestamp}
-              color="gray0"
-            >
+            <Text size="small" weight="light" key={item?.creationTimestamp} color="gray0">
               {getFormatedShortDate(new Date(item?.creationTimestamp))}
             </Text>
           </Container>,
@@ -218,9 +209,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             crossAlignment="flex-start"
           >
             <Text size="small" weight="light" key={item?.id} color="gray0">
-              {item?.deletedTimestamp
-                ? getFormatedShortDate(new Date(item?.deletedTimestamp))
-                : ""}
+              {item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
             </Text>
           </Container>,
         ],
@@ -258,8 +247,8 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
       crossAlignment="flex-start"
       mainAlignment="flex-start"
       width="100%"
-      padding={{ top: "extralarge" }}
-      style={{ overflowY: "auto" }}
+      padding={{ top: 'extralarge' }}
+      style={{ overflowY: 'auto' }}
       maxHeight="calc(100vh - 17.5em)"
     >
       <Row mainAlignment="flex-start" width="100%">
@@ -269,23 +258,17 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             mainAlignment="space-between"
             crossAlignment="flex-start"
             width="fill"
-            padding={{ bottom: "large", right: "large", left: "large" }}
+            padding={{ bottom: 'large', right: 'large', left: 'large' }}
           >
-            <Container
-              padding={{ bottom: "medium" }}
-              crossAlignment="flex-start"
-            >
+            <Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
               <Text size="medium" color="gray0" weight="regular">
                 {t(
-                  "label.restore_select_account_row_1",
+                  'label.restore_select_account_row_1',
                   `Through this tool, you'll be able to restore an entire account from the backup into a new account.`,
                 )}
               </Text>
             </Container>
-            <Container
-              padding={{ bottom: "medium" }}
-              crossAlignment="flex-start"
-            >
+            <Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
               {
                 <Text size="medium" color="gray0" weight="regular">
                   <Trans
@@ -296,34 +279,30 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
                 </Text>
               }
             </Container>
-            <Container padding={{ bottom: "medium", top: "large" }}>
+            <Container padding={{ bottom: 'medium', top: 'large' }}>
               <Input
-                disabled={
-                  accountRows.length === 0 && !searchString && !hasError
-                }
+                disabled={accountRows.length === 0 && !searchString && !hasError}
                 backgroundColor="gray5"
                 value={searchString}
                 onChange={(e: any): void => {
                   setSearchString(e.target.value);
                 }}
-                label={t("label.filter_account_list", "Filter Account List")}
+                label={t('label.filter_account_list', 'Filter Account List')}
                 CustomIcon={(): any => (
-                  <Icon icon="FunnelOutline" size="large" color="primary" />
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                 )}
               />
             </Container>
             <ListRow>
-              <Row
-                height={isRequestInProgress ? "fit" : "calc(100vh - 35.625em)"}
-              >
+              <Row height={isRequestInProgress ? 'fit' : 'calc(100vh - 35.625em)'}>
                 <Table
-                  style={{ overflow: "auto", height: "100%" }}
+                  style={{ overflow: 'auto', height: '100%' }}
                   multiSelect={false}
                   rows={accountRows}
                   headers={accountHeader}
                   showCheckbox={false}
                   selectedRows={selectedAccountRows}
-                  RowFactory={CustomRowFactory}
+                  RowFactory={HoverableRowFactory}
                   HeaderFactory={CustomHeaderFactory}
                 />
                 {isRequestInProgress && (
@@ -331,7 +310,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
                     crossAlignment="center"
                     mainAlignment="center"
                     height="fit"
-                    padding={{ top: "medium" }}
+                    padding={{ top: 'medium' }}
                   >
                     <Button
                       type="ghost"
@@ -346,7 +325,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             </ListRow>
 
             <ListRow>
-              <Container padding={{ top: "large", bottom: "small" }}>
+              <Container padding={{ top: 'large', bottom: 'small' }}>
                 <divider-wc></divider-wc>
               </Container>
             </ListRow>

@@ -3,15 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   Container,  CustomTextArea,  Icon,  Input,  Row,  Select,  SelectItem,  Text } from '@zextras/ui-components';
-import {  useDomainStore  } from '@zextras/ui-shared';
-import {  ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import {
+  Container,
+  CustomTextArea,
+  Input,
+  Row,
+  Select,
+  SelectItem,
+  Text,
+} from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ListRow from '../../../list/list-row';
-import {  checkValidUserName, convertToAscii, getModifiedName  } from '../../../utility/utils';
-import {  ResourceContext  } from './resource-context';
-import {   RESOURCE_TYPE,  SCHEDULE_POLITY_TYPE,  STATUS,  TRUE_FALSE } from './resource-edit-detail-view';
+import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
+import { ResourceContext } from './resource-context';
+import {
+  RESOURCE_TYPE,
+  SCHEDULE_POLITY_TYPE,
+  STATUS,
+  TRUE_FALSE,
+} from './resource-edit-detail-view';
 
 type SelectValue = SelectItem[] | string | null;
 
@@ -288,7 +301,7 @@ const ResourceDetailSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <Icon icon="AtOutline" color="gray0" size="large" />
+              <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
             </Row>
             <Row width="45%">
               <Input

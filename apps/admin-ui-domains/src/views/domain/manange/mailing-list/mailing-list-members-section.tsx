@@ -6,7 +6,9 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
+  HoverableRowFactory,
   Padding,
   Row,
   Table,
@@ -20,8 +22,6 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
@@ -270,7 +270,7 @@ const MailingListMembersSection: FC<any> = () => {
               headers={memberHeaders}
               showCheckbox={false}
               selectedRows={selectedDistributionListMember}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Icon } from '@zextras/ui-components';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
 import {
   addRoute,
   registerActions,
@@ -15,7 +15,6 @@ import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
 import {
   APP_ID,
@@ -30,19 +29,8 @@ import {
   PRIMARY_BAR_COS,
   SERVICES_ROUTE_ID,
 } from './constants';
-import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useCosStore } from './store/cos/store';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const PrimaryBarIcon = styled(Icon)`
-  &:hover {
-    background: transparent;
-  }
-  @media (max-width: 60rem) {
-    padding: 0 0 0 0.188rem;
-  }
-`;
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -111,16 +99,17 @@ const App: FC = () => {
 
   const cosPrimaryBar = useCallback(
     () => (
-      <PrimaryBarIcon
-        icon={SettingsModOutline}
+      <icon-wc
+        icon="SettingsModOutline"
         size="large"
         onClick={(): void => {
           navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`);
         }}
-      />
+      ></icon-wc>
     ),
     [navigate],
   );
+
   useEffect(() => {
     if (showCOS) {
       addRoute({

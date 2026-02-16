@@ -7,6 +7,8 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
   ModalOverlay,
   Padding,
@@ -32,8 +34,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
@@ -804,7 +804,7 @@ const HSMsettingPanel: FC = () => {
             multiSelect={false}
             selectedRows={selectedPolicies}
             HeaderFactory={CustomHeaderFactory}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
           />
         </ListRow>
         <ListRow>

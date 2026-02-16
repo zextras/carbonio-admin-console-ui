@@ -8,7 +8,10 @@ import {
   Button,
   ChipInput,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HorizontalWizard,
+  HoverableRowFactory,
+  InheritedInput,
   Input,
   Padding,
   Row,
@@ -23,45 +26,21 @@ import { map } from 'lodash-es';
 import QRCode from 'qrcode.react';
 import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
+import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import { Section } from '../../../../app/component/section-component';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
 import ListRow from '../../../../list/list-row';
-import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
 import { ServicesPassphrase } from './services-passphrase';
-
-const StaticCodesContainer = styled(Row)`
-  max-width: 350px;
-`;
-const StaticCodesWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  column-count: 2;
-  padding: 16px;
-`;
-const StaticCode = styled.label`
-  display: block;
-  font-family: monospace;
-  padding: 4.95px 0;
-`;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
   const { t } = useTranslation();
@@ -187,13 +166,18 @@ const EditAccountSecuritySection: FC = () => {
                 <Container>
                   <Padding top="large">
                     <Row mainAlignment="center">
-                      <StaticCodesContainer background="gray5">
-                        <StaticCodesWrapper>
+                      <Row background="gray5" style={{ maxWidth: '350px' }}>
+                        <div className={staticCodesStyles['static-codes-wrapper']}>
                           {map(pinCodes, (singleCode: any) => (
-                            <StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
+                            <label
+                              key={singleCode.code}
+                              className={staticCodesStyles['static-code']}
+                            >
+                              {singleCode.code}
+                            </label>
                           ))}
-                        </StaticCodesWrapper>
-                      </StaticCodesContainer>
+                        </div>
+                      </Row>
                     </Row>
                   </Padding>
                 </Container>
@@ -660,7 +644,6 @@ const EditAccountSecuritySection: FC = () => {
                   mainAlignment="space-between"
                   crossAlignment="flex-start"
                   width="fill"
-                  // height="calc(100vh - 340px)"
                 >
                   {otpList.length !== 0 && (
                     <Table
@@ -669,7 +652,7 @@ const EditAccountSecuritySection: FC = () => {
                       multiSelect={false}
                       onSelectionChange={setSelectedRows}
                       style={{ overflow: 'auto', height: '100%' }}
-                      RowFactory={CustomRowFactory}
+                      RowFactory={HoverableRowFactory}
                       HeaderFactory={CustomHeaderFactory}
                     />
                   )}
@@ -774,7 +757,11 @@ const EditAccountSecuritySection: FC = () => {
             >
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
+                  <icon-wc
+                    icon="InfoOutline"
+                    color="primary"
+                    style={{ width: '20px', height: '20px' }}
+                  ></icon-wc>
                 </Padding>
               </Row>
               <Row
