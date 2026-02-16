@@ -16,6 +16,7 @@ interface InheritedInputProps {
 	inputName: any;
 	onChange: any;
 	onChangeReset: any;
+	/** show reset clickable icon */
 	fromSubValue: any;
 	disabled?: boolean;
 	hasError?: boolean;
