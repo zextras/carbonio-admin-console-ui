@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useUserAccount } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { usePostHog } from 'posthog-js/react';
 import { useCallback, useEffect } from 'react';

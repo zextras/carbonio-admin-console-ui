@@ -3,11 +3,6 @@
   "version": "0.9.36",
   "description": "The Zextras Carbonio web admin",
   "private": true,
-  "main": "./exports.ts",
-  "exports": {
-    ".": "./exports.ts",
-    "./testing": "./testing.ts"
-  },
   "types": "./exports.ts",
   "engines": {
     "node": "v22",
@@ -29,6 +24,18 @@
     "@fontsource/roboto": "^5.2.6",
     "@tanstack/react-query": "^5.90.5",
     "@zextras/ui-components": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
+    "@zextras/admin-ui-backup": "workspace:*",
+    "@zextras/admin-ui-cos": "workspace:*",
+    "@zextras/admin-ui-dashboard": "workspace:*",
+    "@zextras/admin-ui-domains": "workspace:*",
+    "@zextras/admin-ui-legalhold": "workspace:*",
+    "@zextras/admin-ui-mta": "workspace:*",
+    "@zextras/admin-ui-notifications": "workspace:*",
+    "@zextras/admin-ui-operations": "workspace:*",
+    "@zextras/admin-ui-privacy": "workspace:*",
+    "@zextras/admin-ui-storage": "workspace:*",
+    "@zextras/admin-ui-subscription": "workspace:*",
     "date-fns": "^4.1.0",
     "i18next": "^22.5.1",
     "i18next-http-backend": "^2.5.0",
@@ -44,8 +51,8 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@tanstack/react-query-devtools": "^5.90.2",

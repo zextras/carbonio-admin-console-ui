@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { ModalManager, SnackbarManager } from '@zextras/ui-components';
+import { I18nFactory, ReactQueryProvider, useBridge } from '@zextras/ui-shared';
 import { FC, use } from 'react';
 
-import I18nFactory from '../i18n/i18n-factory';
-import { ReactQueryProvider } from '../providers/react-query-provider';
-import { useBridge } from '../store/context-bridge';
 import { TrackerProvider } from '../tracker/provider';
 import { BootstrapperContextProvider } from './bootstrapper-provider';
 import { BootstrapperRouter } from './bootstrapper-router';

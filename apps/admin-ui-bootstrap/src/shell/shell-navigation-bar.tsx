@@ -5,10 +5,11 @@
  */
 
 import { Container } from '@zextras/ui-components';
+import type { AppRoute } from '@zextras/ui-shared';
 
 import ShellPrimaryBar from './shell-primary-bar';
 
-export default function ShellNavigationBar({ activeRoute }) {
+export default function ShellNavigationBar({ activeRoute }: { activeRoute: AppRoute | undefined }) {
   return (
     <Container
       orientation="horizontal"

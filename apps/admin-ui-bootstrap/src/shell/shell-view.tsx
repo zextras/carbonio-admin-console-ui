@@ -6,7 +6,6 @@
 
 import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
 
-import { useCurrentRoute } from '../history/hooks';
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
 import ShellContextProvider from './shell-context-provider';

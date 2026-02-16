@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
@@ -19,6 +18,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

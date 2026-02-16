@@ -5,14 +5,6 @@
  */
 
 import {
-  fetchExternalSoap,
-  getSoapFetchRequest,
-  postSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-  useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   Input,
@@ -24,6 +16,14 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  fetchExternalSoap,
+  getSoapFetchRequest,
+  postSoapFetchRequest,
+  useAllServers,
+  useCurrentUserRights,
+  useModuleLicenseInfo,
+} from '@zextras/ui-shared';
 import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

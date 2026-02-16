@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Text } from '@zextras/ui-components';
+import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
 
 import { BadgeInfo } from '../../types';

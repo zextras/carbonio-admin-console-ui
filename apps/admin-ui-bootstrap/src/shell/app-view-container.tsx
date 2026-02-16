@@ -5,16 +5,16 @@
  */
 
 import { Container } from '@zextras/ui-components';
+import { useAppList, useAppRoutes, useAppStore } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import AppContextProvider from '../boot/app/app-context-provider';
-import { useAppList, useAppStore, useRoutes } from '../store/app';
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
-  const routes = useRoutes();
+  const routes = useAppRoutes();
   const location = useLocation();
   const mainRoute = useMemo(
     () => find(routes, (r) => apps[0]?.name === r.app)?.route,

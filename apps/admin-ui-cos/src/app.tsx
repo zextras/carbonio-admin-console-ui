@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Icon } from '@zextras/ui-components';
 import {
   addRoute,
   registerActions,
