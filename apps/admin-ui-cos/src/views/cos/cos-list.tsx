@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  Paging,
   Row,
   Table,
   Text,
@@ -25,7 +26,6 @@ import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 

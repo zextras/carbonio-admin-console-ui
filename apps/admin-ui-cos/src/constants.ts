@@ -10,7 +10,6 @@ export const GENERAL_INFORMATION = 'general_information';
 export const ADVANCED = 'advanced';
 export const NOT_SET = 'not_set';
 export const MANAGE_APP_ID = 'manage';
-export const FIRST_PAGE = 1;
 export const ACCOUNTS = 'accounts';
 export const DASHBOARD = 'dashboard';
 export const SERVICES_ROUTE_ID = 'services';

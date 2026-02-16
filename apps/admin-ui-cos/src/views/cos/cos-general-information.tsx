@@ -13,6 +13,7 @@ import {
   ListRow,
   Modal,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
@@ -34,7 +35,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
