@@ -4,12 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Text } from '@zextras/ui-components';
+import { Button, Container, ListRow, NotificationView, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import NotificationView from '../app/shared/notification-view';
-import ListRow from '../list/list-row';
 
 const DashboardNotification: FC<{
   goToMailNotificationt: () => void;
