@@ -4,7 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, DropDownInput, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import {
+  Container,
+  DropDownInput,
+  ListItems,
+  type ListItemType,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -27,7 +36,6 @@ import {
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 import GeneralListPanel from './general-list-panel';
 
@@ -157,12 +165,7 @@ export const CosListPanel: FC = () => {
     [setCos, setCosView],
   );
 
-  const detailOptions = useMemo<
-    {
-      id: string;
-      name: string;
-    }[]
-  >(
+  const detailOptions = useMemo<Array<ListItemType>>(
     () => [
       {
         id: GENERAL_INFORMATION,
@@ -209,12 +212,7 @@ export const CosListPanel: FC = () => {
     },
   };
 
-  const globalOptionItems = useMemo<
-    {
-      id: string;
-      name: string;
-    }[]
-  >(
+  const globalOptionItems = useMemo<Array<ListItemType>>(
     () => [
       {
         id: COS_LIST,
