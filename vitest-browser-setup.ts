@@ -5,8 +5,12 @@
  */
 import 'vitest-browser-react';
 
-import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
+
+// IMPORTANT: Stub globals BEFORE importing anything that might use them
+vi.stubGlobal('BASE_PATH', '');
+
+import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 
 // Mock TinyMCE global object to prevent errors during module imports
 vi.stubGlobal('tinymce', {
