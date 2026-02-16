@@ -8,7 +8,9 @@ import {
   Button,
   Container,
   CustomTextArea,
+  Displayer,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -28,8 +30,6 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import Displayer from '../../../components/displayer';
-import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { SendInviteAccounts } from './send-invite-accounts';
 
@@ -740,20 +740,20 @@ const ResourceEditDetailView: FC<any> = ({
 
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       label: t('label.view_mail', 'VIEW MAIL'),
       color: 'primary',
       onClick: onViewMail,
     },
     {
-      align: 'right',
-      type: 'outlined',
+      align: 'right' as const,
+      type: 'outlined' as const,
       color: 'error',
       onClick: onDeleteResource,
       label: t('label.delete', 'delete'),
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);

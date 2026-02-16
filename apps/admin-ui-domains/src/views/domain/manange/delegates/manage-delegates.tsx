@@ -9,6 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
+  ListRow,
   ModalOverlay,
   Row,
   Table,
@@ -56,7 +57,6 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import EditAccount from '../accounts/edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';

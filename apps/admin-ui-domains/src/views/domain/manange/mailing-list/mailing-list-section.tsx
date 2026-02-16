@@ -9,6 +9,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -24,7 +25,6 @@ import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { isValidLdapQuery } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
 

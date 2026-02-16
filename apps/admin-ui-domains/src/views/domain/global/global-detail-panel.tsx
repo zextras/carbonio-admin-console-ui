@@ -9,6 +9,7 @@ import {
   ChipItem,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -30,7 +31,6 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 
 const GlobalDetailPanel: FC = () => {

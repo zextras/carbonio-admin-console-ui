@@ -7,6 +7,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  ListRow,
   Row,
   Select,
   SelectItem,
@@ -16,7 +17,6 @@ import { useDomainStore } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ListRow from '../../../list/list-row';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 import { ResourceContext } from './resource-context';
 import {

@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Row,
   Table,
   Text,
@@ -21,7 +22,6 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 
 import Paging from '../../../components/paging';
-import ListRow from '../../../list/list-row';
 import { getFormatedShortDate } from '../../../utility/utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 

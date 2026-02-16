@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  ListRow,
   OverlayDivision,
   Padding,
   Row,
@@ -29,7 +30,7 @@ import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
-import ListRow from '../../list/list-row';
+
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();

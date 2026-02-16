@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   DropDownInput,
   Input,
+  ListRow,
   Padding,
   Row,
   Table,
@@ -31,7 +32,7 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import ListRow from '../../list/list-row';
+
 const DomainCosLink: FC<{
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;

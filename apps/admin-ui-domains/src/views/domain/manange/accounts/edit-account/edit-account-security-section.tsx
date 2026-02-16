@@ -13,6 +13,7 @@ import {
   HoverableRowFactory,
   InheritedInput,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -34,7 +35,6 @@ import { sendMail } from '../../../../../services/send-mail-service';
 import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
-import ListRow from '../../../../list/list-row';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';

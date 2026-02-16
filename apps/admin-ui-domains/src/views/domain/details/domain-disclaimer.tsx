@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -34,7 +35,7 @@ import {
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
-import ListRow from '../../list/list-row';
+
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();

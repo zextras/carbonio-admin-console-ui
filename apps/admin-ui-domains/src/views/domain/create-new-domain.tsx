@@ -10,6 +10,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  ListRow,
   OverlayDivision,
   Padding,
   Row,
@@ -41,7 +42,6 @@ import { createObjectAttribute } from '../../services/create-object-attribute-se
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { getCosList } from '../../services/search-cos-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
 import { GbToBytes, isValidEmail } from '../utility/utils';
 import styles from './create-new-domain.module.css';
 

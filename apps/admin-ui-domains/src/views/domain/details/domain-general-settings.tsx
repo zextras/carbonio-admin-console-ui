@@ -11,6 +11,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  ListRow,
   Modal,
   OverlayDivision,
   Padding,
@@ -50,7 +51,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { getDateFromStr, getFormatedDate, isValidEmail, timeZoneList } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
