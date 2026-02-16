@@ -102,7 +102,7 @@ export class IconWC extends LitElement {
         viewBox="0 0 24 24"
         aria-hidden="true"
         role="img"
-        data-testid="icon:${this.icon}"
+        data-testid="icon: ${this.icon}"
       >
         ${unsafeSVG(svgContent)}
       </svg>
