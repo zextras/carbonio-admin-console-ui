@@ -12,6 +12,7 @@ import {
   Input,
   ModalOverlay,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
@@ -63,7 +64,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext } from './account-context';

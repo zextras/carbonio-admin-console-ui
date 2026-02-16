@@ -9,6 +9,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  Paging,
   Row,
   Table,
   Text,
@@ -23,7 +24,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
-import Paging from '../../components/paging';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 

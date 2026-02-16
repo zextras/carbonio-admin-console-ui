@@ -18,6 +18,7 @@ import {
   Modal,
   OverlayDivision,
   Padding,
+  Paging,
   Row,
   Select,
   Switch,
@@ -67,7 +68,6 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import ManageAliases from '../../../components/manageAliases';
-import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateTimeFromStr, isValidEmail } from '../../../utility/utils';

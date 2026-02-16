@@ -11,6 +11,7 @@ import {
   Input,
   ListRow,
   Padding,
+  Paging,
   Row,
   Switch,
   Table,
@@ -23,7 +24,6 @@ import { useTranslation } from 'react-i18next';
 
 import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { isValidLdapQuery } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';

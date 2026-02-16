@@ -12,6 +12,7 @@ import {
   Input,
   ListRow,
   Padding,
+  Paging,
   Row,
   Select,
   Table,
@@ -43,7 +44,6 @@ import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import DownloadCSV from '../../app/shared/download-csv';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
-import Paging from '../../components/paging';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
 

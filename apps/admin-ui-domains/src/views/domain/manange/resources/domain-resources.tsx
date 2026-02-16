@@ -11,6 +11,7 @@ import {
   HoverableRowFactory,
   Input,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
@@ -29,7 +30,6 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateResource from './create-resource';

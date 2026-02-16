@@ -11,6 +11,7 @@ import {
   Input,
   ModalOverlay,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
@@ -38,7 +39,6 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';

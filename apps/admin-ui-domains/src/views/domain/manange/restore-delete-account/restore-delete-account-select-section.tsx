@@ -11,6 +11,7 @@ import {
   HoverableRowFactory,
   Input,
   ListRow,
+  Paging,
   Row,
   Table,
   Text,
@@ -21,7 +22,6 @@ import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import Paging from '../../../components/paging';
 import { getFormatedShortDate } from '../../../utility/utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
