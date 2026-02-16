@@ -6,15 +6,15 @@
 
 import { find, replace, startsWith, trim } from 'lodash-es';
 import { useMemo } from 'react';
-import { type To,useLocation } from 'react-router';
+import { type To, useLocation } from 'react-router';
 
 import { AppRoute, HistoryParams } from '../../types';
-import { getRoutes, useRoutes } from '../store/app';
+import { getRoutes, useAppRoutes } from '../store/app';
 import { useContextBridge } from '../store/context-bridge';
 
 export const useCurrentRoute = (): AppRoute | undefined => {
   const location = useLocation();
-  const routes = useRoutes();
+  const routes = useAppRoutes();
   return useMemo(
     () => find(routes, (r) => startsWith(trim(location.pathname, '/'), r.route)),
     [location.pathname, routes],

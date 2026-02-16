@@ -9,7 +9,7 @@ import {
   registerActions,
   useCurrentUserRights,
   useDomainStore,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

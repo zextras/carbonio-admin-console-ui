@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Text } from '@zextras/ui-components';
+import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
 import styled from 'styled-components';
-
-import { BadgeInfo } from '../../types';
 
 const MiniBadge = styled(Container)<{ badge: BadgeInfo }>`
   position: absolute;

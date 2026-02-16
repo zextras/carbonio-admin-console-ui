@@ -10,7 +10,7 @@ export {
   getSoapFetchRequest,
   postSoapFetchRequest,
   soapFetch,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 
 export const useDomainInformation = vi.fn();
 export const addRoute = vi.fn();

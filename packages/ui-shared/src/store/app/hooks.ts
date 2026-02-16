@@ -14,12 +14,12 @@ import { useAppStore } from './store';
 
 const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
 export const useAppList = (): Array<CarbonioModule> => {
-	const apps = useApps();
-	return useMemo(() => sortBy(apps, (a) => a.priority), [apps]);
+  const apps = useApps();
+  return useMemo(() => sortBy(apps, (a) => a.priority), [apps]);
 };
 
 export const getApp = (appId: string) => (): CarbonioModule => useAppStore.getState().apps[appId];
 
 export const getShell = (): CarbonioModule => useAppStore.getState().shell;
 export const getRoutes = (): Record<string, AppRoute> => useAppStore.getState().routes;
-export const useRoutes = (): Record<string, AppRoute> => useAppStore((s) => s.routes);
+export const useAppRoutes = (): Record<string, AppRoute> => useAppStore((s) => s.routes);

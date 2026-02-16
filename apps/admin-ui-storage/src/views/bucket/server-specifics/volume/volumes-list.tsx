@@ -5,12 +5,6 @@
  */
 
 import {
-  postSoapFetchRequest,
-  soapFetch,
-  useAllServers,
-  useIsAdvanced,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   ModalOverlay,
@@ -20,6 +14,12 @@ import {
   THeader,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  postSoapFetchRequest,
+  soapFetch,
+  useAllServers,
+  useIsAdvanced,
+} from '@zextras/ui-shared';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';

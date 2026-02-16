@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore, useStickyBarStore  } from '@zextras/admin-ui-bootstrap';
 import {   Button,  Container,  CustomTextArea,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
+import {  useDomainStore, useStickyBarStore  } from '@zextras/ui-shared';
 import {  format, parse  } from 'date-fns';
 import {  isEqual  } from 'lodash-es';
 import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';

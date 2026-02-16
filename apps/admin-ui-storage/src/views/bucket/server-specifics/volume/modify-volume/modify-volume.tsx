@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   soapFetch,  useIsAdvanced,  useStickyBarStore } from "@zextras/admin-ui-bootstrap";
 import {   Button,  Container,  Input,  Link,  Modal,  OverlayDivision,  Padding,  Radio,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from "@zextras/ui-components";
+import {   soapFetch,  useIsAdvanced,  useStickyBarStore } from "@zextras/ui-shared";
 import {  isEmpty  } from "lodash-es";
 import React, {
   FC,

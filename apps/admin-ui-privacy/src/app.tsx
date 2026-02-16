@@ -6,7 +6,7 @@
 
 import '@zextras/ui-components';
 
-import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
+import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

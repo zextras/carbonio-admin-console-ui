@@ -6,7 +6,7 @@
   "main": "src/app.tsx",
   "scripts": {
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --build",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet",
     "test": "vitest run",
@@ -18,7 +18,7 @@
     "@tanstack/react-query": "^5.90.5",
     "@types/react-csv": "^1.1.10",
     "@vitest/browser-preview": "^4.0.14",
-    "@zextras/admin-ui-bootstrap": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@zextras/ui-components": "workspace:*",
     "html-entities": "^2.6.0",
     "i18next": "^22.5.1",

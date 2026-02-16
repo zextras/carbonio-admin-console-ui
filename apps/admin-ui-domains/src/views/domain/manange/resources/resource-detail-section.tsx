@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
 import {   Container,  CustomTextArea,  Icon,  Input,  Row,  Select,  SelectItem,  Text } from '@zextras/ui-components';
+import {  useDomainStore  } from '@zextras/ui-shared';
 import {  ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
 import {  useTranslation  } from 'react-i18next';
 

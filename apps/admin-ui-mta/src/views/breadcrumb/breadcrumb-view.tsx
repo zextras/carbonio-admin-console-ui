@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLastLoginTimestamp, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container, Icon,Padding, Row, Text } from '@zextras/ui-components';
+import { useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';

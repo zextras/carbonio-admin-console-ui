@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   useDomainStore,  useIsAdvanced,  useUserSettings } from "@zextras/admin-ui-bootstrap";
 import {   Button,  Container,  Icon,  Input,  Padding,  PasswordInput,  Popper,  Row,  Select,  SelectItem,  Switch,  Text,  Tooltip as TooltipDefault,  useSnackbar } from "@zextras/ui-components";
+import {   useDomainStore,  useIsAdvanced,  useUserSettings } from "@zextras/ui-shared";
 import {  isEmpty  } from "lodash-es";
 import React, {
   FC,

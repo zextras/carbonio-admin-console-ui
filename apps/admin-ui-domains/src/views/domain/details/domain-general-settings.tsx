@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   replaceHistory,  useDomainStore,  useIsAdvanced,  useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {   Button,  ChipInput,  ChipItem,  Container,  CustomTextArea,  Input,  Modal,  OverlayDivision,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
+import {   replaceHistory,  useDomainStore,  useIsAdvanced,  useUserSettings } from '@zextras/ui-shared';
 import {  cloneDeep, filter, find, isEqual, map, some  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {  Trans, useTranslation  } from 'react-i18next';

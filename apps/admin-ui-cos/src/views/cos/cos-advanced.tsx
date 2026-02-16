@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights,useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
+import { useCurrentUserRights,useIsAdvanced } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import {
 	ChangeEvent,

@@ -13,7 +13,7 @@ import svgr from 'vite-plugin-svgr';
 import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
-import { getWorkspaceRoot } from '../../scripts/utils';
+import { getWorkspaceRoot } from './vite-config/utils';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';

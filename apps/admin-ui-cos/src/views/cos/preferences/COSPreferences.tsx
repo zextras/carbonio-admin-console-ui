@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
 import {  Container, useSnackbar  } from '@zextras/ui-components';
+import {  useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find  } from 'lodash-es';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {  useTranslation  } from 'react-i18next';

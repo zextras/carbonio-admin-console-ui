@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
@@ -16,6 +15,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAppConfigStore } from '@zextras/ui-shared';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
