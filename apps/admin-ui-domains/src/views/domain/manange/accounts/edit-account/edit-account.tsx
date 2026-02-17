@@ -16,6 +16,7 @@ import {  addAccountAliasRequest  } from '../../../../../services/add-account-al
 import {  deleteAccountAliasRequest  } from '../../../../../services/delete-account-alias';
 import {  deleteAccount  } from '../../../../../services/delete-account-service';
 import {  flushCache  } from '../../../../../services/flush-cache-service';
+import { getAccountQuota } from '../../../../../services/get-account-quota';
 import {  getDelegateAuthRequest  } from '../../../../../services/get-delegate-auth-request';
 import {  modifyAccountRequest  } from '../../../../../services/modify-account';
 import {  removeDistributionListMember  } from '../../../../../services/remove-distributionlist-member-service';
@@ -600,7 +601,29 @@ const EditAccount: FC<{
 			if (accountDetail.totalComputedQuotaLimit !== undefined) {
 				setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then(notifyResult);
 			} else {
-				unsetAccountQuota(accountDetail?.zimbraId).then(notifyResult);
+				unsetAccountQuota(accountDetail?.zimbraId)
+					.then(notifyResult)
+					.then(() => {
+						return getAccountQuota(accountDetail?.zimbraId);
+					})
+					.then((response) => {
+						if (response.type === 'success') {
+							setInitAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: response.totalComputedLimit }));
+							setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: response.totalComputedLimit }));
+						} else {
+							throw new Error(response.error);
+						}
+					})
+					.catch((error) => {
+							createSnackbar({
+								key: 'getAccountQuotaError',
+								severity: 'error',
+								label: error.message,
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: false
+							});	
+						});
 			}
 
 			remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
