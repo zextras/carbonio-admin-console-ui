@@ -32,33 +32,33 @@ function setupNotAdvancedTest(component: React.ReactElement) {
 
 describe('EditAccountQuotaInputsNew', () => {
   it('should render the total quota input when advanced is supported', async () => {
-    const setAccountDetail = vi.fn();
+    const onChange = vi.fn();
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
-        initAccountDetail={defaultAccountDetail}
-        setAccountDetail={setAccountDetail}
+        totalComputedQuotaLimit={defaultAccountDetail.totalComputedQuotaLimit}
+        onChange={onChange}
       />,
     );
     await expect.element(page.getByText('Total quota(GB)')).toBeVisible();
   });
 
   it('should render nothing when advanced is not supported', async () => {
-    const setAccountDetail = vi.fn();
+    const onChange = vi.fn();
     const { container } = await setupNotAdvancedTest(
       <EditAccountQuotaInputsNew
-        initAccountDetail={defaultAccountDetail}
-        setAccountDetail={setAccountDetail}
+        totalComputedQuotaLimit={defaultAccountDetail.totalComputedQuotaLimit}
+        onChange={onChange}
       />,
     );
     expect(container.innerHTML).toBe('');
   });
 
   it('should allow numeric input', async () => {
-    const setAccountDetail = vi.fn();
+    const onChange = vi.fn();
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
-        initAccountDetail={defaultAccountDetail}
-        setAccountDetail={setAccountDetail}
+        totalComputedQuotaLimit={defaultAccountDetail.totalComputedQuotaLimit}
+        onChange={onChange}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -70,14 +70,15 @@ describe('EditAccountQuotaInputsNew', () => {
     const fakeAccountDetail = {
       id: 'account-id',
       name: 'test-account',
-      [TOTAL_COMPUTED_QUOTA_LIMIT]: 0,
+      totalComputedQuotaLimit: 0,
     } satisfies AccountDetail;
 
-    const setAccountDetail = vi.fn();
+    const onChange = vi.fn();
+
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
-        initAccountDetail={fakeAccountDetail}
-        setAccountDetail={setAccountDetail}
+        totalComputedQuotaLimit={fakeAccountDetail.totalComputedQuotaLimit}
+        onChange={onChange}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });

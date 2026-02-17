@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
 import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
 import { AccountDetail } from '../../account-context';
@@ -20,25 +20,28 @@ type EditAccountQuotaInputsProps = {
   setFocusableMailboxQuota: (value: boolean) => void;
   setHighlightMailboxQuota: (value: boolean) => void;
   accountDetail: AccountDetail;
-  initAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
 
 export const EditAccountQuotaInputs = ({
-  focusableFileQuota,
-  highlightFileQuota,
-  focusableMailboxQuota,
-  highlightMailboxQuota,
-  setFocusableFileQuota,
-  setHighlightFileQuota,
-  setFocusableMailboxQuota,
-  setHighlightMailboxQuota,
-  accountDetail,
-  initAccountDetail,
-  setAccountDetail
-}: EditAccountQuotaInputsProps): React.JSX.Element => {
+                                         focusableFileQuota,
+                                         highlightFileQuota,
+                                         focusableMailboxQuota,
+                                         highlightMailboxQuota,
+                                         setFocusableFileQuota,
+                                         setHighlightFileQuota,
+                                         setFocusableMailboxQuota,
+                                         setHighlightMailboxQuota,
+                                         accountDetail,
+                                         setAccountDetail,
+                                       }: EditAccountQuotaInputsProps): React.JSX.Element => {
 
   const isTotalQuotaActive = useTotalQuotaActive();
+
+  const onTotalComputedQuotaLimitChange: ComponentProps<typeof EditAccountQuotaInputsNew>['onChange'] = useCallback(
+    (value) => {
+      setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
+    }, [setAccountDetail]);
 
   if (!isTotalQuotaActive) {
     return <EditAccountQuotaInputsLegacy
@@ -50,8 +53,8 @@ export const EditAccountQuotaInputs = ({
       setHighlightFileQuota={setHighlightFileQuota}
       setFocusableMailboxQuota={setFocusableMailboxQuota}
       setHighlightMailboxQuota={setHighlightMailboxQuota}
-    />
+    />;
   } else {
-    return <EditAccountQuotaInputsNew initAccountDetail={initAccountDetail} setAccountDetail={setAccountDetail} accountDetail={accountDetail} />
+    return <EditAccountQuotaInputsNew totalComputedQuotaLimit={accountDetail.totalComputedQuotaLimit} onChange={onTotalComputedQuotaLimitChange} />;
   }
-}
+};

@@ -742,7 +742,6 @@ const EditAccountGeneralSection: FC<{
         )}
         <EditAccountQuotaInputs
           accountDetail={accountDetail}
-          initAccountDetail={initAccountDetail}
           setAccountDetail={setAccountDetail}
           focusableFileQuota={focusableFileQuota}
           highlightFileQuota={highlightFileQuota}

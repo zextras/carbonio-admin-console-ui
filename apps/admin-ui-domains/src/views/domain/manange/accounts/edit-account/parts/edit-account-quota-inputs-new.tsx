@@ -5,39 +5,34 @@
  */
 import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { Input, Row } from '@zextras/ui-components';
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TOTAL_COMPUTED_QUOTA_LIMIT } from '../../../../../../constants';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
-import { AccountDetail } from '../../account-context';
 
 type EditAccountQuotaInputsNewProps = {
-  initAccountDetail: AccountDetail;
-  setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
+  totalComputedQuotaLimit?: number;
+  onChange: (value?: number) => void;
 };
 
 export const EditAccountQuotaInputsNew = ({
-  initAccountDetail,
-  setAccountDetail
+  totalComputedQuotaLimit,
+  onChange
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
 
-  const initialTotalComputed = initAccountDetail[TOTAL_COMPUTED_QUOTA_LIMIT];
-  const [inputValue, setInputValue] = useState<string| undefined>(undefined);
+  const [inputValue, setInputValue] = useState<number | undefined >(undefined);
 
   useEffect(() => {
-    if (initialTotalComputed !== undefined) {
-      setInputValue(BytesToGB(initialTotalComputed));
-    }
-
-  }, [initialTotalComputed]);
+      setInputValue(totalComputedQuotaLimit ? BytesToGB(totalComputedQuotaLimit) as number : undefined);
+  }, [totalComputedQuotaLimit]);
 
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
-    setInputValue(value);
-    const valueInBytes = value ? GbToBytes(value) as number : undefined;
-    setAccountDetail((prev: AccountDetail) => ({ ...prev, [TOTAL_COMPUTED_QUOTA_LIMIT]: valueInBytes }) satisfies AccountDetail);
-  },[setAccountDetail]);
+    const filteredStringValue = e.target.value.replace(/\D/g, '');
+    const valueInGB = filteredStringValue ? parseInt(filteredStringValue, 10) : undefined;
+    const valueInBytes = valueInGB ? GbToBytes(valueInGB) as number : undefined;
+    setInputValue(valueInGB);
+    onChange(valueInBytes);
+  },[onChange]);
 
   const isAdvanced = useIsAdvanced();
   const [t] = useTranslation();

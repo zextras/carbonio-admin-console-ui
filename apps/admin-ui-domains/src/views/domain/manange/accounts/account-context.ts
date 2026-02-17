@@ -5,10 +5,8 @@
  */
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { TOTAL_COMPUTED_QUOTA_LIMIT } from '../../../../constants';
-
 export type AccountDetail = Record<string, any> & {
-	[TOTAL_COMPUTED_QUOTA_LIMIT]?: number;
+	totalComputedQuotaLimit?: number;
 }
 
 type AccountContext = {
