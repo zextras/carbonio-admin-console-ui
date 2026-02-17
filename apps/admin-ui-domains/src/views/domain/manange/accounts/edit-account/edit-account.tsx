@@ -22,6 +22,7 @@ import {  removeDistributionListMember  } from '../../../../../services/remove-d
 import {  renameAccountRequest  } from '../../../../../services/rename-account';
 import {  resetFileQuotaLimitById  } from '../../../../../services/reset-file-quota-limit';
 import {  getDomainList  } from '../../../../../services/search-domain-service';
+import { setAccountQuota } from '../../../../../services/set-account-quota';
 import {  setCoreAttributes  } from '../../../../../services/set-core-attributes';
 import {  setFileQuotaLimitById  } from '../../../../../services/set-file-quota-limit';
 import {  setPasswordRequest  } from '../../../../../services/set-password';
@@ -568,10 +569,40 @@ const EditAccount: FC<{
 			if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
 				return;
 			}
-				
+			if (accountDetail.totalComputedQuotaLimit) {
+				setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then((response) => {
+					if (response.type === 'success') {
+						createSnackbar({
+							key: 'setAccountQuotaSuccess',
+							severity: 'success',
+							label: t(
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						})
+
+					} else {
+						createSnackbar({
+							key: 'setAccountQuotaError',
+							severity: 'error',
+							label: response.error,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: false
+						});
+					}
+				})
+			} else {
+				// call unset quota
+			}
+
+
 			remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
 		},
-		[]
+		[accountDetail.totalComputedQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
 	);
 
 	const handleMainModifiedKeys = useCallback(

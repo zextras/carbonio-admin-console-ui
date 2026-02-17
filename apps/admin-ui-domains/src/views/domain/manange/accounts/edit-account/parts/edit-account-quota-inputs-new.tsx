@@ -35,8 +35,8 @@ export const EditAccountQuotaInputsNew = ({
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     setInputValue(value);
-    const valueInBytes = value ? GbToBytes(value) : '';
-    setAccountDetail((prev: AccountDetail) => ({ ...prev, [TOTAL_COMPUTED_QUOTA_LIMIT]: valueInBytes }));
+    const valueInBytes = value ? GbToBytes(value) as number : undefined;
+    setAccountDetail((prev: AccountDetail) => ({ ...prev, [TOTAL_COMPUTED_QUOTA_LIMIT]: valueInBytes }) satisfies AccountDetail);
   },[setAccountDetail]);
 
   const isAdvanced = useIsAdvanced();
