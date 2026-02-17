@@ -232,7 +232,7 @@ const SelectComponent = function SelectFn<T = string>({
   const updateSingleSelection = useCallback(
     (item: SelectItem<T>) => {
       if (!isControlled) {
-        setSelected(item.value != null ? [item] : []);
+        setSelected(item.value !== null && item.value !== undefined ? [item] : []);
       }
       (onChange as SingleSelectionOnChange<T>)(item.value);
     },
