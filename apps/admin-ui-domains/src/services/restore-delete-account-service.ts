@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/admin-ui-bootstrap';
+import { fetchExternalSoap } from '@zextras/ui-shared';
 
 export const doRestoreDeleteAccount = async (
 	dataItem: unknown,

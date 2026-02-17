@@ -34,11 +34,10 @@ import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
 
 import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
-import { getLocale, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
+import { getLocale, useUserSettings } from '@zextras/ui-shared';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 // eslint-disable-next-line no-duplicate-imports
 import tinymce, { type EditorOptions, type TinyMCE, type Ui } from 'tinymce/tinymce';
 
@@ -60,10 +59,6 @@ type ComposerProps = EditorProps & {
   onFileSelect?: (arg: { editor: TinyMCE; files: HTMLInputElement['files'] | undefined }) => void;
   customInitOptions?: Partial<EditorProps['init']>;
 };
-
-const FileInput = styled.input`
-  display: none;
-`;
 
 const Composer = ({
   onEditorChange,
@@ -260,7 +255,8 @@ const Composer = ({
       mainAlignment="flex-start"
       style={{ overflowY: 'hidden' }}
     >
-      <FileInput
+      <input
+        style={{ display: 'none' }}
         type="file"
         ref={inputRef}
         accept="image/*"

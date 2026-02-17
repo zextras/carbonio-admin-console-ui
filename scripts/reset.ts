@@ -19,8 +19,8 @@ function reset() {
 
     const steps = [
       { name: 'Cleaning root', command: 'rm -rf node_modules pnpm-lock.yaml .turbo' },
-      { name: 'Cleaning apps', command: 'rm -rf apps/**/node_modules apps/**/.turbo' },
-      { name: 'Cleaning packages', command: 'rm -rf packages/**/node_modules packages/**/.turbo' },
+      { name: 'Cleaning apps', command: 'rm -rf apps/**/node_modules apps/**/.turbo apps/**/tsconfig.tsbuildinfo' },
+      { name: 'Cleaning packages', command: 'rm -rf packages/**/node_modules packages/**/.turbo packages/**/tsconfig.tsbuildinfo' },
       { name: 'Pruning store', command: 'pnpm store prune --force' },
       { name: 'Installing', command: 'pnpm install' },
     ];

@@ -4,26 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Button } from '@zextras/ui-components';
+import { Button, PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
+import styles from './app.module.css';
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const PrimaryBarIconButton = styled(Button)`
-  &:hover {
-    background: transparent;
-  }
-  @media (max-width: 60rem) {
-    padding: 0 0 0 0.188rem;
-  }
-`;
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -73,12 +63,13 @@ const App: FC = () => {
 
   const backupPrimaryBar: FC = useCallback(
     () => (
-      <PrimaryBarIconButton
+      <Button
         // @ts-expect-error - needs a fix // Need to fix it with custom soultion
         icon={SvgBackupOutline}
         type="ghost"
         size={'extralarge'}
         color={'text'}
+        className={styles.primaryBarButton}
         onClick={(): void => {
           navigate(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`);
         }}

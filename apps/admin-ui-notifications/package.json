@@ -6,7 +6,7 @@
   "main": "src/app.tsx",
   "scripts": {
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --build",
     "lint": "eslint --quiet",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.5",
     "@vitest/browser-preview": "^4.0.14",
-    "@zextras/admin-ui-bootstrap": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@zextras/ui-components": "workspace:*",
     "date-fns": "^4.1.0",
     "html-entities": "^2.6.0",
@@ -29,7 +29,6 @@
     "react-csv": "^2.2.2",
     "react-i18next": "^12.3.1",
     "react-router": "^7.13.0",
-    "styled-components": "^5.3.11",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
@@ -45,12 +44,10 @@
     "@types/react": "^19.1.0",
     "@types/react-csv": "^1.1.10",
     "@types/react-dom": "^19.1.0",
-    "@types/styled-components": "^5.1.26",
     "@vitest/browser": "^4.0.5",
     "@vitest/coverage-istanbul": "^4.0.5",
     "@vitest/ui": "^4.0.5",
     "admin-ui-test-utils": "workspace:*",
-    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^9.34.0",
     "jsdom": "^26.1.0",
     "msw": "^2.12.2",
