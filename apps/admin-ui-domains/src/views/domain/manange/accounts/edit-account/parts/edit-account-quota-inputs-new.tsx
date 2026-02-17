@@ -13,13 +13,11 @@ import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
 import { AccountDetail } from '../../account-context';
 
 type EditAccountQuotaInputsNewProps = {
-  accountDetail: AccountDetail;
   initAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
 
 export const EditAccountQuotaInputsNew = ({
-  accountDetail,
   initAccountDetail,
   setAccountDetail
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
@@ -35,8 +33,7 @@ export const EditAccountQuotaInputsNew = ({
   }, [initialTotalComputed]);
 
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // replace(/\D/g, '');
+    const value = e.target.value.replace(/\D/g, '');
     setInputValue(value);
     const valueInBytes = value ? GbToBytes(value) : '';
     setAccountDetail((prev: AccountDetail) => ({ ...prev, [TOTAL_COMPUTED_QUOTA_LIMIT]: valueInBytes }));
