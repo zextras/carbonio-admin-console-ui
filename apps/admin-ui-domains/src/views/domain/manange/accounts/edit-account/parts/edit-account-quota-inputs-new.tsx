@@ -20,10 +20,10 @@ export const EditAccountQuotaInputsNew = ({
   onChange
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
 
-  const [inputValue, setInputValue] = useState<number | '' | undefined >(undefined);
+  const [inputValue, setInputValue] = useState<number | ''>('');
 
   useEffect(() => {
-      setInputValue(totalComputedQuotaLimit ? BytesToGB(totalComputedQuotaLimit) as number : undefined);
+      setInputValue(totalComputedQuotaLimit ? BytesToGB(totalComputedQuotaLimit) as number : '');
   }, [totalComputedQuotaLimit]);
 
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
