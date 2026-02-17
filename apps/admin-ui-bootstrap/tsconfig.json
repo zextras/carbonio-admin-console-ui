@@ -31,6 +31,14 @@
     { "path": "../admin-ui-privacy" },
     { "path": "../admin-ui-storage" }
   ],
-  "include": ["src/**/*", "**/types/**/*", "translations/**/*", "*.ts", "*.js", "*.d.ts"],
+  "include": [
+    "src/**/*",
+    "**/types/**/*",
+    "translations/**/*",
+    "*.ts",
+    "vite-config",
+    "*.js",
+    "*.d.ts"
+  ],
   "exclude": ["node_modules", "dist", "build"]
 }
