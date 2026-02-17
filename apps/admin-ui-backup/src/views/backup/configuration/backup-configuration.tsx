@@ -47,7 +47,21 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import styles from './backup-configuration.module.css';
+
+const getOverlayStyle = (): React.CSSProperties => ({
+  position: 'fixed',
+  width: '70.35rem',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  height: 'auto',
+  maxHeight: '100%',
+  overflow: 'hidden',
+  backgroundColor: '#0d0d0d',
+  opacity: '0.4',
+  zIndex: 11,
+  paddingTop: '2rem',
+});
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -937,9 +951,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && (
-        <OverlayDivision overlayStyle={styles.overlay as React.CSSProperties} />
-      )}
+      {isSaveRequestInProgress && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
