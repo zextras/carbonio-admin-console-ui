@@ -20,7 +20,7 @@ export const EditAccountQuotaInputsNew = ({
   onChange
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
 
-  const [inputValue, setInputValue] = useState<number | undefined >(undefined);
+  const [inputValue, setInputValue] = useState<number | '' | undefined >(undefined);
 
   useEffect(() => {
       setInputValue(totalComputedQuotaLimit ? BytesToGB(totalComputedQuotaLimit) as number : undefined);
@@ -28,9 +28,11 @@ export const EditAccountQuotaInputsNew = ({
 
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const filteredStringValue = e.target.value.replace(/\D/g, '');
-    const valueInGB = filteredStringValue !== '' ? parseInt(filteredStringValue, 10) : undefined;
+    const parsedValue = filteredStringValue !== '' ? parseInt(filteredStringValue, 10) : undefined;
+    const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
     const valueInBytes = valueInGB !== undefined ? GbToBytes(valueInGB) as number : undefined;
-    setInputValue(valueInGB);
+    // change between defined and undefined value breaks the input component, so we need to set it to empty string when it's undefined
+    setInputValue(valueInGB !== undefined ? valueInGB : '');
     onChange(valueInBytes);
   },[onChange]);
 
