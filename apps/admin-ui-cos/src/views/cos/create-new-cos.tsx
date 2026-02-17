@@ -25,7 +25,7 @@ import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
 import ListRow from '../list/list-row';
 
-function getOverlayStyle() {
+function getOverlayStyle(): React.CSSProperties {
   return {
     position: 'fixed',
     width: '70.35rem',
