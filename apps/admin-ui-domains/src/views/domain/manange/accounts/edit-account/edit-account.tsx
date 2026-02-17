@@ -569,7 +569,7 @@ const EditAccount: FC<{
 			if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
 				return;
 			}
-			if (accountDetail.totalComputedQuotaLimit) {
+			if (accountDetail.totalComputedQuotaLimit !== undefined) {
 				setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then((response) => {
 					if (response.type === 'success') {
 						createSnackbar({

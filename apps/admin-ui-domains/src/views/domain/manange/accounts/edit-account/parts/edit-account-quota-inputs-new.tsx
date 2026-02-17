@@ -28,8 +28,8 @@ export const EditAccountQuotaInputsNew = ({
 
   const inputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const filteredStringValue = e.target.value.replace(/\D/g, '');
-    const valueInGB = filteredStringValue ? parseInt(filteredStringValue, 10) : undefined;
-    const valueInBytes = valueInGB ? GbToBytes(valueInGB) as number : undefined;
+    const valueInGB = filteredStringValue !== '' ? parseInt(filteredStringValue, 10) : undefined;
+    const valueInBytes = valueInGB !== undefined ? GbToBytes(valueInGB) as number : undefined;
     setInputValue(valueInGB);
     onChange(valueInBytes);
   },[onChange]);
