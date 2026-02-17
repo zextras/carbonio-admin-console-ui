@@ -30,6 +30,7 @@
     "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "react": "^19.1.0"
   },
   "devDependencies": {

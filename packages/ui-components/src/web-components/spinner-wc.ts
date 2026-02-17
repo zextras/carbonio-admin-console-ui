@@ -7,11 +7,9 @@
 import './theme.css';
 
 import { css, html, LitElement } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
-/**
- * A simple loading spinner web component
- * @element spinner-wc
- */
+@customElement('spinner-wc')
 export class SpinnerWC extends LitElement {
   static override styles = css`
     :host {
@@ -35,11 +33,8 @@ export class SpinnerWC extends LitElement {
     }
   `;
 
-  static override properties = {
-    color: { type: String, reflect: true },
-  };
-
-  color = 'primary';
+  @property({ type: String, reflect: true })
+  accessor color = 'primary';
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -57,10 +52,6 @@ export class SpinnerWC extends LitElement {
       ></div>
     `;
   }
-}
-
-if (!customElements.get('spinner-wc')) {
-  customElements.define('spinner-wc', SpinnerWC);
 }
 
 declare global {
