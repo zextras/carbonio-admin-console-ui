@@ -26,6 +26,7 @@ import { setAccountQuota } from '../../../../../services/set-account-quota';
 import {  setCoreAttributes  } from '../../../../../services/set-core-attributes';
 import {  setFileQuotaLimitById  } from '../../../../../services/set-file-quota-limit';
 import {  setPasswordRequest  } from '../../../../../services/set-password';
+import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
 import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
 import {  RouteLeavingGuard  } from '../../../../ui-extras/nav-guard';
 import {  AccountContext  } from '../account-context';
@@ -569,36 +570,38 @@ const EditAccount: FC<{
 			if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
 				return;
 			}
+
+			const notifyResult = (response: Awaited<ReturnType<typeof setAccountQuota>> | Awaited<ReturnType<typeof unsetAccountQuota>>) => {
+				if (response.type === 'success') {
+					createSnackbar({
+						key: 'setAccountQuotaSuccess',
+						severity: 'success',
+						label: t(
+							'label.the_last_changes_has_been_saved_successfully',
+							'Changes have been saved successfully'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					})
+
+				} else {
+					createSnackbar({
+						key: 'setAccountQuotaError',
+						severity: 'error',
+						label: response.error,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: false
+					});
+				}
+			};
+
 			if (accountDetail.totalComputedQuotaLimit !== undefined) {
-				setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then((response) => {
-					if (response.type === 'success') {
-						createSnackbar({
-							key: 'setAccountQuotaSuccess',
-							severity: 'success',
-							label: t(
-								'label.the_last_changes_has_been_saved_successfully',
-								'Changes have been saved successfully'
-							),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						})
-
-					} else {
-						createSnackbar({
-							key: 'setAccountQuotaError',
-							severity: 'error',
-							label: response.error,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: false
-						});
-					}
-				})
+				setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then(notifyResult);
 			} else {
-				// call unset quota
+				unsetAccountQuota(accountDetail?.zimbraId).then(notifyResult);
 			}
-
 
 			remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
 		},
