@@ -11,7 +11,7 @@ import { 	FC,	ReactElement,	useCallback,	useContext,	useEffect,	useMemo,	useStat
 import {  Trans, useTranslation  } from 'react-i18next';
 import styled from 'styled-components';
 
-import { 	ABQ_MODE,	ACCOUNT,	ADMIN_LOGIN_AS,	ADMINISTRATION,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	CHANGE_DISPLAY_NAME_BOOLEAN,	CHANGE_NAME_BOOLEAN,	CLOSED,	CONFIGURATION,	DELEGATES,	DOMAIN_NAME,	FILES_QUOTA_LIMIT,	GENERAL_SECTION,	IS_DEFAULT_USER_NAME,	PROFILE,	SECURITY,	TRUE,	UID,	USER_PREFERENCES } from '../../../../../constants';
+import { 	ABQ_MODE,	ACCOUNT,	ADMIN_LOGIN_AS,	ADMINISTRATION,	BACKUP_ENABLED,	BACKUP_SELF_UNDELETE_ALLOWED,	CHANGE_DISPLAY_NAME_BOOLEAN,	CHANGE_NAME_BOOLEAN,	CLOSED,	CONFIGURATION,	DELEGATES,	DOMAIN_NAME,	FILES_QUOTA_LIMIT,	GENERAL_SECTION,	IS_DEFAULT_USER_NAME,	PROFILE,	SECURITY,	TOTAL_COMPUTED_QUOTA_LIMIT,	TRUE,	UID,	USER_PREFERENCES } from '../../../../../constants';
 import {  addAccountAliasRequest  } from '../../../../../services/add-account-alias';
 import {  deleteAccountAliasRequest  } from '../../../../../services/delete-account-alias';
 import {  deleteAccount  } from '../../../../../services/delete-account-service';
@@ -563,6 +563,17 @@ const EditAccount: FC<{
 		]
 	);
 
+	const handleTotalComputedQuotaLimitChange = useCallback(
+		(modifiedKeys: string[]) => {
+			if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
+				return;
+			}
+				
+			remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+		},
+		[]
+	);
+
 	const handleMainModifiedKeys = useCallback(
 		async (initAccountDetails: any, modifiedData: any) => {
 			setIsLoading(true);
@@ -650,6 +661,8 @@ const EditAccount: FC<{
 		}
 
 		handleFileQuotaLimitChange(modifiedKeys);
+
+		handleTotalComputedQuotaLimitChange(modifiedKeys);
 
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
