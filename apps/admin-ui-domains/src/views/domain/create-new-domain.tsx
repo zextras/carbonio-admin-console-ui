@@ -43,7 +43,23 @@ import { getCosList } from '../../services/search-cos-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import { GbToBytes, isValidEmail } from '../utility/utils';
-import styles from './create-new-domain.module.css';
+
+function getOverlayStyle(): React.CSSProperties {
+  return {
+    position: 'fixed',
+    width: '70.35rem',
+    top: '6.5rem',
+    right: 0,
+    bottom: 0,
+    height: 'auto',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    background: '#0d0d0d',
+    opacity: 0.4,
+    zIndex: 11,
+    paddingTop: '2rem',
+  };
+}
 
 const GAL_MODE = {
   INTERNAL: 'zimbra',
@@ -376,7 +392,7 @@ const CreateDomain: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision overlayStyle={styles.overlayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

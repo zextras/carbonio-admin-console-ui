@@ -35,6 +35,7 @@ function jsdomProjectConfig() {
       mockReset: true,
       restoreMocks: true,
       testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      maxConcurrency: 3,
     },
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
@@ -49,6 +50,7 @@ function browserProjectConfig() {
     },
     test: {
       name: 'browser',
+      maxConcurrency: 3,
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
 
       alias: {
@@ -129,6 +131,7 @@ export default defineConfig({
   test: {
     globals: true,
     passWithNoTests: true,
+    maxConcurrency: 3,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
 
     coverage: {

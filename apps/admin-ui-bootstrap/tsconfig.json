@@ -1,10 +1,19 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": false,
-    "noEmit": true,
-    "declaration": false,
-    "declarationMap": false
+    "paths": {
+      "@zextras/admin-ui-dashboard": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-domains": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-backup": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-cos": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-legalhold": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-mta": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-notifications": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-operations": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-subscription": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-privacy": ["./src/apps/app-modules.d.ts"],
+      "@zextras/admin-ui-storage": ["./src/apps/app-modules.d.ts"]
+    }
   },
   "references": [
     { "path": "../../packages/ui-shared" },
@@ -25,11 +34,11 @@
   "include": [
     "src/**/*",
     "**/types/**/*",
+    "translations/**/*",
     "*.ts",
+    "vite-config",
     "*.js",
-    "*.d.ts",
-    "vite.config.ts",
-    "vite-config"
+    "*.d.ts"
   ],
   "exclude": ["node_modules", "dist", "build"]
 }
