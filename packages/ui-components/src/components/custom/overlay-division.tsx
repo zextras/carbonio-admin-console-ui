@@ -18,31 +18,30 @@ const rotateKeyframes = keyframes`
 `;
 
 const KeyFrameContainer = styled(Container)`
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	display: inline-block;
-	border-top: 0.188rem solid #fff;
-	border-right: 0.188rem solid transparent;
-	box-sizing: border-box;
-	animation: ${rotateKeyframes} 1s linear infinite;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 0.188rem solid #fff;
+  border-right: 0.188rem solid transparent;
+  box-sizing: border-box;
+  animation: ${rotateKeyframes} 1s linear infinite;
 `;
 
 type OverlayDivisionProps = {
-	overlayStyle: any;
+  overlayStyle: React.CSSProperties;
 };
 
 export const OverlayDivision: FC<OverlayDivisionProps> = ({ overlayStyle }) => {
-	const [t] = useTranslation();
-	const OverlayContainer = overlayStyle;
-	return (
-		<OverlayContainer>
-			<KeyFrameContainer />
-			<Container height="auto" padding={{ top: 'small' }}>
-				<Text color="gray5" size="medium" weight="bold">
-					{t('label.please_wait', 'Please wait')}
-				</Text>
-			</Container>
-		</OverlayContainer>
-	);
+  const [t] = useTranslation();
+  return (
+    <Container style={overlayStyle}>
+      <KeyFrameContainer />
+      <Container height="auto" padding={{ top: 'small' }}>
+        <Text color="gray5" size="medium" weight="bold">
+          {t('label.please_wait', 'Please wait')}
+        </Text>
+      </Container>
+    </Container>
+  );
 };
