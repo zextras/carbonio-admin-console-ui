@@ -73,7 +73,7 @@ describe('getAccountQuota', () => {
 
     expect(result).toEqual({
       type: 'error',
-      error: 'API request failed with status 500',
+      error: 'Internal Server Error',
     });
     expect(apiInterceptor.getCalledTimes()).toBe(1);
   });
