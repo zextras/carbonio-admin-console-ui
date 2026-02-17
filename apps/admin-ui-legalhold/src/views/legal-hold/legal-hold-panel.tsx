@@ -44,7 +44,7 @@ import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import RestoreAccountView from './restore/restore-account';
 
-const overlayStyle = {
+const getOverlayStyle = () => ({
   width: '20rem',
   right: 0,
   bottom: 0,
@@ -53,7 +53,7 @@ const overlayStyle = {
   background: '#0d0d0d',
   opacity: 0.4,
   zIndex: 11,
-};
+});
 
 const absoluteContainerItemStyle: React.CSSProperties = {
   position: 'absolute',
@@ -118,7 +118,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision overlayStyle={overlayStyle} />
+          <OverlayDivision overlayStyle={getOverlayStyle()} />
         </Container>
       ),
     },
