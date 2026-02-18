@@ -77,7 +77,7 @@ importers:
         version: 12.1.1(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-testing-library:
         specifier: ^7.6.6
-        version: 7.15.4(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+        version: 7.16.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint-plugin-unused-imports:
         specifier: ^4.3.0
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.56.0(@typescript-eslint/parser@8.56.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
@@ -155,7 +155,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -451,7 +451,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       react:
         specifier: ^19.1.0
         version: 19.2.4
@@ -572,7 +572,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -705,7 +705,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -838,7 +838,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -968,7 +968,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1095,7 +1095,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1225,7 +1225,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1355,7 +1355,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1482,7 +1482,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1612,7 +1612,7 @@ importers:
         version: 10.30.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.347.2
+        version: 1.350.0
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -3215,11 +3215,11 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@posthog/core@1.22.0':
-    resolution: {integrity: sha512-WkmOnq95aAOu6yk6r5LWr5cfXsQdpVbWDCwOxQwxSne8YV6GuZET1ziO5toSQXgrgbdcjrSz2/GopAfiL6iiAA==}
+  '@posthog/core@1.23.0':
+    resolution: {integrity: sha512-WXYL4+trl27iV8/Y+ESADOYDB7jBhbEj6q3AEQdn+9ygYG06Q3rZSdWk4ZVn8FdrD3mlq8fEqkUgRCekzp2W4g==}
 
-  '@posthog/types@1.347.2':
-    resolution: {integrity: sha512-aT+r/7jXOzPmUHO6sutoWzczPcYIZyhmWt1f1OvY4zKC7Pwp/ZsJWKFTxjV02p0PZz96AE83eLTe7w7b6tjhIw==}
+  '@posthog/types@1.350.0':
+    resolution: {integrity: sha512-Z8s3xc70RByHDT9u/xB1lLYHFNmEgY7nveqY8hXRPK39+vKrhosrQQOjnURLKAdyi9fRgoLc0D2yL/qRBKTxvQ==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4655,11 +4655,11 @@ packages:
     peerDependencies:
       eslint: '>=5.0.0'
 
-  eslint-plugin-testing-library@7.15.4:
-    resolution: {integrity: sha512-qP0ZPWAvDrS3oxZJErUfn3SZiIzj5Zh2EWuyWxjR5Bsk84ntxpquh4D0USorfyw5MzECURQ8OcEeBQdspHatzQ==}
+  eslint-plugin-testing-library@7.16.0:
+    resolution: {integrity: sha512-lHZI6/Olb2oZqxd1+s1nOLCtL2PXKrc1ERz6oDbUKS0xZAMFH3Fy6wJo75z3pXTop3BV6+loPi2MSjIYt3vpAg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
+      eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
 
   eslint-plugin-unused-imports@4.4.1:
     resolution: {integrity: sha512-oZGYUz1X3sRMGUB+0cZyK2VcvRX5lm/vB56PgNNcU+7ficUCKm66oZWKUubXWnOuPjQ8PvmXtCViXBMONPe7tQ==}
@@ -6059,8 +6059,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.347.2:
-    resolution: {integrity: sha512-hDbsSU30gfNhC11cBYSPpwUYB4DglbCN2G8W8NPIR/KXhT03shmuxabra/uaoI4blkr8SSSpxwvYV4gGa3hXrA==}
+  posthog-js@1.350.0:
+    resolution: {integrity: sha512-Ab+dyQdlKUTrfUZ12+fvcBo75S4jw/3o2gMleDga21B1v9c15yybiX4S3JrX66uh5L1DYG1H8sxtd4BXIIodjQ==}
 
   preact@10.28.3:
     resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
@@ -8586,11 +8586,11 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@posthog/core@1.22.0':
+  '@posthog/core@1.23.0':
     dependencies:
       cross-spawn: 7.0.6
 
-  '@posthog/types@1.347.2': {}
+  '@posthog/types@1.350.0': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -10297,7 +10297,7 @@ snapshots:
     dependencies:
       eslint: 9.39.2(jiti@2.6.1)
 
-  eslint-plugin-testing-library@7.15.4(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
+  eslint-plugin-testing-library@7.16.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/scope-manager': 8.56.0
       '@typescript-eslint/utils': 8.56.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
@@ -11682,15 +11682,15 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.347.2:
+  posthog-js@1.350.0:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
       '@opentelemetry/exporter-logs-otlp-http': 0.208.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 2.5.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
-      '@posthog/core': 1.22.0
-      '@posthog/types': 1.347.2
+      '@posthog/core': 1.23.0
+      '@posthog/types': 1.350.0
       core-js: 3.48.0
       dompurify: 3.3.1
       fflate: 0.4.8
