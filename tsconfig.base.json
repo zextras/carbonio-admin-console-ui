@@ -24,10 +24,5 @@
     "noUncheckedIndexedAccess": false,
     "types": ["@vitest/browser/matchers", "vitest/globals"],
     "useDefineForClassFields": false
-  },
-  "references": [
-    { "path": "./packages/test-utils/" },
-    { "path": "./packages/ui-components/" },
-    { "path": "./packages/ui-shared/" }
-  ]
+  }
 }
