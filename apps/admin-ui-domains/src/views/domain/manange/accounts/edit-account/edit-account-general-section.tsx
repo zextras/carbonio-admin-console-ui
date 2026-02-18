@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {  useDomainStore, useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  ChipInput,  Container,  CustomTextArea,  DropDownInput,  Icon,  Input,  Modal,  Padding,  Quota,  Row,  Select,  Switch,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
+import {   Button,  ChipInput,  Container,  CustomTextArea,  DropDownInput,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Switch,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
 import {  debounce, map  } from 'lodash-es';
 import React, {
   ChangeEvent,
