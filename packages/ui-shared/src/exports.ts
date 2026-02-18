@@ -60,6 +60,13 @@ import {
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
 import {
+	type CloseSnackbarFn,
+	type CreateSnackbarFn,
+	type CreateSnackbarFnArgs,
+	SnackbarManagerContext,
+	useSnackbar,
+} from './hooks/useSnackbar';
+import {
   fetchExternalSoap,
   getSoapFetchRequest,
   postSoapFetchRequest,
@@ -189,6 +196,7 @@ export {
   SCALING_OPTIONS,
   SEND_FEEDBACK_URL,
   SHELL_APP_ID,
+  SnackbarManagerContext,
   soapFetch,
   TRUE,
   useActions,
@@ -221,6 +229,7 @@ export {
   useMtaServers,
   usePrimaryBarState,
   useRemoveLicense,
+  useSnackbar,
   useStickyBarStore,
   useUserAccount,
   useUserAccounts,
@@ -229,3 +238,4 @@ export {
   useVersion,
   ZIMBRA_ADMIN_URN,
 };
+export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };

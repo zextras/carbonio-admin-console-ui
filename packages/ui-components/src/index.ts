@@ -109,9 +109,14 @@ export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
 export * from './hooks/useScreenMode';
-export * from './hooks/useSnackbar/useSnackbar';
 export * from './hooks/usewizard';
 export type { ThemeObj as Theme } from './theme/theme';
 export * from './theme/theme-context-provider';
 export * from './theme/theme-utils';
 export type { AnyColor, PaletteColor } from './types/utils';
+export {
+  type CloseSnackbarFn,
+  type CreateSnackbarFn,
+  type CreateSnackbarFnArgs,
+  useSnackbar,
+} from '@zextras/ui-shared';
