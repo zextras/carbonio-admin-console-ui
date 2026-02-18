@@ -77,7 +77,6 @@ const EditAccountGeneralSection: FC<{
 }> = ({ setChange }) => {
   const createSnackbar = useSnackbar();
   const {
-    initAccountDetail,
     accountDetail,
     setAccountDetail,
     directMemberList,
@@ -345,10 +344,7 @@ const EditAccountGeneralSection: FC<{
             <>
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <icon-wc
-                    icon="InfoOutline"
-                    style={{ width: '20px', height: '20px' }}
-                  ></icon-wc>
+                  <icon-wc icon="InfoOutline" style={{ width: '20px', height: '20px' }}></icon-wc>
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
@@ -606,7 +602,10 @@ const EditAccountGeneralSection: FC<{
             {t('label.account', 'Account')}
           </Text>
         </Row>
-        <EditAccountQuotaBar onClickMailboxQuota={focusMailBoxQuota} onClickFilesQuota={focusFileQuota} />
+        <EditAccountQuotaBar
+          onClickMailboxQuota={focusMailBoxQuota}
+          onClickFilesQuota={focusFileQuota}
+        />
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           {renderInputRow({
             id: 'surname-input',

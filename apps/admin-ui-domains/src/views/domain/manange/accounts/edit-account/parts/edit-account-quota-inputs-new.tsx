@@ -29,11 +29,11 @@ export const EditAccountQuotaInputsNew = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const filteredStringValue = e.target.value.replace(/\D/g, '');
       const parsedValue =
-        filteredStringValue !== '' ? parseInt(filteredStringValue, 10) : undefined;
+        filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
       const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
-      const valueInBytes = valueInGB !== undefined ? (GbToBytes(valueInGB) as number) : undefined;
+      const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
       // change between defined and undefined value breaks the input component, so we need to set it to empty string when it's undefined
-      setInputValue(valueInGB !== undefined ? valueInGB : '');
+      setInputValue(valueInGB ?? '');
       onChange(valueInBytes);
     },
     [onChange],
@@ -44,22 +44,22 @@ export const EditAccountQuotaInputsNew = ({
 
   if (!isAdvanced) {
     return null;
-  } else {
-    return (
-      <Row
-        width="100%"
-        padding={{ top: 'large', left: 'large' }}
-        mainAlignment="space-between"
-        crossAlignment="flex-start"
-      >
-        <Input
-          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-          background={'gray5'}
-          inputName="totalQuota"
-          onChange={inputOnChange}
-          value={inputValue}
-        />
-      </Row>
-    );
   }
+
+  return (
+    <Row
+      width="100%"
+      padding={{ top: 'large', left: 'large' }}
+      mainAlignment="space-between"
+      crossAlignment="flex-start"
+    >
+      <Input
+        label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+        background={'gray5'}
+        inputName="totalQuota"
+        onChange={inputOnChange}
+        value={inputValue}
+      />
+    </Row>
+  );
 };

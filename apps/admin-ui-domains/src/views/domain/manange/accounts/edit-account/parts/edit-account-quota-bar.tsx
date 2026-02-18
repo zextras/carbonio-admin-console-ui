@@ -6,7 +6,6 @@
 
 import { Quota, Row, Text } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { noop } from 'lodash-es';
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +16,6 @@ import { AccountContext } from '../../account-context';
 type EditAccountQuotaBarProps = {
   onClickMailboxQuota: () => void;
   onClickFilesQuota: () => void;
-  onBarClick?: () => void;
 };
 
 const EditAccountQuotaBarLegacy = ({
@@ -133,7 +131,6 @@ const EditAccountQuotaBarLegacy = ({
 export const EditAccountQuotaBar = ({
   onClickMailboxQuota,
   onClickFilesQuota,
-  onBarClick,
 }: EditAccountQuotaBarProps): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
   const [t] = useTranslation();
@@ -175,7 +172,7 @@ export const EditAccountQuotaBar = ({
 
   return (
     <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-      <Row width={'100%'} mainAlignment="space-between" onClick={onBarClick ? onBarClick : noop}>
+      <Row width={'100%'} mainAlignment="space-between">
         <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
           <Text size="extrasmall" color="secondary">
             {t('label.total_quota_usage', 'Total Quota Usage')}

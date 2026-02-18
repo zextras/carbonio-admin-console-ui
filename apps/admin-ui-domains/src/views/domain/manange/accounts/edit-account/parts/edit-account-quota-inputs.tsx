@@ -24,27 +24,39 @@ type EditAccountQuotaInputsProps = {
 };
 
 export const EditAccountQuotaInputs = ({
-                                         focusableFileQuota,
-                                         highlightFileQuota,
-                                         focusableMailboxQuota,
-                                         highlightMailboxQuota,
-                                         setFocusableFileQuota,
-                                         setHighlightFileQuota,
-                                         setFocusableMailboxQuota,
-                                         setHighlightMailboxQuota,
-                                         accountDetail,
-                                         setAccountDetail,
-                                       }: EditAccountQuotaInputsProps): React.JSX.Element => {
-
+  focusableFileQuota,
+  highlightFileQuota,
+  focusableMailboxQuota,
+  highlightMailboxQuota,
+  setFocusableFileQuota,
+  setHighlightFileQuota,
+  setFocusableMailboxQuota,
+  setHighlightMailboxQuota,
+  accountDetail,
+  setAccountDetail,
+}: EditAccountQuotaInputsProps): React.JSX.Element => {
   const isTotalQuotaActive = useTotalQuotaActive();
 
-  const onTotalComputedQuotaLimitChange: ComponentProps<typeof EditAccountQuotaInputsNew>['onChange'] = useCallback(
+  const onTotalComputedQuotaLimitChange: ComponentProps<
+    typeof EditAccountQuotaInputsNew
+  >['onChange'] = useCallback(
     (value) => {
       setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
-    }, [setAccountDetail]);
+    },
+    [setAccountDetail],
+  );
 
-  if (!isTotalQuotaActive) {
-    return <EditAccountQuotaInputsLegacy
+  if (isTotalQuotaActive) {
+    return (
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={accountDetail.totalComputedQuotaLimit}
+        onChange={onTotalComputedQuotaLimitChange}
+      />
+    );
+  }
+
+  return (
+    <EditAccountQuotaInputsLegacy
       focusableFileQuota={focusableFileQuota}
       highlightFileQuota={highlightFileQuota}
       focusableMailboxQuota={focusableMailboxQuota}
@@ -53,8 +65,6 @@ export const EditAccountQuotaInputs = ({
       setHighlightFileQuota={setHighlightFileQuota}
       setFocusableMailboxQuota={setFocusableMailboxQuota}
       setHighlightMailboxQuota={setHighlightMailboxQuota}
-    />;
-  } else {
-    return <EditAccountQuotaInputsNew totalComputedQuotaLimit={accountDetail.totalComputedQuotaLimit} onChange={onTotalComputedQuotaLimitChange} />;
-  }
+    />
+  );
 };
