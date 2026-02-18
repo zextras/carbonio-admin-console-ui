@@ -5,29 +5,29 @@
  */
 
 import { ModalManager, SnackbarManager } from '@zextras/ui-components';
+import { getApp, getShell } from '@zextras/ui-shared';
 import React, { FC, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 
-import { getApp, getShell } from '../../store/app';
 import { useI18nFactory } from '../bootstrapper-context';
 import AppErrorCatcher from './app-error-catcher';
 
 const AppContextProvider: FC<{ pkg: string; children: React.ReactNode | React.ReactNode[] }> = ({
-	pkg,
-	children
+  pkg,
+  children,
 }) => {
-	const i18nFactory = useI18nFactory();
-	const app = useMemo(() => getApp(pkg)() ?? getShell(), [pkg]);
-	const i18n = useMemo(() => i18nFactory.getAppI18n(app), [i18nFactory, app]);
-	return (
-		<I18nextProvider i18n={i18n}>
-			<ModalManager>
-				<SnackbarManager>
-					<AppErrorCatcher>{children}</AppErrorCatcher>
-				</SnackbarManager>
-			</ModalManager>
-		</I18nextProvider>
-	);
+  const i18nFactory = useI18nFactory();
+  const app = useMemo(() => getApp(pkg)() ?? getShell(), [pkg]);
+  const i18n = useMemo(() => i18nFactory.getAppI18n(app), [i18nFactory, app]);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ModalManager>
+        <SnackbarManager>
+          <AppErrorCatcher>{children}</AppErrorCatcher>
+        </SnackbarManager>
+      </ModalManager>
+    </I18nextProvider>
+  );
 };
 
 export default AppContextProvider;

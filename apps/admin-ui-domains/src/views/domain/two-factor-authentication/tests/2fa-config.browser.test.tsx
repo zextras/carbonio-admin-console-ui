@@ -261,8 +261,8 @@ describe('TwoFactorAuthencationConfig', () => {
       ); // Wait for state update
 
       expect(modifyPoliciesMock).toHaveBeenCalledWith([
-        { WebUI: { trustedDevice: undefined, trustedIpRange: [] } },
-        { WebAdminUI: { trustedDevice: undefined, trustedIpRange: [] } },
+        { WebUI: { trustedDevice: 1, trustedIpRange: [] } },
+        { WebAdminUI: { trustedDevice: 1, trustedIpRange: [] } },
       ]);
     });
 

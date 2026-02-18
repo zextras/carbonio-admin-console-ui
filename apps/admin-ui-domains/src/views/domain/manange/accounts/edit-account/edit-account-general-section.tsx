@@ -3,9 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore, useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  ChipInput,  Container,  CustomTextArea,  DropDownInput,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Switch,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
-import {  debounce, map  } from 'lodash-es';
+import {
+  Button,
+  ChipInput,
+  Container,
+  CustomHeaderFactory,
+  CustomTextArea,
+  DropDownInput,
+  HoverableRowFactory,
+  Input,
+  Modal,
+  Padding,
+  Row,
+  Select,
+  Switch,
+  Table,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
   FC,
@@ -15,25 +33,31 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  Attribute, objectType  } from '../../../../../../types';
-import {  ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE  } from '../../../../../constants';
-import {  endSession  } from '../../../../../services/end-session';
-import {  getDelegateAuthRequest  } from '../../../../../services/get-delegate-auth-request';
-import {  modifyAccountRequest  } from '../../../../../services/modify-account';
-import {  getDomainList  } from '../../../../../services/search-domain-service';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import { Attribute, objectType } from '../../../../../../types';
+import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
+import { endSession } from '../../../../../services/end-session';
+import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
-import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { ABQStatus, AccountStatus, backupEnabledStatus, formatZimbraDate, localeList } from '../../../../utility/utils';
-import {  AccountContext  } from '../account-context';
-import {  AccountType  } from '../account-types/account-types';
+import {
+  ABQStatus,
+  AccountStatus,
+  backupEnabledStatus,
+  BytesToGB,
+  formatZimbraDate,
+  GbToBytes,
+  isValidDecimalNumber,
+  localeList,
+} from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
+import { AccountType } from '../account-types/account-types';
 import { EditAccountQuotaBar } from './parts/edit-account-quota-bar';
 import { EditAccountQuotaInputs } from './parts/edit-account-quota-inputs';
 
@@ -44,13 +68,6 @@ type UserSession = {
   ip: string;
   service: string;
 };
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
 
 const ZimbraAuthMethod = {
   INTERNAL: 'zimbra',
@@ -134,19 +151,17 @@ const EditAccountGeneralSection: FC<{
   }, [domainInformation]);
 
   const extLdapAuth = useMemo(() => {
-		if (!!domainInformation && domainInformation?.length > 0) {
-			const obj: objectType = {};
-			domainInformation?.forEach((item: Attribute) => {
-				obj[item?.n] = item._content;
-			});
-			if (
-				obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== "" 
-			) {
-				return true;
-			}
-		}
-		return false;
-	}, [domainInformation]);
+    if (!!domainInformation && domainInformation?.length > 0) {
+      const obj: objectType = {};
+      domainInformation?.forEach((item: Attribute) => {
+        obj[item?.n] = item._content;
+      });
+      if (obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== '') {
+        return true;
+      }
+    }
+    return false;
+  }, [domainInformation]);
 
   const getDomainLists = useCallback(
     (domain: string | undefined): void => {
@@ -333,7 +348,10 @@ const EditAccountGeneralSection: FC<{
             <>
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" />
+                  <icon-wc
+                    icon="InfoOutline"
+                    style={{ width: '20px', height: '20px' }}
+                  ></icon-wc>
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
@@ -354,7 +372,7 @@ const EditAccountGeneralSection: FC<{
       id: domain.id,
       label: domain.name,
       customComponent: (
-        <SelectItem
+        <Row
           style={{
             display: 'block',
             textAlign: 'left',
@@ -365,7 +383,7 @@ const EditAccountGeneralSection: FC<{
           onClick={(): void => selectedDomain(domain?.name)}
         >
           {domain?.name}
-        </SelectItem>
+        </Row>
       ),
     }));
   }, [domainList, selectedDomain, t]);
@@ -630,7 +648,7 @@ const EditAccountGeneralSection: FC<{
             />
           </Row>
           <Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
-            <Icon icon="AtOutline" size="large" />
+            <icon-wc icon="AtOutline" size="large"></icon-wc>
           </Row>
           <Row width="47%" mainAlignment="flex-start">
             <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
@@ -673,13 +691,13 @@ const EditAccountGeneralSection: FC<{
               label={t('label.type', 'Type')}
               value={accountUserType}
               CustomIcon={(): any => (
-                <Icon
+                <icon-wc
                   icon="DiagonalArrowRightUp"
                   onClick={(): void => setChange(ADMINISTRATION)}
                   style={{ cursor: 'pointer' }}
                   size="large"
                   onChange={(): null => null}
-                />
+                ></icon-wc>
               )}
             />
           </Row>
@@ -929,36 +947,40 @@ const EditAccountGeneralSection: FC<{
           )}
         </Row>
       )}
-      
 
       {extLdapAuth && (
         <>
           <Row width="100%">
-          <divider-wc></divider-wc>
-        </Row>
-        <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
-              {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
-            </Text>
+            <divider-wc></divider-wc>
           </Row>
-          <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-            <Row width="100%" mainAlignment="space-between">
-              <Input
-                data-testid="zimbraAuthLdapExternalDn"
-                label={t(
-                  'domain.accounts.editAccount.externalldapReferenceForAuthentication',
-                  'External LDAP Reference for Authentication'
-                )}
-                backgroundColor="gray5"
-                onChange={changeAccDetail}
-                inputName="zimbraAuthLdapExternalDn"
-                value={accountDetail?.zimbraAuthLdapExternalDn || ''}
-              />
+          <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+              <Text size="small" color="gray0" weight="bold">
+                {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
+              </Text>
+            </Row>
+            <Row
+              padding={{ top: 'large', left: 'large' }}
+              width="100%"
+              mainAlignment="space-between"
+            >
+              <Row width="100%" mainAlignment="space-between">
+                <Input
+                  data-testid="zimbraAuthLdapExternalDn"
+                  label={t(
+                    'domain.accounts.editAccount.externalldapReferenceForAuthentication',
+                    'External LDAP Reference for Authentication',
+                  )}
+                  backgroundColor="gray5"
+                  onChange={changeAccDetail}
+                  inputName="zimbraAuthLdapExternalDn"
+                  value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+                />
+              </Row>
             </Row>
           </Row>
-        </Row> 
-      </>)}
+        </>
+      )}
       <Row width="100%" padding={{ top: 'medium' }}>
         <divider-wc></divider-wc>
       </Row>
@@ -1168,8 +1190,8 @@ const EditAccountGeneralSection: FC<{
             selectedRows={selectedSession}
             multiSelect={false}
             HeaderFactory={CustomHeaderFactory}
-            RowFactory={CustomRowFactory}
-          ></Table>
+            RowFactory={HoverableRowFactory}
+          />
         </Row>
 
         <Row

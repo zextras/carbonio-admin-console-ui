@@ -5,14 +5,10 @@
  */
 
 import {
-  postSoapFetchRequest,
-  soapFetch,
-  useAllServers,
-  useIsAdvanced,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   ModalOverlay,
   Row,
   Table,
@@ -20,10 +16,15 @@ import {
   THeader,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  postSoapFetchRequest,
+  soapFetch,
+  useAllServers,
+  useIsAdvanced,
+} from '@zextras/ui-shared';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import { objectType, Volume } from '../../../../../types';
 import {
@@ -48,8 +49,6 @@ import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
@@ -57,10 +56,6 @@ import { VolumeContext } from './create-volume/volume-context';
 import DeleteVolumeModel from './delete-volume-model';
 import IndexerVolumeTable from './indexer-volume-table';
 import ModifyVolume from './modify-volume/modify-volume';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
@@ -165,7 +160,7 @@ const VolumeListTable: FC<{
         multiSelect={false}
         selectedRows={selectedRows}
         onSelectionChange={onSelectionChange}
-        RowFactory={CustomRowFactory}
+        RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {tableRows?.length === 0 && (
@@ -727,11 +722,11 @@ const VolumesDetailPanel: FC = () => {
         </ModalOverlay>
       )}
 
-      <RelativeContainer
+      <Container
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflowY: 'auto' }}
+        style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
         {open && (
@@ -871,7 +866,7 @@ const VolumesDetailPanel: FC = () => {
             </Row>
           </Container>
         </Container>
-      </RelativeContainer>
+      </Container>
     </>
   );
 };

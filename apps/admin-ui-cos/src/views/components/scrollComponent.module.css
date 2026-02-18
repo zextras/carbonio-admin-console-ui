@@ -1,0 +1,10 @@
+.scrollingContainer {
+  position: sticky;
+  bottom: -6rem;
+  background: var(--color-gray6-regular);
+  background: linear-gradient(to top, var(--color-gray6-regular) 0%, transparent 100%);
+}
+
+.scrollingContainer[data-isShow='true'] {
+  bottom: 0;
+}

@@ -20,7 +20,7 @@
     "icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
     "build": "echo 'No build needed - apps import TypeScript source directly'",
     "clean": "rm -rf dist/* types/*",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --build"
   },
   "author": "Zextras Frontend Tribe <https://www.zextras.com/carbonio/>",
   "license": "AGPL-3.0-only",
