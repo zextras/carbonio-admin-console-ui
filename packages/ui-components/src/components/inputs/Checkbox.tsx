@@ -11,14 +11,11 @@ import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
-import { Icon } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 
 type CheckboxSize = 'medium' | 'small';
-
-const CustomIcon = styled(Icon)``;
 
 const IconWrapper = styled.div<{
 	$disabled: boolean;
@@ -33,19 +30,19 @@ const IconWrapper = styled.div<{
 		css`
 			&:focus {
 				outline: none;
-				> ${CustomIcon} {
+				> icon-wc {
 					color: ${getColor(`${$iconColor}.focus`, theme)};
 				}
 			}
 			&:hover {
 				outline: none;
-				> ${CustomIcon} {
+				> icon-wc {
 					color: ${getColor(`${$iconColor}.hover`, theme)};
 				}
 			}
 			&:active {
 				outline: none;
-				> ${CustomIcon} {
+				> icon-wc {
 					color: ${getColor(`${$iconColor}.active`, theme)};
 				}
 			}
@@ -133,11 +130,11 @@ export const Checkbox = ({
 				$size={size}
 				tabIndex={disabled ? -1 : 0}
 			>
-				<Icon
-					size={computedIconSize}
+				<icon-wc
 					icon={checked ? 'CheckmarkSquare' : 'Square'}
+					size={computedIconSize}
 					color={iconColor}
-					disabled={disabled}
+					disabled={disabled || undefined}
 				/>
 			</IconWrapper>
 			{label && (
