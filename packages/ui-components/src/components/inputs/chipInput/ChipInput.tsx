@@ -16,7 +16,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
+import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import {
@@ -28,7 +28,6 @@ import {
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, PaletteColor } from '../../../types/utils';
-import { Icon } from '../../basic/icon/Icon';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
 import { Dropdown, DropdownItem } from '../../display/Dropdown';
@@ -36,7 +35,6 @@ import { Container, ContainerProps } from '../../layout/Container';
 import { InputContainer } from '../commons/InputContainer';
 import { InputDescription } from '../commons/InputDescription';
 import { InputLabel } from '../commons/InputLabel';
-import { IconButton } from '../IconButton';
 
 const ContainerEl = styled(InputContainer)<{
   background: PaletteColor;
@@ -194,22 +192,6 @@ const CustomInputDescription = styled(InputDescription)<{
     $backgroundColor && getColor($backgroundColor, theme)};
 `;
 
-const CustomIcon = styled(({ onClick, iconColor, ...rest }) =>
-  onClick ? (
-    <IconButton onClick={onClick} iconColor={iconColor} {...rest} />
-  ) : (
-    <Icon color={iconColor} {...rest} />
-  ),
-)`
-  padding: 0.125rem;
-  ${({ onClick }): SimpleInterpolation =>
-    !onClick &&
-    css`
-      width: 1.25rem;
-      height: 1.25rem;
-    `};
-`;
-
 type ReducerAction<TValue> =
   | { type: 'push' | 'replace'; item: ChipItem<TValue> }
   | { type: 'pop'; index: number }
@@ -309,14 +291,6 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
    * To avoid options to be shown at all, leave options empty
    */
   disableOptions?: boolean;
-  /** Icon on the right of the input */
-  icon?: keyof DefaultTheme['icons'];
-  /** Action on Icon click */
-  iconAction?: React.ReactEventHandler;
-  /** Disable the icon */
-  iconDisabled?: boolean;
-  /** Icon color */
-  iconColor?: AnyColor;
   /** select single replaceable value from options */
   singleSelection?: boolean;
   /** hide the input's bottom border */
@@ -376,10 +350,6 @@ const ChipInputComponent = <TValue = unknown,>({
     { key: ',', ctrlKey: false },
     { key: ' ', ctrlKey: false },
   ],
-  icon,
-  iconAction,
-  iconDisabled = false,
-  iconColor,
   disabled = false,
   requireUniqueChips = false,
   createChipOnPaste = false,
@@ -811,7 +781,7 @@ const ChipInputComponent = <TValue = unknown,>({
                   htmlFor={id}
                   $hasFocus={hasFocus}
                   $hasError={hasError}
-                  $disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
+                  $disabled={disabled && isDropdownDisabled}
                   $hasItems={items.length > 0 || !!inputElRef.current?.value}
                 >
                   {placeholder}
@@ -819,24 +789,13 @@ const ChipInputComponent = <TValue = unknown,>({
               )}
             </ScrollContainer>
           </RelativeContainer>
-          {icon && (
-            <span>
-              <CustomIcon
-                icon={icon}
-                onClick={iconAction}
-                disabled={iconDisabled}
-                iconColor={iconColor}
-                size="large"
-              />
-            </span>
-          )}
         </ContainerEl>
       </Dropdown>
       <divider-wc color={dividerColor}></divider-wc>
       {description !== undefined && (
         <CustomInputDescription
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
-          disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
+          disabled={disabled && isDropdownDisabled}
           $backgroundColor={errorBackgroundColor}
         >
           {description}
