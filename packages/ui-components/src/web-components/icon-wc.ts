@@ -13,7 +13,7 @@ import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 import { type IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
-type IconSize = (typeof ICON_SIZES)[number];
+export type IconSize = (typeof ICON_SIZES)[number];
 
 const DEFAULT_ICON = 'AlertTriangleOutline';
 
@@ -24,6 +24,10 @@ export class IconWC extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+    }
+
+    :host([clickable]) {
+      cursor: pointer;
     }
 
     svg {
@@ -52,6 +56,9 @@ export class IconWC extends LitElement {
   @property({ type: Boolean, reflect: true })
   accessor disabled = false;
 
+  @property({ attribute: false })
+  accessor clickHandler: ((event: Event) => void) | undefined = undefined;
+
   private getColorVariable(color: string): string {
     const trimmed = color.trim();
 
@@ -75,8 +82,22 @@ export class IconWC extends LitElement {
     return iconRegistry[this.icon] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
+  private handleClick(event: Event): void {
+    if (this.disabled) {
+      event.stopPropagation();
+      return;
+    }
+    this.clickHandler?.(event);
+  }
+
   override render(): TemplateResult | typeof nothing {
     const svgContent = this.getSvgContent();
+
+    if (this.clickHandler) {
+      this.setAttribute('clickable', '');
+    } else {
+      this.removeAttribute('clickable');
+    }
 
     const styles = styleMap({
       '--icon-color': this.getColorVariable(this.color),
@@ -90,6 +111,7 @@ export class IconWC extends LitElement {
         viewBox="0 0 24 24"
         role="img"
         data-testid="icon: ${this.icon}"
+        @click=${this.handleClick}
       >
         ${unsafeSVG(svgContent)}
       </svg>

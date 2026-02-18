@@ -7,7 +7,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports
 import React from 'react';
 
-import { IconName } from './icon-registry';
+import { IconName, IconSize } from './icon-registry';
 
 declare global {
   namespace React {
@@ -17,10 +17,11 @@ declare global {
         'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'icon-wc': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {
-            'icon'?: IconName;
+            icon?: IconName;
             color?: string;
-            size?: 'small' | 'medium' | 'large';
+            size?: IconSize;
             disabled?: boolean;
+            clickHandler?: (e: Event) => void;
           },
           HTMLElement
         >;
