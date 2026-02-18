@@ -11,9 +11,3 @@ import './theme.css';
 export { DividerElement } from './divider-wc';
 export { IconWC } from './icon-wc';
 export { SpinnerWC } from './spinner-wc';
-
-// Function to ensure web components are registered (call this if needed)
-export function registerWebComponents(): void {
-  // The imports above will register the custom elements
-  // This function exists to ensure the side effects are executed
-}
