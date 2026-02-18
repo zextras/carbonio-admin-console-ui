@@ -1,131 +1,67 @@
-## [0.12.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.21...v0.12.0-devel.22) (2026-02-06)
-
-## [0.12.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.20...v0.12.0-devel.21) (2026-02-06)
-
-### Bug Fixes
-
-* remove redirect to dashboard ([#1053](https://github.com/zextras/carbonio-admin-console-ui/issues/1053)) ([9e85e95](https://github.com/zextras/carbonio-admin-console-ui/commit/9e85e959362e8fadbfbae2d176acb33509bae8f3))
-
-## [0.12.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.19...v0.12.0-devel.20) (2026-01-29)
-
-### Bug Fixes
-
-* tooltip fix ([#1050](https://github.com/zextras/carbonio-admin-console-ui/issues/1050)) ([161e76b](https://github.com/zextras/carbonio-admin-console-ui/commit/161e76b1ffec3e85d8d16ccfd2d187f5919d43f1))
-
-## [0.12.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.18...v0.12.0-devel.19) (2026-01-28)
+## [0.12.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.3...v0.12.0) (2026-02-13)
 
 ### Features
 
-* replace moment.js with date-fns for date formatting in EditMail… ([#1047](https://github.com/zextras/carbonio-admin-console-ui/issues/1047)) ([46e5433](https://github.com/zextras/carbonio-admin-console-ui/commit/46e543391c2b5b72704f450166718723c025cc95))
-
-## [0.12.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.17...v0.12.0-devel.18) (2026-01-27)
-
-### Features
-
+* added counter for total user using a specific ([07007f0](https://github.com/zextras/carbonio-admin-console-ui/commit/07007f0c9023e13fc04b6f82f3e72a85cc2db9aa))
 * added create account browser test ([fcefa3b](https://github.com/zextras/carbonio-admin-console-ui/commit/fcefa3b5444e475eb48bcc8055de8154446530cf))
 * added create account browser test ([f6417ec](https://github.com/zextras/carbonio-admin-console-ui/commit/f6417ec02257d12cb07af7400ef9c7654f2e69e3))
 * added create account browser test ([cd216b8](https://github.com/zextras/carbonio-admin-console-ui/commit/cd216b8e18b949a280269c330b1c8075aa3414bd))
+* added tooltip on description of managed account ([#1030](https://github.com/zextras/carbonio-admin-console-ui/issues/1030)) ([1adb627](https://github.com/zextras/carbonio-admin-console-ui/commit/1adb6274864840582edb4959fdf3f5da87673fe1))
+* **ci:** add renovate definition for dependencies management ([#988](https://github.com/zextras/carbonio-admin-console-ui/issues/988)) ([01823d4](https://github.com/zextras/carbonio-admin-console-ui/commit/01823d45e90a3de036207e22c53f49e9672970f5))
 * fix test ([b9ceb72](https://github.com/zextras/carbonio-admin-console-ui/commit/b9ceb725d6bd038db42c80d943aa3352874a35e5))
+* hide files ulimited quota to a fixed 0 ([b38533c](https://github.com/zextras/carbonio-admin-console-ui/commit/b38533c293493ab6c0fd187de35cc2707821e9ef))
+* implement ESM build with import maps ([#1041](https://github.com/zextras/carbonio-admin-console-ui/issues/1041)) ([8334128](https://github.com/zextras/carbonio-admin-console-ui/commit/8334128c65f1379369e162276f0ce4e5ff7e8125))
+* replace moment.js with date-fns for date formatting in EditMail… ([#1047](https://github.com/zextras/carbonio-admin-console-ui/issues/1047)) ([46e5433](https://github.com/zextras/carbonio-admin-console-ui/commit/46e543391c2b5b72704f450166718723c025cc95))
 * tests ([243f19a](https://github.com/zextras/carbonio-admin-console-ui/commit/243f19a14923e9dee276900655f7e38e2f3ea643))
 * tests on services ([b46a4e0](https://github.com/zextras/carbonio-admin-console-ui/commit/b46a4e02ad5c0c74f31e5cf8deee4a396559f25f))
 * tests on services refs: CO-3021 ([a005e62](https://github.com/zextras/carbonio-admin-console-ui/commit/a005e6234632b23a3f542a534b1ad6b640c31e34))
 
 ### Bug Fixes
 
-* deleted unit tests and created browser tests ([46a7988](https://github.com/zextras/carbonio-admin-console-ui/commit/46a798867fa7d20437568b9dad16e837f8ea8378))
-* fix tests ([55271a1](https://github.com/zextras/carbonio-admin-console-ui/commit/55271a15b05c1f67bcbf3fe5ac3dfe1b45056762))
-* fix type ([fc10fdd](https://github.com/zextras/carbonio-admin-console-ui/commit/fc10fdd2fafac56bad8a20855374ba6934ad6085))
-
-## [0.12.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.16...v0.12.0-devel.17) (2026-01-26)
-
-### Features
-
-* implement ESM build with import maps ([#1041](https://github.com/zextras/carbonio-admin-console-ui/issues/1041)) ([8334128](https://github.com/zextras/carbonio-admin-console-ui/commit/8334128c65f1379369e162276f0ce4e5ff7e8125))
-
-## [0.12.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.15...v0.12.0-devel.16) (2026-01-22)
-
-### Bug Fixes
-
-* account counter issue fixed ([#1044](https://github.com/zextras/carbonio-admin-console-ui/issues/1044)) ([1dd00c6](https://github.com/zextras/carbonio-admin-console-ui/commit/1dd00c69edd73420da77d5a39cf1346bc9ef439d))
-
-## [0.12.0-devel.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.14...v0.12.0-devel.15) (2026-01-22)
-
-### Bug Fixes
-
 * account count request issue fixed ([#1043](https://github.com/zextras/carbonio-admin-console-ui/issues/1043)) ([9b2c8a0](https://github.com/zextras/carbonio-admin-console-ui/commit/9b2c8a0fb5be1cb3bc4e7b627e17189238a7e519))
-
-## [0.12.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.13...v0.12.0-devel.14) (2026-01-21)
-
-### Bug Fixes
-
-* CO-3059 Admin ui Notifications is not working ([#1040](https://github.com/zextras/carbonio-admin-console-ui/issues/1040)) ([a09ce78](https://github.com/zextras/carbonio-admin-console-ui/commit/a09ce78242bd30d0200cc7f321b4bb5304923778))
-
-## [0.12.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.12...v0.12.0-devel.13) (2026-01-20)
-
-### Features
-
-* added counter for total user using a specific ([07007f0](https://github.com/zextras/carbonio-admin-console-ui/commit/07007f0c9023e13fc04b6f82f3e72a85cc2db9aa))
-
-### Bug Fixes
-
-* sonarqube correct inconsistent useState destructuring ([3f84f56](https://github.com/zextras/carbonio-admin-console-ui/commit/3f84f567e6c71e77279b02397886ca3a01232a55))
-
-## [0.12.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.11...v0.12.0-devel.12) (2026-01-20)
-
-### Bug Fixes
-
-* fix send&receive label ([a6107ae](https://github.com/zextras/carbonio-admin-console-ui/commit/a6107aeee3746d48f17ace0580eea847aa722d38))
-* fixed domain list ( removed unused column + fixed column name ) ([2a12c52](https://github.com/zextras/carbonio-admin-console-ui/commit/2a12c525216705158db5b3857974e0a1ba1bfcc6))
-
-## [0.12.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.10...v0.12.0-devel.11) (2026-01-19)
-
-### Bug Fixes
-
-* show zimbraAuthLdapExternalDn only when zimbraAuthLdapURL is def… ([#1035](https://github.com/zextras/carbonio-admin-console-ui/issues/1035)) ([b80f25d](https://github.com/zextras/carbonio-admin-console-ui/commit/b80f25d94a742e4e464cf6d1b545c7eda720217a))
-
-## [0.12.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.9...v0.12.0-devel.10) (2026-01-19)
-
-### Features
-
-* hide files ulimited quota to a fixed 0 ([b38533c](https://github.com/zextras/carbonio-admin-console-ui/commit/b38533c293493ab6c0fd187de35cc2707821e9ef))
-
-## [0.12.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.8...v0.12.0-devel.9) (2026-01-19)
-
-### Features
-
-* added tooltip on description of managed account ([#1030](https://github.com/zextras/carbonio-admin-console-ui/issues/1030)) ([1adb627](https://github.com/zextras/carbonio-admin-console-ui/commit/1adb6274864840582edb4959fdf3f5da87673fe1))
-
-## [0.12.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.7...v0.12.0-devel.8) (2026-01-08)
-
-### Bug Fixes
-
-* **sonar:** fix SonarQube scanner execution in Jenkins pipeline ([#1024](https://github.com/zextras/carbonio-admin-console-ui/issues/1024)) ([1452e24](https://github.com/zextras/carbonio-admin-console-ui/commit/1452e241141ef167e8689e1286351df851900c5e))
-
-## [0.12.0-devel.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.6...v0.12.0-devel.7) (2025-12-31)
-
-### Bug Fixes
-
-* license token field shows blank on initial page load ([#1020](https://github.com/zextras/carbonio-admin-console-ui/issues/1020)) ([dd25e08](https://github.com/zextras/carbonio-admin-console-ui/commit/dd25e082fe6109e9f4acee622e8771f0e460a900))
-
-## [0.12.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.5...v0.12.0-devel.6) (2025-12-19)
-
-### Bug Fixes
-
+* account counter issue fixed ([#1044](https://github.com/zextras/carbonio-admin-console-ui/issues/1044)) ([1dd00c6](https://github.com/zextras/carbonio-admin-console-ui/commit/1dd00c69edd73420da77d5a39cf1346bc9ef439d))
 * added check for advanced ([6cd624f](https://github.com/zextras/carbonio-admin-console-ui/commit/6cd624f0843f7f228a09c48cde87fb7a96dba271))
 * added check for advanced ([3703443](https://github.com/zextras/carbonio-admin-console-ui/commit/3703443d3bebc4da80d2dd35ecc7327f85529932))
 * added check for advanced refs: CO-2975 ([f1ae3d5](https://github.com/zextras/carbonio-admin-console-ui/commit/f1ae3d5b006d8e19fc78c22cde9452c050abdf51))
+* added translation key ([4b15ce8](https://github.com/zextras/carbonio-admin-console-ui/commit/4b15ce8887e6029f47bed0ca7a4a4a3e81e36701))
+* added translation key refs: CO-2960 ([4b1fdf1](https://github.com/zextras/carbonio-admin-console-ui/commit/4b1fdf1e468ea1b2847d8917c5fa906d8bb80a76))
+* **apps/admin-ui-bootstrap:** handle unsupported advanced in init ([#987](https://github.com/zextras/carbonio-admin-console-ui/issues/987)) ([36c7cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/36c7cc595956cd134c5f1e071fe4477d80059bd9))
+* **ci:** correct image name for admin console UI ([#971](https://github.com/zextras/carbonio-admin-console-ui/issues/971)) ([0dcecfa](https://github.com/zextras/carbonio-admin-console-ui/commit/0dcecfa0e0cce1948f2ec17f5af2ecc303cd9869))
+* CO-3059 Admin ui Notifications is not working ([#1040](https://github.com/zextras/carbonio-admin-console-ui/issues/1040)) ([a09ce78](https://github.com/zextras/carbonio-admin-console-ui/commit/a09ce78242bd30d0200cc7f321b4bb5304923778))
+* deleted unit tests and created browser tests ([46a7988](https://github.com/zextras/carbonio-admin-console-ui/commit/46a798867fa7d20437568b9dad16e837f8ea8378))
 * fix indentation ([eb8611e](https://github.com/zextras/carbonio-admin-console-ui/commit/eb8611e5c2c6d6dbef23dc1b46a9bba266e24d94))
+* fix send&receive label ([a6107ae](https://github.com/zextras/carbonio-admin-console-ui/commit/a6107aeee3746d48f17ace0580eea847aa722d38))
+* fix tests ([55271a1](https://github.com/zextras/carbonio-admin-console-ui/commit/55271a15b05c1f67bcbf3fe5ac3dfe1b45056762))
+* fix type ([fc10fdd](https://github.com/zextras/carbonio-admin-console-ui/commit/fc10fdd2fafac56bad8a20855374ba6934ad6085))
+* fixed domain list ( removed unused column + fixed column name ) ([2a12c52](https://github.com/zextras/carbonio-admin-console-ui/commit/2a12c525216705158db5b3857974e0a1ba1bfcc6))
+* fixed issue of send otp bugs in user security ([#970](https://github.com/zextras/carbonio-admin-console-ui/issues/970)) ([0f43855](https://github.com/zextras/carbonio-admin-console-ui/commit/0f43855e01a9ada69f7857faa6770922a168f7b8))
+* fixed string ([8b600aa](https://github.com/zextras/carbonio-admin-console-ui/commit/8b600aa8f3be56c441e456736d6fc2d4d9153745))
+* fixed the issue of undefined ref in wizard ([a8e8296](https://github.com/zextras/carbonio-admin-console-ui/commit/a8e8296adcc2aafc7ceb75097eaa2e89910b4bb8))
+* license token field shows blank on initial page load ([#1020](https://github.com/zextras/carbonio-admin-console-ui/issues/1020)) ([dd25e08](https://github.com/zextras/carbonio-admin-console-ui/commit/dd25e082fe6109e9f4acee622e8771f0e460a900))
+* mta inbound flow security are not persisting in ce ([#978](https://github.com/zextras/carbonio-admin-console-ui/issues/978)) ([485ba9f](https://github.com/zextras/carbonio-admin-console-ui/commit/485ba9f57705b836aa62549a90a827f28a5a88a5))
+* remove redirect to dashboard ([#1053](https://github.com/zextras/carbonio-admin-console-ui/issues/1053)) ([9e85e95](https://github.com/zextras/carbonio-admin-console-ui/commit/9e85e959362e8fadbfbae2d176acb33509bae8f3))
+* show zimbraAuthLdapExternalDn only when zimbraAuthLdapURL is def… ([#1035](https://github.com/zextras/carbonio-admin-console-ui/issues/1035)) ([b80f25d](https://github.com/zextras/carbonio-admin-console-ui/commit/b80f25d94a742e4e464cf6d1b545c7eda720217a))
+* simplify certificate modal props ([#993](https://github.com/zextras/carbonio-admin-console-ui/issues/993)) ([74a1699](https://github.com/zextras/carbonio-admin-console-ui/commit/74a169991c6a0c1111d51672cf5e7d36b9d89dcc))
+* **sonar:** fix SonarQube scanner execution in Jenkins pipeline ([#1024](https://github.com/zextras/carbonio-admin-console-ui/issues/1024)) ([1452e24](https://github.com/zextras/carbonio-admin-console-ui/commit/1452e241141ef167e8689e1286351df851900c5e))
+* sonarqube correct inconsistent useState destructuring ([3f84f56](https://github.com/zextras/carbonio-admin-console-ui/commit/3f84f567e6c71e77279b02397886ca3a01232a55))
+* tooltip fix ([#1050](https://github.com/zextras/carbonio-admin-console-ui/issues/1050)) ([161e76b](https://github.com/zextras/carbonio-admin-console-ui/commit/161e76b1ffec3e85d8d16ccfd2d187f5919d43f1))
+
+### Performance Improvements
+
+* **ci:** optimize stashing by including only required files ([#994](https://github.com/zextras/carbonio-admin-console-ui/issues/994)) ([38f2b0f](https://github.com/zextras/carbonio-admin-console-ui/commit/38f2b0fe291441e4312931805a8f0e9a0df37b23))
+* optimize build script to skip redundant builds ([#995](https://github.com/zextras/carbonio-admin-console-ui/issues/995)) ([e639bcb](https://github.com/zextras/carbonio-admin-console-ui/commit/e639bcba65da48cda979747062d7423686b7faba))
+
+## [0.11.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.2...v0.11.3) (2025-12-17)
+
+### Bug Fixes
+
+* bump version and update lock file ([367e7ad](https://github.com/zextras/carbonio-admin-console-ui/commit/367e7ad46d5ef79396f5bb921e90fe6bcfadcca1))
 
 ## [0.11.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.1...v0.11.2) (2025-12-16)
 
 ### Bug Fixes
 
 * correctly format date in various parts of the code ([a2cd3f0](https://github.com/zextras/carbonio-admin-console-ui/commit/a2cd3f0d95b6da9a91e492f3dbf91994f2243261))
-## [0.12.0-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.4...v0.12.0-devel.5) (2025-12-15)
-
-### Bug Fixes
-
-* mta inbound flow security are not persisting in ce ([10dfee2](https://github.com/zextras/carbonio-admin-console-ui/commit/10dfee23a14b9e907ad65722b16ab0d283966542))
 
 ## [0.11.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.0...v0.11.1) (2025-12-05)
 
