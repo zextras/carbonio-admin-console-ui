@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, HorizontalWizard, OverlayDivision } from '@zextras/ui-components';
+import { Button, HorizontalWizard } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,21 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { Section } from '../../../../app/component/section-component';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
-
-const overlayStyle = {
-  position: 'fixed' as const,
-  width: '39.4rem',
-  top: 0,
-  right: 0,
-  bottom: 0,
-  height: 'auto',
-  maxHeight: '100%',
-  overflow: 'hidden' as const,
-  background: '#0d0d0d',
-  opacity: 0.4,
-  zIndex: 11,
-  paddingTop: '2rem',
-};
 
 const WizardInSection: FC<any> = ({
   wizard,
@@ -146,7 +131,8 @@ const NewVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision overlayStyle={overlayStyle} />}
+      {isLoading && <spinner-wc></spinner-wc>}
+
       <HorizontalWizard
         steps={wizardSteps}
         Wrapper={WizardInSection}

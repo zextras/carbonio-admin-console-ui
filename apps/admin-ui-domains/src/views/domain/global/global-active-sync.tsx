@@ -9,7 +9,6 @@ import {
   Container,
   Input,
   ListRow,
-  OverlayDivision,
   Padding,
   Row,
   Switch,
@@ -30,7 +29,6 @@ import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
-
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();
@@ -218,24 +216,7 @@ const GlobalActiveSync: FC = () => {
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '70.35rem',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container mainAlignment="flex-start" background="gray6">
         <Row mainAlignment="flex-start" width="100%">
           <Container orientation="vertical" mainAlignment="space-around" height="56px">

@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { useAppConfigStore, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -235,24 +227,7 @@ const DomainTheme: FC = () => {
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: 'calc(100% - 19rem)',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"

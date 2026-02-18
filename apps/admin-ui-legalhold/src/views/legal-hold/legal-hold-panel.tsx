@@ -12,7 +12,6 @@ import {
   HoverableRowFactory,
   Input,
   ListRow,
-  OverlayDivision,
   Padding,
   Paging,
   Row,
@@ -43,17 +42,6 @@ import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import RestoreAccountView from './restore/restore-account';
-
-const getOverlayStyle = () => ({
-  width: '20rem',
-  right: 0,
-  bottom: 0,
-  height: '8rem',
-  overflow: 'hidden',
-  background: '#0d0d0d',
-  opacity: 0.4,
-  zIndex: 11,
-});
 
 const absoluteContainerItemStyle: React.CSSProperties = {
   position: 'absolute',
@@ -118,7 +106,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision overlayStyle={getOverlayStyle()} />
+          <spinner-wc></spinner-wc>
         </Container>
       ),
     },

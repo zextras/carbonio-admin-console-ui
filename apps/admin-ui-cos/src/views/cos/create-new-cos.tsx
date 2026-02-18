@@ -10,7 +10,6 @@ import {
   CustomTextArea,
   Input,
   ListRow,
-  OverlayDivision,
   Padding,
   Row,
   Text,
@@ -24,24 +23,6 @@ import { useNavigate } from 'react-router';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
-
-
-function getOverlayStyle(): React.CSSProperties {
-  return {
-    position: 'fixed',
-    width: '70.35rem',
-    top: '6.5rem',
-    right: 0,
-    bottom: 0,
-    height: 'auto',
-    maxHeight: '100%',
-    overflow: 'hidden',
-    background: '#0d0d0d',
-    opacity: 0.4,
-    zIndex: 11,
-    paddingTop: '2rem',
-  };
-}
 
 const CreateCos: FC = () => {
   const [t] = useTranslation();
@@ -127,7 +108,7 @@ const CreateCos: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

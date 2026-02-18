@@ -16,7 +16,6 @@ import {
   Input,
   ListRow,
   Modal,
-  OverlayDivision,
   Padding,
   Paging,
   Row,
@@ -117,7 +116,7 @@ const EditMailingListView: FC<any> = ({
   const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
   const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  const isRequstInProgress=false;
+  const isRequstInProgress = false;
   const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
   const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
   const [isShowError, setIsShowError] = useState<boolean>(false);
@@ -2343,24 +2342,7 @@ const EditMailingListView: FC<any> = ({
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '39.4rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -2799,11 +2781,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChange}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3124,11 +3102,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeGrantEmail}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3276,11 +3250,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeSendEmail}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>

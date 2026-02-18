@@ -68,7 +68,6 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import styles from './domain-list-panel.module.css';
 import GlobalListPanel from './global-list-panel';
 
 const DomainListPanel: FC = () => {
@@ -115,7 +114,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <div className={styles.overlayStyle} />
+          <spinner-wc></spinner-wc>
         </Container>
       ),
     },
@@ -496,7 +495,10 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc className={styles.customIcon} icon="InfoOutline"></icon-wc>
+                    <icon-wc
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                      icon="InfoOutline"
+                    ></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -523,7 +525,6 @@ const DomainListPanel: FC = () => {
             label: domain.name,
             customComponent: (
               <Row
-                className={styles.selectItem}
                 style={{
                   display: 'block',
                   textAlign: 'left',

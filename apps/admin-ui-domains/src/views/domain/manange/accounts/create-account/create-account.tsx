@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Button,
-  Container,
-  HorizontalWizard,
-  OverlayDivision,
-  Padding,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, HorizontalWizard, Padding, useSnackbar } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -477,24 +470,7 @@ const CreateAccount: FC<{
   );
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '39.4rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"

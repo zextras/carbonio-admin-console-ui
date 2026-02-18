@@ -10,7 +10,15 @@ import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './mail-message-renderer.module.css';
+const bannerContainerStyle: React.CSSProperties = {
+  borderBottom: '0.0625rem solid #f7a538',
+  padding: '0.5rem 1rem',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  height: '3.625rem',
+  borderRadius: '0.125rem 0.125rem 0 0',
+};
 
 const _CI_REGEX = /^<(.*)>$/;
 const _CI_SRC_REGEX = /^cid:(.*)$/;
@@ -332,7 +340,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
     <div ref={divRef} className="force-white-bg" style={{ width: '100%' }}>
       {showBanner && !showExternalImage && (
         <Container
-          className={styles.bannerContainer}
+          style={bannerContainerStyle}
           orientation="horizontal"
           mainAlignment="space-between"
           crossAlignment="center"

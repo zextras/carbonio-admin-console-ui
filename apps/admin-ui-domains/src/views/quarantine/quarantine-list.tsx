@@ -41,7 +41,6 @@ import { modifyConfig } from '../../services/modify-config';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-import styles from './quarantine-list.module.css';
 
 type AttachmentPart = {
   part?: string;
@@ -1346,7 +1345,7 @@ const QuarantineList: FC = () => {
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <div className={styles.overlayStyle} />}
+          {messageViewLoading && <spinner-wc></spinner-wc>}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"

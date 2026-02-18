@@ -74,7 +74,6 @@ export * from './components/custom/list-row';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/notification-detail';
 export * from './components/custom/notification-view';
-export * from './components/custom/overlay-division';
 export * from './components/custom/paging';
 export * from './components/custom/primary-bar-tooltip';
 export * from './components/custom/track-number-per-page';

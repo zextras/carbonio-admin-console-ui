@@ -12,7 +12,6 @@ import {
   Link,
   ListRow,
   Modal,
-  OverlayDivision,
   Padding,
   Radio,
   Row,
@@ -54,21 +53,6 @@ import {
 import { fetchSoap } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
-
-const getOverlayStyle = (): React.CSSProperties => ({
-  position: 'fixed',
-  width: '39.4rem',
-  top: '0rem',
-  right: 0,
-  bottom: 0,
-  height: 'auto',
-  maxHeight: '100%',
-  overflow: 'hidden',
-  background: '#0d0d0d',
-  opacity: 0.4,
-  zIndex: 11,
-  paddingTop: '2rem',
-});
 
 const ModifyVolume: FC<{
   volumeId: any;
@@ -720,7 +704,7 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray6"
         mainAlignment="flex-start"

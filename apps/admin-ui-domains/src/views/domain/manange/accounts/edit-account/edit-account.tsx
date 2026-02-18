@@ -9,7 +9,6 @@ import {
   Container,
   DefaultTabBarItem,
   Modal,
-  OverlayDivision,
   Padding,
   Row,
   TabBar,
@@ -889,24 +888,7 @@ const EditAccount: FC<{
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '58.75rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {(!accountDetail?.name || isLoading) && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"

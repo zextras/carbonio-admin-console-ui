@@ -13,19 +13,13 @@ import {
   Input,
   ListRow,
   Modal,
-  OverlayDivision,
   Padding,
   Row,
   Select,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  replaceHistory,
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { replaceHistory, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -819,24 +813,7 @@ const DomainGeneralSettings: FC = () => {
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '70.35rem',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Row mainAlignment="flex-start" width="100%">
         <Container
           orientation="vertical"
