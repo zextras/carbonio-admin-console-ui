@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+
 import { Quota, Row, Text } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -153,11 +154,11 @@ export const EditAccountQuotaBar = ({
 
   const sizeDescription = useMemo<string>(() => {
     return t('label.account_quota_usage', {
-        used: usedGB,
-        limit: limitGB,
-        defaultValue: '{{used}} GB of {{limit}} GB',
+      used: usedGB,
+      limit: limitGB,
+      defaultValue: '{{used}} GB of {{limit}} GB',
     });
-    }, [limitGB, t, usedGB]);
+  }, [limitGB, t, usedGB]);
 
   if (!isAdvanced) {
     return null;

@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createAPIInterceptor } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 
-import { createAPIInterceptor } from '../../../../../packages/test-utils/src/index.jsdom';
 import { getAccountQuota, GetAccountQuotaRawResponse } from '../get-account-quota';
 
 describe('getAccountQuota', () => {
-    it('should call the correct API endpoint with the correct version header', async () => {
+  it('should call the correct API endpoint with the correct version header', async () => {
     const accountId = '12345';
 
     const apiInterceptor = createAPIInterceptor(
@@ -41,13 +41,9 @@ describe('getAccountQuota', () => {
       },
     };
 
-    createAPIInterceptor(
-      'get',
-      `/services/storages/admin/quota/accounts/${accountId}`,
-      () => {
-        return HttpResponse.json(apiResponse, { status: 200 });
-      },
-    );
+    createAPIInterceptor('get', `/services/storages/admin/quota/accounts/${accountId}`, () => {
+      return HttpResponse.json(apiResponse, { status: 200 });
+    });
 
     const result = await getAccountQuota(accountId);
 

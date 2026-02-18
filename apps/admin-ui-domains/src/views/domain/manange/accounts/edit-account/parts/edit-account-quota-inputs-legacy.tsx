@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Padding, Row, Text } from '@zextras/ui-components';
+
+import { Container, InheritedInput, Padding, Row, Text } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import InheritedInput from '../../../../../utility/inherited-components/inherited-input';
 import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
 
@@ -33,14 +33,8 @@ export const EditAccountQuotaInputsLegacy = ({
   setFocusableMailboxQuota,
   setHighlightMailboxQuota,
 }: EditAccountQuotaInputsLegacyProps): React.JSX.Element => {
-
-  const {
-    accountDetail,
-    setAccountDetail,
-    accSpecificDetail,
-    cosDetail,
-    initAccountDetail,
-  } = useContext(AccountContext);
+  const { accountDetail, setAccountDetail, accSpecificDetail, cosDetail, initAccountDetail } =
+    useContext(AccountContext);
 
   const setEmptyValue = useCallback(
     (keyName: string) => {
@@ -72,7 +66,6 @@ export const EditAccountQuotaInputsLegacy = ({
     [setEmptyValue],
   );
 
-
   const handleQuotaChange = useCallback(
     (
       value: string,
@@ -95,7 +88,6 @@ export const EditAccountQuotaInputsLegacy = ({
     },
     [setAccountDetail],
   );
-
 
   const changeFileQuotaLimit = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -140,80 +132,48 @@ export const EditAccountQuotaInputsLegacy = ({
       initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
     ) {
       setFileQuotaGBValue(
-        initAccountDetail?.filesQuotaLimit && initAccountDetail?.filesQuotaLimit < 9223372036854776000
+        initAccountDetail?.filesQuotaLimit &&
+          initAccountDetail?.filesQuotaLimit < 9223372036854776000
           ? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)
-          : '0.00'
+          : '0.00',
       );
     }
   }, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
 
-
-  return (<Row
-    width="100%"
-    padding={{ top: 'large', left: 'large' }}
-    mainAlignment="space-between"
-    crossAlignment="flex-start"
-  >
+  return (
     <Row
-      width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
-      mainAlignment="flex-start"
+      width="100%"
+      padding={{ top: 'large', left: 'large' }}
+      mainAlignment="space-between"
+      crossAlignment="flex-start"
     >
-      <InheritedInput
-        label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
-        subValue={accountQuotaGBValue}
-        inheritedValue={
-          cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
-        }
-        fromSubValue={
-          accSpecificDetail?.zimbraMailQuota
-            ? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(2)
-            : undefined
-        }
-        background="gray5"
-        inputName="zimbraMailQuota"
-        onChange={changeAccountQuota}
-        focus={focusableMailboxQuota}
-        highlighted={highlightMailboxQuota}
-        onBlur={(): void => {
-          setFocusableMailboxQuota(false);
-          setHighlightMailboxQuota(false);
-        }}
-        onChangeReset={(): void => setEmptyAccountQuota('zimbraMailQuota')}
-      />
-      {showAccountQuotaLimitMsg && (
-        <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-          <Padding top="small">
-            <Text size="extrasmall" weight="regular" color="primary">
-              {t(
-                'label.maximum_3_digits_allowed_decimal_point',
-                'Maximum 3 digits allowed after the decimal point',
-              )}
-            </Text>
-          </Padding>
-        </Container>
-      )}
-    </Row>
-    {isAdvanced && initAccountDetail?.filesQuotaLimit && (
-      <Row width="49%" mainAlignment="flex-start">
+      <Row
+        width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
+        mainAlignment="flex-start"
+      >
         <InheritedInput
-          background="gray5"
-          label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
-          subValue={fileQuotaGBValue}
+          label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
+          subValue={accountQuotaGBValue}
           inheritedValue={
-            cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000 ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2) : '0.00'
+            cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
           }
-          fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
-          onChange={changeFileQuotaLimit}
-          onChangeReset={(): void => setEmptyFileQuota('filesQuotaLimit')}
-          inputName="filesQuotaLimit"
-          focus={focusableFileQuota}
-          highlighted={highlightFileQuota}
+          fromSubValue={
+            accSpecificDetail?.zimbraMailQuota
+              ? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(2)
+              : undefined
+          }
+          background="gray5"
+          inputName="zimbraMailQuota"
+          onChange={changeAccountQuota}
+          focus={focusableMailboxQuota}
+          highlighted={highlightMailboxQuota}
           onBlur={(): void => {
-            setFocusableFileQuota(false);
-            setHighlightFileQuota(false);
+            setFocusableMailboxQuota(false);
+            setHighlightMailboxQuota(false);
           }}
+          onChangeReset={(): void => setEmptyAccountQuota('zimbraMailQuota')}
         />
-        {showFileQuotaLimitMsg && (
+        {showAccountQuotaLimitMsg && (
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
             <Padding top="small">
               <Text size="extrasmall" weight="regular" color="primary">
@@ -226,6 +186,42 @@ export const EditAccountQuotaInputsLegacy = ({
           </Container>
         )}
       </Row>
-    )}
-  </Row>)
-}
+      {isAdvanced && initAccountDetail?.filesQuotaLimit && (
+        <Row width="49%" mainAlignment="flex-start">
+          <InheritedInput
+            background="gray5"
+            label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
+            subValue={fileQuotaGBValue}
+            inheritedValue={
+              cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000
+                ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2)
+                : '0.00'
+            }
+            fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
+            onChange={changeFileQuotaLimit}
+            onChangeReset={(): void => setEmptyFileQuota('filesQuotaLimit')}
+            inputName="filesQuotaLimit"
+            focus={focusableFileQuota}
+            highlighted={highlightFileQuota}
+            onBlur={(): void => {
+              setFocusableFileQuota(false);
+              setHighlightFileQuota(false);
+            }}
+          />
+          {showFileQuotaLimitMsg && (
+            <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+              <Padding top="small">
+                <Text size="extrasmall" weight="regular" color="primary">
+                  {t(
+                    'label.maximum_3_digits_allowed_decimal_point',
+                    'Maximum 3 digits allowed after the decimal point',
+                  )}
+                </Text>
+              </Padding>
+            </Container>
+          )}
+        </Row>
+      )}
+    </Row>
+  );
+};
