@@ -6,10 +6,10 @@
 
 import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
 import {
-	type AppRoute,
-	type PrimaryBarView,
-	useAppStore,
-	useUtilityBarStore,
+  type AppRoute,
+  type PrimaryBarView,
+  useAppStore,
+  useUtilityBarStore,
 } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -28,7 +28,7 @@ type PrimaryBarItemProps = {
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
   const [open, setOpen] = useState(false);
-  const containerRef = useRef(undefined);
+  const containerRef = useRef(null);
   return (
     <>
       <Container

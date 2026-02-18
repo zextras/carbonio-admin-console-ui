@@ -5,9 +5,9 @@
  */
 
 import {
-	generateColorSet,
-	ThemeProvider as UIThemeProvider,
-	ThemeProviderProps as UIThemeProviderProps,
+  generateColorSet,
+  ThemeProvider as UIThemeProvider,
+  ThemeProviderProps as UIThemeProviderProps,
 } from '@zextras/ui-components';
 import { type ThemeExtension, useUserSettings } from '@zextras/ui-shared';
 import { reduce } from 'lodash-es';
@@ -144,7 +144,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Eleme
     }));
   }, []);
 
-  const aggregatedExtensions = useCallback<NonNullable<(typeof UIThemeProviderProps)['extension']>>(
+  const aggregatedExtensions = useCallback<NonNullable<UIThemeProviderProps['extension']>>(
     (theme: any) =>
       reduce(
         extensions,

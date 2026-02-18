@@ -40,7 +40,7 @@ type PopperProps = HTMLAttributes<HTMLDivElement> & {
   /** Whether the popper is open or not */
   open?: boolean;
   /** Ref to the DOM element triggering the popper */
-  anchorEl: React.RefObject<HTMLElement>;
+  anchorEl: React.RefObject<HTMLElement | null>;
   /** Optional parameter to anchor the popper to a virtual element, defined by his x, y coordinates (ex. \{x: 2, y: 2\}) */
   placement?: Placement;
   /** Callback for closed Popper */
