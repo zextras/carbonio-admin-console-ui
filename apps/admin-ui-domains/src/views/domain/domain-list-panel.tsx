@@ -484,7 +484,7 @@ const DomainListPanel: FC = () => {
       width: '1.25rem',
       height: '1.25rem',
     },
-    icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline',
+    icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
   const items =

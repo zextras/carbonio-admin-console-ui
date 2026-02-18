@@ -444,7 +444,7 @@ const LegalHoldPanel: FC = () => {
       height: '1.25rem',
       cursor: 'pointer',
     },
-    icon: searchDomainName === '' ? 'ChevronDown' : 'CloseOutline',
+    icon: searchDomainName === '' ? ('ChevronDown' as const) : ('CloseOutline' as const),
   };
 
   const selectedDomain = useCallback(

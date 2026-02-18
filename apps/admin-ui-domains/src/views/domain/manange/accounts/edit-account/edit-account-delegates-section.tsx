@@ -905,8 +905,6 @@ const EditAccountDelegatesSection: FC = () => {
               background="gray5"
               bottomBorderColor="gray3"
               onInputType={filterOptions}
-              icon="ChevronDown"
-              iconAction={filterOptions}
               inputRef={inputRef}
               value={selectedAccounts}
               onChange={(contacts: any): void => {

@@ -40,8 +40,8 @@ type DropDownInputType = {
   isCustomIcon: boolean;
   customIconDetail?: {
     icon: IconName;
-    size: IconSize;
-    color: string;
+    size?: IconSize;
+    color?: string;
     onClick?: (e: Event) => void;
   };
 };

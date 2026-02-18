@@ -202,7 +202,7 @@ export const CosListPanel: FC = () => {
   );
 
   const customIconDetail = {
-    icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
     },
@@ -231,10 +231,7 @@ export const CosListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc
-                      icon="InfoOutline"
-                      style={{ width: '20px', height: '20px' }}
-                    ></icon-wc>
+                    <icon-wc icon="InfoOutline" style={{ width: '20px', height: '20px' }}></icon-wc>
                   </Padding>
                 </Row>
                 <Row

@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, ListItems, ListPanelItem, Padding, Row, Text } from '@zextras/ui-components';
+import {
+  Container,
+  DropDownInput,
+  ListItems,
+  ListPanelItem,
+  Padding,
+  Row,
+  Text,
+} from '@zextras/ui-components';
 import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
@@ -181,7 +189,7 @@ const BucketListPanel: FC = () => {
   };
 
   const customIconDetail = {
-    icon: searchVolumeName === '' ? 'HardDriveOutline' : 'CloseOutline',
+    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
       setIsVolumeListExpand(!isVolumeListExpand);
       setIsShowError(false);

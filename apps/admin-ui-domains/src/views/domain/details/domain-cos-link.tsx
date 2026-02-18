@@ -62,7 +62,7 @@ const DomainCosLink: FC<{
   }, [userSetting?.attrs]);
 
   const customIconDetail = {
-    icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
     },

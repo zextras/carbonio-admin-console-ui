@@ -201,7 +201,7 @@ const BackupListPanel: FC = () => {
   }, [rights]);
 
   const customIconDetail = {
-    icon: searchServer === '' ? 'HardDriveOutline' : 'CloseOutline',
+    icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
       setIsShowError(false);
       if (searchServer !== '') {
