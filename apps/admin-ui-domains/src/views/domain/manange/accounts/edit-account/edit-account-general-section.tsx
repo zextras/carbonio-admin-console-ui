@@ -50,10 +50,7 @@ import {
   ABQStatus,
   AccountStatus,
   backupEnabledStatus,
-  BytesToGB,
   formatZimbraDate,
-  GbToBytes,
-  isValidDecimalNumber,
   localeList,
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
