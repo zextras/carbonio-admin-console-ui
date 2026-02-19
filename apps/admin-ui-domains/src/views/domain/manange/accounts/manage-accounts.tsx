@@ -43,6 +43,8 @@ import {
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
+  TOTAL_QUOTA_USED,
+  TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
 import {
@@ -545,6 +547,8 @@ const ManageAccounts: FC = () => {
       getAccountQuota(accountId).then((res) => {
         if (res.type === 'success') {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
+          setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
+          setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
         } else {
           // handle
         }

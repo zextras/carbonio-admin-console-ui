@@ -96,9 +96,9 @@ export const SAML_METADATA_JSON_FILE = 'saml_metadata.json';
 export const ZIMBRA_PUBLIC_SERVICE_HOSTNAME = 'zimbraPublicServiceHostname';
 export const ZIMBRA_PUBLIC_SERVICE_PROTOCOL = 'zimbraPublicServiceProtocol';
 export const EXTERNAL_SERVER_EXAMPLE =
-	'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld';
+  'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld';
 export const LDAP_BIND_DN_LABLE =
-	'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com';
+  'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com';
 export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))';
 export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
 export const CHECK_OK = 'check.OK';
@@ -125,13 +125,13 @@ export const QUARANTINE = 'quarantine';
 export const DELEGATES_DOMAIN_ADMINS = 'delegates_domain_admins';
 export const DISCLAIMER = 'disclaimer';
 export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
-	'zimbraDomainMandatoryMailSignatureEnabled';
+  'zimbraDomainMandatoryMailSignatureEnabled';
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML = 'zimbraAmavisDomainDisclaimerHTML';
 export const ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY = 'zimbraAmavisOutboundDisclaimersOnly';
 export const CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE = 'carbonioSearchAllDomainsByFeature';
 export const CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE =
-	'carbonioSearchSpecifiedDomainsByFeature';
+  'carbonioSearchSpecifiedDomainsByFeature';
 export const GLOBAL_SETTINGS_ROUTE = 'global/settings';
 export const SETTINGS = 'settings';
 export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
@@ -150,28 +150,28 @@ export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
 export const ABQ_DISABLED = 'Disabled';
 export const paginationItems: Array<{ label: string; value: number }> = [
-	{
-		label: '5',
+  {
+    label: '5',
 		value: 5
-	},
-	{
-		label: '10',
+  },
+  {
+    label: '10',
 		value: 10
-	},
-	{
-		label: '15',
+  },
+  {
+    label: '15',
 		value: 15
-	},
-	{
-		label: '25',
+  },
+  {
+    label: '25',
 		value: 25
-	},
-	{
-		label: '50',
+  },
+  {
+    label: '50',
 		value: 50
-	},
-	{
-		label: '100',
+  },
+  {
+    label: '100',
 		value: 100
 	}
 ];
@@ -187,6 +187,8 @@ export const ADMINISTRATORS = 'administrators';
 export const DISPLAYNAME = 'displayName';
 export const FETCH_DATA_LIMIT = 50;
 export const TOTAL_COMPUTED_QUOTA_LIMIT = 'totalComputedQuotaLimit';
+export const TOTAL_QUOTA_USED = 'totalQuotaUsed';
+export const TOTAL_QUOTA_USED_BY_MODULE = 'totalQuotaUsedByModule';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';
