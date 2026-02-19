@@ -884,7 +884,7 @@ const InputIconsContainer = styled.div`
   width: fit-content;
 `;
 
-const CustomIconButton = styled(Button)`
+const CustomButton = styled(Button)`
   padding: 0.125rem;
 `;
 
@@ -925,7 +925,7 @@ const buildInputIcons = ({
     return (
       <InputIconsContainer>
         {showClear && (
-          <CustomIconButton
+          <CustomButton
             icon="CloseOutline"
             size="large"
             onClick={onClear}
@@ -933,7 +933,7 @@ const buildInputIcons = ({
             disabled={disabled}
           />
         )}
-        <CustomIconButton
+        <CustomButton
           icon="CalendarOutline"
           size="large"
           backgroundColor="transparent"
