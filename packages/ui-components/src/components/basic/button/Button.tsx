@@ -7,15 +7,12 @@
 import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
-import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { getColor, pseudoClasses } from '../../../theme/theme-utils';
 import { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
 import { Icon, IconProps } from '../icon/Icon';
 import { Text } from '../text/Text';
 
-type ButtonShape = 'regular' | 'round';
 type ButtonSize = 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
-type ButtonWidth = 'fit' | 'fill';
 type ButtonIconPlacement = 'left' | 'right';
 type ButtonColorsByType =
   | ({
@@ -67,14 +64,8 @@ type ButtonPropsInternal = {
   loading?: boolean;
   /** Main action callback */
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
-  /** Shape of the button */
-  shape?: ButtonShape;
-  /** Width of the button */
-  width?: ButtonWidth;
   /** min width of the button */
   minWidth?: string;
-  /** Ref for the button element */
-  buttonRef?: React.Ref<HTMLButtonElement> | null;
   ref?: React.Ref<HTMLButtonElement>;
 } & (
   | {
@@ -99,12 +90,10 @@ type StyledButtonProps = With$Prefix<{
   color: string;
   padding: string;
   gap: string;
-  shape: ButtonShape;
   // cannot name this prop type because of conflicts with button type prop
   buttonType: ButtonType;
   iconPlacement?: ButtonIconPlacement;
   forceActive: boolean;
-  width: ButtonWidth;
   minWidth?: string;
 }>;
 
@@ -165,8 +154,7 @@ const StyledButton = styled.button.attrs<
   padding: ${({ $outerPadding }): string => $outerPadding};
   gap: ${({ $gap }): string => $gap};
   /* width */
-  width: ${({ $width }): SimpleInterpolation =>
-    ($width === 'fill' && '100%') || ($width === 'fit' && 'auto')};
+  width: auto;
   max-width: 100%;
   min-width: 0;
   /* order of elements */
@@ -180,8 +168,7 @@ const StyledButton = styled.button.attrs<
   }
   /* border */
   border: ${({ $border }): string => $border};
-  border-radius: ${({ $shape }): SimpleInterpolation =>
-    ($shape === 'regular' && '0.25rem') || ($shape === 'round' && '3.125rem')};
+  border-radius: 0.25rem;
   /* colors */
   ${({ $color, $backgroundColor, theme, $forceActive }): SimpleInterpolation =>
     $forceActive
@@ -219,9 +206,8 @@ const StyledSecondaryActionPlaceholder = styled.span<{ $padding: string }>`
   visibility: hidden;
 `;
 
-const StyledGrid = styled.div<{ $width: 'fill' | 'fit'; $padding: string; $minWidth?: string }>`
-  width: ${({ $width }): SimpleInterpolation =>
-    ($width === 'fill' && '100%') || ($width === 'fit' && 'fit-content')};
+const StyledGrid = styled.div<{ $padding: string; $minWidth?: string }>`
+  width: fit-content;
   max-width: 100%;
   min-width: ${({ $minWidth }): SimpleInterpolation => $minWidth};
 
@@ -335,21 +321,16 @@ const Button = ({
   disabled = false,
   label,
   size = 'medium',
-  width = 'fit',
   icon,
   iconPlacement = 'right',
   onClick,
   loading = false,
   forceActive = false,
-  shape = 'regular',
   secondaryAction,
   minWidth,
-  buttonRef = null,
   ref,
   ...rest
 }: ButtonProps) => {
-  const innerButtonRef = useCombinedRefs<HTMLButtonElement>(buttonRef, ref);
-
   const clickHandler = useCallback(
     (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
       if (!disabled && onClick && !e.defaultPrevented) {
@@ -372,22 +353,20 @@ const Button = ({
   const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
 
   return (
-    <StyledGrid $width={width} $minWidth={minWidth} $padding={SIZES[size].padding}>
+    <StyledGrid $minWidth={minWidth} $padding={SIZES[size].padding}>
       <StyledButton
         {...rest}
         $backgroundColor={colors.backgroundColor}
         $color={colors.color}
         $forceActive={!disabled && forceActive}
-        $shape={shape}
         $buttonType={type}
         $padding={SIZES[size].padding}
         $gap={SIZES[size].gap}
         $iconPlacement={iconPlacement}
-        $width={width}
         $minWidth={minWidth}
         disabled={disabled}
         onClick={clickHandler}
-        ref={innerButtonRef}
+        ref={ref}
       >
         {loading && (
           <StyledLoadingContainer>
@@ -423,12 +402,10 @@ const Button = ({
           $backgroundColor={colors.backgroundColor}
           $color={colors.color}
           $forceActive={!secondaryAction.disabled && !!secondaryAction.forceActive}
-          $shape={shape}
           $buttonType={(type === 'outlined' && 'default') || type}
           $padding={SIZES[size].secondaryButton.padding}
           $gap={SIZES[size].gap}
           $loading={loading}
-          $width="fit"
           disabled={!!secondaryAction.disabled}
           ref={secondaryAction.ref}
           onClick={secondaryActionClickHandler}

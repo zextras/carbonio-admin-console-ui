@@ -14,8 +14,11 @@ import { Button, ButtonProps } from '../basic/button/Button';
 const StyledIconButton = styled(Button)<{
 	$iconSize?: string;
 	$paddingSize?: string;
+	$borderRadius?: 'regular' | 'round';
 }>`
 	min-width: fit-content;
+	border-radius: ${({ $borderRadius }): string =>
+		($borderRadius === 'round' && '3.125rem') || '0.25rem'};
 	${({ $iconSize }): SimpleInterpolation =>
 		$iconSize &&
 		css`
@@ -105,9 +108,9 @@ const IconButton = ({
 			icon={icon}
 			$iconSize={iconSize}
 			$paddingSize={paddingSize}
+			$borderRadius={borderRadius}
 			backgroundColor={backgroundColor}
 			labelColor={customIconColor || iconColor}
-			shape={borderRadius}
 			size={size}
 			disabled={disabled}
 			type={type}

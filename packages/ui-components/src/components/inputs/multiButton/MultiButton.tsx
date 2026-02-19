@@ -49,7 +49,6 @@ const MultiButton = ({
 	items,
 	onClick,
 	primaryIcon,
-	width,
 	dropdownProps,
 	ref,
 	...rest
@@ -88,7 +87,7 @@ const MultiButton = ({
 			disabled
 			disableRestoreFocus
 			{...dropdownProps}
-			$containerWidth={(width === 'fill' && '100%') || 'auto'}
+			$containerWidth="auto"
 			triggerRef={ref}
 		>
 			<Button
@@ -99,7 +98,6 @@ const MultiButton = ({
 				disabled={disabledPrimary}
 				icon={primaryIcon}
 				secondaryAction={secondaryAction}
-				width={width}
 				{...rest}
 			/>
 		</StyledDropdown>
