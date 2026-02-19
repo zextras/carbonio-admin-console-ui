@@ -6,9 +6,9 @@
 import React from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
+import { Button } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
 import { Tooltip } from '../../display/Tooltip';
-import { IconButton } from '../../inputs/IconButton';
 import { Row } from '../../layout/Row';
 
 type ModalHeaderProps = {
@@ -54,7 +54,7 @@ const ModalHeader = ({
 		</ModalTitle>
 		{showCloseIcon && onClose && (
 			<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
-				<IconButton icon="Close" size="large" onClick={onClose} />
+				<Button icon="Close" size="large" onClick={onClose} type="ghost" color="text" />
 			</Tooltip>
 		)}
 	</Row>

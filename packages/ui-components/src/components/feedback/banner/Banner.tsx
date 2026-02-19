@@ -14,7 +14,6 @@ import { useModal } from '../../../hooks/useModal';
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button, ButtonProps } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
-import { IconButton, IconButtonProps } from '../../inputs/IconButton';
 import { Container } from '../../layout/Container';
 
 type ActionButton = ButtonProps & { type?: never; color?: never; backgroundColor?: never };
@@ -33,7 +32,7 @@ type BannerProps = HTMLAttributes<HTMLDivElement> & {
 } & (
     | {
         showClose: true;
-        onClose: IconButtonProps['onClick'];
+        onClose: ButtonProps['onClick'];
       }
     | {
         showClose?: false;
@@ -295,7 +294,7 @@ const Banner = ({
           minHeight={'fit'}
           ref={closeContainerRef}
         >
-          <IconButton
+          <Button
             onClick={onClose}
             icon={'Close'}
             color={textColor}

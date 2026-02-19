@@ -9,9 +9,9 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import DatePicker, { type DatePickerProps } from 'react-datepicker';
 import styled from 'styled-components';
 
+import { Button, ButtonProps } from '../basic/button/Button';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
-import { IconButton, IconButtonProps } from './IconButton';
 import { Input, InputProps } from './Input';
 
 const COLORS = {
@@ -884,7 +884,7 @@ const InputIconsContainer = styled.div`
   width: fit-content;
 `;
 
-const CustomIconButton = styled(IconButton)`
+const CustomIconButton = styled(Button)`
   padding: 0.125rem;
 `;
 
@@ -907,12 +907,12 @@ type DateTimePickerProps = Omit<DatePickerProps, 'onChange' | 'placeholderText'>
 type DateTimePickerInputProps = Omit<InputProps, 'onChange'> & {
   width: ContainerProps['width'];
   isClearable: boolean;
-  onClear: IconButtonProps['onClick'];
+  onClear: ButtonProps['onClick'];
 };
 
-type InputIconsProps = Pick<IconButtonProps, 'onClick' | 'disabled'> & {
+type InputIconsProps = Pick<ButtonProps, 'onClick' | 'disabled'> & {
   showClear: boolean;
-  onClear: IconButtonProps['onClick'];
+  onClear: ButtonProps['onClick'];
 };
 
 const buildInputIcons = ({
@@ -938,7 +938,7 @@ const buildInputIcons = ({
           size="large"
           backgroundColor="transparent"
           onClick={onClick}
-          iconColor={'text'}
+          labelColor={'text'}
           disabled={disabled}
         />
       </InputIconsContainer>
