@@ -43,6 +43,7 @@ import {
   IS_DEFAULT_USER_NAME,
   PROFILE,
   SECURITY,
+  TOTAL_COMPUTED_QUOTA_LIMIT,
   TRUE,
   UID,
   USER_PREFERENCES,
@@ -51,15 +52,18 @@ import { addAccountAliasRequest } from '../../../../../services/add-account-alia
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
 import { flushCache } from '../../../../../services/flush-cache-service';
+import { getAccountQuota } from '../../../../../services/get-account-quota';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
+import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
@@ -582,6 +586,96 @@ const EditAccount: FC<{
     ],
   );
 
+  const handleTotalComputedQuotaLimitChange = useCallback(
+    (modifiedKeys: string[]) => {
+      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
+        return;
+      }
+
+      const notifyResult = (
+        response:
+          | Awaited<ReturnType<typeof setAccountQuota>>
+          | Awaited<ReturnType<typeof unsetAccountQuota>>,
+      ) => {
+        if (response.type === 'success') {
+          createSnackbar({
+            key: 'setAccountQuotaSuccess',
+            severity: 'success',
+            label: t(
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        } else {
+          createSnackbar({
+            key: 'setAccountQuotaError',
+            severity: 'error',
+            label: response.error,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: false,
+          });
+        }
+      };
+
+      /*
+       * If totalComputedQuotaLimit is undefined, it means the quota limit is
+       * being removed, so we call unsetAccountQuota. Otherwise, we set the
+       * new quota limit.
+       * After the operation, we fetch the updated quota limit to get the
+       * possible inherited quota limit
+       */
+      if (accountDetail.totalComputedQuotaLimit === undefined) {
+        unsetAccountQuota(accountDetail?.zimbraId)
+          .then(notifyResult)
+          .then(() => {
+            return getAccountQuota(accountDetail?.zimbraId);
+          })
+          .then((response) => {
+            if (response.type === 'success') {
+              setInitAccountDetail((prev) => ({
+                ...prev,
+                totalComputedQuotaLimit: response.totalComputedLimit,
+              }));
+              setAccountDetail((prev) => ({
+                ...prev,
+                totalComputedQuotaLimit: response.totalComputedLimit,
+              }));
+            } else {
+              throw new Error(response.error);
+            }
+          })
+          .catch((error) => {
+            createSnackbar({
+              key: 'getAccountQuotaError',
+              severity: 'error',
+              label: error.message,
+              autoHideTimeout: 3000,
+              hideButton: true,
+              replace: false,
+            });
+          });
+      } else {
+        setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then(
+          notifyResult,
+        );
+      }
+
+      remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+    },
+    [
+      accountDetail.totalComputedQuotaLimit,
+      accountDetail?.zimbraId,
+      createSnackbar,
+      setAccountDetail,
+      setInitAccountDetail,
+      t,
+    ],
+  );
+
   const handleMainModifiedKeys = useCallback(
     async (initAccountDetails: any, modifiedData: any) => {
       setIsLoading(true);
@@ -669,6 +763,8 @@ const EditAccount: FC<{
     }
 
     handleFileQuotaLimitChange(modifiedKeys);
+
+    handleTotalComputedQuotaLimitChange(modifiedKeys);
 
     modifiedKeys.forEach((ele: any) => {
       modifiedData[ele] = accountDetail[ele];

@@ -52,14 +52,13 @@ import {
   ABQStatus,
   AccountStatus,
   backupEnabledStatus,
-  BytesToGB,
   formatZimbraDate,
-  GbToBytes,
-  isValidDecimalNumber,
   localeList,
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
+import { EditAccountQuotaBar } from './parts/edit-account-quota-bar';
+import { EditAccountQuotaInputs } from './parts/edit-account-quota-inputs';
 
 type UserSession = {
   name: string;
@@ -79,7 +78,6 @@ const EditAccountGeneralSection: FC<{
   setChange: any;
 }> = ({ setChange }) => {
   const createSnackbar = useSnackbar();
-  const context = useContext(AccountContext);
   const {
     accountDetail,
     setAccountDetail,
@@ -93,11 +91,10 @@ const EditAccountGeneralSection: FC<{
     setAllUserSessionList,
     userSessionList,
     setUserSessionList,
-    initAccountDetail,
     defaultCOS,
     setDefaultCOS,
     allowedDeletePassword,
-  } = context;
+  } = useContext(AccountContext);
   const domainInformation = useDomainStore((state) => state.domain?.a);
   const domainName = useDomainStore((state) => state.domain?.name);
   const cosList = useDomainStore((state) => state.cosList);
@@ -115,19 +112,11 @@ const EditAccountGeneralSection: FC<{
   const [domainList, setDomainList] = useState([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState(domainName);
-  const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
   const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
   const [selectedSession, setSelectedSession] = useState<any>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const isAdvanced = useIsAdvanced();
-  const [fileQuotaGBValue, setFileQuotaGBValue] = useState('');
-  const [focusableFileQuota, setFocusableFileQuota] = useState(false);
-  const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
-  const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
-  const [highlightFileQuota, setHighlightFileQuota] = useState(false);
   const [defaultCosId, setDefaultCosId] = useState('');
-  const [focusableMailboxQuota, setFocusableMailboxQuota] = useState(false);
-  const [highlightMailboxQuota, setHighlightMailboxQuota] = useState(false);
 
   const sessionTableHeader: any[] = useMemo(() => {
     const accountsLabel = t('label.accounts', 'Accounts');
@@ -189,53 +178,6 @@ const EditAccountGeneralSection: FC<{
         });
     },
     [createSnackbar, t],
-  );
-
-  const handleQuotaChange = useCallback(
-    (
-      value: string,
-      setQuotaLimitMsg: (msg: boolean) => void,
-      setQuotaGBValue: (value: string) => void,
-      name: string,
-    ) => {
-      if (!isValidDecimalNumber(value)) return;
-      const decimalPoints = value?.split('.')[1];
-      if (!!decimalPoints && decimalPoints?.length > 3) {
-        setQuotaLimitMsg(true);
-        return;
-      }
-      setQuotaLimitMsg(false);
-      setQuotaGBValue(value);
-      setAccountDetail((prev: any) => ({
-        ...prev,
-        [name]: value ? Math.round(GbToBytes(value)) : '',
-      }));
-    },
-    [setAccountDetail],
-  );
-
-  const changeAccountQuota = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      handleQuotaChange(
-        e.target.value,
-        setShowAccountQuotaLimitMsg,
-        setAccountQuotaGBValue,
-        e.target.name,
-      );
-    },
-    [handleQuotaChange, setShowAccountQuotaLimitMsg, setAccountQuotaGBValue],
-  );
-
-  const changeFileQuotaLimit = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      handleQuotaChange(
-        e.target.value,
-        setShowFileQuotaLimitMsg,
-        setFileQuotaGBValue,
-        e.target.name,
-      );
-    },
-    [handleQuotaChange, setShowFileQuotaLimitMsg, setFileQuotaGBValue],
   );
 
   const selectedDomain = useCallback(
@@ -396,49 +338,6 @@ const EditAccountGeneralSection: FC<{
     [setAccountDetail],
   );
 
-  const setEmptyAccountQuota = useCallback(
-    (keyName: string) => {
-      setEmptyValue(keyName);
-      setAccountQuotaGBValue('');
-    },
-    [setEmptyValue],
-  );
-
-  const setEmptyFileQuota = useCallback(
-    (keyName: string) => {
-      setEmptyValue(keyName);
-      setFileQuotaGBValue('');
-    },
-    [setEmptyValue],
-  );
-
-  useEffect(() => {
-    if (
-      initAccountDetail?.zimbraMailQuota &&
-      accountDetail?.zimbraMailQuota === initAccountDetail?.zimbraMailQuota
-    ) {
-      setAccountQuotaGBValue(
-        initAccountDetail.zimbraMailQuota
-          ? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(2)
-          : '',
-      );
-    }
-  }, [accountDetail.zimbraMailQuota, initAccountDetail.zimbraMailQuota]);
-
-  useEffect(() => {
-    if (
-      initAccountDetail?.filesQuotaLimit &&
-      initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
-    ) {
-      setFileQuotaGBValue(
-        initAccountDetail?.filesQuotaLimit &&
-          initAccountDetail?.filesQuotaLimit < 9223372036854776000
-          ? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)
-          : '0.00',
-      );
-    }
-  }, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
-
   const items = useMemo(() => {
     if (domainList.length > MAX_DOMAIN_DISPLAY) {
       return [
@@ -447,10 +346,7 @@ const EditAccountGeneralSection: FC<{
             <>
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <icon-wc
-                    icon="InfoOutline"
-                    style={{ width: '20px', height: '20px' }}
-                  ></icon-wc>
+                  <icon-wc icon="InfoOutline" style={{ width: '20px', height: '20px' }}></icon-wc>
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
@@ -645,22 +541,10 @@ const EditAccountGeneralSection: FC<{
     [allUserSessionList, setUserSessionList],
   );
 
-  const calculatedFilesQuotaSizePercentage: number = useMemo(() => {
-    if (!initAccountDetail?.filesQuotaLimit) {
-      return 0;
-    }
-    if (initAccountDetail?.filesQuotaLimit == '9223372036854776000') {
-      return 0;
-    }
-    return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
-  }, [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed]);
-
-  const calculatedMailBoxQuotaSizePercentage: number = useMemo(() => {
-    if (!initAccountDetail?.zimbraMailQuota) {
-      return 0;
-    }
-    return (initAccountDetail.mailboxQuotaUsed / initAccountDetail.zimbraMailQuota) * 100;
-  }, [initAccountDetail?.zimbraMailQuota, initAccountDetail?.mailboxQuotaUsed]);
+  const [focusableFileQuota, setFocusableFileQuota] = useState(false);
+  const [highlightFileQuota, setHighlightFileQuota] = useState(false);
+  const [focusableMailboxQuota, setFocusableMailboxQuota] = useState(false);
+  const [highlightMailboxQuota, setHighlightMailboxQuota] = useState(false);
 
   const focusFileQuota = useCallback(() => {
     setFocusableFileQuota(true);
@@ -671,75 +555,6 @@ const EditAccountGeneralSection: FC<{
     setFocusableMailboxQuota(true);
     setHighlightMailboxQuota(true);
   }, []);
-
-  const calculatedFilesQuotaSize: string = useMemo(
-    () =>
-      initAccountDetail?.filesQuotaLimit > 0 &&
-      initAccountDetail?.filesQuotaLimit < 9223372036854776000
-        ? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
-            'label.of',
-            'Of',
-          )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} ${t('label.gb', 'GB')}`
-        : `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
-            'label.unlimited',
-            'unlimited',
-          )}`,
-    [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed, t],
-  );
-
-  const calculatedMailboxQuotaSize: string = useMemo(
-    () =>
-      initAccountDetail?.zimbraMailQuota > 0
-        ? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t(
-            'label.of',
-            'Of',
-          )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(2)} ${t('label.gb', 'GB')}`
-        : `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(2)} ${t('label.of', 'Of')}  ${t(
-            'label.unlimited',
-            'unlimited',
-          )}`,
-    [initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t],
-  );
-
-  const renderQuotaRow = (
-    label: string,
-    usageSize: string,
-    quotaPercentage: number | undefined,
-    onClick: () => void,
-  ): React.JSX.Element => (
-    <Row
-      width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
-      mainAlignment="space-between"
-      onClick={onClick}
-    >
-      <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
-        <Text size="extrasmall" color="secondary">
-          {label}
-        </Text>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
-        <Text size="extrasmall" color="gray0">
-          {usageSize}
-        </Text>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <Quota
-          fill={quotaPercentage ?? 0}
-          height="0.5rem"
-          background="gray5"
-          style={{ borderRadius: '2px' }}
-        />
-      </Row>
-    </Row>
-  );
-
-  const renderRowHeader = ({ label }: { label: string }): React.JSX.Element => (
-    <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-      <Text size="small" color="gray0" weight="bold">
-        {label}
-      </Text>
-    </Row>
-  );
 
   const renderInputRow = ({
     id,
@@ -789,22 +604,10 @@ const EditAccountGeneralSection: FC<{
             {t('label.account', 'Account')}
           </Text>
         </Row>
-        <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          {renderQuotaRow(
-            t('label.mailbox_space_usage', 'Mailbox Space Usage'),
-            calculatedMailboxQuotaSize,
-            calculatedMailBoxQuotaSizePercentage,
-            focusMailBoxQuota,
-          )}
-          {isAdvanced &&
-            initAccountDetail?.filesQuotaLimit &&
-            renderQuotaRow(
-              t('label.files_space_usage', 'Files Space Usage'),
-              calculatedFilesQuotaSize,
-              calculatedFilesQuotaSizePercentage,
-              focusFileQuota,
-            )}
-        </Row>
+        <EditAccountQuotaBar
+          onClickMailboxQuota={focusMailBoxQuota}
+          onClickFilesQuota={focusFileQuota}
+        />
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           {renderInputRow({
             id: 'surname-input',
@@ -953,88 +756,18 @@ const EditAccountGeneralSection: FC<{
             </Row>
           </Row>
         )}
-        <Row
-          width="100%"
-          padding={{ top: 'large', left: 'large' }}
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-        >
-          <Row
-            width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
-            mainAlignment="flex-start"
-          >
-            <InheritedInput
-              label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
-              subValue={accountQuotaGBValue}
-              inheritedValue={
-                cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toFixed(2) : ''
-              }
-              fromSubValue={
-                accSpecificDetail?.zimbraMailQuota
-                  ? BytesToGB(accSpecificDetail.zimbraMailQuota).toFixed(2)
-                  : undefined
-              }
-              background="gray5"
-              inputName="zimbraMailQuota"
-              onChange={changeAccountQuota}
-              focus={focusableMailboxQuota}
-              highlighted={highlightMailboxQuota}
-              onBlur={(): void => {
-                setFocusableMailboxQuota(false);
-                setHighlightMailboxQuota(false);
-              }}
-              onChangeReset={(): void => setEmptyAccountQuota('zimbraMailQuota')}
-            />
-            {showAccountQuotaLimitMsg && (
-              <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                <Padding top="small">
-                  <Text size="extrasmall" weight="regular" color="primary">
-                    {t(
-                      'label.maximum_3_digits_allowed_decimal_point',
-                      'Maximum 3 digits allowed after the decimal point',
-                    )}
-                  </Text>
-                </Padding>
-              </Container>
-            )}
-          </Row>
-          {isAdvanced && initAccountDetail?.filesQuotaLimit && (
-            <Row width="49%" mainAlignment="flex-start">
-              <InheritedInput
-                background="gray5"
-                label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
-                subValue={fileQuotaGBValue}
-                inheritedValue={
-                  cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000
-                    ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2)
-                    : '0.00'
-                }
-                fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
-                onChange={changeFileQuotaLimit}
-                onChangeReset={(): void => setEmptyFileQuota('filesQuotaLimit')}
-                inputName="filesQuotaLimit"
-                focus={focusableFileQuota}
-                highlighted={highlightFileQuota}
-                onBlur={(): void => {
-                  setFocusableFileQuota(false);
-                  setHighlightFileQuota(false);
-                }}
-              />
-              {showFileQuotaLimitMsg && (
-                <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                  <Padding top="small">
-                    <Text size="extrasmall" weight="regular" color="primary">
-                      {t(
-                        'label.maximum_3_digits_allowed_decimal_point',
-                        'Maximum 3 digits allowed after the decimal point',
-                      )}
-                    </Text>
-                  </Padding>
-                </Container>
-              )}
-            </Row>
-          )}
-        </Row>
+        <EditAccountQuotaInputs
+          accountDetail={accountDetail}
+          setAccountDetail={setAccountDetail}
+          focusableFileQuota={focusableFileQuota}
+          highlightFileQuota={highlightFileQuota}
+          focusableMailboxQuota={focusableMailboxQuota}
+          highlightMailboxQuota={highlightMailboxQuota}
+          setFocusableFileQuota={setFocusableFileQuota}
+          setHighlightFileQuota={setHighlightFileQuota}
+          setFocusableMailboxQuota={setFocusableMailboxQuota}
+          setHighlightMailboxQuota={setHighlightMailboxQuota}
+        />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
             <Input
