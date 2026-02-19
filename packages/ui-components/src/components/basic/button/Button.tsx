@@ -13,6 +13,7 @@ import { Icon, IconProps } from '../icon/Icon';
 import { Text } from '../text/Text';
 
 type ButtonSize = 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
+type ButtonWidth = 'fit' | 'fill';
 type ButtonIconPlacement = 'left' | 'right';
 type ButtonColorsByType =
   | ({
@@ -64,6 +65,8 @@ type ButtonPropsInternal = {
   loading?: boolean;
   /** Main action callback */
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
+  /** Width of the button: 'fit' sizes to content, 'fill' expands to container */
+  width?: ButtonWidth;
   /** min width of the button */
   minWidth?: string;
   ref?: React.Ref<HTMLButtonElement>;
@@ -94,15 +97,20 @@ type StyledButtonProps = With$Prefix<{
   buttonType: ButtonType;
   iconPlacement?: ButtonIconPlacement;
   forceActive: boolean;
+  width: ButtonWidth;
   minWidth?: string;
 }>;
 
-const StyledIcon = styled(Icon)<{ $loading?: boolean; $size: string }>`
+const loadingOpacity = css<{ $loading?: boolean }>`
   ${({ $loading }): SimpleInterpolation =>
     $loading &&
     css`
       opacity: 0;
     `};
+`;
+
+const StyledIcon = styled(Icon)<{ $loading?: boolean; $size: string }>`
+  ${loadingOpacity}
   width: ${({ $size }): string => $size};
   min-width: ${({ $size }): string => $size};
   height: ${({ $size }): string => $size};
@@ -111,14 +119,10 @@ const StyledIcon = styled(Icon)<{ $loading?: boolean; $size: string }>`
 `;
 
 const StyledText = styled(Text)<{ $loading: boolean; $size: string }>`
+  ${loadingOpacity}
   user-select: none;
   text-transform: uppercase;
   font-size: ${({ $size }): string => $size};
-  ${({ $loading }): SimpleInterpolation =>
-    $loading &&
-    css`
-      opacity: 0;
-    `};
 `;
 
 const StyledLoadingContainer = styled.div`
@@ -154,7 +158,8 @@ const StyledButton = styled.button.attrs<
   padding: ${({ $outerPadding }): string => $outerPadding};
   gap: ${({ $gap }): string => $gap};
   /* width */
-  width: auto;
+  width: ${({ $width }): SimpleInterpolation =>
+    ($width === 'fill' && '100%') || ($width === 'fit' && 'auto')};
   max-width: 100%;
   min-width: 0;
   /* order of elements */
@@ -190,13 +195,9 @@ const StyledButton = styled.button.attrs<
 `;
 
 const StyledSecondaryAction = styled(StyledButton)<{ $loading: boolean }>`
+  ${loadingOpacity}
   flex-shrink: 0;
   min-width: fit-content;
-  ${({ $loading }): SimpleInterpolation =>
-    $loading &&
-    css`
-      opacity: 0;
-    `};
 `;
 
 const StyledSecondaryActionPlaceholder = styled.span<{ $padding: string }>`
@@ -206,8 +207,9 @@ const StyledSecondaryActionPlaceholder = styled.span<{ $padding: string }>`
   visibility: hidden;
 `;
 
-const StyledGrid = styled.div<{ $padding: string; $minWidth?: string }>`
-  width: fit-content;
+const StyledGrid = styled.div<{ $width: ButtonWidth; $padding: string; $minWidth?: string }>`
+  width: ${({ $width }): SimpleInterpolation =>
+    ($width === 'fill' && '100%') || ($width === 'fit' && 'fit-content')};
   max-width: 100%;
   min-width: ${({ $minWidth }): SimpleInterpolation => $minWidth};
 
@@ -278,6 +280,8 @@ const SIZES: Record<ButtonSize, { label: string; icon: string; padding: string; 
   },
 } as const;
 
+const SUPPORTS_SECONDARY_ACTION: Array<ButtonSize> = ['medium', 'large', 'extralarge'];
+
 const DEFAULT_COLORS = {
   outlined: {
     backgroundColor: 'gray6',
@@ -327,6 +331,7 @@ const Button = ({
   loading = false,
   forceActive = false,
   secondaryAction,
+  width = 'fit',
   minWidth,
   ref,
   ...rest
@@ -352,8 +357,13 @@ const Button = ({
 
   const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
 
+  const hasSecondaryAction =
+    secondaryAction && SUPPORTS_SECONDARY_ACTION.includes(size);
+
+  const sizeWithSecondary = size as 'medium' | 'large' | 'extralarge';
+
   return (
-    <StyledGrid $minWidth={minWidth} $padding={SIZES[size].padding}>
+    <StyledGrid $width={width} $minWidth={minWidth} $padding={SIZES[size].padding}>
       <StyledButton
         {...rest}
         $backgroundColor={colors.backgroundColor}
@@ -363,6 +373,7 @@ const Button = ({
         $padding={SIZES[size].padding}
         $gap={SIZES[size].gap}
         $iconPlacement={iconPlacement}
+        $width={width}
         $minWidth={minWidth}
         disabled={disabled}
         onClick={clickHandler}
@@ -387,24 +398,27 @@ const Button = ({
           </StyledText>
         )}
 
-        {secondaryAction && size !== 'extrasmall' && size !== 'small' && (
-          <StyledSecondaryActionPlaceholder $padding={SIZES[size].secondaryButton.padding}>
+        {hasSecondaryAction && (
+          <StyledSecondaryActionPlaceholder
+            $padding={SIZES[sizeWithSecondary].secondaryButton.padding}
+          >
             <StyledIcon
               icon={`${secondaryAction.icon}Placeholder`}
               color="currentColor"
-              $size={SIZES[size].secondaryButton.icon}
+              $size={SIZES[sizeWithSecondary].secondaryButton.icon}
             />
           </StyledSecondaryActionPlaceholder>
         )}
       </StyledButton>
-      {secondaryAction && size !== 'extrasmall' && size !== 'small' && (
+      {hasSecondaryAction && (
         <StyledSecondaryAction
           $backgroundColor={colors.backgroundColor}
           $color={colors.color}
           $forceActive={!secondaryAction.disabled && !!secondaryAction.forceActive}
           $buttonType={(type === 'outlined' && 'default') || type}
-          $padding={SIZES[size].secondaryButton.padding}
-          $gap={SIZES[size].gap}
+          $padding={SIZES[sizeWithSecondary].secondaryButton.padding}
+          $gap={SIZES[sizeWithSecondary].gap}
+          $width="fit"
           $loading={loading}
           disabled={!!secondaryAction.disabled}
           ref={secondaryAction.ref}
@@ -413,7 +427,7 @@ const Button = ({
           <StyledIcon
             icon={secondaryAction.icon}
             color="currentColor"
-            $size={SIZES[size].secondaryButton.icon}
+            $size={SIZES[sizeWithSecondary].secondaryButton.icon}
           />
         </StyledSecondaryAction>
       )}
