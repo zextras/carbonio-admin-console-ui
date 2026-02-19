@@ -28,6 +28,12 @@ export const humanFileSize = (inputSize: number, t: TFunction | undefined): stri
   const unit = units[i >= 0 ? i : 0];
   const unitTranslated = t ? t('size.unitMeasure', { context: unit, defaultValue: unit }) : unit;
   const sizeNum = inputSize / 1024 ** i;
-  const size = Number.isInteger(sizeNum) ? sizeNum.toString() : sizeNum.toFixed(2);
+  let size: string;
+  const rounded = Math.round(sizeNum);
+  if (Math.abs(sizeNum - rounded) < 0.01) {
+    size = rounded.toString();
+  } else {
+    size = sizeNum.toFixed(2);
+  }
   return `${size} ${unitTranslated}`;
 };
