@@ -759,8 +759,6 @@ const ChipInputComponent = <TValue = unknown,>({
                   key={`${index}-${item.value}`}
                   maxWidth={(wrap === 'wrap' && '100%') || undefined}
                   {...item}
-                  closable
-                  onClose={(): void => onChipClose(index)}
                 />
               ))}
               <AdjustWidthInput

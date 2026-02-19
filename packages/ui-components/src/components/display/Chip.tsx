@@ -14,7 +14,6 @@ import { AnyColor } from '../../types/utils';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Icon, IconProps } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
-import { IconButton, IconButtonProps } from '../inputs/IconButton';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
 import { Tooltip } from './Tooltip';
@@ -36,7 +35,7 @@ type ChipAction = {
       /** Chip action type */
       type: 'button';
       /** Chip action click callback (button type only). NB: onClick event IS propagated. It's up to the dev to eventually stop the propagation */
-      onClick: IconButtonProps['onClick'];
+      onClick: IconProps['onClick'];
       /** Chip action background (button type only) */
       background?: AnyColor;
     }
@@ -63,8 +62,6 @@ type ChipProps = Omit<RowProps, 'children'> & {
   background?: AnyColor;
   /** Chip shape  */
   shape?: 'regular' | 'round';
-  /** If an onClose callback is provided, this prop defines if the close action should be active or disabled */
-  closable?: boolean;
   /** Chip text color */
   color?: AnyColor;
   /** Chip disabled status. If a string is provided it is shown in a tooltip */
@@ -81,9 +78,6 @@ type ChipProps = Omit<RowProps, 'children'> & {
   maxWidth?: string;
   /** Chip click callback */
   onClick?: React.ReactEventHandler;
-  /** Callback to call when user tries to remove the Chip. If not provided, the close icon is hidden.
-   * Be aware that the close action can be also provided with the actions prop  */
-  onClose?: IconButtonProps['onClick'];
   /** Chip double-click callback */
   onDoubleClick?: React.ReactEventHandler;
   /** Chip size */
@@ -94,8 +88,6 @@ type ChipProps = Omit<RowProps, 'children'> & {
 };
 
 const ActionIcon = styled(Icon)``;
-
-const ActionIconButton = styled(IconButton)``;
 
 const ActionContainer = styled.div<{ $spacing: string }>`
   min-width: fit-content;
@@ -174,7 +166,6 @@ const Chip = ({
   avatarPicture,
   background = 'gray3',
   shape = 'round',
-  closable = true,
   color,
   disabled,
   error,
@@ -183,7 +174,6 @@ const Chip = ({
   label,
   maxWidth,
   onClick,
-  onClose,
   onDoubleClick,
   size = 'small',
   tooltipPlacement,
@@ -194,20 +184,6 @@ const Chip = ({
   const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
   const theme = useTheme();
   const [tooltipVisible, setTooltipVisible] = useState(false);
-
-  const chipActions = useMemo(() => {
-    const $actions = [...actions];
-    if (onClose) {
-      $actions.push({
-        id: 'CloseChipAction',
-        icon: 'Close',
-        onClick: onClose,
-        type: 'button',
-        disabled: !closable,
-      });
-    }
-    return $actions;
-  }, [actions, closable, onClose]);
 
   const showInnerTooltip = useCallback(() => {
     setTooltipVisible(true);
@@ -227,7 +203,7 @@ const Chip = ({
 
   const actionItems = useMemo(
     () =>
-      map(chipActions, (action) => {
+      map(actions, (action) => {
         let item;
         const actionDisabled = !!disabled || !action.label;
         const showTooltipHandler = (!actionDisabled && showInnerTooltip) || undefined;
@@ -256,54 +232,10 @@ const Chip = ({
               </ActionContainer>
             </Tooltip>
           );
-        } else if (action.type === 'button') {
-          const clickHandler: IconButtonProps['onClick'] = (event) => {
-            event.preventDefault();
-            action.onClick(event);
-          };
-          item = (
-            <Tooltip
-              key={action.id}
-              label={action.label}
-              disabled={actionDisabled}
-              placement={tooltipPlacement}
-            >
-              <ActionContainer
-                onMouseEnter={showTooltipHandler}
-                onMouseLeave={hideTooltipHandler}
-                onFocus={showTooltipHandler}
-                onBlur={hideTooltipHandler}
-                $spacing={SIZES[size].spacing}
-              >
-                <ActionIconButton
-                  icon={action.icon}
-                  iconColor={error ? 'error' : action.color}
-                  borderRadius={shape}
-                  backgroundColor={error || !action.background ? 'gray5' : action.background}
-                  disabled={!!disabled || action.disabled}
-                  onClick={clickHandler}
-                  customSize={{
-                    iconSize: SIZES[size].icon,
-                    paddingSize: `calc(${SIZES[size].spacing} / 2)`,
-                  }}
-                />
-              </ActionContainer>
-            </Tooltip>
-          );
         }
-
         return item;
       }),
-    [
-      chipActions,
-      disabled,
-      showInnerTooltip,
-      hideInnerTooltip,
-      tooltipPlacement,
-      size,
-      error,
-      shape,
-    ],
+    [actions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error],
   );
 
   const clickHandler = useCallback<React.ReactEventHandler>(
