@@ -64,6 +64,7 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
+import { useTotalQuotaActive } from '../../../../app/hooks/useTotalQuotaActive';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
@@ -108,6 +109,7 @@ const EditAccount: FC<{
   STATUS_COLOR,
 }) => {
   const { t } = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const domainList = useDomainStore((state) => state.domainList);
   const [change, setChange] = useState(defaultTab);
@@ -588,7 +590,7 @@ const EditAccount: FC<{
 
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT)) {
+      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isTotalQuotaActive || !isAdvanced) {
         return;
       }
 

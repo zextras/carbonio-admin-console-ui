@@ -21,6 +21,8 @@ export type AccountDetail = Record<string, any> & {
   carbonioWscMaxRoomPictureSize?: string;
   carbonioWscMaxAttachmentSize?: string;
   totalComputedQuotaLimit?: number;
+  totalQuotaUsed?: number;
+  totalQuotaUsedByModule?: Record<string, number>;
 };
 
 type AccountContext = {

@@ -45,6 +45,8 @@ import {
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
+  TOTAL_QUOTA_USED,
+  TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
 import {
@@ -66,6 +68,9 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useTotalQuotaActive } from '../../../app/hooks/useTotalQuotaActive';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
+import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';
@@ -88,6 +93,7 @@ type CheckRightResponse = {
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {
   const [t] = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
   const domainName = useDomainStore((state) => state.domain?.name);
@@ -543,12 +549,21 @@ const ManageAccounts: FC = () => {
       getAccountQuota(accountId).then((res) => {
         if (res.type === 'success') {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
+          setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
+          setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
         } else {
-          // handle
+          createSnackbar({
+            key: 'retrieveAccountQuotaError',
+            severity: 'error',
+            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true
+          })
         }
       });
     },
-    [setAccDetailValue],
+    [createSnackbar, setAccDetailValue, t],
   );
 
   const getAccountDetail = useCallback(
@@ -597,7 +612,9 @@ const ManageAccounts: FC = () => {
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
-            retrieveAccountQuotaByAccountId(id);
+            if (isTotalQuotaActive) {
+              retrieveAccountQuotaByAccountId(id);
+            }
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
