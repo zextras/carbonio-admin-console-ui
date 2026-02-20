@@ -1,3 +1,9 @@
+## [0.12.0-devel.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.23...v0.12.0-devel.24) (2026-02-20)
+
+### Features
+
+* show total quota usage by module ([#1077](https://github.com/zextras/carbonio-admin-console-ui/issues/1077)) ([c2e3a77](https://github.com/zextras/carbonio-admin-console-ui/commit/c2e3a77cb5de100e5c331059c42491b4962dad2d))
+
 ## [0.12.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.22...v0.12.0-devel.23) (2026-02-20)
 
 ### Features
