@@ -64,6 +64,7 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useTotalQuotaActive } from '../../../app/hooks/useTotalQuotaActive';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
@@ -88,6 +89,7 @@ type CheckRightResponse = {
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {
   const [t] = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
   const domainName = useDomainStore((state) => state.domain?.name);
@@ -546,11 +548,18 @@ const ManageAccounts: FC = () => {
         if (res.type === 'success') {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
         } else {
-          // handle
+          createSnackbar({
+            key: 'retrieveAccountQuotaError',
+            severity: 'error',
+            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true
+          })
         }
       });
     },
-    [setAccDetailValue],
+    [createSnackbar, setAccDetailValue, t],
   );
 
   const getAccountDetail = useCallback(
@@ -599,7 +608,9 @@ const ManageAccounts: FC = () => {
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
-            retrieveAccountQuotaByAccountId(id);
+            if (isTotalQuotaActive) {
+              retrieveAccountQuotaByAccountId(id);
+            }
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
