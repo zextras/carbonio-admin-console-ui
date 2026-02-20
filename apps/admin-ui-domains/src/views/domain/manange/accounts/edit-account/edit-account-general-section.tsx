@@ -602,10 +602,12 @@ const EditAccountGeneralSection: FC<{
             {t('label.account', 'Account')}
           </Text>
         </Row>
-        <EditAccountQuotaBar
-          onClickMailboxQuota={focusMailBoxQuota}
-          onClickFilesQuota={focusFileQuota}
-        />
+        <Row padding={{ vertical: 'large', left: 'large' }} width="100%" mainAlignment="flex-start">
+          <EditAccountQuotaBar
+            onClickMailboxQuota={focusMailBoxQuota}
+            onClickFilesQuota={focusFileQuota}
+          />
+        </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           {renderInputRow({
             id: 'surname-input',

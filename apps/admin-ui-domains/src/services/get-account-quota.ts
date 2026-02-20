@@ -27,6 +27,11 @@ type GetAccountQuotaResponse =
       type: 'success';
       totalComputedLimit: number;
       totalUsed: number;
+      usedByModules: {
+        mailbox: number;
+        files: number;
+        wsc: number;
+      };
     }
   | {
       type: 'error';
@@ -58,6 +63,11 @@ export const getAccountQuota = async (accountId: string): Promise<GetAccountQuot
         type: 'success',
         totalComputedLimit: total.computedLimit,
         totalUsed: total.used,
+        usedByModules: {
+          mailbox: data.modules.mailbox.used,
+          files: data.modules.files.used,
+          wsc: data.modules.wsc.used,
+        },
       } satisfies GetAccountQuotaResponse;
     })
     .catch((error) => {

@@ -51,7 +51,12 @@ describe('getAccountQuota', () => {
       type: 'success',
       totalComputedLimit: apiResponse.total.computedLimit,
       totalUsed: apiResponse.total.used,
-    });
+      usedByModules: {
+        mailbox: apiResponse.modules.mailbox.used,
+        files: apiResponse.modules.files.used,
+        wsc: apiResponse.modules.wsc.used,
+      },
+    } satisfies Awaited<ReturnType<typeof getAccountQuota>>);
   });
 
   it('should return an error if the API request fails', async () => {
