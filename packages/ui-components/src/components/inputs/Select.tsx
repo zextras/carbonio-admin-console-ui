@@ -4,17 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../web-components/icon-wc';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { getColor } from '../../theme/theme-utils';
-import { Icon } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
+import styles from './Select.module.css';
 
 const Label = styled(Text)<{ $selected: boolean }>`
   position: absolute;
@@ -39,11 +41,6 @@ const ContainerEl = styled(Container)<{ $focus: boolean }>`
 
 const CustomText = styled(Text)`
   min-height: 1.167em;
-`;
-
-const CustomIcon = styled(Icon)`
-  align-self: center;
-  pointer-events: none;
 `;
 
 type LabelFactoryProps<T = string> = {
@@ -98,11 +95,13 @@ const DefaultLabelFactory = <T,>({
             {label}
           </Label>
         </Row>
-        <CustomIcon
-          size="medium"
-          icon={open ? 'ArrowUp' : 'ArrowDown'}
-          color={(disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary'}
-        />
+        <div className={styles.iconWrapper}>
+          <icon-wc
+            size="medium"
+            icon={open ? 'ArrowUp' : 'ArrowDown'}
+            color={(disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary'}
+          ></icon-wc>
+        </div>
       </ContainerEl>
       <divider-wc color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></divider-wc>
     </>
