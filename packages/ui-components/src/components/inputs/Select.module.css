@@ -5,6 +5,9 @@
  */
 
 .iconWrapper {
+	display: flex;
+	align-items: center;
+	line-height: 0;
 	align-self: center;
 	pointer-events: none;
 }
