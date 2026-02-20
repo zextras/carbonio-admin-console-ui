@@ -30,6 +30,7 @@ export const QuotaLegendEntry = ({
       width="fit"
       gap="0.25rem"
       crossAlignment="center"
+      data-testid={'quota-bar-legend-entry'}
     >
       <Container
         background={color}
@@ -38,6 +39,7 @@ export const QuotaLegendEntry = ({
         minWidth="0.75rem"
         minHeight="0.75rem"
         flexShrink={0}
+        data-testid="color-indicator"
       />
       <Text size="small">{`${label} (${humanFileSize(used, t)})`}</Text>
     </Container>

@@ -63,6 +63,7 @@ export const QuotaBar = ({
             height="100%"
             flexShrink={0}
             borderRadius="none"
+            data-testid={'quota-bar-module-segment'}
           />
         ))}
       </Container>
