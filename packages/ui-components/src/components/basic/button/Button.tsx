@@ -278,7 +278,7 @@ const Button = ({
       <button
         {...rest}
         className={buttonClassName}
-        style={buttonStyle}
+        style={{ ...buttonStyle, ...rest.style }}
         disabled={disabled}
         onClick={clickHandler}
         ref={ref}
