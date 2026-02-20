@@ -5,25 +5,24 @@
  */
 
 .text {
-	margin: 0;
-	max-width: 100%;
-	color: var(--text-color);
-	font-family: var(--text-font-family);
-	font-size: var(--text-font-size);
-	font-weight: var(--text-font-weight);
-	font-style: var(--text-font-style);
-	text-align: var(--text-align);
-	line-height: var(--text-line-height);
+  margin: 0;
+  max-width: 100%;
+  color: var(--text-color);
+  font-family: var(--text-font-family);
+  font-size: var(--text-font-size);
+  font-weight: var(--text-font-weight);
+  font-style: var(--text-font-style);
+  text-align: var(--text-align);
+  line-height: var(--text-line-height);
 }
 
 .ellipsis {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .break-word {
-	overflow-wrap: break-word;
-	word-wrap: break-word;
-	word-break: break-all;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

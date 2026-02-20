@@ -43,15 +43,6 @@ const paletteExtension =
     },
   });
 
-const iconExtension: ThemeExtension = (theme) => ({
-  ...theme,
-  icons: {
-    ...theme.icons,
-    Shared: theme.icons.ArrowCircleRight,
-    Linked: theme.icons.ArrowCircleLeft,
-  },
-});
-
 const themeSizes = (
   size: 'small' | 'normal' | 'large' | 'larger' | 'default' | string,
 ): ThemeExtension => {
@@ -140,7 +131,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps): React.JSX.Eleme
       palette: paletteExtension({
         palette: customThemePalette,
       }),
-      icons: iconExtension,
     }));
   }, []);
 
