@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../web-components/icon-wc';
+
 import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
@@ -11,11 +13,12 @@ import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-component
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { pseudoClasses, useTheme } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
+import { type IconName } from '../../web-components/icon-registry';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
-import { Icon, IconProps } from '../basic/icon/Icon';
 import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
+import styles from './Chip.module.css';
 import { Tooltip } from './Tooltip';
 
 type ChipAction = {
@@ -24,7 +27,7 @@ type ChipAction = {
   /** Chip action disabled status */
   disabled?: boolean;
   /** Chip action icon */
-  icon: keyof DefaultTheme['icons'];
+  icon: IconName;
   /** Chip action id (required for key attribute) */
   id: string;
   /** Chip action label value. It is shown in a tooltip. To not render the tooltip, just don't value the prop.
@@ -35,7 +38,7 @@ type ChipAction = {
       /** Chip action type */
       type: 'button';
       /** Chip action click callback (button type only). NB: onClick event IS propagated. It's up to the dev to eventually stop the propagation */
-      onClick: IconProps['onClick'];
+      onClick: React.MouseEventHandler;
       /** Chip action background (button type only) */
       background?: AnyColor;
     }
@@ -87,13 +90,9 @@ type ChipProps = Omit<RowProps, 'children'> & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-const ActionIcon = styled(Icon)``;
-
 const ActionContainer = styled.div<{ $spacing: string }>`
   min-width: fit-content;
-  & > ${ActionIcon} {
-    padding: ${({ $spacing }): SimpleInterpolation => css`calc(${$spacing} / 2)`};
-  }
+  --action-spacing: ${({ $spacing }): string => $spacing};
 `;
 
 const LabelContainer = styled(Container)``;
@@ -153,7 +152,7 @@ const SIZES = {
   {
     avatar: keyof DefaultTheme['sizes']['avatar'];
     font: keyof DefaultTheme['sizes']['font'];
-    icon: NonNullable<IconProps['size']>;
+    icon: 'small' | 'medium' | 'large';
     spacing: string;
   }
 >;
@@ -223,12 +222,14 @@ const Chip = ({
                 onBlur={hideTooltipHandler}
                 $spacing={SIZES[size].spacing}
               >
-                <ActionIcon
-                  icon={action.icon}
-                  color={error ? 'gray6' : action.color}
-                  disabled={!!disabled || action.disabled}
-                  size={SIZES[size].icon}
-                />
+                <div className={styles.actionIcon}>
+                  <icon-wc
+                    icon={action.icon}
+                    color={error ? 'gray6' : action.color}
+                    disabled={!!disabled || action.disabled}
+                    size={SIZES[size].icon}
+                  ></icon-wc>
+                </div>
               </ActionContainer>
             </Tooltip>
           );
