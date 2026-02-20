@@ -15,6 +15,8 @@ import { type IconName, iconRegistry } from './icon-registry';
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
 export type IconSize = (typeof ICON_SIZES)[number];
 
+type IconSizeValue = IconSize | string;
+
 const DEFAULT_ICON = 'AlertTriangleOutline';
 
 @customElement('icon-wc')
@@ -51,7 +53,7 @@ export class IconWC extends LitElement {
   accessor color = 'text';
 
   @property({ type: String, reflect: true })
-  accessor size: IconSize = 'medium';
+  accessor size: IconSizeValue = 'medium';
 
   @property({ type: Boolean, reflect: true })
   accessor disabled = false;
@@ -61,6 +63,10 @@ export class IconWC extends LitElement {
 
   private getColorVariable(color: string): string {
     const trimmed = color.trim();
+
+    if (trimmed === 'currentColor') {
+      return trimmed;
+    }
 
     // Check if it's a hex color (3, 4, 6, or 8 digit formats)
     const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
@@ -72,9 +78,11 @@ export class IconWC extends LitElement {
     return `var(--color-${sanitized}-regular, var(--color-text-regular))`;
   }
 
-  private getSizeVariable(size: IconSize): string {
-    // Validate size is one of allowed values
-    const validSize = ICON_SIZES.includes(size) ? size : 'medium';
+  private getSizeValue(size: IconSizeValue): string {
+    if (/^[\d.]+(rem|px|em|vh|vw|%)$/.test(size)) {
+      return size;
+    }
+    const validSize = ICON_SIZES.includes(size as IconSize) ? (size as IconSize) : 'medium';
     return `var(--icon-size-${validSize}, var(--icon-size-medium, 1rem))`;
   }
 
@@ -101,7 +109,7 @@ export class IconWC extends LitElement {
 
     const styles = styleMap({
       '--icon-color': this.getColorVariable(this.color),
-      '--icon-size': this.getSizeVariable(this.size),
+      '--icon-size': this.getSizeValue(this.size),
     });
 
     return html`

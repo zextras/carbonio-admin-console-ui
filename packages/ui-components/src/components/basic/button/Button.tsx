@@ -6,8 +6,8 @@
 
 import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
 
-import { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
-import { Icon, IconProps } from '../icon/Icon';
+import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
+import { type IconName } from '../../../web-components/icon-registry';
 import { Text } from '../text/Text';
 import styles from './Button.module.css';
 
@@ -31,7 +31,7 @@ type ButtonColorsByType =
 type ButtonType = NonNullable<ButtonColorsByType['type']>;
 
 type ButtonSecondaryAction = {
-  icon: IconProps['icon'];
+  icon: IconName;
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
   disabled?: boolean;
   forceActive?: boolean;
@@ -41,7 +41,7 @@ type ButtonSecondaryAction = {
 type ButtonPropsInternal = {
   forceActive?: boolean;
   disabled?: boolean;
-  icon?: IconProps['icon'];
+  icon?: IconName;
   iconPlacement?: ButtonIconPlacement;
   label?: string;
   loading?: boolean;
@@ -253,10 +253,6 @@ const Button = ({
     '--btn-padding-adjusted': type === 'outlined' ? `calc(${padding} - 0.0625rem)` : padding,
     '--btn-gap': gap,
     '--btn-width': buttonWidth,
-    '--icon-size': iconSize,
-    '--text-size': textSize,
-    '--icon-order': iconPlacement === 'left' ? 1 : 2,
-    '--text-order': iconPlacement === 'left' ? 2 : 1,
     ...colorStyles,
   } as React.CSSProperties;
 
@@ -299,23 +295,32 @@ const Button = ({
           </div>
         )}
         {icon && (
-          <Icon
-            icon={icon}
-            color="currentColor"
+          <span
             className={styles.icon}
             data-loading={loading ? 'true' : undefined}
-            style={{ '--icon-size': iconSize } as React.CSSProperties}
-          />
+            style={
+              {
+                '--icon-size': iconSize,
+                '--icon-order': iconPlacement === 'left' ? 1 : 2,
+              } as React.CSSProperties
+            }
+          >
+            <icon-wc icon={icon as IconName} color="currentColor" size={iconSize}></icon-wc>
+          </span>
         )}
         {label && (
-          <Text
-            color="currentColor"
+          <span
             className={styles.text}
             data-loading={loading ? 'true' : undefined}
-            style={{ '--text-size': textSize } as React.CSSProperties}
+            style={
+              {
+                '--text-size': textSize,
+                '--text-order': iconPlacement === 'left' ? 2 : 1,
+              } as React.CSSProperties
+            }
           >
-            {label}
-          </Text>
+            <Text color="currentColor">{label}</Text>
+          </span>
         )}
 
         {hasSecondaryAction && secondarySizeConfig && (
@@ -323,11 +328,11 @@ const Button = ({
             className={styles.secondaryPlaceholder}
             style={{ '--placeholder-padding': secondarySizeConfig.padding } as React.CSSProperties}
           >
-            <Icon
-              icon={`${secondaryAction.icon}Placeholder`}
+            <icon-wc
+              icon={secondaryAction.icon as IconName}
               color="currentColor"
-              style={{ '--icon-size': secondarySizeConfig.icon } as React.CSSProperties}
-            />
+              size={secondarySizeConfig.icon}
+            ></icon-wc>
           </span>
         )}
       </button>
@@ -344,11 +349,11 @@ const Button = ({
           data-loading={loading ? 'true' : undefined}
           tabIndex={secondaryAction.disabled ? -1 : 0}
         >
-          <Icon
-            icon={secondaryAction.icon}
+          <icon-wc
+            icon={secondaryAction.icon as IconName}
             color="currentColor"
-            style={{ '--icon-size': secondarySizeConfig.icon } as React.CSSProperties}
-          />
+            size={secondarySizeConfig.icon}
+          ></icon-wc>
         </button>
       )}
     </div>
