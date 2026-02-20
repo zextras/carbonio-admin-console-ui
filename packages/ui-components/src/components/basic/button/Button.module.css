@@ -24,6 +24,11 @@
   transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
 }
 
+.outlined {
+  border: 0.0625rem solid var(--btn-color);
+  padding: var(--btn-padding-adjusted, var(--btn-padding));
+}
+
 .button.outlined {
   border: 0.0625rem solid var(--btn-color);
   padding: var(--btn-padding-adjusted, var(--btn-padding));

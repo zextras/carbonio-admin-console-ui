@@ -238,11 +238,7 @@ const Button = ({
   const buttonWidth = width === 'fill' ? '100%' : 'auto';
   const gridWidth = width === 'fill' ? '100%' : 'fit-content';
 
-  const buttonClassName = [
-    styles.button,
-    type === 'outlined' ? styles.outlined : '',
-    type === 'ghost' ? styles.ghost : '',
-  ]
+  const buttonClassName = [styles.button, type === 'outlined' ? styles.outlined : '']
     .filter(Boolean)
     .join(' ');
 
