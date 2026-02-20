@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Displayer,
+  IconName,
   Input,
   Padding,
   PasswordInput,
@@ -63,7 +64,7 @@ const EditBucketDetailPanel: FC<{
   const [verify, setVerify] = useState('primary');
 
   const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
-  const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
+  const [buttonIcon, setButtonIcon] = useState<IconName>('ActivityOutline');
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [previousDetail, setPreviousDetail] = useState<any>({});
   const [showURL, setShowURL] = useState(true);
@@ -123,7 +124,7 @@ const EditBucketDetailPanel: FC<{
             'SOMETHING WENT WRONG. CHECK DATA AND TRY AGAIN',
           ),
         );
-        setButtonIcon('alert-triangle');
+        setButtonIcon('AlertTriangle');
         setCheckError(
           t(
             'label.bucket_verification_failed_message',

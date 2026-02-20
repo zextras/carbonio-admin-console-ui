@@ -5,7 +5,16 @@
  */
 
 import { Button, Container, Dropdown, Text, Tooltip } from '@zextras/ui-components';
-import { CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE, CARBONIO_CE_ADMIN_DOCUMENTATION_URL, logout, useConfigAttribute, useIsAdvanced, useUserAccount, useUtilityBarStore, UtilityView } from '@zextras/ui-shared';
+import {
+  CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
+  CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
+  logout,
+  useConfigAttribute,
+  useIsAdvanced,
+  useUserAccount,
+  useUtilityBarStore,
+  UtilityView,
+} from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +34,7 @@ const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
         <Button
           type="ghost"
           color={current === view.id ? 'primary' : 'text'}
-          icon={view.button}
+          icon={view.button as IconName}
           onClick={onClick}
           size="large"
         />

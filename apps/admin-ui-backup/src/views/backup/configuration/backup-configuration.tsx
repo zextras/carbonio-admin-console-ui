@@ -1082,7 +1082,7 @@ const BackupConfiguration: FC = () => {
                   type="outlined"
                   label={initializeBackup}
                   color="primary"
-                  icon={showIcon ? 'PowerOutline' : ''}
+                  {...(showIcon && { icon: 'PowerOutline' })}
                   iconPlacement="right"
                   width="fill"
                   style={{ width: '100%' }}

@@ -747,7 +747,6 @@ const HSMsettingPanel: FC = () => {
                 <Padding right="medium">
                   <Button
                     label={t('hsm.new', 'New')}
-                    icon=""
                     type="outlined"
                     color="primary"
                     onClick={(): void => {
@@ -761,7 +760,6 @@ const HSMsettingPanel: FC = () => {
                   <Button
                     label={t('hsm.run_all', 'Run All')}
                     type="outlined"
-                    icon=""
                     color="primary"
                     onClick={(): void => {
                       runAllHSMpolicy();
@@ -774,7 +772,6 @@ const HSMsettingPanel: FC = () => {
                   label={t('hsm.delete', 'Delete')}
                   color="error"
                   type="outlined"
-                  icon=""
                   onClick={(): void => {
                     setShowDeletePolicyView(true);
                   }}

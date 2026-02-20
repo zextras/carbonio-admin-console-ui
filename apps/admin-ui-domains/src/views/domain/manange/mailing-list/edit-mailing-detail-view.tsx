@@ -2359,7 +2359,7 @@ const EditMailingListView: FC<any> = ({
                   type="outlined"
                   color="error"
                   onClick={handleClickDeleteEvent}
-                  icon="TrashOutline"
+                  icon="Trash2Outline"
                   label={t('label.delete', 'delete')}
                 />
               </Row>

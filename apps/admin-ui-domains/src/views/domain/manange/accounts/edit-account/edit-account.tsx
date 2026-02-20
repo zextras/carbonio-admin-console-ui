@@ -590,7 +590,11 @@ const EditAccount: FC<{
 
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isTotalQuotaActive || !isAdvanced) {
+      if (
+        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
+        !isTotalQuotaActive ||
+        !isAdvanced
+      ) {
         return;
       }
 
@@ -1042,7 +1046,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="error"
                 onClick={onDeleteAccount}
-                icon="TrashOutline"
+                icon="Trash2Outline"
                 disabled={
                   !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
                 }
@@ -1057,7 +1061,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="primary"
                 onClick={onViewMail}
-                icon="EmailOutline"
+                icon="MailModOutline"
                 disabled={!allowSetPrivacy}
                 label={t('label.view_mail', 'VIEW MAIL')}
               />

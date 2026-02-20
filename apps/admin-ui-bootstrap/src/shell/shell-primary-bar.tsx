@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
+import { Button, Container, IconName, Padding, Popper, Row, Text } from '@zextras/ui-components';
 import {
   type AppRoute,
   type PrimaryBarView,
@@ -48,7 +48,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
               <Button
                 type="ghost"
                 color={'text'}
-                icon={view.component}
+                icon={view.component as IconName}
                 onClick={onClick}
                 size={'extralarge'}
                 className={styles.primaryBarButton}
