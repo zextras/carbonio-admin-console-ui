@@ -6,15 +6,15 @@
 
 import { TFunction } from 'i18next';
 
-export const getPercentage = (used: number, total: number): number => {
+export function getPercentage(used: number, total: number): number {
   return total ? Math.floor((used / total) * 100) : 100;
-};
+}
 
-export const getExactPercentage = (used: number, total: number): number => {
+export function getExactPercentage(used: number, total: number): number {
   return (used / total) * 100;
-};
+}
 
-export const humanFileSize = (inputSize: number, t: TFunction | undefined): string => {
+export function humanFileSize(inputSize: number, t: TFunction | undefined): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   if (inputSize === 0) {
     const unit = units[0];
@@ -36,4 +36,4 @@ export const humanFileSize = (inputSize: number, t: TFunction | undefined): stri
     size = sizeNum.toFixed(2);
   }
   return `${size} ${unitTranslated}`;
-};
+}
