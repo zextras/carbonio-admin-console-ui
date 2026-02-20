@@ -1,3 +1,9 @@
+## [0.12.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.22...v0.12.0-devel.23) (2026-02-20)
+
+### Features
+
+* integrate total quota active hook in account management ([#1076](https://github.com/zextras/carbonio-admin-console-ui/issues/1076)) ([1054574](https://github.com/zextras/carbonio-admin-console-ui/commit/1054574762be2a96851b20938ed8a1900a9aea4d))
+
 ## [0.12.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.3...v0.12.0) (2026-02-13)
 
 ### Features
