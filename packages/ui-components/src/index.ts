@@ -16,7 +16,6 @@ export * from './web-components';
 export { type IconName } from './web-components/icon-registry';
 /** Basic components */
 export * from './components/basic/button/Button';
-export { Icon, type IconProps } from './components/basic/icon/Icon';
 export * from './components/basic/Link';
 export * from './components/basic/text/Text';
 

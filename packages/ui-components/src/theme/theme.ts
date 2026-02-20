@@ -6,8 +6,6 @@
 
 import React, { SVGProps } from 'react';
 
-import IconData from '../icons';
-
 export type ThemeSizeObj<T = string> = {
   small: T;
   medium: T;
@@ -73,7 +71,6 @@ export interface ThemeObj {
     avatar: Omit<ThemeSizeObjExtended<{ diameter: string; font: string }>, 'extrasmall'>;
     padding: ThemeSizeObjExtended;
   };
-  icons: Record<string, IconComponent>;
   logo?: {
     svg: IconComponent;
     size: ThemeSizeObj;
@@ -116,9 +113,6 @@ export const Theme: ThemeObj = {
       large: '1rem',
       extralarge: '1.5rem',
     },
-  },
-  icons: {
-    ...IconData,
   },
   palette: {
     currentColor: {
