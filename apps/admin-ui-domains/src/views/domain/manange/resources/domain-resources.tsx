@@ -186,7 +186,7 @@ const DomainResources: FC = () => {
           if (resourceListResponse && Array.isArray(resourceListResponse)) {
             setTotalAccount(data?.searchTotal || 0);
             const rList: any[] = [];
-            resourceListResponse.forEach((item: any, index: number) => {
+            resourceListResponse.forEach((item: any) => {
               rList.push({
                 id: item?.id,
                 columns: [
@@ -416,7 +416,7 @@ const DomainResources: FC = () => {
                       attrList.push({ n: ele, _content: signtureAttr[ele] }),
                     );
                     modifyCalendarResource(resourceId, attrList)
-                      .then((modifyData) => {
+                      .then(() => {
                         setShowCreateResourceView(false);
                         successSnackBar(resourceName);
                         setIsUpdateRecord(true);
@@ -426,7 +426,7 @@ const DomainResources: FC = () => {
                       });
                   }
                 })
-                .catch((error) => {
+                .catch(() => {
                   errorSnackBar();
                 });
             } else {

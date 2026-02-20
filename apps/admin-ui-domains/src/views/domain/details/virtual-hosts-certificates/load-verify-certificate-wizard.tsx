@@ -40,10 +40,10 @@ export const LoadVerifyCertificateWizard: FC<{
       label: t('virtual_hosts.load_certificate', 'LOAD CERTIFICATE'),
       icon: 'CubeOutline',
       view: LoadAndVerifyCert,
-      canGoNext: (): any => true,
-      CancelButton: (props: any): ReactElement => <></>,
-      PrevButton: (props: any): ReactElement => <></>,
-      NextButton: (props: any): ReactElement => <></>,
+      canGoNext: () => true,
+      CancelButton: (): ReactElement => <></>,
+      PrevButton: (): ReactElement => <></>,
+      NextButton: (): ReactElement => <></>,
     },
   ];
 

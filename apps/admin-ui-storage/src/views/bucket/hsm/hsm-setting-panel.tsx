@@ -466,7 +466,7 @@ const HSMsettingPanel: FC = () => {
       policy += `${criteriaScale.toString()}:`;
     }
     if (hsmPolicyDetail?.policyCriteria.length > 0) {
-      hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
+      hsmPolicyDetail?.policyCriteria.forEach((item: any) => {
         policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
       });
     }

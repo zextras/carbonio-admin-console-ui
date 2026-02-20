@@ -162,7 +162,7 @@ const EditMailingListView: FC<any> = ({
 
   // dist list members offset
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(15);
+  const limit = 15;
   const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
   const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
@@ -965,7 +965,7 @@ const EditMailingListView: FC<any> = ({
     getGrantML();
   }, [getGrantML, isDirty]);
 
-  const grantItems = searchGrantEmailResult.map((item: any, index) => ({
+  const grantItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -986,7 +986,7 @@ const EditMailingListView: FC<any> = ({
     ),
   }));
 
-  const sendItems = searchGrantEmailResult.map((item: any, index) => ({
+  const sendItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -1470,7 +1470,7 @@ const EditMailingListView: FC<any> = ({
       });
 
       if (newAddedMember.length > 0) {
-        newAddedMember.forEach((item: any) => {
+        newAddedMember.forEach(() => {
           const id: any = {
             n: 'id',
             _content: selectedMailingList?.id,
@@ -1484,7 +1484,7 @@ const EditMailingListView: FC<any> = ({
       }
 
       if (removeMember.length > 0) {
-        removeMember.forEach((item: any) => {
+        removeMember.forEach(() => {
           const id: any = {
             n: 'id',
             _content: selectedMailingList?.id,
@@ -1687,7 +1687,7 @@ const EditMailingListView: FC<any> = ({
     }
   }, [selectedMailingList?.dynamic]);
 
-  const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+  const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -1708,7 +1708,7 @@ const EditMailingListView: FC<any> = ({
     ),
   }));
 
-  const searchOwnerList = searchOwnerResult.map((item: any, index) => ({
+  const searchOwnerList = searchOwnerResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -2155,7 +2155,7 @@ const EditMailingListView: FC<any> = ({
   const onDeleteHandler = useCallback(() => {
     setIsRequestInProgress(true);
     deleteDistributionList(dlId)
-      .then((data: any) => {
+      .then(() => {
         onSuccess(
           t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
             name: distributionName,

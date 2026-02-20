@@ -31,7 +31,7 @@ const ReusedDefaultTabBar: FC<{
   index: any;
   selected: any;
   onClick: any;
-}> = ({ item, index, selected, onClick }): ReactElement => (
+}> = ({ item, selected, onClick }): ReactElement => (
   <DefaultTabBarItem
     item={item}
     selected={selected}

@@ -151,17 +151,11 @@ const replaceLinkToAnchor = (content: string): string => {
 };
 
 const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
-  const [showQuotedText, setShowQuotedText] = useState(false);
   const orignalText = body.content; // getOriginalContent(body.content, false);
 
-  const contentToDisplay = useMemo(
-    () => (showQuotedText ? body.content : orignalText),
-    [showQuotedText, body.content, orignalText],
-  );
-
   const convertedHTML = useMemo(
-    () => replaceLinkToAnchor(plainTextToHTML(contentToDisplay)),
-    [contentToDisplay],
+    () => replaceLinkToAnchor(plainTextToHTML(orignalText)),
+    [orignalText],
   );
   return (
     <>
@@ -191,7 +185,6 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [showQuotedText, setShowQuotedText] = useState(false);
 
   const settingsPref = useUserSettings()?.prefs;
   const from = filter(participants, { type: ParticipantRole.FROM })[0]?.address;
@@ -199,18 +192,14 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
   const [displayBanner, setDisplayBanner] = useState(true);
 
   const orignalText = body.content; // getOriginalContent(body.content, false);
-  const contentToDisplay = useMemo(
-    () => (showQuotedText ? body.content : orignalText),
-    [showQuotedText, body.content, orignalText],
-  );
 
   const hasExternalImages = useMemo(() => {
     const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(contentToDisplay, 'text/html');
+    const htmlDoc = parser.parseFromString(orignalText, 'text/html');
     const images = htmlDoc.body.getElementsByTagName('img');
 
     return some(images, (i) => i.hasAttribute('dfsrc'));
-  }, [contentToDisplay]);
+  }, [orignalText]);
   const isAvailableInTrusteeList = (
     trusteeList: string | number | Array<number | string>,
     address: string,
@@ -263,7 +252,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
   useLayoutEffect(() => {
     if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
       iframeRef.current.contentDocument.open();
-      iframeRef.current.contentDocument.write(contentToDisplay);
+      iframeRef.current.contentDocument.write(orignalText);
       iframeRef.current.contentDocument.close();
     }
     const styleTag = document.createElement('style');
@@ -334,7 +323,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
     divRef.current && resizeObserver.observe(divRef.current);
 
     return () => resizeObserver.disconnect();
-  }, [contentToDisplay, msgId, parts, showImage]);
+  }, [msgId, orignalText, parts, showImage]);
   const [t] = useTranslation();
   return (
     <div ref={divRef} className="force-white-bg" style={{ width: '100%' }}>

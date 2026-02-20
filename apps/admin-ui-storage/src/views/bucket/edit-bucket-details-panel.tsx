@@ -7,15 +7,12 @@
 import {
   Button,
   Container,
-  CustomHeaderFactory,
   Displayer,
-  HoverableRowFactory,
   Input,
   Padding,
   PasswordInput,
   Row,
   Select,
-  Table,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -28,135 +25,6 @@ import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
-
-const DetailsHeaders = [
-  {
-    id: 'service',
-    label: 'Service',
-    width: '40%',
-    bold: true,
-  },
-  {
-    id: 'version',
-    label: 'Version',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'rtstatus',
-    label: 'RT Status',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'type',
-    label: 'Type',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'samrtstatus',
-    label: 'SmartStaus',
-    width: '20%',
-    bold: true,
-  },
-];
-const serverItems = [
-  {
-    id: '1',
-
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Enabled',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Enabled',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-];
-
-const ServerListTabel: FC<{
-  volumes: Array<any>;
-  selectedRows: any;
-  onSelectionChange: any;
-}> = ({ volumes, selectedRows, onSelectionChange }) => {
-  const [t] = useTranslation();
-  const tableRows = useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: v.id,
-        columns: [
-          <Text key={i} weight="light">
-            {v.name}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.version}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.rtstatus}
-          </Text>,
-          <Text key={i} weight="light">
-            {v.type}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.samrtstatus}
-          </Text>,
-        ],
-        clickable: true,
-      })),
-    [volumes],
-  );
-
-  return (
-    <Container crossAlignment="flex-start">
-      <Table
-        headers={DetailsHeaders}
-        rows={tableRows}
-        showCheckbox={false}
-        multiSelect={false}
-        selectedRows={selectedRows}
-        onSelectionChange={onSelectionChange}
-        RowFactory={HoverableRowFactory}
-        HeaderFactory={CustomHeaderFactory}
-      />
-      {tableRows.length === 0 && (
-        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text>{t('label.empty_table', 'Empty Table')}</Text>
-        </Row>
-      )}
-    </Container>
-  );
-};
 
 const EditBucketDetailPanel: FC<{
   setShowEditDetailView: any;
@@ -410,15 +278,6 @@ const EditBucketDetailPanel: FC<{
       bucketRegionsInAlibaba,
       checkIfChanged,
     ],
-  );
-
-  const onBucketTypeSelectionChange = useCallback(
-    (e: any): void => {
-      const volumeObject: any = bucketTypeItems.find((item: any): any => item.value === e);
-      setBucketType(volumeObject);
-      checkIfChanged('storeType', volumeObject?.value);
-    },
-    [bucketTypeItems, checkIfChanged],
   );
 
   useEffect(() => {

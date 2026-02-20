@@ -14,11 +14,7 @@ import {
   Table,
   Text,
 } from '@zextras/ui-components';
-import {
-  getSoapFetchRequest,
-  useIsAdvanced,
-  useMailstoreServers,
-} from '@zextras/ui-shared';
+import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -269,11 +265,11 @@ const ServerDetailPanel: FC = () => {
                 }
               }
             })
-            .catch((error: any) => {
+            .catch(() => {
               setIsRequestInProgress(false);
             });
         })
-        .catch((error: any) => {
+        .catch(() => {
           setIsRequestInProgress(false);
         });
     } else if (!isAdvanced) {

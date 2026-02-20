@@ -1,14 +1,13 @@
 {
   "name": "admin-ui-test-utils",
-  "composite": true,
   "description": "admin-ui-test-utils",
-  "types": "dist/index.d.ts",
+  "types": "./dist-types/index.d.ts",
   "exports": {
     ".": {
       "browser": "./src/index.browser.ts",
       "jsdom": "./src/index.node.ts",
       "default": "./src/index.ts",
-      "types": "./dist/index.d.ts"
+      "types": "./dist-types/index.d.ts"
     }
   },
   "engines": {
@@ -39,12 +38,12 @@
     "vitest-browser-react": "^2.0.2"
   },
   "peerDependencies": {
-    "@zextras/ui-components": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "dependencies": {
     "@zextras/ui-shared": "workspace:*",
+    "@zextras/ui-components": "workspace:*",
     "i18next": "^22.5.1",
     "react": "^19.2.3",
     "react-router": "^7.13.0"

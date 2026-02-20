@@ -89,7 +89,7 @@ const DomainCosLink: FC<{
   }, [cosMaxAccountList, cosList]);
 
   const getCosLists = useCallback(
-    (cos: string): any => {
+    (cos: string) => {
       getCosList(cos, 0)
         .then((data) => {
           const searchResponse: any = data;
@@ -586,7 +586,7 @@ const DomainCosLink: FC<{
             ),
           },
         ]
-      : cosList.map((cos: any, index) => ({
+      : cosList.map((cos: any) => ({
           id: cos.id,
           label: cos.name,
           customComponent: (

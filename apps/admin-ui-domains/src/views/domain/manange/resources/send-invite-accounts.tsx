@@ -164,7 +164,7 @@ export const SendInviteAccounts: FC<any> = ({
     }
   }, [newSentInviteValue, searchMemberCall]);
 
-  const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+  const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (

@@ -1020,7 +1020,7 @@ const DomainGalSettings: FC = () => {
         hideButton: true,
         replace: true,
       });
-    } catch (error: any) {
+    } catch {
       createSnackbar({
         key: 'error',
         severity: 'error',

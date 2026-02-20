@@ -302,7 +302,6 @@ const ManageAccounts: FC = () => {
 
   const [signatureList, setSignatureList] = useState<any[]>([]);
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
   const generateSignatureList = (signatureResponse: any): void => {
@@ -314,7 +313,6 @@ const ManageAccounts: FC = () => {
     getSingatures(id).then((data) => {
       const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
       generateSignatureList(signatureResponse);
-      setSignatureData(signatureResponse);
     });
   }, []);
 

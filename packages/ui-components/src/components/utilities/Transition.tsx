@@ -4,258 +4,256 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable */
-import React, { CSSProperties, PropsWithoutRef, RefAttributes, useEffect, useMemo } from 'react';
+import React, { CSSProperties, useEffect, useMemo } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 
 type CSSObject = {
-	[K in keyof CSSProperties]: CSSProperties[K] | (() => NonNullable<CSSProperties[K]>);
+  [K in keyof CSSProperties]: CSSProperties[K] | (() => NonNullable<CSSProperties[K]>);
 };
 
 const DEFAULT_TRANSITION_TIMING = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const DEFAULT_TRANSITION_DURATION = 225;
 
 const STYLES: Record<
-	Partial<CSSStyleDeclaration['transition']>,
-	{
-		from: CSSObject;
-		to: CSSObject;
-		end?: CSSObject;
-	} & CSSObject & {
-			transitionDuration?: number;
-		}
+  Partial<CSSStyleDeclaration['transition']>,
+  {
+    from: CSSObject;
+    to: CSSObject;
+    end?: CSSObject;
+  } & CSSObject & {
+      transitionDuration?: number;
+    }
 > = {
-	fade: {
-		from: {
-			opacity: '0'
-		},
-		to: {
-			opacity: '1'
-		}
-	},
-	'fade-in-left': {
-		from: {
-			transform: 'translateX(-3.125rem)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'translateX(0)',
-			opacity: '1'
-		}
-	},
-	'fade-in-right': {
-		from: {
-			transform: 'translateX(3.125rem)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'translateX(0)',
-			opacity: '1'
-		}
-	},
-	'fade-in-top': {
-		from: {
-			transform: 'translateY(-3.125rem)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'translateY(0)',
-			opacity: '1'
-		}
-	},
-	'fade-in-bottom': {
-		from: {
-			transform: 'translateY(3.125rem)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'translateY(0)',
-			opacity: '1'
-		}
-	},
-	'scale-in': {
-		from: {
-			transform: 'scale(0.9)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'scale(1)',
-			opacity: '1'
-		}
-	},
-	'scale-out': {
-		from: {
-			transform: 'scale(1.1)',
-			opacity: '0'
-		},
-		to: {
-			transform: 'scale(1)',
-			opacity: '1'
-		}
-	}
+  fade: {
+    from: {
+      opacity: '0',
+    },
+    to: {
+      opacity: '1',
+    },
+  },
+  'fade-in-left': {
+    from: {
+      transform: 'translateX(-3.125rem)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'translateX(0)',
+      opacity: '1',
+    },
+  },
+  'fade-in-right': {
+    from: {
+      transform: 'translateX(3.125rem)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'translateX(0)',
+      opacity: '1',
+    },
+  },
+  'fade-in-top': {
+    from: {
+      transform: 'translateY(-3.125rem)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'translateY(0)',
+      opacity: '1',
+    },
+  },
+  'fade-in-bottom': {
+    from: {
+      transform: 'translateY(3.125rem)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'translateY(0)',
+      opacity: '1',
+    },
+  },
+  'scale-in': {
+    from: {
+      transform: 'scale(0.9)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'scale(1)',
+      opacity: '1',
+    },
+  },
+  'scale-out': {
+    from: {
+      transform: 'scale(1.1)',
+      opacity: '0',
+    },
+    to: {
+      transform: 'scale(1)',
+      opacity: '1',
+    },
+  },
 } as const;
 
 function applyStyle(styles: CSSObject, element: HTMLElement): void {
-	const styleKeys = Object.keys(styles) as Array<
-		Extract<keyof CSSStyleDeclaration, keyof CSSObject>
-	>;
-	styleKeys.forEach((key) => {
-		const style = styles[key];
-		// eslint-disable-next-line no-param-reassign
-		element.style[key] = typeof style === 'function' ? `${style()}` : `${style}`;
-	});
+  const styleKeys = Object.keys(styles) as Array<
+    Extract<keyof CSSStyleDeclaration, keyof CSSObject>
+  >;
+  styleKeys.forEach((key) => {
+    const style = styles[key];
+
+    element.style[key] = typeof style === 'function' ? `${style()}` : `${style}`;
+  });
 }
 
 function resetStyle(styles: CSSObject, element: HTMLElement): void {
-	const styleKeys = Object.keys(styles) as Array<
-		Extract<keyof CSSStyleDeclaration, keyof CSSObject>
-	>;
-	styleKeys.forEach((key) => {
-		// eslint-disable-next-line no-param-reassign
-		element.style[key] = '';
-	});
+  const styleKeys = Object.keys(styles) as Array<
+    Extract<keyof CSSStyleDeclaration, keyof CSSObject>
+  >;
+  styleKeys.forEach((key) => {
+    element.style[key] = '';
+  });
 }
 
 type TransitionOnProps = {
-	/** Transition type, one of the default ones. Ignore if is a custom Transition */
-	type?: keyof typeof STYLES;
-	/** Initial styles of the component to which apply the Transition */
-	from?: CSSObject;
-	/** Final styles of the component to which apply the Transition */
-	to?: CSSObject;
-	/** Styles to keep after the Transition */
-	end?: CSSObject;
-	/** Whether to apply the Transition. If not applied, the component maybe not be visible. */
-	apply?: boolean;
-	/** Custom transition css target (all, opacity...). */
-	transitionTarget?: CSSStyleDeclaration['transitionProperty'];
-	/** Custom transition css timing (ease-in, ease-out...). */
-	transitionTiming?: CSSStyleDeclaration['transitionTimingFunction'];
-	/** Custom transition css duration in ms */
-	transitionDuration?: number;
-	/** Custom transition css delay in ms */
-	transitionDelay?: CSSStyleDeclaration['transitionDelay'] | number;
-	/** Children */
-	children: React.JSX.Element;
-	ref?: React.Ref<HTMLElement>;
+  /** Transition type, one of the default ones. Ignore if is a custom Transition */
+  type?: keyof typeof STYLES;
+  /** Initial styles of the component to which apply the Transition */
+  from?: CSSObject;
+  /** Final styles of the component to which apply the Transition */
+  to?: CSSObject;
+  /** Styles to keep after the Transition */
+  end?: CSSObject;
+  /** Whether to apply the Transition. If not applied, the component maybe not be visible. */
+  apply?: boolean;
+  /** Custom transition css target (all, opacity...). */
+  transitionTarget?: CSSStyleDeclaration['transitionProperty'];
+  /** Custom transition css timing (ease-in, ease-out...). */
+  transitionTiming?: CSSStyleDeclaration['transitionTimingFunction'];
+  /** Custom transition css duration in ms */
+  transitionDuration?: number;
+  /** Custom transition css delay in ms */
+  transitionDelay?: CSSStyleDeclaration['transitionDelay'] | number;
+  /** Children */
+  children: React.JSX.Element;
+  ref?: React.Ref<HTMLElement>;
 };
 
 const TransitionOn = ({
-	type = 'fade',
-	from,
-	to,
-	end,
-	apply = true,
-	transitionTarget = 'all',
-	transitionTiming,
-	transitionDuration,
-	transitionDelay = 0,
-	ref,
-	children
+  type = 'fade',
+  from,
+  to,
+  end,
+  apply = true,
+  transitionTarget = 'all',
+  transitionTiming,
+  transitionDuration,
+  transitionDelay = 0,
+  ref,
+  children,
 }: TransitionOnProps): React.JSX.Element => {
-	const childRef = useCombinedRefs<HTMLElement>(ref);
+  const childRef = useCombinedRefs<HTMLElement>(ref);
 
-	const duration = useMemo(
-		() => transitionDuration || STYLES[type].transitionDuration || DEFAULT_TRANSITION_DURATION,
-		[type, transitionDuration]
-	);
-	const timing = useMemo(
-		() => transitionTiming || STYLES[type].transitionTimingFunction || DEFAULT_TRANSITION_TIMING,
-		[type, transitionTiming]
-	);
+  const duration = useMemo(
+    () => transitionDuration || STYLES[type].transitionDuration || DEFAULT_TRANSITION_DURATION,
+    [type, transitionDuration],
+  );
+  const timing = useMemo(
+    () => transitionTiming || STYLES[type].transitionTimingFunction || DEFAULT_TRANSITION_TIMING,
+    [type, transitionTiming],
+  );
 
-	useEffect(() => {
-		const childElement = childRef.current;
+  useEffect(() => {
+    const childElement = childRef.current;
 
-		if (apply && childElement) {
-			const toStyles = to || STYLES[type].to;
-			applyStyle(toStyles, childElement);
-			childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
+    if (apply && childElement) {
+      const toStyles = to || STYLES[type].to;
+      applyStyle(toStyles, childElement);
+      childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
 
-			const timeout = setTimeout(() => {
-				childElement.style.transition = '';
-				resetStyle(toStyles, childElement);
-				const endStyles = end || STYLES[type].end || {};
-				applyStyle(endStyles, childElement);
-			}, duration);
-			return (): void => {
-				applyStyle(toStyles, childElement);
-				clearTimeout(timeout);
-			};
-		}
+      const timeout = setTimeout(() => {
+        childElement.style.transition = '';
+        resetStyle(toStyles, childElement);
+        const endStyles = end || STYLES[type].end || {};
+        applyStyle(endStyles, childElement);
+      }, duration);
+      return (): void => {
+        applyStyle(toStyles, childElement);
+        clearTimeout(timeout);
+      };
+    }
 
-		const applyStyleTimeout = setTimeout(() => {
-			if (childElement) {
-				const fromStyles = from || STYLES[type].from;
-				applyStyle(fromStyles, childElement);
-				childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
-			}
-		}, 1);
+    const applyStyleTimeout = setTimeout(() => {
+      if (childElement) {
+        const fromStyles = from || STYLES[type].from;
+        applyStyle(fromStyles, childElement);
+        childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
+      }
+    }, 1);
 
-		const resetStyleTimeout = setTimeout(() => {
-			if (childElement) {
-				childElement.style.transition = '';
-				const endStyles = end || STYLES[type].end || {};
-				resetStyle(endStyles, childElement);
-			}
-		}, duration);
+    const resetStyleTimeout = setTimeout(() => {
+      if (childElement) {
+        childElement.style.transition = '';
+        const endStyles = end || STYLES[type].end || {};
+        resetStyle(endStyles, childElement);
+      }
+    }, duration);
 
-		return (): void => {
-			clearTimeout(applyStyleTimeout);
-			clearTimeout(resetStyleTimeout);
-		};
-	}, [
-		apply,
-		type,
-		from,
-		to,
-		end,
-		transitionDuration,
-		transitionTiming,
-		childRef,
-		transitionTarget,
-		duration,
-		timing,
-		transitionDelay
-	]);
+    return (): void => {
+      clearTimeout(applyStyleTimeout);
+      clearTimeout(resetStyleTimeout);
+    };
+  }, [
+    apply,
+    type,
+    from,
+    to,
+    end,
+    transitionDuration,
+    transitionTiming,
+    childRef,
+    transitionTarget,
+    duration,
+    timing,
+    transitionDelay,
+  ]);
 
-	return React.cloneElement(children, {
-		ref: childRef,
-		style: { ...(from || STYLES[type].from) }
-	});
+  return React.cloneElement(children, {
+    ref: childRef,
+    style: { ...(from || STYLES[type].from) },
+  });
 };
 
 type TransitionProps = TransitionOnProps & {
-	/** Turn off the Transition */
-	disabled?: boolean;
-	ref?: React.Ref<HTMLElement>;
+  /** Turn off the Transition */
+  disabled?: boolean;
+  ref?: React.Ref<HTMLElement>;
 };
 
 const Transition = ({
-	type = 'fade',
-	apply = true,
-	transitionTarget = 'all',
-	transitionDelay = 0,
-	disabled = false,
-	children,
-	ref,
-	...rest
+  type = 'fade',
+  apply = true,
+  transitionTarget = 'all',
+  transitionDelay = 0,
+  disabled = false,
+  children,
+  ref,
+  ...rest
 }: TransitionProps) => {
-	if (disabled) return React.cloneElement(children, { ref });
+  if (disabled) return React.cloneElement(children, { ref });
 
-	return (
-		<TransitionOn
-			ref={ref}
-			type={type}
-			apply={apply}
-			transitionTarget={transitionTarget}
-			transitionDelay={transitionDelay}
-			{...rest}
-		>
-			{children}
-		</TransitionOn>
-	);
+  return (
+    <TransitionOn
+      ref={ref}
+      type={type}
+      apply={apply}
+      transitionTarget={transitionTarget}
+      transitionDelay={transitionDelay}
+      {...rest}
+    >
+      {children}
+    </TransitionOn>
+  );
 };
 
 Transition.types = Object.keys(STYLES);

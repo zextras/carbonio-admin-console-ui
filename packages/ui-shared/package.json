@@ -3,11 +3,11 @@
   "description": "shared stores and utils for Carbonio Admin Panel",
   "private": true,
   "main": "./src/exports.ts",
-  "types": "dist/index.d.ts",
+  "types": "dist-types/index.d.ts",
   "exports": {
     ".": {
       "default": "./src/exports.ts",
-      "types": "./dist/index.d.ts"
+      "types": "./dist-types/index.d.ts"
     }
   },
   "engines": {

@@ -290,7 +290,7 @@ const CosGeneralInformation: FC = () => {
       renameBody.newName = newName;
 
       renameCos(renameBody)
-        .then((data) => {
+        .then(() => {
           modifyCosInfo();
         })
         .catch((error) => {

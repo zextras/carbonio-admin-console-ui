@@ -330,13 +330,12 @@ const EditAccountSecuritySection: FC = () => {
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
-  const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '',
-  );
+  const zimbraPasswordLockoutDurationType =
+    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '';
   const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
     useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
-  const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
-    useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+  const zimbraPasswordLockoutFailureLifetimeType =
+    accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
   const headers: any = useMemo(

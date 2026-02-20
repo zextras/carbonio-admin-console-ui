@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button,HorizontalWizard } from '@zextras/ui-components';
+import { Button, HorizontalWizard } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -96,7 +96,7 @@ const CreateMailstoresVolume: FC<{
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: any): any => '',
+      PrevButton: (): any => '',
       NextButton: (props: any): ReactElement =>
         !props.toggleNextBtn ? (
           <Button

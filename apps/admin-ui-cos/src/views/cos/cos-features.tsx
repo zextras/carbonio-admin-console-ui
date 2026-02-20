@@ -171,7 +171,7 @@ const CosFeatures: FC = () => {
 
   const modifyCoreAttributes = (body: any): void => {
     setCoreAttributes(body)
-      .then((data: any) => {
+      .then(() => {
         setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync);
         setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync);
       })

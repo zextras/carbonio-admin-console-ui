@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
+import { MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import {
   ACTIVE,
@@ -42,10 +42,9 @@ import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 
 const ReusedDefaultTabBar: FC<{
   item: any;
-  index: any;
   selected: any;
   onClick: any;
-}> = ({ item, index, selected, onClick }): ReactElement => (
+}> = ({ item, selected, onClick }): ReactElement => (
   <DefaultTabBarItem
     item={item}
     selected={selected}
@@ -98,7 +97,6 @@ const MTAStatsMail: FC<{
     incoming: serverState?.incoming ? parseInt(serverState?.incoming, 10) : 0,
     onhold: serverState?.hold ? parseInt(serverState?.hold, 10) : 0,
   });
-  const [mtaMailQueueRecords, setMtaMailQueueRecords] = useState<MtaMailQueue>();
   const [isMailQueueLoading, setIsMailQueueLoading] = useState<boolean>(false);
   const [holdInProgress, setHoldInProgress] = useState<boolean>(false);
   const [releaseInProgress, setReleaseInProgress] = useState<boolean>(false);
@@ -354,16 +352,10 @@ const MTAStatsMail: FC<{
               });
             });
           }
-          const mailQueueData = {
-            name: queue?.name,
-            qi: queueItem,
-            total: queue?.total,
-          };
-          setMtaMailQueueRecords(mailQueueData);
           setToTable(queueItem);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setIsMailQueueLoading(false);
         createSnackbar({
           key: 'error',
@@ -534,8 +526,8 @@ const MTAStatsMail: FC<{
       >
         <Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto" width="100%">
           <TabBar
-            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
             items={items}
+            background={''}
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
               setOffset(0);

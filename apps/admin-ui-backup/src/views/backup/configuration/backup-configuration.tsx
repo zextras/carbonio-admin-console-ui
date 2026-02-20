@@ -468,7 +468,7 @@ const BackupConfiguration: FC = () => {
           });
         }
       })
-      .catch((error: any) => {
+      .catch(() => {
         setIsSaveRequestInProgress(false);
         setCurrentBackupValue((prev: any) => ({
           ...prev,

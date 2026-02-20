@@ -116,7 +116,7 @@ export const SignatureDetail: FC<any> = ({
       selectedSignature.forEach((item: string) => {
         deleteRequest.push(deleteSignature(accountId, item));
       });
-      Promise.all(deleteRequest).then((response) => {
+      Promise.all(deleteRequest).then(() => {
         deleteSignatureIntoList(selectedSignature);
       });
     } else {

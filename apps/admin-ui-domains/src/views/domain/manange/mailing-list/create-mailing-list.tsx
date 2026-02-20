@@ -6,6 +6,7 @@
 
 import { Button, Container, HorizontalWizard } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
+import { noop } from 'lodash-es';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -62,7 +63,6 @@ const CreateMailingList: FC<{
   isLoading: boolean;
 }> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
   const { t } = useTranslation();
-  const [wizardData, setWizardData] = useState();
   const domainInformation = useDomainStore((state) => state.domain);
 
   const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
@@ -130,7 +130,7 @@ const CreateMailingList: FC<{
             }}
           />
         ),
-        PrevButton: (props: any) => null,
+        PrevButton: () => null,
         NextButton: (props: any) => (
           <Button
             {...props}
@@ -284,7 +284,7 @@ const CreateMailingList: FC<{
             }}
           />
         ),
-        PrevButton: (props: any) => null,
+        PrevButton: () => null,
         NextButton: (props: any) => (
           <Button
             {...props}
@@ -414,7 +414,7 @@ const CreateMailingList: FC<{
                 : standardMailingListSizardSteps
             }
             Wrapper={WizardInSection}
-            onChange={setWizardData}
+            onChange={noop}
             onComplete={onComplete}
             setToggleWizardSection={setShowCreateMailingListView}
           />

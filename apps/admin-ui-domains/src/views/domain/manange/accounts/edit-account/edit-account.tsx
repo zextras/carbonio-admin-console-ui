@@ -531,7 +531,7 @@ const EditAccount: FC<{
       if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
         if (accountDetail?.filesQuotaLimit) {
           setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            (res) => {
+            () => {
               if (modifiedKeys?.length === 0) {
                 createSnackbar({
                   key: 'success',
@@ -548,7 +548,7 @@ const EditAccount: FC<{
             },
           );
         } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
+          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
             if (modifiedKeys?.length === 0) {
               createSnackbar({
                 key: 'success',
@@ -935,7 +935,7 @@ const EditAccount: FC<{
   const onDeleteHandler = useCallback(() => {
     setIsRequestInProgress(true);
     deleteAccount(selectedAccount?.id)
-      .then((data: any) => {
+      .then(() => {
         onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
         setShowEditAccountView(false);
         setIsAccountDeleted(true);

@@ -25,7 +25,6 @@ const GlobalTheme: FC = () => {
   const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -130,7 +129,7 @@ const GlobalTheme: FC = () => {
   const modifyConfigRequest = (attributes: Array<any>): void => {
     setIsLoading(true);
     modifyConfig(attributes)
-      .then((data) => {
+      .then(() => {
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -312,7 +311,6 @@ const GlobalTheme: FC = () => {
           <ResetTheme
             title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
             isOpenResetDialog={isOpenResetDialog}
-            isRequestInProgress={isRequestInProgress}
             closeHandler={closeHandler}
             onResetHandler={onResetHandler}
           />

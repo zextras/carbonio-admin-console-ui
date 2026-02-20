@@ -20,11 +20,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  useAppConfigStore,
-  useCurrentUserRights,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
+import { useAppConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -145,7 +141,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
-        .then((data) => {
+        .then(() => {
           createSnackbar({
             key: 'success',
             severity: 'success',

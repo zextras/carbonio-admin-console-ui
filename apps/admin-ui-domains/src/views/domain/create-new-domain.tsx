@@ -308,7 +308,7 @@ const CreateDomain: FC = () => {
               GAL_MODE.INTERNAL,
               attributes,
               `_${dataSourceName}`,
-            ).then((resp) => {
+            ).then(() => {
               if (isDomainDelegatedAdmin) {
                 handleRevokesGrants();
               }

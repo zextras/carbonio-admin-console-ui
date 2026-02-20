@@ -496,17 +496,6 @@ const ChipInputComponent = <TValue = unknown,>({
 
   useKeyboard(inputElRef, backspaceEvent);
 
-  const onChipClose = useCallback(
-    (index: number) => {
-      if (uncontrolledMode) {
-        dispatch({ type: 'pop', index });
-      }
-      onChange?.(filter(items, (_item, i) => index !== i));
-      inputElRef.current?.focus();
-    },
-    [inputElRef, items, onChange, uncontrolledMode],
-  );
-
   const onInputBlur = useCallback(() => {
     setIsActive(false);
     if (confirmChipOnBlur && options.length === 0) {

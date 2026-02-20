@@ -3,7 +3,6 @@
   "version": "0.9.36",
   "description": "The Zextras Carbonio web admin",
   "private": true,
-  "types": "./exports.ts",
   "engines": {
     "node": "v22",
     "npm": "v10"

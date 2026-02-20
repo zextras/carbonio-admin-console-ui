@@ -152,14 +152,10 @@ const ManageDelegates: FC = () => {
         (domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
       );
       if (domainCosMaxAccountArray && domainCosMaxAccountArray.length > 0) {
-        const domainCosMaxAccounts = domainCosMaxAccountArray.map(
-          (domainContent: any, index: any) => ({
-            id: domainContent._content?.split(':')[0],
-            value: domainContent._content?.split(':')[1]
-              ? domainContent._content?.split(':')[1]
-              : -1,
-          }),
-        );
+        const domainCosMaxAccounts = domainCosMaxAccountArray.map((domainContent: any) => ({
+          id: domainContent._content?.split(':')[0],
+          value: domainContent._content?.split(':')[1] ? domainContent._content?.split(':')[1] : -1,
+        }));
         SetCosMaxAccountList(domainCosMaxAccounts);
       } else {
         SetCosMaxAccountList([]);

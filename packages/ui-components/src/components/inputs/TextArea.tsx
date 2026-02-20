@@ -52,7 +52,6 @@ export type TextAreaProps = HTMLTextAreaProps & {
   /** Divider color */
   borderColor?: string | PaletteColor;
   ref?: React.Ref<HTMLDivElement> | null;
-  _newId?: number;
 };
 
 const StyledTextArea = styled.textarea<{ $color: string }>`
@@ -199,7 +198,6 @@ export const TextArea = ({
   textColor = 'text',
   borderColor = INPUT_DIVIDER_COLOR,
   ref,
-  _newId,
   ...props
 }: TextAreaProps) => {
   const { defaultValue, value, onInput, disabled, onFocus, onBlur } = props;

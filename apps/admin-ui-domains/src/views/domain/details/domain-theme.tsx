@@ -32,7 +32,6 @@ const DomainTheme: FC = () => {
   const domainName = useDomainStore((state) => state.domain?.name);
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
   const [zimbraId, setZimbraId] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -294,7 +293,6 @@ const DomainTheme: FC = () => {
               },
             )}
             isOpenResetDialog={isOpenResetDialog}
-            isRequestInProgress={isRequestInProgress}
             closeHandler={closeHandler}
             onResetHandler={onResetHandler}
           />

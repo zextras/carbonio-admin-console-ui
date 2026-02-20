@@ -293,7 +293,7 @@ const DomainMailboxQuotaSetting: FC = () => {
           }
           return [];
         })
-        .catch((error) => {
+        .catch(() => {
           setIsRequestInProgress(false);
           setFileStorageEnabled(false);
         });
@@ -436,7 +436,7 @@ const DomainMailboxQuotaSetting: FC = () => {
           setIsShowDownload(false);
         }, 100);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setIsDownloadInProgress(false);
       });
   }, [

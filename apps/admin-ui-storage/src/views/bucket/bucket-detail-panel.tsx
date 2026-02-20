@@ -170,7 +170,7 @@ const BucketDetailPanel: FC = () => {
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<string[]>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
-  const [bucketType, setBucketType] = useState('');
+  const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
   const [allBucketList, setAllBucketList] = useState([]);
   const [connectionData, setConnectionData] = useState<objectType | undefined>();

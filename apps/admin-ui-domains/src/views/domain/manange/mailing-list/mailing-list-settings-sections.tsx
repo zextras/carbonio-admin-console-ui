@@ -222,7 +222,7 @@ const MailingListSettingsSection: FC<any> = () => {
     }
   }, [member, searchMemberCall]);
 
-  const items = searchMemberResult.map((item: any, index) => ({
+  const items = searchMemberResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -243,7 +243,7 @@ const MailingListSettingsSection: FC<any> = () => {
     ),
   }));
 
-  const grantItems = searchGrantEmailResult.map((item: any, index) => ({
+  const grantItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (

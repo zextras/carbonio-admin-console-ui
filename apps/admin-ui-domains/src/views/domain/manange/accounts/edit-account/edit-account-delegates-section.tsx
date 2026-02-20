@@ -607,7 +607,7 @@ const EditAccountDelegatesSection: FC = () => {
         _jsns: 'urn:zimbra',
       },
       accountDetail?.zimbraMailDeliveryAddress,
-    ).then((res) => {
+    ).then(() => {
       getIdentitiesList({
         id: accountDetail?.zimbraId,
         name: accountDetail?.zimbraMailDeliveryAddress,
@@ -720,7 +720,7 @@ const EditAccountDelegatesSection: FC = () => {
             _jsns: 'urn:zimbra',
           },
           accountDetail?.zimbraMailDeliveryAddress,
-        ).then((res) => {
+        ).then(() => {
           getIdentitiesList({
             id: accountDetail?.zimbraId,
             name: accountDetail?.zimbraMailDeliveryAddress,

@@ -3,9 +3,12 @@
   "description": "UI Components for Carbonio Admin Panel",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
-  "types": "./src/index.ts",
+  "types": "./dist-types/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./dist-types/index.d.ts"
+    },
     "./web-components": "./src/web-components/index.ts"
   },
   "type": "commonjs",
@@ -58,7 +61,7 @@
     "styled-components": "^5.3.11"
   },
   "dependencies": {
-    "@zextras/ui-shared":"workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@floating-ui/dom": "^1.5.3",
     "clsx": "^2.1.1",
     "core-js": "^3.38.1",

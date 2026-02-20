@@ -176,7 +176,7 @@ const MailingListMembersSection: FC<any> = () => {
     }
   }, [member, searchMemberCall]);
 
-  const items = searchMemberResult.map((item: any, index) => ({
+  const items = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (

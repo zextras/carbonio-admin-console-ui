@@ -67,7 +67,6 @@ const ResourceEditDetailView: FC<any> = ({
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);
   const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [resourceName, setResourceName] = useState<string>('');
@@ -81,19 +80,6 @@ const ResourceEditDetailView: FC<any> = ({
   const { isSticky, setIsSticky } = useStickyBarStore();
   const errorMessage = useMemo(
     () => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    [t],
-  );
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-    }),
     [t],
   );
 
