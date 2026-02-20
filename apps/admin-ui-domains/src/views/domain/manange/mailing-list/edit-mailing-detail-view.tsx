@@ -71,16 +71,10 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateTimeFromStr, isValidEmail } from '../../../utility/utils';
 
-export enum SUBSCRIBE_UNSUBSCRIBE {
-  ACCEPT = 'ACCEPT',
-  APPROVAL = 'APPROVAL',
-  REJECT = 'REJECT',
-}
-
-export enum TRUE_FALSE {
-  TRUE = 'TRUE',
-  FALSE = 'FALSE',
-}
+export const TRUE_FALSE = {
+  TRUE: 'TRUE',
+  FALSE: 'FALSE',
+} as const;
 
 const EditMailingListView: FC<any> = ({
   selectedMailingList,
@@ -255,24 +249,6 @@ const EditMailingListView: FC<any> = ({
         label: t('label.actions', 'Actions'),
         width: '20%',
         bold: false,
-      },
-    ],
-    [t],
-  );
-
-  const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.automatically_accept', 'Automatically accept'),
-        value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT,
-      },
-      {
-        label: t('label.require_list_owner_approval', 'Require list owner approval'),
-        value: SUBSCRIBE_UNSUBSCRIBE.APPROVAL,
-      },
-      {
-        label: t('label.automatically_reject', 'Automatically reject'),
-        value: SUBSCRIBE_UNSUBSCRIBE.REJECT,
       },
     ],
     [t],
