@@ -97,17 +97,7 @@ function generateHighlightSet(fromColorSet: Parameters<typeof generateColorSet>[
   return generateColorSet(highlightPartialSet);
 }
 
-/**
- * Retrieve the color from the colorSet
- * @param color - in the form color[.variant]
- * <ul>
- *  <li>Color can be a palette key or any css compliant color.</li>
- *  <li>Variant (optional) has to be one of the set</li>
- * </ul>
- * @param theme - the theme object used to retrieve the palette colors
- * @returns the css color of the palette or the one generated with the colorSet
- */
-function getColorValue(color: string, theme: DefaultTheme): string {
+function getColor(color: string, theme: DefaultTheme): string {
   const variants = Object.keys(colorsSet.light);
   const splitRegexp = RegExp(`.(${variants.join('|')})`, 'g');
   const [iColor, iVariant = 'regular'] = color.split(splitRegexp);
@@ -118,10 +108,6 @@ function getColorValue(color: string, theme: DefaultTheme): string {
     (isThemeVariant(iVariant, theme) && getVariantColor(iColor, iVariant)) ||
     iColor
   );
-}
-
-function getColor(color: string, theme: DefaultTheme): string {
-  return getColorValue(color, theme);
 }
 
 type PaddingString = `${string | string}`;
