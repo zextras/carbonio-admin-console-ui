@@ -9,7 +9,6 @@ import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
-import ShellContextProvider from './shell-context-provider';
 import ShellHeader from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
 
@@ -49,12 +48,10 @@ function Shell() {
 
 export default function ShellView() {
   return (
-    <ShellContextProvider>
-      <ModalManager>
-        <SnackbarManager>
-          <Shell />
-        </SnackbarManager>
-      </ModalManager>
-    </ShellContextProvider>
+    <ModalManager>
+      <SnackbarManager>
+        <Shell />
+      </SnackbarManager>
+    </ModalManager>
   );
 }

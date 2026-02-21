@@ -18,7 +18,6 @@ import {
   Switch,
   Table,
   Text,
-  useScreenMode,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
@@ -32,7 +31,6 @@ import logo from '../../assets/ninja_robo.svg';
 import {
   ERROR_LABLE,
   MAX_DOMAIN_DISPLAY,
-  MOBILE,
   RECORD_DISPLAY_LIMIT,
   SET,
   TRUE,
@@ -56,7 +54,6 @@ const customIconStyle = {
 
 const LegalHoldPanel: FC = () => {
   const [t] = useTranslation();
-  const screenMode = useScreenMode();
   const [totalItem, setTotalItem] = useState(1);
   const accountLimit = RECORD_DISPLAY_LIMIT;
   const [accountOffset, setAccountOffset] = useState<number>(0);
@@ -758,7 +755,7 @@ const LegalHoldPanel: FC = () => {
                       crossAlignment="flex-start"
                       width="fill"
                       style={{
-                        height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 25rem)',
+                        height: 'calc(100vh - 25rem)',
                       }}
                       padding={{ all: 'large' }}
                     >

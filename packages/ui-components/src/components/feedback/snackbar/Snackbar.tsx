@@ -7,9 +7,8 @@
 import '../../../web-components/icon-wc';
 
 import React, { useCallback, useEffect } from 'react';
-import styled, { css, keyframes, SimpleInterpolation } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-import { ScreenMode, useScreenMode } from '../../../hooks/useScreenMode';
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
@@ -19,19 +18,13 @@ import { Row } from '../../layout/Row';
 import { Portal } from '../../utilities/Portal';
 import { Transition } from '../../utilities/Transition';
 
-const SnackContainer = styled(Container)<{ $zIndex: number; $screenMode: ScreenMode }>`
+const SnackContainer = styled(Container)<{ $zIndex: number }>`
   position: fixed;
   box-shadow: ${({ theme }): string => theme.shadows.snackbar};
   user-select: none;
   z-index: ${({ $zIndex }): number => $zIndex};
   right: 0;
   bottom: 5vh;
-  ${({ $screenMode }): SimpleInterpolation =>
-    $screenMode === 'mobile' &&
-    css`
-      right: 50%;
-      transform: translateX(50%);
-    `};
 `;
 
 const shrink = keyframes`
@@ -103,14 +96,11 @@ const Snackbar = ({
   onClose,
   zIndex = 1000,
   autoHideTimeout = TIMERS.SNACKBAR.DEFAULT_HIDE_TIMEOUT,
-  target = window,
   disablePortal = false,
   progressBar = true,
   ref,
   ...rest
 }: SnackbarProps) => {
-  const screenMode = useScreenMode(target);
-
   const handleClick = useCallback(() => {
     onActionClick ? onActionClick() : onClose?.();
   }, [onActionClick, onClose]);
@@ -133,14 +123,13 @@ const Snackbar = ({
     <Portal show={open} disablePortal={disablePortal}>
       <Transition ref={ref} type="fade-in-right">
         <SnackContainer
-          $screenMode={screenMode}
           orientation="vertical"
           background={severity}
           height="auto"
           width="auto"
           $zIndex={zIndex}
           data-testid="snackbar"
-          maxWidth={screenMode === 'mobile' ? '100%' : '40%'}
+          maxWidth={'40%'}
           {...rest}
         >
           <Container

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, useScreenMode } from '@zextras/ui-components';
+import { Container, Padding } from '@zextras/ui-components';
 import { type AppRoute, CARBONIO_LOGO_URL, useLoginConfigStore } from '@zextras/ui-shared';
 import React, { FC, useMemo } from 'react';
 
@@ -15,7 +15,6 @@ const ShellHeader: FC<{
   activeRoute: AppRoute;
   children?: React.ReactNode;
 }> = ({ activeRoute, children }) => {
-  const screenMode = useScreenMode();
   const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
     useLoginConfigStore();
   const logoSrc = useMemo(() => {
@@ -34,8 +33,8 @@ const ShellHeader: FC<{
       maxHeight="60px"
       mainAlignment="space-between"
       padding={{
-        left: screenMode === 'desktop' ? 'large' : 'small',
-        right: screenMode === 'desktop' ? 'large' : 'extrasmall',
+        left: 'large',
+        right: 'large',
         vertical: 'small',
       }}
     >
