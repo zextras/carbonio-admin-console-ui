@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
+import { Row } from '@zextras/ui-components';
 import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
@@ -26,7 +26,7 @@ function getDivStyle() {
   } as const;
 }
 
-function Shell() {
+export default function ShellView() {
   const activeRoute = useCurrentRoute();
   return (
     <div style={getDivStyle()}>
@@ -43,15 +43,5 @@ function Shell() {
         <ShellUtilityPanel />
       </Row>
     </div>
-  );
-}
-
-export default function ShellView() {
-  return (
-    <ModalManager>
-      <SnackbarManager>
-        <Shell />
-      </SnackbarManager>
-    </ModalManager>
   );
 }
