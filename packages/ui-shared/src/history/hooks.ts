@@ -26,7 +26,7 @@ const getCurrentRoute = (): AppRoute | undefined => {
   return find(routes, (r) => startsWith(trim(history.location.pathname, '/'), r.route));
 };
 
-export const parseParams = (params: HistoryParams): To => {
+const parseParams = (params: HistoryParams): To => {
   if (typeof params === 'string') {
     return replace(`/${getCurrentRoute()?.route}/${params}`, '//', '/');
   }
@@ -45,9 +45,4 @@ export const parseParams = (params: HistoryParams): To => {
 export const replaceHistory = (params: HistoryParams): void => {
   const history = useContextBridge.getState().functions.getHistory?.();
   history.replace(parseParams(params));
-};
-
-export const pushHistory = (params: HistoryParams): void => {
-  const history = useContextBridge.getState().functions.getHistory?.();
-  history.push(parseParams(params));
 };

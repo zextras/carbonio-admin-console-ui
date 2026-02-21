@@ -30,16 +30,12 @@ export default function ShellView() {
   const activeRoute = useCurrentRoute();
   return (
     <div style={getDivStyle()}>
-      <ShellHeader
-        // @ts-expect-error - needs a fix
-        activeRoute={activeRoute}
-      >
+      <ShellHeader activeRoute={activeRoute}>
         <ShellUtilityBar />
       </ShellHeader>
       <Row crossAlignment="unset" style={{ position: 'relative', flexGrow: '1' }}>
         <ShellNavigationBar activeRoute={activeRoute} />
-        {/* @ts-expect-error - needs a fix */}
-        <AppViewContainer activeRoute={activeRoute} />
+        <AppViewContainer />
         <ShellUtilityPanel />
       </Row>
     </div>

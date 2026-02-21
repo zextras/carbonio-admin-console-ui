@@ -12,7 +12,7 @@ import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
 
 const ShellHeader: FC<{
-  activeRoute: AppRoute;
+  activeRoute: AppRoute | undefined;
   children?: React.ReactNode;
 }> = ({ activeRoute, children }) => {
   const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
