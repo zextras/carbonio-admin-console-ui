@@ -315,7 +315,7 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <Text color="currentColor">{label}</Text>
+            <Text color="currentColor" style={{ '--text-font-size': textSize } as React.CSSProperties}>{label}</Text>
           </span>
         )}
 
