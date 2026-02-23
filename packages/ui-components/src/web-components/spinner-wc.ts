@@ -7,9 +7,8 @@
 import './theme.css';
 
 import { css, html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 
-@customElement('spinner-wc')
 export class SpinnerWC extends LitElement {
   static override styles = css`
     :host {
@@ -58,4 +57,8 @@ declare global {
   interface HTMLElementTagNameMap {
     'spinner-wc': SpinnerWC;
   }
+}
+
+if (!customElements.get('spinner-wc')) {
+  customElements.define('spinner-wc', SpinnerWC);
 }
