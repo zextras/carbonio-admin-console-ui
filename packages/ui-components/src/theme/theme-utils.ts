@@ -237,26 +237,35 @@ function pseudoClasses(
   `;
 }
 
-function getCSSColorVar(color: string): string {
-	const variants = ['hover', 'focus', 'active', 'disabled', 'regular'];
-	const splitRegexp = RegExp(`\\.(${variants.join('|')})`);
-	const parts = color.split(splitRegexp);
-	const colorName = parts[0];
-	const variant = parts[2] || 'regular';
-	return `var(--color-${colorName}-${variant})`;
+export function getCSSColorVar(color: string): string {
+  const variants = ['hover', 'focus', 'active', 'disabled', 'regular'];
+  const splitRegexp = RegExp(`\\.(${variants.join('|')})`);
+  const parts = color.split(splitRegexp);
+  const colorName = parts[0];
+  const variant = parts[2] || 'regular';
+  return `var(--color-${colorName}-${variant})`;
+}
+
+export function getThemeColorVar(colorName: string, state: string): string {
+  if (!colorName) return '';
+  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+  if (hexPattern.test(colorName)) {
+    return colorName;
+  }
+  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
 }
 
 const useTheme = (): DefaultTheme => useContext(ThemeContext);
 
 export type { PaddingObj };
 export {
-	calcHighlight,
-	generateColorSet,
-	generateHighlightSet,
-	getColor,
-	getCSSColorVar,
-	getPadding,
-	getPadding as parsePadding,
-	pseudoClasses,
-	useTheme,
+  calcHighlight,
+  generateColorSet,
+  generateHighlightSet,
+  getColor,
+  getPadding,
+  getPadding as parsePadding,
+  pseudoClasses,
+  useTheme,
 };
