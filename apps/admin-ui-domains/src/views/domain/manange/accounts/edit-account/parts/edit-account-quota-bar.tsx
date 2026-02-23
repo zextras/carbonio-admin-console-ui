@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
 import { BytesToGB } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
+import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
 import { getPercentage, humanFileSize } from './size-utils';
 
@@ -201,6 +202,8 @@ export const EditAccountQuotaBar = ({
           {sizeDescription}
         </Text>
       </Container>
+
+      <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit)} />
 
       <QuotaBar modules={quotaModules} limit={limit} used={used} />
     </Container>
