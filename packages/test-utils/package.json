@@ -6,8 +6,8 @@
     ".": {
       "browser": "./src/index.browser.ts",
       "jsdom": "./src/index.node.ts",
-      "default": "./src/index.ts",
-      "types": "./dist-types/index.d.ts"
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/index.ts"
     }
   },
   "engines": {

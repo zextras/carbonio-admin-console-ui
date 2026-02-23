@@ -7,8 +7,8 @@
   "types": "dist-types/index.d.ts",
   "exports": {
     ".": {
-      "default": "./src/app.tsx",
-      "types": "./dist-types/index.d.ts"
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/app.tsx"
     }
   },
   "scripts": {

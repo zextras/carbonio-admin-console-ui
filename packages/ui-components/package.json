@@ -6,8 +6,8 @@
   "types": "./dist-types/index.d.ts",
   "exports": {
     ".": {
-      "default": "./src/index.ts",
-      "types": "./dist-types/index.d.ts"
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/index.ts"
     },
     "./web-components": "./src/web-components/index.ts"
   },

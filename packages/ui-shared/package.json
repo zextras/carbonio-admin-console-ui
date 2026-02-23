@@ -6,8 +6,8 @@
   "types": "dist-types/index.d.ts",
   "exports": {
     ".": {
-      "default": "./src/exports.ts",
-      "types": "./dist-types/index.d.ts"
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/exports.ts"
     }
   },
   "engines": {
