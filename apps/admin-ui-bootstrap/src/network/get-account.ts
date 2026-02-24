@@ -37,5 +37,7 @@ export const getAccount = (): Promise<void> => {
                                 useI18nStore.getState().setLocale(userLocale);
                         }
                 }
+        }).catch((error: Error) => {
+                console.error('Error fetching account information:', error);
         });
 };

@@ -16,7 +16,6 @@ import {
 	SuccessSoapResponse
 } from '../../types';
 import { SHELL_APP_ID } from '../constants';
-import { report } from '../reporting';
 import { useAccountStore } from '../store/account';
 import { useNetworkStore } from '../store/network';
 import { handleTagSync } from '../store/tags';
@@ -161,11 +160,10 @@ export const getSoapFetch =
 				.then((res) => res?.json())
 				.then((res: SoapResponse<Response>) => handleResponse(api, res))
 				.catch((e) => {
-					//report(app)(e);
-					console.log(`Error in ${api}Request:`, e);
+					throw e;
 				});
 
-		return retry(fetchFn);
+		return retry(fetchFn, { retries: 1 });
 	};
 
 /* POST and GET Soap */
@@ -232,7 +230,6 @@ export const getSoapFetchRequest =
 				.then((res) => res?.json())
 				.then((res: SoapResponse<Response>) => handleSoapResponse(res))
 				.catch((e) => {
-					report(app)(e);
 					throw e;
 				});
 
@@ -289,7 +286,6 @@ export const postSoapFetchRequest =
 				.then((res) => res?.json())
 				.then((res: SoapResponse<Response>) => handleSoapResponse(res))
 				.catch((e) => {
-					report(app)(e);
 					throw e;
 				});
 
@@ -333,7 +329,6 @@ export const fetchExternalSoap =
 				)
 				.then((res: any) => handleSoapResponse(res))
 				.catch((e) => {
-					report(app)(e);
 					throw e;
 				});
 

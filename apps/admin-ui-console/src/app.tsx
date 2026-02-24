@@ -152,12 +152,15 @@ const App: FC = () => {
 	const getAccountDetails = useCallback(
 		(id: any) => {
 			getAccountRequest(id, '', 0).then((res: any) => {
+				console.log(`Account details response for last login timestamp:`, res);
 				const lastLogin = res?.account?.[0]?.a?.find(
 					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
 				);
 				setLastLoginTimestamp(
 					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
 				);
+			}).catch((error) => {
+				console.log(`Error while fetching account details for last login timestamp:`, error);
 			});
 		},
 		[setLastLoginTimestamp]
@@ -210,18 +213,8 @@ const App: FC = () => {
 				.then((res) => {
 					setRights(res?.target);
 				})
-				.catch(() => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: t(
-							'label.error_rights_message',
-							'Error obtaining Rights. Please try again later.'
-						),
-						autoHideTimeout: 4000,
-						hideButton: true,
-						replace: true
-					});
+				.catch((error) => {
+					console.log(`Error while fetching user rights:`, error);
 				});
 		}
 	}, [accounts, createSnackbar, setRights, t]);

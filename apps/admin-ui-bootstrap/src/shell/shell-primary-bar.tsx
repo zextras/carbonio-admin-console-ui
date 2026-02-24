@@ -271,6 +271,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute }> = ({ activeRoute }) => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
 			getUsersRights('name', accounts[0].name).then((res) => {
 				setAllUserRights(res?.target);
+			}).catch((error) => {
+				console.log('Error fetching user rights: ', error);
+				setAllUserRights(undefined);
 			});
 		}
 	}, [accounts]);

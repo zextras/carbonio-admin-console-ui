@@ -20,7 +20,7 @@ import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { ACCOUNTS, GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { ACCOUNTS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
