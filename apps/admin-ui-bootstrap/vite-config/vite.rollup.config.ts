@@ -5,9 +5,7 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
-
-import { colorLog } from '../../../scripts/utils';
-import { getSharedDepNames } from './utils';
+import { colorLog, getSharedDepNames } from './utils';
 
 /**
  * Creates standardized rollup options for the ESM bootstrap application (shell).

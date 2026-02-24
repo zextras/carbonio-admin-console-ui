@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { 	useActivateLicense,	useCurrentUserRights,	useLicenseInfo,	useRemoveLicense,	useVersion } from '@zextras/admin-ui-bootstrap';
 import { 	Button,	Container,	Input,	Modal,	Quota,	Row,	Text,	Tooltip } from '@zextras/ui-components';
+import { 	useActivateLicense,	useCurrentUserRights,	useLicenseInfo,	useRemoveLicense,	useVersion } from '@zextras/ui-shared';
 import {  format  } from 'date-fns';
 import {  find  } from 'lodash-es';
 import React, { useEffect, useMemo,useState } from 'react';

@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAppStore } from '@zextras/ui-shared';
 import { isEmpty, map } from 'lodash-es';
 import React, { FC, memo, Suspense, useMemo } from 'react';
 
-import { useAppStore } from '../../store/app';
 import AppContextProvider from './app-context-provider';
 
 const Mounter: FC<{ children: React.ReactNode; appId: string }> = ({ children, appId }) => (

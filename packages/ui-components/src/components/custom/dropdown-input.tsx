@@ -7,88 +7,86 @@ import { Dropdown, Icon, Input } from '@zextras/ui-components';
 import type { FC } from 'react';
 
 type DropDownInputType = {
-	items: any;
-	placement?:
-		| 'bottom-start'
-		| 'auto'
-		| 'auto-start'
-		| 'auto-end'
-		| 'top'
-		| 'top-start'
-		| 'top-end'
-		| 'bottom'
-		| 'bottom-end'
-		| 'right'
-		| 'right-start'
-		| 'right-end'
-		| 'left'
-		| 'left-start'
-		| 'left-end'
-		| undefined;
-	maxWidth?: string;
-	disableAutoFocus?: boolean;
-	width?: string;
-	dropdownOnClick?: any;
-	inputLabel: string;
-	onChange: any;
-	inputValue: any;
-	size?: string;
-	backgroundColor?: string;
-	hasError?: boolean;
-	inputDisabled?: boolean;
-	isCustomIcon: boolean;
-	customIconDetail?: any;
+  items: any;
+  placement?:
+    | 'bottom-start'
+    | 'auto'
+    | 'auto-start'
+    | 'auto-end'
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'bottom'
+    | 'bottom-end'
+    | 'right'
+    | 'right-start'
+    | 'right-end'
+    | 'left'
+    | 'left-start'
+    | 'left-end'
+    | undefined;
+  maxWidth?: string;
+  disableAutoFocus?: boolean;
+  width?: string;
+  dropdownOnClick?: any;
+  inputLabel: string;
+  onChange: any;
+  inputValue: any;
+  size?: string;
+  backgroundColor?: string;
+  hasError?: boolean;
+  inputDisabled?: boolean;
+  isCustomIcon: boolean;
+  customIconDetail?: any;
 };
 
 export const DropDownInput: FC<DropDownInputType> = ({
-	items,
-	maxWidth,
-	width,
-	disableAutoFocus,
-	dropdownOnClick,
-	inputLabel,
-	onChange,
-	inputValue,
-	backgroundColor,
-	hasError,
-	inputDisabled,
-	isCustomIcon,
-	customIconDetail
+  items,
+  maxWidth,
+  width,
+  disableAutoFocus,
+  dropdownOnClick,
+  inputLabel,
+  onChange,
+  inputValue,
+  backgroundColor,
+  hasError,
+  inputDisabled,
+  isCustomIcon,
+  customIconDetail,
 }) => (
-	<Dropdown
-		items={items}
-		maxWidth={maxWidth || '300px'}
-		disableAutoFocus={disableAutoFocus || true}
-		width={width || '265px'}
-		style={{
-			width: '100%'
-		}}
-		onClick={dropdownOnClick}
-	>
-		<div>
-			<Input
-				label={inputLabel}
-				onChange={onChange}
-				// @ts-expect-error - needs a fix // Need to fix it with custom soultion
-				CustomIcon={(): React.ReactChild =>
-					isCustomIcon ? (
-						<Icon
-							icon={customIconDetail?.icon || 'GlobeOutline'}
-							size={customIconDetail?.size || 'large'}
-							color={customIconDetail?.color || 'primary'}
-							onClick={customIconDetail?.onClick}
-							style={customIconDetail?.style}
-						/>
-					) : (
-						''
-					)
-				}
-				value={inputValue}
-				backgroundColor={backgroundColor || 'gray5'}
-				hasError={hasError}
-				disabled={inputDisabled || false}
-			/>
-		</div>
-	</Dropdown>
+  <Dropdown
+    items={items}
+    maxWidth={maxWidth || '300px'}
+    disableAutoFocus={disableAutoFocus || true}
+    width={width || '265px'}
+    style={{
+      width: '100%',
+    }}
+    onClick={dropdownOnClick}
+  >
+    <div>
+      <Input
+        label={inputLabel}
+        onChange={onChange}
+        CustomIcon={() =>
+          isCustomIcon ? (
+            <Icon
+              icon={customIconDetail?.icon || 'GlobeOutline'}
+              size={customIconDetail?.size || 'large'}
+              color={customIconDetail?.color || 'primary'}
+              onClick={customIconDetail?.onClick}
+              style={customIconDetail?.style}
+            />
+          ) : (
+            ''
+          )
+        }
+        value={inputValue}
+        backgroundColor={backgroundColor || 'gray5'}
+        hasError={hasError}
+        disabled={inputDisabled || false}
+      />
+    </div>
+  </Dropdown>
 );
-

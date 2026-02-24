@@ -15,10 +15,10 @@ import Operations from '@zextras/admin-ui-operations';
 import Privacy from '@zextras/admin-ui-privacy';
 import Storage from '@zextras/admin-ui-storage';
 import Subscription from '@zextras/admin-ui-subscription';
+import type { AppState } from '@zextras/ui-shared';
 import { ComponentType } from 'react';
 import { StoreApi, UseBoundStore } from 'zustand';
 
-import { AppState } from '../../types';
 import type { AppManifest } from './types';
 
 /**

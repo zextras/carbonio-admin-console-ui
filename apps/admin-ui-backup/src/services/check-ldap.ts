@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
+import { getSoapFetchRequest } from '@zextras/ui-shared';
 
 export const checkLdap = async (): Promise<any> =>
 	getSoapFetchRequest(`/service/extension/zextras_admin/backup/checkLDAPDump`);

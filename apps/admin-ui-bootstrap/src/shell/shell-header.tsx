@@ -5,18 +5,11 @@
  */
 
 import { Container, Padding, useScreenMode } from '@zextras/ui-components';
+import { type AppRoute, CARBONIO_LOGO_URL, useLoginConfigStore } from '@zextras/ui-shared';
 import React, { FC, useMemo } from 'react';
-import styled from 'styled-components';
 
-import { AppRoute } from '../../types';
-import { CARBONIO_LOGO_URL } from '../constants';
-import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
-
-const CustomImg = styled.img`
-  height: 2rem;
-`;
 
 const ShellHeader: FC<{
   activeRoute: AppRoute;
@@ -61,7 +54,11 @@ const ShellHeader: FC<{
         >
           <Container width="auto" height={32} crossAlignment="flex-start">
             <a target="_blank" href={logoUrl} rel="noreferrer">
-              {logoSrc ? <CustomImg src={logoSrc} /> : <Logo height="2rem" />}
+              {logoSrc ? (
+                <img src={logoSrc} alt="logo" style={{ height: '2rem' }} />
+              ) : (
+                <Logo height="2rem" />
+              )}
             </a>
           </Container>
 
