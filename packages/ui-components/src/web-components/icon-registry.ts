@@ -22,7 +22,7 @@ export const iconRegistry = {
   AlertTriangleOutline: `<g data-name="Layer 2">
 			<g data-name="alert-triangle">
 				<path d="M22.56 16.3 14.89 3.58a3.43 3.43 0 0 0-5.78 0L1.44 16.3a3 3 0 0 0-.05 3A3.37 3.37 0 0 0 4.33 21h15.34a3.37 3.37 0 0 0 2.94-1.66 3 3 0 0 0-.05-3.04m-1.7 2.05a1.31 1.31 0 0 1-1.19.65H4.33a1.31 1.31 0 0 1-1.19-.65 1 1 0 0 1 0-1l7.68-12.73a1.48 1.48 0 0 1 2.36 0l7.67 12.72a1 1 0 0 1 .01 1.01" />
-				<circle cx={12} cy={16} r={1} />
+				<circle cx="12" cy="16" r="1" />
 				<path d="M12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1" />
 			</g>
 		</g>`,
@@ -151,7 +151,7 @@ export const iconRegistry = {
   CalendarOutline: `<g data-name="Layer 2">
 			<g data-name="calendar">
 				<path d="M18 4h-1V3a1 1 0 0 0-2 0v1H9V3a1 1 0 0 0-2 0v1H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3M6 6h1v1a1 1 0 0 0 2 0V6h6v1a1 1 0 0 0 2 0V6h1a1 1 0 0 1 1 1v4H5V7a1 1 0 0 1 1-1m12 14H6a1 1 0 0 1-1-1v-6h14v6a1 1 0 0 1-1 1" />
-				<circle cx={8} cy={16} r={1} />
+				<circle cx="8" cy="16" r="1" />
 				<path d="M16 15h-4a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2" />
 			</g>
 		</g>`,
@@ -159,7 +159,7 @@ export const iconRegistry = {
 			<g data-name="cast">
 				<path d="M18.4 3H5.6A2.7 2.7 0 0 0 3 5.78V7a1 1 0 0 0 2 0V5.78A.72.72 0 0 1 5.6 5h12.8a.72.72 0 0 1 .6.78v12.44a.72.72 0 0 1-.6.78H17a1 1 0 0 0 0 2h1.4a2.7 2.7 0 0 0 2.6-2.78V5.78A2.7 2.7 0 0 0 18.4 3M3.86 14A1 1 0 0 0 3 15.17a1 1 0 0 0 1.14.83 2.49 2.49 0 0 1 2.12.72 2.52 2.52 0 0 1 .51 2.84 1 1 0 0 0 .48 1.33 1.1 1.1 0 0 0 .42.09 1 1 0 0 0 .91-.58A4.52 4.52 0 0 0 3.86 14" />
 				<path d="M3.86 10.08a1 1 0 0 0 .28 2 6 6 0 0 1 5.09 1.71 6 6 0 0 1 1.53 5.95 1 1 0 0 0 .68 1.26.9.9 0 0 0 .28 0 1 1 0 0 0 1-.72 8 8 0 0 0-8.82-10.2z" />
-				<circle cx={4} cy={19} r={1} />
+				<circle cx="4" cy="19" r="1" />
 			</g>
 		</g>`,
   Checkmark: `<g data-name="Layer 2">
@@ -349,18 +349,18 @@ export const iconRegistry = {
 		<path d="M18.992 3c1.646 0 3 1.354 3 3v12c0 1.646-1.354 3-3 3h-12c-1.646 0-3-1.354-3-3v-1h-1c-.548 0-1-.451-1-1s.452-1 1-1h1V9h-1c-.548 0-1-.451-1-1s.452-1 1-1h1V6c0-1.646 1.354-3 3-3zm0 2h-12c-.548 0-1 .451-1 1v1h1c.549 0 1 .451 1 1s-.451 1-1 1h-1v6h1c.549 0 1 .451 1 1s-.451 1-1 1h-1v1c0 .549.452 1 1 1h12c.549 0 1-.451 1-1V6c0-.549-.451-1-1-1" />`,
   Download: `<g data-name="Layer 2">
 			<g data-name="download">
-				<rect width={16} height={2} x={4} y={18} rx={1} ry={1} />
-				<rect width={4} height={2} x={3} y={17} rx={1} ry={1} transform="rotate(-90 5 18)" />
-				<rect width={4} height={2} x={17} y={17} rx={1} ry={1} transform="rotate(-90 19 18)" />
+				<rect width="16" height="2" x="4" y="18" rx="1" ry="1" />
+				<rect width="4" height="2" x="3" y="17" rx="1" ry="1" transform="rotate(-90 5 18)" />
+				<rect width="4" height="2" x="17" y="17" rx="1" ry="1" transform="rotate(-90 19 18)" />
 				<path d="M12 15a1 1 0 0 1-.58-.18l-4-2.82a1 1 0 0 1-.24-1.39 1 1 0 0 1 1.4-.24L12 12.76l3.4-2.56a1 1 0 0 1 1.2 1.6l-4 3a1 1 0 0 1-.6.2" />
 				<path d="M12 13a1 1 0 0 1-1-1V4a1 1 0 0 1 2 0v8a1 1 0 0 1-1 1" />
 			</g>
 		</g>`,
   DownloadOutline: `<g data-name="Layer 2">
 			<g data-name="download">
-				<rect width={16} height={2} x={4} y={18} rx={1} ry={1} />
-				<rect width={4} height={2} x={3} y={17} rx={1} ry={1} transform="rotate(-90 5 18)" />
-				<rect width={4} height={2} x={17} y={17} rx={1} ry={1} transform="rotate(-90 19 18)" />
+				<rect width="16" height="2" x="4" y="18" rx="1" ry="1" />
+				<rect width="4" height="2" x="3" y="17" rx="1" ry="1" transform="rotate(-90 5 18)" />
+				<rect width="4" height="2" x="17" y="17" rx="1" ry="1" transform="rotate(-90 19 18)" />
 				<path d="M12 15a1 1 0 0 1-.58-.18l-4-2.82a1 1 0 0 1-.24-1.39 1 1 0 0 1 1.4-.24L12 12.76l3.4-2.56a1 1 0 0 1 1.2 1.6l-4 3a1 1 0 0 1-.6.2" />
 				<path d="M12 13a1 1 0 0 1-1-1V4a1 1 0 0 1 2 0v8a1 1 0 0 1-1 1" />
 			</g>
@@ -484,7 +484,7 @@ export const iconRegistry = {
 			<g data-name="hard-drive">
 				<path d="m20.79 11.34-3.34-6.68A3 3 0 0 0 14.76 3H9.24a3 3 0 0 0-2.69 1.66l-3.34 6.68a2 2 0 0 0-.21.9V18a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5.76a2 2 0 0 0-.21-.9M8.34 5.55a1 1 0 0 1 .9-.55h5.52a1 1 0 0 1 .9.55L18.38 11H5.62zM18 19H6a1 1 0 0 1-1-1v-5h14v5a1 1 0 0 1-1 1" />
 				<path d="M16 15h-4a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2" />
-				<circle cx={8} cy={16} r={1} />
+				<circle cx="8" cy="16" r="1" />
 			</g>
 		</g>`,
   Home: `<g data-name="Layer 2">
@@ -502,7 +502,7 @@ export const iconRegistry = {
   Image: `<g data-name="Layer 2">
 			<g data-name="image">
 				<path d="M18 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3M6 5h12a1 1 0 0 1 1 1v8.36l-3.2-2.73a2.77 2.77 0 0 0-3.52 0L5 17.7V6a1 1 0 0 1 1-1" />
-				<circle cx={8} cy={8.5} r={1.5} />
+				<circle cx="8" cy="8.5" r="1.5" />
 			</g>
 		</g>`,
   Info: `<g data-name="Layer 2">
@@ -514,7 +514,7 @@ export const iconRegistry = {
   InfoOutline: `<g data-name="Layer 2">
 			<g data-name="info">
 				<path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8" />
-				<circle cx={12} cy={8} r={1} />
+				<circle cx="12" cy="8" r="1" />
 				<path d="M12 10a1 1 0 0 0-1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0-1-1" />
 			</g>
 		</g>`,
@@ -552,12 +552,12 @@ export const iconRegistry = {
 		</g>`,
   List: `<g data-name="Layer 2">
 			<g data-name="list">
-				<circle cx={4} cy={7} r={1} />
-				<circle cx={4} cy={12} r={1} />
-				<circle cx={4} cy={17} r={1} />
-				<rect width={14} height={2} x={7} y={11} rx={0.94} ry={0.94} />
-				<rect width={14} height={2} x={7} y={16} rx={0.94} ry={0.94} />
-				<rect width={14} height={2} x={7} y={6} rx={0.94} ry={0.94} />
+				<circle cx="4" cy="7" r="1" />
+				<circle cx="4" cy="12" r="1" />
+				<circle cx="4" cy="17" r="1" />
+				<rect width="14" height="2" x="7" y="11" rx="0.94" ry="0.94" />
+				<rect width="14" height="2" x="7" y="16" rx="0.94" ry="0.94" />
+				<rect width="14" height="2" x="7" y="6" rx="0.94" ry="0.94" />
 			</g>
 		</g>`,
   ListOutline: `<g data-name="Layer 2">
@@ -591,16 +591,16 @@ export const iconRegistry = {
 		</g>`,
   Menu: `<g data-name="Layer 2">
 			<g data-name="menu">
-				<rect width={18} height={2} x={3} y={11} rx={0.95} ry={0.95} />
-				<rect width={18} height={2} x={3} y={16} rx={0.95} ry={0.95} />
-				<rect width={18} height={2} x={3} y={6} rx={0.95} ry={0.95} />
+				<rect width="18" height="2" x="3" y="11" rx="0.95" ry="0.95" />
+				<rect width="18" height="2" x="3" y="16" rx="0.95" ry="0.95" />
+				<rect width="18" height="2" x="3" y="6" rx="0.95" ry="0.95" />
 			</g>
 		</g>`,
   MoreVertical: `<g data-name="Layer 2">
 			<g data-name="more-vertical">
-				<circle cx={12} cy={12} r={2} />
-				<circle cx={12} cy={5} r={2} />
-				<circle cx={12} cy={19} r={2} />
+				<circle cx="12" cy="12" r="2" />
+				<circle cx="12" cy="5" r="2" />
+				<circle cx="12" cy="19" r="2" />
 			</g>
 		</g>`,
   Move: `<g data-name="Layer 2">
@@ -673,20 +673,20 @@ export const iconRegistry = {
   QuestionMark: `<g data-name="Layer 2">
 			<g data-name="menu-arrow">
 				<path d="M17 9A5 5 0 0 0 7 9a1 1 0 0 0 2 0 3 3 0 1 1 3 3 1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-1.1A5 5 0 0 0 17 9" />
-				<circle cx={12} cy={19} r={1} />
+				<circle cx="12" cy="19" r="1" />
 			</g>
 		</g>`,
   QuestionMarkCircleOutline: `<g data-name="Layer 2">
 			<g data-name="menu-arrow-circle">
 				<path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8" />
 				<path d="M12 6a3.5 3.5 0 0 0-3.5 3.5 1 1 0 0 0 2 0A1.5 1.5 0 1 1 12 11a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-1.16A3.49 3.49 0 0 0 12 6" />
-				<circle cx={12} cy={17} r={1} />
+				<circle cx="12" cy="17" r="1" />
 			</g>
 		</g>`,
   QuestionMarkOutline: `<g data-name="Layer 2">
 			<g data-name="question-mark">
 				<path d="M17 9A5 5 0 0 0 7 9a1 1 0 0 0 2 0 3 3 0 1 1 3 3 1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-1.1A5 5 0 0 0 17 9" />
-				<circle cx={12} cy={19} r={1} />
+				<circle cx="12" cy="19" r="1" />
 			</g>
 		</g>`,
   Radio: `<g data-name="Layer 2">
@@ -733,7 +733,7 @@ export const iconRegistry = {
 		</g>`,
   Settings: `<g data-name="Layer 2">
 			<g data-name="settings">
-				<circle cx={12} cy={12} r={1.5} />
+				<circle cx="12" cy="12" r="1.5" />
 				<path d="M21.89 10.32 21.1 7.8a2.26 2.26 0 0 0-2.88-1.51l-.34.11a1.74 1.74 0 0 1-1.59-.26l-.11-.08a1.76 1.76 0 0 1-.69-1.43v-.28a2.37 2.37 0 0 0-.68-1.68 2.26 2.26 0 0 0-1.6-.67h-2.55a2.32 2.32 0 0 0-2.29 2.33v.24a1.94 1.94 0 0 1-.73 1.51l-.13.1a1.93 1.93 0 0 1-1.78.29 2.14 2.14 0 0 0-1.68.12 2.18 2.18 0 0 0-1.12 1.33l-.82 2.6a2.34 2.34 0 0 0 1.48 2.94h.16a1.83 1.83 0 0 1 1.12 1.22l.06.16a2.06 2.06 0 0 1-.23 1.86 2.37 2.37 0 0 0 .49 3.3l2.07 1.57a2.25 2.25 0 0 0 1.35.43A2 2 0 0 0 9 22a2.25 2.25 0 0 0 1.47-1l.23-.33a1.8 1.8 0 0 1 1.43-.77 1.75 1.75 0 0 1 1.5.78l.12.17a2.24 2.24 0 0 0 3.22.53L19 19.86a2.38 2.38 0 0 0 .5-3.23l-.26-.38A2 2 0 0 1 19 14.6a1.89 1.89 0 0 1 1.21-1.28l.2-.07a2.36 2.36 0 0 0 1.48-2.93M12 15.5a3.5 3.5 0 1 1 3.5-3.5 3.5 3.5 0 0 1-3.5 3.5" />
 			</g>
 		</g>`,
@@ -838,7 +838,7 @@ export const iconRegistry = {
 		</g>`,
   ToggleRight: `<g data-name="Layer 2">
 			<g data-name="toggle-right">
-				<circle cx={15} cy={12} r={1} />
+				<circle cx="15" cy="12" r="1" />
 				<path d="M15 5H9a7 7 0 0 0 0 14h6a7 7 0 0 0 0-14m0 10a3 3 0 1 1 3-3 3 3 0 0 1-3 3" />
 			</g>
 		</g>`,
@@ -851,9 +851,9 @@ export const iconRegistry = {
   Unpin3Outline: `<path d="m14.584 17.408-8-8a1.004 1.004 0 0 0-1.42 1.42l3.292 3.293-4.16 4.16a.987.987 0 0 0 1.395 1.395l4.16-4.16 3.313 3.312a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42m-3.925-9.545 3.334-3.334c.757-.69 1.94-.659 2.66.07l2.74 2.74c.76.725.792 1.947.07 2.71l-3.309 3.309-1.403-1.403 3.242-3.226L15.263 6l-3.21 3.258zM4.714 3.291a1.004 1.004 0 0 0-1.42 1.42l16 16a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z" />`,
   Upload: `<g data-name="Layer 2">
 			<g data-name="upload">
-				<rect width={16} height={2} x={4} y={4} rx={1} ry={1} transform="rotate(180 12 5)" />
-				<rect width={4} height={2} x={17} y={5} rx={1} ry={1} transform="rotate(90 19 6)" />
-				<rect width={4} height={2} x={3} y={5} rx={1} ry={1} transform="rotate(90 5 6)" />
+				<rect width="16" height="2" x="4" y="4" rx="1" ry="1" transform="rotate(180 12 5)" />
+				<rect width="4" height="2" x="17" y="5" rx="1" ry="1" transform="rotate(90 19 6)" />
+				<rect width="4" height="2" x="3" y="5" rx="1" ry="1" transform="rotate(90 5 6)" />
 				<path d="M8 14a1 1 0 0 1-.8-.4 1 1 0 0 1 .2-1.4l4-3a1 1 0 0 1 1.18 0l4 2.82a1 1 0 0 1 .24 1.39 1 1 0 0 1-1.4.24L12 11.24 8.6 13.8a1 1 0 0 1-.6.2" />
 				<path d="M12 21a1 1 0 0 1-1-1v-8a1 1 0 0 1 2 0v8a1 1 0 0 1-1 1" />
 			</g>
