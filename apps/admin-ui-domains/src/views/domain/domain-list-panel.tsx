@@ -429,16 +429,11 @@ const DomainListPanel: FC = () => {
   );
 
   useEffect(() => {
-    if (!backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
+    if (backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
       const options = manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT);
       setListItemType(options);
     }
-  }, [
-    backupData?.backupModuleEnable,
-    backupData?.isBackupModuleLicensed,
-    manageItems,
-    isDomainSelect,
-  ]);
+  }, [manageItems, isDomainSelect, backupData]);
 
   useMemo(() => {
     setListItemType(
