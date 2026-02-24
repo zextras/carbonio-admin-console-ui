@@ -32,7 +32,7 @@
   ],
   "devDependencies": {
     "@microsoft/api-extractor": "^7.56.3",
-    "@svgr/cli": "^8.0.1",
+    "@svgr/cli": "^8.1.0",
     "@types/lodash": "^4.14.196",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

@@ -1782,7 +1782,7 @@ importers:
         specifier: ^7.56.3
         version: 7.57.1(@types/node@22.19.11)
       '@svgr/cli':
-        specifier: ^8.0.1
+        specifier: ^8.1.0
         version: 8.1.0(typescript@5.9.3)
       '@types/lodash':
         specifier: ^4.14.196
