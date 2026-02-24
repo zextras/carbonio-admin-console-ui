@@ -7,72 +7,21 @@
 import '../../web-components/icon-wc';
 
 import { useCallback, useMemo, useRef } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
+import { getCSSColorVar } from '../../theme/theme-utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
-
-const IconWrapper = styled.div<{
-  $borderRadius: 'regular' | 'round';
-  $isActive: boolean;
-  $disabled: boolean;
-}>`
-  border-radius: ${({ $borderRadius, theme }): string =>
-    $borderRadius === 'regular' ? theme.borderRadius : '50%'};
-  background: ${({ theme, $isActive }): string =>
-    $isActive ? theme.palette.primary.regular : 'transparent'};
-  transition: 0.2s ease-out;
-
-  ${({ $disabled, $isActive, theme }): SimpleInterpolation =>
-    $disabled &&
-    css`
-      background: ${theme.palette[$isActive ? 'primary' : 'transparent'].disabled};
-    `};
-  svg {
-    transition: 0.2s ease-out;
-    fill: ${({ theme, $isActive }): string =>
-      $isActive ? theme.palette.gray6.regular : 'currentColor'};
-  }
-  ${({ theme, $disabled, $isActive }): SimpleInterpolation =>
-    !$disabled &&
-    css`
-      transition: background 0.2s ease-out;
-      &:focus {
-        outline: none;
-        background: ${theme.palette[$isActive ? 'primary' : 'transparent'].focus};
-        svg {
-          fill: ${$isActive ? theme.palette.gray6.focus : theme.palette.primary.focus};
-        }
-      }
-      &:hover {
-        outline: none;
-        background: ${theme.palette[$isActive ? 'primary' : 'transparent'].hover};
-        svg {
-          fill: ${$isActive ? theme.palette.gray6.hover : theme.palette.primary.hover};
-        }
-      }
-      &:active {
-        outline: none;
-        background: ${theme.palette[$isActive ? 'primary' : 'transparent'].active};
-      }
-    `};
-`;
-
-const CustomText = styled(Text)`
-  white-space: normal;
-  padding-left: ${({ theme }): string => theme.sizes.padding.small};
-  user-select: none;
-`;
+import styles from './IconCheckbox.module.css';
 
 const padding = {
   small: 'extrasmall',
   regular: 'small',
   large: 'medium',
-};
+} as const;
 
 type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
   /** Status of the IconCheckbox */
@@ -88,7 +37,7 @@ type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
   /** IconCheckbox size */
   size?: 'small' | 'regular' | 'large';
   /** IconCheckbox margin */
-  margin?: keyof DefaultTheme['sizes']['padding'];
+  margin?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
   /** IconCheckbox value */
   value?: boolean;
   /** change callback */
@@ -127,6 +76,37 @@ const IconCheckbox = ({
 
   const iconSize = useMemo(() => (size === 'small' ? 'medium' : 'large'), [size]);
 
+  const iconWrapperStyle = useMemo(
+    () =>
+      ({
+        '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
+        '--icon-wrapper-bg': checked ? getCSSColorVar('primary') : 'transparent',
+        '--icon-wrapper-bg-hover': checked
+          ? getCSSColorVar('primary.hover')
+          : getCSSColorVar('transparent.hover'),
+        '--icon-wrapper-bg-focus': checked
+          ? getCSSColorVar('primary.focus')
+          : getCSSColorVar('transparent.focus'),
+        '--icon-wrapper-bg-active': checked
+          ? getCSSColorVar('primary.active')
+          : getCSSColorVar('transparent.active'),
+        '--icon-wrapper-bg-disabled': checked
+          ? getCSSColorVar('primary.disabled')
+          : getCSSColorVar('transparent.disabled'),
+        '--icon-fill': checked ? getCSSColorVar('gray6') : 'currentColor',
+        '--icon-fill-hover': checked
+          ? getCSSColorVar('gray6.hover')
+          : getCSSColorVar('primary.hover'),
+        '--icon-fill-focus': checked
+          ? getCSSColorVar('gray6.focus')
+          : getCSSColorVar('primary.focus'),
+        '--icon-fill-disabled': checked ? getCSSColorVar('gray6.disabled') : 'currentColor',
+      } as React.CSSProperties),
+    [borderRadius, checked],
+  );
+
+  const iconWrapperClassName = `${styles.iconWrapper} ${disabled ? styles.disabled : ''}`;
+
   return (
     <Container
       ref={containerRef}
@@ -138,21 +118,20 @@ const IconCheckbox = ({
       crossAlignment="center"
       {...rest}
     >
-      <IconWrapper
+      <div
         ref={iconCheckboxRef}
-        $isActive={checked}
-        $borderRadius={borderRadius}
-        $disabled={disabled}
+        className={iconWrapperClassName}
+        style={iconWrapperStyle}
         tabIndex={disabled ? -1 : 0}
       >
         <Padding all={padding[size]}>
           <icon-wc size={iconSize} icon={icon}></icon-wc>
         </Padding>
-      </IconWrapper>
+      </div>
       {label && (
-        <CustomText size="medium" weight="regular">
+        <Text className={styles.label} size="medium" weight="regular">
           {label}
-        </CustomText>
+        </Text>
       )}
     </Container>
   );
