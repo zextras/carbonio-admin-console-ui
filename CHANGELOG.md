@@ -1,3 +1,9 @@
+## [0.12.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0...v0.12.1) (2026-02-24)
+
+### Bug Fixes
+
+* **[admin-ui-domains] domain-list-panel:** update effect deps ([b4313b6](https://github.com/zextras/carbonio-admin-console-ui/commit/b4313b6c814dcf6de420e00cb8437f59d2cd8a3e))
+
 ## [0.12.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.3...v0.12.0) (2026-02-13)
 
 ### Features
