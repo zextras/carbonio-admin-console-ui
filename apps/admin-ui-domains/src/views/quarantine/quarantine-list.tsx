@@ -1534,7 +1534,7 @@ const QuarantineList: FC = () => {
                     type="ghost"
                   />
                 </Row>
-                <Collapse orientation="vertical" open={showTextMsgView}>
+                <Collapse open={showTextMsgView}>
                   <Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
                     <Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
                       {message?.body?.content}
