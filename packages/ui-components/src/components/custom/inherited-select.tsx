@@ -99,6 +99,7 @@ const InheritedSelect: FC<InheritedSelectProps> = ({
 						onClick={onChangeReset}
 						style={{ cursor: 'pointer' }}
 						onChange={(): null => null}
+						data-testid={`reset-${selectName}`}
 					/>
 				</Tooltip>
 			) : null}
