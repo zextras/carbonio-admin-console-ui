@@ -13,6 +13,7 @@
     "test:ci": "vitest run --coverage"
   },
   "dependencies": {
+    "@posthog/react": "^1.8.1",
     "@tanstack/react-query": "^5.90.5",
     "@vitest/browser-preview": "^4.0.14",
     "@zextras/admin-ui-bootstrap": "workspace:*",

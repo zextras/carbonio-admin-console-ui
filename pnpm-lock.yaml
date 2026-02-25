@@ -123,6 +123,9 @@ importers:
 
   apps/admin-ui-backup:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -259,6 +262,9 @@ importers:
       '@fontsource/roboto':
         specifier: ^5.2.6
         version: 5.2.10
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -404,6 +410,9 @@ importers:
 
   apps/admin-ui-cos:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.11)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(tsx@4.21.0))(vitest@4.0.18)
@@ -519,6 +528,9 @@ importers:
 
   apps/admin-ui-dashboard:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -658,6 +670,9 @@ importers:
 
   apps/admin-ui-domains:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -803,6 +818,9 @@ importers:
 
   apps/admin-ui-legalhold:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -942,6 +960,9 @@ importers:
 
   apps/admin-ui-mta:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1081,6 +1102,9 @@ importers:
 
   apps/admin-ui-notifications:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1220,6 +1244,9 @@ importers:
 
   apps/admin-ui-operations:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1356,6 +1383,9 @@ importers:
 
   apps/admin-ui-privacy:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.28.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1495,6 +1525,9 @@ importers:
 
   apps/admin-ui-storage:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1631,6 +1664,9 @@ importers:
 
   apps/admin-ui-subscription:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1770,6 +1806,9 @@ importers:
 
   packages/test-utils:
     dependencies:
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1813,6 +1852,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.5.3
         version: 1.7.5
+      '@posthog/react':
+        specifier: ^1.8.1
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -3112,6 +3154,16 @@ packages:
 
   '@posthog/core@1.23.1':
     resolution: {integrity: sha512-GViD5mOv/mcbZcyzz3z9CS0R79JzxVaqEz4sP5Dsea178M/j3ZWe6gaHDZB9yuyGfcmIMQ/8K14yv+7QrK4sQQ==}
+
+  '@posthog/react@1.8.1':
+    resolution: {integrity: sha512-/tRMKPm8PKvCgmKjgKM4ojSbOpdzzKyDNK8upbK6cKedZ1wdtOcSAMiLEyNCatFB2dqwB85LcjrhkaO8lFnHNQ==}
+    peerDependencies:
+      '@types/react': '>=16.8.0'
+      posthog-js: '>=1.257.2'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@posthog/types@1.354.0':
     resolution: {integrity: sha512-sfH1PiThX1YWkrZSls6zMuZcJWnvboCnZEJ3Z/OI8WgBmLDJfQpficbuLM3tgSLIchI22TPAkpwdT987iW6XIA==}
@@ -8480,6 +8532,13 @@ snapshots:
   '@posthog/core@1.23.1':
     dependencies:
       cross-spawn: 7.0.6
+
+  '@posthog/react@1.8.1(@types/react@19.2.14)(posthog-js@1.354.0)(react@19.2.4)':
+    dependencies:
+      posthog-js: 1.354.0
+      react: 19.2.4
+    optionalDependencies:
+      '@types/react': 19.2.14
 
   '@posthog/types@1.354.0': {}
 

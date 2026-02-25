@@ -17,6 +17,9 @@ function jsdomProjectConfig() {
       name: 'unit',
       environment: 'jsdom',
       setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
+      sequence: {
+        groupOrder: 1,
+      },
       env: {
         TZ: 'UTC',
       },
@@ -47,6 +50,18 @@ function browserProjectConfig() {
     test: {
       name: 'browser',
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+      sequence: {
+        groupOrder: 2,
+      },
+      isolate: false,
+      fileParallelism: false,
+      pool: 'forks',
+      poolOptions: {
+        forks: {
+          singleFork: true,
+        },
+      },
+      retry: 2,
 
       alias: {
         'admin-ui-test-utils': path.resolve(
