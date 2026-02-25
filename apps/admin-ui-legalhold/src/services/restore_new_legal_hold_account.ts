@@ -32,18 +32,18 @@ export const doRestoreOnNewLegalHoldAccount = async (
 		.then((rawData) => {
 			const data = rawData as RestoreRawResponse;
 			if (data?.error) {
-				return Promise.reject(data.error);
+				throw data.error;
 			}
 			const parseData = data?.operationId
 				? data
 				: JSON.parse(data?.Body?.response?.content || '{}');
 			const message: string = parseData?.error?.message || parseData?.message;
 			if (message) {
-				return Promise.reject(message);
+				throw new Error(message);
 			}
 			const operationId = data?.operationId ?? parseData?.response?.operationId;
 			if (!operationId) {
-				return Promise.reject(new Error('No operationId returned'));
+				throw new Error('No operationId returned');
 			}
 			return { operationId };
 		})
