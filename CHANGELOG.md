@@ -1,3 +1,9 @@
+## [0.12.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.24...v0.12.0-devel.25) (2026-02-25)
+
+### Features
+
+* add warning banners for account quota ([#1078](https://github.com/zextras/carbonio-admin-console-ui/issues/1078)) ([a44e013](https://github.com/zextras/carbonio-admin-console-ui/commit/a44e0136f8f8a08bc73b438a54bf39778ccda94c))
+
 ## [0.12.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.3...v0.12.0) (2026-02-13)
 
 ### Features
