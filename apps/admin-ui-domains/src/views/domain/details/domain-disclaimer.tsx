@@ -16,12 +16,13 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { encode } from 'html-entities';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import Composer from '../../../composer/composer';
+import { getFontSizesOptions } from '../../../composer/utils';
 import {
   AMAVIS_DISCLAIMER_OPTIONS,
   FALSE,
@@ -40,11 +41,6 @@ const EditorWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   position: relative;
-  .tox-edit-area {
-    iframe {
-      background: ${({ theme }): string => theme.palette.gray5.regular};
-    }
-  }
 `;
 
 const TextAreaEditor = styled(TextArea)`
@@ -80,6 +76,22 @@ const DomainDisclaimer: FC = () => {
     }
   }, [userSetting?.attrs]);
 
+  const fontSizesOptionsToString = getFontSizesOptions()
+    .map((fontSize: string) => fontSize)
+    .join(' ');
+
+  const composerCustomOptions = {
+    base_url: `${BASE_PATH}`,
+    font_size_formats: fontSizesOptionsToString,
+    toolbar: 'undo redo | bold italic | alignleft aligncenter',
+    content_style: 'p { margin: 0; }',
+    valid_elements: '*[*]',
+    extended_valid_elements: 'p[style|class]',
+    cleanup: false,
+    verify_html: false,
+    forced_root_block: 'p',
+    protect: [/&nbsp;/g],
+  };
   const setInitialAndCurrentValue = useCallback(
     (key: string, value: unknown) => {
       setInitialValue(key, value);
@@ -88,48 +100,50 @@ const DomainDisclaimer: FC = () => {
     [setInitialValue, setValue],
   );
 
-  useMemo(() => {
-    if (domainInformation) {
-      const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+  useEffect(() => {
+    if (!domainInformation) return;
+    const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+    );
+    if (
+      zimbraDomainMandatoryMailSignatureEnabled &&
+      zimbraDomainMandatoryMailSignatureEnabled[0]?._content
+    ) {
+      setInitialAndCurrentValue(
+        ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+        zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE,
       );
-      if (
-        zimbraDomainMandatoryMailSignatureEnabled &&
-        zimbraDomainMandatoryMailSignatureEnabled[0]?._content
-      ) {
-        setInitialAndCurrentValue(
-          ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-          zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
-      }
+    } else {
+      setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
+    }
 
-      const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+    const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+    );
+    if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
+      setInitialAndCurrentValue(
+        ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+        zimbraAmavisDomainDisclaimerText[0]?._content,
       );
-      if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
-          zimbraAmavisDomainDisclaimerText[0]?._content,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, '');
-      }
+    } else {
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, '');
+    }
+  }, [domainInformation, setInitialAndCurrentValue]);
 
-      const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+  useEffect(() => {
+    if (!domainInformation) return;
+    const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+    );
+    if (zimbraAmavisDomainDisclaimerHtml?.[0]?._content) {
+      setInitialAndCurrentValue(
+        ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+        zimbraAmavisDomainDisclaimerHtml?.[0]?._content,
       );
-      if (zimbraAmavisDomainDisclaimerHtml && zimbraAmavisDomainDisclaimerHtml[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-          zimbraAmavisDomainDisclaimerHtml[0]?._content,
-        );
-        setDefaulRichTextContent(zimbraAmavisDomainDisclaimerHtml[0]?._content);
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, '');
-        setDefaulRichTextContent('');
-      }
+      setDefaulRichTextContent(zimbraAmavisDomainDisclaimerHtml[0]?._content);
+    } else {
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, '');
+      setDefaulRichTextContent('');
     }
   }, [domainInformation, setInitialAndCurrentValue]);
 
@@ -396,7 +410,9 @@ const DomainDisclaimer: FC = () => {
           >
             <EditorWrapper>
               <Composer
-                value={defaulRichTextContent}
+                initialValue={defaulRichTextContent}
+                customInitOptions={composerCustomOptions}
+                value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}
                 onEditorChange={(ev: any): void => {
                   setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);
                 }}
