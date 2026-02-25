@@ -47,4 +47,6 @@ export const doRestoreOnNewLegalHoldAccount = async (
 			}
 			return { operationId };
 		})
-		.catch((err: ApiError) => Promise.reject(err));
+		.catch((err: ApiError) => {
+			throw err;
+		});

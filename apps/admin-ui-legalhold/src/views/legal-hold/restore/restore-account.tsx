@@ -126,7 +126,14 @@ const RestoreAccountView: FC<{
       const type = 'distributionlists,accounts';
       const attrs = 'displayName,zimbraId';
       const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-      accountListDirectory(attrs, type, '', searchStr === '' ? '' : query, offset, limit)
+      accountListDirectory({
+        attr: attrs,
+        type,
+        domainName: '',
+        query: searchStr === '' ? '' : query,
+        offset,
+        limit,
+      })
         .then((data) => {
           const accountListResponse =
             data?.account
