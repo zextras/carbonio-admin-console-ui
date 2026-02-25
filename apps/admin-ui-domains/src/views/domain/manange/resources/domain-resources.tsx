@@ -277,7 +277,7 @@ const DomainResources: FC = () => {
                               item?.a?.find(
                                 (a: any) => a?.n === "zimbraLastLogonTimestamp",
                               )?._content,
-                              "yyyyMMddHHmmss.X",
+                              "yyyyMMddHHmmss.SSSX",
                               new Date(),
                             ),
                             "yy/MM/dd | hh:mm",
