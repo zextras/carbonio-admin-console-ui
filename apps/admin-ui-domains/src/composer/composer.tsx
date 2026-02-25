@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import 'tinymce/tinymce';
-import 'tinymce/models/dom/model';
+import 'tinymce/models/dom';
 // Theme
 import 'tinymce/themes/silver';
 // Toolbar icons
