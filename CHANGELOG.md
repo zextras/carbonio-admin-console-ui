@@ -1,3 +1,10 @@
+## [0.12.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.1...v0.12.2) (2026-02-25)
+
+### Bug Fixes
+
+* fixed date format parse issue ([270c717](https://github.com/zextras/carbonio-admin-console-ui/commit/270c717306be84a85fa1056385333741f69d2b7a))
+* fixed date format parse issue in get resource ([bd9929b](https://github.com/zextras/carbonio-admin-console-ui/commit/bd9929bd9ba216181676240cf3dea4d31add9348))
+
 ## [0.12.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0...v0.12.1) (2026-02-24)
 
 ### Bug Fixes
