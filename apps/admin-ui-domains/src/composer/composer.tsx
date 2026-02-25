@@ -4,13 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import 'tinymce/tinymce';
-import 'tinymce/models/dom';
+import 'tinymce/models/dom/model';
 // Theme
 import 'tinymce/themes/silver';
 // Toolbar icons
 import 'tinymce/icons/default';
 // Editor styles
-import 'tinymce/skins/ui/oxide/skin.min.css';
+import 'tinymce/skins/ui/oxide/skin';
+// Content styles, including inline UI like fake cursors
+import 'tinymce/skins/content/default/content';
+import 'tinymce/skins/ui/oxide/content';
 // importing the plugin js.
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/anchor';
@@ -41,7 +44,6 @@ import {
   DEFAULT_FONT_SIZE_FORMATS,
   DEFAULT_PLUGINS,
   DEFAULT_STYLE_FORMATS,
-  generateQuickBarsConfig,
   generateToolbarConfig,
   SUPPORTED_LOCALES,
 } from './utils';
@@ -93,10 +95,8 @@ const Composer = ({
     );
   }, [locale]);
 
-  const quickBarsConfig = generateQuickBarsConfig(inline);
   const editorInitConfig = useMemo<EditorProps['init']>(
     () => ({
-      content_css: [''],
       language_url: `${BASE_PATH}tinymce/langs/${language}.js`,
       language,
       min_height: 350,
@@ -110,8 +110,7 @@ const Composer = ({
       object_resizing: 'img',
       style_formats: DEFAULT_STYLE_FORMATS,
       plugins: DEFAULT_PLUGINS,
-      toolbar: generateToolbarConfig(inline),
-      ...quickBarsConfig,
+      toolbar: generateToolbarConfig(),
       contextmenu: [''],
       toolbar_mode: 'wrap',
       visualblocks_default_state: false,
@@ -124,7 +123,7 @@ const Composer = ({
       ...customInitOptions,
     }),
 
-    [language, inline, quickBarsConfig, customInitOptions],
+    [language, inline, customInitOptions],
   );
 
   return (
@@ -135,6 +134,7 @@ const Composer = ({
       style={{ overflowY: 'hidden' }}
     >
       <Editor
+        licenseKey="gpl"
         initialValue={initialValue}
         value={value}
         init={editorInitConfig}

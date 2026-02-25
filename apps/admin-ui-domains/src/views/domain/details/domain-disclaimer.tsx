@@ -22,7 +22,6 @@ import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import Composer from '../../../composer/composer';
-import { getFontSizesOptions } from '../../../composer/utils';
 import {
   AMAVIS_DISCLAIMER_OPTIONS,
   FALSE,
@@ -76,22 +75,6 @@ const DomainDisclaimer: FC = () => {
     }
   }, [userSetting?.attrs]);
 
-  const fontSizesOptionsToString = getFontSizesOptions()
-    .map((fontSize: string) => fontSize)
-    .join(' ');
-
-  const composerCustomOptions = {
-    base_url: `${BASE_PATH}`,
-    font_size_formats: fontSizesOptionsToString,
-    toolbar: 'undo redo | bold italic | alignleft aligncenter',
-    content_style: 'p { margin: 0; }',
-    valid_elements: '*[*]',
-    extended_valid_elements: 'p[style|class]',
-    cleanup: false,
-    verify_html: false,
-    forced_root_block: 'p',
-    protect: [/&nbsp;/g],
-  };
   const setInitialAndCurrentValue = useCallback(
     (key: string, value: unknown) => {
       setInitialValue(key, value);
@@ -411,7 +394,6 @@ const DomainDisclaimer: FC = () => {
             <EditorWrapper>
               <Composer
                 initialValue={defaulRichTextContent}
-                customInitOptions={composerCustomOptions}
                 value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}
                 onEditorChange={(ev: any): void => {
                   setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);

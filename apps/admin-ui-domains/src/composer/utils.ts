@@ -135,121 +135,16 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
   },
 } as const;
 
-export const getFontSizesOptions = (): string[] => [
-  '8pt',
-  '9pt',
-  '10pt',
-  '11pt',
-  '12pt',
-  '13pt',
-  '14pt',
-  '16pt',
-  '18pt',
-  '24pt',
-  '36pt',
-  '48pt',
-];
-export function generateToolbarConfig(inline: boolean): string | false {
-  if (inline) {
-    return false;
-  }
-
+export function generateToolbarConfig(): string | false {
   return [
-    // Font and style controls
     'fontfamily fontsize styles forecolor backcolor',
-    // Text formatting
     'bold italic underline strikethrough removeformat',
-    // Alignment and direction
     'alignleft aligncenter alignright alignjustify ltr rtl',
-    // Lists and indentation
     'bullist numlist outdent indent',
-    // Insert elements
     'link table insertfile image imageSelector',
-    // View and blocks
     'visualblocks code',
   ].join(' | ');
 }
-export function generateQuickBarsConfig(inline: boolean): {
-  quickbars_insert_toolbar: string;
-  quickbars_selection_toolbar: string;
-} {
-  return {
-    quickbars_insert_toolbar: inline ? 'bullist numlist' : '',
-    quickbars_selection_toolbar: inline
-      ? 'bold italic underline | forecolor backcolor | removeformat | link'
-      : 'link',
-  };
-}
-export const getFonts = (): { label: string; value: string }[] => [
-  {
-    label: 'Andale Mono',
-    value: 'andale mono, times',
-  },
-  {
-    label: 'Arial',
-    value: 'arial, helvetica, sans-serif',
-  },
-  {
-    label: 'Arial Black',
-    value: 'arial black, avant garde',
-  },
-  {
-    label: 'Book Antiqua',
-    value: 'book antiqua, palatino',
-  },
-  {
-    label: 'Comic Sans MS',
-    value: 'comic sans ms, sans-serif',
-  },
-  {
-    label: 'Courier New',
-    value: 'courier new, courier',
-  },
-  {
-    label: 'Georgia',
-    value: 'georgia, palatino',
-  },
-  {
-    label: 'Helvetica',
-    value: 'helvetica',
-  },
-  {
-    label: 'Impact',
-    value: 'impact, chicago',
-  },
-  {
-    label: 'Symbol',
-    value: 'symbol',
-  },
-  {
-    label: 'Tahoma',
-    value: 'tahoma, arial, helvetica, sans-serif',
-  },
-  {
-    label: 'Terminal',
-    value: 'terminal, monaco',
-  },
-  {
-    label: 'Times New Roman',
-    value: 'times new roman, times',
-  },
-  {
-    label: 'Trebuchet MS',
-    value: 'trebuchet ms, geneva',
-  },
-  {
-    label: 'Verdana',
-    value: 'verdana, geneva',
-  },
-  {
-    label: 'Webdings',
-    value: 'webdings',
-  },
-  {
-    label: 'Wingdings',
-    value: 'wingdings, zapf dingbats',
-  },
-];
 
 export const DEFAULT_FONT_SIZE_FORMATS =
   '8pt 9pt 10pt 11pt 12pt 13pt 14pt 16pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt';
