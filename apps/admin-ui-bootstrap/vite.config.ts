@@ -14,6 +14,7 @@ import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from './vite-config/utils';
+import tailwindcss from '@tailwindcss/vite';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
@@ -53,6 +54,7 @@ export default defineConfig(({ command, mode }) => {
         include: '**/*.svg',
         exclude: '**/src/assets/**/*.svg',
       }),
+      tailwindcss(),
     ],
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
