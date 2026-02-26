@@ -32,7 +32,7 @@ describe('getAccountQuota', () => {
     const apiResponse: GetAccountQuotaRawResponse = {
       total: {
         used: 500000000,
-        computedLimit: 1000000000,
+        computedLimit: { type: 'set', value: 1000000000 },
       },
       modules: {
         mailbox: { used: 0 },

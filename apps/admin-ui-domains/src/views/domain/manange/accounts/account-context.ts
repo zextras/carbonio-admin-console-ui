@@ -5,6 +5,8 @@
  */
 import { createContext, Dispatch, SetStateAction } from 'react';
 
+import { ComputedLimit } from '../../../../services/get-account-quota';
+
 export type AccountDetail = Record<string, any> & {
   carbonioFeatureWscEnabled?: string;
   carbonioWscShowMessageReads?: string;
@@ -20,7 +22,7 @@ export type AccountDetail = Record<string, any> & {
   carbonioWscMaxGroupMembers?: string;
   carbonioWscMaxRoomPictureSize?: string;
   carbonioWscMaxAttachmentSize?: string;
-  totalComputedQuotaLimit?: number;
+  totalComputedQuotaLimit?: ComputedLimit;
   totalQuotaUsed?: number;
   totalQuotaUsedByModule?: Record<string, number>;
 };

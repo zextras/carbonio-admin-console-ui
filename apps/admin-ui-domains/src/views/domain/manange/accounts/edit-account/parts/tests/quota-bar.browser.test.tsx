@@ -1,16 +1,19 @@
-import { setupBrowserTest } from 'admin-ui-test-utils';
-import { page } from 'vitest/browser';
-
-import { QuotaBar } from '../quota-bar';
-
 /*
  * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { setupBrowserTest } from 'admin-ui-test-utils';
+import { page } from 'vitest/browser';
+
+import { QuotaBar } from '../quota-bar';
+
 describe('QuotaBar', () => {
   it('should render correctly the given background', async () => {
-    await setupBrowserTest(<QuotaBar modules={[]} background="red" limit={1} used={0} />);
+    await setupBrowserTest(
+      <QuotaBar modules={[]} background="red" limit={{ type: 'set', value: 1 }} used={0} />,
+    );
 
     expect(page.getByTestId('quota-bar')).toHaveStyle('background: red');
   });
@@ -21,7 +24,9 @@ describe('QuotaBar', () => {
       { label: 'Module 2', color: 'blue', used: 2 },
     ];
 
-    await setupBrowserTest(<QuotaBar modules={modules} limit={10} used={3} />);
+    await setupBrowserTest(
+      <QuotaBar modules={modules} limit={{ type: 'set', value: 10 }} used={3} />,
+    );
 
     const segments = page.getByTestId('quota-bar-module-segment');
     expect(segments).toHaveLength(modules.length);
@@ -36,7 +41,9 @@ describe('QuotaBar', () => {
       { label: 'Module 2', color: 'blue', used: 7 },
     ];
 
-    await setupBrowserTest(<QuotaBar modules={modules} limit={10} used={12} />);
+    await setupBrowserTest(
+      <QuotaBar modules={modules} limit={{ type: 'set', value: 10 }} used={12} />,
+    );
 
     const segments = page.getByTestId('quota-bar-module-segment');
     expect(segments).toHaveLength(modules.length);
@@ -51,7 +58,9 @@ describe('QuotaBar', () => {
       { label: 'Module 2', color: 'blue', used: 7 },
     ];
 
-    await setupBrowserTest(<QuotaBar modules={modules} limit={15} used={12} />);
+    await setupBrowserTest(
+      <QuotaBar modules={modules} limit={{ type: 'set', value: 15 }} used={12} />,
+    );
 
     expect(page.getByTestId('quota-bar-legend-entry').getByText('Available (3 B)')).toBeVisible();
   });
@@ -62,7 +71,9 @@ describe('QuotaBar', () => {
       { label: 'Module 2', color: 'blue', used: 7 },
     ];
 
-    await setupBrowserTest(<QuotaBar modules={modules} limit={15} used={12} />);
+    await setupBrowserTest(
+      <QuotaBar modules={modules} limit={{ type: 'set', value: 15 }} used={12} />,
+    );
 
     const legendEntries = page.getByTestId('quota-bar-legend-entry');
     expect(legendEntries).toHaveLength(modules.length + 1);
