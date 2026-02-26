@@ -5,6 +5,11 @@
  */
 
 export const optimizeDepsInclude = [
+  'vitest-browser-react',
+  '@tanstack/react-query',
+  '@tanstack/react-query-devtools',
+  'zustand',
+  'lit',
   '@zextras/ui-components',
   'i18next',
   'react-i18next',
