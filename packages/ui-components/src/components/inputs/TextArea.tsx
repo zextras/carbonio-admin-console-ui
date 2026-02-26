@@ -15,7 +15,7 @@ import React, {
 } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getCSSColorVar } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { AnyColor, PaletteColor } from '../../types/utils';
 import { TextProps } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
@@ -88,7 +88,7 @@ const AdjustHeightTextArea = ({
 					? 'calc(var(--font-size-extrasmall) * 1.5)'
 					: '0px',
 				'--grow-max-height': maxHeight,
-				'--color-gray2-regular': getCSSColorVar('gray2'),
+				'--color-gray2-regular': getThemeColorVar('gray2', 'regular'),
 			}) as React.CSSProperties,
 		[hasLabel, maxHeight],
 	);
@@ -96,7 +96,7 @@ const AdjustHeightTextArea = ({
 	const textAreaStyle = useMemo(
 		() =>
 			({
-				'--text-color-disabled': getCSSColorVar(`${color}.disabled`),
+				'--text-color-disabled': getThemeColorVar(color, 'disabled'),
 			}) as React.CSSProperties,
 		[color],
 	);

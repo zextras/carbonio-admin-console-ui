@@ -10,7 +10,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getCSSColorVar } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
@@ -80,27 +80,27 @@ const IconCheckbox = ({
     () =>
       ({
         '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
-        '--icon-wrapper-bg': checked ? getCSSColorVar('primary') : 'transparent',
+        '--icon-wrapper-bg': checked ? getThemeColorVar('primary', 'regular') : 'transparent',
         '--icon-wrapper-bg-hover': checked
-          ? getCSSColorVar('primary.hover')
-          : getCSSColorVar('transparent.hover'),
+          ? getThemeColorVar('primary', 'hover')
+          : getThemeColorVar('transparent', 'hover'),
         '--icon-wrapper-bg-focus': checked
-          ? getCSSColorVar('primary.focus')
-          : getCSSColorVar('transparent.focus'),
+          ? getThemeColorVar('primary', 'focus')
+          : getThemeColorVar('transparent', 'focus'),
         '--icon-wrapper-bg-active': checked
-          ? getCSSColorVar('primary.active')
-          : getCSSColorVar('transparent.active'),
+          ? getThemeColorVar('primary', 'active')
+          : getThemeColorVar('transparent', 'active'),
         '--icon-wrapper-bg-disabled': checked
-          ? getCSSColorVar('primary.disabled')
-          : getCSSColorVar('transparent.disabled'),
-        '--icon-fill': checked ? getCSSColorVar('gray6') : 'currentColor',
+          ? getThemeColorVar('primary', 'disabled')
+          : getThemeColorVar('transparent', 'disabled'),
+        '--icon-fill': checked ? getThemeColorVar('gray6', 'regular') : 'currentColor',
         '--icon-fill-hover': checked
-          ? getCSSColorVar('gray6.hover')
-          : getCSSColorVar('primary.hover'),
+          ? getThemeColorVar('gray6', 'hover')
+          : getThemeColorVar('primary', 'hover'),
         '--icon-fill-focus': checked
-          ? getCSSColorVar('gray6.focus')
-          : getCSSColorVar('primary.focus'),
-        '--icon-fill-disabled': checked ? getCSSColorVar('gray6.disabled') : 'currentColor',
+          ? getThemeColorVar('gray6', 'focus')
+          : getThemeColorVar('primary', 'focus'),
+        '--icon-fill-disabled': checked ? getThemeColorVar('gray6', 'disabled') : 'currentColor',
       } as React.CSSProperties),
     [borderRadius, checked],
   );

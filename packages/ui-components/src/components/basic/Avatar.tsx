@@ -6,7 +6,7 @@
 
 import { HTMLAttributes, useMemo } from 'react';
 
-import { getCSSColorVar } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import styles from './Avatar.module.css';
 
 type ShapeType = 'round' | 'square';
@@ -98,12 +98,12 @@ const Avatar = ({
 		() => ({
 			'--avatar-diameter': `var(--avatar-${size}-diameter)`,
 			'--avatar-bg':
-				(selecting && getCSSColorVar(selected ? 'primary' : 'gray6')) ||
-				(background && getCSSColorVar(`${background}.${disabled ? 'disabled' : 'regular'}`)) ||
+				(selecting && getThemeColorVar(selected ? 'primary' : 'gray6', 'regular')) ||
+				(background && getThemeColorVar(background, disabled ? 'disabled' : 'regular')) ||
 				getAvatarColorVar(calculatedColor),
 			'--avatar-picture': picture && !selecting ? `url(${picture})` : 'none',
 			'--avatar-radius': shape === 'round' ? '50%' : '15%',
-			'--avatar-border': selecting ? `0.125rem solid ${getCSSColorVar('primary')}` : 'none',
+			'--avatar-border': selecting ? `0.125rem solid ${getThemeColorVar('primary', 'regular')}` : 'none',
 		}) as React.CSSProperties,
 		[size, selecting, selected, background, disabled, calculatedColor, picture, shape],
 	);
@@ -112,7 +112,7 @@ const Avatar = ({
 		() =>
 			({
 				'--avatar-font': `var(--avatar-${size}-font)`,
-				'--capitals-color': getCSSColorVar(color ?? 'gray6'),
+				'--capitals-color': getThemeColorVar(color ?? 'gray6', 'regular'),
 			}) as React.CSSProperties,
 		[size, color],
 	);

@@ -7,7 +7,7 @@
 import React, { InputHTMLAttributes, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getCSSColorVar } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { Container, ContainerProps } from '../layout/Container';
 import styles from './Radio.module.css';
@@ -127,12 +127,12 @@ const RadioComponent = (
     '--radio-inner-diameter': `calc(${radioSize} * (10 / 24))`,
     '--radio-border-width': `calc(${radioSize} * (2 / 24))`,
     '--radio-padding': `calc(${radioSize} * (3 / 24))`,
-    '--radio-color': getCSSColorVar(iconColor),
-    '--radio-color-hover': getCSSColorVar(`${iconColor}.hover`),
-    '--radio-color-focus': getCSSColorVar(`${iconColor}.focus`),
-    '--radio-color-active': getCSSColorVar(`${iconColor}.active`),
-    '--radio-color-disabled': getCSSColorVar(`${iconColor}.disabled`),
-    '--radio-bg-color': getCSSColorVar('gray6'),
+    '--radio-color': getThemeColorVar(iconColor, 'regular'),
+    '--radio-color-hover': getThemeColorVar(iconColor, 'hover'),
+    '--radio-color-focus': getThemeColorVar(iconColor, 'focus'),
+    '--radio-color-active': getThemeColorVar(iconColor, 'active'),
+    '--radio-color-disabled': getThemeColorVar(iconColor, 'disabled'),
+    '--radio-bg-color': getThemeColorVar('gray6', 'regular'),
   } as React.CSSProperties;
 
   const labelWithClick = useMemo(

@@ -237,15 +237,6 @@ function pseudoClasses(
   `;
 }
 
-export function getCSSColorVar(color: string): string {
-  const variants = ['hover', 'focus', 'active', 'disabled', 'regular'];
-  const splitRegexp = RegExp(`\\.(${variants.join('|')})`);
-  const parts = color.split(splitRegexp);
-  const colorName = parts[0];
-  const variant = parts[2] || 'regular';
-  return `var(--color-${colorName}-${variant})`;
-}
-
 export function getThemeColorVar(colorName: string, state: string): string {
   if (!colorName) return '';
   const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
