@@ -723,13 +723,7 @@ const DomainMailboxQuotaSetting: FC = () => {
                       height="fit"
                       padding={{ top: 'medium' }}
                     >
-                      <Button
-                        type="ghost"
-                        color="primary"
-                        label=""
-                        loading
-                        onClick={(): null => null}
-                      />
+                      <spinner-wc></spinner-wc>
                     </Container>
                   )}
                 </Row>

@@ -5,7 +5,6 @@
  */
 
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -172,7 +171,7 @@ const ServersListTable: FC<{
           height="fit"
           padding={{ top: 'medium' }}
         >
-          <Button type="ghost" label={''} loading onClick={(): null => null} />
+          <spinner-wc></spinner-wc>
         </Container>
       )}
       {(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (

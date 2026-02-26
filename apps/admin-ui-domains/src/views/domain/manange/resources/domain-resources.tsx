@@ -242,10 +242,9 @@ const DomainResources: FC = () => {
                       {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
-                              item?.a?.find(
-                                (a: any) => a?.n === "zimbraLastLogonTimestamp",
-                              )?._content,
-                              "yyyyMMddHHmmss.SSSX",
+                              item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
+                                ?._content,
+                              'yyyyMMddHHmmss.SSSX',
                               new Date(),
                             ),
                             'yy/MM/dd | hh:mm',
@@ -568,13 +567,7 @@ const DomainResources: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (

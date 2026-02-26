@@ -1113,13 +1113,7 @@ const ManageDelegates: FC = () => {
                     height="auto"
                     padding={{ top: 'medium' }}
                   >
-                    <Button
-                      type="ghost"
-                      color="primary"
-                      label=""
-                      loading
-                      onClick={(): null => null}
-                    />
+                    <spinner-wc></spinner-wc>
                   </Container>
                 )}
                 {allAccount?.length === 0 && !isRequestInProgress && (

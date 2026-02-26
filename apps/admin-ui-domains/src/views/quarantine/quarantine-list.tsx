@@ -276,7 +276,7 @@ const MessageListTable: FC<{
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <spinner-wc></spinner-wc>
             </Container>
           )}
           {tableRows.length === 0 && !requestInprogress && (
@@ -1250,13 +1250,7 @@ const QuarantineList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               </>
             )}

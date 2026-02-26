@@ -715,13 +715,7 @@ const LegalHoldPanel: FC = () => {
                     padding={{ top: 'medium' }}
                     style={absoluteContainerItemStyle}
                   >
-                    <Button
-                      type="ghost"
-                      color="primary"
-                      label=""
-                      loading
-                      onClick={(): null => null}
-                    />
+                    <spinner-wc></spinner-wc>
                   </Container>
                 )}
 

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -352,13 +351,7 @@ const DomainList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {domainList.length === 0 && !isRequestInProgress && (

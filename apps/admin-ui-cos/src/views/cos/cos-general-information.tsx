@@ -742,7 +742,7 @@ const CosGeneralInformation: FC = () => {
                 height="auto"
                 padding={{ top: 'medium' }}
               >
-                <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+                <spinner-wc></spinner-wc>
               </Container>
             )}
             {domainList.length === 0 && !isDomainRequestInProgress && (
@@ -855,7 +855,7 @@ const CosGeneralInformation: FC = () => {
                 height="auto"
                 padding={{ top: 'medium' }}
               >
-                <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+                <spinner-wc></spinner-wc>
               </Container>
             )}
             {accountList.length === 0 && !isAccountRequestInProgress && (

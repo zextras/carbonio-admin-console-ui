@@ -480,7 +480,7 @@ const MTAStats: FC = () => {
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <spinner-wc></spinner-wc>
             </Container>
           )}
           {mtaServerList.length === 0 && !requestInprogress && (

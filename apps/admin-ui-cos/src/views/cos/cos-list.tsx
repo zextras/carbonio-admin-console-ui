@@ -5,7 +5,6 @@
  */
 
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -352,13 +351,7 @@ const CosList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {cosList.length === 0 && !isRequestInProgress && (
