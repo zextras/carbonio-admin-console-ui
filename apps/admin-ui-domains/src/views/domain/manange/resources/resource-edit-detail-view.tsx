@@ -1047,7 +1047,7 @@ const ResourceEditDetailView: FC<any> = ({
                     ? format(
                         parse(
                           resourceDetailData?.zimbraCreateTimestamp,
-                          'yyyyMMddHHmmss.X',
+                          'yyyyMMddHHmmss.SSSX',
                           new Date(),
                         ),
                         'dd MMM yyyy | hh:mm:ss a',

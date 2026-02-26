@@ -468,7 +468,8 @@ export const SignatureDetail: FC<any> = ({
             <Container>
               <div className={editorWrapperStyles['editor-wrapper']}>
                 <Composer
-                  value={defaultSignatureContent}
+                  initialValue={defaultSignatureContent}
+                  value={signatureContent}
                   onEditorChange={(ev: any): void => {
                     setSignatureContent(ev[1]);
                   }}

@@ -16,8 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { isEqual } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
@@ -43,7 +42,6 @@ const DomainDisclaimer: FC = () => {
   const domainName = useDomainStore((state) => state.domain?.name);
   const setDomain = useDomainStore((state) => state.setDomain);
   const createSnackbar = useSnackbar();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
   const [domainDisclaimerInitialDetail, setDomainDisclaimerInitialDetail] =
     useState<DomainDisclaimerType>();
@@ -74,58 +72,52 @@ const DomainDisclaimer: FC = () => {
     [setInitialValue, setValue],
   );
 
-  useMemo(() => {
-    if (domainInformation) {
-      const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+  useEffect(() => {
+    if (!domainInformation) return;
+    const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+    );
+    if (
+      zimbraDomainMandatoryMailSignatureEnabled &&
+      zimbraDomainMandatoryMailSignatureEnabled[0]?._content
+    ) {
+      setInitialAndCurrentValue(
+        ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+        zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE,
       );
-      if (
-        zimbraDomainMandatoryMailSignatureEnabled &&
-        zimbraDomainMandatoryMailSignatureEnabled[0]?._content
-      ) {
-        setInitialAndCurrentValue(
-          ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-          zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
-      }
+    } else {
+      setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
+    }
 
-      const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+    const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+    );
+    if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
+      setInitialAndCurrentValue(
+        ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+        zimbraAmavisDomainDisclaimerText[0]?._content,
       );
-      if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
-          zimbraAmavisDomainDisclaimerText[0]?._content,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, '');
-      }
-
-      const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
-        (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-      );
-      if (zimbraAmavisDomainDisclaimerHtml && zimbraAmavisDomainDisclaimerHtml[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
-          zimbraAmavisDomainDisclaimerHtml[0]?._content,
-        );
-        setDefaulRichTextContent(zimbraAmavisDomainDisclaimerHtml[0]?._content);
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, '');
-        setDefaulRichTextContent('');
-      }
+    } else {
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, '');
     }
   }, [domainInformation, setInitialAndCurrentValue]);
 
   useEffect(() => {
-    if (domainDisclaimerDetail && !isEqual(domainDisclaimerDetail, domainDisclaimerInitialDetail)) {
-      setIsDirty(true);
+    if (!domainInformation) return;
+    const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
+      (item) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+    );
+    if (zimbraAmavisDomainDisclaimerHtml?.[0]?._content) {
+      setInitialAndCurrentValue(
+        ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+        zimbraAmavisDomainDisclaimerHtml?.[0]?._content,
+      );
+      setDefaulRichTextContent(zimbraAmavisDomainDisclaimerHtml[0]?._content);
     } else {
-      setIsDirty(false);
+      setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, '');
+      setDefaulRichTextContent('');
     }
-  }, [domainDisclaimerDetail, domainDisclaimerInitialDetail]);
+  }, [domainInformation, setInitialAndCurrentValue]);
 
   const onCancel = useCallback(() => {
     setDefaulRichTextContent(domainDisclaimerInitialDetail?.zimbraAmavisDomainDisclaimerHTML || '');
@@ -276,29 +268,19 @@ const DomainDisclaimer: FC = () => {
           </Text>
         </Row>
         <Row>
-          {isDirty && (
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-end"
-              crossAlignment="flex-end"
-              background="gray6"
-            >
-              <Padding right="small">
-                {isDirty && (
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={onCancel}
-                  />
-                )}
-              </Padding>
-              <Padding right="small">
-                {isDirty && (
-                  <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-                )}
-              </Padding>
-            </Container>
-          )}
+          <Container
+            orientation="horizontal"
+            mainAlignment="flex-end"
+            crossAlignment="flex-end"
+            background="gray6"
+          >
+            <Padding right="small">
+              <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+            </Padding>
+            <Padding right="small">
+              <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+            </Padding>
+          </Container>
         </Row>
       </Row>
       <ListRow>
@@ -382,7 +364,6 @@ const DomainDisclaimer: FC = () => {
           >
             <TextArea
               label={''}
-              minHeight="20.5rem"
               value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
               // @ts-expect-error - needs a fix
               onChange={(event: ChangeEvent<HTMLInputElement>): void => {
@@ -401,7 +382,8 @@ const DomainDisclaimer: FC = () => {
           >
             <div className={editorWrapperStyles['editor-wrapper']}>
               <Composer
-                value={defaulRichTextContent}
+                initialValue={defaulRichTextContent}
+                value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}
                 onEditorChange={(ev: any): void => {
                   setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);
                 }}

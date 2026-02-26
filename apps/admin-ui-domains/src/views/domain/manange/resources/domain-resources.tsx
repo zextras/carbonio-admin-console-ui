@@ -242,9 +242,10 @@ const DomainResources: FC = () => {
                       {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
-                              item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
-                                ?._content,
-                              'yyyyMMddHHmmss.X',
+                              item?.a?.find(
+                                (a: any) => a?.n === "zimbraLastLogonTimestamp",
+                              )?._content,
+                              "yyyyMMddHHmmss.SSSX",
                               new Date(),
                             ),
                             'yy/MM/dd | hh:mm',
