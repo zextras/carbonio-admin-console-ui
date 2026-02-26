@@ -11,7 +11,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { tv } from 'tailwind-variants';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getCSSColorVar, useTheme } from '../../theme/theme-utils';
+import { getThemeColorVar, useTheme } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
@@ -164,9 +164,9 @@ const labelVariants = tv({
 
 function getChipColorVars(background: string): Record<string, string> {
   return {
-    '--chip-bg': getCSSColorVar(background),
-    '--chip-bg-hover': getCSSColorVar(`${background}.hover`),
-    '--chip-bg-active': getCSSColorVar(`${background}.active`),
+    '--chip-bg': getThemeColorVar(background, 'regular'),
+    '--chip-bg-hover': getThemeColorVar(background, 'hover'),
+    '--chip-bg-active': getThemeColorVar(background, 'active'),
   };
 }
 
