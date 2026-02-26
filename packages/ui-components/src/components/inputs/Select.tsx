@@ -7,41 +7,22 @@
 import '../../web-components/icon-wc';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
+import { tv } from 'tailwind-variants';
 
-import { getColor } from '../../theme/theme-utils';
+import { getThemeColorVar, useTheme } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
-import styles from './Select.module.css';
 
-const Label = styled(Text)<{ $selected: boolean }>`
-  position: absolute;
-  top: ${({ $selected, theme }): string =>
-    $selected ? `calc(${theme.sizes.padding.small} - 0.0625rem)` : '50%'};
-  left: ${({ theme }): string => theme.sizes.padding.large};
-  transform: translateY(${({ $selected }): string => ($selected ? '0' : '-50%')});
-  transition: 150ms ease-out;
-`;
-
-const ContainerEl = styled(Container)<{ $focus: boolean }>`
-  transition: background 0.2s ease-out;
-  &:hover {
-    background: ${({ theme, background }): string => getColor(`${background}.hover`, theme)};
-  }
-  ${({ $focus, theme, background }): SimpleInterpolation =>
-    $focus &&
-    css`
-      background: ${getColor(`${background}.focus`, theme)};
-    `};
-`;
-
-const CustomText = styled(Text)`
-  min-height: 1.167em;
-`;
+type SelectItem<T = string> = {
+  label: string;
+  value: T;
+  disabled?: boolean;
+  customComponent?: React.ReactElement;
+};
 
 type LabelFactoryProps<T = string> = {
   label: string | undefined;
@@ -53,102 +34,20 @@ type LabelFactoryProps<T = string> = {
   selected: SelectItem<T>[];
 };
 
-const DefaultLabelFactory = <T,>({
-  selected,
-  label,
-  open,
-  focus,
-  background,
-  disabled,
-}: LabelFactoryProps<T>): React.JSX.Element => {
-  const selectedLabels = useMemo(
-    () => selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', '),
-    [selected],
-  );
-
-  return (
-    <>
-      <ContainerEl
-        orientation="horizontal"
-        width="fill"
-        crossAlignment="flex-end"
-        mainAlignment="space-between"
-        borderRadius="half"
-        padding={{
-          horizontal: 'large',
-          vertical: 'small',
-        }}
-        background={background}
-        $focus={focus}
-      >
-        <Row takeAvailableSpace mainAlignment="unset">
-          <Padding top="medium" width="100%">
-            <CustomText size="medium" color={disabled ? 'secondary' : 'text'}>
-              {selectedLabels}
-            </CustomText>
-          </Padding>
-          <Label
-            $selected={selected.length > 0}
-            size={selected.length > 0 ? 'small' : 'medium'}
-            color={(disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary'}
-          >
-            {label}
-          </Label>
-        </Row>
-        <div className={styles.iconWrapper}>
-          <icon-wc
-            size="medium"
-            icon={open ? 'ArrowUp' : 'ArrowDown'}
-            color={(disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary'}
-          ></icon-wc>
-        </div>
-      </ContainerEl>
-      <divider-wc color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></divider-wc>
-    </>
-  );
-};
-
-const TabContainer = styled(Container)`
-  position: relative;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-type SelectItem<T = string> = {
-  label: string;
-  value: T;
-  disabled?: boolean;
-  customComponent?: React.ReactElement;
-};
-
-type SelectComponentProps<T> = {
-  label?: string;
-  background?: string;
-  disabled?: boolean;
-  items: SelectItem<T>[];
-  /** Css display property of select */
-  display?: 'block' | 'inline-block';
-  /** Css width property of dropdown */
-  dropdownWidth?: string;
-  /** Css max-width property of dropdown */
-  dropdownMaxWidth?: string;
-  /** Css max-height property of dropdown */
-  dropdownMaxHeight?: string;
-  LabelFactory?: React.ComponentType<LabelFactoryProps<T>>;
-  i18nAllLabel?: string;
-  /** Flag to disable the Portal implementation of dropdown */
-  disablePortal?: boolean;
-  /** Whether to show checkboxes */
-  showCheckbox?: boolean;
-} & (
-  | UncontrolledMultipleSelection<T>
-  | ControlledMultipleSelection<T>
-  | UncontrolledSingleSelection<T>
-  | ControlledSingleSelection<T>
-);
+const selectVariants = tv({
+  slots: {
+    container: [
+      'transition-colors duration-200 ease-out',
+      'bg-[var(--select-bg)]',
+      'hover:bg-[var(--select-bg-hover)]',
+    ],
+    containerFocused: 'bg-[var(--select-bg-focus)]',
+    label: ['absolute', 'left-[var(--padding-large)]', 'transition-all duration-150 ease-out'],
+    customText: 'min-h-[1.167em]',
+    tabContainer: 'relative cursor-pointer focus:outline-none',
+    iconWrapper: 'flex items-center self-center pointer-events-none leading-none',
+  },
+});
 
 type MultipleSelectionOnChange<T = string> = (value: Array<SelectItem<T>>) => void;
 
@@ -182,10 +81,111 @@ type ControlledSingleSelection<T> = {
   onChange: SingleSelectionOnChange<T>;
 };
 
+type SelectComponentProps<T> = {
+  label?: string;
+  background?: string;
+  disabled?: boolean;
+  items: SelectItem<T>[];
+  /** Css display property of select */
+  display?: 'block' | 'inline-block';
+  /** Css width property of dropdown */
+  dropdownWidth?: string;
+  /** Css max-width property of dropdown */
+  dropdownMaxWidth?: string;
+  /** Css max-height property of dropdown */
+  dropdownMaxHeight?: string;
+  LabelFactory?: React.ComponentType<LabelFactoryProps<T>>;
+  i18nAllLabel?: string;
+  /** Flag to disable the Portal implementation of dropdown */
+  disablePortal?: boolean;
+  /** Whether to show checkboxes */
+  showCheckbox?: boolean;
+} & (
+  | UncontrolledMultipleSelection<T>
+  | ControlledMultipleSelection<T>
+  | UncontrolledSingleSelection<T>
+  | ControlledSingleSelection<T>
+);
+
 type SelectProps<T = string> = SelectComponentProps<T> &
   Omit<DropdownProps, keyof SelectComponentProps<T> | 'children'>;
 
 type SelectType = <T = string>(p: SelectProps<T>) => React.ReactElement | null;
+
+const DefaultLabelFactory = <T,>({
+  selected,
+  label,
+  open,
+  focus,
+  background,
+  disabled,
+}: LabelFactoryProps<T>): React.JSX.Element => {
+  const theme = useTheme();
+  const {
+    container,
+    containerFocused,
+    label: labelSlot,
+    customText,
+    iconWrapper,
+  } = selectVariants();
+
+  const selectedLabels = useMemo(
+    () => selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', '),
+    [selected],
+  );
+
+  const hasSelection = selected.length > 0;
+  const labelColor = (disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary';
+  const iconColor = (disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary';
+
+  const containerStyle: React.CSSProperties = {
+    '--select-bg': getThemeColorVar(background, 'regular'),
+    '--select-bg-hover': getThemeColorVar(background, 'hover'),
+    '--select-bg-focus': getThemeColorVar(background, 'focus'),
+    '--padding-large': theme.sizes.padding.large,
+    '--padding-small': theme.sizes.padding.small,
+  } as React.CSSProperties;
+
+  const labelStyle: React.CSSProperties = {
+    top: hasSelection ? `calc(${theme.sizes.padding.small} - 0.0625rem)` : '50%',
+    transform: hasSelection ? 'translateY(0)' : 'translateY(-50%)',
+  };
+
+  return (
+    <>
+      <Container
+        orientation="horizontal"
+        width="fill"
+        crossAlignment="flex-end"
+        mainAlignment="space-between"
+        borderRadius="half"
+        padding={{
+          horizontal: 'large',
+          vertical: 'small',
+        }}
+        className={`${container()} ${focus ? containerFocused() : ''}`}
+        style={containerStyle}
+      >
+        <Row takeAvailableSpace mainAlignment="unset">
+          <Padding top="medium" width="100%">
+            <Text size="medium" color={disabled ? 'secondary' : 'text'} className={customText()}>
+              {selectedLabels}
+            </Text>
+          </Padding>
+          <div className={labelSlot()} style={labelStyle}>
+            <Text size={hasSelection ? 'small' : 'medium'} color={labelColor}>
+              {label}
+            </Text>
+          </div>
+        </Row>
+        <div className={iconWrapper()}>
+          <icon-wc size="medium" icon={open ? 'ArrowUp' : 'ArrowDown'} color={iconColor}></icon-wc>
+        </div>
+      </Container>
+      <divider-wc color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></divider-wc>
+    </>
+  );
+};
 
 const SelectComponent = function SelectFn<T = string>({
   background = INPUT_BACKGROUND_COLOR,
@@ -206,6 +206,8 @@ const SelectComponent = function SelectFn<T = string>({
   showCheckbox = true,
   ...rest
 }: SelectProps<T>): React.JSX.Element {
+  const { tabContainer } = selectVariants();
+
   const initialState = defaultSelection ?? selection ?? [];
   const [selected, setSelected] = useState<SelectItem<T>[]>(
     Array.isArray(initialState) ? initialState : [initialState],
@@ -256,9 +258,7 @@ const SelectComponent = function SelectFn<T = string>({
         return {
           id: `${index}-${item.label}`,
           label: item.label,
-          ...(showCheckbox
-            ? { icon: showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square') }
-            : {}),
+          ...(showCheckbox ? { icon: isSelected ? 'CheckmarkSquare' : 'Square' } : {}),
           onClick: clickItemHandler(item, isSelected),
           selected: isSelected,
           disabled: item.disabled,
@@ -300,9 +300,7 @@ const SelectComponent = function SelectFn<T = string>({
       {
         id: 'all',
         label: i18nAllLabel,
-        ...(showCheckbox
-          ? { icon: showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square') }
-          : {}),
+        ...(showCheckbox ? { icon: isSelected ? 'CheckmarkSquare' : 'Square' } : {}),
         onClick: toggleSelectAll(isSelected),
         selected: isSelected,
       },
@@ -336,7 +334,7 @@ const SelectComponent = function SelectFn<T = string>({
       disablePortal={disablePortal}
       {...rest}
     >
-      <TabContainer onFocus={onFocus} onBlur={onBlur} tabIndex={0}>
+      <div onFocus={onFocus} onBlur={onBlur} tabIndex={0} className={tabContainer()}>
         <LabelFactory
           label={label}
           open={open}
@@ -346,7 +344,7 @@ const SelectComponent = function SelectFn<T = string>({
           disabled={disabled}
           selected={selected}
         />
-      </TabContainer>
+      </div>
     </Dropdown>
   );
 };
@@ -354,10 +352,8 @@ const SelectComponent = function SelectFn<T = string>({
 const Select = SelectComponent as SelectType;
 
 export {
-  type LabelFactoryProps,
   type MultipleSelectionOnChange,
   Select,
-  SelectComponent,
   type SelectItem,
   type SelectProps,
   type SingleSelectionOnChange,

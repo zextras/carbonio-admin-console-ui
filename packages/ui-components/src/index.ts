@@ -39,7 +39,6 @@ export * from './components/inputs/PasswordInput';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
 export {
-  type LabelFactoryProps,
   type MultipleSelectionOnChange,
   Select,
   type SelectItem,
