@@ -4,47 +4,67 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  getSoapFetchRequest, useDomainInformation  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  DropDownInput,  Icon,  Input,  OverlayDivision,  Padding,  Row,  Switch,  Table,  Text,  useScreenMode,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  debounce  } from 'lodash-es';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  DropDownInput,
+  HoverableRowFactory,
+  Input,
+  OverlayDivision,
+  Padding,
+  Row,
+  Switch,
+  Table,
+  Text,
+  useScreenMode,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
+import { format } from 'date-fns';
+import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-import {  BackupAccountItem, DomainResponse  } from '../../../types';
+import { BackupAccountItem, DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import {   ERROR_LABLE,  MAX_DOMAIN_DISPLAY,  MOBILE,  RECORD_DISPLAY_LIMIT,  SET,  TRUE,  UNSET } from '../../constants';
-import {  getDomainList  } from '../../services/search-domain-service';
-import {  setUnsetLegalHold  } from '../../services/set-unset-legalhold';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
+import {
+  ERROR_LABLE,
+  MAX_DOMAIN_DISPLAY,
+  MOBILE,
+  RECORD_DISPLAY_LIMIT,
+  SET,
+  TRUE,
+  UNSET,
+} from '../../constants';
+import { getDomainList } from '../../services/search-domain-service';
+import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import Paging from '../components/paging';
-import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
 
-const ovelayStyle = styled(Container)`
-  width: 20rem;
-  right: 0;
-  bottom: 0;
-  height: 8rem;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-`;
+const getOverlayStyle = () => ({
+  width: '20rem',
+  right: 0,
+  bottom: 0,
+  height: '8rem',
+  overflow: 'hidden',
+  background: '#0d0d0d',
+  opacity: 0.4,
+  zIndex: 11,
+});
 
-const AbsoluteContainerItem = styled(Container)`
-  position: absolute;
-  z-index: 1;
-  top: 8rem;
-`;
+const absoluteContainerItemStyle: React.CSSProperties = {
+  position: 'absolute',
+  zIndex: 1,
+  top: '8rem',
+};
 
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
+const customIconStyle = {
+  width: '1.25rem',
+  height: '1.25rem',
+};
 
 const LegalHoldPanel: FC = () => {
   const [t] = useTranslation();
@@ -98,7 +118,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision ovelayStyle={ovelayStyle} />
+          <OverlayDivision overlayStyle={getOverlayStyle()} />
         </Container>
       ),
     },
@@ -498,7 +518,7 @@ const LegalHoldPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <icon-wc icon="InfoOutline" style={customIconStyle}></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -559,7 +579,7 @@ const LegalHoldPanel: FC = () => {
   }, [selectedAccountRows, t]);
 
   const customIcon = useCallback(
-    () => <Icon icon="FunnelOutline" size="large" color="primary" />,
+    () => <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>,
     [],
   );
 
@@ -703,11 +723,12 @@ const LegalHoldPanel: FC = () => {
                 style={{ position: 'relative' }}
               >
                 {isRequestInProgress && (
-                  <AbsoluteContainerItem
+                  <Container
                     crossAlignment="center"
                     mainAlignment="center"
                     height="auto"
                     padding={{ top: 'medium' }}
+                    style={absoluteContainerItemStyle}
                   >
                     <Button
                       type="ghost"
@@ -716,7 +737,7 @@ const LegalHoldPanel: FC = () => {
                       loading
                       onClick={(): null => null}
                     />
-                  </AbsoluteContainerItem>
+                  </Container>
                 )}
 
                 {accountRows.length === 0 && (
@@ -763,7 +784,7 @@ const LegalHoldPanel: FC = () => {
                           height: '100%',
                         }}
                         selectedRows={selectedAccountRows}
-                        RowFactory={CustomRowFactory}
+                        RowFactory={HoverableRowFactory}
                         HeaderFactory={CustomHeaderFactory}
                       />
                     </Row>

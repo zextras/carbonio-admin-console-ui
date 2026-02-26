@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
   DropDownInput,
-  Icon,
   Input,
   Padding,
   Row,
@@ -17,10 +15,10 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
@@ -34,13 +32,6 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 const DomainCosLink: FC<{
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
@@ -486,7 +477,7 @@ const DomainCosLink: FC<{
                         {t('label.default_cos', 'Default COS')}
                       </Text>
                     </Padding>
-                    <Icon icon="Star" color="primary" />
+                    <icon-wc icon="Star" color="primary"></icon-wc>
                   </Row>
                 )}
               </Container>,
@@ -499,23 +490,23 @@ const DomainCosLink: FC<{
                       <Text>{t('label.set_as_default', 'Set as Default')}</Text>
                     </Padding>
                     <Padding right="small">
-                      <Icon
+                      <icon-wc
                         icon="StarOutline"
                         color="primary"
                         onClick={(event: { stopPropagation: () => void }): void => {
                           event.stopPropagation();
                           markAsDefaultCosToDomain(item?.id);
                         }}
-                      />
+                      ></icon-wc>
                     </Padding>
-                    <Icon
+                    <icon-wc
                       icon="Close"
                       color="primary"
                       onClick={(event: { stopPropagation: () => void }): void => {
                         event.stopPropagation();
                         removeCosLinkRows(item);
                       }}
-                    />
+                    ></icon-wc>
                   </Row>
                 </Container>
               ) : (
@@ -570,7 +561,10 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <icon-wc
+                      icon="InfoOutline"
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                    ></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -595,7 +589,7 @@ const DomainCosLink: FC<{
           id: cos.id,
           label: cos.name,
           customComponent: (
-            <SelectItem
+            <Row
               style={{
                 display: 'block',
                 textAlign: 'left',
@@ -608,7 +602,7 @@ const DomainCosLink: FC<{
               }}
             >
               {cos?.name}
-            </SelectItem>
+            </Row>
           ),
         }));
 

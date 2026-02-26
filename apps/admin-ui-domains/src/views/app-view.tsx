@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps, Icon, Padding, Text } from '@zextras/ui-components';
+
+import { Container, Padding, Text } from '@zextras/ui-components';
+import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
 import logo from '../assets/ninja_robo.svg';
 import {
@@ -23,7 +23,7 @@ import {
   TWO_FACTOR_AUTHENTICATION,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import CreateDomain from './domain/create-new-domain';
 import DomainOperations from './domain/domain-detail-operation';
 import DomainDetailPanel from './domain/domain-detail-panel';
@@ -36,15 +36,12 @@ import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth
 import GlobalDelegates from './domain/global-delegates';
 import QuarantineList from './quarantine/quarantine-list';
 
-interface ContainerExtendProps extends ContainerProps {
-  isPrimaryBarExpanded?: boolean;
+function getContainerStyle(isPrimaryBarExpanded: boolean) {
+  return {
+    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
+    transition: 'width 300ms',
+  };
 }
-
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-  transition: width 300ms;
-`;
-
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   const [t] = useTranslation();
@@ -79,7 +76,7 @@ const AppView: FC = () => {
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
         >
-          <Icon icon="Plus" size="large" color="primary" />
+          <icon-wc icon="Plus" size="large" color="primary"></icon-wc>
         </Text>
       </Padding>
     </Container>
@@ -87,7 +84,7 @@ const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<spinner-wc />}>
@@ -95,7 +92,7 @@ const AppView: FC = () => {
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
-          <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+          <Container style={getContainerStyle(isPrimaryBarExpanded)}>
             <Suspense fallback={<spinner-wc />}>
               <Routes>
                 <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
@@ -136,7 +133,7 @@ const AppView: FC = () => {
                 />
               </Routes>
             </Suspense>
-          </DetailViewContainer>
+          </Container>
         </Container>
       </Container>
     </Container>

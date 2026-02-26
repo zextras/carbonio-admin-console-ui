@@ -36,9 +36,12 @@ import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
 
 import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
-import { getLocale } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
-import React, { useCallback, useMemo } from 'react';
+import { getLocale, useUserSettings } from '@zextras/ui-shared';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+// eslint-disable-next-line no-duplicate-imports
+import tinymce, { type EditorOptions, type TinyMCE, type Ui } from 'tinymce/tinymce';
 
 import {
   DEFAULT_FONT_SIZE_FORMATS,
@@ -133,6 +136,14 @@ const Composer = ({
       mainAlignment="flex-start"
       style={{ overflowY: 'hidden' }}
     >
+      <input
+        style={{ display: 'none' }}
+        type="file"
+        ref={inputRef}
+        accept="image/*"
+        onChange={fileInputOnChange}
+        multiple
+      />
       <Editor
         licenseKey="gpl"
         initialValue={initialValue}

@@ -4,32 +4,43 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, CustomTextArea, Input, OverlayDivision, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Input,
+  OverlayDivision,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
 import ListRow from '../list/list-row';
 
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+function getOverlayStyle(): React.CSSProperties {
+  return {
+    position: 'fixed',
+    width: '70.35rem',
+    top: '6.5rem',
+    right: 0,
+    bottom: 0,
+    height: 'auto',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    background: '#0d0d0d',
+    opacity: 0.4,
+    zIndex: 11,
+    paddingTop: '2rem',
+  };
+}
 
 const CreateCos: FC = () => {
   const [t] = useTranslation();
@@ -115,7 +126,7 @@ const CreateCos: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

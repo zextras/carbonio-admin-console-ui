@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { flip, limitShift, offset, Placement, shift, VirtualElement } from '@floating-ui/dom';
+import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import React, {
-	HTMLAttributes,
-	useCallback,
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useMemo,
-	useRef
+  HTMLAttributes,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
 } from 'react';
 import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
@@ -22,171 +22,147 @@ import { setupFloating } from '../../utils/floating-ui';
 import { Portal } from '../utilities/Portal';
 
 const PopperContainer = styled.div<{ $open: boolean }>`
-	display: none;
-	position: absolute;
-	${({ $open }): SimpleInterpolation =>
-		$open &&
-		css`
-			display: block;
-			z-index: 99;
-		`};
+  display: none;
+  position: absolute;
+  ${({ $open }): SimpleInterpolation =>
+    $open &&
+    css`
+      display: block;
+      z-index: 99;
+    `};
 `;
 
 const PopperWrapper = styled.div`
-	outline: 0;
+  outline: 0;
 `;
 
 type PopperProps = HTMLAttributes<HTMLDivElement> & {
-	/** Whether the popper is open or not */
-	open?: boolean;
-	/** Ref to the DOM element triggering the popper */
-	anchorEl: React.RefObject<HTMLElement>;
-	/** Optional parameter to anchor the popper to a virtual element, defined by his x, y coordinates (ex. \{x: 2, y: 2\}) */
-	virtualElement?: { x: number; y: number };
-	/** Whether to disable the re-focus of Popper trigger */
-	disableRestoreFocus?: boolean;
-	/** Popper placement relative to the anchorEl */
-	placement?: Placement;
-	/** Callback for closed Popper */
-	onClose: () => void;
-	/** Flag to disable the Portal implementation */
-	disablePortal?: boolean;
-	/** Popper content */
-	children: React.ReactNode | React.ReactNode[];
-	ref?: React.Ref<HTMLDivElement>;
+  /** Whether the popper is open or not */
+  open?: boolean;
+  /** Ref to the DOM element triggering the popper */
+  anchorEl: React.RefObject<HTMLElement>;
+  /** Optional parameter to anchor the popper to a virtual element, defined by his x, y coordinates (ex. \{x: 2, y: 2\}) */
+  placement?: Placement;
+  /** Callback for closed Popper */
+  onClose: () => void;
+  /** Popper content */
+  children: React.ReactNode | React.ReactNode[];
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 const Popper = ({
-	open = false,
-	anchorEl,
-	virtualElement,
-	disableRestoreFocus = false,
-	placement = 'bottom-end',
-	onClose,
-	children,
-	disablePortal = false,
-	ref,
-	...rest
+  open = false,
+  anchorEl,
+  placement = 'bottom-end',
+  onClose,
+  children,
+  ref,
 }: PopperProps) => {
-	const { windowObj } = useContext(ThemeContext);
-	const popperRef = useCombinedRefs<HTMLDivElement>(ref);
-	const wrapperRef = useRef<HTMLDivElement>(null);
+  const { windowObj } = useContext(ThemeContext);
+  const popperRef = useCombinedRefs<HTMLDivElement>(ref);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-	const startSentinelRef = useRef<HTMLDivElement>(null);
-	const endSentinelRef = useRef<HTMLDivElement>(null);
+  const startSentinelRef = useRef<HTMLDivElement>(null);
+  const endSentinelRef = useRef<HTMLDivElement>(null);
 
-	const closePopper = useCallback(
-		(e: Event) => {
-			if (!popperRef.current?.contains(e.target as Node)) {
-				onClose?.();
-			}
-		},
-		[onClose, popperRef]
-	);
+  const closePopper = useCallback(
+    (e: Event) => {
+      if (!popperRef.current?.contains(e.target as Node)) {
+        onClose?.();
+      }
+    },
+    [onClose, popperRef],
+  );
 
-	const keyboardClosePopper = useCallback(() => {
-		!disableRestoreFocus && anchorEl.current?.focus();
-		onClose?.();
-	}, [anchorEl, disableRestoreFocus, onClose]);
+  const keyboardClosePopper = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
 
-	const onStartSentinelFocus = useCallback(() => {
-		const nodeList =
-			wrapperRef.current?.querySelectorAll<HTMLElement>(
-				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-			) ?? [];
-		nodeList.length > 0 && nodeList[nodeList.length - 1].focus();
-	}, []);
+  const onStartSentinelFocus = useCallback(() => {
+    const nodeList =
+      wrapperRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ) ?? [];
+    nodeList.length > 0 && nodeList[nodeList.length - 1].focus();
+  }, []);
 
-	const onEndSentinelFocus = useCallback(() => {
-		const node = wrapperRef.current?.querySelector<HTMLElement>(
-			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-		);
-		node?.focus();
-	}, []);
+  const onEndSentinelFocus = useCallback(() => {
+    const node = wrapperRef.current?.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    node?.focus();
+  }, []);
 
-	const escapeEvent = useMemo<KeyboardPresetObj[]>(
-		() => [
-			{ type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] }
-		],
-		[keyboardClosePopper]
-	);
+  const escapeEvent = useMemo<KeyboardPresetObj[]>(
+    () => [
+      { type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] },
+    ],
+    [keyboardClosePopper],
+  );
 
-	useKeyboard(popperRef, escapeEvent);
+  useKeyboard(popperRef, escapeEvent);
 
-	useLayoutEffect(() => {
-		let cleanup: ReturnType<typeof setupFloating>;
-		if (open) {
-			const anchorElement = anchorEl.current;
-			if (anchorElement) {
-				const virtualEl = virtualElement && {
-					getBoundingClientRect: (): ReturnType<VirtualElement['getBoundingClientRect']> => ({
-						width: 0,
-						height: 0,
-						top: virtualElement.y,
-						right: virtualElement.x,
-						bottom: virtualElement.y,
-						left: virtualElement.x,
-						y: virtualElement.y,
-						x: virtualElement.x
-					})
-				};
+  useLayoutEffect(() => {
+    let cleanup: ReturnType<typeof setupFloating>;
+    if (open) {
+      const anchorElement = anchorEl.current;
+      if (anchorElement) {
+        if (popperRef.current) {
+          cleanup = setupFloating(anchorElement, popperRef.current, {
+            placement,
+            middleware: [
+              offset(8),
+              flip({ fallbackPlacements: ['bottom'] }),
+              shift({ limiter: limitShift() }),
+            ],
+          });
+        }
+      }
+    }
+    return (): void => {
+      cleanup?.();
+    };
+  }, [open, placement, anchorEl, popperRef]);
 
-				if (popperRef.current) {
-					cleanup = setupFloating(virtualEl || anchorElement, popperRef.current, {
-						placement,
-						middleware: [
-							offset(8),
-							!virtualEl && flip({ fallbackPlacements: ['bottom'] }),
-							shift({ limiter: limitShift() })
-						]
-					});
-				}
-			}
-		}
-		return (): void => {
-			cleanup?.();
-		};
-	}, [open, placement, anchorEl, virtualElement, popperRef]);
+  useEffect(() => {
+    let listenerTimeout: ReturnType<typeof setTimeout>;
+    if (open) {
+      listenerTimeout = setTimeout(() => {
+        windowObj.document.addEventListener('click', closePopper);
+      }, 1);
+    }
+    return (): void => {
+      windowObj.document.removeEventListener('click', closePopper);
+      listenerTimeout && clearTimeout(listenerTimeout);
+    };
+  }, [open, closePopper, windowObj]);
 
-	useEffect(() => {
-		let listenerTimeout: ReturnType<typeof setTimeout>;
-		if (open) {
-			listenerTimeout = setTimeout(() => {
-				windowObj.document.addEventListener('click', closePopper);
-			}, 1);
-		}
-		return (): void => {
-			windowObj.document.removeEventListener('click', closePopper);
-			listenerTimeout && clearTimeout(listenerTimeout);
-		};
-	}, [open, closePopper, windowObj]);
+  useEffect(() => {
+    const startSentinelRefSave = startSentinelRef.current;
+    const endSentinelRefSave = endSentinelRef.current;
+    if (open) {
+      wrapperRef.current?.focus();
+      startSentinelRefSave?.addEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.addEventListener('focus', onEndSentinelFocus);
+    }
 
-	useEffect(() => {
-		const startSentinelRefSave = startSentinelRef.current;
-		const endSentinelRefSave = endSentinelRef.current;
-		if (open) {
-			wrapperRef.current?.focus();
-			startSentinelRefSave?.addEventListener('focus', onStartSentinelFocus);
-			endSentinelRefSave?.addEventListener('focus', onEndSentinelFocus);
-		}
+    return (): void => {
+      startSentinelRefSave?.removeEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.removeEventListener('focus', onEndSentinelFocus);
+    };
+  }, [open, startSentinelRef, endSentinelRef, onStartSentinelFocus, onEndSentinelFocus]);
 
-		return (): void => {
-			startSentinelRefSave?.removeEventListener('focus', onStartSentinelFocus);
-			endSentinelRefSave?.removeEventListener('focus', onEndSentinelFocus);
-		};
-	}, [open, startSentinelRef, endSentinelRef, onStartSentinelFocus, onEndSentinelFocus]);
-
-	return (
-		<Portal show={open} disablePortal={disablePortal}>
-			<PopperContainer ref={popperRef} $open={open} data-testid="popper" {...rest}>
-				<div tabIndex={0} ref={startSentinelRef} />
-				<PopperWrapper ref={wrapperRef} tabIndex={-1}>
-					{children}
-				</PopperWrapper>
-				<div tabIndex={0} ref={endSentinelRef} />
-			</PopperContainer>
-		</Portal>
-	);
+  return (
+    <Portal show={open} disablePortal={false}>
+      <PopperContainer ref={popperRef} $open={open} data-testid="popper">
+        <div tabIndex={0} ref={startSentinelRef} />
+        <PopperWrapper ref={wrapperRef} tabIndex={-1}>
+          {children}
+        </PopperWrapper>
+        <div tabIndex={0} ref={endSentinelRef} />
+      </PopperContainer>
+    </Portal>
+  );
 };
 
 export type { PopperProps };

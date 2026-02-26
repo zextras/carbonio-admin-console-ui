@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
@@ -15,10 +14,11 @@ import {
   TextArea,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import { isEqual } from 'lodash-es';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import Composer from '../../../composer/composer';
@@ -33,18 +33,8 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
 import ListRow from '../../list/list-row';
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
-
-const TextAreaEditor = styled(TextArea)`
-  min-height: 20.5rem;
-`;
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();

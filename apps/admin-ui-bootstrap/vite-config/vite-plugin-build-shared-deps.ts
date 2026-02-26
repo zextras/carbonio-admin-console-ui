@@ -11,8 +11,7 @@ import { init, parse } from 'cjs-module-lexer';
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild, type Plugin } from 'vite';
 
-import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
-import { DepConfig, getSharedDepsConfig } from './utils';
+import { colorLog, DepConfig, getSharedDepsConfig, getWorkspaceRoot } from './utils';
 
 function createSharedBuildConfig(dep: DepConfig, isDev: boolean) {
   return {
