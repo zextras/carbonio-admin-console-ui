@@ -5,7 +5,7 @@
  */
 
 // Import theme CSS to define CSS variables for web components
-import './theme.css';
+import '../theme/theme.css';
 
 // Import and export the web components to ensure they are bundled and registered
 export { DividerElement } from './divider-wc';

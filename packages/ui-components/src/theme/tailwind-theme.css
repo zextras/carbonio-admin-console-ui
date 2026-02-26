@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-@import '../web-components/theme.css';
+@import './theme.css';
 
 @theme inline {
   --color-primary-*: initial;

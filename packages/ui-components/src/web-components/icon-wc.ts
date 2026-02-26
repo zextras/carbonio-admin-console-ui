@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import './theme.css';
+import '../theme/theme.css';
 
 import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
