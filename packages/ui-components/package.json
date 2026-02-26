@@ -46,6 +46,7 @@
     "react": "^19.1.0",
     "react-docgen-typescript": "^2.2.2",
     "react-dom": "^19.1.0",
+    "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.2.1",
     "ts-node": "^10 >=10.9.2",
     "typescript": "^5.7.2"
