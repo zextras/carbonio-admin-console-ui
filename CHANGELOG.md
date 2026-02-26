@@ -1,8 +1,23 @@
-## [0.12.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0-devel.24...v0.12.0-devel.25) (2026-02-25)
+## [0.13.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.13.0-devel.1) (2026-02-26)
 
 ### Features
 
 * add warning banners for account quota ([#1078](https://github.com/zextras/carbonio-admin-console-ui/issues/1078)) ([a44e013](https://github.com/zextras/carbonio-admin-console-ui/commit/a44e0136f8f8a08bc73b438a54bf39778ccda94c))
+* integrate total quota active hook in account management ([#1076](https://github.com/zextras/carbonio-admin-console-ui/issues/1076)) ([1054574](https://github.com/zextras/carbonio-admin-console-ui/commit/1054574762be2a96851b20938ed8a1900a9aea4d))
+* show total quota usage by module ([#1077](https://github.com/zextras/carbonio-admin-console-ui/issues/1077)) ([c2e3a77](https://github.com/zextras/carbonio-admin-console-ui/commit/c2e3a77cb5de100e5c331059c42491b4962dad2d))
+
+## [0.12.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.1...v0.12.2) (2026-02-25)
+
+### Bug Fixes
+
+* fixed date format parse issue ([270c717](https://github.com/zextras/carbonio-admin-console-ui/commit/270c717306be84a85fa1056385333741f69d2b7a))
+* fixed date format parse issue in get resource ([bd9929b](https://github.com/zextras/carbonio-admin-console-ui/commit/bd9929bd9ba216181676240cf3dea4d31add9348))
+
+## [0.12.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.0...v0.12.1) (2026-02-24)
+
+### Bug Fixes
+
+* **[admin-ui-domains] domain-list-panel:** update effect deps ([b4313b6](https://github.com/zextras/carbonio-admin-console-ui/commit/b4313b6c814dcf6de420e00cb8437f59d2cd8a3e))
 
 ## [0.12.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.11.3...v0.12.0) (2026-02-13)
 

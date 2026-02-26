@@ -177,6 +177,9 @@ const Styler = styled(Container)`
     padding-left: 0.3125rem;
     padding-right: 0.3125rem;
   }
+  .react-datepicker__sr-only {
+    display: none;
+  }
   .react-datepicker__header--time:not(.react-datepicker__header--time--only) {
     border-top-left-radius: 0;
   }

@@ -20,6 +20,9 @@ function jsdomProjectConfig() {
       name: 'unit',
       environment: 'jsdom',
       setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
+      sequence: {
+        groupOrder: 1,
+      },
       env: {
         TZ: 'UTC',
       },
@@ -68,6 +71,12 @@ function browserProjectConfig() {
         'tinymce/models/dom': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/themes/silver': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/icons/default': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
+        'tinymce/skins/ui/oxide/skin': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
+        'tinymce/skins/content/default/content': path.resolve(
+          __dirname,
+          './__mocks__/tinymce-noop.js',
+        ),
+        'tinymce/skins/ui/oxide/content': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/plugins/advlist': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/plugins/anchor': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/plugins/autolink': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
@@ -89,6 +98,16 @@ function browserProjectConfig() {
         'tinymce/plugins/visualblocks': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
+    },
+    test: {
+      name: 'browser',
+      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+      sequence: {
+        groupOrder: 2,
+      },
+      fileParallelism: false,
+      retry: 2,
+
       include: ['**/*.browser.test.{ts,tsx}'],
       browser: {
         enabled: true,
