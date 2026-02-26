@@ -16,8 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { isEqual } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
@@ -363,7 +362,7 @@ const DomainDisclaimer: FC = () => {
               right: 'extralarge',
             }}
           >
-            <TextAreaEditor
+            <TextArea
               label={''}
               value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
               // @ts-expect-error - needs a fix
@@ -381,7 +380,7 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <EditorWrapper>
+            <div className={editorWrapperStyles['editor-wrapper']}>
               <Composer
                 initialValue={defaulRichTextContent}
                 value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}
@@ -389,7 +388,7 @@ const DomainDisclaimer: FC = () => {
                   setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);
                 }}
               />
-            </EditorWrapper>
+            </div>
           </Container>
         </ListRow>
       </Container>
