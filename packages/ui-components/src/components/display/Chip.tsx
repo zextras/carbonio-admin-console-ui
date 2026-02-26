@@ -8,17 +8,16 @@ import '../../web-components/icon-wc';
 
 import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
+import { tv } from 'tailwind-variants';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { pseudoClasses, useTheme } from '../../theme/theme-utils';
+import { getCSSColorVar, useTheme } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
-import styles from './Chip.module.css';
 import { Tooltip } from './Tooltip';
 
 type ChipAction = {
@@ -90,72 +89,86 @@ type ChipProps = Omit<RowProps, 'children'> & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-const ActionContainer = styled.div<{ $spacing: string }>`
-  min-width: fit-content;
-  --action-spacing: ${({ $spacing }): string => $spacing};
-`;
-
-const LabelContainer = styled(Container)``;
-
-const ContentContainer = styled(Container)`
-  &:first-child > ${LabelContainer}:first-child {
-    padding-left: ${({ gap }): SimpleInterpolation => css`calc(${gap} * 2)`};
-  }
-  & > ${LabelContainer}:last-child {
-    padding-right: ${({ gap }): SimpleInterpolation => css`calc(${gap} * 2)`};
-  }
-`;
-
-const ChipContainer = styled(Container)<{
-  $disabled: boolean;
-}>`
-  user-select: none;
-  vertical-align: middle;
-  line-height: 1.5;
-  ${({ background, $disabled, onClick, onDoubleClick, theme }): SimpleInterpolation =>
-    !$disabled && (onClick || onDoubleClick) && background && pseudoClasses(theme, background)};
-  border-radius: ${(props): string => {
-    switch (props.borderRadius) {
-      case 'regular':
-        return `calc(${props.theme.borderRadius} * 2)`;
-      case 'round':
-        return '100vh';
-      default:
-        return '100vh';
-    }
-  }};
-  cursor: ${({ onClick, onDoubleClick, $disabled }): SimpleInterpolation =>
-    (onClick || onDoubleClick) && !$disabled ? 'pointer' : 'default'};
-`;
-
 const SIZES = {
   small: {
     avatar: 'small',
     font: 'extrasmall',
     icon: 'small',
     spacing: '0.25rem',
+    gap: 'gap-1',
+    paddingY: 'py-0.5',
+    paddingX: 'px-1',
   },
   medium: {
     avatar: 'medium',
     font: 'small',
     icon: 'medium',
     spacing: '0.5rem',
+    gap: 'gap-2',
+    paddingY: 'py-1',
+    paddingX: 'px-2',
   },
   large: {
     avatar: 'large',
     font: 'medium',
     icon: 'large',
     spacing: '0.75rem',
+    gap: 'gap-3',
+    paddingY: 'py-2',
+    paddingX: 'px-3',
   },
-} satisfies Record<
-  NonNullable<ChipProps['size']>,
-  {
-    avatar: keyof DefaultTheme['sizes']['avatar'];
-    font: keyof DefaultTheme['sizes']['font'];
-    icon: 'small' | 'medium' | 'large';
-    spacing: string;
-  }
->;
+} as const;
+
+const chipVariants = tv({
+  base: [
+    'inline-flex items-center select-none leading-relaxed',
+    'bg-[var(--chip-bg)]',
+    'transition-colors duration-200 ease-out',
+    'outline-none',
+  ],
+  variants: {
+    shape: {
+      regular: 'rounded-[calc(var(--radius-default)*2)]',
+      round: 'rounded-full',
+    },
+    size: {
+      small: `${SIZES.small.gap} ${SIZES.small.paddingY} ${SIZES.small.paddingX}`,
+      medium: `${SIZES.medium.gap} ${SIZES.medium.paddingY} ${SIZES.medium.paddingX}`,
+      large: `${SIZES.large.gap} ${SIZES.large.paddingY} ${SIZES.large.paddingX}`,
+    },
+    clickable: {
+      true: 'cursor-pointer hover:bg-[var(--chip-bg-hover)] active:bg-[var(--chip-bg-active)]',
+      false: 'cursor-default',
+    },
+    disabled: {
+      true: 'cursor-default',
+    },
+  },
+  defaultVariants: {
+    shape: 'round',
+    size: 'small',
+  },
+});
+
+const actionVariants = tv({
+  base: 'min-w-fit p-[calc(var(--action-spacing)/2)]',
+});
+
+const contentVariants = tv({
+  base: 'inline-flex min-w-0',
+});
+
+const labelVariants = tv({
+  base: 'truncate',
+});
+
+function getChipColorVars(background: string): Record<string, string> {
+  return {
+    '--chip-bg': getCSSColorVar(background),
+    '--chip-bg-hover': getCSSColorVar(`${background}.hover`),
+    '--chip-bg-active': getCSSColorVar(`${background}.active`),
+  };
+}
 
 const Chip = ({
   actions = [],
@@ -200,6 +213,26 @@ const Chip = ({
     maxWidth && typeof label === 'string' && hideInnerTooltip();
   }, [hideInnerTooltip, label, maxWidth]);
 
+  const backgroundColor = error ? 'error' : background;
+  const isClickable = (onClick || onDoubleClick) && !disabled;
+  const isDisabled = !!disabled;
+
+  const chipClassName = chipVariants({
+    shape,
+    size,
+    clickable: isClickable,
+    disabled: isDisabled,
+  });
+
+  const chipStyle: React.CSSProperties = {
+    ...getChipColorVars(backgroundColor),
+    maxWidth: maxWidth || 'fit-content',
+    width: 'fit-content',
+    height: 'fit-content',
+    minWidth: maxWidth ? '0' : 'max-content',
+    ...rest.style,
+  };
+
   const actionItems = useMemo(
     () =>
       map(actions, (action) => {
@@ -215,22 +248,21 @@ const Chip = ({
               disabled={actionDisabled}
               placement={tooltipPlacement}
             >
-              <ActionContainer
+              <div
+                className={actionVariants()}
                 onMouseEnter={showTooltipHandler}
                 onMouseLeave={hideTooltipHandler}
                 onFocus={showTooltipHandler}
                 onBlur={hideTooltipHandler}
-                $spacing={SIZES[size].spacing}
+                style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
               >
-                <div className={styles.actionIcon}>
-                  <icon-wc
-                    icon={action.icon}
-                    color={error ? 'gray6' : action.color}
-                    disabled={!!disabled || action.disabled}
-                    size={SIZES[size].icon}
-                  ></icon-wc>
-                </div>
-              </ActionContainer>
+                <icon-wc
+                  icon={action.icon}
+                  color={error ? 'gray6' : action.color}
+                  disabled={!!disabled || action.disabled}
+                  size={SIZES[size].icon}
+                ></icon-wc>
+              </div>
             </Tooltip>
           );
         }
@@ -255,6 +287,16 @@ const Chip = ({
     [onDoubleClick],
   );
 
+  const sizeConfig = SIZES[size];
+  const contentMinHeight = `calc(${theme.sizes.avatar[sizeConfig.avatar].diameter} + calc(${
+    sizeConfig.spacing
+  } / 4))`;
+  const contentMaxWidth = maxWidth
+    ? `calc(100% - calc(${hasAvatar ? theme.sizes.avatar[sizeConfig.avatar].diameter : 0} + ${
+        sizeConfig.spacing
+      }))`
+    : undefined;
+
   return (
     <Tooltip
       disabled={
@@ -266,31 +308,19 @@ const Chip = ({
       }
       placement={tooltipPlacement}
     >
-      <ChipContainer
-        data-testid={'chip'}
-        wrap="nowrap"
-        orientation="horizontal"
+      <div
+        data-testid="chip"
         ref={chipRef}
-        background={error ? 'error' : background}
-        borderRadius={shape}
-        maxWidth={maxWidth}
-        mainAlignment="space-between"
-        gap={SIZES[size].spacing}
-        padding={{
-          vertical: `calc(${SIZES[size].spacing} / 4)`,
-          horizontal: `calc(${SIZES[size].spacing} / 2)`,
-        }}
+        className={chipClassName}
+        style={chipStyle}
         onClick={onClick && clickHandler}
         onDoubleClick={onDoubleClick && dblClickHandler}
-        $disabled={!!disabled}
-        width="fit"
-        height="fit"
-        minWidth={maxWidth ? '0' : 'max-content'}
+        data-disabled={isDisabled || undefined}
         {...rest}
       >
         {hasAvatar && (
           <Avatar
-            size={SIZES[size].avatar}
+            size={sizeConfig.avatar}
             label={avatarLabel || (typeof label === 'string' && label) || ''}
             picture={avatarPicture}
             background={error ? 'error.active' : avatarBackground || 'secondary'}
@@ -299,43 +329,39 @@ const Chip = ({
             disabled={!!disabled}
           />
         )}
-        <ContentContainer
-          wrap="nowrap"
-          orientation="horizontal"
-          width="fit"
-          minWidth={maxWidth ? '0' : 'fit'}
-          minHeight={`calc(${theme.sizes.avatar[SIZES[size].avatar].diameter} + calc(${
-            SIZES[size].spacing
-          } / 4))`}
-          maxWidth={
-            maxWidth &&
-            `calc(100% - calc(${
-              hasAvatar ? theme.sizes.avatar[SIZES[size].avatar].diameter : 0
-            } + ${SIZES[size].spacing}))`
-          }
-          gap={SIZES[size].spacing}
+        <div
+          className={contentVariants()}
+          style={{
+            gap: sizeConfig.spacing,
+            minWidth: maxWidth ? '0' : 'fit',
+            minHeight: contentMinHeight,
+            maxWidth: contentMaxWidth,
+          }}
         >
           {keyLabel && (
-            <LabelContainer wrap="nowrap" width="auto">
+            <div className={labelVariants()} style={{ width: 'auto' }}>
               <Text
                 weight="regular"
-                size={SIZES[size].font}
+                size={sizeConfig.font}
                 color={error ? 'gray6' : color}
                 disabled={!!disabled}
               >
                 {keyLabel}
               </Text>
-            </LabelContainer>
+            </div>
           )}
           {label && (
-            <LabelContainer
-              width="fit"
+            <div
+              className={labelVariants()}
+              style={{
+                width: 'fit',
+                flexShrink: maxWidth ? 1 : 0,
+                minWidth: 0,
+              }}
               onMouseEnter={showLabelTooltip}
               onMouseLeave={hideLabelTooltip}
               onFocus={showLabelTooltip}
               onBlur={hideLabelTooltip}
-              flexShrink={maxWidth ? 1 : 0}
-              minWidth="0"
             >
               <Tooltip
                 label={(typeof label === 'string' && label) || ''}
@@ -346,18 +372,18 @@ const Chip = ({
               >
                 <Text
                   weight="light"
-                  size={SIZES[size].font}
+                  size={sizeConfig.font}
                   color={error ? 'gray6' : color}
                   disabled={!!disabled}
                 >
                   {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
                 </Text>
               </Tooltip>
-            </LabelContainer>
+            </div>
           )}
           {actionItems && actionItems.length > 0 && (
             <Container
-              gap={`calc(${SIZES[size].spacing} / 2)`}
+              gap={`calc(${sizeConfig.spacing} / 2)`}
               orientation="horizontal"
               width="fit"
               minWidth="fit"
@@ -366,8 +392,8 @@ const Chip = ({
               {actionItems}
             </Container>
           )}
-        </ContentContainer>
-      </ChipContainer>
+        </div>
+      </div>
     </Tooltip>
   );
 };
