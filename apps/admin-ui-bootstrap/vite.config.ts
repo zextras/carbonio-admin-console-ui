@@ -56,6 +56,11 @@ export default defineConfig(({ command, mode }) => {
       }),
       tailwindcss(),
     ],
+    css: {
+      modules: {
+        localsConvention: 'camelCaseOnly',
+      },
+    },
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       BASE_PATH: JSON.stringify(basePath),

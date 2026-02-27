@@ -19,7 +19,15 @@
     "preserveConstEnums": true,
     "noUncheckedIndexedAccess": false,
     "types": ["@vitest/browser/matchers", "vitest/globals"],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "classnameTransform": "camelCaseOnly"
+        }
+      }
+    ]
   },
   "references": [
     { "path": "./packages/test-utils/" },

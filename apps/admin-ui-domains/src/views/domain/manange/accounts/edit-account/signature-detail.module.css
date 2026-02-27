@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.editor-wrapper {
+.editorWrapper {
   width: 100%;
   height: 100%;
   overflow-y: auto;
   position: relative;
 }
 
-.editor-wrapper .tox-edit-area iframe {
+.editorWrapper .tox-edit-area iframe {
   background: var(--color-gray5-regular);
 }

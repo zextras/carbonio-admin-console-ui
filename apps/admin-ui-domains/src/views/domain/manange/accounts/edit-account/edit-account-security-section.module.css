@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.static-codes-wrapper {
+.staticCodesWrapper {
   position: relative;
   width: 100%;
   column-count: 2;
   padding: 16px;
 }
 
-.static-code {
+.staticCode {
   display: block;
   font-family: monospace;
   padding: 4.95px 0;

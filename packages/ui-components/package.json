@@ -41,6 +41,7 @@
     "clsx": "^2.1.1",
     "create-index": "2.6.0",
     "del": "^7.1.0",
+    "eslint-plugin-css-modules": "^2.12.0",
     "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-notice": "^0.9.10",
     "react": "^19.1.0",
@@ -49,7 +50,8 @@
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.2.1",
     "ts-node": "^10 >=10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-plugin-css-modules": "^5.2.0"
   },
   "browserslist": [
     ">1%",

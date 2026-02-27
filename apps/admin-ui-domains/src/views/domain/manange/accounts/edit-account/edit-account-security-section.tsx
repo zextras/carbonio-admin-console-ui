@@ -33,13 +33,13 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+import styles from './edit-account-security-section.module.scss';
 import { ServicesPassphrase } from './services-passphrase';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
@@ -167,12 +167,9 @@ const EditAccountSecuritySection: FC = () => {
                   <Padding top="large">
                     <Row mainAlignment="center">
                       <Row background="gray5" style={{ maxWidth: '350px' }}>
-                        <div className={staticCodesStyles['static-codes-wrapper']}>
+                        <div className={styles.staticCodesWrapper}>
                           {map(pinCodes, (singleCode: any) => (
-                            <label
-                              key={singleCode.code}
-                              className={staticCodesStyles['static-code']}
-                            >
+                            <label key={singleCode.code} className={styles.staticCode}>
                               {singleCode.code}
                             </label>
                           ))}

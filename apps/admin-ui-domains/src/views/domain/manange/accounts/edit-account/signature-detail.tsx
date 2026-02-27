@@ -26,7 +26,7 @@ import Composer from '../../../../../composer/composer';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
-import editorWrapperStyles from '../../../../../styles/editor-wrapper.module.css';
+import styles from './signature-detail.module.css';
 
 export const SignatureDetail: FC<any> = ({
   isEditable,
@@ -467,7 +467,7 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <div className={editorWrapperStyles['editor-wrapper']}>
+              <div className={styles.editorWrapper}>
                 <Composer
                   initialValue={defaultSignatureContent}
                   value={signatureContent}

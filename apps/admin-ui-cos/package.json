@@ -51,6 +51,7 @@
     "admin-ui-test-utils": "workspace:*",
     "clsx": "^2.1.1",
     "eslint": "^9.34.0",
+    "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^26.1.0",
     "msw": "^2.12.2",
     "playwright": "^1.55.0",
@@ -58,6 +59,7 @@
     "sonarqube-scanner": "^4.3.3",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.7.2",
+    "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"
   },

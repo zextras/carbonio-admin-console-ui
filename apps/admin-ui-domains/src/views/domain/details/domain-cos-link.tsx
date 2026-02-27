@@ -9,6 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   DropDownInput,
+  HoverableRowFactory,
   Input,
   ListRow,
   Padding,
@@ -30,7 +31,6 @@ import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
-import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
 const DomainCosLink: FC<{
@@ -715,7 +715,7 @@ const DomainCosLink: FC<{
           showCheckbox={isGlobalAdmin}
           multiSelect={false}
           style={{ overflow: 'auto', height: '100%' }}
-          RowFactory={HoverContentRowFactory}
+          RowFactory={HoverableRowFactory}
           HeaderFactory={CustomHeaderFactory}
         />
         {cosMaxAccountListRow.length === 0 && (
