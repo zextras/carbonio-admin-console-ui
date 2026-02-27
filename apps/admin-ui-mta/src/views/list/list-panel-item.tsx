@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {  Button,Container, Padding, Row, Text  } from '@zextras/ui-components';
+import { noop } from 'lodash-es';
 import {  FC  } from 'react';
 
 const ListPanelItem: FC<{
@@ -37,7 +38,7 @@ const ListPanelItem: FC<{
 						color={'text'}
 						icon={isListExpanded ? 'ChevronUpOutline' : 'ChevronDownOutline'}
 						size="small"
-						onClick={setToggleView}
+						onClick={noop}
 					/>
 				</Padding>
 			</Row>
