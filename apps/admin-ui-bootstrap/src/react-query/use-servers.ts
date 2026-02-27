@@ -79,3 +79,35 @@ export const useServersByService = (serviceName: string, options: ServersOptions
 export const useMtaServers = (options: ServersOptions = {}) => {
 	return useServersByService('mta', options);
 };
+
+type VersionInfo = {
+	majorversion?: string;
+	minorversion?: string;
+	microversion?: string;
+	type?: string;
+	release?: string;
+	buildDate?: string;
+	host?: string;
+};
+
+type GetVersionInfoResponse = {
+	info: Array<VersionInfo>;
+	_jsns?: string;
+};
+
+const versionInfoQueryFn = async (): Promise<VersionInfo | undefined> => {
+	const response = await soapFetch<{ _jsns: string }, GetVersionInfoResponse>('GetVersionInfo', {
+		_jsns: 'urn:zimbraAdmin'
+	});
+
+	const info = (response as GetVersionInfoResponse)?.info;
+	return info && Array.isArray(info) ? info[0] : undefined;
+};
+
+export const useServerVersion = () => {
+	return useQuery({
+		queryKey: ['serverVersionInfo'],
+		queryFn: versionInfoQueryFn,
+		retry: 3
+	});
+};
