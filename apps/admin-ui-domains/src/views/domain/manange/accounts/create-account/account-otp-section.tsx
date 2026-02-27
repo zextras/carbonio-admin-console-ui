@@ -11,10 +11,10 @@ import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { sendMail } from '../../../../../services/send-mail-service';
-import staticCodesStyles from '../../../../../styles/static-codes.module.css';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from './account-context';
+import staticCodesStyles from './account-otp-section.module.css';
 import { emailContent } from './email-content';
 const AccountOtpSection: FC<{
   setToggleNextBtn: (newValue: boolean) => void;
@@ -132,12 +132,9 @@ const AccountOtpSection: FC<{
                   <Padding top="large">
                     <Row mainAlignment="center">
                       <Row background="gray5" style={{ maxWidth: '350px' }}>
-                        <div className={staticCodesStyles['static-codes-wrapper']}>
+                        <div className={staticCodesStyles.staticCodesWrapper}>
                           {map(accountDetail?.pinCodes, (singleCode: any) => (
-                            <label
-                              key={singleCode.code}
-                              className={staticCodesStyles['static-code']}
-                            >
+                            <label key={singleCode.code} className={staticCodesStyles.staticCode}>
                               {singleCode.code}
                             </label>
                           ))}

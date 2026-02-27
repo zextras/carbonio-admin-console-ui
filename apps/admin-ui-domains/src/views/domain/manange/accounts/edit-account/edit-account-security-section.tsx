@@ -5,24 +5,24 @@
  */
 
 import {
-	Button,
-	ChipInput,
-	Container,
-	CustomHeaderFactory,
-	HorizontalWizard,
-	HoverableRowFactory,
-	InheritedInput,
-	InheritedSelect,
-	Input,
-	ListRow,
-	Padding,
-	Row,
-	Select,
-	Switch,
-	Table,
-	Text,
-	useSnackbar,
-	WizardInSection,
+  Button,
+  ChipInput,
+  Container,
+  CustomHeaderFactory,
+  HorizontalWizard,
+  HoverableRowFactory,
+  InheritedInput,
+  InheritedSelect,
+  Input,
+  ListRow,
+  Padding,
+  Row,
+  Select,
+  Switch,
+  Table,
+  Text,
+  useSnackbar,
+  WizardInSection,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
@@ -39,7 +39,7 @@ import InheritedSwitch from '../../../../utility/inherited-components/inherited-
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
-import styles from './edit-account-security-section.module.scss';
+import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
 
 const EditAccountSecuritySection: FC = () => {
@@ -293,17 +293,15 @@ const EditAccountSecuritySection: FC = () => {
       },
     ],
     [
-      accountDetail?.name,
-      domainName,
+      handleEmailChange,
+      handleSendOTPEmail,
+      hasEmailError,
+      isSendDisabled,
       pinCodes,
       qrData,
       secrateCode,
       sendEmailTo,
-      createSnackbar,
       t,
-      handleEmailChange,
-      hasEmailError,
-      isSendDisabled,
     ],
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
@@ -679,12 +677,12 @@ const EditAccountSecuritySection: FC = () => {
           {showCreateOTP && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-					<HorizontalWizard
-						steps={wizardSteps}
-						title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
-						Wrapper={WizardInSection}
-						setToggleWizardSection={setShowCreateOTP}
-					/>
+                <HorizontalWizard
+                  steps={wizardSteps}
+                  title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
+                  Wrapper={WizardInSection}
+                  setToggleWizardSection={setShowCreateOTP}
+                />
               </Row>
             </>
           )}
