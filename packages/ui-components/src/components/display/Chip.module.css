@@ -70,18 +70,18 @@
   min-width: fit-content;
   padding: calc(var(--action-spacing) / 2);
   border: none;
-  background: transparent;
+  background: var(--color-gray5-regular);
   cursor: pointer;
-  border-radius: var(--radius-default);
+  border-radius: var(--action-radius, 100vh);
   transition: background-color 0.2s ease-out;
 }
 
-.actionButton:hover {
-  background-color: var(--color-gray5-regular);
+.actionButton:hover:not(:disabled) {
+  background-color: var(--color-gray5-hover, var(--color-gray6-regular));
 }
 
-.actionButton:active {
-  background-color: var(--color-gray6-regular);
+.actionButton:active:not(:disabled) {
+  background-color: var(--color-gray5-active, var(--color-gray6-regular));
 }
 
 .actionButton:disabled {

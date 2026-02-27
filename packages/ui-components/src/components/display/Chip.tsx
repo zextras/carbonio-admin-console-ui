@@ -238,6 +238,7 @@ const Chip = ({
                 style={
                   {
                     '--action-spacing': SIZES[size].spacing,
+                    '--action-radius': shape === 'round' ? '100vh' : `calc(${theme.borderRadius} * 2)`,
                     background: action.background
                       ? getThemeColorVar(action.background, 'regular')
                       : undefined,
@@ -256,7 +257,7 @@ const Chip = ({
         }
         return item;
       }),
-    [chipActions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error],
+    [chipActions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error, shape, theme],
   );
 
   const clickHandler = useCallback<React.ReactEventHandler>(
