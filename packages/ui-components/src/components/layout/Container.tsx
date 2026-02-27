@@ -64,6 +64,7 @@ function resolveDimension(value: Dimension | undefined): string | undefined {
   if (value === 'fill') return '100%';
   if (value === 'fit') return 'fit-content';
   if (typeof value === 'number') return `${value}px`;
+  if (/^-?\d+(\.\d+)?$/.test(value)) return undefined;
   return value;
 }
 
@@ -126,10 +127,10 @@ export const Container = ({
       background: background ? resolveColorVar(background) : undefined,
       marginLeft: margin?.left,
       marginRight: margin?.right,
-      width: width !== 'fill' ? resolveDimension(width) : undefined,
+      width: resolveDimension(width),
       minWidth: minWidth !== 'unset' ? resolveDimension(minWidth) : undefined,
       maxWidth: maxWidth !== 'unset' ? resolveDimension(maxWidth) : undefined,
-      height: height !== 'fill' ? resolveDimension(height) : undefined,
+      height: resolveDimension(height),
       minHeight: minHeight !== 'unset' ? resolveDimension(minHeight) : undefined,
       maxHeight: maxHeight !== 'unset' ? resolveDimension(maxHeight) : undefined,
       borderRadius: BORDER_RADIUS[borderRadius],
