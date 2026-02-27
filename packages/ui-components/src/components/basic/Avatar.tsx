@@ -38,7 +38,7 @@ type AvatarPropTypes = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
 
 function getAvatarColorVar(colorKey: string): string {
 	const num = colorKey.replace('avatar_', '');
-	return `var(--avatar--${num.padStart(2, '0')})`;
+	return `var(--color-avatar-${num})`;
 }
 
 const SPECIAL_CHARS_REGEX = /[&/\\#,+()$~%.'":*?!<>{}@^_`=]/g;
