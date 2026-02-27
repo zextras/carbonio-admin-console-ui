@@ -250,13 +250,4 @@ export function getThemeColorVar(colorName: string, state: string): string {
 const useTheme = (): DefaultTheme => useContext(ThemeContext);
 
 export type { PaddingObj };
-export {
-  calcHighlight,
-  generateColorSet,
-  generateHighlightSet,
-  getColor,
-  getPadding,
-  getPadding as parsePadding,
-  pseudoClasses,
-  useTheme,
-};
+export { generateColorSet, generateHighlightSet, getColor, getPadding, pseudoClasses, useTheme };
