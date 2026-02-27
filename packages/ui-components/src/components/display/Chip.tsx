@@ -323,7 +323,7 @@ const Chip = ({
             size={sizeConfig.avatar}
             label={avatarLabel || (typeof label === 'string' && label) || ''}
             picture={avatarPicture}
-            background={error ? 'error.active' : avatarBackground || 'secondary'}
+            background={error ? 'error.active' : avatarBackground}
             color={error ? 'gray6' : avatarColor}
             shape={shape === 'regular' ? 'square' : shape}
             disabled={!!disabled}
