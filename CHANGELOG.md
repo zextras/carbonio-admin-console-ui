@@ -1,3 +1,9 @@
+## [0.12.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.12.3) (2026-02-27)
+
+### Bug Fixes
+
+* fixed mta sidebar expand collape icon ([132ee39](https://github.com/zextras/carbonio-admin-console-ui/commit/132ee391826067c28e27fc45764765113c33ad41))
+
 ## [0.12.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.1...v0.12.2) (2026-02-25)
 
 ### Bug Fixes
