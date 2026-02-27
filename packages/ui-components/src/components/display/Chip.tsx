@@ -8,7 +8,6 @@ import '../../web-components/icon-wc';
 
 import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { tv } from 'tailwind-variants';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getThemeColorVar, useTheme } from '../../theme/theme-utils';
@@ -18,6 +17,7 @@ import { Avatar, AvatarPropTypes } from '../basic/Avatar';
 import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
+import styles from './Chip.module.css';
 import { Tooltip } from './Tooltip';
 
 type ChipAction = {
@@ -100,77 +100,20 @@ const SIZES = {
     font: 'extrasmall',
     icon: 'small',
     spacing: '0.25rem',
-    gap: 'gap-1',
-    paddingY: 'py-0.5',
-    paddingX: 'px-1',
   },
   medium: {
     avatar: 'medium',
     font: 'small',
     icon: 'medium',
     spacing: '0.5rem',
-    gap: 'gap-2',
-    paddingY: 'py-1',
-    paddingX: 'px-2',
   },
   large: {
     avatar: 'large',
     font: 'medium',
     icon: 'large',
     spacing: '0.75rem',
-    gap: 'gap-3',
-    paddingY: 'py-2',
-    paddingX: 'px-3',
   },
 } as const;
-
-const chipVariants = tv({
-  base: [
-    'inline-flex items-center select-none leading-relaxed',
-    'bg-[var(--chip-bg)]',
-    'transition-colors duration-200 ease-out',
-    'outline-none',
-  ],
-  variants: {
-    shape: {
-      regular: 'rounded-[calc(var(--radius-default)*2)]',
-      round: 'rounded-full',
-    },
-    size: {
-      small: `${SIZES.small.gap} ${SIZES.small.paddingY} ${SIZES.small.paddingX}`,
-      medium: `${SIZES.medium.gap} ${SIZES.medium.paddingY} ${SIZES.medium.paddingX}`,
-      large: `${SIZES.large.gap} ${SIZES.large.paddingY} ${SIZES.large.paddingX}`,
-    },
-    clickable: {
-      true: 'cursor-pointer hover:bg-[var(--chip-bg-hover)] active:bg-[var(--chip-bg-active)]',
-      false: 'cursor-default',
-    },
-    disabled: {
-      true: 'cursor-default',
-    },
-  },
-  defaultVariants: {
-    shape: 'round',
-    size: 'small',
-  },
-});
-
-const actionVariants = tv({
-  base: 'min-w-fit p-[calc(var(--action-spacing)/2)] border-none bg-transparent',
-  variants: {
-    clickable: {
-      true: 'cursor-pointer rounded-[var(--radius-default)] hover:bg-[var(--color-gray5-regular)] active:bg-[var(--color-gray6-regular)] transition-colors',
-    },
-  },
-});
-
-const contentVariants = tv({
-  base: 'inline-flex min-w-0',
-});
-
-const labelVariants = tv({
-  base: 'truncate',
-});
 
 function getChipColorVars(background: string): Record<string, string> {
   return {
@@ -239,26 +182,6 @@ const Chip = ({
     maxWidth && typeof label === 'string' && hideInnerTooltip();
   }, [hideInnerTooltip, label, maxWidth]);
 
-  const backgroundColor = error ? 'error' : background;
-  const isClickable = (onClick || onDoubleClick) && !disabled;
-  const isDisabled = !!disabled;
-
-  const chipClassName = chipVariants({
-    shape,
-    size,
-    clickable: isClickable,
-    disabled: isDisabled,
-  });
-
-  const chipStyle: React.CSSProperties = {
-    ...getChipColorVars(backgroundColor),
-    maxWidth: maxWidth || 'fit-content',
-    width: 'fit-content',
-    height: 'fit-content',
-    minWidth: maxWidth ? '0' : 'max-content',
-    ...rest.style,
-  };
-
   const actionItems = useMemo(
     () =>
       map(chipActions, (action) => {
@@ -275,7 +198,7 @@ const Chip = ({
               placement={tooltipPlacement}
             >
               <div
-                className={actionVariants()}
+                className={styles.actionContainer}
                 onMouseEnter={showTooltipHandler}
                 onMouseLeave={hideTooltipHandler}
                 onFocus={showTooltipHandler}
@@ -305,7 +228,7 @@ const Chip = ({
             >
               <button
                 type="button"
-                className={actionVariants({ clickable: true })}
+                className={styles.actionButton}
                 onMouseEnter={showTooltipHandler}
                 onMouseLeave={hideTooltipHandler}
                 onFocus={showTooltipHandler}
@@ -352,14 +275,22 @@ const Chip = ({
     [onDoubleClick],
   );
 
-  const sizeConfig = SIZES[size];
-  const contentMinHeight = `calc(${theme.sizes.avatar[sizeConfig.avatar].diameter} + calc(${
-    sizeConfig.spacing
-  } / 4))`;
+  const backgroundColor = error ? 'error' : background;
+  const isClickable = (onClick || onDoubleClick) && !disabled;
+  const isDisabled = !!disabled;
+
+  const chipStyle: React.CSSProperties = {
+    ...getChipColorVars(backgroundColor),
+    maxWidth: maxWidth || 'fit-content',
+    minWidth: maxWidth ? '0' : 'max-content',
+    gap: SIZES[size].spacing,
+    padding: `calc(${SIZES[size].spacing} / 4) calc(${SIZES[size].spacing} / 2)`,
+    backgroundColor: `var(--chip-bg)`,
+    ...rest.style,
+  };
+
   const contentMaxWidth = maxWidth
-    ? `calc(100% - calc(${hasAvatar ? theme.sizes.avatar[sizeConfig.avatar].diameter : 0} + ${
-        sizeConfig.spacing
-      }))`
+    ? `calc(100% - calc(${hasAvatar ? theme.sizes.avatar[SIZES[size].avatar].diameter : 0} + ${SIZES[size].spacing}))`
     : undefined;
 
   return (
@@ -376,16 +307,18 @@ const Chip = ({
       <div
         data-testid="chip"
         ref={chipRef}
-        className={chipClassName}
+        className={styles.chip}
         style={chipStyle}
+        data-shape={shape}
+        data-clickable={isClickable || undefined}
+        data-disabled={isDisabled || undefined}
         onClick={onClick && clickHandler}
         onDoubleClick={onDoubleClick && dblClickHandler}
-        data-disabled={isDisabled || undefined}
         {...rest}
       >
         {hasAvatar && (
           <Avatar
-            size={sizeConfig.avatar}
+            size={SIZES[size].avatar}
             label={avatarLabel || (typeof label === 'string' && label) || ''}
             picture={avatarPicture}
             background={error ? 'error.active' : avatarBackground}
@@ -395,19 +328,18 @@ const Chip = ({
           />
         )}
         <div
-          className={contentVariants()}
+          className={styles.content}
           style={{
-            gap: sizeConfig.spacing,
+            gap: SIZES[size].spacing,
             minWidth: maxWidth ? '0' : 'fit',
-            minHeight: contentMinHeight,
             maxWidth: contentMaxWidth,
           }}
         >
           {keyLabel && (
-            <div className={labelVariants()} style={{ width: 'auto' }}>
+            <div className={styles.label} style={{ width: 'auto' }}>
               <Text
                 weight="regular"
-                size={sizeConfig.font}
+                size={SIZES[size].font}
                 color={error ? 'gray6' : color}
                 disabled={!!disabled}
               >
@@ -417,7 +349,7 @@ const Chip = ({
           )}
           {label && (
             <div
-              className={labelVariants()}
+              className={styles.label}
               style={{
                 width: 'fit',
                 flexShrink: maxWidth ? 1 : 0,
@@ -437,7 +369,7 @@ const Chip = ({
               >
                 <Text
                   weight="light"
-                  size={sizeConfig.font}
+                  size={SIZES[size].font}
                   color={error ? 'gray6' : color}
                   disabled={!!disabled}
                 >
@@ -448,7 +380,7 @@ const Chip = ({
           )}
           {actionItems && actionItems.length > 0 && (
             <Container
-              gap={`calc(${sizeConfig.spacing} / 2)`}
+              gap={`calc(${SIZES[size].spacing} / 2)`}
               orientation="horizontal"
               width="fit"
               minWidth="fit"

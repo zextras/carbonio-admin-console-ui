@@ -1,0 +1,94 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1.5;
+  transition:
+    background-color 0.2s ease-out,
+    color 0.2s ease-out;
+  outline: none;
+  width: fit-content;
+  height: fit-content;
+}
+
+.chip[data-shape='regular'] {
+  border-radius: calc(var(--radius-default) * 2);
+}
+
+.chip[data-shape='round'] {
+  border-radius: 100vh;
+}
+
+.chip[data-clickable='true'] {
+  cursor: pointer;
+}
+
+.chip[data-clickable='true']:hover {
+  background-color: var(--chip-bg-hover);
+}
+
+.chip[data-clickable='true']:active {
+  background-color: var(--chip-bg-active);
+}
+
+.chip[data-disabled='true'],
+.chip[data-clickable='false'] {
+  cursor: default;
+}
+
+.content {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content > .label:first-child {
+  padding-left: calc(var(--chip-spacing) * 2);
+}
+
+.content > .label:last-child {
+  padding-right: calc(var(--chip-spacing) * 2);
+}
+
+.actionContainer {
+  min-width: fit-content;
+}
+
+.actionButton {
+  min-width: fit-content;
+  padding: calc(var(--action-spacing) / 2);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--radius-default);
+  transition: background-color 0.2s ease-out;
+}
+
+.actionButton:hover {
+  background-color: var(--color-gray5-regular);
+}
+
+.actionButton:active {
+  background-color: var(--color-gray6-regular);
+}
+
+.actionButton:disabled {
+  cursor: default;
+}
+
+.actionIcon {
+  min-width: fit-content;
+  padding: calc(var(--action-spacing) / 2);
+}
