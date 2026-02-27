@@ -5,32 +5,32 @@
  */
 export type { Account, AccountSettings } from '../types/account';
 export type {
-	AppRoute,
-	AppRouteData,
-	AppRouteDescriptor,
-	AppState,
-	AppView,
-	AppViewComponentProps,
-	BadgeInfo,
-	CarbonioModule,
-	PanelMode,
-	PrimaryAccessoryView,
-	PrimaryAccessoryViewProps,
-	PrimaryBarComponentProps,
-	PrimaryBarView,
-	Right,
-	SecondaryAccessoryView,
-	SecondaryBarComponentProps,
-	SecondaryBarView,
-	UtilityBarComponentProps,
-	UtilityView,
+  AppRoute,
+  AppRouteData,
+  AppRouteDescriptor,
+  AppState,
+  AppView,
+  AppViewComponentProps,
+  BadgeInfo,
+  CarbonioModule,
+  PanelMode,
+  PrimaryAccessoryView,
+  PrimaryAccessoryViewProps,
+  PrimaryBarComponentProps,
+  PrimaryBarView,
+  Right,
+  SecondaryAccessoryView,
+  SecondaryBarComponentProps,
+  SecondaryBarView,
+  UtilityBarComponentProps,
+  UtilityView,
 } from '../types/apps';
 export type {
-	Action,
-	ActionFactory,
-	ActionMap,
-	AnyFunction,
-	IntegrationsState,
+  Action,
+  ActionFactory,
+  ActionMap,
+  AnyFunction,
+  IntegrationsState,
 } from '../types/integrations';
 export type { II18nFactory } from '../types/misc';
 export type { ThemeExtension } from '../types/theme';
@@ -38,25 +38,25 @@ export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext } from './apps/loader';
 import {
-	ACTION_TYPES,
-	BASENAME,
-	CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-	CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
-	CARBONIO_HELP_ADMIN_URL,
-	CARBONIO_HELP_ADVANCED_URL,
-	CARBONIO_LOGO_URL,
-	CONFIG,
-	CONTENT,
-	FORUM_URL,
-	LOCAL_STORAGE_LAST_PRIMARY_KEY,
-	LOGIN_V3_CONFIG_PATH,
-	OPEN_TICKET_URL,
-	SCALING_LIMIT,
-	SCALING_OPTIONS,
-	SEND_FEEDBACK_URL,
-	SHELL_APP_ID,
-	TRUE,
-	ZIMBRA_ADMIN_URN,
+  ACTION_TYPES,
+  BASENAME,
+  CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
+  CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
+  CARBONIO_HELP_ADMIN_URL,
+  CARBONIO_HELP_ADVANCED_URL,
+  CARBONIO_LOGO_URL,
+  CONFIG,
+  CONTENT,
+  FORUM_URL,
+  LOCAL_STORAGE_LAST_PRIMARY_KEY,
+  LOGIN_V3_CONFIG_PATH,
+  OPEN_TICKET_URL,
+  SCALING_LIMIT,
+  SCALING_OPTIONS,
+  SEND_FEEDBACK_URL,
+  SHELL_APP_ID,
+  TRUE,
+  ZIMBRA_ADMIN_URN,
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
 import {
@@ -73,19 +73,17 @@ import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
 import { useDomainInformation } from './react-query/use-domain-information';
-import {
-	useGlobalCarbonioSendAnalytics,
-} from './react-query/use-global-settings';
+import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
 import {
-	getAllRights,
-	getRights,
-	useCurrentUserRights,
-	useHasAllRights,
+  getAllRights,
+  getRights,
+  useCurrentUserRights,
+  useHasAllRights,
 } from './react-query/use-rights';
-import { useAllServers, useMtaServers } from './react-query/use-servers';
+import { useAllServers, useMtaServers, useServerVersion } from './react-query/use-servers';
 import {
   useActivateLicense,
   useLicenseInfo,
@@ -218,6 +216,7 @@ export {
   useMtaServers,
   usePrimaryBarState,
   useRemoveLicense,
+  useServerVersion,
   useStickyBarStore,
   useUserAccount,
   useUserAccounts,
