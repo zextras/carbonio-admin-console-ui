@@ -23,14 +23,18 @@ export * from './components/basic/text/Text';
 export * from './components/layout/Container';
 export * from './components/layout/Padding';
 export * from './components/layout/Row';
-export { Section, type SectionProps, WizardInSection, type WizardInSectionProps } from './components/layout/Section';
+export {
+  Section,
+  type SectionProps,
+  WizardInSection,
+  type WizardInSectionProps,
+} from './components/layout/Section';
 
 /** Inputs components */
 export * from './components/inputs/Checkbox';
 export {
   ChipInput,
   type ChipInputProps,
-  type ChipInputType,
   type ChipItem,
 } from './components/inputs/chipInput/ChipInput';
 export * from './components/inputs/DateTimePicker';

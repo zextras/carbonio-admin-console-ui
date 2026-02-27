@@ -6,6 +6,7 @@
 
 import '../../../web-components/divider-wc';
 
+import clsx from 'clsx';
 import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
 import React, {
   InputHTMLAttributes,
@@ -16,7 +17,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import {
@@ -26,7 +26,6 @@ import {
   useKeyboard,
 } from '../../../hooks/useKeyboard';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { getColor } from '../../../theme/theme-utils';
 import { AnyColor, PaletteColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
@@ -35,83 +34,17 @@ import { Container, ContainerProps } from '../../layout/Container';
 import { InputContainer } from '../commons/InputContainer';
 import { InputDescription } from '../commons/InputDescription';
 import { InputLabel } from '../commons/InputLabel';
+import styles from './ChipInput.module.css';
 
-const ContainerEl = styled(InputContainer)<{
-  background: PaletteColor;
-  $inputDisabled: boolean;
-  $dropdownDisabled: boolean;
-}>`
-  cursor: ${({ $inputDisabled, $dropdownDisabled }): string | false => {
-    if ($inputDisabled && !$dropdownDisabled) {
-      return 'pointer';
-    }
-    if (!$inputDisabled) {
-      return 'text';
-    }
-    return false;
-  }};
-`;
-
-const ScrollContainer = styled(Container)<{ $hasLabel: boolean }>`
-  overflow: auto;
-  scrollbar-width: ${({ wrap }): string => (wrap === 'wrap' ? 'auto' : 'none')};
-  &::-webkit-scrollbar {
-    display: ${({ wrap }): string => (wrap === 'wrap' ? 'auto' : 'none')};
+function getThemeColorVar(colorName: string, state: string): string {
+  if (!colorName) return '';
+  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+  if (hexPattern.test(colorName)) {
+    return colorName;
   }
-  ${({ theme, $hasLabel }): SimpleInterpolation =>
-    $hasLabel &&
-    css`
-      margin-block-start: calc(${theme.sizes.font.extrasmall} * 1.5);
-    `}
-`;
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
-
-const InputEl = styled.input<{ $color: PaletteColor }>`
-  border: none !important;
-  height: auto !important;
-  width: 1em;
-  outline: 0;
-  background: transparent !important;
-  font-size: ${({ theme }): string => theme.sizes.font.medium};
-  font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-  font-family: ${({ theme }): string => theme.fonts.default};
-  color: ${({ theme, $color }): string => getColor($color, theme)};
-
-  &:disabled {
-    color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
-    pointer-events: none;
-  }
-
-  transition: background 0.2s ease-out;
-  line-height: 1.5;
-  padding: 0;
-  min-width: 1em;
-  overflow-wrap: break-word;
-  max-width: 100%;
-
-  &::placeholder {
-    color: transparent;
-    font-size: 0;
-    user-select: none;
-  }
-`;
-
-const HiddenSpan = styled.span`
-  position: absolute;
-  height: 0;
-  overflow: hidden;
-  white-space: pre;
-`;
-
-const AdjustWidthInputContainer = styled.div`
-  position: relative;
-  flex: 1 1 auto;
-  overflow-wrap: break-word;
-  max-width: 100%;
-`;
+  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
+}
 
 /**
  * Adapt input width on typing
@@ -159,38 +92,21 @@ const AdjustWidthInput = ({
     };
   }, [inputRef, resizeInput]);
 
+  const inputStyle: React.CSSProperties = useMemo(
+    () => ({
+      '--input-color': getThemeColorVar(color, 'regular'),
+      '--input-color-disabled': getThemeColorVar(color, 'disabled'),
+    } as React.CSSProperties),
+    [color]
+  );
+
   return (
-    <AdjustWidthInputContainer>
-      <HiddenSpan ref={hiddenSpanRef} />
-      <InputEl $color={color} {...rest} ref={inputRef} />
-    </AdjustWidthInputContainer>
+    <div className={styles.adjustWidthInputContainer}>
+      <span ref={hiddenSpanRef} className={styles.hiddenSpan} />
+      <input className={styles.inputEl} style={inputStyle} {...rest} ref={inputRef} />
+    </div>
   );
 };
-
-const Label = styled(InputLabel)<{
-  $hasItems: boolean;
-}>`
-  ${AdjustWidthInputContainer}:focus-within + & {
-    top: 0;
-    transform: translateY(0);
-    font-size: ${({ theme }): string => theme.sizes.font.extrasmall};
-  }
-
-  ${({ $hasItems, theme }): SimpleInterpolation =>
-    $hasItems &&
-    css`
-      top: 0;
-      transform: translateY(0);
-      font-size: ${theme.sizes.font.extrasmall};
-    `};
-`;
-
-const CustomInputDescription = styled(InputDescription)<{
-  $backgroundColor?: string;
-}>`
-  background-color: ${({ $backgroundColor, theme }): string | undefined =>
-    $backgroundColor && getColor($backgroundColor, theme)};
-`;
 
 type ReducerAction<TValue> =
   | { type: 'push' | 'replace'; item: ChipItem<TValue> }
@@ -681,6 +597,25 @@ const ChipInputComponent = <TValue = unknown,>({
     [bottomBorderColor, disabled, hasError, hasFocus, hideBorder],
   );
 
+  const cursorState = useMemo(() => {
+    if (disabled || isInputDisabled) {
+      if (!isDropdownDisabled) return 'pointer';
+      return undefined;
+    }
+    return 'text';
+  }, [disabled, isInputDisabled, isDropdownDisabled]);
+
+  const containerElClassName = clsx(styles.containerEl);
+
+  const descriptionStyle: React.CSSProperties = useMemo(
+    () => ({
+      '--description-bg-color': errorBackgroundColor
+        ? getThemeColorVar(errorBackgroundColor, 'regular')
+        : 'transparent',
+    } as React.CSSProperties),
+    [errorBackgroundColor]
+  );
+
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
       <Dropdown
@@ -696,8 +631,10 @@ const ChipInputComponent = <TValue = unknown,>({
         maxHeight={dropdownMaxHeight}
         maxWidth={dropdownMaxWidth}
       >
-        <ContainerEl
+        <InputContainer
           ref={ref}
+          className={containerElClassName}
+          data-cursor={cursorState}
           orientation="horizontal"
           width="fill"
           maxWidth={'fill'}
@@ -709,12 +646,11 @@ const ChipInputComponent = <TValue = unknown,>({
           borderRadius="half"
           background={background}
           $disabled={(disabled || isInputDisabled) && isDropdownDisabled}
-          $inputDisabled={disabled || isInputDisabled}
-          $dropdownDisabled={isDropdownDisabled}
           onClick={setFocus}
           {...rest}
         >
-          <RelativeContainer
+          <Container
+            className={styles.relativeContainer}
             padding={{
               top: placeholder ? '0.0625rem' : '0.625rem',
               bottom: placeholder ? '0.175rem' : '0.625rem',
@@ -729,8 +665,11 @@ const ChipInputComponent = <TValue = unknown,>({
             flexShrink={1}
             minWidth={0}
           >
-            <ScrollContainer
+            <Container
               ref={scrollContainerRef}
+              className={styles.scrollContainer}
+              data-wrap={wrap}
+              data-has-label={placeholder ? 'true' : undefined}
               flexBasis={'auto'}
               flexGrow={1}
               flexShrink={1}
@@ -741,7 +680,6 @@ const ChipInputComponent = <TValue = unknown,>({
               gap={'0.5rem'}
               wrap={wrap}
               maxHeight={maxHeight}
-              $hasLabel={!!placeholder}
             >
               {items.map((item, index) => (
                 <ChipComp
@@ -764,29 +702,31 @@ const ChipInputComponent = <TValue = unknown,>({
                 onPaste={onPaste}
               />
               {placeholder && (
-                <Label
+                <InputLabel
+                  className={styles.label}
+                  data-has-items={items.length > 0 || !!inputElRef.current?.value ? 'true' : undefined}
                   htmlFor={id}
                   $hasFocus={hasFocus}
                   $hasError={hasError}
                   $disabled={disabled && isDropdownDisabled}
-                  $hasItems={items.length > 0 || !!inputElRef.current?.value}
                 >
                   {placeholder}
-                </Label>
+                </InputLabel>
               )}
-            </ScrollContainer>
-          </RelativeContainer>
-        </ContainerEl>
+            </Container>
+          </Container>
+        </InputContainer>
       </Dropdown>
       <divider-wc color={dividerColor}></divider-wc>
       {description !== undefined && (
-        <CustomInputDescription
+        <InputDescription
+          className={styles.customInputDescription}
+          style={descriptionStyle}
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
           disabled={disabled && isDropdownDisabled}
-          $backgroundColor={errorBackgroundColor}
         >
           {description}
-        </CustomInputDescription>
+        </InputDescription>
       )}
     </Container>
   );
