@@ -19,10 +19,30 @@ export const getDomainList = async (
 		sortAscending: '1',
 		applyCos: 'false',
 		applyConfig: 'false',
-		attrs: 'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType',
+		attrs: 'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraPublicServiceHostname',
 		types: 'domains',
 		query: {
 			_content:
 				!!searchKeyWord && searchKeyWord !== '' ? `(|(zimbraDomainName=*${searchKeyWord}*))` : ''
 		}
 	});
+
+export const syncGetDomainInfo = (
+       searchKeyWord: string,
+       offset: number,
+       limit?: number
+): Promise<any> =>
+       soapFetch(`SearchDirectory`, {
+               _jsns: 'urn:zimbraAdmin',
+               limit: limit ?? 50,
+               offset: offset || 0,
+               sortBy: 'zimbraDomainName',
+               sortAscending: '1',
+               applyCos: 'false',
+               applyConfig: 'false',
+               attrs: 'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraPublicServiceHostname',
+               types: 'domains',
+               query: {
+                       _content: `(zimbraDomainName=${searchKeyWord})`
+               }
+       });

@@ -70,7 +70,7 @@ import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
-import { getDomainList } from '../../../../../services/search-domain-service';
+import { getDomainList, syncGetDomainInfo } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
@@ -139,7 +139,7 @@ const EditAccount: FC<{
 }) => {
 		const { t } = useTranslation();
 		const createSnackbar = useSnackbar();
-		const domainList = useDomainStore((state) => state.domainList);
+		const [domainList,setDomainList] = useDomainStore((state) => [state.domainList,state.setDomainList]);
 		const [change, setChange] = useState(defaultTab);
 		const [click, setClick] = useState<any>('');
 		const [isLoading, setIsLoading] = useState(false);
@@ -153,7 +153,6 @@ const EditAccount: FC<{
 			setDefaultCOS,
 			cosDetail
 		} = context;
-		const setDomainListStore = useDomainStore((state) => state.setDomainList);
 		const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 		const userSetting = useUserSettings();
 		const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -169,13 +168,13 @@ const EditAccount: FC<{
 						const searchResponse: any = data;
 						if (!!searchResponse && searchResponse?.searchTotal > 0) {
 							if (searchResponse?.domain?.length) {
-								setDomainListStore([...domainList, ...searchResponse.domain]);
+								setDomainList([...domainList, ...searchResponse.domain]);
 								if (searchResponse?.more) {
 									getDomainLists(offset + 50);
 								}
 							}
 						} else {
-							setDomainListStore([]);
+							setDomainList([]);
 						}
 					})
 					.catch((error) => {
@@ -183,7 +182,7 @@ const EditAccount: FC<{
 						createSnackbar(snackbarConfig);
 					});
 			},
-			[createSnackbar, domainList, setDomainListStore, t]
+			[createSnackbar, domainList, setDomainList, t]
 		);
 
 		useEffect(() => {
@@ -762,10 +761,27 @@ const EditAccount: FC<{
 			getDelegateAuthRequest(selectedAccount?.id)
 				.then((data: any) => {
 					if (data?.authToken?.[0]) {
-						window.open(
-							`https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-							'blank'
-						);
+						let preauthDomain = window.location.hostname;
+						syncGetDomainInfo(accountDetail?.domainName, 0)
+						.then((getDomainData:any) => {
+								const searchResponse: any = getDomainData;
+								if (!!searchResponse && searchResponse?.searchTotal > 0) {
+										if (searchResponse?.domain?.length > 0) {
+												const filterAttribute= searchResponse?.domain[0].a?.filter((attribute:any) => attribute.n == 'zimbraPublicServiceHostname');
+												if(filterAttribute) preauthDomain = filterAttribute[0]._content;
+										}
+								}
+								window.open(
+										`https://${preauthDomain}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+										'blank'
+								);
+						})
+						.catch((error: any) => {
+								window.open(
+										`https://${preauthDomain}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+										'blank'
+								);
+						});
 					} else {
 						createSnackbar({
 							key: 'error',
@@ -791,7 +807,7 @@ const EditAccount: FC<{
 						replace: true
 					});
 				});
-		}, [createSnackbar, selectedAccount?.id, t]);
+		}, [createSnackbar, selectedAccount?.id, t, accountDetail?.domainName]);
 
 		const accountUserType = useCallback((item: any): string => {
 			if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
