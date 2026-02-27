@@ -151,7 +151,12 @@ const chipVariants = tv({
 });
 
 const actionVariants = tv({
-  base: 'min-w-fit p-[calc(var(--action-spacing)/2)]',
+  base: 'min-w-fit p-[calc(var(--action-spacing)/2)] border-none bg-transparent',
+  variants: {
+    clickable: {
+      true: 'cursor-pointer rounded-[var(--radius-default)] hover:bg-[var(--color-gray5-regular)] active:bg-[var(--color-gray6-regular)] transition-colors',
+    },
+  },
 });
 
 const contentVariants = tv({
@@ -263,6 +268,45 @@ const Chip = ({
                   size={SIZES[size].icon}
                 ></icon-wc>
               </div>
+            </Tooltip>
+          );
+        } else if (action.type === 'button') {
+          const clickHandler = (event: React.MouseEvent) => {
+            event.preventDefault();
+            action.onClick(event);
+          };
+          item = (
+            <Tooltip
+              key={action.id}
+              label={action.label}
+              disabled={actionDisabled}
+              placement={tooltipPlacement}
+            >
+              <button
+                type="button"
+                className={actionVariants({ clickable: true })}
+                onMouseEnter={showTooltipHandler}
+                onMouseLeave={hideTooltipHandler}
+                onFocus={showTooltipHandler}
+                onBlur={hideTooltipHandler}
+                onClick={clickHandler}
+                disabled={!!disabled || action.disabled}
+                style={
+                  {
+                    '--action-spacing': SIZES[size].spacing,
+                    background: action.background
+                      ? getThemeColorVar(action.background, 'regular')
+                      : undefined,
+                  } as React.CSSProperties
+                }
+              >
+                <icon-wc
+                  icon={action.icon}
+                  color={error ? 'gray6' : action.color}
+                  disabled={!!disabled || action.disabled}
+                  size={SIZES[size].icon}
+                ></icon-wc>
+              </button>
             </Tooltip>
           );
         }
