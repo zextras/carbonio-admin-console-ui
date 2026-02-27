@@ -31,7 +31,7 @@ import {
 	useCurrentUserRights,
 	useHasAllRights,
 	useRightsByType} from '../../react-query/use-rights';
-import { useAllServers, useMtaServers, useServersByService } from '../../react-query/use-servers';
+import { useAllServers, useMtaServers, useServersByService, useServerVersion } from '../../react-query/use-servers';
 import {
   useActivateLicense,
   useLicenseInfo,
@@ -84,6 +84,7 @@ export const getAppFunctions = (pkg: CarbonioModule): Record<string, Function> =
 	useLastLoginTimestamp,
 	useLicenseInfo,
 	useVersion,
+	useServerVersion,
 	useActivateLicense,
 	useRemoveLicense,
 	useModuleLicenseInfo,

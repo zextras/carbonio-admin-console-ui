@@ -30,7 +30,7 @@ import {
 	useCurrentUserRights,
 	useHasAllRights,
 	useRightsByType} from './src/react-query/use-rights';
-import { useAllServers, useMtaServers, useServersByService } from './src/react-query/use-servers';
+import { useAllServers, useMtaServers, useServersByService, useServerVersion } from './src/react-query/use-servers';
 import {
 	useActivateLicense,
 	useLicenseInfo,
@@ -124,6 +124,7 @@ export {
 	useRemoveLicense,
 	useRightsByType,
 	useServersByService,
+	useServerVersion,
 	useStickyBarStore,
 	useUserAccount,
 	useUserAccounts,
