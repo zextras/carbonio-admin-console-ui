@@ -19,7 +19,7 @@ export const MTADetailPanel: FC = () => (
   >
     <Routes>
       <Route path={'/:operation'} element={<MTADetailOperationPanel />} />
-      <Route path={'/server/:server/:operation'} element={<MTADetailOperationPanel />} />
+      <Route path={'/:server/:operation'} element={<MTADetailOperationPanel />} />
     </Routes>
   </Container>
 );
