@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 export const getAllDevices = async (module: string, domainName: string): Promise<any> =>
 	postSoapFetchRequest(

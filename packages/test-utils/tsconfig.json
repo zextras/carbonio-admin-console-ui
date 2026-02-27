@@ -1,4 +1,13 @@
 {
-	"extends": "../../tsconfig.base.json",
-	"include": ["src/**/*"]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist-types",
+    "rootDir": "./src"
+  },
+  "references": [{ "path": "../ui-shared" }],
+  "include": ["src/**/*"]
 }

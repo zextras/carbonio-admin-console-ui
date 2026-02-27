@@ -5,14 +5,6 @@
  */
 
 import {
-  fetchExternalSoap,
-  getSoapFetchRequest,
-  postSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-  useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   Input,
@@ -24,11 +16,18 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  fetchExternalSoap,
+  getSoapFetchRequest,
+  postSoapFetchRequest,
+  useAllServers,
+  useCurrentUserRights,
+  useModuleLicenseInfo,
+} from '@zextras/ui-shared';
 import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import {
   BACKUP_REALTIME,
@@ -49,20 +48,20 @@ import { useBackupStore } from '../../../store/backup/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+const getOverlayStyle = (): React.CSSProperties => ({
+  position: 'fixed',
+  width: '70.35rem',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  height: 'auto',
+  maxHeight: '100%',
+  overflow: 'hidden',
+  backgroundColor: '#0d0d0d',
+  opacity: '0.4',
+  zIndex: 11,
+  paddingTop: '2rem',
+});
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -952,7 +951,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isSaveRequestInProgress && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"

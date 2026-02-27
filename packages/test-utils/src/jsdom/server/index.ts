@@ -21,7 +21,7 @@ export type APIInterceptor = {
 export const getSetupServer = (): SetupServer => server;
 
 export const createAPIInterceptor = (
-  method: 'get' | 'post',
+  method: 'get' | 'post' | 'put' | 'delete',
   url: string,
   response: () => HttpResponse<DefaultBodyType>,
 ): APIInterceptor => {

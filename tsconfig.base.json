@@ -1,8 +1,11 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
     "checkJs": false,
-    "noEmit": true,
     "module": "esnext",
     "jsx": "react-jsx",
     "esModuleInterop": true,
@@ -22,5 +25,9 @@
     "types": ["@vitest/browser/matchers", "vitest/globals"],
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*", "*.d.ts"]
+  "references": [
+    { "path": "./packages/test-utils/" },
+    { "path": "./packages/ui-components/" },
+    { "path": "./packages/ui-shared/" }
+  ],
 }

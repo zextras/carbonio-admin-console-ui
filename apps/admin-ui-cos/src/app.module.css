@@ -1,0 +1,12 @@
+.primaryBarIcon {
+}
+
+.primaryBarIcon:hover {
+	background: transparent;
+}
+
+@media (max-width: 60rem) {
+	.primaryBarIcon {
+		padding: 0 0 0 0.188rem;
+	}
+}

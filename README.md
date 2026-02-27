@@ -178,7 +178,7 @@ Packages reference each other using the `workspace:*` protocol:
 ```json
 {
   "dependencies": {
-    "@zextras/admin-ui-bootstrap": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@zextras/ui-components": "workspace:*"
   }
 }
@@ -367,7 +367,7 @@ If builds fail unexpectedly:
 2. **Clean build outputs:**
 
    ```bash
-   pnpm --filter @zextras/admin-ui-bootstrap clean
+   pnpm --filter @zextras/ui-shared clean
    ```
 
 3. **Check Node.js version:**

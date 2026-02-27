@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
   useIsAdvanced,
   useMailstoreServers,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import {
   BUCKET_LIST,
@@ -25,8 +24,6 @@ import {
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-
-const SelectItem = styled(Row)``;
 
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
@@ -63,7 +60,7 @@ const BucketListPanel: FC = () => {
         id: volume.id,
         label: volume.name,
         customComponent: (
-          <SelectItem
+          <Row
             style={{
               display: 'block',
               textAlign: 'left',
@@ -76,7 +73,7 @@ const BucketListPanel: FC = () => {
             }}
           >
             {volume?.name}
-          </SelectItem>
+          </Row>
         ),
       }));
       setItemsVolume(data);

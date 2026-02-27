@@ -4,24 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  Container, ContainerProps, Icon, Text  } from '@zextras/ui-components';
-import {  FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { Container, IconName, Text } from '@zextras/ui-components';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ListRow from '../list/list-row';
-
-interface ContainerExtendProps extends ContainerProps {
-  bgColor: string;
-}
-
-const ActionContainer = styled(Container)<ContainerExtendProps>`
-  background: ${({ theme, bgColor }): string => theme.avatarColors[bgColor as keyof typeof theme.avatarColors]};
-`;
-
-const OperationContainer = styled(Container)`
-  cursor: pointer;
-`;
 
 const QuickAccess: FC<{
   openOperationView: (operation: string) => void;
@@ -33,18 +20,18 @@ const QuickAccess: FC<{
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.accounts', 'Accounts'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'PersonOutline',
-      bottomIcon: 'ChevronRightOutline',
-      bgColor: 'avatar_39',
+      operationIcon: 'PersonOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
+      bgColor: 'avatar-39',
       operation: 'account',
     },
     {
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.distribution_list', 'Distribution List'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'DistributionListOutline',
-      bottomIcon: 'ChevronRightOutline',
-      bgColor: 'avatar_21',
+      operationIcon: 'DistributionListOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
+      bgColor: 'avatar-21',
       operation: 'malinglist',
     },
   ];
@@ -66,7 +53,7 @@ const QuickAccess: FC<{
       >
         <ListRow>
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <Icon size="large" icon="FlashOutline" />
+            <icon-wc size="large" icon="FlashOutline"></icon-wc>
           </Container>
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
             <Text color="gray0" overflow="break-word" weight="bold" size="medium">
@@ -88,13 +75,12 @@ const QuickAccess: FC<{
             padding={{ left: 'extralarge' }}
             key={item?.operation}
           >
-            <ActionContainer
+            <Container
               height={'8.75rem'}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               width={'21.75rem'}
-              bgColor={item?.bgColor}
-              style={{ borderRadius: '0.5rem' }}
+              style={{ borderRadius: '0.5rem', background: `var(--color-${item?.bgColor})` }}
             >
               <ListRow>
                 <Container padding={{ all: 'large' }}>
@@ -114,7 +100,7 @@ const QuickAccess: FC<{
                   </Container>
                 </Container>
                 <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <Icon color="gray6" icon={item?.operationIcon} size="large" />
+                  <icon-wc color="gray6" icon={item?.operationIcon} size="large"></icon-wc>
                 </Container>
               </ListRow>
               <ListRow>
@@ -123,10 +109,11 @@ const QuickAccess: FC<{
                 </Container>
               </ListRow>
               <ListRow>
-                <OperationContainer
+                <Container
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
                   padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
@@ -134,19 +121,20 @@ const QuickAccess: FC<{
                   <Text color="gray6" overflow="break-word" weight="light" size="medium">
                     {item?.bottomText}
                   </Text>
-                </OperationContainer>
-                <OperationContainer
+                </Container>
+                <Container
                   mainAlignment="flex-end"
                   crossAlignment="flex-end"
                   padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
-                </OperationContainer>
+                  <icon-wc icon={item?.bottomIcon} size="medium" color="gray6"></icon-wc>
+                </Container>
               </ListRow>
-            </ActionContainer>
+            </Container>
           </Container>
         ))}
       </Container>

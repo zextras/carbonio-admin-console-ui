@@ -36,8 +36,8 @@ import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/wordcount';
 
 import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
-import { getLocale } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
+import { getLocale } from '@zextras/ui-shared';
 import React, { useCallback, useMemo } from 'react';
 
 import {

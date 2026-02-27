@@ -4,20 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore  } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Icon,  Input,  Padding,  Row,  Table,  Text,  useSnackbar } from "@zextras/ui-components";
-import {  format  } from "date-fns";
-import {  debounce  } from "lodash-es";
-import {  FC, useCallback, useEffect, useMemo, useState  } from "react";
-import {  Trans, useTranslation  } from "react-i18next";
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Input,
+  Padding,
+  Row,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
+import { format } from 'date-fns';
+import { debounce } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import logo from "../../../../assets/gardian.svg";
-import {  ZX_MOBILE  } from "../../../../constants";
-import {  doRemoveDevice  } from "../../../../services/do-remove-device";
-import {  getAllDevices  } from "../../../../services/get-all-devices";
-import CustomHeaderFactory from "../../../app/shared/customTableHeaderFactory";
-import CustomRowFactory from "../../../app/shared/customTableRowFactory";
-import ActiveDeviceDetail from "./active-device-detail";
+import logo from '../../../../assets/gardian.svg';
+import { ZX_MOBILE } from '../../../../constants';
+import { doRemoveDevice } from '../../../../services/do-remove-device';
+import { getAllDevices } from '../../../../services/get-all-devices';
+import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {
   accountEmail: string;
@@ -39,34 +48,22 @@ type MobileDevice = {
 
 const ActiveSync: FC = () => {
   const [t] = useTranslation();
-  const [allMobileDevices, setAllMobileDevices] = useState<Array<MobileDevice>>(
-    [],
-  );
+  const [allMobileDevices, setAllMobileDevices] = useState<Array<MobileDevice>>([]);
   const [allDeviceRow, setAllDeviceRow] = useState<Array<any>>([]);
   const createSnackbar = useSnackbar();
   const [isShowDeviceDetail, setIsShowDeviceDetail] = useState<boolean>(false);
-  const [selectedMobileDevice, setSelectedMobileDevice] = useState<Array<any>>(
-    [],
-  );
-  const [selectedMobileDeviceDetail, setSelectedMobileDeviceDetail] =
-    useState<any>();
+  const [selectedMobileDevice, setSelectedMobileDevice] = useState<Array<any>>([]);
+  const [selectedMobileDeviceDetail, setSelectedMobileDeviceDetail] = useState<any>();
   const [refreshDeviceList, setRefreshDeviceList] = useState<boolean>(false);
-  const [searchString, setSearchString] = useState<string>("");
-  const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>(
-    [],
-  );
+  const [searchString, setSearchString] = useState<string>('');
+  const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
   const [hasError, setHasError] = useState<boolean>(false);
-  const domainName = useDomainStore((state) => state.domain?.name) ?? "";
+  const domainName = useDomainStore((state) => state.domain?.name) ?? '';
   const [selectRow, setSelectRow] = useState<any>([]);
-  const [isRequestInProgress, setIsRequestInProgress] =
-    useState<boolean>(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
   const showSnackbar = useCallback(
-    (
-      key: string,
-      severity: "success" | "info" | "warning" | "error",
-      msg: string,
-    ) => {
+    (key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
       createSnackbar({
         key,
         severity,
@@ -82,39 +79,39 @@ const ActiveSync: FC = () => {
   const headers: any[] = useMemo(
     () => [
       {
-        id: "name",
-        label: t("label.device", "Device"),
-        width: "10%",
+        id: 'name',
+        label: t('label.device', 'Device'),
+        width: '10%',
         bold: true,
       },
       {
-        id: "device_id",
-        label: t("label.device_id", "Device ID"),
-        width: "15%",
+        id: 'device_id',
+        label: t('label.device_id', 'Device ID'),
+        width: '15%',
         bold: true,
       },
       {
-        id: "account",
-        label: t("label.account", "Account"),
-        width: "15%",
+        id: 'account',
+        label: t('label.account', 'Account'),
+        width: '15%',
         bold: true,
       },
       {
-        id: "last_seen",
-        label: t("label.last_seen", "Last seen"),
-        width: "20%",
+        id: 'last_seen',
+        label: t('label.last_seen', 'Last seen'),
+        width: '20%',
         bold: true,
       },
       {
-        id: "eas",
-        label: t("label.eas", "EAS"),
-        width: "15%",
+        id: 'eas',
+        label: t('label.eas', 'EAS'),
+        width: '15%',
         bold: true,
       },
       {
-        id: "status",
-        label: t("label.status", "Status"),
-        width: "15%",
+        id: 'status',
+        label: t('label.status', 'Status'),
+        width: '15%',
         bold: true,
       },
     ],
@@ -129,32 +126,29 @@ const ActiveSync: FC = () => {
     };
   };
 
-  const parseAllDevices = useCallback(
-    (keys: string[], contentDevice: ContentDevice) => {
-      if (keys.length > 0) {
-        const allDevices: Array<MobileDevice> = [];
-        keys.forEach((item: string) => {
-          const mobileData = contentDevice[item];
-          if (mobileData?.response?.devices) {
-            const devices = mobileData?.response?.devices;
-            if (devices && devices.length > 0) {
-              devices.forEach((deviceItem: MobileDevice) => {
-                allDevices.push(deviceItem);
-              });
-            }
+  const parseAllDevices = useCallback((keys: string[], contentDevice: ContentDevice) => {
+    if (keys.length > 0) {
+      const allDevices: Array<MobileDevice> = [];
+      keys.forEach((item: string) => {
+        const mobileData = contentDevice[item];
+        if (mobileData?.response?.devices) {
+          const devices = mobileData?.response?.devices;
+          if (devices && devices.length > 0) {
+            devices.forEach((deviceItem: MobileDevice) => {
+              allDevices.push(deviceItem);
+            });
           }
-        });
-        if (allDevices.length > 0) {
-          setAllMobileDevices(allDevices);
-          setBackupAllDevice(allDevices);
-        } else {
-          setAllMobileDevices([]);
-          setBackupAllDevice([]);
         }
+      });
+      if (allDevices.length > 0) {
+        setAllMobileDevices(allDevices);
+        setBackupAllDevice(allDevices);
+      } else {
+        setAllMobileDevices([]);
+        setBackupAllDevice([]);
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   const getAllDeviceList = useCallback(() => {
     setIsRequestInProgress(true);
@@ -173,14 +167,11 @@ const ActiveSync: FC = () => {
       .catch((error: any) => {
         setIsRequestInProgress(false);
         showSnackbar(
-          "error",
-          "error",
+          'error',
+          'error',
           error
             ? error?.error
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         );
         setHasError(true);
       });
@@ -206,13 +197,8 @@ const ActiveSync: FC = () => {
       if (searchText) {
         const filterDevice = data.filter(
           (item: MobileDevice) =>
-            item?.accountName
-              .toLowerCase()
-              .includes(searchText.toLowerCase()) ||
-            item?.status
-              .toString()
-              .toLowerCase()
-              .includes(searchText.toLowerCase()) ||
+            item?.accountName.toLowerCase().includes(searchText.toLowerCase()) ||
+            item?.status.toString().toLowerCase().includes(searchText.toLowerCase()) ||
             item?.deviceType.toLowerCase().includes(searchText.toLowerCase()),
         );
         setAllMobileDevices(filterDevice);
@@ -231,93 +217,89 @@ const ActiveSync: FC = () => {
     setAllDeviceRow([]);
     setSelectRow([]);
     if (allMobileDevices.length > 0) {
-      const allRows = allMobileDevices.map(
-        (item: MobileDevice, index: number) => ({
-          id: item?.firstSeen,
-          columns: [
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="regular" color="gray0" key={index}>
-                {item?.accountName}
-              </Text>
-            </Container>,
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="light" color="gray0" key={index}>
-                {item?.deviceId}
-              </Text>
-            </Container>,
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="light" color="gray0" key={index}>
-                {item?.accountEmail}
-              </Text>
-            </Container>,
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="light" color="gray0" key={index}>
-                {format(new Date(item?.lastSeen), "yy/MM/dd | hh:mm:ss a")}
-              </Text>
-            </Container>,
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="light" color="gray0" key={index}>
-                {""}
-              </Text>
-            </Container>,
-            <Container
-              key={index}
-              crossAlignment="flex-start"
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-                setSelectedMobileDevice([item?.firstSeen]);
-                setSelectRow([item?.firstSeen]);
-              }}
-            >
-              <Text size="small" weight="light" color="gray0" key={index}>
-                {item?.status === 1
-                  ? t("label.enabled", "Enabled")
-                  : t("label.disabled", "Disabled")}
-              </Text>
-            </Container>,
-          ],
-        }),
-      );
+      const allRows = allMobileDevices.map((item: MobileDevice, index: number) => ({
+        id: item?.firstSeen,
+        columns: [
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="regular" color="gray0" key={index}>
+              {item?.accountName}
+            </Text>
+          </Container>,
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="light" color="gray0" key={index}>
+              {item?.deviceId}
+            </Text>
+          </Container>,
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="light" color="gray0" key={index}>
+              {item?.accountEmail}
+            </Text>
+          </Container>,
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="light" color="gray0" key={index}>
+              {format(new Date(item?.lastSeen), 'yy/MM/dd | hh:mm:ss a')}
+            </Text>
+          </Container>,
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="light" color="gray0" key={index}>
+              {''}
+            </Text>
+          </Container>,
+          <Container
+            key={index}
+            crossAlignment="flex-start"
+            onClick={(event: { stopPropagation: () => void }): void => {
+              event.stopPropagation();
+              setSelectedMobileDevice([item?.firstSeen]);
+              setSelectRow([item?.firstSeen]);
+            }}
+          >
+            <Text size="small" weight="light" color="gray0" key={index}>
+              {item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+            </Text>
+          </Container>,
+        ],
+      }));
       setAllDeviceRow(allRows);
     } else {
       setAllDeviceRow([]);
@@ -342,17 +324,14 @@ const ActiveSync: FC = () => {
       if (info?.ok) {
         getAllDeviceList();
         showSnackbar(
-          "success",
-          "success",
-          t(
-            "label.remove_device_success_message",
-            "Device remove successfully",
-          ),
+          'success',
+          'success',
+          t('label.remove_device_success_message', 'Device remove successfully'),
         );
       } else if (info?.error?.message) {
-        showSnackbar("error", "error", info?.error?.message);
+        showSnackbar('error', 'error', info?.error?.message);
       } else if (info?.exception?.message) {
-        showSnackbar("error", "error", info?.exception?.message);
+        showSnackbar('error', 'error', info?.exception?.message);
       }
     },
     [getAllDeviceList, showSnackbar, t],
@@ -373,14 +352,11 @@ const ActiveSync: FC = () => {
         .catch((error) => {
           setIsRequestInProgress(false);
           showSnackbar(
-            "error",
-            "error",
+            'error',
+            'error',
             error
               ? error?.error
-              : t(
-                  "label.something_wrong_error_msg",
-                  "Something went wrong. Please try again.",
-                ),
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           );
         });
     }
@@ -391,11 +367,7 @@ const ActiveSync: FC = () => {
   }, []);
 
   return (
-    <Container
-      padding={{ all: "large" }}
-      background="gray6"
-      mainAlignment="flex-start"
-    >
+    <Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
       <Container
         orientation="column"
         background="gray6"
@@ -403,30 +375,14 @@ const ActiveSync: FC = () => {
         mainAlignment="flex-start"
       >
         <Row mainAlignment="flex-start" width="100%">
-          <Container
-            orientation="vertical"
-            mainAlignment="space-around"
-            height="3.625rem"
-          >
-            <Row
-              orientation="horizontal"
-              width="100%"
-              padding={{ all: "large" }}
-            >
-              <Row
-                mainAlignment="flex-start"
-                width="30%"
-                crossAlignment="flex-start"
-              >
+          <Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+            <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+              <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
                 <Text size="medium" weight="bold" color="gray0">
-                  {t("label.active_sync", "ActiveSync")}
+                  {t('label.active_sync', 'ActiveSync')}
                 </Text>
               </Row>
-              <Row
-                width="70%"
-                mainAlignment="flex-end"
-                crossAlignment="flex-end"
-              ></Row>
+              <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end"></Row>
             </Row>
           </Container>
         </Row>
@@ -440,45 +396,33 @@ const ActiveSync: FC = () => {
           mainAlignment="flex-start"
           height="calc(100% - 70px)"
           style={{
-            position: "relative",
-            overflow: "auto",
+            position: 'relative',
+            overflow: 'auto',
           }}
-          padding={{ all: "large" }}
+          padding={{ all: 'large' }}
         >
           <Row mainAlignment="flex-start" width="100%" wrap="nowrap">
-            <Container
-              width="88%"
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-            >
+            <Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
               <Input
-                disabled={
-                  allDeviceRow.length === 0 &&
-                  searchString.length === 0 &&
-                  !hasError
-                }
+                disabled={allDeviceRow.length === 0 && searchString.length === 0 && !hasError}
                 label={t(
-                  "label.filter_by_device_type_account",
-                  "Filter by device type, account, status",
+                  'label.filter_by_device_type_account',
+                  'Filter by device type, account, status',
                 )}
                 backgroundColor="gray5"
                 onChange={(e: any): any => {
                   setSearchString(e.target.value);
                 }}
                 CustomIcon={(): any => (
-                  <Icon icon="FunnelOutline" size="large" color="primary" />
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                 )}
               />
             </Container>
-            <Container
-              width="12%"
-              crossAlignment="flex-end"
-              mainAlignment="flex-end"
-            >
+            <Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
               <Padding left="medium">
                 <Button
                   type="outlined"
-                  label={t("label.remove", "Remove")}
+                  label={t('label.remove', 'Remove')}
                   color="error"
                   disabled={selectRow.length === 0 || isRequestInProgress}
                   size="extralarge"
@@ -492,10 +436,10 @@ const ActiveSync: FC = () => {
             orientation="horizontal"
             mainAlignment="space-between"
             crossAlignment="flex-start"
-            padding={{ top: "large" }}
+            padding={{ top: 'large' }}
             width="fill"
             style={{
-              position: "relative",
+              position: 'relative',
             }}
           >
             <Table
@@ -505,47 +449,33 @@ const ActiveSync: FC = () => {
               multiSelect={false}
               selectedRows={selectRow}
               onSelectionChange={onSelectChange}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
 
             {allDeviceRow.length === 0 && (
-              <Container
-                orientation="column"
-                crossAlignment="center"
-                mainAlignment="center"
-              >
-                <Row padding={{ top: "extralarge" }}>
+              <Container orientation="column" crossAlignment="center" mainAlignment="center">
+                <Row padding={{ top: 'extralarge' }}>
                   <img src={logo} alt="logo" />
                 </Row>
                 <Row
-                  padding={{ top: "extralarge" }}
+                  padding={{ top: 'extralarge' }}
                   orientation="vertical"
                   crossAlignment="center"
-                  style={{ textAlign: "center" }}
+                  style={{ textAlign: 'center' }}
                 >
-                  <Text
-                    weight="light"
-                    color="#828282"
-                    size="large"
-                    overflow="break-word"
-                  >
-                    {t("label.this_list_is_empty", "This list is empty.")}
+                  <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    {t('label.this_list_is_empty', 'This list is empty.')}
                   </Text>
                 </Row>
                 <Row
                   orientation="vertical"
                   crossAlignment="center"
-                  style={{ textAlign: "center" }}
-                  padding={{ top: "small" }}
+                  style={{ textAlign: 'center' }}
+                  padding={{ top: 'small' }}
                   width="53%"
                 >
-                  <Text
-                    weight="light"
-                    color="#828282"
-                    size="large"
-                    overflow="break-word"
-                  >
+                  <Text weight="light" color="#828282" size="large" overflow="break-word">
                     <Trans
                       i18nKey="label.do_you_need_more_information"
                       defaults="Do you need more information?"
@@ -555,12 +485,12 @@ const ActiveSync: FC = () => {
                 <Row
                   orientation="vertical"
                   crossAlignment="center"
-                  style={{ textAlign: "center" }}
-                  padding={{ top: "small", bottom: "small" }}
+                  style={{ textAlign: 'center' }}
+                  padding={{ top: 'small', bottom: 'small' }}
                   width="53%"
                 >
                   <Text weight="light" color="primary">
-                    {t("label.click_here", "Click here")}
+                    {t('label.click_here', 'Click here')}
                   </Text>
                 </Row>
               </Container>

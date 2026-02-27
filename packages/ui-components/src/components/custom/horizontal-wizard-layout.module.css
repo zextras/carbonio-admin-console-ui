@@ -1,0 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.rowContainer {
+  cursor: pointer;
+}
+
+.rowContainer[data-is-active='true'] {
+  border-bottom: 2px solid var(--color-primary-regular);
+}

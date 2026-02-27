@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
@@ -18,6 +17,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAppConfigStore, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

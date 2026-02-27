@@ -35,7 +35,7 @@ export class DividerElement extends LitElement {
     return html`<hr
       data-testid="divider"
       role="separator"
-      style="background-color: var(--color-${this.color});"
+      style="background-color: var(--color-${this.color}-regular);"
       class="divider"
       aria-orientation='horizontal'
     ></hr>`;

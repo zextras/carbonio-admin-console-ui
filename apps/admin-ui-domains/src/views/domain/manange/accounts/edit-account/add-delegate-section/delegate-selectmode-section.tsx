@@ -7,14 +7,11 @@ import { Container, DropDownInput, Row, Select, Text, useSnackbar } from '@zextr
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
 import { generateSnackbarFromError } from '../../../../../error/generate-snackbar-error';
 import { delegateType } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
-
-const SelectItem = styled(Row)``;
 
 const DelegateSelectModeSection: FC = () => {
   const [t] = useTranslation();
@@ -82,7 +79,7 @@ const DelegateSelectModeSection: FC = () => {
                 id: delegateAccount.id,
                 label: delegateAccount.name,
                 customComponent: (
-                  <SelectItem
+                  <Row
                     style={{
                       display: 'block',
                       textAlign: 'left',
@@ -94,7 +91,7 @@ const DelegateSelectModeSection: FC = () => {
                     }}
                   >
                     {delegateAccount?.name}
-                  </SelectItem>
+                  </Row>
                 ),
               }),
           );

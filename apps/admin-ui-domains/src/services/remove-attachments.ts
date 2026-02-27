@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest } from '@zextras/admin-ui-bootstrap';
+import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 export const removeAttachmentsRequest = async (id: string, part: string): Promise<any> =>
 	postSoapFetchRequest(
