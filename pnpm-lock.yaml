@@ -128,7 +128,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -152,7 +152,7 @@ importers:
         version: 10.2.0
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -267,7 +267,7 @@ importers:
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -463,7 +463,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@vitest/browser-preview':
         specifier: ^4.0.14
         version: 4.0.18(msw@2.12.10(@types/node@22.19.13)(typescript@5.9.3))(vite@7.3.1(@types/node@22.19.13)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.31.1)(sass@1.97.3)(stylus@0.62.0)(tsx@4.21.0))(vitest@4.0.18)
@@ -484,7 +484,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       react:
         specifier: ^19.1.0
         version: 19.2.4
@@ -584,7 +584,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -620,7 +620,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -729,7 +729,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -768,7 +768,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -880,7 +880,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -916,7 +916,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1025,7 +1025,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1061,7 +1061,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1170,7 +1170,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1203,7 +1203,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1315,7 +1315,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1348,7 +1348,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1457,7 +1457,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.28.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1493,7 +1493,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1602,7 +1602,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1635,7 +1635,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1744,7 +1744,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.90.21(react@19.2.4)
@@ -1780,7 +1780,7 @@ importers:
         version: 10.30.3
       posthog-js:
         specifier: ^1.261.0
-        version: 1.356.0
+        version: 1.356.1
       qrcode.react:
         specifier: ^3.1.0
         version: 3.2.0(react@19.2.4)
@@ -1889,7 +1889,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1950,7 +1950,7 @@ importers:
         version: 1.7.5
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)
+        version: 1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -3533,8 +3533,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@posthog/types@1.356.0':
-    resolution: {integrity: sha512-ploousJoT1/8hILP++jk32bO21O+C9ur5F10mga55kziFWRp67SkyssGCxyl/MRNd48cSsM1XpFEkCpjkk5f5Q==}
+  '@posthog/types@1.356.1':
+    resolution: {integrity: sha512-miIUjs4LiBDMOxKkC87HEJLIih0pNGMAjxx+mW4X7jLpN41n0PLMW7swRE6uuxcMV0z3H6MllRSCYmsokkyfuQ==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4539,8 +4539,8 @@ packages:
   brace-expansion@2.0.2:
     resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
 
-  brace-expansion@5.0.3:
-    resolution: {integrity: sha512-fy6KJm2RawA5RcHkLa1z/ScpBeA762UF9KmZQxwIbDtRJrgLzM10depAiEQ+CXYcoiqW1/m96OAAoke2nE9EeA==}
+  brace-expansion@5.0.4:
+    resolution: {integrity: sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -6682,8 +6682,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.356.0:
-    resolution: {integrity: sha512-60jOQ5yGd22m3DZ9I4swummVepHEx7EPs6jhs/HjXH0ML/3UFYHRrLHd3tHslr/uh0PXQW7m9NQkucwQ22Tdgw==}
+  posthog-js@1.356.1:
+    resolution: {integrity: sha512-4EQliSyTp3j/xOaWpZmu7fk1b4S+J3qy4JOu5Xy3/MYFxv1SlAylgifRdCbXZxCQWb6PViaNvwRf4EmburgfWA==}
 
   preact@10.28.4:
     resolution: {integrity: sha512-uKFfOHWuSNpRFVTnljsCluEFq57OKT+0QdOiQo8XWnQ/pSvg7OpX5eNOejELXJMWy+BwM2nobz0FkvzmnpCNsQ==}
@@ -9335,14 +9335,14 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
-  '@posthog/react@1.8.1(@types/react@19.2.14)(posthog-js@1.356.0)(react@19.2.4)':
+  '@posthog/react@1.8.1(@types/react@19.2.14)(posthog-js@1.356.1)(react@19.2.4)':
     dependencies:
-      posthog-js: 1.356.0
+      posthog-js: 1.356.1
       react: 19.2.4
     optionalDependencies:
       '@types/react': 19.2.14
 
-  '@posthog/types@1.356.0': {}
+  '@posthog/types@1.356.1': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -10451,7 +10451,7 @@ snapshots:
     dependencies:
       balanced-match: 1.0.2
 
-  brace-expansion@5.0.3:
+  brace-expansion@5.0.4:
     dependencies:
       balanced-match: 4.0.4
 
@@ -12253,11 +12253,11 @@ snapshots:
 
   minimatch@10.2.1:
     dependencies:
-      brace-expansion: 5.0.3
+      brace-expansion: 5.0.4
 
   minimatch@10.2.4:
     dependencies:
-      brace-expansion: 5.0.3
+      brace-expansion: 5.0.4
 
   minimatch@3.1.5:
     dependencies:
@@ -12678,7 +12678,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.356.0:
+  posthog-js@1.356.1:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.208.0
@@ -12686,7 +12686,7 @@ snapshots:
       '@opentelemetry/resources': 2.5.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.0)
       '@posthog/core': 1.23.1
-      '@posthog/types': 1.356.0
+      '@posthog/types': 1.356.1
       core-js: 3.48.0
       dompurify: 3.3.1
       fflate: 0.4.8
