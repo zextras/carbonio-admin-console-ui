@@ -1,10 +1,21 @@
-## [0.13.0-devel.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.13.0-devel.1) (2026-02-26)
+## [0.12.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.4...v0.12.5) (2026-02-27)
 
-### Features
+### Bug Fixes
 
-* add warning banners for account quota ([#1078](https://github.com/zextras/carbonio-admin-console-ui/issues/1078)) ([a44e013](https://github.com/zextras/carbonio-admin-console-ui/commit/a44e0136f8f8a08bc73b438a54bf39778ccda94c))
-* integrate total quota active hook in account management ([#1076](https://github.com/zextras/carbonio-admin-console-ui/issues/1076)) ([1054574](https://github.com/zextras/carbonio-admin-console-ui/commit/1054574762be2a96851b20938ed8a1900a9aea4d))
-* show total quota usage by module ([#1077](https://github.com/zextras/carbonio-admin-console-ui/issues/1077)) ([c2e3a77](https://github.com/zextras/carbonio-admin-console-ui/commit/c2e3a77cb5de100e5c331059c42491b4962dad2d))
+* **[admin-ui-storage] bucket-route-panel:** update route path param order ([24ed2c3](https://github.com/zextras/carbonio-admin-console-ui/commit/24ed2c3e9f82c17fa3d6a362278f219e8bcc4a9f))
+
+## [0.12.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.3...v0.12.4) (2026-02-27)
+
+### Bug Fixes
+
+* fixed admin core version ([901377a](https://github.com/zextras/carbonio-admin-console-ui/commit/901377af53e0c796618ad8c6ee1c005e953d71b2))
+* fixed sonar cube error ([5998ecb](https://github.com/zextras/carbonio-admin-console-ui/commit/5998ecbee0be38bbfe3252644a5d1ed6df2533a8))
+
+## [0.12.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.12.3) (2026-02-27)
+
+### Bug Fixes
+
+* fixed mta sidebar expand collape icon ([132ee39](https://github.com/zextras/carbonio-admin-console-ui/commit/132ee391826067c28e27fc45764765113c33ad41))
 
 ## [0.12.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.1...v0.12.2) (2026-02-25)
 
