@@ -217,7 +217,7 @@ const Input = ({
           )}
         </RelativeContainer>
         {CustomIcon && (
-          <span>
+          <span style={{ display: 'flex', alignItems: 'center' }}>
             <CustomIcon hasError={hasError} hasFocus={hasFocus} disabled={disabled} />
           </span>
         )}
