@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import styled, { css, SimpleInterpolation } from 'styled-components';
+import { useMemo } from 'react';
 
-import { With$Prefix } from '../../types/utils';
-import { Container, ContainerProps } from './Container';
+import { Container, type ContainerProps } from './Container';
+import styles from './row.module.css';
 
 type RowProps = ContainerProps & {
 	display?: string;
@@ -15,18 +15,6 @@ type RowProps = ContainerProps & {
 	takeAvailableSpace?: boolean;
 	ref?: React.Ref<HTMLDivElement>;
 };
-
-const ContainerEl = styled(Container)<With$Prefix<RowProps>>`
-	display: ${({ $display }): SimpleInterpolation => $display};
-	order: ${({ $order }): SimpleInterpolation => $order};
-	${({ $takeAvailableSpace }): SimpleInterpolation =>
-		$takeAvailableSpace &&
-		css`
-			min-width: 0;
-			flex-basis: 0;
-			flex-grow: 1;
-		`};
-`;
 
 const Row = ({
 	display = 'flex',
@@ -42,11 +30,33 @@ const Row = ({
 	takeAvailableSpace = false,
 	maxWidth = '100%',
 	children,
+	className,
+	style,
 	ref,
 	...rest
 }: RowProps) => {
+	const rowStyle = useMemo(
+		() => ({
+			'--row-display': display,
+			'--row-order': order,
+			...style,
+		}),
+		[display, order, style],
+	);
+
+	const rowClassName = useMemo(() => {
+		const classes = [styles.row];
+		if (takeAvailableSpace) {
+			classes.push(styles.takeAvailableSpace);
+		}
+		if (className) {
+			classes.push(className);
+		}
+		return classes.join(' ');
+	}, [takeAvailableSpace, className]);
+
 	return (
-		<ContainerEl
+		<Container
 			ref={ref}
 			orientation={orientation}
 			borderRadius={borderRadius}
@@ -57,13 +67,12 @@ const Row = ({
 			flexGrow={flexGrow}
 			flexShrink={flexShrink}
 			maxWidth={maxWidth}
-			$display={display}
-			$order={order}
-			$takeAvailableSpace={takeAvailableSpace}
+			className={rowClassName}
+			style={rowStyle}
 			{...rest}
 		>
 			{children}
-		</ContainerEl>
+		</Container>
 	);
 };
 
