@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import clsx from 'clsx';
 import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
 
 import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
@@ -238,9 +239,7 @@ const Button = ({
   const buttonWidth = width === 'fill' ? '100%' : 'auto';
   const gridWidth = width === 'fill' ? '100%' : 'fit-content';
 
-  const buttonClassName = [styles.button, type === 'outlined' ? styles.outlined : '']
-    .filter(Boolean)
-    .join(' ');
+  const buttonClassName = clsx(styles.button, type === 'outlined' && styles.outlined);
 
   const colorStyles = getColorStyles(colors.color, colors.backgroundColor);
 
@@ -315,7 +314,12 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <Text color="currentColor" style={{ '--text-font-size': textSize } as React.CSSProperties}>{label}</Text>
+            <Text
+              color="currentColor"
+              style={{ '--text-font-size': textSize } as React.CSSProperties}
+            >
+              {label}
+            </Text>
           </span>
         )}
 
@@ -334,7 +338,7 @@ const Button = ({
       </button>
       {hasSecondaryAction && secondaryButtonStyle && secondarySizeConfig && (
         <button
-          className={[styles.button, styles.secondaryAction].join(' ')}
+          className={clsx(styles.button, styles.secondaryAction)}
           style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}
           ref={secondaryAction.ref}
