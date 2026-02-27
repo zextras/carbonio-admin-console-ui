@@ -1,3 +1,10 @@
+## [0.12.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.3...v0.12.4) (2026-02-27)
+
+### Bug Fixes
+
+* fixed admin core version ([901377a](https://github.com/zextras/carbonio-admin-console-ui/commit/901377af53e0c796618ad8c6ee1c005e953d71b2))
+* fixed sonar cube error ([5998ecb](https://github.com/zextras/carbonio-admin-console-ui/commit/5998ecbee0be38bbfe3252644a5d1ed6df2533a8))
+
 ## [0.12.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.12.3) (2026-02-27)
 
 ### Bug Fixes
