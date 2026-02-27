@@ -1,3 +1,9 @@
+## [0.12.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.4...v0.12.5) (2026-02-27)
+
+### Bug Fixes
+
+* **[admin-ui-storage] bucket-route-panel:** update route path param order ([24ed2c3](https://github.com/zextras/carbonio-admin-console-ui/commit/24ed2c3e9f82c17fa3d6a362278f219e8bcc4a9f))
+
 ## [0.12.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.3...v0.12.4) (2026-02-27)
 
 ### Bug Fixes
