@@ -23,6 +23,7 @@ export * from './components/basic/text/Text';
 export * from './components/layout/Container';
 export * from './components/layout/Padding';
 export * from './components/layout/Row';
+export { Section, type SectionProps, WizardInSection, type WizardInSectionProps } from './components/layout/Section';
 
 /** Inputs components */
 export * from './components/inputs/Checkbox';

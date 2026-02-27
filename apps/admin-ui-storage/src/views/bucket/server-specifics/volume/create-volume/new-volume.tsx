@@ -4,42 +4,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, HorizontalWizard } from '@zextras/ui-components';
+import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useContext } from 'react';
+import { type FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Section } from '../../../../app/component/section-component';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 
-const WizardInSection: FC<any> = ({
-  wizard,
-  wizardFooter,
-  setToggleWizardSection,
-  externalData,
-}) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t(
-        'volume.serverName_volumes_create_mailstores_volume',
-        '{{serverName}} | Create Mailstores Volume',
-        {
-          serverName: externalData,
-        },
-      )}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={t(
+				'volume.serverName_volumes_create_mailstores_volume',
+				'{{serverName}} | Create Mailstores Volume',
+				{
+					serverName: externalData,
+				},
+			)}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
 const NewVolume: FC<{

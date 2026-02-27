@@ -4,28 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HorizontalWizard } from '@zextras/ui-components';
-import { FC, ReactElement } from 'react';
+import { HorizontalWizard, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Section } from '../../../app/component/section-component';
 import { LoadAndVerifyCert } from './load-verify-certificate';
 
 const WizardInSection: FC<any> = ({ wizard, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('virtual_hosts.load_and_verify_certificate', 'Load and Verify Certificate')}
-      padding={{ all: '0' }}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={t('virtual_hosts.load_and_verify_certificate', 'Load and Verify Certificate')}
+			padding={{ all: '0' }}
+			divider
+			showClose
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
 export const LoadVerifyCertificateWizard: FC<{

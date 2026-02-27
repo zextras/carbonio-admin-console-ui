@@ -5,23 +5,24 @@
  */
 
 import {
-  Button,
-  ChipInput,
-  Container,
-  CustomHeaderFactory,
-  HorizontalWizard,
-  HoverableRowFactory,
-  InheritedInput,
-  InheritedSelect,
-  Input,
-  ListRow,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Text,
-  useSnackbar,
+	Button,
+	ChipInput,
+	Container,
+	CustomHeaderFactory,
+	HorizontalWizard,
+	HoverableRowFactory,
+	InheritedInput,
+	InheritedSelect,
+	Input,
+	ListRow,
+	Padding,
+	Row,
+	Select,
+	Switch,
+	Table,
+	Text,
+	useSnackbar,
+	WizardInSection,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
@@ -33,7 +34,6 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
 import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
@@ -41,24 +41,6 @@ import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
 import styles from './edit-account-security-section.module.scss';
 import { ServicesPassphrase } from './services-passphrase';
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
@@ -697,11 +679,12 @@ const EditAccountSecuritySection: FC = () => {
           {showCreateOTP && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-                <HorizontalWizard
-                  steps={wizardSteps}
-                  Wrapper={WizardInSection}
-                  setToggleWizardSection={setShowCreateOTP}
-                />
+					<HorizontalWizard
+						steps={wizardSteps}
+						title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
+						Wrapper={WizardInSection}
+						setToggleWizardSection={setShowCreateOTP}
+					/>
               </Row>
             </>
           )}

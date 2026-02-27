@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  Container, Row  } from '@zextras/ui-components';
-import React, { ReactNode } from 'react';
+import { Container, Row } from '@zextras/ui-components';
+import { type FC, type ReactNode } from 'react';
 
-export const SectionFooter = ({
-	divider,
-	footer
-}: {
+type SectionFooterProps = {
 	divider: boolean;
 	footer: ReactNode;
-}): React.JSX.Element => (
+};
+
+export const SectionFooter: FC<SectionFooterProps> = ({ divider, footer }) => (
 	<Row width="100%">
 		<Row takeAvailableSpace>
 			{divider && <divider-wc></divider-wc>}

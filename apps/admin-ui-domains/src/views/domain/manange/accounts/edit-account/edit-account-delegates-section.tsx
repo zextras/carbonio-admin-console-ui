@@ -5,20 +5,21 @@
  */
 
 import {
-  Button,
-  Checkbox,
-  ChipInput,
-  ChipInputProps,
-  Container,
-  CustomHeaderFactory,
-  HorizontalWizard,
-  HoverableRowFactory,
-  InheritedSelect,
-  Padding,
-  Row,
-  Table,
-  Text,
-  useSnackbar,
+	Button,
+	Checkbox,
+	ChipInput,
+	ChipInputProps,
+	Container,
+	CustomHeaderFactory,
+	HorizontalWizard,
+	HoverableRowFactory,
+	InheritedSelect,
+	Padding,
+	Row,
+	Table,
+	Text,
+	useSnackbar,
+	WizardInSection,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
@@ -37,15 +38,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../../../assets/gardian.svg';
 import {
   MANAGE_NO_SEND,
-  READ_MAILS_ONLY,
-  SEND_MAILS_ONLY,
-  SEND_READ_MAILS,
-  SEND_READ_MANAGE_MAILS,
-  ZIMBRA_ADMIN_URN,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
+	SEND_READ_MANAGE_MAILS,
+	ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
-import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
@@ -53,24 +53,6 @@ import { AccountContext } from '../account-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const EditAccountDelegatesSection: FC = () => {
   const context = useContext(AccountContext);
@@ -1300,11 +1282,12 @@ const EditAccountDelegatesSection: FC = () => {
           {showCreateIdentity && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-                <HorizontalWizard
-                  steps={wizardSteps}
-                  Wrapper={WizardInSection}
-                  setToggleWizardSection={setShowCreateIdentity}
-                />
+					<HorizontalWizard
+						steps={wizardSteps}
+						title={t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')}
+						Wrapper={WizardInSection}
+						setToggleWizardSection={setShowCreateIdentity}
+					/>
               </Row>
             </>
           )}

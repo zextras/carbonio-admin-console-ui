@@ -4,33 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, HorizontalWizard } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
-import { Section } from '../../../app/component/section-component';
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('label.restore_account', 'Restore Account')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose={false}
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={t('label.restore_account', 'Restore Account')}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose={false}
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
 const RestoreDeleteAccountWizard: FC<{
