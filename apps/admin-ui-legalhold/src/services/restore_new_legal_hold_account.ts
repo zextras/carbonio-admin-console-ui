@@ -5,6 +5,8 @@
  */
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
+import type { ApiError, RestoreRawResponse } from '../../types';
+
 type RestoreResponse = {
 	operationId: string;
 };
@@ -13,7 +15,7 @@ export const doRestoreOnNewLegalHoldAccount = async (
 	srcAccountName: string,
 	dstAccountName: string,
 	date: number,
-	undeleteDate: number | undefined,
+	undeleteDate: number | null,
 	unDelete: boolean,
 	targetServers: string
 ): Promise<RestoreResponse> =>
@@ -27,22 +29,24 @@ export const doRestoreOnNewLegalHoldAccount = async (
 			undeleteStartDate: undeleteDate
 		}
 	)
-		.then((data: any) => {
+		.then((rawData) => {
+			const data = rawData as RestoreRawResponse;
 			if (data?.error) {
-				return Promise.reject(data.error);
+				throw data.error;
 			}
 			const parseData = data?.operationId
 				? data
 				: JSON.parse(data?.Body?.response?.content || '{}');
 			const message: string = parseData?.error?.message || parseData?.message;
 			if (message) {
-				return Promise.reject(message);
+				throw new Error(message);
 			}
 			const operationId = data?.operationId ?? parseData?.response?.operationId;
 			if (!operationId) {
-				const msg = undefined;
-				return Promise.reject(msg);
+				throw new Error('No operationId returned');
 			}
 			return { operationId };
 		})
-		.catch((err: any) => Promise.reject(err));
+		.catch((err: ApiError) => {
+			throw err;
+		});

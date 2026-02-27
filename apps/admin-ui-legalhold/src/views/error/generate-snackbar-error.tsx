@@ -1,5 +1,6 @@
 import { TFunction } from 'i18next';
 
+import type { SnackbarConfig } from '../../../types';
 import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
 
 /*
@@ -10,7 +11,7 @@ import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
 export const generateSnackbarFromError = (
 	error: Error,
 	t: TFunction<'translation', undefined, 'translation'>
-): any => {
+): SnackbarConfig => {
 	let errorText = '';
 
 	if (error?.message) {
