@@ -20,7 +20,7 @@ const BucketRoutePanel: FC = () => {
     >
       <Routes>
         <Route path={`/:operation`} element={<BucketOperation />} />
-        <Route path={`/server/:server/:operation`} element={<BucketOperation />} />
+        <Route path={`/:server/:operation`} element={<BucketOperation />} />
       </Routes>
     </Container>
   );
