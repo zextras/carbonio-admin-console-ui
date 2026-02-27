@@ -64,6 +64,8 @@ type ChipProps = Omit<RowProps, 'children'> & {
   background?: AnyColor;
   /** Chip shape  */
   shape?: 'regular' | 'round';
+  /** If an onClose callback is provided, this prop defines if the close action should be active or disabled */
+  closable?: boolean;
   /** Chip text color */
   color?: AnyColor;
   /** Chip disabled status. If a string is provided it is shown in a tooltip */
@@ -82,6 +84,9 @@ type ChipProps = Omit<RowProps, 'children'> & {
   onClick?: React.ReactEventHandler;
   /** Chip double-click callback */
   onDoubleClick?: React.ReactEventHandler;
+  /** Callback to call when user tries to remove the Chip. If not provided, the close icon is hidden.
+   * Be aware that the close action can be also provided with the actions prop  */
+  onClose?: (event: React.MouseEvent) => void;
   /** Chip size */
   size?: 'small' | 'medium' | 'large';
   /** Tooltip placement */
@@ -183,6 +188,7 @@ const Chip = ({
   avatarPicture,
   background = 'gray3',
   shape = 'round',
+  closable = true,
   color,
   disabled,
   error,
@@ -191,6 +197,7 @@ const Chip = ({
   label,
   maxWidth,
   onClick,
+  onClose,
   onDoubleClick,
   size = 'small',
   tooltipPlacement,
@@ -201,6 +208,20 @@ const Chip = ({
   const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
   const theme = useTheme();
   const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const chipActions = useMemo(() => {
+    const result = [...actions];
+    if (onClose) {
+      result.push({
+        id: 'CloseChipAction',
+        icon: 'Close',
+        onClick: onClose,
+        type: 'button' as const,
+        disabled: !closable,
+      });
+    }
+    return result;
+  }, [actions, closable, onClose]);
 
   const showInnerTooltip = useCallback(() => {
     setTooltipVisible(true);
@@ -240,7 +261,7 @@ const Chip = ({
 
   const actionItems = useMemo(
     () =>
-      map(actions, (action) => {
+      map(chipActions, (action) => {
         let item;
         const actionDisabled = !!disabled || !action.label;
         const showTooltipHandler = (!actionDisabled && showInnerTooltip) || undefined;
@@ -312,7 +333,7 @@ const Chip = ({
         }
         return item;
       }),
-    [actions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error],
+    [chipActions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error],
   );
 
   const clickHandler = useCallback<React.ReactEventHandler>(
