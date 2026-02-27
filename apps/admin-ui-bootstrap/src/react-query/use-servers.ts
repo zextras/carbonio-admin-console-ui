@@ -100,7 +100,7 @@ const versionInfoQueryFn = async (): Promise<VersionInfo | undefined> => {
 		_jsns: 'urn:zimbraAdmin'
 	});
 
-	const info = (response as GetVersionInfoResponse)?.info;
+	const info = response?.info;
 	return info && Array.isArray(info) ? info[0] : undefined;
 };
 
