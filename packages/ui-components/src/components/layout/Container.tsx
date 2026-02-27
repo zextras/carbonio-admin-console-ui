@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import clsx from 'clsx';
 import React, { CSSProperties, HTMLAttributes, useMemo } from 'react';
 
@@ -16,57 +15,20 @@ import {
 import { AnyColor, LiteralUnion } from '../../types/utils';
 import styles from './Container.module.css';
 
+type Dimension = LiteralUnion<'fit' | 'fill', string> | number;
+type BorderSides = 'top' | 'right' | 'bottom' | 'left';
+
 type ContainerElProps = {
-  /** The Container orientation (css flex-direction prop or 'vertical' or 'horizontal') */
   orientation?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  /** Type of the Container's corners */
   borderRadius?: 'regular' | 'round' | 'half' | 'none';
-  borderColor?: AnyColor | Partial<Record<'top' | 'right' | 'bottom' | 'left', AnyColor>>;
-  /** Container background color */
+  borderColor?: AnyColor | Partial<Record<BorderSides, AnyColor>>;
   background?: AnyColor;
-  /** Container height: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  height?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container minHeight: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  minHeight?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container maxHeight: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  maxHeight?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container width: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  width?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container minWidth: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  minWidth?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container maxWidth: <br/>
-   *  	`fit`: shorthand for fit-content
-   *  	`fill`: semantic alternative for `100%`
-   *  	number: measure in px
-   *  	string: any measure in CSS syntax
-   */
-  maxWidth?: LiteralUnion<'fit' | 'fill', string> | number;
-  /** Container flex alignment along the main axis */
+  height?: Dimension;
+  minHeight?: Dimension;
+  maxHeight?: Dimension;
+  width?: Dimension;
+  minWidth?: Dimension;
+  maxWidth?: Dimension;
   mainAlignment?:
     | 'stretch'
     | 'center'
@@ -77,26 +39,27 @@ type ContainerElProps = {
     | 'space-around'
     | 'space-evenly'
     | 'unset';
-  /** Container flex alignment along the cross axis */
   crossAlignment?: 'stretch' | 'center' | 'baseline' | 'flex-start' | 'flex-end' | 'unset';
-  /** Whether the Container items should wrap or not */
   wrap?: 'wrap' | 'nowrap' | 'wrap-reverse' | 'unset';
-  /** an object specifying the Container padding */
   padding?: PaddingObj | PaddingVarObj | string | 0;
-  /** Gap flex css property */
   gap?: string;
-  /** Flex grow css property */
   flexGrow?: string | number;
-  /** Flex shrink css property */
   flexShrink?: string | number;
-  /** Flex basis css property */
   flexBasis?: string;
-  /** Margin css property */
   margin?: { left?: string; right?: string };
   ref?: React.Ref<HTMLDivElement>;
 };
 
-function resolveDimension(value: string | number | undefined): string | undefined {
+export type ContainerProps = Omit<ContainerElProps, 'orientation'> &
+  Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> & {
+    orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
+    children?: React.ReactNode | React.ReactNode[];
+  };
+
+const COLOR_VARIANTS = ['regular', 'hover', 'focus', 'active', 'disabled'] as const;
+const COLOR_SPLIT_REGEXP = new RegExp(`.(${COLOR_VARIANTS.join('|')})`);
+
+function resolveDimension(value: Dimension | undefined): string | undefined {
   if (value === undefined) return undefined;
   if (value === 'fill') return '100%';
   if (value === 'fit') return 'fit-content';
@@ -104,23 +67,26 @@ function resolveDimension(value: string | number | undefined): string | undefine
   return value;
 }
 
-const COLOR_VARIANTS = ['regular', 'hover', 'focus', 'active', 'disabled'] as const;
-const COLOR_SPLIT_REGEXP = RegExp(`.(${COLOR_VARIANTS.join('|')})`);
-
 function resolveColorVar(color: string): string {
   const [, variant] = color.split(COLOR_SPLIT_REGEXP);
-  const state = variant || 'regular';
-  const baseColor = color.replace(COLOR_SPLIT_REGEXP, '');
-  return getThemeColorVar(baseColor, state);
+  return getThemeColorVar(color.replace(COLOR_SPLIT_REGEXP, ''), variant ?? 'regular');
 }
 
-type ContainerProps = Omit<ContainerElProps, 'orientation'> &
-  Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> & {
-    orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
-    children?: React.ReactNode | React.ReactNode[];
-  };
+const BORDER = (color: string) => `0.0625rem solid ${resolveColorVar(color)}`;
 
-const Container = ({
+const BORDER_RADIUS: Record<string, string> = {
+  round: '50%',
+  half: 'var(--border-radius) var(--border-radius) 0 0',
+  none: '0',
+};
+
+function resolveOrientation(o: string): ContainerElProps['orientation'] {
+  return o
+    .replace('horizontal', 'row')
+    .replace('vertical', 'column') as ContainerElProps['orientation'];
+}
+
+export const Container = ({
   orientation = 'vertical',
   borderRadius = 'regular',
   borderColor,
@@ -146,116 +112,61 @@ const Container = ({
   className,
   ...rest
 }: ContainerProps) => {
-  const direction = useMemo<ContainerElProps['orientation']>(
-    () =>
-      orientation
-        .replace('horizontal', 'row')
-        .replace('vertical', 'column') as ContainerElProps['orientation'],
-    [orientation],
-  );
-
   const containerStyle = useMemo<CSSProperties>(() => {
-    const styleObj: Record<string, string | number | undefined> = {};
-
-    styleObj.flexDirection = direction;
-    styleObj.alignItems = crossAlignment;
-    styleObj.justifyContent = mainAlignment;
-    styleObj.flexWrap = wrap;
-    if (flexGrow !== undefined) {
-      styleObj.flexGrow = flexGrow;
-    }
-    if (flexShrink !== undefined) {
-      styleObj.flexShrink = flexShrink;
-    }
-    if (flexBasis !== undefined) {
-      styleObj.flexBasis = flexBasis;
-    }
-    if (width !== 'fill') {
-      styleObj.width = resolveDimension(width);
-    }
-    if (minWidth !== 'unset') {
-      styleObj.minWidth = resolveDimension(minWidth);
-    }
-
-    if (maxWidth !== 'unset') {
-      styleObj.maxWidth = resolveDimension(maxWidth);
-    }
-
-    if (height !== 'fill') {
-      styleObj.height = resolveDimension(height);
-    }
-
-    if (minHeight !== 'unset') {
-      styleObj.minHeight = resolveDimension(minHeight);
-    }
-
-    if (maxHeight !== 'unset') {
-      styleObj.maxHeight = resolveDimension(maxHeight);
-    }
-
-    if (gap !== undefined) {
-      styleObj.gap = gap;
-    }
-
-    if (borderRadius === 'round') {
-      styleObj.borderRadius = '50%';
-    } else if (borderRadius === 'half') {
-      styleObj.borderRadius = 'var(--border-radius) var(--border-radius) 0 0';
-    } else if (borderRadius === 'none') {
-      styleObj.borderRadius = '0';
-    }
-
-    if (padding !== undefined) {
-      styleObj.padding = getPaddingVar(padding);
-    }
-
-    if (background) {
-      styleObj.background = resolveColorVar(background);
-    }
-
-    if (margin?.left !== undefined) {
-      styleObj.marginLeft = margin.left;
-    }
-
-    if (margin?.right !== undefined) {
-      styleObj.marginRight = margin.right;
-    }
+    const inlineStile: Record<string, string | number | undefined> = {
+      flexDirection: resolveOrientation(orientation),
+      alignItems: crossAlignment,
+      justifyContent: mainAlignment,
+      flexWrap: wrap,
+      flexGrow,
+      flexShrink,
+      flexBasis,
+      gap,
+      padding: padding !== undefined ? getPaddingVar(padding) : undefined,
+      background: background ? resolveColorVar(background) : undefined,
+      marginLeft: margin?.left,
+      marginRight: margin?.right,
+      width: width !== 'fill' ? resolveDimension(width) : undefined,
+      minWidth: minWidth !== 'unset' ? resolveDimension(minWidth) : undefined,
+      maxWidth: maxWidth !== 'unset' ? resolveDimension(maxWidth) : undefined,
+      height: height !== 'fill' ? resolveDimension(height) : undefined,
+      minHeight: minHeight !== 'unset' ? resolveDimension(minHeight) : undefined,
+      maxHeight: maxHeight !== 'unset' ? resolveDimension(maxHeight) : undefined,
+      borderRadius: BORDER_RADIUS[borderRadius],
+    };
 
     if (borderColor) {
       if (typeof borderColor === 'string') {
-        styleObj.border = `0.0625rem solid ${resolveColorVar(borderColor)}`;
+        inlineStile.border = BORDER(borderColor);
       } else {
-        if (borderColor.top)
-          styleObj.borderTop = `0.0625rem solid ${resolveColorVar(borderColor.top)}`;
-        if (borderColor.right)
-          styleObj.borderRight = `0.0625rem solid ${resolveColorVar(borderColor.right)}`;
-        if (borderColor.bottom)
-          styleObj.borderBottom = `0.0625rem solid ${resolveColorVar(borderColor.bottom)}`;
-        if (borderColor.left)
-          styleObj.borderLeft = `0.0625rem solid ${resolveColorVar(borderColor.left)}`;
+        const sides: BorderSides[] = ['top', 'right', 'bottom', 'left'];
+        for (const side of sides) {
+          const c = borderColor[side];
+          if (c) inlineStile[`border${side.charAt(0).toUpperCase()}${side.slice(1)}`] = BORDER(c);
+        }
       }
     }
 
-    return { ...styleObj, ...style } as CSSProperties;
+    return { ...inlineStile, ...style } as CSSProperties;
   }, [
-    direction,
+    orientation,
     crossAlignment,
     mainAlignment,
     wrap,
     flexGrow,
     flexShrink,
     flexBasis,
+    gap,
+    padding,
+    background,
+    margin,
     width,
     minWidth,
     maxWidth,
     height,
     minHeight,
     maxHeight,
-    padding,
-    gap,
     borderRadius,
-    background,
-    margin,
     borderColor,
     style,
   ]);
@@ -266,6 +177,3 @@ const Container = ({
     </div>
   );
 };
-
-export { Container };
-export type { ContainerProps };
