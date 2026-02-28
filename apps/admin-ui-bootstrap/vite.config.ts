@@ -89,6 +89,19 @@ export default defineConfig(({ command, mode }) => {
         include: '**/*.svg',
         exclude: '**/src/assets/**/*.svg',
       }),
+      {
+        name: 'trailing-slash-redirect',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/carbonioAdmin') {
+              res.writeHead(301, { Location: '/carbonioAdmin/' });
+              res.end();
+              return;
+            }
+            next();
+          });
+        },
+      },
     ],
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
