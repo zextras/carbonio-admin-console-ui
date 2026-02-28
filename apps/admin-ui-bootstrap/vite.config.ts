@@ -98,6 +98,11 @@ export default defineConfig(({ command, mode }) => {
               res.end();
               return;
             }
+            if (req.url?.startsWith('/static/')) {
+              res.writeHead(301, { Location: `/carbonioAdmin${req.url}/` });
+              res.end();
+              return;
+            }
             next();
           });
         },
