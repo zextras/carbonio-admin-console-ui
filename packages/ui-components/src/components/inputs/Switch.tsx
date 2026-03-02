@@ -4,72 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useRef } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
+import clsx from 'clsx';
+import { CSSProperties, useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { AnyColor, PaletteColor } from '../../types/utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
+import { PaletteColor } from '../../types/utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
+import styles from './Switch.module.css';
 
 type SwitchSize = 'medium' | 'small';
 
-const IconWrapper = styled.div<{
-  $disabled: boolean;
-  $iconColor: AnyColor;
-}>`
-  position: relative;
-  display: flex;
-  align-items: center;
-  ${({ theme, $disabled, $iconColor }): SimpleInterpolation =>
-    !$disabled &&
-    css`
-      &:focus {
-        outline: none;
-        > icon-wc {
-          color: ${theme.palette[$iconColor as keyof typeof theme.palette].focus};
-        }
-      }
-      &:hover {
-        outline: none;
-        > icon-wc {
-          color: ${theme.palette[$iconColor as keyof typeof theme.palette].hover};
-        }
-      }
-      &:active {
-        outline: none;
-        > icon-wc {
-          color: ${theme.palette[$iconColor as keyof typeof theme.palette].active};
-        }
-      }
-    `};
-`;
-
-const CustomText = styled(Text)`
-  user-select: none;
-  line-height: 1.5;
-`;
-
 type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
-  /** status of the Switch */
   defaultChecked?: boolean;
-  /** Switch value */
   value?: boolean;
-  /** Switch text */
   label?: string;
-  /** Switch padding */
   padding?: ContainerProps['padding'];
-  /** whether to disable the Switch or not */
   disabled?: boolean;
-  /** click callback */
   onClick?: (event: Event) => void;
-  /** change callback */
   onChange?: (checked: boolean) => void;
-  /** available sizes */
   size?: SwitchSize;
-  /** icon color */
   iconColor?: PaletteColor;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -98,6 +55,16 @@ const Switch = ({
     onChange,
   });
 
+  const iconWrapperStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        '--icon-color-focus': getThemeColorVar(String(iconColor), 'focus'),
+        '--icon-color-hover': getThemeColorVar(String(iconColor), 'hover'),
+        '--icon-color-active': getThemeColorVar(String(iconColor), 'active'),
+      }) as CSSProperties,
+    [iconColor],
+  );
+
   return (
     <Container
       ref={ckbRef}
@@ -109,17 +76,22 @@ const Switch = ({
       crossAlignment="center"
       {...rest}
     >
-      <IconWrapper $disabled={disabled} tabIndex={disabled ? -1 : 0} $iconColor={String(iconColor)}>
+      <div
+        className={clsx(styles.iconWrapper, disabled && styles.disabled)}
+        style={iconWrapperStyle}
+        tabIndex={disabled ? -1 : 0}
+      >
         <icon-wc
           icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}
           disabled={disabled || undefined}
         />
-      </IconWrapper>
+      </div>
       {label && (
         <Padding left="small">
-          <CustomText
+          <Text
+            className={styles.text}
             size={size === 'medium' ? 'medium' : 'small'}
             weight="regular"
             overflow="break-word"
@@ -127,7 +99,7 @@ const Switch = ({
             disabled={disabled}
           >
             {label}
-          </CustomText>
+          </Text>
         </Padding>
       )}
     </Container>
