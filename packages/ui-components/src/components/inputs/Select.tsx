@@ -9,7 +9,7 @@ import '../../web-components/icon-wc';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { tv } from 'tailwind-variants';
 
-import { getThemeColorVar, useTheme } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
@@ -120,7 +120,6 @@ const DefaultLabelFactory = <T,>({
   background,
   disabled,
 }: LabelFactoryProps<T>): React.JSX.Element => {
-  const theme = useTheme();
   const {
     container,
     containerFocused,
@@ -142,12 +141,12 @@ const DefaultLabelFactory = <T,>({
     '--select-bg': getThemeColorVar(background, 'regular'),
     '--select-bg-hover': getThemeColorVar(background, 'hover'),
     '--select-bg-focus': getThemeColorVar(background, 'focus'),
-    '--padding-large': theme.sizes.padding.large,
-    '--padding-small': theme.sizes.padding.small,
+    '--padding-large': 'var(--padding-size-large)',
+    '--padding-small': 'var(--padding-size-small)',
   } as React.CSSProperties;
 
   const labelStyle: React.CSSProperties = {
-    top: hasSelection ? `calc(${theme.sizes.padding.small} - 0.0625rem)` : '50%',
+    top: hasSelection ? 'calc(var(--padding-size-small) - 0.0625rem)' : '50%',
     transform: hasSelection ? 'translateY(0)' : 'translateY(-50%)',
   };
 
