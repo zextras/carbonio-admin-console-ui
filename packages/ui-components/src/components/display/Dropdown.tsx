@@ -12,14 +12,12 @@ import React, {
   CSSProperties,
   HTMLAttributes,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import {
@@ -88,7 +86,6 @@ function ListItemContent({
 }
 
 function useContainerElStyle(
-  disabled: boolean | undefined,
   selected: boolean | undefined,
   selectedBackgroundColor?: AnyColor,
 ): CSSProperties {
@@ -100,7 +97,7 @@ function useContainerElStyle(
       '--dropdown-item-bg-focus': getThemeColorVar(String(bgColor), 'focus'),
       '--dropdown-item-bg-active': getThemeColorVar(String(bgColor), 'active'),
     } as CSSProperties;
-  }, [disabled, selected, selectedBackgroundColor]);
+  }, [selected, selectedBackgroundColor]);
 }
 
 type PopperListItemProps = ListItemContentProps &
@@ -124,7 +121,7 @@ function PopperListItem({
   tooltipLabel,
   ...rest
 }: Readonly<PopperListItemProps>): React.JSX.Element {
-  const containerStyle = useContainerElStyle(disabled, selected, selectedBackgroundColor);
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
   return (
     <Container
       data-keep-open={keepOpen}
@@ -180,7 +177,7 @@ function NestListItem({
     setInnerDropdownListElement(node);
   }, []);
   const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
-  const containerStyle = useContainerElStyle(disabled, selected, selectedBackgroundColor);
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
 
   useEffect(
     () => () => {
@@ -378,7 +375,6 @@ const Dropdown = ({
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
-  const { windowObj } = useContext(ThemeContext);
   const [open, setOpen] = useState<boolean>(forceOpen);
   const openRef = useRef<boolean>(open);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
@@ -596,14 +592,14 @@ const Dropdown = ({
 
   useEffect(() => {
     if (open) {
-      windowObj.document.addEventListener('click', clickOutsidePopper, true);
+      window.document.addEventListener('click', clickOutsidePopper, true);
     }
 
     return (): void => {
-      windowObj.document.removeEventListener('click', clickOutsidePopper, true);
-      windowObj.document.removeEventListener('contextmenu', clickOutsidePopper, true);
+      window.document.removeEventListener('click', clickOutsidePopper, true);
+      window.document.removeEventListener('contextmenu', clickOutsidePopper, true);
     };
-  }, [open, closePopper, clickOutsidePopper, windowObj.document]);
+  }, [open, closePopper, clickOutsidePopper]);
 
   useEffect(() => {
     const startSentinelRefElement = startSentinelRef.current;
@@ -616,7 +612,14 @@ const Dropdown = ({
       startSentinelRefElement?.removeEventListener('focus', onStartSentinelFocus);
       endSentinelRefElement?.removeEventListener('focus', onEndSentinelFocus);
     };
-  }, [open, startSentinelRef, endSentinelRef, onStartSentinelFocus, onEndSentinelFocus, disableAutoFocus]);
+  }, [
+    open,
+    startSentinelRef,
+    endSentinelRef,
+    onStartSentinelFocus,
+    onEndSentinelFocus,
+    disableAutoFocus,
+  ]);
 
   const listItemClickHandler = useCallback<
     (
@@ -715,7 +718,7 @@ const Dropdown = ({
             : width,
         maxWidth: width === '100%' ? '100%' : maxWidth,
         '--popper-max-height': maxHeight,
-      }) as CSSProperties,
+      } as CSSProperties),
     [width, maxWidth, maxHeight, innerTriggerRef],
   );
 
