@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React from 'react';
-import styled, { SimpleInterpolation } from 'styled-components';
+import React, { useMemo } from 'react';
 
 import { useIsVisible } from '../../hooks/useIsVisible/useIsVisible';
-import { pseudoClasses } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
+import styles from './ListItem.module.css';
 
 /**
  * @deprecated Use ListItemProps instead
@@ -25,13 +25,6 @@ type ListItemWrapperProps = {
 	/** Define if the item is selected in order to show the selectedBackground */
 	selected?: boolean;
 };
-
-const ListItemWrapper = styled.div<{ $backgroundColor?: AnyColor }>`
-	user-select: none;
-	outline: none;
-	${({ theme, $backgroundColor }): SimpleInterpolation =>
-		$backgroundColor && pseudoClasses(theme, $backgroundColor)};
-`;
 
 type ListItemProps = {
 	/** Base background color for the item */
@@ -73,17 +66,29 @@ const ListItem = ({
 }: ListItemProps) => {
 	const [inView, itemRef] = useIsVisible<HTMLDivElement>(listRef, ref);
 
+	const backgroundColor = (active && activeBackground) || (selected && selectedBackground) || background;
+
+	const itemStyle = useMemo<React.CSSProperties>(
+		() =>
+			({
+				'--item-bg': backgroundColor ? getThemeColorVar(backgroundColor, 'regular') : 'transparent',
+				'--item-bg-hover': backgroundColor ? getThemeColorVar(backgroundColor, 'hover') : 'transparent',
+				'--item-bg-focus': backgroundColor ? getThemeColorVar(backgroundColor, 'focus') : 'transparent',
+				'--item-bg-active': backgroundColor ? getThemeColorVar(backgroundColor, 'active') : 'transparent',
+			}) as React.CSSProperties,
+		[backgroundColor]
+	);
+
 	return (
-		<ListItemWrapper
+		<div
 			tabIndex={0}
 			ref={itemRef}
-			$backgroundColor={
-				(active && activeBackground) || (selected && selectedBackground) || background
-			}
+			className={styles.listItem}
+			style={itemStyle}
 			{...rest}
 		>
 			{children(inView)}
-		</ListItemWrapper>
+		</div>
 	);
 };
 
