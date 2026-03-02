@@ -7,43 +7,16 @@
 import '../../../web-components/icon-wc';
 
 import React, { useCallback, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
 
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
 import { TIMERS } from '../../constants';
-import { Container, ContainerProps } from '../../layout/Container';
+import { Container } from '../../layout/Container';
 import { Row } from '../../layout/Row';
 import { Portal } from '../../utilities/Portal';
 import { Transition } from '../../utilities/Transition';
-
-const SnackContainer = styled(Container)<{ $zIndex: number }>`
-  position: fixed;
-  box-shadow: ${({ theme }): string => theme.shadows.snackbar};
-  user-select: none;
-  z-index: ${({ $zIndex }): number => $zIndex};
-  right: 0;
-  bottom: 5vh;
-`;
-
-const shrink = keyframes`
-	from {
-		width: 100%;
-  }
-	to {
-		width: 0;
-  }
-`;
-
-const ProgressBarContent = styled(Container)<{ $timeout: number }>`
-  animation-name: ${shrink};
-  animation-duration: ${({ $timeout }): string => `${$timeout}ms`};
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  border-radius: 1rem 0 0 1rem;
-  align-self: flex-end;
-`;
+import styles from './Snackbar.module.css';
 
 const icons: Record<'success' | 'info' | 'warning' | 'error', IconName> = {
   success: 'CheckmarkOutline',
@@ -52,7 +25,7 @@ const icons: Record<'success' | 'info' | 'warning' | 'error', IconName> = {
   error: 'CloseCircleOutline',
 };
 
-type SnackbarProps = Omit<ContainerProps, 'children'> & {
+type SnackbarProps = {
   /** Whether to show the Snackbar or not */
   open?: boolean;
   /** Snackbar severity */
@@ -99,7 +72,6 @@ const Snackbar = ({
   disablePortal = false,
   progressBar = true,
   ref,
-  ...rest
 }: SnackbarProps) => {
   const handleClick = useCallback(() => {
     onActionClick ? onActionClick() : onClose?.();
@@ -122,15 +94,16 @@ const Snackbar = ({
   return (
     <Portal show={open} disablePortal={disablePortal}>
       <Transition ref={ref} type="fade-in-right">
-        <SnackContainer
-          orientation="vertical"
-          background={severity}
-          height="auto"
-          width="auto"
-          $zIndex={zIndex}
+        <div
+          className={styles.snackContainer}
+          style={
+            {
+              '--snackbar-z-index': zIndex,
+              backgroundColor: `var(--color-${severity})`,
+            } as React.CSSProperties
+          }
           data-testid="snackbar"
-          maxWidth={'40%'}
-          {...rest}
+          ref={ref}
         >
           <Container
             orientation="horizontal"
@@ -185,15 +158,16 @@ const Snackbar = ({
             </Container>
           </Container>
           {enableTimeout && progressBar && (
-            <ProgressBarContent
+            <Container
+              className={styles.progressBar}
+              style={{ animationDuration: `${autoHideTimeout}ms` }}
               height={'0.25rem'}
               data-testid={'progress-bar'}
-              $timeout={autoHideTimeout}
               background={`${severity}.active`}
               width={'100%'}
             />
           )}
-        </SnackContainer>
+        </div>
       </Transition>
     </Portal>
   );
