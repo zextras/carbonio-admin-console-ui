@@ -1,0 +1,80 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.container {
+	position: relative;
+	cursor: text;
+	background: var(--container-bg);
+	transition: background 0.2s ease-out;
+}
+
+.container.disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.container:not(.disabled):focus-within {
+	outline: none;
+	background: var(--container-bg-focus);
+}
+
+.container:not(.disabled):hover {
+	outline: none;
+	background: var(--container-bg-hover);
+}
+
+.container:not(.disabled):active {
+	outline: none;
+	background: var(--container-bg-active);
+}
+
+.textarea {
+	border: none !important;
+	height: auto !important;
+	width: 100%;
+	outline: 0;
+	resize: none;
+	background: transparent !important;
+	font-size: var(--font-size-medium);
+	font-weight: var(--font-weight-regular);
+	font-family: var(--font-family);
+	transition: background 0.2s ease-out;
+	padding: calc(var(--padding-size-large) + var(--padding-size-extrasmall))
+		var(--padding-size-large) var(--padding-size-small) !important;
+}
+
+.textarea::placeholder {
+	color: transparent;
+}
+
+.label {
+	position: absolute;
+	top: 20%;
+	left: var(--padding-size-large);
+	font-size: var(--font-size-medium);
+	font-weight: var(--font-weight-regular);
+	font-family: var(--font-family);
+	color: var(--label-color);
+	transform: translateY(-50%);
+	transition:
+		transform 150ms ease-out,
+		font-size 150ms ease-out,
+		top 150ms ease-out,
+		left 150ms ease-out;
+	pointer-events: none;
+	user-select: none;
+	max-width: calc(100% - var(--padding-size-large) * 2);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.textarea:focus ~ .label,
+.textarea:not(:placeholder-shown) ~ .label {
+	top: calc(var(--padding-size-small) - 1px);
+	transform: translateY(0);
+	font-size: var(--font-size-small);
+}
