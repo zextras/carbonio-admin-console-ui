@@ -124,7 +124,7 @@ export const Container = ({
       flexBasis,
       gap,
       padding: padding !== undefined ? getPaddingVar(padding) : undefined,
-      '--container-background': background ? resolveColorVar(background) : undefined,
+      background: background ? resolveColorVar(background) : undefined,
       marginLeft: margin?.left,
       marginRight: margin?.right,
       width: resolveDimension(width),
