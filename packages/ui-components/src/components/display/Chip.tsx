@@ -10,7 +10,7 @@ import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getThemeColorVar, useTheme } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
@@ -149,7 +149,6 @@ const Chip = ({
 }: ChipProps) => {
   const innerRef = useRef<HTMLDivElement | null>(null);
   const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
-  const theme = useTheme();
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const chipActions = useMemo(() => {
@@ -238,7 +237,8 @@ const Chip = ({
                 style={
                   {
                     '--action-spacing': SIZES[size].spacing,
-                    '--action-radius': shape === 'round' ? '100vh' : `calc(${theme.borderRadius} * 2)`,
+                    '--action-radius':
+                      shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
                     background: action.background
                       ? getThemeColorVar(action.background, 'regular')
                       : undefined,
@@ -257,7 +257,16 @@ const Chip = ({
         }
         return item;
       }),
-    [chipActions, disabled, showInnerTooltip, hideInnerTooltip, tooltipPlacement, size, error, shape, theme],
+    [
+      chipActions,
+      disabled,
+      showInnerTooltip,
+      hideInnerTooltip,
+      tooltipPlacement,
+      size,
+      error,
+      shape,
+    ],
   );
 
   const clickHandler = useCallback<React.ReactEventHandler>(
@@ -291,7 +300,9 @@ const Chip = ({
   };
 
   const contentMaxWidth = maxWidth
-    ? `calc(100% - calc(${hasAvatar ? theme.sizes.avatar[SIZES[size].avatar].diameter : 0} + ${SIZES[size].spacing}))`
+    ? `calc(100% - calc(${hasAvatar ? `var(--avatar-${SIZES[size].avatar}-diameter)` : '0'} + ${
+        SIZES[size].spacing
+      }))`
     : undefined;
 
   return (
