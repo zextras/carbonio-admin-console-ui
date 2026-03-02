@@ -27,7 +27,9 @@ export const EditAccountQuotaInputsNew = ({
   useEffect(() => {
     setQuotaValue(
       typeof totalComputedQuotaLimit === 'number'
-        ? BytesToGB(totalComputedQuotaLimit)
+        ? totalComputedQuotaLimit > 0
+          ? BytesToGB(totalComputedQuotaLimit)
+          : undefined
         : totalComputedQuotaLimit,
     );
   }, [totalComputedQuotaLimit]);
