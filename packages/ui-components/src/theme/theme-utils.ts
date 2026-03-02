@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useContext } from 'react';
-import { DefaultTheme, ThemeContext } from 'styled-components';
+import { DefaultTheme } from 'styled-components';
 
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
   {
@@ -80,7 +79,7 @@ function simpleParsePaddingVar(size: string): string {
   return explodedSizes.join(' ');
 }
 
-function getPaddingVar(padding: string | PaddingVarObj | 0): string | undefined {
+export function getPaddingVar(padding: string | PaddingVarObj | 0): string | undefined {
   if (padding === 0 || padding === '0') return '0';
   if (typeof padding === 'string') {
     return simpleParsePaddingVar(padding);
@@ -115,7 +114,4 @@ function getPaddingVar(padding: string | PaddingVarObj | 0): string | undefined 
   return p.map((val) => paddingTokenToVar(val)).join(' ');
 }
 
-const useTheme = (): DefaultTheme => useContext(ThemeContext);
-
 export type { PaddingObj, PaddingVarObj };
-export { getPaddingVar, useTheme };
