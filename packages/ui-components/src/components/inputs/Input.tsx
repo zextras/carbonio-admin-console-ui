@@ -6,94 +6,36 @@
 
 import '../../web-components/divider-wc';
 
-import React, { useCallback, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
-import { getColor } from '../../theme/theme-utils';
+import { getThemeColorVar } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
 import { InputContainer } from './commons/InputContainer';
 import { InputDescription } from './commons/InputDescription';
-import { InputLabel } from './commons/InputLabel';
-
-const InputEl = styled.input<{ $color: AnyColor }>`
-  border: none !important;
-  height: auto !important;
-  width: 100%;
-  outline: 0;
-  background: transparent !important;
-  font-size: ${({ theme }): string => theme.sizes.font.medium};
-  font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-  font-family: ${({ theme }): string => theme.fonts.default};
-  color: ${({ theme, $color }): string => getColor(String($color), theme)};
-
-  &:disabled {
-    color: ${({ theme, $color }): string => getColor(`${String($color)}.disabled`, theme)};
-  }
-
-  transition: background 0.2s ease-out;
-  line-height: 1.5;
-  padding: 0;
-
-  &::placeholder {
-    color: transparent;
-    font-size: 0;
-    user-select: none;
-  }
-`;
-
-const Label = styled(InputLabel)`
-  ${InputEl}:focus + &,
-  ${InputEl}:not(:placeholder-shown) + & {
-    top: 0;
-    transform: translateY(0);
-    font-size: ${({ theme }): string => theme.sizes.font.extrasmall};
-  }
-`;
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
+import styles from './Input.module.css';
 
 type InputProps = ContainerProps & {
-  /** Input's background color */
   backgroundColor?: AnyColor;
-  /** whether to disable the Input or not */
   disabled?: boolean;
-  /** Input's text color */
   textColor?: AnyColor;
-  /** Input's bottom border color */
   borderColor?: AnyColor;
-  /** Label of the input, will act (graphically) as placeholder when the input is not focused */
   label?: string;
-  /** input change callback */
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  /** ref to the input element */
   inputRef?: React.RefObject<HTMLInputElement> | null;
-  /** value of the input */
   value?: string | number;
-  /** default value of the input */
   defaultValue?: string | number;
-  /** Whether the input has an error */
   hasError?: boolean;
-  /** Whether the input should focus on load */
   autoFocus?: boolean;
-  /** input autocompletion type (HTML input attribute) */
   autoComplete?: string;
-  /** HTML input name */
   inputName?: string;
-  /** Custom component to show on the right of the input, it occupies 56x42 px */
   CustomIcon?: React.ComponentType<{ hasError: boolean; hasFocus: boolean; disabled: boolean }>;
-  /** input type attribute */
   type?: string;
-  /** hide the inputs bottom line */
   hideBorder?: boolean;
-  /** on Enter key callback */
   onEnter?: (e: KeyboardEvent) => void;
-  /** Description of the input */
   description?: string;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -171,6 +113,21 @@ const Input = ({
     [borderColor, disabled, hasError, hasFocus, hideBorder],
   );
 
+  const labelColor = useMemo(() => {
+    const color = (hasError && 'error') || (hasFocus && 'primary') || 'secondary';
+    return getThemeColorVar(color, disabled ? 'disabled' : 'regular');
+  }, [hasError, hasFocus, disabled]);
+
+  const inputColor = useMemo<React.CSSProperties>(
+    () =>
+      ({
+        '--input-color': getThemeColorVar(String(textColor), 'regular'),
+        '--input-color-disabled': getThemeColorVar(String(textColor), 'disabled'),
+        '--label-color': labelColor,
+      }) as React.CSSProperties,
+    [textColor, labelColor],
+  );
+
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
       <InputContainer
@@ -187,17 +144,19 @@ const Input = ({
         gap={'0.5rem'}
         {...rest}
       >
-        <RelativeContainer
+        <Container
+          className={styles.relativeContainer}
           padding={{ vertical: label ? '0.0625rem' : '0.625rem' }}
           mainAlignment={'flex-end'}
           height={'fill'}
           width={'fill'}
           minHeight={'inherit'}
         >
-          <InputEl
+          <input
+            className={styles.input}
+            style={inputColor}
             autoFocus={autoFocus || undefined}
-            autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
-            $color={textColor}
+            autoComplete={autoComplete || 'off'}
             ref={innerRef}
             type={type}
             onFocus={onInputFocus}
@@ -211,11 +170,11 @@ const Input = ({
             placeholder={label}
           />
           {label && (
-            <Label htmlFor={id} $hasFocus={hasFocus} $hasError={hasError} $disabled={disabled}>
+            <label htmlFor={id} className={styles.label}>
               {label}
-            </Label>
+            </label>
           )}
-        </RelativeContainer>
+        </Container>
         {CustomIcon && (
           <span style={{ display: 'flex', alignItems: 'center' }}>
             <CustomIcon hasError={hasError} hasFocus={hasFocus} disabled={disabled} />
