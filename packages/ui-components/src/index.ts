@@ -87,14 +87,11 @@ export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';
 export {
-  DefaultHeaderFactory,
-  DefaultRowFactory,
   Table,
   type TableProps,
   type THeader,
   type THeaderProps,
   type TRow,
-  type TRowProps,
 } from './components/display/Table';
 export * from './components/display/Tooltip';
 

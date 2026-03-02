@@ -5,111 +5,12 @@
  */
 
 import React, { HTMLAttributes, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
-import { Text } from '../basic/text/Text';
-import { Checkbox } from '../inputs/Checkbox';
-import { MultipleSelectionOnChange, Select, SelectProps } from '../inputs/Select';
-import { Container } from '../layout/Container';
-import { Row } from '../layout/Row';
-
-const StyledCheckbox = styled(Checkbox)<{
-  $show: boolean;
-}>`
-  display: ${({ $show }): SimpleInterpolation => ($show ? 'block' : 'none')};
-`;
-
-const StyledText = styled(Text)``;
-
-const StyledTr = styled.tr`
-  &:hover,
-  &:focus {
-    ${StyledCheckbox} {
-      display: block;
-    }
-  }
-`;
-
-const TableRow = styled.tr<{
-  $selected: boolean;
-  $highlight?: boolean;
-  $showCheckbox?: boolean;
-  $clickable?: boolean;
-}>`
-  transition: background-color 0.2s ease-out;
-  &:nth-child(odd) {
-    background-color: ${({ theme }): string => theme.palette.gray6.regular};
-    &:hover {
-      background-color: ${({ theme }): string => theme.palette.gray6.hover};
-    }
-  }
-  &:nth-child(even) {
-    background-color: ${({ theme }): string => theme.palette.gray5.regular};
-    &:hover {
-      background-color: ${({ theme }): string => theme.palette.gray5.hover};
-    }
-  }
-  ${({ $selected, $highlight, theme }): SimpleInterpolation =>
-    ($selected || $highlight) &&
-    css`
-      background-color: ${theme.palette.highlight.regular} !important;
-    `};
-  ${({ $clickable, $showCheckbox }): SimpleInterpolation =>
-    ($clickable === true || (typeof $clickable === 'undefined' && $showCheckbox === false)) &&
-    css`
-      cursor: pointer;
-    `};
-  &:hover,
-  &:focus {
-    ${StyledCheckbox} {
-      display: block;
-    }
-  }
-  ${({ $showCheckbox }): SimpleInterpolation =>
-    $showCheckbox &&
-    css`
-      &:hover,
-      &:focus {
-        ${StyledText} {
-          display: none;
-        }
-      }
-    `};
-`;
-
-const TableContainer = styled.div`
-  position: relative;
-  display: block;
-`;
-
-const StyledTable = styled.table`
-  border-collapse: collapse;
-  table-layout: fixed;
-
-  &,
-  thead,
-  tbody,
-  tr {
-    width: 100%;
-  }
-
-  thead {
-    &,
-    th {
-      background-color: ${({ theme }): string => theme.palette.gray3.regular};
-    }
-    th {
-      position: sticky;
-      top: 0;
-    }
-  }
-  th,
-  td {
-    padding: 0 0.5rem;
-    height: 1.875rem;
-  }
-`;
+import { MultipleSelectionOnChange, SelectProps } from '../inputs/Select';
+import { DefaultHeaderFactory } from './default-header-factory';
+import { DefaultRowFactory, TRowProps } from './default-row-factory';
+import styles from './Table.module.css';
 
 type THeaderProps = {
   headers: THeader[];
@@ -118,185 +19,6 @@ type THeaderProps = {
   selectionMode: boolean;
   multiSelect: boolean;
   showCheckbox: boolean;
-};
-
-type LabelFactoryProps = {
-  label?: string;
-  open?: boolean;
-  focus?: boolean;
-  bold?: boolean;
-};
-
-const DefaultHeaderFactory = ({
-  headers,
-  onChange,
-  allSelected,
-  selectionMode,
-  multiSelect,
-  showCheckbox,
-}: THeaderProps): React.JSX.Element => {
-  const trRef = useRef<HTMLTableRowElement>(null);
-
-  const LabelFactory = useCallback(
-    ({ label, open, focus, bold }: LabelFactoryProps) => (
-      <Container
-        orientation="horizontal"
-        width="fill"
-        crossAlignment="center"
-        mainAlignment="space-between"
-        borderRadius="half"
-        padding={{
-          vertical: 'small',
-        }}
-      >
-        <Row takeAvailableSpace mainAlignment="unset">
-          <Text
-            size="medium"
-            weight={bold ? 'bold' : 'regular'}
-            color={open || focus ? 'primary' : 'text'}
-          >
-            {label}
-          </Text>
-        </Row>
-        <icon-wc
-          size="medium"
-          icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
-          color={open || focus ? 'primary' : 'text'}
-          style={{ alignSelf: 'center' }}
-        ></icon-wc>
-      </Container>
-    ),
-    [],
-  );
-
-  const headerData = useMemo(
-    () =>
-      headers.map((column) => {
-        const hasItems = column.items !== undefined && column.items.length > 0;
-        return (
-          <th key={column.id} align={column.align || 'left'}>
-            {hasItems && (
-              <Select
-                label={column.label}
-                multiple
-                items={column.items}
-                i18nAllLabel={column.i18nAllLabel || 'All'}
-                dropdownWidth="auto"
-                onChange={column.onChange}
-                display={column.align ? 'inline-block' : 'block'}
-                LabelFactory={(props): React.JSX.Element =>
-                  LabelFactory({ ...props, bold: column.bold })
-                }
-              />
-            )}
-            {!hasItems && <Text weight={column.bold ? 'bold' : 'regular'}>{column.label}</Text>}
-          </th>
-        );
-      }),
-    [LabelFactory, headers],
-  );
-
-  return (
-    <StyledTr ref={trRef}>
-      <th align="center">
-        {showCheckbox && multiSelect && (
-          <StyledCheckbox
-            size={'small'}
-            value={allSelected}
-            onClick={onChange}
-            iconColor={selectionMode ? 'primary' : 'text'}
-            $show={selectionMode}
-          />
-        )}
-      </th>
-      {headerData}
-    </StyledTr>
-  );
-};
-
-type TRowProps = {
-  index: number;
-  row: TRow;
-  onChange: (id: string) => void;
-  selected: boolean;
-  selectionMode: boolean;
-  multiSelect: boolean;
-  showCheckbox: boolean;
-};
-
-const DefaultRowFactory = ({
-  index,
-  row,
-  onChange,
-  selected,
-  selectionMode,
-  multiSelect,
-  showCheckbox,
-}: TRowProps): React.JSX.Element => {
-  const ckbRef = useRef<HTMLDivElement>(null);
-  const trRef = useRef<HTMLTableRowElement>(null);
-  const clickableRow = useMemo(
-    () => (!showCheckbox && row.clickable === undefined) || row.clickable,
-    [showCheckbox, row.clickable],
-  );
-
-  const _onChange = (): void => {
-    !clickableRow && onChange(row.id);
-  };
-
-  const onClick = useCallback<React.ReactEventHandler>(
-    (e) => {
-      showCheckbox &&
-        ckbRef.current &&
-        e.target !== ckbRef.current &&
-        !ckbRef.current.contains(e.target as Node | null) &&
-        row.onClick &&
-        row.onClick(e);
-      clickableRow && onChange(row.id);
-    },
-    [row, onChange, clickableRow, showCheckbox],
-  );
-
-  const rowData = useMemo(
-    () =>
-      row.columns.map((column, i) => (
-        <td key={i}>{typeof column === 'string' ? <Text>{column}</Text> : column}</td>
-      )),
-    [row.columns],
-  );
-
-  const displayBlockCheckbox = useMemo(
-    () => selected || (selectionMode && multiSelect),
-    [multiSelect, selected, selectionMode],
-  );
-
-  return (
-    <TableRow
-      ref={trRef}
-      onClick={onClick}
-      $selected={selected}
-      $highlight={row.highlight}
-      $clickable={row.clickable}
-      $showCheckbox={showCheckbox}
-    >
-      <td>
-        <Row mainAlignment={'center'}>
-          {showCheckbox && (
-            <StyledCheckbox
-              ref={ckbRef}
-              size={'small'}
-              value={selected}
-              onClick={_onChange}
-              iconColor={displayBlockCheckbox ? 'primary' : 'text'}
-              $show={displayBlockCheckbox}
-            />
-          )}
-          {(!showCheckbox || !displayBlockCheckbox) && <StyledText>{index}</StyledText>}
-        </Row>
-      </td>
-      {rowData}
-    </TableRow>
-  );
 };
 
 const SELECT_ACTION = {
@@ -503,8 +225,8 @@ const Table = ({
   }, [controlledMode, selectedRows]);
 
   return (
-    <TableContainer {...rest} ref={ref}>
-      <StyledTable>
+    <div {...rest} ref={ref} className={styles.tableContainer}>
+      <table className={styles.table}>
         <thead>
           <HeaderFactory
             headers={headers}
@@ -530,20 +252,9 @@ const Table = ({
               />
             ))}
         </tbody>
-      </StyledTable>
-    </TableContainer>
+      </table>
+    </div>
   );
 };
 
-export {
-  DefaultHeaderFactory,
-  DefaultRowFactory,
-  // for test purpose only
-  StyledCheckbox,
-  Table,
-  type TableProps,
-  type THeader,
-  type THeaderProps,
-  type TRow,
-  type TRowProps,
-};
+export { Table, type TableProps, type THeader, type THeaderProps, type TRow };
