@@ -47,9 +47,15 @@ function withLocationRewrite(config: {
       proxy.on('proxyRes', (proxyRes: any) => {
         const cookies = proxyRes.headers['set-cookie'];
         if (cookies) {
-          proxyRes.headers['set-cookie'] = cookies.map((cookie: string) =>
-            cookie.replace(/;\s*Secure/gi, '').replace(/;\s*SameSite=\w+/gi, ''),
-          );
+          if (Array.isArray(cookies)) {
+            proxyRes.headers['set-cookie'] = cookies.map((cookie: string) =>
+              cookie.replace(/;\s*Secure/gi, '').replace(/;\s*SameSite=\w+/gi, ''),
+            );
+          } else if (typeof cookies === 'string') {
+            proxyRes.headers['set-cookie'] = cookies
+              .replace(/;\s*Secure/gi, '')
+              .replace(/;\s*SameSite=\w+/gi, '');
+          }
         }
         const location = proxyRes.headers['location'];
         if (location) {
