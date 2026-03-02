@@ -6,8 +6,16 @@
 
 import '../../../web-components/icon-wc';
 
-import React, { HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
+import clsx from 'clsx';
+import {
+  CSSProperties,
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useModal } from '../../../hooks/useModal';
@@ -15,6 +23,7 @@ import { type IconName } from '../../../web-components/icon-registry';
 import { Button, ButtonProps } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
 import { Container } from '../../layout/Container';
+import styles from './Banner.module.css';
 
 type ActionButton = ButtonProps & { type?: never; color?: never; backgroundColor?: never };
 
@@ -50,56 +59,6 @@ const BANNER_ICON: Record<NonNullable<BannerProps['severity']>, IconName> = {
 const BANNER_GAP = '1rem';
 const BANNER_WIDTH = '100%';
 
-const InfoContainer = styled(Container)`
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  & > *:not(:is(:first-child)) {
-    padding-top: 0.25rem;
-  }
-`;
-
-const BannerText = styled(Text)`
-  overflow: visible;
-`;
-
-const WrapAndGrowContainer = styled(Container).attrs(({ theme, gap, flexBasis }) => ({
-  flexBasis: css`calc(${flexBasis} + ${theme.sizes.icon.large} + ${gap})`,
-}))``;
-
-const ActionsContainer = styled(Container)`
-  align-self: stretch;
-`;
-
-const CloseContainer = styled(Container)<{ $alignSelf?: string }>`
-  align-self: ${({ $alignSelf }): SimpleInterpolation => $alignSelf};
-`;
-
-const BannerContainer = styled(Container)<{ $isMultiline: boolean }>`
-  ${WrapAndGrowContainer} {
-    order: 1;
-  }
-  ${({ $isMultiline }): SimpleInterpolation =>
-    $isMultiline
-      ? css`
-          ${CloseContainer} {
-            order: 2;
-          }
-          ${ActionsContainer} {
-            order: 3;
-          }
-        `
-      : css`
-          ${CloseContainer} {
-            order: 3;
-          }
-          ${ActionsContainer} {
-            order: 2;
-          }
-        `};
-`;
-
 const Banner = ({
   severity = 'success',
   type = 'fill',
@@ -132,7 +91,6 @@ const Banner = ({
 
   const onBannerResize = useCallback((bannerContentHeight: number) => {
     if (actionsContainerRef.current) {
-      // actionsContainerRef must be align-self stretch in order to extend its height to the entire banner when inline
       setIsMultiline(actionsContainerRef.current.clientHeight < bannerContentHeight);
     }
     if (infoContainerRef.current) {
@@ -163,8 +121,6 @@ const Banner = ({
   const contentFlexBasis = useMemo(() => {
     const titleLength = title?.length ?? 0;
     const descriptionLength = description.length * 0.875;
-    // calculate the number of character which can be seen in a line,
-    // in order to keep all text visible (both title and description - more or less, it is not super precise)
     const numberOfCharsPerLine = Math.ceil(
       Math.max(titleLength, descriptionLength) / (titleLength > 0 && descriptionLength > 0 ? 2 : 3),
     );
@@ -203,10 +159,26 @@ const Banner = ({
       ),
     });
   }, [closeLabel, closeModal, createModal, description, primaryAction, secondaryAction, title]);
+  const wrapContainerStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        '--wrap-flex-basis': `calc(${contentFlexBasis} + var(--icon-size-large) + ${BANNER_GAP})`,
+      } as CSSProperties),
+    [contentFlexBasis],
+  );
+
+  const closeContainerStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        '--close-align-self': isMultiline ? 'flex-start' : 'stretch',
+      } as CSSProperties),
+    [isMultiline],
+  );
 
   return (
-    <BannerContainer
+    <Container
       ref={bannerRef}
+      className={clsx(styles.bannerContainer, isMultiline && styles.multiline)}
       background={backgroundColor}
       padding={{ vertical: '0.5rem', horizontal: '1rem' }}
       gap={BANNER_GAP}
@@ -216,15 +188,16 @@ const Banner = ({
       borderColor={{ bottom: severity }}
       mainAlignment={'flex-start'}
       wrap={'wrap'}
-      $isMultiline={isMultiline}
       {...rest}
     >
-      <WrapAndGrowContainer
+      <Container
+        className={styles.wrapAndGrowContainer}
+        style={wrapContainerStyle}
         width={'auto'}
         maxWidth={
-          showClose &&
-          closeContainerRef.current &&
-          `calc(${BANNER_WIDTH} - ${BANNER_GAP} - ${closeContainerRef.current.clientWidth}px)`
+          showClose && closeContainerRef.current
+            ? `calc(${BANNER_WIDTH} - ${BANNER_GAP} - ${closeContainerRef.current.clientWidth}px)`
+            : undefined
         }
         minWidth={0}
         flexGrow={1}
@@ -238,7 +211,8 @@ const Banner = ({
         <Container width={'fit'} minWidth={'fit'} height={'fit'} minHeight={'fit'}>
           <icon-wc icon={BANNER_ICON[severity]} color={mainColor} size="large"></icon-wc>
         </Container>
-        <InfoContainer
+        <Container
+          className={styles.infoContainer}
           orientation={'vertical'}
           height={'fit'}
           maxHeight={'4rem'}
@@ -249,16 +223,28 @@ const Banner = ({
           ref={infoContainerRef}
         >
           {title && (
-            <BannerText color={textColor} size={'medium'} weight={'bold'} overflow={'break-word'}>
+            <Text
+              className={styles.bannerText}
+              color={textColor}
+              size={'medium'}
+              weight={'bold'}
+              overflow={'break-word'}
+            >
               {title}
-            </BannerText>
+            </Text>
           )}
-          <BannerText color={textColor} size={'small'} overflow={'break-word'}>
+          <Text
+            className={styles.bannerText}
+            color={textColor}
+            size={'small'}
+            overflow={'break-word'}
+          >
             {description}
-          </BannerText>
-        </InfoContainer>
-      </WrapAndGrowContainer>
-      <ActionsContainer
+          </Text>
+        </Container>
+      </Container>
+      <Container
+        className={styles.actionsContainer}
         width={'auto'}
         flexBasis={'fit-content'}
         height={'auto'}
@@ -285,9 +271,11 @@ const Banner = ({
             onClick={showMoreInfoModal}
           />
         )}
-      </ActionsContainer>
+      </Container>
       {showClose && onClose && (
-        <CloseContainer
+        <Container
+          className={styles.closeContainer}
+          style={closeContainerStyle}
           width={'fit'}
           height={'fit'}
           minWidth={'fit'}
@@ -301,10 +289,10 @@ const Banner = ({
             type={'ghost'}
             size={'large'}
           />
-        </CloseContainer>
+        </Container>
       )}
-    </BannerContainer>
+    </Container>
   );
 };
 
-export { Banner, type BannerProps, InfoContainer };
+export { Banner, type BannerProps };
