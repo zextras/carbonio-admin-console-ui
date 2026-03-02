@@ -1117,7 +1117,6 @@ const ResourceEditDetailView: FC<any> = ({
             label={t('label.description', 'Description')}
             backgroundColor="gray5"
             value={zimbraNotes}
-            size="medium"
             onChange={(e: any): any => {
               setZimbraNotes(e.target.value);
             }}

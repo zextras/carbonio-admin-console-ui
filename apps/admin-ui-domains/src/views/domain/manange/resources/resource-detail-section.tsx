@@ -421,7 +421,6 @@ const ResourceDetailSection: FC = () => {
               label={t('label.description', 'Description')}
               backgroundColor="gray5"
               value={resourceDetail.zimbraNotes}
-              size="medium"
               inputName="zimbraNotes"
               onChange={changeResourceDetail}
             />

@@ -15,7 +15,7 @@ type TextareaProps = {
   backgroundColor?: string;
   disabled?: boolean;
   label: string;
-  onChange?: (e: React.SyntheticEvent) => void;
+  onChange?: (e: any) => void;
   value?: string | number;
   defaultValue?: string | number;
   hasError?: boolean;
@@ -74,7 +74,7 @@ const CustomTextArea: CustomTextAreaType = ({
           (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
           'regular',
         ),
-      }) as React.CSSProperties,
+      } as React.CSSProperties),
     [backgroundColor, hasError, hasFocus],
   );
 
