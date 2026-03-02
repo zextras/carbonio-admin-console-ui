@@ -10,6 +10,7 @@ import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
+import { getThemeColorVar } from '../theme/theme-utils';
 import { type IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
@@ -60,23 +61,6 @@ export class IconWC extends LitElement {
   @property({ attribute: false })
   accessor clickHandler: ((event: Event) => void) | undefined = undefined;
 
-  private getColorVariable(color: string): string {
-    const trimmed = color.trim();
-
-    if (trimmed === 'currentColor') {
-      return trimmed;
-    }
-
-    // Check if it's a hex color (3, 4, 6, or 8 digit formats)
-    const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
-    if (hexPattern.test(trimmed)) {
-      return trimmed;
-    }
-    // For named colors, sanitize and return as CSS variable
-    const sanitized = trimmed.replace(/[^a-zA-Z0-9-]/g, '');
-    return `var(--color-${sanitized}-regular, var(--color-text-regular))`;
-  }
-
   private getSizeValue(size: IconSizeValue): string {
     if (/^[\d.]+(rem|px|em|vh|vw|%)$/.test(size)) {
       return size;
@@ -107,7 +91,7 @@ export class IconWC extends LitElement {
     }
 
     const styles = styleMap({
-      '--icon-color': this.getColorVariable(this.color),
+      '--icon-color': getThemeColorVar(this.color, 'regular'),
       '--icon-size': this.getSizeValue(this.size),
     });
 

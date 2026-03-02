@@ -31,12 +31,14 @@ type PaddingObj =
 
 export function getThemeColorVar(colorName: string, state: string): string {
   if (!colorName) return '';
+  const trimmed = colorName.trim();
+  if (trimmed === 'currentColor') return trimmed;
   const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
-  if (hexPattern.test(colorName)) {
-    return colorName;
+  if (hexPattern.test(trimmed)) {
+    return trimmed;
   }
-  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
-  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
+  const sanitized = trimmed.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${trimmed}))`;
 }
 
 type PaddingVarObj =
