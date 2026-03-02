@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { rgba } from 'polished';
+import clsx from 'clsx';
 import React from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { Container } from '../../layout/Container';
+import styles from './ModalComponents.module.css';
 
 const modalMinWidth = {
 	extrasmall: '20%',
@@ -48,66 +48,66 @@ function getScrollbarSize(windowObj: Window): number {
 	return 0;
 }
 
-const ModalContainer = styled.div<{ $mounted: boolean; $open: boolean; $zIndex: number }>`
-	display: flex;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: ${(props): string =>
-		`${props.theme.sizes.padding.medium} ${props.theme.sizes.padding.medium} 0`};
-	background-color: ${({ theme }): string => theme.palette.transparent.regular};
-	opacity: 0;
-	pointer-events: none;
-	transition: 0.3s ease-out;
-	z-index: -1;
-	justify-content: center;
-	align-items: center;
-	overflow-y: auto;
+type ModalContainerProps = React.HTMLAttributes<HTMLDivElement> & {
+	$mounted?: boolean;
+	$open?: boolean;
+	$zIndex?: number;
+};
 
-	${({ $mounted, $open, $zIndex }): SimpleInterpolation =>
-		($mounted || $open) &&
-		css`
-			z-index: ${$zIndex};
-		`};
-	${({ $open, theme }): SimpleInterpolation =>
-		$open &&
-		css`
-			background-color: ${rgba(theme.palette.black.regular, 0.5)};
-			opacity: 1;
-			pointer-events: auto;
-		`};
-`;
+function ModalContainer({
+	$mounted,
+	$open,
+	$zIndex,
+	className,
+	style,
+	...props
+}: ModalContainerProps) {
+	return (
+		<div
+			className={clsx(styles.modalContainer, $open && styles.open, className)}
+			style={{
+				...style,
+				zIndex: $mounted || $open ? $zIndex : -1,
+			}}
+			{...props}
+		/>
+	);
+}
 
-const ModalWrapper = styled.div`
-	max-width: 100%;
-	width: 100%;
-	margin: auto;
-	box-sizing: border-box;
-	pointer-events: none;
-`;
+type ModalWrapperProps = React.HTMLAttributes<HTMLDivElement>;
 
-const ModalContent = styled(Container).attrs<{
+function ModalWrapper({ className, ...props }: ModalWrapperProps) {
+	return <div className={clsx(styles.modalWrapper, className)} {...props} />;
+}
+
+type ModalContentProps = React.HTMLAttributes<HTMLDivElement> & {
 	$size: keyof typeof modalMinWidth & keyof typeof modalWidth;
-}>(({ $size }) => ({
-	maxWidth: '100%',
-	minWidth: modalMinWidth[$size],
-	width: modalWidth[$size],
-	padding: '2rem',
-	mainAlignment: 'flex-start',
-	crossAlignment: 'flex-start',
-	height: 'auto',
-	tabIndex: -1
-}))<{
-	$size: keyof typeof modalMinWidth & keyof typeof modalWidth;
-}>`
-	position: relative;
-	margin: 0 auto ${({ theme }): string => theme.sizes.padding.medium};
-	border-radius: 1rem;
-	box-shadow: ${({ theme }): string => theme.shadows.regular};
-	outline: none;
-	pointer-events: auto;
-`;
+};
 
-export { getScrollbarSize, isBodyOverflowing,ModalContainer, ModalContent, ModalWrapper };
+function ModalContent({
+	$size,
+	className,
+	style,
+	...props
+}: ModalContentProps) {
+	return (
+		<Container
+			className={clsx(styles.modalContent, className)}
+			maxWidth="100%"
+			minWidth={modalMinWidth[$size]}
+			width={modalWidth[$size]}
+			padding="2rem"
+			mainAlignment="flex-start"
+			crossAlignment="flex-start"
+			height="auto"
+			tabIndex={-1}
+			style={{
+				...style,
+				margin: `0 auto var(--padding-medium)`,
+			}}
+			{...props}
+		/>
+	);
+}
+
+export { getScrollbarSize, isBodyOverflowing, ModalContainer, ModalContent, ModalWrapper };
