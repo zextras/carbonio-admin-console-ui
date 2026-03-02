@@ -4,30 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultTheme } from 'styled-components';
-
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
-
-type PaddingObj =
-  | {
-      value: string | keyof DefaultTheme['sizes']['padding'] | 0;
-    }
-  | {
-      all: string | keyof DefaultTheme['sizes']['padding'] | 0;
-    }
-  | RequireAtLeastOne<{
-      vertical: string | keyof DefaultTheme['sizes']['padding'] | 0;
-      horizontal: string | keyof DefaultTheme['sizes']['padding'] | 0;
-    }>
-  | RequireAtLeastOne<{
-      top: string | keyof DefaultTheme['sizes']['padding'] | 0;
-      right: string | keyof DefaultTheme['sizes']['padding'] | 0;
-      bottom: string | keyof DefaultTheme['sizes']['padding'] | 0;
-      left: string | keyof DefaultTheme['sizes']['padding'] | 0;
-    }>;
 
 export function getThemeColorVar(colorName: string, state: string): string {
   if (!colorName) return '';
@@ -41,7 +21,7 @@ export function getThemeColorVar(colorName: string, state: string): string {
   return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${trimmed}))`;
 }
 
-type PaddingVarObj =
+export type PaddingVarObj =
   | {
       value: string | 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge' | 0;
     }
@@ -115,5 +95,3 @@ export function getPaddingVar(padding: string | PaddingVarObj | 0): string | und
   }
   return p.map((val) => paddingTokenToVar(val)).join(' ');
 }
-
-export type { PaddingObj, PaddingVarObj };

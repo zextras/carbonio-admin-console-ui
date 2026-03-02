@@ -83,10 +83,7 @@ export default defineConfig(({ command, mode }) => {
       ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
       react({
         babel: {
-          plugins: [
-            'babel-plugin-styled-components',
-            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-          ],
+          plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
         },
       }),
       svgr({

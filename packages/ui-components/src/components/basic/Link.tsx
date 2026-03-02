@@ -17,7 +17,7 @@ type LinkProps = {
   Pick<TextProps, 'color' | 'size' | 'weight'>;
 
 const Link = ({ children, underlined = false, color = 'primary', style, ...rest }: LinkProps) => {
-  const hoverColorVar = useMemo(() => getThemeColorVar(`${color}.hover`), [color]);
+  const hoverColorVar = useMemo(() => getThemeColorVar(color, 'hover'), [color]);
 
   const linkStyle = {
     ...style,

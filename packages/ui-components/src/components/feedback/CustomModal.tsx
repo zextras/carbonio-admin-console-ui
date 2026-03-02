@@ -46,14 +46,11 @@ type CustomModalProps = BareModalProps &
   Omit<HTMLAttributes<HTMLDivElement>, keyof BareModalProps | 'title'>;
 
 const CustomModal = ({
-  background = 'gray6',
   size = 'small',
   open = false,
   onClose,
   children,
   disablePortal = false,
-  minHeight,
-  maxHeight,
   zIndex = 999,
   onClick,
   ref,
@@ -156,7 +153,6 @@ const CustomModal = ({
   return (
     <Portal show={open} disablePortal={disablePortal} container={window.document.body}>
       <ModalContainer
-        ref={modalRef}
         $open={delayedOpen}
         $mounted={open}
         onClick={onBackdropClick}
@@ -167,14 +163,7 @@ const CustomModal = ({
         <div tabIndex={0} ref={startSentinelRef} />
         <Transition type="scale-in" apply={delayedOpen}>
           <ModalWrapper>
-            <ModalContent
-              ref={modalContentRef}
-              background={background}
-              $size={size}
-              minHeight={minHeight}
-              maxHeight={maxHeight}
-              onClick={onClick}
-            >
+            <ModalContent $size={size} onClick={onClick}>
               {children}
             </ModalContent>
           </ModalWrapper>

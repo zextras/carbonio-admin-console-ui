@@ -26,7 +26,7 @@ import {
   useKeyboard,
 } from '../../../hooks/useKeyboard';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { AnyColor, PaletteColor } from '../../../types/utils';
+import { AnyColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
 import { Dropdown, DropdownItem } from '../../display/Dropdown';
@@ -62,7 +62,7 @@ const AdjustWidthInput = ({
   ref,
   ...rest
 }: {
-  color: PaletteColor;
+  color: string;
   ref?: React.Ref<HTMLInputElement>;
 } & InputHTMLAttributes<HTMLInputElement>) => {
   const hiddenSpanRef = useRef<HTMLSpanElement | null>(null);
@@ -93,11 +93,12 @@ const AdjustWidthInput = ({
   }, [inputRef, resizeInput]);
 
   const inputStyle: React.CSSProperties = useMemo(
-    () => ({
-      '--input-color': getThemeColorVar(color, 'regular'),
-      '--input-color-disabled': getThemeColorVar(color, 'disabled'),
-    } as React.CSSProperties),
-    [color]
+    () =>
+      ({
+        '--input-color': getThemeColorVar(color, 'regular'),
+        '--input-color-disabled': getThemeColorVar(color, 'disabled'),
+      } as React.CSSProperties),
+    [color],
   );
 
   return (
@@ -188,13 +189,13 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   /** Set the current input text as a Chip when it loses focus */
   confirmChipOnBlur?: boolean;
   /** ChipInput backgroundColor */
-  background?: PaletteColor;
+  background?: string;
   /** Chip generation triggers */
   separators?: KeyboardPresetKey[];
   /** Show the error  */
   hasError?: boolean;
   /** Background color for the error status */
-  errorBackgroundColor?: PaletteColor;
+  errorBackgroundColor?: string;
   /** Set the limit for chip inputs <br />
    * <strong>Warning</strong>: be aware that this check is performed only on internal changes on items.
    * If you change the value from outside, you are in charge of apply this check on the new value itself.
@@ -619,12 +620,13 @@ const ChipInputComponent = <TValue = unknown,>({
   const containerElClassName = clsx(styles.containerEl);
 
   const descriptionStyle: React.CSSProperties = useMemo(
-    () => ({
-      '--description-bg-color': errorBackgroundColor
-        ? getThemeColorVar(errorBackgroundColor, 'regular')
-        : 'transparent',
-    } as React.CSSProperties),
-    [errorBackgroundColor]
+    () =>
+      ({
+        '--description-bg-color': errorBackgroundColor
+          ? getThemeColorVar(errorBackgroundColor, 'regular')
+          : 'transparent',
+      } as React.CSSProperties),
+    [errorBackgroundColor],
   );
 
   return (
@@ -716,7 +718,9 @@ const ChipInputComponent = <TValue = unknown,>({
               {placeholder && (
                 <InputLabel
                   className={styles.label}
-                  data-has-items={items.length > 0 || !!inputElRef.current?.value ? 'true' : undefined}
+                  data-has-items={
+                    items.length > 0 || !!inputElRef.current?.value ? 'true' : undefined
+                  }
                   htmlFor={id}
                   $hasFocus={hasFocus}
                   $hasError={hasError}

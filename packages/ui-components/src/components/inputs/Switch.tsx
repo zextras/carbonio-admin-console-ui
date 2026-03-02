@@ -10,7 +10,6 @@ import { CSSProperties, useMemo, useRef } from 'react';
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getThemeColorVar } from '../../theme/theme-utils';
-import { PaletteColor } from '../../types/utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
@@ -27,7 +26,7 @@ type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
   onClick?: (event: Event) => void;
   onChange?: (checked: boolean) => void;
   size?: SwitchSize;
-  iconColor?: PaletteColor;
+  iconColor?: string;
   ref?: React.Ref<HTMLDivElement>;
 };
 
@@ -61,7 +60,7 @@ const Switch = ({
         '--icon-color-focus': getThemeColorVar(String(iconColor), 'focus'),
         '--icon-color-hover': getThemeColorVar(String(iconColor), 'hover'),
         '--icon-color-active': getThemeColorVar(String(iconColor), 'active'),
-      }) as CSSProperties,
+      } as CSSProperties),
     [iconColor],
   );
 

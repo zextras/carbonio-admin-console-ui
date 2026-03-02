@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 /* eslint-disable-next-line @typescript-eslint/triple-slash-reference */
-/// <reference path="./styled-components.ts" />
-/* eslint-disable-next-line @typescript-eslint/triple-slash-reference */
 /// <reference path="./css-modules.d.ts" />
 
 // global definitions
@@ -108,10 +106,8 @@ export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
 export * from './hooks/usewizard';
-export type { ThemeObj as Theme } from './theme/theme';
-export * from './theme/theme-context-provider';
 export * from './theme/theme-utils';
-export type { AnyColor, PaletteColor } from './types/utils';
+export type { AnyColor } from './types/utils';
 export {
   type CloseSnackbarFn,
   type CreateSnackbarFn,

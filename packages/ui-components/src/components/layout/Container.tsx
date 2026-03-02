@@ -6,12 +6,7 @@
 import clsx from 'clsx';
 import React, { CSSProperties, HTMLAttributes, useMemo } from 'react';
 
-import {
-  getPaddingVar,
-  getThemeColorVar,
-  PaddingObj,
-  PaddingVarObj,
-} from '../../theme/theme-utils';
+import { getPaddingVar, getThemeColorVar, PaddingVarObj } from '../../theme/theme-utils';
 import { AnyColor, LiteralUnion } from '../../types/utils';
 import styles from './Container.module.css';
 
@@ -41,7 +36,7 @@ type ContainerElProps = {
     | 'unset';
   crossAlignment?: 'stretch' | 'center' | 'baseline' | 'flex-start' | 'flex-end' | 'unset';
   wrap?: 'wrap' | 'nowrap' | 'wrap-reverse' | 'unset';
-  padding?: PaddingObj | PaddingVarObj | string | 0;
+  padding?: PaddingVarObj | PaddingVarObj | string | 0;
   gap?: string;
   flexGrow?: string | number;
   flexShrink?: string | number;
