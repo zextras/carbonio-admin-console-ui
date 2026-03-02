@@ -14,7 +14,7 @@ describe('EditAccountQuotaBarNew', () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
         used={512 * 1024 * 1024}
-        limit={{ type: 'set', value: 1024 * 1024 * 1024 }}
+        limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
         usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
       />,
     );
@@ -26,7 +26,7 @@ describe('EditAccountQuotaBarNew', () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
         used={500000000}
-        limit={{ type: 'set', value: 1000000000 }}
+        limit={{ type: 'limited', value: 1000000000 }}
         usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
       />,
     );
@@ -54,7 +54,7 @@ describe('EditAccountQuotaBarNew', () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
         used={512 * 1024 * 1024}
-        limit={{ type: 'set', value: 2 * 1024 * 1024 * 1024 }}
+        limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
         usedByModule={{
           mailbox: 200 * 1024 * 1024,
           files: 200 * 1024 * 1024,
@@ -87,7 +87,7 @@ describe('EditAccountQuotaBarNew', () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
         used={500 * 1024 * 1024}
-        limit={{ type: 'set', value: 2 * 1024 * 1024 * 1024 }}
+        limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
         usedByModule={{
           mailbox: 200 * 1024 * 1024,
           files: 200 * 1024 * 1024,
@@ -104,7 +104,7 @@ describe('EditAccountQuotaBarNew', () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
         used={850 * 1024 * 1024}
-        limit={{ type: 'set', value: 1 * 1024 * 1024 * 1024 }}
+        limit={{ type: 'limited', value: 1 * 1024 * 1024 * 1024 }}
         usedByModule={{
           mailbox: 400 * 1024 * 1024,
           files: 300 * 1024 * 1024,

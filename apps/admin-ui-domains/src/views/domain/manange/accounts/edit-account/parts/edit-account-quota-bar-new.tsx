@@ -72,7 +72,7 @@ export const EditAccountQuotaBarNew = ({
           {sizeDescription}
         </Text>
       </Container>
-      {limit.type === 'set' && (
+      {limit.type === 'limited' && (
         <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit.value)} />
       )}
       <QuotaBar modules={quotaModules} limit={limit} used={used} />

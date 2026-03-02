@@ -10,8 +10,7 @@ import {
   STORAGES_API_VERSION_HEADER,
 } from '../constants';
 
-
-export type LimitedComputedLimit = { type: 'set', value: number };
+export type LimitedComputedLimit = { type: 'limited'; value: number };
 export type UnlimitedComputedLimit = { type: 'unlimited' };
 export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
 

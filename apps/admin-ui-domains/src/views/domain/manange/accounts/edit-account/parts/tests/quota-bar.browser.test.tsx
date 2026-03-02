@@ -12,7 +12,7 @@ import { QuotaBar } from '../quota-bar';
 describe('QuotaBar', () => {
   it('should render correctly the given background', async () => {
     await setupBrowserTest(
-      <QuotaBar modules={[]} background="red" limit={{ type: 'set', value: 1 }} used={0} />,
+      <QuotaBar modules={[]} background="red" limit={{ type: 'limited', value: 1 }} used={0} />,
     );
 
     expect(page.getByTestId('quota-bar')).toHaveStyle('background: red');
@@ -25,7 +25,7 @@ describe('QuotaBar', () => {
     ];
 
     await setupBrowserTest(
-      <QuotaBar modules={modules} limit={{ type: 'set', value: 10 }} used={3} />,
+      <QuotaBar modules={modules} limit={{ type: 'limited', value: 10 }} used={3} />,
     );
 
     const segments = page.getByTestId('quota-bar-module-segment');
@@ -42,7 +42,7 @@ describe('QuotaBar', () => {
     ];
 
     await setupBrowserTest(
-      <QuotaBar modules={modules} limit={{ type: 'set', value: 10 }} used={12} />,
+      <QuotaBar modules={modules} limit={{ type: 'limited', value: 10 }} used={12} />,
     );
 
     const segments = page.getByTestId('quota-bar-module-segment');
@@ -59,7 +59,7 @@ describe('QuotaBar', () => {
     ];
 
     await setupBrowserTest(
-      <QuotaBar modules={modules} limit={{ type: 'set', value: 15 }} used={12} />,
+      <QuotaBar modules={modules} limit={{ type: 'limited', value: 15 }} used={12} />,
     );
 
     expect(page.getByTestId('quota-bar-legend-entry').getByText('Available (3 B)')).toBeVisible();
@@ -72,7 +72,7 @@ describe('QuotaBar', () => {
     ];
 
     await setupBrowserTest(
-      <QuotaBar modules={modules} limit={{ type: 'set', value: 15 }} used={12} />,
+      <QuotaBar modules={modules} limit={{ type: 'limited', value: 15 }} used={12} />,
     );
 
     const legendEntries = page.getByTestId('quota-bar-legend-entry');

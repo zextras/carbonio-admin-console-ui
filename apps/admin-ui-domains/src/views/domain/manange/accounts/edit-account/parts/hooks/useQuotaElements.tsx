@@ -28,7 +28,7 @@ export const useQuotaElements = (
       background={module.color}
       width={`${getExactPercentage(
         module.used,
-        limit.type === 'set' ? Math.max(limit.value, used) : used,
+        limit.type === 'limited' ? Math.max(limit.value, used) : used,
       )}%`}
       height="100%"
       flexShrink={0}
@@ -46,7 +46,7 @@ export const useQuotaElements = (
     />
   ));
 
-  if (limit.type === 'set') {
+  if (limit.type === 'limited') {
     quotaLegendEntryNodes.push(
       <QuotaLegendEntry
         key="available"
