@@ -5,6 +5,14 @@
  */
 
 import {
+  Container,
+  DropDownInput,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import {
   getAllRights,
   replaceHistory,
   useAppConfigStore,
@@ -13,22 +21,11 @@ import {
   useDomainStore,
   useGlobalCarbonioSendAnalytics,
   useIsAdvanced,
-} from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  DropDownInput,
-  Icon,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import styled from 'styled-components';
 
 import { DomainResponse } from '../../../types';
 import {
@@ -70,24 +67,8 @@ import { getDomainList } from '../../services/search-domain-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
+import styles from './domain-list-panel.module.css';
 import GlobalListPanel from './global-list-panel';
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
-const ovelayStyle = styled(Container)`
-  width: 20rem;
-  right: 0;
-  bottom: 0;
-  height: 8rem;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-`;
 
 interface ManageOptions {
   [key: string]: string | boolean;
@@ -137,7 +118,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision ovelayStyle={ovelayStyle} />
+          <div className={styles.overlayStyle} />
         </Container>
       ),
     },
@@ -452,16 +433,11 @@ const DomainListPanel: FC = () => {
   );
 
   useEffect(() => {
-    if (!backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
+    if (backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
       const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
       setManageOptions(options);
     }
-  }, [
-    backupData?.backupModuleEnable,
-    backupData?.isBackupModuleLicensed,
-    manageItems,
-    isDomainSelect,
-  ]);
+  }, [manageItems, isDomainSelect, backupData]);
 
   useMemo(() => {
     setManageOptions(
@@ -518,7 +494,7 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <icon-wc className={styles.customIcon} icon="InfoOutline"></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -544,7 +520,8 @@ const DomainListPanel: FC = () => {
             id: domain.id,
             label: domain.name,
             customComponent: (
-              <SelectItem
+              <Row
+                className={styles.selectItem}
                 style={{
                   display: 'block',
                   textAlign: 'left',
@@ -558,7 +535,7 @@ const DomainListPanel: FC = () => {
                 }}
               >
                 {domain?.name}
-              </SelectItem>
+              </Row>
             ),
           }),
         );

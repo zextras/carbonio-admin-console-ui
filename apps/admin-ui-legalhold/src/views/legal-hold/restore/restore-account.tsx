@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DateTimePicker,
   DropDownInput,
+  HoverableRowFactory,
   Input,
   Padding,
   Row,
@@ -18,6 +19,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { postSoapFetchRequest, soapFetch } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { cloneDeep, debounce, unionBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -32,8 +34,6 @@ import {
 } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
@@ -716,7 +716,7 @@ const RestoreAccountView: FC<{
               showCheckbox={false}
               multiSelect={false}
               selectedRows={selectedRow}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>

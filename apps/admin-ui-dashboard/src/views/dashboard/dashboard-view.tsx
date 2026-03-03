@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Container } from '@zextras/ui-components';
 import {
   getRights,
   useCurrentUserRights,
@@ -11,10 +12,9 @@ import {
   useDomainStore,
   useHasAllRights,
   useIsAdvanced,
+  useServerVersion,
   useUserAccounts,
-  useVersion,
-} from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -42,7 +42,7 @@ const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const [userName, setUserName] = useState<string>('');
-  const { data: serverVersion } = useVersion();
+  const { data: serverVersion } = useServerVersion();
 
   const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();

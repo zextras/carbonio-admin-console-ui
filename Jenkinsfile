@@ -5,7 +5,7 @@
  */
 
 library(
-    identifier: 'jenkins-lib-common@1.2.1',
+    identifier: 'jenkins-lib-common@1.3.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-lib-common.git',
@@ -141,7 +141,8 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh '''
-                                npm install -g sonarqube-scanner
+                                npm install -g sonarqube-scanner \
+                                npm install baseline-browser-mapping@latest \
                                 npx sonar-scanner \
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
                                     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info

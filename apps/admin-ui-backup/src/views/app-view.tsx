@@ -3,30 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
+import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 
-interface ContainerExtendProps extends ContainerProps {
-  isPrimaryBarExpanded?: boolean;
+function getContainerStyle(isPrimaryBarExpanded: boolean) {
+  return {
+    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
+    transition: 'width 300ms',
+  };
 }
-
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-  transition: width 300ms;
-`;
 
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
       <Routes>
         <Route
           path={'/*'}
@@ -37,16 +34,16 @@ const AppView: FC = () => {
               style={{ overflow: 'hidden' }}
             >
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<spinner-wc></spinner-wc>}>
                   <BackupListPanel />
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-                  <Suspense fallback={<spinner-wc />}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                  <Suspense fallback={<spinner-wc></spinner-wc>}>
                     <BackupDetailPanel />
                   </Suspense>
-                </DetailViewContainer>
+                </Container>
               </Container>
             </Container>
           }

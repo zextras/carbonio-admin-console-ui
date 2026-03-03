@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useConfigurationAttribute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { PostHogProvider } from '@posthog/react';
+import { useConfigurationAttribute, useIsAdvanced } from '@zextras/ui-shared';
 import type { PostHogConfig } from 'posthog-js';
-import { PostHogProvider } from 'posthog-js/react';
 import React, { useMemo } from 'react';
 
 import { TrackerPageView } from './page-view';
@@ -14,35 +14,35 @@ const PH_API_HOST = 'https://stats.zextras.tools';
 const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
 
 export const TrackerProvider = ({
-	children
+  children,
 }: React.PropsWithChildren<Record<never, never>>): React.JSX.Element => {
-	const feedbackPermission = useConfigurationAttribute('carbonioAllowFeedback') === 'TRUE';
-	const isAdvanced = useIsAdvanced();
-	const showPostHogSurveys = useMemo(
-		() => !isAdvanced && feedbackPermission,
-		[isAdvanced, feedbackPermission]
-	);
-	const options = useMemo(
-		(): Partial<PostHogConfig> => ({
-			api_host: PH_API_HOST,
-			person_profiles: 'identified_only',
-			opt_out_capturing_by_default: false,
-			disable_session_recording: true,
-			mask_all_text: true,
-			disable_surveys: showPostHogSurveys,
-			autocapture: false
-		}),
-		[showPostHogSurveys]
-	);
-	const carbonioSendAnalyticsEnabled =
-		useConfigurationAttribute('carbonioSendAnalytics') === 'TRUE';
-	if (carbonioSendAnalyticsEnabled) {
-		return (
-			<PostHogProvider apiKey={PH_PROJECT_API_KEY} options={options}>
-				{children}
-				<TrackerPageView />
-			</PostHogProvider>
-		);
-	}
-	return <>{children}</>;
+  const feedbackPermission = useConfigurationAttribute('carbonioAllowFeedback') === 'TRUE';
+  const isAdvanced = useIsAdvanced();
+  const showPostHogSurveys = useMemo(
+    () => !isAdvanced && feedbackPermission,
+    [isAdvanced, feedbackPermission],
+  );
+  const options = useMemo(
+    (): Partial<PostHogConfig> => ({
+      api_host: PH_API_HOST,
+      person_profiles: 'identified_only',
+      opt_out_capturing_by_default: false,
+      disable_session_recording: true,
+      mask_all_text: true,
+      disable_surveys: showPostHogSurveys,
+      autocapture: false,
+    }),
+    [showPostHogSurveys],
+  );
+  const carbonioSendAnalyticsEnabled =
+    useConfigurationAttribute('carbonioSendAnalytics') === 'TRUE';
+  if (carbonioSendAnalyticsEnabled) {
+    return (
+      <PostHogProvider apiKey={PH_PROJECT_API_KEY} options={options}>
+        {children}
+        <TrackerPageView />
+      </PostHogProvider>
+    );
+  }
+  return <>{children}</>;
 };

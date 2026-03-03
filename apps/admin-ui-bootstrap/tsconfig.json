@@ -15,6 +15,30 @@
       "@zextras/admin-ui-storage": ["./src/apps/app-modules.d.ts"]
     }
   },
-  "include": ["src/**/*", "**/types/**/*", "translations/**/*", "*.ts", "*.js", "*.d.ts"],
+  "references": [
+    { "path": "../../packages/ui-shared" },
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/test-utils" },
+    { "path": "../admin-ui-dashboard" },
+    { "path": "../admin-ui-backup" },
+    { "path": "../admin-ui-cos" },
+    { "path": "../admin-ui-domains" },
+    { "path": "../admin-ui-legalhold" },
+    { "path": "../admin-ui-mta" },
+    { "path": "../admin-ui-notifications" },
+    { "path": "../admin-ui-operations" },
+    { "path": "../admin-ui-subscription" },
+    { "path": "../admin-ui-privacy" },
+    { "path": "../admin-ui-storage" }
+  ],
+  "include": [
+    "src/**/*",
+    "**/types/**/*",
+    "translations/**/*",
+    "*.ts",
+    "vite-config",
+    "*.js",
+    "*.d.ts"
+  ],
   "exclude": ["node_modules", "dist", "build"]
 }

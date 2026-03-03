@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/admin-ui-bootstrap';
+import { fetchExternalSoap } from '@zextras/ui-shared';
 
 export const getCoreAttributes = async (body: any): Promise<any> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/core/attributes/get`, [...body]);

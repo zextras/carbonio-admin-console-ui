@@ -36,6 +36,10 @@ declare const devUtils: devUtilsNamespace | undefined;
 declare const cliSettings: cliSettingsNamespace | undefined;
 declare module '@zextras/ui-components';
 declare module '*.svg';
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
 
 interface ImportMetaEnv {
   readonly MODE: string;

@@ -5,7 +5,7 @@
  */
 
 import { type QueryClient } from '@tanstack/react-query';
-import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
+import { queryClient } from '@zextras/ui-shared';
 import { clone, cloneDeep, map } from 'lodash-es';
 import { type ReactElement } from 'react';
 import { useLocation } from 'react-router';

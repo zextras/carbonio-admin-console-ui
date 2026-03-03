@@ -1,0 +1,26 @@
+.panel {
+	width: 48px;
+	border-radius: 0;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	transition: width 0.2s;
+	border-left: 1px solid var(--color-gray2-regular);
+}
+
+.panel[data-mode='open'] {
+	width: 256px;
+}
+
+.spacer {
+	position: relative;
+	width: 48px;
+	height: 100%;
+	transition: width 0.2s;
+}
+
+.spacer[data-mode='open'] {
+	width: 256px;
+}

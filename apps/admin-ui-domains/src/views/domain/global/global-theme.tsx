@@ -3,34 +3,26 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore  } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  OverlayDivision,  Padding,  Row,  Text,  useSnackbar } from "@zextras/ui-components";
-import {  isEqual  } from "lodash-es";
-import {  FC, useCallback, useEffect, useState  } from "react";
-import {  useTranslation  } from "react-i18next";
-import styled from "styled-components";
+import {
+  Button,
+  Container,
+  OverlayDivision,
+  Padding,
+  Row,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useAppConfigStore } from '@zextras/ui-shared';
+import { isEqual } from 'lodash-es';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  themeConfigStore  } from "../../../../types/domain";
-import {  modifyConfig  } from "../../../services/modify-config";
-import {  RouteLeavingGuard  } from "../../ui-extras/nav-guard";
-import {  isValidHexColor  } from "../../utility/utils";
-import {  ThemeConfigs  } from "../theme/theme-configs";
-import {  ResetTheme  } from "../theme/theme-reset";
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+import { themeConfigStore } from '../../../../types/domain';
+import { modifyConfig } from '../../../services/modify-config';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isValidHexColor } from '../../utility/utils';
+import { ThemeConfigs } from '../theme/theme-configs';
+import { ResetTheme } from '../theme/theme-reset';
 
 const GlobalTheme: FC = () => {
   const [t] = useTranslation();
@@ -39,12 +31,9 @@ const GlobalTheme: FC = () => {
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
   const configInformation = useAppConfigStore((state) => state.config);
   const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
-  const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>(
-    {},
-  );
+  const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] =
-    useState<boolean>(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -59,51 +48,33 @@ const GlobalTheme: FC = () => {
   const setInitalValues = useCallback(
     (obj: any): void => {
       if (obj) {
-        setValue("carbonioWebUiDarkMode", obj?.carbonioWebUiDarkMode);
-        setValue("carbonioWebUiLoginLogo", obj?.carbonioWebUiLoginLogo);
-        setValue("carbonioWebUiDarkLoginLogo", obj?.carbonioWebUiDarkLoginLogo);
-        setValue(
-          "carbonioWebUiLoginBackground",
-          obj?.carbonioWebUiLoginBackground,
-        );
-        setValue(
-          "carbonioWebUiDarkLoginBackground",
-          obj?.carbonioWebUiDarkLoginBackground,
-        );
-        setValue("carbonioWebUiAppLogo", obj?.carbonioWebUiAppLogo);
-        setValue("carbonioWebUiDarkAppLogo", obj?.carbonioWebUiDarkAppLogo);
-        setValue("carbonioWebUiFavicon", obj?.carbonioWebUiFavicon);
-        setValue("carbonioWebUiTitle", obj?.carbonioWebUiTitle);
-        setValue("carbonioWebUiDescription", obj?.carbonioWebUiDescription);
-        setValue("carbonioAdminUiLoginLogo", obj?.carbonioAdminUiLoginLogo);
-        setValue(
-          "carbonioAdminUiDarkLoginLogo",
-          obj?.carbonioAdminUiDarkLoginLogo,
-        );
-        setValue("carbonioAdminUiAppLogo", obj?.carbonioAdminUiAppLogo);
-        setValue("carbonioAdminUiDarkAppLogo", obj?.carbonioAdminUiDarkAppLogo);
-        setValue("carbonioAdminUiBackground", obj?.carbonioAdminUiBackground);
-        setValue(
-          "carbonioAdminUiDarkBackground",
-          obj?.carbonioAdminUiDarkBackground,
-        );
-        setValue("carbonioAdminUiFavicon", obj?.carbonioAdminUiFavicon);
-        setValue("carbonioAdminUiTitle", obj?.carbonioAdminUiTitle);
-        setValue("carbonioAdminUiDescription", obj?.carbonioAdminUiDescription);
-        setValue("carbonioLogoUrl", obj?.carbonioLogoUrl);
-        setValue("carbonioWebUiPrimaryColor", obj?.carbonioWebUiPrimaryColor);
-        setValue(
-          "carbonioWebUiDarkPrimaryColor",
-          obj?.carbonioWebUiDarkPrimaryColor,
-        );
-        setValue("carbonioWebUILoginURL", obj?.carbonioWebUILoginURL);
-        setValue("carbonioWebUILogoutURL", obj?.carbonioWebUILogoutURL);
-        setValue("carbonioAdminUILoginURL", obj?.carbonioAdminUILoginURL);
-        setValue("carbonioAdminUILogoutURL", obj?.carbonioAdminUILogoutURL);
-        setValue(
-          "carbonioAdminDocumentationUrl",
-          obj?.carbonioAdminDocumentationUrl,
-        );
+        setValue('carbonioWebUiDarkMode', obj?.carbonioWebUiDarkMode);
+        setValue('carbonioWebUiLoginLogo', obj?.carbonioWebUiLoginLogo);
+        setValue('carbonioWebUiDarkLoginLogo', obj?.carbonioWebUiDarkLoginLogo);
+        setValue('carbonioWebUiLoginBackground', obj?.carbonioWebUiLoginBackground);
+        setValue('carbonioWebUiDarkLoginBackground', obj?.carbonioWebUiDarkLoginBackground);
+        setValue('carbonioWebUiAppLogo', obj?.carbonioWebUiAppLogo);
+        setValue('carbonioWebUiDarkAppLogo', obj?.carbonioWebUiDarkAppLogo);
+        setValue('carbonioWebUiFavicon', obj?.carbonioWebUiFavicon);
+        setValue('carbonioWebUiTitle', obj?.carbonioWebUiTitle);
+        setValue('carbonioWebUiDescription', obj?.carbonioWebUiDescription);
+        setValue('carbonioAdminUiLoginLogo', obj?.carbonioAdminUiLoginLogo);
+        setValue('carbonioAdminUiDarkLoginLogo', obj?.carbonioAdminUiDarkLoginLogo);
+        setValue('carbonioAdminUiAppLogo', obj?.carbonioAdminUiAppLogo);
+        setValue('carbonioAdminUiDarkAppLogo', obj?.carbonioAdminUiDarkAppLogo);
+        setValue('carbonioAdminUiBackground', obj?.carbonioAdminUiBackground);
+        setValue('carbonioAdminUiDarkBackground', obj?.carbonioAdminUiDarkBackground);
+        setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon);
+        setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle);
+        setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription);
+        setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
+        setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
+        setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
+        setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL);
+        setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL);
+        setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL);
+        setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL);
+        setValue('carbonioAdminDocumentationUrl', obj?.carbonioAdminDocumentationUrl);
       }
     },
     [setValue],
@@ -112,33 +83,33 @@ const GlobalTheme: FC = () => {
   useEffect(() => {
     if (!!configInformation && configInformation.length > 0) {
       const defaultValues: any = {
-        carbonioWebUiDarkMode: "FALSE",
-        carbonioWebUiLoginLogo: "",
-        carbonioWebUiDarkLoginLogo: "",
-        carbonioWebUiLoginBackground: "",
-        carbonioWebUiDarkLoginBackground: "",
-        carbonioWebUiAppLogo: "",
-        carbonioWebUiDarkAppLogo: "",
-        carbonioWebUiFavicon: "",
-        carbonioWebUiTitle: "",
-        carbonioWebUiDescription: "",
-        carbonioAdminUiLoginLogo: "",
-        carbonioAdminUiDarkLoginLogo: "",
-        carbonioAdminUiAppLogo: "",
-        carbonioAdminUiDarkAppLogo: "",
-        carbonioAdminUiBackground: "",
-        carbonioAdminUiDarkBackground: "",
-        carbonioAdminUiFavicon: "",
-        carbonioAdminUiTitle: "",
-        carbonioAdminUiDescription: "",
-        carbonioLogoUrl: "",
-        carbonioWebUiPrimaryColor: "",
-        carbonioWebUiDarkPrimaryColor: "",
-        carbonioWebUILoginURL: "",
-        carbonioWebUILogoutURL: "",
-        carbonioAdminUILoginURL: "",
-        carbonioAdminUILogoutURL: "",
-        carbonioAdminDocumentationUrl: "",
+        carbonioWebUiDarkMode: 'FALSE',
+        carbonioWebUiLoginLogo: '',
+        carbonioWebUiDarkLoginLogo: '',
+        carbonioWebUiLoginBackground: '',
+        carbonioWebUiDarkLoginBackground: '',
+        carbonioWebUiAppLogo: '',
+        carbonioWebUiDarkAppLogo: '',
+        carbonioWebUiFavicon: '',
+        carbonioWebUiTitle: '',
+        carbonioWebUiDescription: '',
+        carbonioAdminUiLoginLogo: '',
+        carbonioAdminUiDarkLoginLogo: '',
+        carbonioAdminUiAppLogo: '',
+        carbonioAdminUiDarkAppLogo: '',
+        carbonioAdminUiBackground: '',
+        carbonioAdminUiDarkBackground: '',
+        carbonioAdminUiFavicon: '',
+        carbonioAdminUiTitle: '',
+        carbonioAdminUiDescription: '',
+        carbonioLogoUrl: '',
+        carbonioWebUiPrimaryColor: '',
+        carbonioWebUiDarkPrimaryColor: '',
+        carbonioWebUILoginURL: '',
+        carbonioWebUILogoutURL: '',
+        carbonioAdminUILoginURL: '',
+        carbonioAdminUILogoutURL: '',
+        carbonioAdminDocumentationUrl: '',
       };
 
       const obj: any = { ...defaultValues };
@@ -169,12 +140,9 @@ const GlobalTheme: FC = () => {
     modifyConfig(attributes)
       .then((data) => {
         createSnackbar({
-          key: "success",
-          severity: "success",
-          label: t(
-            "label.change_save_success_msg",
-            "The change has been saved successfully",
-          ),
+          key: 'success',
+          severity: 'success',
+          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -184,14 +152,11 @@ const GlobalTheme: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -203,8 +168,8 @@ const GlobalTheme: FC = () => {
   const showErrorMessage = useCallback(
     (msg: string) => {
       createSnackbar({
-        key: "error",
-        severity: "error",
+        key: 'error',
+        severity: 'error',
         label: msg,
         autoHideTimeout: 3000,
         hideButton: true,
@@ -221,10 +186,7 @@ const GlobalTheme: FC = () => {
       !isValidHexColor(globalTheme?.carbonioWebUiPrimaryColor)
     ) {
       showErrorMessage(
-        t(
-          "label.invalid_primary_color_light_mode",
-          "Primary Color for Light Mode is not valid",
-        ),
+        t('label.invalid_primary_color_light_mode', 'Primary Color for Light Mode is not valid'),
       );
       return;
     }
@@ -233,10 +195,7 @@ const GlobalTheme: FC = () => {
       !isValidHexColor(globalTheme?.carbonioWebUiDarkPrimaryColor)
     ) {
       showErrorMessage(
-        t(
-          "label.invalid_primary_color_dark_mode",
-          "Primary Color for Dark Mode is not valid",
-        ),
+        t('label.invalid_primary_color_dark_mode', 'Primary Color for Dark Mode is not valid'),
       );
       return;
     }
@@ -264,33 +223,33 @@ const GlobalTheme: FC = () => {
     setIsOpenResetDialog(false);
     const attributes: any[] = [];
     const domainDefaultElements: any = {
-      carbonioWebUiDarkMode: "FALSE",
-      carbonioWebUiLoginLogo: "",
-      carbonioWebUiDarkLoginLogo: "",
-      carbonioWebUiLoginBackground: "",
-      carbonioWebUiDarkLoginBackground: "",
-      carbonioWebUiAppLogo: "",
-      carbonioWebUiDarkAppLogo: "",
-      carbonioWebUiFavicon: "",
-      carbonioWebUiTitle: "",
-      carbonioWebUiDescription: "",
-      carbonioAdminUiLoginLogo: "",
-      carbonioAdminUiDarkLoginLogo: "",
-      carbonioAdminUiAppLogo: "",
-      carbonioAdminUiDarkAppLogo: "",
-      carbonioAdminUiBackground: "",
-      carbonioAdminUiDarkBackground: "",
-      carbonioAdminUiFavicon: "",
-      carbonioAdminUiTitle: "",
-      carbonioAdminUiDescription: "",
-      carbonioLogoUrl: "",
-      carbonioWebUiPrimaryColor: "",
-      carbonioWebUiDarkPrimaryColor: "",
-      carbonioWebUILoginURL: "",
-      carbonioWebUILogoutURL: "",
-      carbonioAdminUILoginURL: "",
-      carbonioAdminUILogoutURL: "",
-      carbonioAdminDocumentationUrl: "",
+      carbonioWebUiDarkMode: 'FALSE',
+      carbonioWebUiLoginLogo: '',
+      carbonioWebUiDarkLoginLogo: '',
+      carbonioWebUiLoginBackground: '',
+      carbonioWebUiDarkLoginBackground: '',
+      carbonioWebUiAppLogo: '',
+      carbonioWebUiDarkAppLogo: '',
+      carbonioWebUiFavicon: '',
+      carbonioWebUiTitle: '',
+      carbonioWebUiDescription: '',
+      carbonioAdminUiLoginLogo: '',
+      carbonioAdminUiDarkLoginLogo: '',
+      carbonioAdminUiAppLogo: '',
+      carbonioAdminUiDarkAppLogo: '',
+      carbonioAdminUiBackground: '',
+      carbonioAdminUiDarkBackground: '',
+      carbonioAdminUiFavicon: '',
+      carbonioAdminUiTitle: '',
+      carbonioAdminUiDescription: '',
+      carbonioLogoUrl: '',
+      carbonioWebUiPrimaryColor: '',
+      carbonioWebUiDarkPrimaryColor: '',
+      carbonioWebUILoginURL: '',
+      carbonioWebUILogoutURL: '',
+      carbonioAdminUILoginURL: '',
+      carbonioAdminUILogoutURL: '',
+      carbonioAdminDocumentationUrl: '',
     };
     Object.keys(domainDefaultElements).forEach((ele: any) =>
       attributes.push({ n: ele, _content: domainDefaultElements[ele] }),
@@ -300,12 +259,25 @@ const GlobalTheme: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
-      <Container
-        padding={{ all: "large" }}
-        mainAlignment="flex-start"
-        background="gray6"
-      >
+      {isLoading && (
+        <OverlayDivision
+          overlayStyle={{
+            position: 'fixed',
+            width: '70.35rem',
+            top: '6.5rem',
+            right: '0',
+            bottom: '0',
+            height: 'auto',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            background: '#0d0d0d',
+            opacity: '0.4',
+            zIndex: '11',
+            paddingTop: '2rem',
+          }}
+        />
+      )}
+      <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
           background="gray6"
@@ -313,24 +285,20 @@ const GlobalTheme: FC = () => {
           mainAlignment="flex-start"
         >
           <Row mainAlignment="flex-start" width="100%">
-            <Container
-              orientation="vertical"
-              mainAlignment="space-around"
-              height="56px"
-            >
+            <Container orientation="vertical" mainAlignment="space-around" height="56px">
               <Row orientation="horizontal" width="100%">
                 <Row
-                  padding={{ all: "large" }}
+                  padding={{ all: 'large' }}
                   mainAlignment="flex-start"
                   width="50%"
                   crossAlignment="flex-start"
                 >
                   <Text size="medium" weight="bold" color="gray0">
-                    {t("label.whitelabel_settings", "Whitelabel Settings")}
+                    {t('label.whitelabel_settings', 'Whitelabel Settings')}
                   </Text>
                 </Row>
                 <Row
-                  padding={{ all: "large" }}
+                  padding={{ all: 'large' }}
                   width="50%"
                   mainAlignment="flex-end"
                   crossAlignment="flex-end"
@@ -338,7 +306,7 @@ const GlobalTheme: FC = () => {
                   <Padding right="small">
                     {isDirty && (
                       <Button
-                        label={t("label.cancel", "Cancel")}
+                        label={t('label.cancel', 'Cancel')}
                         color="secondary"
                         onClick={onCancel}
                       />
@@ -346,7 +314,7 @@ const GlobalTheme: FC = () => {
                   </Padding>
                   {isDirty && (
                     <Button
-                      label={t("label.save", "Save")}
+                      label={t('label.save', 'Save')}
                       color="primary"
                       onClick={onSave}
                       disabled={!isValidated}
@@ -367,10 +335,7 @@ const GlobalTheme: FC = () => {
         </Container>
         {isOpenResetDialog && (
           <ResetTheme
-            title={t(
-              "label.reset_global_whitelabel_settings",
-              "Reset global whitelabel settings",
-            )}
+            title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
             isOpenResetDialog={isOpenResetDialog}
             isRequestInProgress={isRequestInProgress}
             closeHandler={closeHandler}
@@ -380,16 +345,11 @@ const GlobalTheme: FC = () => {
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
           <Text>
             {t(
-              "label.unsaved_changes_line1",
-              "Are you sure you want to leave this page without saving?",
+              'label.unsaved_changes_line1',
+              'Are you sure you want to leave this page without saving?',
             )}
           </Text>
-          <Text>
-            {t(
-              "label.unsaved_changes_line2",
-              "All your unsaved changes will be lost",
-            )}
-          </Text>
+          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
         </RouteLeavingGuard>
       </Container>
     </>

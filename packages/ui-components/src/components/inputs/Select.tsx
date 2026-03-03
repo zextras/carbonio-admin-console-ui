@@ -232,7 +232,7 @@ const SelectComponent = function SelectFn<T = string>({
   const updateSingleSelection = useCallback(
     (item: SelectItem<T>) => {
       if (!isControlled) {
-        setSelected(item.value != null ? [item] : []);
+        setSelected(item.value !== null && item.value !== undefined ? [item] : []);
       }
       (onChange as SingleSelectionOnChange<T>)(item.value);
     },
@@ -257,7 +257,9 @@ const SelectComponent = function SelectFn<T = string>({
         return {
           id: `${index}-${item.label}`,
           label: item.label,
-          icon: (showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square')) || '',
+          ...(showCheckbox
+            ? { icon: showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square') }
+            : {}),
           onClick: clickItemHandler(item, isSelected),
           selected: isSelected,
           disabled: item.disabled,
@@ -299,7 +301,9 @@ const SelectComponent = function SelectFn<T = string>({
       {
         id: 'all',
         label: i18nAllLabel,
-        icon: (showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square')) || '',
+        ...(showCheckbox
+          ? { icon: showCheckbox && ((isSelected && 'CheckmarkSquare') || 'Square') }
+          : {}),
         onClick: toggleSelectAll(isSelected),
         selected: isSelected,
       },

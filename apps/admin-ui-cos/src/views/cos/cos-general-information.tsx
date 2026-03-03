@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { replaceHistory, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   CustomTextArea,
-  Icon,
+  HoverableRowFactory,
   Input,
   Modal,
   Padding,
@@ -18,6 +18,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -31,8 +32,6 @@ import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -530,7 +529,7 @@ const CosGeneralInformation: FC = () => {
                           {t('label.default_cos', 'Default COS')}
                         </Text>
                       </Padding>
-                      <Icon icon="Star" color="primary" />
+                      <icon-wc icon="Star" color="primary"></icon-wc>
                     </Row>
                   )}
                 </Container>,
@@ -706,7 +705,9 @@ const CosGeneralInformation: FC = () => {
               onChange={(e: any): any => {
                 setSearchDomainString(e.target.value);
               }}
-              CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+              CustomIcon={(): any => (
+                <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+              )}
             />
           </Container>
         </Row>
@@ -731,7 +732,7 @@ const CosGeneralInformation: FC = () => {
                 overflow: 'auto',
                 height: '100%',
               }}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
             {isDomainRequestInProgress && (
@@ -816,7 +817,9 @@ const CosGeneralInformation: FC = () => {
               onChange={(e: any): any => {
                 setSearchAccountString(e.target.value);
               }}
-              CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+              CustomIcon={(): any => (
+                <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+              )}
             />
           </Container>
         </Row>
@@ -842,7 +845,7 @@ const CosGeneralInformation: FC = () => {
                 overflow: 'auto',
                 height: '100%',
               }}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
             {isAccountRequestInProgress && (

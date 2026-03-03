@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
   Modal,
   Padding,
@@ -14,26 +16,17 @@ import {
   Table,
   Text,
   useSnackbar,
-} from "@zextras/ui-components";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
-import styled from "styled-components";
+} from '@zextras/ui-components';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import logo from "../../../../../assets/gardian.svg";
-import Composer from "../../../../../composer/composer";
-import { createSignature } from "../../../../../services/create-signature-service";
-import { deleteSignature } from "../../../../../services/delete-signature-service";
-import { modifySignature } from "../../../../../services/modify-signature-service";
-import CustomHeaderFactory from "../../../../app/shared/customTableHeaderFactory";
-import CustomRowFactory from "../../../../app/shared/customTableRowFactory";
-import ListRow from "../../../../list/list-row";
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
+import logo from '../../../../../assets/gardian.svg';
+import Composer from '../../../../../composer/composer';
+import { createSignature } from '../../../../../services/create-signature-service';
+import { deleteSignature } from '../../../../../services/delete-signature-service';
+import { modifySignature } from '../../../../../services/modify-signature-service';
+import editorWrapperStyles from '../../../../../styles/editor-wrapper.module.css';
+import ListRow from '../../../../list/list-row';
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
@@ -47,11 +40,10 @@ export const SignatureDetail: FC<any> = ({
   const createSnackbar = useSnackbar();
   const [selectedSignature, setSelectedSignature] = useState<any>([]);
   const [isEditSignature, setIsEditSignature] = useState<boolean>(false);
-  const [signatureName, setSignatureName] = useState<string>("");
-  const [signatureContent, setSignatureContent] = useState<string>("");
-  const [defaultSignatureContent, setDefaultSignatureContent] =
-    useState<string>("");
-  const [searchSignatureName, setSearchSignatureName]: any = useState("");
+  const [signatureName, setSignatureName] = useState<string>('');
+  const [signatureContent, setSignatureContent] = useState<string>('');
+  const [defaultSignatureContent, setDefaultSignatureContent] = useState<string>('');
+  const [searchSignatureName, setSearchSignatureName]: any = useState('');
   const [isOpenCreateEditSignatureDialog, setIsOpenCreateEditSignatureDialog] =
     useState<boolean>(false);
   const [signatureListRows, setSignatureListRows] = useState<any[]>([]);
@@ -68,9 +60,9 @@ export const SignatureDetail: FC<any> = ({
   const signatureHeaders: any[] = useMemo(
     () => [
       {
-        id: "name",
-        label: t("label.name", "Name"),
-        width: "100%",
+        id: 'name',
+        label: t('label.name', 'Name'),
+        width: '100%',
         bold: true,
       },
     ],
@@ -83,12 +75,7 @@ export const SignatureDetail: FC<any> = ({
       sList.push({
         id: item?.id,
         columns: [
-          <Text
-            size="medium"
-            weight="light"
-            key={`${item?.id}-name`}
-            color="gray0"
-          >
+          <Text size="medium" weight="light" key={`${item?.id}-name`} color="gray0">
             {item?.name}
           </Text>,
         ],
@@ -109,27 +96,17 @@ export const SignatureDetail: FC<any> = ({
 
   const deleteSignatureIntoList = useCallback(
     (selectedList: any) => {
-      const newList = signatureList.filter(
-        (item: any) => !selectedList.includes(item?.id),
-      );
+      const newList = signatureList.filter((item: any) => !selectedList.includes(item?.id));
       setSignatureList(newList);
       const newDefaultList = defaultSignatureList.filter(
         (item: any) => !selectedList.includes(item?.id),
       );
       setDefaultSignatureList(newDefaultList);
       setSelectedSignature([]);
-      const signItems = signatureItems.filter(
-        (item: any) => !selectedList.includes(item?.value),
-      );
+      const signItems = signatureItems.filter((item: any) => !selectedList.includes(item?.value));
       setSignatureItems(signItems);
     },
-    [
-      defaultSignatureList,
-      setSignatureItems,
-      setSignatureList,
-      signatureItems,
-      signatureList,
-    ],
+    [defaultSignatureList, setSignatureItems, setSignatureList, signatureItems, signatureList],
   );
 
   const onDeleteSignature = useCallback(() => {
@@ -152,7 +129,7 @@ export const SignatureDetail: FC<any> = ({
         const item = {
           content: [
             {
-              type: "text/plain",
+              type: 'text/plain',
               _content: signatureContent,
             },
           ],
@@ -167,13 +144,7 @@ export const SignatureDetail: FC<any> = ({
         setSignatureItems([...signatureItems, signItem]);
       }
     },
-    [
-      setSignatureItems,
-      setSignatureList,
-      signatureContent,
-      signatureItems,
-      signatureList,
-    ],
+    [setSignatureItems, setSignatureList, signatureContent, signatureItems, signatureList],
   );
 
   const _createSignature = useCallback((): void => {
@@ -182,31 +153,27 @@ export const SignatureDetail: FC<any> = ({
         .then((data) => {
           if (data?.Body?.Reason?.Text) {
             createSnackbar({
-              key: "error",
-              severity: "error",
+              key: 'error',
+              severity: 'error',
               label: data?.Body?.Fault?.Reason?.Text,
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
             });
           } else {
-            const signatureItem =
-              data?.Body?.CreateSignatureResponse?.signature[0];
+            const signatureItem = data?.Body?.CreateSignatureResponse?.signature[0];
             addSignatureIntoList(signatureItem);
             setIsOpenCreateEditSignatureDialog(false);
           }
         })
         .catch(() => {});
     } else {
-      const lastId =
-        signatureList.length > 0
-          ? signatureList[signatureList.length - 1].id
-          : 0;
+      const lastId = signatureList.length > 0 ? signatureList[signatureList.length - 1].id : 0;
       const newId = +lastId + 1;
       const item = {
         content: [
           {
-            type: "text/plain",
+            type: 'text/plain',
             _content: signatureContent,
           },
         ],
@@ -232,7 +199,7 @@ export const SignatureDetail: FC<any> = ({
           if (item?.id === id) {
             item.content = [
               {
-                type: "text/plain",
+                type: 'text/plain',
                 _content: content,
               },
             ];
@@ -257,37 +224,20 @@ export const SignatureDetail: FC<any> = ({
 
   const _modifySignature = useCallback(() => {
     if (accountId) {
-      modifySignature(
-        accountId,
-        selectedSignature[0],
-        signatureName,
-        signatureContent,
-      ).then((data) => {
-        const _signature = data?.Body?.ModifySignatureResponse;
-        if (_signature) {
-          modifySignatureIntoList(
-            selectedSignature[0],
-            signatureName,
-            signatureContent,
-          );
-        }
-        setIsOpenCreateEditSignatureDialog(false);
-      });
-    } else {
-      modifySignatureIntoList(
-        selectedSignature[0],
-        signatureName,
-        signatureContent,
+      modifySignature(accountId, selectedSignature[0], signatureName, signatureContent).then(
+        (data) => {
+          const _signature = data?.Body?.ModifySignatureResponse;
+          if (_signature) {
+            modifySignatureIntoList(selectedSignature[0], signatureName, signatureContent);
+          }
+          setIsOpenCreateEditSignatureDialog(false);
+        },
       );
+    } else {
+      modifySignatureIntoList(selectedSignature[0], signatureName, signatureContent);
       setIsOpenCreateEditSignatureDialog(false);
     }
-  }, [
-    modifySignatureIntoList,
-    accountId,
-    selectedSignature,
-    signatureContent,
-    signatureName,
-  ]);
+  }, [modifySignatureIntoList, accountId, selectedSignature, signatureContent, signatureName]);
 
   const onSaveOrEditSignature = useCallback(() => {
     if (isEditSignature) {
@@ -298,9 +248,7 @@ export const SignatureDetail: FC<any> = ({
   }, [_createSignature, _modifySignature, isEditSignature]);
 
   const onEditSignature = useCallback(() => {
-    const _signature = signatureList.find(
-      (item: any) => item?.id === selectedSignature[0],
-    );
+    const _signature = signatureList.find((item: any) => item?.id === selectedSignature[0]);
     if (_signature && _signature?.id) {
       const content = _signature?.content;
       if (content && content[0]?._content) {
@@ -318,9 +266,9 @@ export const SignatureDetail: FC<any> = ({
   useEffect(() => {
     if (!isOpenCreateEditSignatureDialog) {
       setIsEditSignature(false);
-      setDefaultSignatureContent("");
-      setSignatureContent("");
-      setSignatureName("");
+      setDefaultSignatureContent('');
+      setSignatureContent('');
+      setSignatureName('');
     }
   }, [isOpenCreateEditSignatureDialog]);
 
@@ -328,16 +276,11 @@ export const SignatureDetail: FC<any> = ({
     <>
       {isEditable && (
         <ListRow>
-          <Row
-            mainAlignment="flex-end"
-            width="100%"
-            wrap="nowrap"
-            padding={{ top: "large" }}
-          >
-            <Padding all={"0"}>
+          <Row mainAlignment="flex-end" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
+            <Padding all={'0'}>
               <Button
                 type="outlined"
-                label={t("label.add", "Add")}
+                label={t('label.add', 'Add')}
                 icon="Plus"
                 color="primary"
                 onClick={(): void => {
@@ -348,19 +291,17 @@ export const SignatureDetail: FC<any> = ({
             <Padding left="large">
               <Button
                 type="outlined"
-                label={t("label.edit", "Edit")}
+                label={t('label.edit', 'Edit')}
                 icon="Edit"
                 color="secondary"
-                disabled={
-                  selectedSignature.length === 0 || selectedSignature.length > 1
-                }
+                disabled={selectedSignature.length === 0 || selectedSignature.length > 1}
                 onClick={onEditSignature}
               />
             </Padding>
             <Padding left="large">
               <Button
                 type="outlined"
-                label={t("label.delete", "Delete")}
+                label={t('label.delete', 'Delete')}
                 icon="Close"
                 color="error"
                 disabled={selectedSignature.length === 0}
@@ -376,19 +317,16 @@ export const SignatureDetail: FC<any> = ({
             mainAlignment="flex-start"
             crossAlignment="flex-start"
             orientation="horizontal"
-            padding={{ top: "large" }}
+            padding={{ top: 'large' }}
           >
             <Row width="100%">
               <Input
-                disabled={
-                  signatureListRows.length === 0 &&
-                  searchSignatureName.length === 0
-                }
-                label={t("label.search_a_signature", "Search for a signature")}
+                disabled={signatureListRows.length === 0 && searchSignatureName.length === 0}
+                label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"
                 value={searchSignatureName}
                 CustomIcon={(): any => (
-                  <Icon icon="FunnelOutline" size="large" color="primary" />
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                 )}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
@@ -403,59 +341,43 @@ export const SignatureDetail: FC<any> = ({
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           orientation="horizontal"
-          padding={{ top: "large" }}
+          padding={{ top: 'large' }}
         >
           {signatureListRows && signatureListRows.length > 0 && (
             <Table
               rows={signatureListRows}
               headers={signatureHeaders}
               showCheckbox={false}
-              style={{ overflow: "auto", height: "100%" }}
+              style={{ overflow: 'auto', height: '100%' }}
               selectedRows={selectedSignature}
-              onSelectionChange={(selected: any): void =>
-                setSelectedSignature(selected)
-              }
-              RowFactory={CustomRowFactory}
+              onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           )}
           {signatureListRows?.length === 0 && (
-            <Container
-              orientation="column"
-              crossAlignment="center"
-              mainAlignment="center"
-            >
+            <Container orientation="column" crossAlignment="center" mainAlignment="center">
               <Row>
                 <img src={logo} alt="logo" />
               </Row>
               <Row
-                padding={{ top: "extralarge" }}
+                padding={{ top: 'extralarge' }}
                 orientation="vertical"
                 crossAlignment="center"
-                style={{ textAlign: "center" }}
+                style={{ textAlign: 'center' }}
               >
-                <Text
-                  weight="light"
-                  color="#828282"
-                  size="large"
-                  overflow="break-word"
-                >
-                  {t("label.this_list_is_empty", "This list is empty.")}
+                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                  {t('label.this_list_is_empty', 'This list is empty.')}
                 </Text>
               </Row>
               <Row
                 orientation="vertical"
                 crossAlignment="center"
-                style={{ textAlign: "center" }}
-                padding={{ top: "small" }}
+                style={{ textAlign: 'center' }}
+                padding={{ top: 'small' }}
                 width="53%"
               >
-                <Text
-                  weight="light"
-                  color="#828282"
-                  size="large"
-                  overflow="break-word"
-                >
+                <Text weight="light" color="#828282" size="large" overflow="break-word">
                   <Trans
                     i18nKey="label.do_you_need_more_information"
                     defaults="Do you need more information?"
@@ -465,12 +387,12 @@ export const SignatureDetail: FC<any> = ({
               <Row
                 orientation="vertical"
                 crossAlignment="center"
-                style={{ textAlign: "center" }}
-                padding={{ top: "small" }}
+                style={{ textAlign: 'center' }}
+                padding={{ top: 'small' }}
                 width="53%"
               >
                 <Text weight="light" color="primary">
-                  {t("label.click_here", "Click here")}
+                  {t('label.click_here', 'Click here')}
                 </Text>
               </Row>
             </Container>
@@ -503,7 +425,7 @@ export const SignatureDetail: FC<any> = ({
           customFooter={
             <Container orientation="horizontal" mainAlignment="space-between">
               <Button
-                label={t("label.help", "Help")}
+                label={t('label.help', 'Help')}
                 type="outlined"
                 color="primary"
                 onClick={(): null => null}
@@ -511,7 +433,7 @@ export const SignatureDetail: FC<any> = ({
               <Container orientation="horizontal" mainAlignment="flex-end">
                 <Padding all="small">
                   <Button
-                    label={t("label.cancel", "Cancel")}
+                    label={t('label.cancel', 'Cancel')}
                     color="secondary"
                     onClick={(): void => {
                       setIsOpenCreateEditSignatureDialog(false);
@@ -519,9 +441,9 @@ export const SignatureDetail: FC<any> = ({
                   />
                 </Padding>
                 <Button
-                  label={t("label.add_to_the_list", "Add to the list")}
+                  label={t('label.add_to_the_list', 'Add to the list')}
                   color="primary"
-                  disabled={signatureName === "" || signatureContent === ""}
+                  disabled={signatureName === '' || signatureContent === ''}
                   onClick={onSaveOrEditSignature}
                 />
               </Container>
@@ -531,11 +453,11 @@ export const SignatureDetail: FC<any> = ({
           <Container
             mainAlignment="flex-start"
             crossAlignment="flex-start"
-            padding={{ top: "extralarge", bottom: "extralarge" }}
+            padding={{ top: 'extralarge', bottom: 'extralarge' }}
           >
-            <Container padding={{ bottom: "medium" }}>
+            <Container padding={{ bottom: 'medium' }}>
               <Input
-                label={t("label.name_of_signature", "Name of Signature")}
+                label={t('label.name_of_signature', 'Name of Signature')}
                 value={signatureName}
                 backgroundColor="gray5"
                 onChange={(e: any): any => {
@@ -544,14 +466,15 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <EditorWrapper>
+              <div className={editorWrapperStyles['editor-wrapper']}>
                 <Composer
-                  value={defaultSignatureContent}
+                  initialValue={defaultSignatureContent}
+                  value={signatureContent}
                   onEditorChange={(ev: any): void => {
                     setSignatureContent(ev[1]);
                   }}
                 />
-              </EditorWrapper>
+              </div>
             </Container>
           </Container>
         </Modal>
