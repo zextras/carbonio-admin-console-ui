@@ -79,10 +79,10 @@ const ReusedDefaultTabBar: FC<{
       width="fill"
     >
       <Container width="2rem" padding={{ right: 'small' }}>
-        <icon-wc icon={item?.icon} color={selected ? 'primary' : 'gray'}></icon-wc>
+        <icon-wc icon={item?.icon} color={selected ? 'primary' : 'gray1'}></icon-wc>
       </Container>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
-        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
+        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray1'}>
           {item.label} ({item?.count})
         </Text>
       </Container>
