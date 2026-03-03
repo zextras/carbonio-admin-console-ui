@@ -26,6 +26,10 @@
 	color: var(--icon-color-active);
 }
 
+.iconWrapper.disabled > icon-wc {
+	color: var(--icon-color-disabled);
+}
+
 .text {
 	user-select: none;
 	line-height: 1.5;

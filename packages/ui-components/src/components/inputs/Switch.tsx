@@ -60,6 +60,7 @@ const Switch = ({
         '--icon-color-focus': resolveThemeColor(String(iconColor), 'focus'),
         '--icon-color-hover': resolveThemeColor(String(iconColor), 'hover'),
         '--icon-color-active': resolveThemeColor(String(iconColor), 'active'),
+        '--icon-color-disabled': resolveThemeColor(String(iconColor), 'disabled'),
       } as CSSProperties),
     [iconColor],
   );
