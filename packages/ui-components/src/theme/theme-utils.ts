@@ -9,9 +9,13 @@ type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyo
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
+const CSS_KEYWORDS = new Set(['currentColor', 'transparent', 'inherit', 'initial', 'unset']);
+
 export function getThemeColorVar(colorName: string, state: string): string {
   if (!colorName) return '';
   const trimmed = colorName.trim();
+
+  if (CSS_KEYWORDS.has(trimmed)) return trimmed;
 
   // Pass through any raw CSS value that isn't a design token name
   const isTokenName = /^[a-zA-Z0-9-]+$/.test(trimmed);

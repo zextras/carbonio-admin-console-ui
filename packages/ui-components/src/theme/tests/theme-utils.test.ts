@@ -107,4 +107,41 @@ describe('getThemeColorVar', () => {
       expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
     });
   });
+
+  describe('CSS keywords (pass-through)', () => {
+    it('should pass through currentColor', () => {
+      const result = getThemeColorVar('currentColor', 'hover');
+      expect(result).toBe('currentColor');
+    });
+
+    it('should pass through transparent', () => {
+      const result = getThemeColorVar('transparent', 'hover');
+      expect(result).toBe('transparent');
+    });
+
+    it('should pass through inherit', () => {
+      const result = getThemeColorVar('inherit', 'hover');
+      expect(result).toBe('inherit');
+    });
+
+    it('should pass through initial', () => {
+      const result = getThemeColorVar('initial', 'hover');
+      expect(result).toBe('initial');
+    });
+
+    it('should pass through unset', () => {
+      const result = getThemeColorVar('unset', 'hover');
+      expect(result).toBe('unset');
+    });
+
+    it('should pass through CSS keywords with whitespace', () => {
+      const result = getThemeColorVar('  transparent  ', 'hover');
+      expect(result).toBe('transparent');
+    });
+
+    it('should pass through CSS keywords without state', () => {
+      const result = getThemeColorVar('currentColor', '');
+      expect(result).toBe('currentColor');
+    });
+  });
 });
