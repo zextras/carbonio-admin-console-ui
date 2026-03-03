@@ -16,10 +16,17 @@ if (merged.test?.projects) {
 	const unitProject = merged.test.projects.find((p) => p.test?.name === 'unit');
 	if (unitProject?.test?.alias) {
 		// Remove the bootstrap module mock for unit tests in this app
-		delete unitProject.test.alias['@zextras/admin-ui-bootstrap'];
+		delete unitProject.test.alias['@zextras/ui-shared'];
 	}
 
 	const browserProject = merged.test.projects.find((p) => p.test?.name === 'browser');
+	// Add alias for @zextras/ui-shared to point to the source for browser tests
+	if (browserProject?.test?.alias) {
+		browserProject.test.alias['@zextras/ui-shared'] = path.resolve(
+			import.meta.dirname,
+			'../../packages/ui-shared/src/exports.ts'
+		);
+	}
 	if (browserProject?.test) {
 		browserProject.test.setupFiles = [
 			path.resolve(import.meta.dirname, './vitest-browser-setup.ts')

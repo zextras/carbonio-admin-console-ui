@@ -3,13 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Icon, Row, Table, Text } from '@zextras/ui-components';
+import {
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Row,
+  Table,
+  Text,
+} from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
@@ -64,11 +69,13 @@ export const OperationsTable: FC<{
             }}
           >
             {v?.type === EXCEPTION && (
-              <Icon icon="StopCircleOutline" size="medium" color="secondary" />
+              <icon-wc icon="StopCircleOutline" size="medium" color="secondary"></icon-wc>
             )}
-            {v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+            {v?.type === FINISHED && (
+              <icon-wc icon="CloseCircleOutline" size="medium" color="error"></icon-wc>
+            )}
             {v?.type === STARTED && (
-              <Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
+              <icon-wc icon="CheckmarkCircleOutline" size="medium" color="success"></icon-wc>
             )}
           </Row>,
           <Row
@@ -211,7 +218,7 @@ export const OperationsTable: FC<{
         multiSelect={false}
         selectedRows={selectedRows}
         onSelectionChange={onSelectionChange}
-        RowFactory={CustomRowFactory}
+        RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {tableRows.length === 0 && (

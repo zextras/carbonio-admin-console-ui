@@ -50,7 +50,7 @@ export class SpinnerWC extends LitElement {
     return html`
       <div
         class="spinner"
-        style="border-color: var(--color-${this.color}); border-right-color: transparent;"
+        style="border-color: var(--color-${this.color}-regular); border-right-color: transparent;"
         role="status"
         aria-busy="true"
         aria-label="Loading"

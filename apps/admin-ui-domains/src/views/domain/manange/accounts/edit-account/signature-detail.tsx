@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
   Modal,
   Padding,
@@ -17,23 +19,14 @@ import {
 } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
 import Composer from '../../../../../composer/composer';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import editorWrapperStyles from '../../../../../styles/editor-wrapper.module.css';
 import ListRow from '../../../../list/list-row';
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
@@ -332,7 +325,9 @@ export const SignatureDetail: FC<any> = ({
                 label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"
                 value={searchSignatureName}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
                 }}
@@ -356,7 +351,7 @@ export const SignatureDetail: FC<any> = ({
               style={{ overflow: 'auto', height: '100%' }}
               selectedRows={selectedSignature}
               onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           )}
@@ -471,7 +466,7 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <EditorWrapper>
+              <div className={editorWrapperStyles['editor-wrapper']}>
                 <Composer
                   initialValue={defaultSignatureContent}
                   value={signatureContent}
@@ -479,7 +474,7 @@ export const SignatureDetail: FC<any> = ({
                     setSignatureContent(ev[1]);
                   }}
                 />
-              </EditorWrapper>
+              </div>
             </Container>
           </Container>
         </Modal>

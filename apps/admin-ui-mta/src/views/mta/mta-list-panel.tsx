@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
 import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
   useMtaServers,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

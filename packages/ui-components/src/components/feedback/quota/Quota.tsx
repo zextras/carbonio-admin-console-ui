@@ -5,39 +5,34 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
 
 import { AnyColor } from '../../../types/utils';
 import { Container, ContainerProps } from '../../layout/Container';
 
-const QuotaBar = styled(Container)`
-	min-width: 4rem;
-`;
-
 type QuotaProps = ContainerProps & {
-	/** Quota percentage */
-	fill: number;
-	/** Quota fill background color */
-	fillBackground?: AnyColor;
+  /** Quota percentage */
+  fill: number;
+  /** Quota fill background color */
+  fillBackground?: AnyColor;
 };
 
 const Quota = (
-	{ background = 'gray6', fill, fillBackground = 'info', height = '0.5rem', ...rest }: QuotaProps,
-	ref?: React.Ref<HTMLDivElement>
+  { background = 'gray6', fill, fillBackground = 'info', height = '0.5rem', ...rest }: QuotaProps,
+  ref?: React.Ref<HTMLDivElement>,
 ) => {
-	return (
-		<QuotaBar
-			ref={ref}
-			background={background}
-			crossAlignment="flex-start"
-			height={height}
-			data-testid={'quota'}
-			{...rest}
-		>
-			<Container background={fillBackground} width={`${fill > 100 ? 100 : fill}%`} height="100%" />
-		</QuotaBar>
-	);
+  return (
+    <Container
+      minWidth="4rem"
+      ref={ref}
+      background={background}
+      crossAlignment="flex-start"
+      height={height}
+      data-testid={'quota'}
+      {...rest}
+    >
+      <Container background={fillBackground} width={`${fill > 100 ? 100 : fill}%`} height="100%" />
+    </Container>
+  );
 };
 
-export type { QuotaProps };
 export { Quota };

@@ -8,8 +8,7 @@ import { resolve } from 'node:path';
 
 import type { Plugin } from 'vite';
 
-import { colorLog, getWorkspaceRoot } from '../../../scripts/utils';
-import { generateImportMap } from './utils';
+import { colorLog, generateImportMap, getWorkspaceRoot } from './utils';
 
 export function postBuildPlugin(): Plugin {
   return {

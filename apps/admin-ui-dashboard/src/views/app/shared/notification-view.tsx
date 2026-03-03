@@ -4,18 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Container,  DefaultTabBarItem,  Icon,  ModalOverlay,  TabBar,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  orderBy  } from 'lodash-es';
-import {  FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import {
+  Container,
+  CustomHeaderFactory,
+  DefaultTabBarItem,
+  HoverableRowFactory,
+  ModalOverlay,
+  TabBar,
+  Table,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { orderBy } from 'lodash-es';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {   DESC,  NOTIFICATION_ALL,  NOTIFICATION_ERROR,  NOTIFICATION_INFORMATION,  NOTIFICATION_WARNING } from '../../../constants';
-import {  getAllNotifications  } from '../../../services/get-all-notifications';
-import {  readUnreadNotification  } from '../../../services/read-unread-notification';
+import {
+  DESC,
+  NOTIFICATION_ALL,
+  NOTIFICATION_ERROR,
+  NOTIFICATION_INFORMATION,
+  NOTIFICATION_WARNING,
+} from '../../../constants';
+import { getAllNotifications } from '../../../services/get-all-notifications';
+import { readUnreadNotification } from '../../../services/read-unread-notification';
 import ListRow from '../../list/list-row';
-import CustomHeaderFactory from './customTableHeaderFactory';
-import CustomRowFactory from './customTableRowFactory';
 import NotificationDetail from './notification-detail-view';
 
 const copyTextToClipboard = (text: string): void => {
@@ -46,12 +60,7 @@ const ReusedDefaultTabBar: FC<{
       width="fill"
     >
       <Container width="2rem" padding={{ right: 'small' }}>
-        <Icon
-          icon={item?.icon}
-          height={'1rem'}
-          width="1rem"
-          color={selected ? 'primary' : 'gray'}
-        />
+        <icon-wc icon={item?.icon} color={selected ? 'primary' : 'gray'}></icon-wc>
       </Container>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
         <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
@@ -462,7 +471,7 @@ const NotificationView: FC<{
             showCheckbox={false}
             multiSelect={false}
             style={{ overflow: 'auto', height: '100%' }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>

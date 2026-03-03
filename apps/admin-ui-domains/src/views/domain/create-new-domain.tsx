@@ -4,46 +4,68 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  replaceHistory, useDomainStore, useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  ChipInput,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
-import {  map, some  } from 'lodash-es';
+import {
+  Button,
+  ChipInput,
+  Container,
+  CustomTextArea,
+  Input,
+  OverlayDivision,
+  Padding,
+  Row,
+  Select,
+  Switch,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/ui-shared';
+import { map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import {  useNavigate  } from 'react-router';
-import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
-import {  Attribute, DomainResponse, objectType, SelectItem  } from '../../../types';
-import {   ACTIVE,  DOMAINS_ROUTE_ID,  GENERAL_SETTINGS,  HTTPS,  INTERNAL_GAL,  MANAGE,  ZIMBRA_ADMIN_URN } from '../../constants';
-import {  createDomain  } from '../../services/create-domain';
-import {  createGalSyncAccount  } from '../../services/create-gal-sync-service';
-import {  createObjectAttribute  } from '../../services/create-object-attribute-service';
-import {  InitDomainForDelegation  } from '../../services/init-domain-for-delegation';
-import {  getCosList  } from '../../services/search-cos-service';
-import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
+import { Attribute, DomainResponse, objectType, SelectItem } from '../../../types';
+import {
+  ACTIVE,
+  DOMAINS_ROUTE_ID,
+  GENERAL_SETTINGS,
+  HTTPS,
+  INTERNAL_GAL,
+  MANAGE,
+  ZIMBRA_ADMIN_URN,
+} from '../../constants';
+import { createDomain } from '../../services/create-domain';
+import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { createObjectAttribute } from '../../services/create-object-attribute-service';
+import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
+import { getCosList } from '../../services/search-cos-service';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
-import {  GbToBytes, isValidEmail  } from '../utility/utils';
+import { GbToBytes, isValidEmail } from '../utility/utils';
 
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+function getOverlayStyle(): React.CSSProperties {
+  return {
+    position: 'fixed',
+    width: '70.35rem',
+    top: '6.5rem',
+    right: 0,
+    bottom: 0,
+    height: 'auto',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    background: '#0d0d0d',
+    opacity: 0.4,
+    zIndex: 11,
+    paddingTop: '2rem',
+  };
+}
 
 const GAL_MODE = {
   INTERNAL: 'zimbra',
   EXTERNAL: 'external',
   BOTH: 'both',
 } as const;
-
 const CreateDomain: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -370,7 +392,7 @@ const CreateDomain: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"

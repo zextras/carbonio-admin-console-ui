@@ -1,0 +1,23 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+.styledLink {
+	cursor: pointer;
+	text-decoration: none;
+	font-family: var(--font-default);
+	margin: 0;
+	max-width: 100%;
+}
+
+.styledLink:not([data-underlined='true']) {
+	text-decoration: none;
+}
+
+.styledLink:hover,
+.styledLink:focus {
+	outline: none;
+	text-decoration: underline;
+	color: var(--link-hover-color);
+}

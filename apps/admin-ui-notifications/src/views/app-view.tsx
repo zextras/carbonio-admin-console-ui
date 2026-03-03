@@ -3,30 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
+import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
-interface ContainerExtendProps extends ContainerProps {
-  isPrimaryBarExpanded?: boolean;
+function getContainerStyle(isPrimaryBarExpanded: boolean) {
+  return {
+    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
+    transition: 'width 300ms',
+  };
 }
-
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-  transition: width 300ms;
-`;
 
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
+
       <Routes>
         <Route
           path="/*"
@@ -38,11 +36,11 @@ const AppView: FC = () => {
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
                   <Suspense fallback={<spinner-wc />}>
                     <NotificationsDetailPanel />
                   </Suspense>
-                </DetailViewContainer>
+                </Container>
               </Container>
             </Container>
           }
