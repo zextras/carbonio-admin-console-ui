@@ -146,6 +146,7 @@ const Input = ({
       >
         <Container
           className={styles.relativeContainer}
+          style={inputColor}
           padding={{ vertical: label ? '0.0625rem' : '0.625rem' }}
           mainAlignment={'flex-end'}
           height={'fill'}
@@ -154,7 +155,6 @@ const Input = ({
         >
           <input
             className={styles.input}
-            style={inputColor}
             autoFocus={autoFocus || undefined}
             autoComplete={autoComplete || 'off'}
             ref={innerRef}
