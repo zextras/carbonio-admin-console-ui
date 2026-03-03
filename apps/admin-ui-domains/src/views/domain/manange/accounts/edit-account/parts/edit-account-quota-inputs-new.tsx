@@ -83,7 +83,7 @@ export const EditAccountQuotaInputsNew = ({
   return (
     <Container crossAlignment={'flex-start'} mainAlignment={'flex-start'} height={'fit'}>
       <Padding top={'large'} left={'large'}>
-        <Container orientation={'horizontal'}>
+        <Container orientation={'horizontal'} gap={'0.5rem'}>
           <Switch iconColor="primary" onClick={switchOnChange} value={switchValue} />
           <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
         </Container>
@@ -100,6 +100,7 @@ export const EditAccountQuotaInputsNew = ({
           inputName="totalQuota"
           onChange={inputOnChange}
           value={inputValue}
+          disabled={switchValue}
         />
       </Row>
     </Container>
