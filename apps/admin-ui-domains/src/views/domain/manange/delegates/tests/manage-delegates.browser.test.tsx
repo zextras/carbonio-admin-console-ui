@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
-import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
+import { queryClient, useDomainStore } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     setupBrowserTest,
