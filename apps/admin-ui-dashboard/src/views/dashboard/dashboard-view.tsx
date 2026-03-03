@@ -11,7 +11,6 @@ import {
   useDomainStore,
   useHasAllRights,
   useIsAdvanced,
-  useServerVersion,
   useUserAccounts,
 } from '@zextras/admin-ui-bootstrap';
 import { Container } from '@zextras/ui-components';
@@ -42,7 +41,7 @@ const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const [userName, setUserName] = useState<string>('');
-  const { data: serverVersion } = useServerVersion();
+  const serverVersion = '26.3.0';
 
   const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();
