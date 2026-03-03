@@ -57,7 +57,7 @@ const DashboardServerList: FC<{
               event.stopPropagation();
             }}
           >
-            {`${serverVersion}`}
+            {serverVersion}
           </VersionText>,
           isAdvanced ? (
             <VersionText
@@ -69,7 +69,7 @@ const DashboardServerList: FC<{
                 event.stopPropagation();
               }}
             >
-              {`${serverVersion}`}
+              {serverVersion}
             </VersionText>
           ) : (
             ''
