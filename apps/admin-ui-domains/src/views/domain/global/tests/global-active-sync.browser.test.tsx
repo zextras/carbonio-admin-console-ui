@@ -5,7 +5,6 @@
  */
 
 import {
-    createBrowserAPIInterceptor,
     createBrowserSoapAPIInterceptor,
     setupBrowserTest,
     worker,
