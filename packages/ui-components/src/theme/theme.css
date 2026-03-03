@@ -163,12 +163,12 @@
   --font-weight-medium: 500;
   --font-weight-bold: 700;
 
-  /* Highlight palette - matches Theme.palette.highlight */
-  --color-highlight-regular: '';
-  --color-highlight-hover: '';
-  --color-highlight-active: '';
-  --color-highlight-focus: '';
-  --color-highlight-disabled: '';
+  /* Highlight palette - calculated from primary colors */
+  --color-highlight-regular: #d5e3f6;
+  --color-highlight-hover: #abc6ed;
+  --color-highlight-active: #96b8e9;
+  --color-highlight-focus: #abc6ed;
+  --color-highlight-disabled: #d5e3f6;
 
   /* Avatar colors - matches Theme.avatarColors */
   --color-avatar-1: #EF9A9A;

@@ -1,7 +1,7 @@
 .primaryBarContainer {
-  min-width: 48px;
+  min-width: 44px;
   max-width: 192px;
-  width: 48px;
+  width: 44px;
   transition: width 300ms;
   overflow-x: hidden;
 }
