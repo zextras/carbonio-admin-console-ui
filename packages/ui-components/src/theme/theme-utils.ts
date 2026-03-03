@@ -10,12 +10,17 @@ type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyo
   }[Keys];
 
 const CSS_KEYWORDS = new Set(['currentColor', 'transparent', 'inherit', 'initial', 'unset']);
+const BASE_COLORS = new Set(['white', 'black']);
 
 export function resolveThemeColor(colorName: string, state: string): string {
   if (!colorName) return '';
   const trimmed = colorName.trim();
 
   if (CSS_KEYWORDS.has(trimmed)) return trimmed;
+
+  if (BASE_COLORS.has(trimmed)) {
+    return `var(--color-${trimmed})`;
+  }
 
   // Pass through any raw CSS value that isn't a design token name
   const isTokenName = /^[a-zA-Z0-9-]+$/.test(trimmed);
