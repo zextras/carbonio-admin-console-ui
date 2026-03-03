@@ -10,7 +10,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
@@ -115,16 +115,16 @@ const Input = ({
 
   const labelColor = useMemo(() => {
     const color = (hasError && 'error') || (hasFocus && 'primary') || 'secondary';
-    return getThemeColorVar(color, disabled ? 'disabled' : 'regular');
+    return resolveThemeColor(color, disabled ? 'disabled' : 'regular');
   }, [hasError, hasFocus, disabled]);
 
   const inputColor = useMemo<React.CSSProperties>(
     () =>
       ({
-        '--input-color': getThemeColorVar(String(textColor), 'regular'),
-        '--input-color-disabled': getThemeColorVar(String(textColor), 'disabled'),
+        '--input-color': resolveThemeColor(String(textColor), 'regular'),
+        '--input-color-disabled': resolveThemeColor(String(textColor), 'disabled'),
         '--label-color': labelColor,
-      }) as React.CSSProperties,
+      } as React.CSSProperties),
     [textColor, labelColor],
   );
 

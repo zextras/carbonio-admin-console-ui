@@ -10,7 +10,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
@@ -80,27 +80,27 @@ const IconCheckbox = ({
     () =>
       ({
         '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
-        '--icon-wrapper-bg': checked ? getThemeColorVar('primary', 'regular') : 'transparent',
+        '--icon-wrapper-bg': checked ? resolveThemeColor('primary', 'regular') : 'transparent',
         '--icon-wrapper-bg-hover': checked
-          ? getThemeColorVar('primary', 'hover')
-          : getThemeColorVar('transparent', 'hover'),
+          ? resolveThemeColor('primary', 'hover')
+          : resolveThemeColor('transparent', 'hover'),
         '--icon-wrapper-bg-focus': checked
-          ? getThemeColorVar('primary', 'focus')
-          : getThemeColorVar('transparent', 'focus'),
+          ? resolveThemeColor('primary', 'focus')
+          : resolveThemeColor('transparent', 'focus'),
         '--icon-wrapper-bg-active': checked
-          ? getThemeColorVar('primary', 'active')
-          : getThemeColorVar('transparent', 'active'),
+          ? resolveThemeColor('primary', 'active')
+          : resolveThemeColor('transparent', 'active'),
         '--icon-wrapper-bg-disabled': checked
-          ? getThemeColorVar('primary', 'disabled')
-          : getThemeColorVar('transparent', 'disabled'),
-        '--icon-fill': checked ? getThemeColorVar('gray6', 'regular') : 'currentColor',
+          ? resolveThemeColor('primary', 'disabled')
+          : resolveThemeColor('transparent', 'disabled'),
+        '--icon-fill': checked ? resolveThemeColor('gray6', 'regular') : 'currentColor',
         '--icon-fill-hover': checked
-          ? getThemeColorVar('gray6', 'hover')
-          : getThemeColorVar('primary', 'hover'),
+          ? resolveThemeColor('gray6', 'hover')
+          : resolveThemeColor('primary', 'hover'),
         '--icon-fill-focus': checked
-          ? getThemeColorVar('gray6', 'focus')
-          : getThemeColorVar('primary', 'focus'),
-        '--icon-fill-disabled': checked ? getThemeColorVar('gray6', 'disabled') : 'currentColor',
+          ? resolveThemeColor('gray6', 'focus')
+          : resolveThemeColor('primary', 'focus'),
+        '--icon-fill-disabled': checked ? resolveThemeColor('gray6', 'disabled') : 'currentColor',
       } as React.CSSProperties),
     [borderRadius, checked],
   );

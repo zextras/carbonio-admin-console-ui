@@ -6,7 +6,7 @@
 import clsx from 'clsx';
 import { CSSProperties, FC, LabelHTMLAttributes, useMemo } from 'react';
 
-import { getThemeColorVar } from '../../../theme/theme-utils';
+import { resolveThemeColor } from '../../../theme/theme-utils';
 import styles from './InputLabel.module.css';
 
 type InputLabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
@@ -25,7 +25,7 @@ export const InputLabel: FC<InputLabelProps> = ({
 }) => {
   const labelColor = useMemo(() => {
     const color = ($hasError && 'error') || ($hasFocus && 'primary') || 'secondary';
-    return getThemeColorVar(color, $disabled ? 'disabled' : 'regular');
+    return resolveThemeColor(color, $disabled ? 'disabled' : 'regular');
   }, [$hasError, $hasFocus, $disabled]);
 
   const labelStyle = useMemo<CSSProperties>(
@@ -33,7 +33,7 @@ export const InputLabel: FC<InputLabelProps> = ({
       ({
         '--label-color': labelColor,
         ...style,
-      }) as CSSProperties,
+      } as CSSProperties),
     [labelColor, style],
   );
 

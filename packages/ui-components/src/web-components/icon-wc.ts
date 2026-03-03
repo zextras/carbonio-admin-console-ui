@@ -10,7 +10,7 @@ import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
-import { getThemeColorVar } from '../theme/theme-utils';
+import { resolveThemeColor } from '../theme/theme-utils';
 import { type IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
@@ -91,7 +91,7 @@ export class IconWC extends LitElement {
     }
 
     const styles = styleMap({
-      '--icon-color': getThemeColorVar(this.color, 'regular'),
+      '--icon-color': resolveThemeColor(this.color, 'regular'),
       '--icon-size': this.getSizeValue(this.size),
     });
 

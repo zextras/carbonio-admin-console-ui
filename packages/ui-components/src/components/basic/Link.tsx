@@ -6,7 +6,7 @@
 
 import { useMemo } from 'react';
 
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import styles from './link.module.css';
 import { TextProps } from './text/Text';
 
@@ -17,7 +17,7 @@ type LinkProps = {
   Pick<TextProps, 'color' | 'size' | 'weight'>;
 
 const Link = ({ children, underlined = false, color = 'primary', style, ...rest }: LinkProps) => {
-  const hoverColorVar = useMemo(() => getThemeColorVar(color, 'hover'), [color]);
+  const hoverColorVar = useMemo(() => resolveThemeColor(color, 'hover'), [color]);
 
   const linkStyle = {
     ...style,

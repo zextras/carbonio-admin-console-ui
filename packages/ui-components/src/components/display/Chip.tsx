@@ -10,7 +10,7 @@ import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { type IconName } from '../../web-components/icon-registry';
 import { Avatar, AvatarPropTypes } from '../basic/Avatar';
@@ -117,9 +117,9 @@ const SIZES = {
 
 function getChipColorVars(background: string): Record<string, string> {
   return {
-    '--chip-bg': getThemeColorVar(background, 'regular'),
-    '--chip-bg-hover': getThemeColorVar(background, 'hover'),
-    '--chip-bg-active': getThemeColorVar(background, 'active'),
+    '--chip-bg': resolveThemeColor(background, 'regular'),
+    '--chip-bg-hover': resolveThemeColor(background, 'hover'),
+    '--chip-bg-active': resolveThemeColor(background, 'active'),
   };
 }
 
@@ -240,7 +240,7 @@ const Chip = ({
                     '--action-radius':
                       shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
                     background: action.background
-                      ? getThemeColorVar(action.background, 'regular')
+                      ? resolveThemeColor(action.background, 'regular')
                       : undefined,
                   } as React.CSSProperties
                 }

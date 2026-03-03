@@ -7,7 +7,7 @@
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { Container } from '../layout/Container';
 import styles from './custom-text-area.module.css';
 
@@ -66,11 +66,11 @@ const CustomTextArea: CustomTextAreaType = ({
   const containerStyle = useMemo<React.CSSProperties>(
     () =>
       ({
-        '--container-bg': getThemeColorVar(backgroundColor, 'regular'),
-        '--container-bg-hover': getThemeColorVar(backgroundColor, 'hover'),
-        '--container-bg-focus': getThemeColorVar(backgroundColor, 'focus'),
-        '--container-bg-active': getThemeColorVar(backgroundColor, 'active'),
-        '--label-color': getThemeColorVar(
+        '--container-bg': resolveThemeColor(backgroundColor, 'regular'),
+        '--container-bg-hover': resolveThemeColor(backgroundColor, 'hover'),
+        '--container-bg-focus': resolveThemeColor(backgroundColor, 'focus'),
+        '--container-bg-active': resolveThemeColor(backgroundColor, 'active'),
+        '--label-color': resolveThemeColor(
           (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
           'regular',
         ),

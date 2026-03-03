@@ -9,7 +9,7 @@ import { CSSProperties, useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
@@ -57,9 +57,9 @@ const Switch = ({
   const iconWrapperStyle = useMemo<CSSProperties>(
     () =>
       ({
-        '--icon-color-focus': getThemeColorVar(String(iconColor), 'focus'),
-        '--icon-color-hover': getThemeColorVar(String(iconColor), 'hover'),
-        '--icon-color-active': getThemeColorVar(String(iconColor), 'active'),
+        '--icon-color-focus': resolveThemeColor(String(iconColor), 'focus'),
+        '--icon-color-hover': resolveThemeColor(String(iconColor), 'hover'),
+        '--icon-color-active': resolveThemeColor(String(iconColor), 'active'),
       } as CSSProperties),
     [iconColor],
   );

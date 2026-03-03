@@ -9,7 +9,7 @@ import React, { useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
@@ -85,9 +85,9 @@ export const Checkbox = ({
           size === 'medium'
             ? 'calc(var(--font-size-medium) * 1.5)'
             : 'calc(var(--font-size-small) * 1.5)',
-        '--icon-color-focus': getThemeColorVar(iconColor, 'focus'),
-        '--icon-color-hover': getThemeColorVar(iconColor, 'hover'),
-        '--icon-color-active': getThemeColorVar(iconColor, 'active'),
+        '--icon-color-focus': resolveThemeColor(iconColor, 'focus'),
+        '--icon-color-hover': resolveThemeColor(iconColor, 'hover'),
+        '--icon-color-active': resolveThemeColor(iconColor, 'active'),
       } as React.CSSProperties),
     [size, iconColor],
   );

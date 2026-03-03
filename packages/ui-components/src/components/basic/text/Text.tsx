@@ -6,7 +6,7 @@
 
 import { HTMLAttributes } from 'react';
 
-import { getThemeColorVar } from '../../../theme/theme-utils';
+import { resolveThemeColor } from '../../../theme/theme-utils';
 import { AnyColor } from '../../../types/utils';
 import styles from './Text.module.css';
 
@@ -42,7 +42,7 @@ const Text = ({
   const overflowClass = overflow === 'break-word' ? 'break-word' : 'ellipsis';
 
   const textStyle = {
-    '--text-color': getThemeColorVar(color, disabled ? 'disabled' : 'regular'),
+    '--text-color': resolveThemeColor(color, disabled ? 'disabled' : 'regular'),
     '--text-font-family': 'var(--font-family)',
     '--text-font-size': `var(--font-size-${size})`,
     '--text-font-weight': `var(--font-weight-${weight})`,

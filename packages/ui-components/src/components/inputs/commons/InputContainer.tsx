@@ -6,7 +6,7 @@
 import clsx from 'clsx';
 import { CSSProperties, FC, HTMLAttributes, useMemo } from 'react';
 
-import { getThemeColorVar } from '../../../theme/theme-utils';
+import { resolveThemeColor } from '../../../theme/theme-utils';
 import { Container, ContainerProps } from '../../layout/Container';
 import styles from './InputContainer.module.css';
 
@@ -23,7 +23,7 @@ const COLOR_VARIANTS = ['regular', 'hover', 'focus', 'active', 'disabled'] as co
 const COLOR_SPLIT_REGEXP = new RegExp(`.(${COLOR_VARIANTS.join('|')})`);
 
 function resolveColorVar(color: string, variant: string): string {
-  return getThemeColorVar(color.replace(COLOR_SPLIT_REGEXP, ''), variant);
+  return resolveThemeColor(color.replace(COLOR_SPLIT_REGEXP, ''), variant);
 }
 
 export const InputContainer: FC<InputContainerProps> = ({

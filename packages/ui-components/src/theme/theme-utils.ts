@@ -11,7 +11,7 @@ type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyo
 
 const CSS_KEYWORDS = new Set(['currentColor', 'transparent', 'inherit', 'initial', 'unset']);
 
-export function getThemeColorVar(colorName: string, state: string): string {
+export function resolveThemeColor(colorName: string, state: string): string {
   if (!colorName) return '';
   const trimmed = colorName.trim();
 

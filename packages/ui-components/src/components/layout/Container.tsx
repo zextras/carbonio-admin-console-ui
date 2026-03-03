@@ -6,7 +6,7 @@
 import clsx from 'clsx';
 import React, { CSSProperties, HTMLAttributes, useMemo } from 'react';
 
-import { getPaddingVar, getThemeColorVar, PaddingVarObj } from '../../theme/theme-utils';
+import { getPaddingVar, PaddingVarObj, resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor, LiteralUnion } from '../../types/utils';
 import styles from './Container.module.css';
 
@@ -36,7 +36,7 @@ type ContainerElProps = {
     | 'unset';
   crossAlignment?: 'stretch' | 'center' | 'baseline' | 'flex-start' | 'flex-end' | 'unset';
   wrap?: 'wrap' | 'nowrap' | 'wrap-reverse' | 'unset';
-  padding?: PaddingVarObj | PaddingVarObj | string | 0;
+  padding?: PaddingVarObj | string | 0;
   gap?: string;
   flexGrow?: string | number;
   flexShrink?: string | number;
@@ -65,7 +65,7 @@ function resolveDimension(value: Dimension | undefined): string | undefined {
 
 function resolveColorVar(color: string): string {
   const [, variant] = color.split(COLOR_SPLIT_REGEXP);
-  return getThemeColorVar(color.replace(COLOR_SPLIT_REGEXP, ''), variant ?? 'regular');
+  return resolveThemeColor(color.replace(COLOR_SPLIT_REGEXP, ''), variant ?? 'regular');
 }
 
 const BORDER = (color: string) => `0.0625rem solid ${resolveColorVar(color)}`;

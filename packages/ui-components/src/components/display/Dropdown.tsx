@@ -30,7 +30,7 @@ import {
   KeyboardPresetObj,
   useKeyboard,
 } from '../../hooks/useKeyboard';
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
@@ -92,10 +92,10 @@ function useContainerElStyle(
   return useMemo<CSSProperties>(() => {
     const bgColor = selected && selectedBackgroundColor ? selectedBackgroundColor : 'gray5';
     return {
-      '--dropdown-item-bg': getThemeColorVar(String(bgColor), 'regular'),
-      '--dropdown-item-bg-hover': getThemeColorVar(String(bgColor), 'hover'),
-      '--dropdown-item-bg-focus': getThemeColorVar(String(bgColor), 'focus'),
-      '--dropdown-item-bg-active': getThemeColorVar(String(bgColor), 'active'),
+      '--dropdown-item-bg': resolveThemeColor(String(bgColor), 'regular'),
+      '--dropdown-item-bg-hover': resolveThemeColor(String(bgColor), 'hover'),
+      '--dropdown-item-bg-focus': resolveThemeColor(String(bgColor), 'focus'),
+      '--dropdown-item-bg-active': resolveThemeColor(String(bgColor), 'active'),
     } as CSSProperties;
   }, [selected, selectedBackgroundColor]);
 }

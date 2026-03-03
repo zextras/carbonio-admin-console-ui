@@ -8,7 +8,7 @@ import '../../web-components/icon-wc';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { getThemeColorVar } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
@@ -115,9 +115,9 @@ const DefaultLabelFactory = <T,>({
   const iconColor = (disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary';
 
   const containerStyle: React.CSSProperties = {
-    '--select-bg': getThemeColorVar(background, 'regular'),
-    '--select-bg-hover': getThemeColorVar(background, 'hover'),
-    '--select-bg-focus': getThemeColorVar(background, 'focus'),
+    '--select-bg': resolveThemeColor(background, 'regular'),
+    '--select-bg-hover': resolveThemeColor(background, 'hover'),
+    '--select-bg-focus': resolveThemeColor(background, 'focus'),
   } as React.CSSProperties;
 
   const labelStyle: React.CSSProperties = {
@@ -142,7 +142,11 @@ const DefaultLabelFactory = <T,>({
       >
         <Row takeAvailableSpace mainAlignment="unset">
           <Padding top="medium" width="100%">
-            <Text size="medium" color={disabled ? 'secondary' : 'text'} className={styles.customText}>
+            <Text
+              size="medium"
+              color={disabled ? 'secondary' : 'text'}
+              className={styles.customText}
+            >
               {selectedLabels}
             </Text>
           </Padding>
