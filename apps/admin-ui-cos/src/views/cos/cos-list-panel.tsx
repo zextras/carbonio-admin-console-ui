@@ -203,12 +203,9 @@ export const CosListPanel: FC = () => {
 
   const customIconDetail = {
     icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
+    size: '20px',
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
-    },
-    style: {
-      width: '20px',
-      height: '20px',
     },
   };
 
