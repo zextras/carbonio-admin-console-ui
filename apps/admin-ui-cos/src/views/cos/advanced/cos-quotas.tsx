@@ -82,7 +82,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.quotas}
       </Text>
       <Row mainAlignment="flex-start" width="100%">

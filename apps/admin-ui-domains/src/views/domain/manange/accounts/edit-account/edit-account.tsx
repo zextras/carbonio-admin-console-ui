@@ -1213,7 +1213,7 @@ const EditAccount: FC<{
               (accountUserType(selectedAccount) === 'System' ||
                 accountUserType(selectedAccount) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
-                  <Text color="warning" size="extralarge" overflow="break-word">
+                  <Text color="warning"  overflow="break-word">
                     {t(
                       'label.deleting_account_warning_content',
                       'Deleting the system account could impact the system stability.',
@@ -1231,7 +1231,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1240,7 +1240,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Close it to preserve</bold> the data, instead."

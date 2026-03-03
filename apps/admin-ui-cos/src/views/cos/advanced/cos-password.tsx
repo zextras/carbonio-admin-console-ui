@@ -67,7 +67,7 @@ const COSPassword: FC<COSPasswordProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.password}
       </Text>
       <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>

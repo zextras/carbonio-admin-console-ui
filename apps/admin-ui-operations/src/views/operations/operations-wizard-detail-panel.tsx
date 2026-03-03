@@ -85,7 +85,7 @@ const OperationsWizardDetailPanel: FC<{
     <Container background="gray6">
       <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('operations.operationname_on_servername', '{{operationName}} on {{serverName}}', {
               operationName: selectedData?.name,
               serverName: selectedData?.serverName,

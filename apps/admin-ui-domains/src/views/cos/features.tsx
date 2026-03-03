@@ -55,7 +55,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.general_lbl', 'General')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -95,7 +95,7 @@ export const Features: FC<{
 						orientation="vertical"
 						padding={{ bottom: 'large' }}
 					>
-						<Text size="extralarge" weight="bold">
+						<Text  weight="bold">
 							{t('label.two_factor_auth', 'Second Factor Authentication')}
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -127,7 +127,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.mail', 'Mail')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -185,7 +185,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.contacts', 'Contacts')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -209,7 +209,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.calendar', 'Calendar')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -241,7 +241,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.files', 'Files')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -278,7 +278,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.tasks', 'Tasks')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>

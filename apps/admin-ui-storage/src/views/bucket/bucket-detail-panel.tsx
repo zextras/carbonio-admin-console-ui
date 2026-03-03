@@ -342,7 +342,7 @@ const BucketDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('buckets.bucket_list', 'Buckets List')}
           </Text>
         </Row>

@@ -326,7 +326,7 @@ const GlobalDetailPanel: FC = () => {
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text size="extralarge" weight="bold">
+              <Text  weight="bold">
                 {t('label.settings', 'Settings')}
               </Text>
             </Row>

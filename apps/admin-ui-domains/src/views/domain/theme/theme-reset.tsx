@@ -48,7 +48,7 @@ export const ResetTheme: FC<{
           </Text>
         </Padding>
         <Padding bottom="medium">
-          <Text size="extralarge" overflow="break-word">
+          <Text  overflow="break-word">
             <Trans
               i18nKey="label.reset_whitelabel_settings_content_2"
               defaults="If you click YES button all data will be lost."

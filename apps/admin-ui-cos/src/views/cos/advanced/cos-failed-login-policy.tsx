@@ -67,7 +67,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{labels.failedLoginPolicy}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

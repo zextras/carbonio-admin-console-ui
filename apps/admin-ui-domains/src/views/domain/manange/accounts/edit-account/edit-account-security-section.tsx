@@ -553,7 +553,7 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text size="extralarge" color="gray0" weight="bold">
+                      <Text  color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
                       </Text>
                       <Row padding={{ top: 'large' }}></Row>
@@ -690,7 +690,7 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('label.backup', 'Backup')}
           </Text>
           <Row mainAlignment="flex-start" width="100%">
@@ -763,7 +763,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.password', 'Password')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">
@@ -1004,7 +1004,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('label.forgotten_password', 'Forgotten Password')}
             </Text>
             <Row mainAlignment="center" width="100%">
@@ -1071,7 +1071,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.failed_login_policy', 'Failed Login Policy')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">

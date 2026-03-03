@@ -31,7 +31,7 @@ export const SendingMails = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.sending_mails', 'Sending Mails')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

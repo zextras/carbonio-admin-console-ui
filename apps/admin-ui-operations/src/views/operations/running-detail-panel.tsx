@@ -107,7 +107,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
           selectedData={selectedData}
         />
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('operations.running_panel_heading', 'Running Operations')}
           </Text>
         </Row>

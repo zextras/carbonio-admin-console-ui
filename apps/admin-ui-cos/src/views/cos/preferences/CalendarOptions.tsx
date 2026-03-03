@@ -74,7 +74,7 @@ export const CalendarOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.calendar_options', 'Calendar Options')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

@@ -22,7 +22,7 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 	<>
 		<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
 			<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-				<Text size="extralarge" weight="bold">
+				<Text  weight="bold">
 					{title}
 				</Text>
 			</Row>

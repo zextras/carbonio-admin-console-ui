@@ -60,7 +60,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{labels.timeoutPolicy}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

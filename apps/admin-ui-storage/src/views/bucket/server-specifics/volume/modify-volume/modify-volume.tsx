@@ -713,7 +713,7 @@ const ModifyVolume: FC<{
       >
         <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
           <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('label.volume_detail_page_title', '{{message}} Details', {
                 message: volumeDetail?.name,
               })}

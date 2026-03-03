@@ -405,7 +405,7 @@ const EditBucketDetailPanel: FC<{
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {title}
           </Text>
         </Row>

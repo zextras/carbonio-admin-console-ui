@@ -122,7 +122,7 @@ const DoneDetailPanel: FC = () => {
         style={{ position: 'relative' }}
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('operations.done_panel_heading', 'Done Operations')}
           </Text>
         </Row>

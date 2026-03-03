@@ -1166,7 +1166,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1175,7 +1175,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."

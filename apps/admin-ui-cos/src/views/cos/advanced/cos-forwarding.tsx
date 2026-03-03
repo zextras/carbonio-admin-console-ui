@@ -38,7 +38,7 @@ const COSForwarding: FC<ForwardingProps> = ({ cosAdvanced, changeValue, readonly
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{labels.cosForwarding}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

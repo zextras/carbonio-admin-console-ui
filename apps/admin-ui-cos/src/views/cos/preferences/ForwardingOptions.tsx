@@ -29,7 +29,7 @@ export const ForwardingOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.forwarding', 'Forwarding')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

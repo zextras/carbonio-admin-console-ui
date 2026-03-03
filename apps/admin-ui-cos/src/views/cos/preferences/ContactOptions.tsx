@@ -28,7 +28,7 @@ export const ContactOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.contact_options', 'Contact Options')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

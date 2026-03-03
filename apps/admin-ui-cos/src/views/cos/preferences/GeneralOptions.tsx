@@ -32,7 +32,7 @@ export const GeneralOptions = ({
 			padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.general_options', 'General Options')}
 			</Text>
 

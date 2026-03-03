@@ -437,7 +437,7 @@ const CosServerPools: FC = () => {
           width="100%"
         >
           <ListRow>
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.general_options', 'General Options')}
             </Text>
           </ListRow>

@@ -329,7 +329,7 @@ const ServerDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('buckets.servers_list', 'Servers List')}
           </Text>
         </Row>

@@ -68,7 +68,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.email.retentionPolicy}
       </Text>
       <Row mainAlignment="flex-start" width="100%">
