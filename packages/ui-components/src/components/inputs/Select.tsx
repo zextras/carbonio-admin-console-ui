@@ -7,7 +7,6 @@
 import '../../web-components/icon-wc';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { tv } from 'tailwind-variants';
 
 import { getThemeColorVar } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
@@ -16,6 +15,7 @@ import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
+import styles from './Select.module.css';
 
 type SelectItem<T = string> = {
   label: string;
@@ -33,21 +33,6 @@ type LabelFactoryProps<T = string> = {
   disabled: boolean;
   selected: SelectItem<T>[];
 };
-
-const selectVariants = tv({
-  slots: {
-    container: [
-      'transition-colors duration-200 ease-out',
-      'bg-[var(--select-bg)]',
-      'hover:bg-[var(--select-bg-hover)]',
-    ],
-    containerFocused: 'bg-[var(--select-bg-focus)]',
-    label: ['absolute', 'left-[var(--padding-large)]', 'transition-all duration-150 ease-out'],
-    customText: 'min-h-[1.167em]',
-    tabContainer: 'relative cursor-pointer focus:outline-none',
-    iconWrapper: 'flex items-center self-center pointer-events-none leading-none',
-  },
-});
 
 type MultipleSelectionOnChange<T = string> = (value: Array<SelectItem<T>>) => void;
 
@@ -120,14 +105,6 @@ const DefaultLabelFactory = <T,>({
   background,
   disabled,
 }: LabelFactoryProps<T>): React.JSX.Element => {
-  const {
-    container,
-    containerFocused,
-    label: labelSlot,
-    customText,
-    iconWrapper,
-  } = selectVariants();
-
   const selectedLabels = useMemo(
     () => selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', '),
     [selected],
@@ -141,8 +118,6 @@ const DefaultLabelFactory = <T,>({
     '--select-bg': getThemeColorVar(background, 'regular'),
     '--select-bg-hover': getThemeColorVar(background, 'hover'),
     '--select-bg-focus': getThemeColorVar(background, 'focus'),
-    '--padding-large': 'var(--padding-size-large)',
-    '--padding-small': 'var(--padding-size-small)',
   } as React.CSSProperties;
 
   const labelStyle: React.CSSProperties = {
@@ -162,22 +137,22 @@ const DefaultLabelFactory = <T,>({
           horizontal: 'large',
           vertical: 'small',
         }}
-        className={`${container()} ${focus ? containerFocused() : ''}`}
+        className={`${styles.container}${focus ? ` ${styles.containerFocused}` : ''}`}
         style={containerStyle}
       >
         <Row takeAvailableSpace mainAlignment="unset">
           <Padding top="medium" width="100%">
-            <Text size="medium" color={disabled ? 'secondary' : 'text'} className={customText()}>
+            <Text size="medium" color={disabled ? 'secondary' : 'text'} className={styles.customText}>
               {selectedLabels}
             </Text>
           </Padding>
-          <div className={labelSlot()} style={labelStyle}>
+          <div className={styles.label} style={labelStyle}>
             <Text size={hasSelection ? 'small' : 'medium'} color={labelColor}>
               {label}
             </Text>
           </div>
         </Row>
-        <div className={iconWrapper()}>
+        <div className={styles.iconWrapper}>
           <icon-wc size="medium" icon={open ? 'ArrowUp' : 'ArrowDown'} color={iconColor}></icon-wc>
         </div>
       </Container>
@@ -205,8 +180,6 @@ const SelectComponent = function SelectFn<T = string>({
   showCheckbox = true,
   ...rest
 }: SelectProps<T>): React.JSX.Element {
-  const { tabContainer } = selectVariants();
-
   const initialState = defaultSelection ?? selection ?? [];
   const [selected, setSelected] = useState<SelectItem<T>[]>(
     Array.isArray(initialState) ? initialState : [initialState],
@@ -333,7 +306,7 @@ const SelectComponent = function SelectFn<T = string>({
       disablePortal={disablePortal}
       {...rest}
     >
-      <div onFocus={onFocus} onBlur={onBlur} tabIndex={0} className={tabContainer()}>
+      <div onFocus={onFocus} onBlur={onBlur} tabIndex={0} className={styles.tabContainer}>
         <LabelFactory
           label={label}
           open={open}
