@@ -9,6 +9,7 @@ import {
   Container,
   InheritedInput,
   InheritedSelect,
+  InheritedSwitch,
   Row,
   Text,
 } from '@zextras/ui-components';
@@ -17,7 +18,6 @@ import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState 
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from '../../../../components/customChip';
-import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import {
   appointmentReminder,
   charactorSet,

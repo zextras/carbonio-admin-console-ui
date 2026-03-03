@@ -8,6 +8,7 @@ import {
   Container,
   InheritedInput,
   InheritedSelect,
+  InheritedSwitch,
   Padding,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
@@ -17,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { AccountType } from '../../types/account';
 import { TRUE } from '../constants';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
-import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
   featuresDetail: AccountType;

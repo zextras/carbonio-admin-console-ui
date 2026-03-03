@@ -13,6 +13,7 @@ import {
   HoverableRowFactory,
   InheritedInput,
   InheritedSelect,
+  InheritedSwitch,
   Input,
   ListRow,
   Padding,
@@ -35,7 +36,6 @@ import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import CustomChip from '../../../../components/customChip';
-import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';

@@ -10,22 +10,25 @@ import {
 	Row,
 	Switch,
 	Text,
-	Tooltip} from '@zextras/ui-components';
-import { FC } from 'react';
+	Tooltip,
+} from '@zextras/ui-components';
+import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const InheritedSwitch: FC<{
-	label: any;
-	subValue: any;
-	inheritedValue: any;
+type InheritedSwitchProps = {
+	label: string;
+	subValue?: string | boolean;
+	inheritedValue?: string | boolean;
 	inputName: string;
-	onChange: any;
-	onChangeReset: any;
-	fromSubValue: any;
+	onChange: (...args: Array<any>) => void;
+	onChangeReset: (...args: Array<any>) => void;
+	fromSubValue?: string | boolean;
 	iconColor: string;
 	disabled?: boolean;
-	onFocus?: any;
-}> = ({
+	onFocus?: () => void;
+};
+
+const InheritedSwitch: FC<InheritedSwitchProps> = ({
 	label,
 	subValue,
 	inheritedValue,
@@ -35,7 +38,7 @@ const InheritedSwitch: FC<{
 	fromSubValue,
 	iconColor,
 	disabled = false,
-	onFocus
+	onFocus,
 }) => {
 	const [t] = useTranslation();
 
@@ -82,12 +85,12 @@ const InheritedSwitch: FC<{
 						style={{ cursor: 'pointer', pointerEvents: disabled ? 'none' : 'all' }}
 						onChange={(): null => null}
 						disabled={disabled}
+						data-testid={`reset-${inputName}`}
 					/>
 				</Tooltip>
-			) : (
-				<></>
-			)}
+			) : null}
 		</Container>
 	);
 };
-export default InheritedSwitch;
+
+export { InheritedSwitch, type InheritedSwitchProps };
