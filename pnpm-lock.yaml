@@ -337,6 +337,9 @@ importers:
       react-router:
         specifier: ^7.13.0
         version: 7.13.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      tailwind-variants:
+        specifier: ^3.2.2
+        version: 3.2.2(tailwind-merge@3.5.0)(tailwindcss@4.2.1)
       ua-parser-js:
         specifier: ^1.0.41
         version: 1.0.41

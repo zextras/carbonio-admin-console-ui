@@ -3,9 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+@import '@zextras/ui-components/theme/theme.css';
 @import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';
-@source '../../../packages/ui-components/src';
+@import '@zextras/ui-components/theme/tailwind-theme.css';
+@source '@zextras/ui-components';
+@source '.';
 
 html,
 body {

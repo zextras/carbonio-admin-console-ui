@@ -9,7 +9,9 @@
       "types": "./dist-types/index.d.ts",
       "default": "./src/index.ts"
     },
-    "./web-components": "./src/web-components/index.ts"
+    "./web-components": "./src/web-components/index.ts",
+    "./theme/tailwind-theme.css": "./src/theme/tailwind-theme.css",
+    "./theme/theme.css": "./src/theme/theme.css"
   },
   "type": "commonjs",
   "files": [

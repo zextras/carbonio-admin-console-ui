@@ -9,7 +9,7 @@ import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
-import ShellHeader from './shell-header';
+import { ShellHeader } from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
 
 function getDivStyle() {
