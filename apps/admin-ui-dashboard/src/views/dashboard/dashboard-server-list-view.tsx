@@ -25,7 +25,7 @@ const VersionText = styled(Text)`
 
 const DashboardServerList: FC<{
   goToMailStoreServerList: () => void;
-  serverVersion: any;
+  serverVersion: string;
 }> = ({ goToMailStoreServerList, serverVersion }) => {
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
@@ -57,7 +57,7 @@ const DashboardServerList: FC<{
               event.stopPropagation();
             }}
           >
-            {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
+            {serverVersion}
           </VersionText>,
           isAdvanced ? (
             <VersionText
@@ -69,7 +69,7 @@ const DashboardServerList: FC<{
                 event.stopPropagation();
               }}
             >
-              {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
+              {serverVersion}
             </VersionText>
           ) : (
             ''

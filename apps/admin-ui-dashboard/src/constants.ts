@@ -36,3 +36,5 @@ export const PRIMARY_BAR_DASHBOARD = 'pb_dashboard';
 
 // API Config
 export const LIST_SERVER = 'listServer';
+
+export const SERVER_VERSION = '26.3.0';
