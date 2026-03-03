@@ -12,13 +12,17 @@ type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyo
 export function getThemeColorVar(colorName: string, state: string): string {
   if (!colorName) return '';
   const trimmed = colorName.trim();
-  if (trimmed === 'currentColor') return trimmed;
-  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
-  if (hexPattern.test(trimmed)) {
-    return trimmed;
+
+  // Pass through any raw CSS value that isn't a design token name
+  const isTokenName = /^[a-zA-Z0-9-]+$/.test(trimmed);
+  if (!isTokenName) return trimmed;
+
+  const sanitizedState = state?.trim();
+  if (!sanitizedState) {
+    return `var(--color-${trimmed}-regular)`;
   }
-  const sanitized = trimmed.replace(/[^a-zA-Z0-9-]/g, '');
-  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${trimmed}))`;
+
+  return `var(--color-${trimmed}-${sanitizedState}, var(--color-${trimmed}-regular))`;
 }
 
 export type PaddingVarObj =

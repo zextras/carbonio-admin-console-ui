@@ -55,7 +55,27 @@ function browserProjectConfig() {
       name: 'browser',
       maxConcurrency: 3,
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-
+      sequence: {
+        groupOrder: 2,
+      },
+      fileParallelism: false,
+      retry: 2,
+      include: ['**/*.browser.test.{ts,tsx}'],
+      browser: {
+        enabled: true,
+        provider: playwright() as any,
+        instances: [{ browser: 'chromium' as const }],
+        viewport: { width: 834, height: 2000 },
+        headless: !!process.env.CI,
+        screenshotFailures: !process.env.CI,
+        providerOptions: { launch: { timeout: 60_000 } },
+      },
+      exclude: ['dist/**', 'node_modules/**'],
+      globals: true,
+      css: true,
+      clearMocks: true,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
@@ -98,32 +118,6 @@ function browserProjectConfig() {
         'tinymce/plugins/visualblocks': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
-    },
-    test: {
-      name: 'browser',
-      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-      sequence: {
-        groupOrder: 2,
-      },
-      fileParallelism: false,
-      retry: 2,
-
-      include: ['**/*.browser.test.{ts,tsx}'],
-      browser: {
-        enabled: true,
-        provider: playwright() as any,
-        instances: [{ browser: 'chromium' as const }],
-        viewport: { width: 834, height: 2000 },
-        headless: !!process.env.CI,
-        screenshotFailures: !process.env.CI,
-        providerOptions: { launch: { timeout: 60_000 } },
-      },
-      exclude: ['dist/**', 'node_modules/**'],
-      globals: true,
-      css: true,
-      clearMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
-      hookTimeout: 15_000,
     },
     plugins: [
       react(),
