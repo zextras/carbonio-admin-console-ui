@@ -5,7 +5,7 @@
  */
 import { Container, Text } from '@zextras/ui-components';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { ComputedLimit } from '../../../../../../services/get-account-quota';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
@@ -46,12 +46,21 @@ export const EditAccountQuotaBarNew = ({
     [t, usedByModule.mailbox, usedByModule.wsc, usedByModule.files],
   );
 
-  const sizeDescription = useMemo<string>(() => {
+  const sizeDescription = useMemo(() => {
     if (limit.type === 'unlimited') {
-      return t('quota.account_quota_usage.unlimited', {
-        used: humanFileSize(used, t),
-        defaultValue: '{{used}} of Unlimited storage used',
-      });
+      return (
+        <Trans
+          t={t}
+          i18nKey="quota.account_quota_usage.unlimited"
+          defaults="{{used}} of <bold>Unlimited</bold> storage used"
+          values={{
+            used: humanFileSize(used, t),
+          }}
+          components={{
+            bold: <Text weight="bold" overflow={'break-word'} style={{ display: 'inline' }} />,
+          }}
+        />
+      );
     }
 
     return t('label.account_quota_usage.limited', {
