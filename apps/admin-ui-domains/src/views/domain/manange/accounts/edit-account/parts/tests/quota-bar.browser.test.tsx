@@ -12,7 +12,7 @@ import { QuotaBar } from '../quota-bar';
 describe('QuotaBar', () => {
   it('should render correctly the given background', async () => {
     await setupBrowserTest(
-      <QuotaBar modules={[]} background="red" limit={{ type: 'limited', value: 1 }} used={0} />,
+      <QuotaBar modules={[]} background="#f00" limit={{ type: 'limited', value: 1 }} used={0} />,
     );
 
     expect(page.getByTestId('quota-bar')).toHaveStyle('background: red');
@@ -20,8 +20,8 @@ describe('QuotaBar', () => {
 
   it('should render the correct number of modules with the correct colors', async () => {
     const modules = [
-      { label: 'Module 1', color: 'red', used: 1 },
-      { label: 'Module 2', color: 'blue', used: 2 },
+      { label: 'Module 1', color: '#f00', used: 1 },
+      { label: 'Module 2', color: '#0ff', used: 2 },
     ];
 
     await setupBrowserTest(
