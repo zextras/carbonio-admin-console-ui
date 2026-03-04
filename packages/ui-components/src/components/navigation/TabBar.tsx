@@ -57,6 +57,7 @@ function getTabItemStyleVars(
   const bgColorBase = background ?? 'transparent';
   return {
     '--tab-underline-color': getThemeColorVar(underlineColor, 'regular'),
+    '--tab-bg-regular': getThemeColorVar(bgColorBase, 'regular'),
     '--tab-bg-hover': disabled ? 'transparent' : getThemeColorVar(bgColorBase, 'hover'),
     '--tab-bg-focus': disabled ? 'transparent' : getThemeColorVar(bgColorBase, 'focus'),
   } as React.CSSProperties;
@@ -108,7 +109,6 @@ const DefaultTabBarItem = (
     <Container
       padding={{ horizontal: 'small' }}
       onClick={activationCb}
-      background={background}
       borderRadius="none"
       ref={combinedRef}
       style={tabItemStyle}
