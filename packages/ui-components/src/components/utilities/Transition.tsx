@@ -220,7 +220,10 @@ const TransitionOn = ({
 
   return React.cloneElement(children, {
     ref: childRef,
-    style: { ...(from || STYLES[type].from) },
+    style: {
+      ...(children.props.style as CSSProperties),
+      ...(from || STYLES[type].from),
+    },
   });
 };
 

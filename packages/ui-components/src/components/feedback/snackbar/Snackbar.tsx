@@ -8,6 +8,7 @@ import '../../../web-components/icon-wc';
 
 import React, { useCallback, useEffect } from 'react';
 
+import { resolveThemeColor } from '../../../theme/theme-utils';
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
@@ -99,11 +100,10 @@ const Snackbar = ({
           style={
             {
               '--snackbar-z-index': zIndex,
-              backgroundColor: `var(--color-${severity})`,
+              '--snackbar-background-color': resolveThemeColor(severity, 'regular'),
             } as React.CSSProperties
           }
           data-testid="snackbar"
-          ref={ref}
         >
           <Container
             orientation="horizontal"

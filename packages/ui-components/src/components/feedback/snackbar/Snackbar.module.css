@@ -21,6 +21,7 @@
   box-shadow: var(--shadow-snackbar);
   z-index: var(--snackbar-z-index, 1000);
   display: flex;
+  background-color: var(--snackbar-background-color);
   flex-direction: column;
   width: auto;
   height: auto;
