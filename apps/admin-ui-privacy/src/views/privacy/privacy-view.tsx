@@ -3,17 +3,25 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useForm  } from '@tanstack/react-form';
-import {  Container, Row, Text, useSnackbar  } from '@zextras/ui-components';
-import {  soapFetch, useAllConfig, useCurrentUserRights  } from '@zextras/ui-shared';
-import {  find  } from 'lodash-es';
-import {  FC, useCallback, useMemo  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useForm } from '@tanstack/react-form';
+import { Text, useSnackbar } from '@zextras/ui-components';
+import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
+import { find } from 'lodash-es';
+import { FC, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { tv } from 'tailwind-variants';
 
-import {   CARBONIO_ALLOW_FEEDBACK,  CARBONIO_SEND_ANALYTICS,  CARBONIO_SEND_FULL_ERROR_STACK,  CONFIG,  FALSE,  TRUE } from '../../constants';
-import {  FormButtons  } from './parts/form-buttons';
-import {  FormSwitch  } from './parts/form-switch';
-import {  SwitchDescription  } from './parts/form-title';
+import {
+  CARBONIO_ALLOW_FEEDBACK,
+  CARBONIO_SEND_ANALYTICS,
+  CARBONIO_SEND_FULL_ERROR_STACK,
+  CONFIG,
+  FALSE,
+  TRUE,
+} from '../../constants';
+import { FormButtons } from './parts/form-buttons';
+import { FormSwitch } from './parts/form-switch';
+import { SwitchDescription } from './parts/form-title';
 
 type ModifyConfigAPI = { allowFeedback: boolean; sendAnalytics: boolean; sendFullError: boolean };
 
@@ -34,10 +42,34 @@ async function modifyConfigApi(value: ModifyConfigAPI) {
   });
 }
 
+const privacyView = tv({
+  slots: {
+    root: 'flex flex-col justify-start items-center bg-gray6-regular h-full w-full',
+    headerRow: 'flex flex-row justify-start w-full',
+    headerContainer: 'flex flex-col justify-around items-center bg-gray6-regular h-[58px] w-full',
+    headerContent: 'flex flex-row w-full p-lg box-border',
+    titleSection: 'flex flex-row justify-start w-[30%] items-start',
+    buttonsSection: 'flex flex-row w-[70%] justify-end items-end',
+    contentContainer:
+      'flex flex-col items-start justify-start w-full h-[calc(100vh-200px)] pt-xl overflow-auto box-border',
+    formContainer: 'flex flex-col items-center h-fit bg-gray6-regular px-sm w-full box-border',
+  },
+});
+
 const PrivacyView: FC = () => {
   const [t] = useTranslation();
   const { data: config = [] } = useAllConfig();
   const createSnackbar = useSnackbar();
+  const {
+    root,
+    headerRow,
+    headerContainer,
+    headerContent,
+    titleSection,
+    buttonsSection,
+    contentContainer,
+    formContainer,
+  } = privacyView();
 
   const { data: rights } = useCurrentUserRights();
   const allowSetPrivacy = useMemo(() => {
@@ -73,7 +105,6 @@ const PrivacyView: FC = () => {
           hideButton: true,
           replace: true,
         });
-        // Reset form dirty state after successful save
         formApi.reset(value);
       }
     },
@@ -103,44 +134,27 @@ const PrivacyView: FC = () => {
   );
 
   return (
-    <Container mainAlignment="flex-start" background="gray6">
+    <div className={root()}>
       <form.Subscribe selector={(state) => state.isDirty}>
         {(isDirty) => (
           <>
-            <Row mainAlignment="flex-start" width="100%">
-              <Container
-                orientation="vertical"
-                mainAlignment="space-around"
-                background="gray6"
-                height="58px"
-              >
-                <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-                  <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
+            <div className={headerRow()}>
+              <div className={headerContainer()}>
+                <div className={headerContent()}>
+                  <div className={titleSection()}>
                     <Text size="medium" weight="bold" color="gray0">
                       {t('label.privacy', 'Privacy')}
                     </Text>
-                  </Row>
-                  <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
+                  </div>
+                  <div className={buttonsSection()}>
                     {isDirty && <FormButtons onCancel={onCancel} onSave={onSave} />}
-                  </Row>
-                </Row>
-              </Container>
-            </Row>
+                  </div>
+                </div>
+              </div>
+            </div>
             <divider-wc></divider-wc>
-            <Container
-              orientation="column"
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-              style={{ overflow: 'auto' }}
-              width="100%"
-              height="calc(100vh - 200px)"
-              padding={{ top: 'extralarge' }}
-            >
-              <Container
-                height="fit"
-                background="gray6"
-                padding={{ left: 'small', right: 'small' }}
-              >
+            <div className={contentContainer()}>
+              <div className={formContainer()}>
                 <form.Field name="sendFullError">
                   {(field) => (
                     <FormSwitch
@@ -183,12 +197,12 @@ const PrivacyView: FC = () => {
                   )}
                 </form.Field>
                 <SwitchDescription label={privacyFeedbackDescription} />
-              </Container>
-            </Container>
+              </div>
+            </div>
           </>
         )}
       </form.Subscribe>
-    </Container>
+    </div>
   );
 };
 
