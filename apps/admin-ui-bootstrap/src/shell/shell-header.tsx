@@ -13,7 +13,7 @@ import { CreationButton } from './creation-button';
 
 const shellHeader = tv({
   slots: {
-    root: 'flex flex-row w-full h-[60px] justify-between items-center bg-gray3-regular px-lg py-sm',
+    root: 'flex flex-row w-full h-[60px] justify-between items-center bg-gray3-regular px-lg py-sm box-border',
     leftSection: 'flex flex-row w-3/4 max-w-3/4 justify-between items-center',
     innerLeft: 'flex flex-row justify-start items-center w-auto',
     logoContainer: 'flex w-auto h-8 items-center',
