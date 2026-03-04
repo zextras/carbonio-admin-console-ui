@@ -30,7 +30,7 @@ function getVersionTextStyle(): React.CSSProperties {
 
 const DashboardServerList: FC<{
   goToMailStoreServerList: () => void;
-  serverVersion: any;
+  serverVersion: string;
 }> = ({ goToMailStoreServerList, serverVersion }) => {
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
@@ -63,7 +63,7 @@ const DashboardServerList: FC<{
               event.stopPropagation();
             }}
           >
-            {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
+            {serverVersion}
           </Text>,
           isAdvanced ? (
             <Text
@@ -76,7 +76,7 @@ const DashboardServerList: FC<{
                 event.stopPropagation();
               }}
             >
-              {`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
+              {serverVersion}
             </Text>
           ) : (
             ''

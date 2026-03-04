@@ -12,7 +12,6 @@ import {
   useDomainStore,
   useHasAllRights,
   useIsAdvanced,
-  useServerVersion,
   useUserAccounts,
 } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -28,6 +27,7 @@ import {
   MANAGE,
   NOTIFICATION_ROUTE_ID,
   SERVER,
+  SERVER_VERSION,
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
@@ -41,7 +41,6 @@ const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const [userName, setUserName] = useState<string>('');
-  const { data: serverVersion } = useServerVersion();
 
   const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();
@@ -117,7 +116,7 @@ const Dashboard: FC = () => {
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
         <ListRow>
           <Container width={'40'} padding={{ all: 'extralarge' }}>
-            <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
+            <CarbonioVersionInformation userName={userName} serverVersion={SERVER_VERSION} />
           </Container>
           <Container width={'60'} padding={{ all: 'extralarge' }}>
             <QuickAccess
@@ -139,7 +138,7 @@ const Dashboard: FC = () => {
             <Container padding={{ all: 'extralarge' }}>
               <DashboardServerList
                 goToMailStoreServerList={goToMailStoreServerList}
-                serverVersion={serverVersion}
+                serverVersion={SERVER_VERSION}
               />
             </Container>
           </ListRow>
