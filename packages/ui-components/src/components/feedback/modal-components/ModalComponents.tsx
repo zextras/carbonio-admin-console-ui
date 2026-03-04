@@ -23,13 +23,19 @@ const modalWidth = {
 };
 
 function isBodyOverflowing(modalRef: React.RefObject<HTMLDivElement | null>, windowObj: Window): boolean {
-	if (windowObj) {
-		return (
-			windowObj.document.body.scrollHeight > (modalRef.current as HTMLDivElement).clientHeight ||
-			windowObj.document.body.scrollWidth > windowObj.document.body.clientWidth
-		);
+	if (!windowObj) {
+		return false;
 	}
-	return false;
+
+	const modalElement = modalRef.current;
+	if (!modalElement) {
+		return false;
+	}
+
+	return (
+		windowObj.document.body.scrollHeight > modalElement.clientHeight ||
+		windowObj.document.body.scrollWidth > windowObj.document.body.clientWidth
+	);
 }
 
 function getScrollbarSize(windowObj: Window): number {
