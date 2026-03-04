@@ -709,18 +709,15 @@ const Dropdown = ({
     } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
   }, [children, innerTriggerRef, triggerComponentLeftClickHandler]);
 
-  const popperListStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        width:
-          width === '100%' && innerTriggerRef.current
-            ? `${innerTriggerRef.current.clientWidth}px`
-            : width,
-        maxWidth: width === '100%' ? '100%' : maxWidth,
-        '--popper-max-height': maxHeight,
-      } as CSSProperties),
-    [width, maxWidth, maxHeight, innerTriggerRef],
-  );
+  const popperListStyle = useMemo<CSSProperties>(() => {
+    const triggerWidth = innerTriggerRef.current?.clientWidth;
+
+    return {
+      width: width === '100%' && triggerWidth ? `${triggerWidth}px` : width,
+      maxWidth: width === '100%' ? '100%' : maxWidth,
+      '--popper-max-height': maxHeight,
+    } as CSSProperties;
+  }, [width, maxWidth, maxHeight, open, innerTriggerRef]);
 
   return (
     <div className={styles.popperDropdownWrapper} data-display={display} {...rest}>
