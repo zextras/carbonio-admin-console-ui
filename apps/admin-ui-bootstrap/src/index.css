@@ -9,6 +9,8 @@
 @import '@zextras/ui-components/theme/tailwind-theme.css';
 @source '@zextras/ui-components';
 @source '.';
+@source '../../../apps/**/src/**/*.{ts,tsx}';
+@source '../../../packages/**/src/**/*.{ts,tsx}';
 
 html,
 body {
