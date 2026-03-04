@@ -157,8 +157,10 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
     <>
       <Container
         className={styles.primaryBarContainer}
-        data-sidebarisopen={isOpen}
         role="menu"
+        width={isOpen ? 192 : 44}
+        minWidth={44}
+        maxWidth={192}
         height="fill"
         background="gray6"
         orientation="vertical"

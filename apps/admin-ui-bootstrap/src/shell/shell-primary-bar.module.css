@@ -6,10 +6,6 @@
   overflow-x: hidden;
 }
 
-.primaryBarContainer[data-sidebarisopen='true'] {
-  width: 192px;
-}
-
 .primaryBarRow {
   background-color: var(--color-gray6-regular);
   cursor: pointer;
