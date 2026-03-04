@@ -78,6 +78,7 @@ const EditAccountGeneralSection: FC<{
   const createSnackbar = useSnackbar();
   const {
     accountDetail,
+    initAccountDetail,
     setAccountDetail,
     directMemberList,
     inDirectMemberList,
@@ -758,6 +759,7 @@ const EditAccountGeneralSection: FC<{
         )}
         <EditAccountQuotaInputs
           accountDetail={accountDetail}
+          initialAccountDetail={initAccountDetail}
           setAccountDetail={setAccountDetail}
           focusableFileQuota={focusableFileQuota}
           highlightFileQuota={highlightFileQuota}

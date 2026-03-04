@@ -101,7 +101,10 @@ describe('EditAccountQuotaInputsNew', () => {
     await userEvent.clear(input);
     await userEvent.type(input, '10');
 
-    expect(onChangeMock).toHaveBeenLastCalledWith(10737418240);
+    expect(onChangeMock).toHaveBeenLastCalledWith({
+      type: 'limited',
+      value: 10737418240,
+    });
   });
 
   it('should call onChange with undefined when input is cleared', async () => {

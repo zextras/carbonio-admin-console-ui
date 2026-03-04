@@ -10,10 +10,14 @@ import {
   STORAGES_API_VERSION_HEADER,
 } from '../constants';
 
+export type LimitedComputedLimit = { type: 'limited'; value: number };
+export type UnlimitedComputedLimit = { type: 'unlimited' };
+export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
+
 export type GetAccountQuotaRawResponse = {
   total: {
     used: number;
-    computedLimit: number;
+    computedLimit: ComputedLimit;
   };
   modules: {
     mailbox: { used: number };
@@ -25,7 +29,7 @@ export type GetAccountQuotaRawResponse = {
 type GetAccountQuotaResponse =
   | {
       type: 'success';
-      totalComputedLimit: number;
+      totalComputedLimit: ComputedLimit;
       totalUsed: number;
       usedByModules: {
         mailbox: number;

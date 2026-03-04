@@ -1,3 +1,9 @@
+## [0.13.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.1...v0.13.0-devel.2) (2026-03-04)
+
+### Features
+
+* support unlimited quota for single account ([9f05adb](https://github.com/zextras/carbonio-admin-console-ui/commit/9f05adb04616a211048ff0bbe45ffcb35838bb45))
+
 ## [0.12.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.4...v0.12.5) (2026-02-27)
 
 ### Bug Fixes

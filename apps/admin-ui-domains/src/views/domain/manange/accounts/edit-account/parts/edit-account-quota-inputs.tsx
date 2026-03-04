@@ -20,6 +20,7 @@ type EditAccountQuotaInputsProps = {
   setFocusableMailboxQuota: (value: boolean) => void;
   setHighlightMailboxQuota: (value: boolean) => void;
   accountDetail: AccountDetail;
+  initialAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
 
@@ -33,6 +34,7 @@ export const EditAccountQuotaInputs = ({
   setFocusableMailboxQuota,
   setHighlightMailboxQuota,
   accountDetail,
+  initialAccountDetail,
   setAccountDetail,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
   const isTotalQuotaActive = useTotalQuotaActive();
@@ -49,7 +51,20 @@ export const EditAccountQuotaInputs = ({
   if (isTotalQuotaActive) {
     return (
       <EditAccountQuotaInputsNew
-        totalComputedQuotaLimit={accountDetail.totalComputedQuotaLimit}
+        totalComputedQuotaLimit={
+          accountDetail.totalComputedQuotaLimit === undefined
+            ? undefined
+            : accountDetail.totalComputedQuotaLimit.type === 'unlimited'
+            ? 'unlimited'
+            : accountDetail.totalComputedQuotaLimit.value
+        }
+        initialTotalComputedQuotaLimit={
+          initialAccountDetail.totalComputedQuotaLimit === undefined
+            ? undefined
+            : initialAccountDetail.totalComputedQuotaLimit.type === 'unlimited'
+            ? 'unlimited'
+            : initialAccountDetail.totalComputedQuotaLimit.value
+        }
         onChange={onTotalComputedQuotaLimitChange}
       />
     );

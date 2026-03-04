@@ -9,6 +9,7 @@ import {
   STORAGES_API_VERSION,
   STORAGES_API_VERSION_HEADER,
 } from '../constants';
+import { ComputedLimit } from './get-account-quota';
 
 type SetAccountQuotaResponse =
   | {
@@ -22,10 +23,10 @@ type SetAccountQuotaResponse =
 /**
  * Sets the quota limit for a specific account.
  * @param accountId The ID of the account.
- * @param request The quota limit request.
+ * @param limit The quota limit to be set for the account.
  * @returns The result of the quota update operation.
  */
-export const setAccountQuota = async (accountId: string, limit: number): Promise<SetAccountQuotaResponse> => {
+export const setAccountQuota = async (accountId: string, limit: ComputedLimit): Promise<SetAccountQuotaResponse> => {
   const url = `${STORAGES_API_BASE_URL}/quota/config/accounts/${accountId}`;
   const headers = {
     'Content-Type': 'application/json',
