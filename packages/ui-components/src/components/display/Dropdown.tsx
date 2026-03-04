@@ -717,6 +717,7 @@ const Dropdown = ({
       maxWidth: width === '100%' ? '100%' : maxWidth,
       '--popper-max-height': maxHeight,
     } as CSSProperties;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, maxWidth, maxHeight, open, innerTriggerRef]);
 
   return (
