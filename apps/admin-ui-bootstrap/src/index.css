@@ -4,17 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 @import '@zextras/ui-components/theme/theme.css';
-@import 'tailwindcss';
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
 @import '@zextras/ui-components/theme/tailwind-theme.css';
 @source '@zextras/ui-components';
 @source '.';
-
-/* Override preflight's box-sizing: border-box */
-*,
-*::before,
-*::after {
-  box-sizing: content-box;
-}
 
 html,
 body {
@@ -26,7 +20,6 @@ body {
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  line-height: normal;
 }
 
 #app {
