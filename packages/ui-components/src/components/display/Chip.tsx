@@ -206,7 +206,7 @@ const Chip = ({
               >
                 <icon-wc
                   icon={action.icon}
-                  color={error ? 'gray6' : action.color}
+                  color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
                 ></icon-wc>
@@ -234,20 +234,19 @@ const Chip = ({
                 onBlur={hideTooltipHandler}
                 onClick={clickHandler}
                 disabled={!!disabled || action.disabled}
-                style={
-                  {
+                style=
+                  {{
                     '--action-spacing': SIZES[size].spacing,
                     '--action-radius':
                       shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
                     background: action.background
                       ? resolveThemeColor(action.background, 'regular')
                       : undefined,
-                  } as React.CSSProperties
-                }
+                  } as React.CSSProperties}
               >
                 <icon-wc
                   icon={action.icon}
-                  color={error ? 'gray6' : action.color}
+                  color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
                 ></icon-wc>
