@@ -99,6 +99,7 @@ function ModalContent({
 	return (
 		<Container
 			className={clsx(styles.modalContent, className)}
+			background="gray6"
 			maxWidth="100%"
 			minWidth={modalMinWidth[$size]}
 			width={modalWidth[$size]}
@@ -109,7 +110,10 @@ function ModalContent({
 			tabIndex={-1}
 			style={{
 				...style,
-				margin: `0 auto var(--padding-medium)`,
+				marginTop: 0,
+				marginRight: 'auto',
+				marginBottom: 'var(--padding-medium, 0.75rem)',
+				marginLeft: 'auto',
 			}}
 			{...props}
 		/>
