@@ -32,7 +32,6 @@ import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-d
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [intMobileAntiDosServiceEnbled, setIntMobileAntiDosServiceEnbled] = useState(false);
   const [intMobileAntiDosServiceJailDuration, setIntMobileAntiDosServiceJailDuration] =
     useState('');
@@ -60,7 +59,6 @@ const GlobalActiveSync: FC = () => {
     });
   };
   const callAllRequest = (requests: any): void => {
-    setIsLoading(true);
     Promise.all(requests)
       .then((response: any) => Promise.all(response))
       .then((data: any) => {
@@ -91,7 +89,6 @@ const GlobalActiveSync: FC = () => {
             replace: true,
           });
         }
-        setIsLoading(false);
       })
       .catch((error) => {
         createSnackbar({
@@ -104,14 +101,12 @@ const GlobalActiveSync: FC = () => {
           hideButton: true,
           replace: true,
         });
-        setIsLoading(false);
       });
   };
 
   const restartJail = (): void => {
     if (mailstoresList.length > 0) {
       const request: any[] = [];
-      setIsLoading(true);
       mailstoresList.forEach((mailbox) => {
         if (mailbox?.name) {
           request.push(doStratStopJail('doStartService', mailbox.name));
@@ -124,7 +119,6 @@ const GlobalActiveSync: FC = () => {
   };
   const PurgeActiveSync = (): void => {
     if (mailstoresList.length > 0) {
-      setIsLoading(true);
       doPurgeActiveSync().then(() => {
         createSnackbar({
           key: 'success',
@@ -137,38 +131,32 @@ const GlobalActiveSync: FC = () => {
           hideButton: true,
           replace: true,
         });
-        setIsLoading(false);
       });
     }
   };
   const onSave = (): void => {
-    setIsLoading(true);
     if (mobileAntiDosServiceEnbled !== intMobileAntiDosServiceEnbled) {
       setAntiDosServiceEnabled(mobileAntiDosServiceEnbled).then(() => {
         setIntMobileAntiDosServiceEnbled(mobileAntiDosServiceEnbled);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceJailDuration !== intMobileAntiDosServiceJailDuration) {
       setAntiDosServiceJailDuration(Number(mobileAntiDosServiceJailDuration)).then(() => {
         setIntMobileAntiDosServiceJailDuration(mobileAntiDosServiceJailDuration);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceMaxRequests !== intMobileAntiDosServiceMaxRequests) {
       setAntiDosServiceMaxRequests(Number(mobileAntiDosServiceMaxRequests)).then(() => {
         setIntMobileAntiDosServiceMaxRequests(mobileAntiDosServiceMaxRequests);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceTimeWindow !== intMobileAntiDosServiceTimeWindow) {
       setAntiDosServiceTimeWindow(Number(mobileAntiDosServiceTimeWindow)).then(() => {
         setIntMobileAntiDosServiceTimeWindow(mobileAntiDosServiceTimeWindow);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     setIsDirty(false);
@@ -216,7 +204,6 @@ const GlobalActiveSync: FC = () => {
 
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
       <Container mainAlignment="flex-start" background="gray6">
         <Row mainAlignment="flex-start" width="100%">
           <Container orientation="vertical" mainAlignment="space-around" height="56px">
