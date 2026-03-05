@@ -6,7 +6,7 @@
 import { Button, ChipInput, Container, Padding, Row, Switch, Text } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -125,7 +125,7 @@ const AccountOtpSection: FC<{
               mainAlignment="space-between"
             >
               <Row width="40%" mainAlignment="flex-start">
-                <QRCode data-testid="qrcode-password" size={179} value={accountDetail?.qrData} />
+                <QRCodeSVG data-testid="qrcode-password" size={179} value={accountDetail?.qrData} />
               </Row>
               <Row width="60%" mainAlignment="flex-start">
                 <Container>

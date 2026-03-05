@@ -34,7 +34,7 @@
     "lodash-es": "^4.17.21",
     "pnpm": "^10.15.1",
     "posthog-js": "^1.261.0",
-    "qrcode.react": "^3.1.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
     "react-csv": "^2.2.2",
     "react-i18next": "^12.3.1",
