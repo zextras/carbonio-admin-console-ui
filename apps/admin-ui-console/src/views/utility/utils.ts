@@ -17,6 +17,7 @@ import {
 	CLOSED,
 	INTERACTIVE,
 	LOCKED,
+	LOCKOUT,
 	MAINTENANCE,
 	MANAGE_NO_SEND,
 	NOT_SET,
@@ -860,6 +861,10 @@ export const AccountStatus = (t: TFunction): Array<{ value: string; label: strin
 	{
 		label: `${t('label.locked', 'Locked')} (${t('label.login_is_disabled', 'Login is disabled')})`,
 		value: LOCKED
+	},
+	{
+		label: `${t('label.lockout', 'Lockout')} (${t('label.login_is_disabled', 'Login is disabled')})`,
+		value: LOCKOUT
 	},
 	{
 		label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
