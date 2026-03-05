@@ -10,9 +10,7 @@
   user-select: none;
   vertical-align: middle;
   line-height: 1.5;
-  transition:
-    background-color 0.2s ease-out,
-    color 0.2s ease-out;
+  transition: background-color 0.2s ease-out, color 0.2s ease-out;
   outline: none;
   width: fit-content;
   height: fit-content;
@@ -45,6 +43,7 @@
 
 .content {
   display: inline-flex;
+  align-items: center;
   min-width: 0;
 }
 
@@ -63,10 +62,16 @@
 }
 
 .actionContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: fit-content;
 }
 
 .actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: fit-content;
   padding: calc(var(--action-spacing) / 2);
   border: none;
