@@ -23,7 +23,7 @@ import {
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -160,7 +160,7 @@ const EditAccountSecuritySection: FC = () => {
               mainAlignment="space-between"
             >
               <Row width="40%" mainAlignment="flex-start">
-                <QRCode data-testid="qrcode-password" size={179} value={qrData} />
+                <QRCodeSVG data-testid="qrcode-password" size={179} value={qrData} />
               </Row>
               <Row width="60%" mainAlignment="flex-start">
                 <Container>
