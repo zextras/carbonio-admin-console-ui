@@ -13,7 +13,7 @@ import {
     worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import DomainGalSettings from '../domain-gal-settings';

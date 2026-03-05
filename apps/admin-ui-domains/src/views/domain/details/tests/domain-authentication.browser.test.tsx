@@ -8,7 +8,6 @@ import { useDomainStore } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     createBrowserSoapAPIInterceptor,
-    getQueryClient,
     setupBrowserTest,
     worker,
 } from 'admin-ui-test-utils';
