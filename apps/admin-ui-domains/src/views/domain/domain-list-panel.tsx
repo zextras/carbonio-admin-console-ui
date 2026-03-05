@@ -475,10 +475,7 @@ const DomainListPanel: FC = () => {
         setIsDomainSelect(false);
       }
     },
-    style: {
-      width: '1.25rem',
-      height: '1.25rem',
-    },
+    size: '1.25rem',
     icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
