@@ -67,3 +67,8 @@ export const LIST_COS = 'listCos';
 export const CREATE_COS = 'createCos';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+
+// Storages API constants
+export const STORAGES_API_BASE_URL = '/services/storages/admin';
+export const STORAGES_API_VERSION = '2';
+export const STORAGES_API_VERSION_HEADER = 'X-API-Version';
