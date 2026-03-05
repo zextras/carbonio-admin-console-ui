@@ -234,15 +234,16 @@ const Chip = ({
                 onBlur={hideTooltipHandler}
                 onClick={clickHandler}
                 disabled={!!disabled || action.disabled}
-                style=
-                  {{
+                style={
+                  {
                     '--action-spacing': SIZES[size].spacing,
                     '--action-radius':
                       shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
                     background: action.background
                       ? resolveThemeColor(action.background, 'regular')
                       : undefined,
-                  } as React.CSSProperties}
+                  } as React.CSSProperties
+                }
               >
                 <icon-wc
                   icon={action.icon}
@@ -332,7 +333,7 @@ const Chip = ({
             size={SIZES[size].avatar}
             label={avatarLabel || (typeof label === 'string' && label) || ''}
             picture={avatarPicture}
-            background={error ? 'error.active' : avatarBackground}
+            background={error ? resolveThemeColor('error', 'active') : avatarBackground}
             color={error ? 'gray6' : avatarColor}
             shape={shape === 'regular' ? 'square' : shape}
             disabled={!!disabled}
