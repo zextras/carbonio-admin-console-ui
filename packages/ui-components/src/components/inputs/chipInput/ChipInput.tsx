@@ -625,8 +625,11 @@ const ChipInputComponent = <TValue = unknown,>({
         '--description-bg-color': errorBackgroundColor
           ? getThemeColorVar(errorBackgroundColor, 'regular')
           : 'transparent',
+        paddingTop: description ? '0.25rem' : undefined,
+        minHeight: description ? '1.125rem' : undefined,
+        lineHeight: description ? '1.5' : undefined,
       } as React.CSSProperties),
-    [errorBackgroundColor],
+    [description, errorBackgroundColor],
   );
 
   return (
