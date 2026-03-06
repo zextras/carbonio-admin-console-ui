@@ -243,20 +243,6 @@ describe('ManageDelegates (browser)', () => {
                 .element(page.getByText('globaladmin@example.com'))
                 .toBeInTheDocument();
         });
-
-        it('should display all three accounts in the table', async () => {
-            setupSearchDirectoryHandler();
-            await setupBrowserTest(<ManageDelegates />);
-            await expect
-                .element(page.getByText('delegated1@example.com'))
-                .toBeInTheDocument();
-            await expect
-                .element(page.getByText('delegated2@example.com'))
-                .toBeInTheDocument();
-            await expect
-                .element(page.getByText('globaladmin@example.com'))
-                .toBeInTheDocument();
-        });
     });
 
     describe('Empty state', () => {

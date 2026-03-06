@@ -73,7 +73,7 @@ function ThemeConfigsWrapper({
 
 describe('ThemeConfigs (browser)', () => {
 	describe('Rendering - Common sections', () => {
-		it('should render the Apperance section header', async () => {
+		it('should render the Appearance section header', async () => {
 			setupBrowserTest(<ThemeConfigsWrapper />);
 
 			await expect.element(page.getByText('Apperance')).toBeVisible();
