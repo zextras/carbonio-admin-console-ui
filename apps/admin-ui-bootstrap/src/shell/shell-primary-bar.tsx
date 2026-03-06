@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Padding, Popper, Row, Text } from '@zextras/ui-components';
+import { Button, Container, IconName, Padding, Popper, Row, Text } from '@zextras/ui-components';
 import {
-	type AppRoute,
-	type PrimaryBarView,
-	useAppStore,
-	useUtilityBarStore,
+  type AppRoute,
+  type PrimaryBarView,
+  useAppStore,
+  useUtilityBarStore,
 } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -28,7 +28,7 @@ type PrimaryBarItemProps = {
 
 const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
   const [open, setOpen] = useState(false);
-  const containerRef = useRef(undefined);
+  const containerRef = useRef(null);
   return (
     <>
       <Container
@@ -48,7 +48,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
               <Button
                 type="ghost"
                 color={'text'}
-                icon={view.component}
+                icon={view.component as IconName}
                 onClick={onClick}
                 size={'extralarge'}
                 className={styles.primaryBarButton}
@@ -157,8 +157,10 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
     <>
       <Container
         className={styles.primaryBarContainer}
-        data-sidebarisopen={isOpen}
         role="menu"
+        width={isOpen ? 192 : 44}
+        minWidth={44}
+        maxWidth={192}
         height="fill"
         background="gray6"
         orientation="vertical"

@@ -6,6 +6,7 @@
 import {
   Button,
   Container,
+  type IconName,
   Input,
   Padding,
   PasswordInput,
@@ -48,7 +49,7 @@ const Connection: FC<{
   const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
   const createSnackbar = useSnackbar();
   const [buttonColor, setButtonColor] = useState<string>('primary');
-  const [icon, setIcon] = useState<string>('ActivityOutline');
+  const [icon, setIcon] = useState<IconName>('ActivityOutline');
   const [buttonDetail, setButtonDetail] = useState(
     t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR'),
   );

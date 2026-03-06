@@ -7,22 +7,21 @@
 import '../../web-components/divider-wc';
 
 import { noop } from 'lodash-es';
-import React, { HTMLAttributes, useCallback, useContext, useRef } from 'react';
-import { ThemeContext } from 'styled-components';
+import React, { HTMLAttributes, useCallback, useRef } from 'react';
 
 import { CustomModal, CustomModalProps } from './CustomModal';
 import { ModalBody } from './modal-components/ModalBody';
 import { ModalFooter, ModalFooterProps } from './modal-components/ModalFooter';
 import { ModalHeader } from './modal-components/ModalHeader';
 
-function copyToClipboard(node: HTMLDivElement | null, windowObj: Window): void {
-  const el = windowObj.document.createElement('textarea');
+function copyToClipboard(node: HTMLDivElement | null, window: Window): void {
+  const el = window.document.createElement('textarea');
   if (el && node?.textContent) {
     el.value = node.textContent;
-    windowObj.document.body.appendChild(el);
+    window.document.body.appendChild(el);
     el.select();
-    windowObj.document.execCommand('copy');
-    windowObj.document.body.removeChild(el);
+    window.document.execCommand('copy');
+    window.document.body.removeChild(el);
   }
 }
 
@@ -62,20 +61,13 @@ const Modal = ({
   hideFooter = false,
   showCloseIcon = true,
   children,
-  containerWindow,
   closeIconTooltip,
   ref,
   ...rest
 }: ModalProps) => {
-  const { windowObj: themeWindowObj } = useContext(ThemeContext);
-  const windowObj = containerWindow ?? themeWindowObj;
-
   const modalBodyRef = useRef<HTMLDivElement | null>(null);
 
-  const onCopyClipboard = useCallback(
-    () => copyToClipboard(modalBodyRef.current, windowObj),
-    [windowObj],
-  );
+  const onCopyClipboard = useCallback(() => copyToClipboard(modalBodyRef.current, window), []);
 
   return (
     <CustomModal onClose={onClose} ref={ref} {...rest}>

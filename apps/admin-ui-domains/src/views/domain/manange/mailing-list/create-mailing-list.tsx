@@ -4,90 +4,71 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, HorizontalWizard, OverlayDivision } from '@zextras/ui-components';
+import { Button, Container, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
-import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { noop } from 'lodash-es';
+import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
-import { Section } from '../../../app/component/section-component';
 import MailingListMembersSection from './mailing-list-members-section';
 import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
 import { MailingListContext } from './mailinglist-context';
 import MailingListCreateSection from './mailinglist-create-section';
 
-interface MailingListDetailObj {
-  name: string;
-  dynamic: boolean;
-  zimbraIsACLGroup: string;
-  zimbraMailStatus: boolean;
-  displayName: string;
-  description: string;
-  zimbraHideInGal: boolean;
-  zimbraNotes: string;
-  memberURL: string;
-  members: Array<any>;
-  zimbraDistributionListSendShareMessageToNewMembers: boolean;
-  owners: Array<any>;
-  prefixName: string;
-  suffixName: string;
-  ldapQueryMembers: Array<any>;
-  allOwnersList: Array<any>;
-  ownerGrantEmailType: any;
-  ownerGrantEmails: Array<any>;
-}
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('label.new_distribution_list', 'New Distribution List')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+type MailingListDetailObj = {
+	name: string;
+	dynamic: boolean;
+	zimbraIsACLGroup: string;
+	zimbraMailStatus: boolean;
+	displayName: string;
+	description: string;
+	zimbraHideInGal: boolean;
+	zimbraNotes: string;
+	memberURL: string;
+	members: Array<any>;
+	zimbraDistributionListSendShareMessageToNewMembers: boolean;
+	owners: Array<any>;
+	prefixName: string;
+	suffixName: string;
+	ldapQueryMembers: Array<any>;
+	allOwnersList: Array<any>;
+	ownerGrantEmailType: any;
+	ownerGrantEmails: Array<any>;
 };
 
 const CreateMailingList: FC<{
-  setShowCreateMailingListView: any;
-  createMailingListReq: any;
-  isLoading: boolean;
+	setShowCreateMailingListView: any;
+	createMailingListReq: any;
+	isLoading: boolean;
 }> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
-  const { t } = useTranslation();
-  const [wizardData, setWizardData] = useState();
-  const domainInformation = useDomainStore((state) => state.domain);
+	const { t } = useTranslation();
+	const domainInformation = useDomainStore((state) => state.domain);
 
-  const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
-    name: '',
-    description: '',
-    dynamic: false,
-    displayName: '',
-    zimbraHideInGal: false,
-    zimbraIsACLGroup: '',
-    zimbraMailStatus: true,
-    zimbraNotes: '',
-    memberURL: LDAP,
-    members: [],
-    zimbraDistributionListSendShareMessageToNewMembers: false,
-    owners: [],
-    prefixName: '',
-    suffixName: '',
-    ldapQueryMembers: [],
-    allOwnersList: [],
-    ownerGrantEmailType: {
-      label: t('label.everyone', 'Everyone'),
-      value: PUB,
-    },
-    ownerGrantEmails: [],
-  });
+	const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
+		name: '',
+		description: '',
+		dynamic: false,
+		displayName: '',
+		zimbraHideInGal: false,
+		zimbraIsACLGroup: '',
+		zimbraMailStatus: true,
+		zimbraNotes: '',
+		memberURL: LDAP,
+		members: [],
+		zimbraDistributionListSendShareMessageToNewMembers: false,
+		owners: [],
+		prefixName: '',
+		suffixName: '',
+		ldapQueryMembers: [],
+		allOwnersList: [],
+		ownerGrantEmailType: {
+			label: t('label.everyone', 'Everyone'),
+			value: PUB,
+		},
+		ownerGrantEmails: [],
+	});
 
   const onCreate = useCallback(() => {
     createMailingListReq(
@@ -130,7 +111,7 @@ const CreateMailingList: FC<{
             }}
           />
         ),
-        PrevButton: (props: any) => null,
+        PrevButton: () => null,
         NextButton: (props: any) => (
           <Button
             {...props}
@@ -284,7 +265,7 @@ const CreateMailingList: FC<{
             }}
           />
         ),
-        PrevButton: (props: any) => null,
+        PrevButton: () => null,
         NextButton: (props: any) => (
           <Button
             {...props}
@@ -392,24 +373,7 @@ const CreateMailingList: FC<{
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '39.4rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -424,17 +388,18 @@ const CreateMailingList: FC<{
         }}
       >
         <MailingListContext.Provider value={{ mailingListDetail, setMailingListDetail }}>
-          <HorizontalWizard
-            steps={
-              mailingListDetail?.dynamic
-                ? dynamicMailingListSizardSteps
-                : standardMailingListSizardSteps
-            }
-            Wrapper={WizardInSection}
-            onChange={setWizardData}
-            onComplete={onComplete}
-            setToggleWizardSection={setShowCreateMailingListView}
-          />
+					<HorizontalWizard
+						steps={
+							mailingListDetail?.dynamic
+								? dynamicMailingListSizardSteps
+								: standardMailingListSizardSteps
+						}
+						title={t('label.new_distribution_list', 'New Distribution List')}
+						Wrapper={WizardInSection}
+						onChange={noop}
+						onComplete={onComplete}
+						setToggleWizardSection={setShowCreateMailingListView}
+					/>
         </MailingListContext.Provider>
       </Container>
     </>

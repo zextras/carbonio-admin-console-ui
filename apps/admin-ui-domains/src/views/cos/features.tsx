@@ -3,12 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  Container,Row, Text  } from '@zextras/ui-components';
-import {  useIsAdvanced  } from '@zextras/ui-shared';
-import {  FC, useCallback  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-
-import InheritedSwitch from '../utility/inherited-components/inherited-switch';
+import { Container, InheritedSwitch, Row, Text } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
+import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
 	featuresDetail: Record<string, string>;
@@ -55,7 +53,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.general_lbl', 'General')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -95,7 +93,7 @@ export const Features: FC<{
 						orientation="vertical"
 						padding={{ bottom: 'large' }}
 					>
-						<Text size="extralarge" weight="bold">
+						<Text  weight="bold">
 							{t('label.two_factor_auth', 'Second Factor Authentication')}
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -127,7 +125,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.mail', 'Mail')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -185,7 +183,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.contacts', 'Contacts')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -209,7 +207,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.calendar', 'Calendar')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -241,7 +239,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.files', 'Files')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -278,7 +276,7 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<Text  weight="bold">
 						{t('label.tasks', 'Tasks')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>

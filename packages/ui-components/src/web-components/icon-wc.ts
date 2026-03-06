@@ -3,17 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import './theme.css';
+import '../theme/theme.css';
 
 import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
+import { resolveThemeColor } from '../theme/theme-utils';
 import { type IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
-type IconSize = (typeof ICON_SIZES)[number];
+export type IconSize = (typeof ICON_SIZES)[number];
 
-const DEFAULT_ICON: IconName = 'AlertTriangleOutline';
+type IconSizeValue = IconSize | string;
+
+const DEFAULT_ICON = 'AlertTriangleOutline';
 
 export class IconWC extends LitElement {
   static override styles = css`
@@ -21,6 +26,10 @@ export class IconWC extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+    }
+
+    :host([clickable]) {
+      cursor: pointer;
     }
 
     svg {
@@ -37,35 +46,26 @@ export class IconWC extends LitElement {
     }
   `;
 
-  static override properties = {
-    icon: { type: String, reflect: true, attribute: 'icon' },
-    color: { type: String, reflect: true },
-    size: { type: String, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-  };
+  @property({ type: String, reflect: true })
+  accessor icon: IconName = DEFAULT_ICON;
 
-  icon: IconName = DEFAULT_ICON;
-  color = 'text';
-  size: IconSize = 'medium';
-  disabled = false;
+  @property({ type: String, reflect: true })
+  accessor color = 'text';
 
-  private getColorVariable(color: string): string {
-    const trimmed = color.trim();
+  @property({ type: String, reflect: true })
+  accessor size: IconSizeValue = 'medium';
 
-    // Check if it's a hex color (3, 4, 6, or 8 digit formats)
-    const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
-    if (hexPattern.test(trimmed)) {
-      return trimmed;
+  @property({ type: Boolean, reflect: true })
+  accessor disabled = false;
+
+  @property({ attribute: false })
+  accessor clickHandler: ((event: Event) => void) | undefined = undefined;
+
+  private getSizeValue(size: IconSizeValue): string {
+    if (/^[\d.]+(rem|px|em|vh|vw|%)$/.test(size)) {
+      return size;
     }
-
-    // For named colors, sanitize and return as CSS variable
-    const sanitized = trimmed.replace(/[^a-zA-Z0-9-]/g, '');
-    return `var(--color-${sanitized}-regular, var(--color-text-regular))`;
-  }
-
-  private getSizeVariable(size: IconSize): string {
-    // Validate size is one of allowed values
-    const validSize = ICON_SIZES.includes(size) ? size : 'medium';
+    const validSize = ICON_SIZES.includes(size as IconSize) ? (size as IconSize) : 'medium';
     return `var(--icon-size-${validSize}, var(--icon-size-medium, 1rem))`;
   }
 
@@ -73,36 +73,36 @@ export class IconWC extends LitElement {
     return iconRegistry[this.icon] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
-  protected override willUpdate(changedProperties: Map<PropertyKey, unknown>): void {
-    if (changedProperties.has('color') || changedProperties.has('size')) {
-      this.updateStyles();
+  private handleClick(event: Event): void {
+    if (this.disabled) {
+      event.stopPropagation();
+      return;
     }
-  }
-
-  private updateStyles(): void {
-    this.style.setProperty('--icon-color', this.getColorVariable(this.color));
-    this.style.setProperty('--icon-size', this.getSizeVariable(this.size));
-  }
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.updateStyles();
+    this.clickHandler?.(event);
   }
 
   override render(): TemplateResult | typeof nothing {
     const svgContent = this.getSvgContent();
 
-    if (!svgContent) {
-      return nothing;
+    if (this.clickHandler) {
+      this.setAttribute('clickable', '');
+    } else {
+      this.removeAttribute('clickable');
     }
+
+    const styles = styleMap({
+      '--icon-color': resolveThemeColor(this.color, 'regular'),
+      '--icon-size': this.getSizeValue(this.size),
+    });
 
     return html`
       <svg
+        style=${styles}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        aria-hidden="true"
         role="img"
         data-testid="icon: ${this.icon}"
+        @click=${this.handleClick}
       >
         ${unsafeSVG(svgContent)}
       </svg>
@@ -110,12 +110,12 @@ export class IconWC extends LitElement {
   }
 }
 
-if (!customElements.get('icon-wc')) {
-  customElements.define('icon-wc', IconWC);
-}
-
 declare global {
   interface HTMLElementTagNameMap {
     'icon-wc': IconWC;
   }
+}
+
+if (!customElements.get('icon-wc')) {
+  customElements.define('icon-wc', IconWC);
 }

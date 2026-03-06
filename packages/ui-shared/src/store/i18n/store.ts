@@ -55,7 +55,7 @@ const defaultI18nInitOptions: InitOptions = {
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
   },
-  missingKeyHandler: (_, __, key) => {
+  missingKeyHandler: (key) => {
     console.warn(`Missing translation with key '${key}'`);
   },
   backend: {

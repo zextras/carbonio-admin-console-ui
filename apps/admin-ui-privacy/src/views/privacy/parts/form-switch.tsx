@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Switch } from '@zextras/ui-components';
+import { Container, ListRow, Switch } from '@zextras/ui-components';
 
-import ListRow from '../../list/list-row';
+
 
 export const FormSwitch = ({
   fieldValue,

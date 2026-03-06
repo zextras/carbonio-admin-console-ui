@@ -10,10 +10,9 @@ import { Trans, useTranslation } from 'react-i18next';
 export const ResetTheme: FC<{
   title: string;
   isOpenResetDialog: boolean;
-  isRequestInProgress: boolean;
   closeHandler: () => void;
   onResetHandler: () => void;
-}> = ({ title, isOpenResetDialog, isRequestInProgress, closeHandler, onResetHandler }) => {
+}> = ({ title, isOpenResetDialog, closeHandler, onResetHandler }) => {
   const [t] = useTranslation();
   return (
     <Modal
@@ -31,12 +30,7 @@ export const ResetTheme: FC<{
           />
           <Row style={{ gap: '1rem' }}>
             <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={closeHandler} />
-            <Button
-              label={t('label.yes', 'Yes')}
-              color="error"
-              onClick={onResetHandler}
-              disabled={isRequestInProgress}
-            />
+            <Button label={t('label.yes', 'Yes')} color="error" onClick={onResetHandler} />
           </Row>
         </Container>
       }
@@ -54,7 +48,7 @@ export const ResetTheme: FC<{
           </Text>
         </Padding>
         <Padding bottom="medium">
-          <Text size="extralarge" overflow="break-word">
+          <Text  overflow="break-word">
             <Trans
               i18nKey="label.reset_whitelabel_settings_content_2"
               defaults="If you click YES button all data will be lost."

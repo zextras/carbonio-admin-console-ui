@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   Container,  CustomTextArea,  Input,  Padding,  Row,  Select,  SingleSelectionOnChange,  Text } from '@zextras/ui-components';
-import {  ChangeEvent, FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { Container, CustomTextArea, Input, ListRow, Padding, Row, Select, SingleSelectionOnChange, Text } from '@zextras/ui-components';
+import { ChangeEvent, FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  AccountType  } from '../../../../types/account';
-import {  TimeItems  } from '../../../../types/general';
-import ListRow from '../../list/list-row';
+import { AccountType } from '../../../../types/account';
+import { TimeItems } from '../../../../types/general';
 
 type QuotaProps = {
   isAdvanced: boolean;
@@ -83,7 +82,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.quotas}
       </Text>
       <Row mainAlignment="flex-start" width="100%">

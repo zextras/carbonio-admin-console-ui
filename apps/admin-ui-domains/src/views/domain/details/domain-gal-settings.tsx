@@ -12,6 +12,7 @@ import {
   DropdownItem,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -55,7 +56,6 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
@@ -1020,7 +1020,7 @@ const DomainGalSettings: FC = () => {
         hideButton: true,
         replace: true,
       });
-    } catch (error: any) {
+    } catch {
       createSnackbar({
         key: 'error',
         severity: 'error',

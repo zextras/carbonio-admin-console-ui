@@ -6,19 +6,31 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { AccountListDirectoryResponse, SearchDirectoryRequest } from '../../types';
 import { ASC } from '../constants';
 
-export const accountListDirectory = async (
-	attr: string,
-	type: string,
-	domainName: string | undefined,
-	query: string,
-	offset: number,
-	limit: number,
-	sortBy?: string,
-	sortAscending?: string
-): Promise<any> => {
-	const request: any = {
+type AccountListDirectoryParams = {
+	attr: string;
+	type: string;
+	domainName: string;
+	query: string;
+	offset: number;
+	limit: number;
+	sortBy?: string;
+	sortAscending?: string;
+};
+
+export const accountListDirectory = async ({
+	attr,
+	type,
+	domainName,
+	query,
+	offset,
+	limit,
+	sortBy,
+	sortAscending,
+}: AccountListDirectoryParams): Promise<AccountListDirectoryResponse> => {
+	const request: SearchDirectoryRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		offset,
 		limit,
@@ -27,7 +39,7 @@ export const accountListDirectory = async (
 		attrs: attr,
 		types: type
 	};
-	if (domainName && domainName !== '') {
+	if (domainName !== '') {
 		request.domain = domainName;
 	}
 	if (query !== '') {

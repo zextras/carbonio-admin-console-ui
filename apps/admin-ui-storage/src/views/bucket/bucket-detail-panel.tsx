@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
@@ -28,7 +29,6 @@ import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import ListRow from '../list/list-row';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
@@ -170,7 +170,7 @@ const BucketDetailPanel: FC = () => {
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<string[]>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
-  const [bucketType, setBucketType] = useState('');
+  const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
   const [allBucketList, setAllBucketList] = useState([]);
   const [connectionData, setConnectionData] = useState<objectType | undefined>();
@@ -342,7 +342,7 @@ const BucketDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('buckets.bucket_list', 'Buckets List')}
           </Text>
         </Row>

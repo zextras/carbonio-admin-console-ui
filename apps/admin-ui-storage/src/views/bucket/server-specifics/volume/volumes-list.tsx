@@ -738,7 +738,7 @@ const VolumesDetailPanel: FC = () => {
           />
         )}
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('volume.serverName_volumes', '{{serverName}} Volumes', {
               serverName: selectedServerName,
             })}

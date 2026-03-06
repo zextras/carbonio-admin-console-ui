@@ -11,9 +11,11 @@ import {
   CustomTextArea,
   DropDownInput,
   HoverableRowFactory,
+  InheritedSelect,
   Input,
   Modal,
   Padding,
+  Paging,
   Row,
   Select,
   Switch,
@@ -43,9 +45,7 @@ import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
-import Paging from '../../../../components/paging';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import {
   ABQStatus,
   AccountStatus,

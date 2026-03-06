@@ -7,14 +7,13 @@
 import {
   Button,
   Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
+  Displayer,
+  IconName,
   Input,
   Padding,
   PasswordInput,
   Row,
   Select,
-  Table,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -26,137 +25,7 @@ import { TestConnectionObjectType } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import Displayer from '../components/displayer';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
-
-const DetailsHeaders = [
-  {
-    id: 'service',
-    label: 'Service',
-    width: '40%',
-    bold: true,
-  },
-  {
-    id: 'version',
-    label: 'Version',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'rtstatus',
-    label: 'RT Status',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'type',
-    label: 'Type',
-    width: '30%',
-    bold: true,
-  },
-  {
-    id: 'samrtstatus',
-    label: 'SmartStaus',
-    width: '20%',
-    bold: true,
-  },
-];
-const serverItems = [
-  {
-    id: '1',
-
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Enabled',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Enabled',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-  {
-    id: '1',
-    name: 'myserver.name',
-    version: '4.0.0',
-    rtstatus: 'Stopped',
-    type: 'local',
-    samrtstatus: 'disbled',
-  },
-];
-
-const ServerListTabel: FC<{
-  volumes: Array<any>;
-  selectedRows: any;
-  onSelectionChange: any;
-}> = ({ volumes, selectedRows, onSelectionChange }) => {
-  const [t] = useTranslation();
-  const tableRows = useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: v.id,
-        columns: [
-          <Text key={i} weight="light">
-            {v.name}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.version}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.rtstatus}
-          </Text>,
-          <Text key={i} weight="light">
-            {v.type}
-          </Text>,
-          <Text color="text" key={i} weight="light">
-            {v.samrtstatus}
-          </Text>,
-        ],
-        clickable: true,
-      })),
-    [volumes],
-  );
-
-  return (
-    <Container crossAlignment="flex-start">
-      <Table
-        headers={DetailsHeaders}
-        rows={tableRows}
-        showCheckbox={false}
-        multiSelect={false}
-        selectedRows={selectedRows}
-        onSelectionChange={onSelectionChange}
-        RowFactory={HoverableRowFactory}
-        HeaderFactory={CustomHeaderFactory}
-      />
-      {tableRows.length === 0 && (
-        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text>{t('label.empty_table', 'Empty Table')}</Text>
-        </Row>
-      )}
-    </Container>
-  );
-};
 
 const EditBucketDetailPanel: FC<{
   setShowEditDetailView: any;
@@ -195,7 +64,7 @@ const EditBucketDetailPanel: FC<{
   const [verify, setVerify] = useState('primary');
 
   const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
-  const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
+  const [buttonIcon, setButtonIcon] = useState<IconName>('ActivityOutline');
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [previousDetail, setPreviousDetail] = useState<any>({});
   const [showURL, setShowURL] = useState(true);
@@ -255,7 +124,7 @@ const EditBucketDetailPanel: FC<{
             'SOMETHING WENT WRONG. CHECK DATA AND TRY AGAIN',
           ),
         );
-        setButtonIcon('alert-triangle');
+        setButtonIcon('AlertTriangle');
         setCheckError(
           t(
             'label.bucket_verification_failed_message',
@@ -412,15 +281,6 @@ const EditBucketDetailPanel: FC<{
     ],
   );
 
-  const onBucketTypeSelectionChange = useCallback(
-    (e: any): void => {
-      const volumeObject: any = bucketTypeItems.find((item: any): any => item.value === e);
-      setBucketType(volumeObject);
-      checkIfChanged('storeType', volumeObject?.value);
-    },
-    [bucketTypeItems, checkIfChanged],
-  );
-
   useEffect(() => {
     const upperBucketType =
       bucketDetail?.storeType !== EMC && bucketDetail?.storeType !== AMAZON_WEB_SERVICE_S3
@@ -522,19 +382,9 @@ const EditBucketDetailPanel: FC<{
     setBucketType(bucketTypeValue);
   }, [bucketDetail, bucketRegions, bucketRegionsInAlibaba, bucketTypeItems]);
 
-  // useEffect(() => {
-  // 	if (bucketDetail.storeType !== '') {
-  // 		if (bucketDetail.storeType === undefined) {
-  // 			setShowPrefix(false);
-  // 		} else {
-  // 			setShowPrefix(true);
-  // 		}
-  // 	}
-  // }, [bucketType, bucketDetail]);
-
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       color: 'error',
       label: t('label.delete', 'delete'),
       onClick: (): void => {
@@ -555,7 +405,7 @@ const EditBucketDetailPanel: FC<{
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {title}
           </Text>
         </Row>

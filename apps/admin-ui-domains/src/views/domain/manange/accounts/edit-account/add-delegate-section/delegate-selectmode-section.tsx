@@ -21,8 +21,8 @@ const DelegateSelectModeSection: FC = () => {
   const [isDelegateAccountListExpand, setIsDelegateAccountListExpand] = useState(false);
   const DELEGETES_TYPE = useMemo(() => delegateType(t), [t]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(20);
+  const offset = 0;
+  const limit = 20;
   const context = useContext(AccountContext);
   const { deligateDetail, setDeligateDetail, accountDetail } = context;
 
@@ -127,7 +127,7 @@ const DelegateSelectModeSection: FC = () => {
   };
 
   const customIconDetail = {
-    icon: 'GlobeOutline',
+    icon: 'GlobeOutline' as const,
     color: 'text',
     onClick: (): void => {
       setIsDelegateAccountListExpand(!isDelegateAccountListExpand);

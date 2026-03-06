@@ -7,7 +7,7 @@
 import '@zextras/ui-components';
 
 declare module '*.jsx';
-n
+
 declare module '*.module.css' {
   const classes: { [key: string]: string };
   export default classes;

@@ -1,0 +1,86 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.textArea {
+	resize: none;
+	width: 100%;
+	max-height: 100%;
+	overflow-y: hidden;
+	outline: none;
+	background: transparent;
+	font-size: var(--font-size-medium);
+	font-weight: var(--font-weight-regular);
+	font-family: var(--font-family);
+	line-height: 1.5;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.textArea:disabled {
+	color: var(--text-color-disabled);
+}
+
+.textArea::placeholder {
+	color: transparent;
+	font-size: 0;
+	user-select: none;
+}
+
+.growContainer {
+	width: 100%;
+	height: auto;
+	margin-top: var(--grow-container-margin-top);
+	max-height: var(--grow-max-height);
+	overflow-y: auto;
+	font-size: var(--font-size-medium);
+	font-weight: var(--font-weight-regular);
+	font-family: var(--font-family);
+	line-height: 1.5;
+	cursor: auto;
+	display: grid;
+}
+
+.growContainer::after {
+	content: attr(data-replicated-value) ' ';
+	white-space: pre-wrap;
+	visibility: hidden;
+}
+
+.growContainer > textarea,
+.growContainer::after {
+	grid-area: 1 / 1 / 2 / 2;
+}
+
+.growContainer::-webkit-scrollbar {
+	width: 0.5rem;
+}
+
+.growContainer::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+.growContainer::-webkit-scrollbar-thumb {
+	background-color: var(--color-gray2-regular);
+	border-radius: 0.25rem;
+}
+
+.label {
+	position: absolute;
+	top: var(--label-top);
+	transform: var(--label-transform);
+	font-size: var(--label-font-size);
+}
+
+.labelFocused {
+	top: 0.0625rem;
+	transform: translateY(0);
+	font-size: var(--font-size-extrasmall);
+}
+
+.relativeContainer {
+	position: relative;
+}

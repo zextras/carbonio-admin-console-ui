@@ -5,11 +5,11 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSnackbar } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
+import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
 
 type LicenseResponse = {

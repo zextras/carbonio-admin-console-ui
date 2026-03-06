@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, Row, SnackbarManager } from '@zextras/ui-components';
+import { Row } from '@zextras/ui-components';
 import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
 import AppViewContainer from './app-view-container';
-import ShellContextProvider from './shell-context-provider';
-import ShellHeader from './shell-header';
+import { ShellHeader } from './shell-header';
 import ShellNavigationBar from './shell-navigation-bar';
 
 function getDivStyle() {
@@ -27,34 +26,18 @@ function getDivStyle() {
   } as const;
 }
 
-function Shell() {
+export default function ShellView() {
   const activeRoute = useCurrentRoute();
   return (
     <div style={getDivStyle()}>
-      <ShellHeader
-        // @ts-expect-error - needs a fix
-        activeRoute={activeRoute}
-      >
+      <ShellHeader activeRoute={activeRoute}>
         <ShellUtilityBar />
       </ShellHeader>
       <Row crossAlignment="unset" style={{ position: 'relative', flexGrow: '1' }}>
         <ShellNavigationBar activeRoute={activeRoute} />
-        {/* @ts-expect-error - needs a fix */}
-        <AppViewContainer activeRoute={activeRoute} />
+        <AppViewContainer />
         <ShellUtilityPanel />
       </Row>
     </div>
-  );
-}
-
-export default function ShellView() {
-  return (
-    <ShellContextProvider>
-      <ModalManager>
-        <SnackbarManager>
-          <Shell />
-        </SnackbarManager>
-      </ModalManager>
-    </ShellContextProvider>
   );
 }

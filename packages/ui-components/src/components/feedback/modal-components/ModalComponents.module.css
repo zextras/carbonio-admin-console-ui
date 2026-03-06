@@ -1,0 +1,50 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.modalContainer {
+  display: flex;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--padding-medium) var(--padding-medium) 0;
+  background-color: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s ease-out;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.modalContainer.open {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modalWrapper {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.modalContent {
+  position: relative;
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  outline: none;
+  pointer-events: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+

@@ -9,7 +9,6 @@ import {
   Container,
   DefaultTabBarItem,
   Modal,
-  OverlayDivision,
   Padding,
   Row,
   TabBar,
@@ -534,7 +533,7 @@ const EditAccount: FC<{
       if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
         if (accountDetail?.filesQuotaLimit) {
           setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            (res) => {
+            () => {
               if (modifiedKeys?.length === 0) {
                 createSnackbar({
                   key: 'success',
@@ -551,7 +550,7 @@ const EditAccount: FC<{
             },
           );
         } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
+          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
             if (modifiedKeys?.length === 0) {
               createSnackbar({
                 key: 'success',
@@ -942,7 +941,7 @@ const EditAccount: FC<{
   const onDeleteHandler = useCallback(() => {
     setIsRequestInProgress(true);
     deleteAccount(selectedAccount?.id)
-      .then((data: any) => {
+      .then(() => {
         onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
         setShowEditAccountView(false);
         setIsAccountDeleted(true);
@@ -991,24 +990,7 @@ const EditAccount: FC<{
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '58.75rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {(!accountDetail?.name || isLoading) && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -1064,7 +1046,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="error"
                 onClick={onDeleteAccount}
-                icon="TrashOutline"
+                icon="Trash2Outline"
                 disabled={
                   !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
                 }
@@ -1079,7 +1061,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="primary"
                 onClick={onViewMail}
-                icon="EmailOutline"
+                icon="MailModOutline"
                 disabled={!allowSetPrivacy}
                 label={t('label.view_mail', 'VIEW MAIL')}
               />
@@ -1231,7 +1213,7 @@ const EditAccount: FC<{
               (accountUserType(selectedAccount) === 'System' ||
                 accountUserType(selectedAccount) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
-                  <Text color="warning" size="extralarge" overflow="break-word">
+                  <Text color="warning"  overflow="break-word">
                     {t(
                       'label.deleting_account_warning_content',
                       'Deleting the system account could impact the system stability.',
@@ -1249,7 +1231,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1258,7 +1240,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Close it to preserve</bold> the data, instead."

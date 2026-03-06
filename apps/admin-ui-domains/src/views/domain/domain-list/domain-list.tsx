@@ -4,14 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  Paging,
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -22,8 +23,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
-import Paging from '../../components/paging';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
@@ -352,13 +351,7 @@ const DomainList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {domainList.length === 0 && !isRequestInProgress && (

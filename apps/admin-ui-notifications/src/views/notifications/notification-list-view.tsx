@@ -4,11 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from '@zextras/ui-components';
+import { Container, ListRow, NotificationView } from '@zextras/ui-components';
 import { FC } from 'react';
-
-import NotificationView from '../app/shared/notification-view';
-import ListRow from '../list/list-row';
 
 const NotificationListView: FC = () => (
 	<Container background="gray6" height="auto" padding={{ top: 'large' }}>

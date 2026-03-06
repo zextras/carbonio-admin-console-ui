@@ -7,6 +7,7 @@ import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -43,7 +44,6 @@ import {
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
 type SelectValue = SelectItem[] | string | null;
 

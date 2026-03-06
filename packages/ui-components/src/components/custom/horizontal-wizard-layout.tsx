@@ -299,12 +299,13 @@ export const HorizontalWizardLayout = ({
     </Row>
   );
 
-  return (
-    <Wrapper
-      wizard={wizard}
-      wizardFooter={wizardFooter}
-      setToggleWizardSection={setToggleWizardSection}
-      externalData={externalData}
-    />
-  );
+	return (
+		<Wrapper
+			title={title}
+			wizard={wizard}
+			wizardFooter={wizardFooter}
+			setToggleWizardSection={setToggleWizardSection}
+			externalData={externalData}
+		/>
+	);
 };

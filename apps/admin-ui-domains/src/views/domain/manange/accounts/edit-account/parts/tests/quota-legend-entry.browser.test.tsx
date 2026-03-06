@@ -16,7 +16,7 @@ describe('QuotaLegendEntry', () => {
   });
 
   it('should render a color indicator', async () => {
-    await setupBrowserTest(<QuotaLegendEntry label="Used" used={1048576} color="red" />);
+    await setupBrowserTest(<QuotaLegendEntry label="Used" used={1048576} color="#f00" />);
 
     expect(page.getByTestId('color-indicator')).toHaveStyle('background: red');
   });

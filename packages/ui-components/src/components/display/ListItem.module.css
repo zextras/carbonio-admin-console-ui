@@ -1,0 +1,24 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.listItem {
+	user-select: none;
+	outline: none;
+	background: var(--item-bg);
+	transition: background 0.2s ease-out;
+}
+
+.listItem:focus {
+	background: var(--item-bg-focus);
+}
+
+.listItem:hover {
+	background: var(--item-bg-hover);
+}
+
+.listItem:active {
+	background: var(--item-bg-active);
+}

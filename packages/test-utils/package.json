@@ -1,14 +1,13 @@
 {
   "name": "admin-ui-test-utils",
-  "composite": true,
   "description": "admin-ui-test-utils",
-  "types": "dist/index.d.ts",
+  "types": "./dist-types/index.d.ts",
   "exports": {
     ".": {
       "browser": "./src/index.browser.ts",
       "jsdom": "./src/index.node.ts",
-      "default": "./src/index.ts",
-      "types": "./dist/index.d.ts"
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/index.ts"
     }
   },
   "engines": {
@@ -32,19 +31,22 @@
   "devDependencies": {
     "@testing-library/user-event": "^14.6.1",
     "@vitest/browser": "^4.0.5",
+    "clsx": "^2.1.1",
     "eslint": "^9.34.0",
+    "eslint-plugin-css-modules": "^2.12.0",
     "msw": "^2.12.2",
-    "styled-components": "^5.3.11",
+    "tailwindcss": "^4.2.1",
+    "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.0.5",
     "vitest-browser-react": "^2.0.2"
   },
   "peerDependencies": {
-    "@zextras/ui-components": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "dependencies": {
     "@posthog/react": "^1.8.1",
+    "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^22.5.1",
     "react": "^19.2.3",

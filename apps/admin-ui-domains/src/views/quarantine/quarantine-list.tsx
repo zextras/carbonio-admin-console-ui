@@ -8,8 +8,10 @@ import {
   Button,
   Collapse,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   ModalOverlay,
   Padding,
@@ -36,12 +38,9 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-import styles from './quarantine-list.module.css';
 
 type AttachmentPart = {
   part?: string;
@@ -277,7 +276,7 @@ const MessageListTable: FC<{
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <spinner-wc></spinner-wc>
             </Container>
           )}
           {tableRows.length === 0 && !requestInprogress && (
@@ -1251,13 +1250,7 @@ const QuarantineList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               </>
             )}
@@ -1346,7 +1339,7 @@ const QuarantineList: FC = () => {
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <div className={styles.overlayStyle} />}
+          {messageViewLoading && <spinner-wc></spinner-wc>}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"
@@ -1535,7 +1528,7 @@ const QuarantineList: FC = () => {
                     type="ghost"
                   />
                 </Row>
-                <Collapse orientation="vertical" open={showTextMsgView}>
+                <Collapse open={showTextMsgView}>
                   <Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
                     <Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
                       {message?.body?.content}

@@ -4,51 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
 
-const ModalOverlayContainer = styled.div`
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.15);
-	box-shadow: 0 0 12px -1px #888;
-	cursor: pointer;
-	z-index: 998;
-`;
-
-const ModalSubOverlayContainer = styled.div<{ maxWidth?: string }>`
-	max-width: ${(props): string => props.maxWidth ?? '39.375rem'};
-	width: 100%;
-	height: 100vh;
-	float: right;
-	position: relative;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-`;
+import styles from './modal-overlay.module.css';
 
 type ModalOverlayProps = {
-	open: boolean;
-	maxWidth?: string;
-	children?: React.ReactNode;
+  open: boolean;
+  maxWidth?: string;
+  children?: React.ReactNode;
 };
 
 export const ModalOverlay = ({ children, open, maxWidth }: ModalOverlayProps) => {
-	const ref = useRef<any>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (open) {
-			document.body.style.overflowY = 'hidden';
-		}
-	}, [open]);
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflowY = 'hidden';
+    }
+  }, [open]);
 
-	return (
-		<ModalOverlayContainer>
-			<ModalSubOverlayContainer ref={ref} maxWidth={maxWidth}>
-				{children}
-			</ModalSubOverlayContainer>
-		</ModalOverlayContainer>
-	);
+  return (
+    <div className={styles.overlayContainer}>
+      <div
+        ref={ref}
+        className={styles.subOverlayContainer}
+        style={
+          maxWidth ? ({ '--modal-overlay-max-width': maxWidth } as React.CSSProperties) : undefined
+        }
+      >
+        {children}
+      </div>
+    </div>
+  );
 };

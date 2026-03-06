@@ -10,6 +10,7 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Table,
@@ -24,7 +25,6 @@ import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { isValidEmail } from '../../../utility/utils';
 
 export const SendInviteAccounts: FC<any> = ({
@@ -164,7 +164,7 @@ export const SendInviteAccounts: FC<any> = ({
     }
   }, [newSentInviteValue, searchMemberCall]);
 
-  const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+  const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (

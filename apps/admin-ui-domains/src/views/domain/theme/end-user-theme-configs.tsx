@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedInput, Padding, Text } from '@zextras/ui-components';
+import { Container, InheritedInput, ListRow, Padding, Text } from '@zextras/ui-components';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types';
-import ListRow from '../../list/list-row';
 import { isValidHttpsUrl } from '../../utility/utils';
 
 const HttpsErrorMessage: FC = () => {
