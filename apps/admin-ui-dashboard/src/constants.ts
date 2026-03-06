@@ -25,12 +25,6 @@ export const LIST = 'list';
 export const TRUE = 'TRUE';
 export const DESC = 'desc';
 
-// Notification Types
-export const NOTIFICATION_INFORMATION = 'Information';
-export const NOTIFICATION_WARNING = 'Warning';
-export const NOTIFICATION_ERROR = 'Error';
-export const NOTIFICATION_ALL = 'All';
-
 // Analytics
 export const PRIMARY_BAR_DASHBOARD = 'pb_dashboard';
 

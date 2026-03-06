@@ -11,9 +11,11 @@ import {
   Input,
   ModalOverlay,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -37,8 +39,6 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
@@ -57,8 +57,6 @@ const DomainMailingList: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
-  const [mailingListItem, setMailingListItem] = useState([]);
-  const [selectedFromRow, setSelectedFromRow] = useState<any>({});
   const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
   const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
   const timer = useRef<any>(null);
@@ -193,7 +191,7 @@ const DomainMailingList: FC = () => {
             setTotalAccount(data?.searchTotal);
           }
           const mList: any[] = [];
-          dlList.forEach((item: any, index: number) => {
+          dlList.forEach((item: any) => {
             mList.push({
               id: item?.id,
               columns: [
@@ -204,7 +202,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -224,7 +221,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -239,7 +235,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -256,7 +251,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -271,7 +265,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -288,7 +281,6 @@ const DomainMailingList: FC = () => {
                   onClick={(e: { stopPropagation: () => void }): void => {
                     e.stopPropagation();
                     setSelectedMailingList(item);
-                    setSelectedFromRow(item);
                     handleClick(e);
                   }}
                 >
@@ -305,7 +297,6 @@ const DomainMailingList: FC = () => {
             });
           });
           setMailingList(mList);
-          setMailingListItem(dlList);
           setIsUpdateRecord(false);
         } else {
           setTotalAccount(0);
@@ -361,14 +352,6 @@ const DomainMailingList: FC = () => {
     searchMailingListQuery(searchString, statusFilter);
   }, [searchString, searchMailingListQuery, statusFilter]);
 
-  const onDetailClick = useCallback(() => {
-    const selectedTableItem = mailingListItem.find((item: any) => selectedDlRow[0] === item?.id);
-    setSelectedFromRow(selectedTableItem);
-    setSelectedMailingList(selectedTableItem);
-    setShowMailingListDetailView(true);
-    setShowMailingListDetailView(true);
-  }, [selectedDlRow, mailingListItem]);
-
   useEffect(() => {
     if (showMailingListDetailView !== undefined && !showMailingListDetailView) {
       setShowMailingListDetailView(false);
@@ -411,7 +394,7 @@ const DomainMailingList: FC = () => {
             });
           }
         })
-        .catch((error) => {
+        .catch(() => {
           setIsUpdateRecord(true);
         });
     },
@@ -478,7 +461,6 @@ const DomainMailingList: FC = () => {
       dynamic: boolean,
       displayName: string,
       zimbraHideInGal: boolean,
-      zimbraIsACLGroup: boolean,
       zimbraMailStatus: boolean,
       zimbraNotes: string,
       memberURL: string,
@@ -730,7 +712,6 @@ const DomainMailingList: FC = () => {
                 }}
                 selectedRows={selectedDlRow}
                 onSelectionChange={(selected: any): void => {
-                  setSelectedFromRow(mailingListItem.find((item: any) => selected[0] === item?.id));
                   setSelectedDlRow(selected);
                 }}
                 RowFactory={HoverableRowFactory}
@@ -743,13 +724,7 @@ const DomainMailingList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {mailingList.length === 0 && !isRequestInProgress && (

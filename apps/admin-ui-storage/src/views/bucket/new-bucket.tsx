@@ -4,30 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button,HorizontalWizard } from '@zextras/ui-components';
-import { FC, useCallback } from 'react';
+import { Button, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
+import { type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Section } from '../app/component/section-component';
 import Connection from './connection';
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('buckets.new.bucket_connection', 'Bucket Connection')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const NewBucket: FC<{
   setToggleWizardSection: any;
@@ -97,14 +78,15 @@ const NewBucket: FC<{
     [setToggleWizardSection, setDetailsBucket, setConnectionData],
   );
 
-  return (
-    <HorizontalWizard
-      steps={wizardSteps}
-      Wrapper={WizardInSection}
-      onComplete={onComplete}
-      setToggleWizardSection={setToggleWizardSection}
-      externalData={bucketType}
-    />
-  );
+	return (
+		<HorizontalWizard
+			steps={wizardSteps}
+			title={t('buckets.new.bucket_connection', 'Bucket Connection')}
+			Wrapper={WizardInSection}
+			onComplete={onComplete}
+			setToggleWizardSection={setToggleWizardSection}
+			externalData={bucketType}
+		/>
+	);
 };
 export default NewBucket;

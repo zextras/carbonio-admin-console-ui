@@ -4,32 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useContext } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeContext } from 'styled-components';
 
 type PortalProps = {
-	/** The children to render into the `container` */
-	children: React.ReactElement;
-	/**
-	 * HTML node where to insert the Portal's children.
-	 * The default value is 'windowObj.document'.
-	 * */
-	container?: Element;
-	/** Flag to show or hide Portal's content */
-	show?: boolean;
-	/** Flag to disable the Portal implementation */
-	disablePortal?: boolean;
+  /** The children to render into the `container` */
+  children: React.ReactElement;
+  /**
+   * HTML node where to insert the Portal's children.
+   * The default value is 'windowObj.document'.
+   * */
+  container?: Element;
+  /** Flag to show or hide Portal's content */
+  show?: boolean;
+  /** Flag to disable the Portal implementation */
+  disablePortal?: boolean;
 };
 
 const Portal = ({ children, container, show = false, disablePortal = false }: PortalProps) => {
-	const { windowObj } = useContext(ThemeContext);
+  if (!show) return null;
 
-	if (!show) return null;
+  if (disablePortal) return children;
 
-	if (disablePortal) return children;
-
-	return ReactDOM.createPortal(children, container ?? windowObj.document.body);
+  return ReactDOM.createPortal(children, container ?? window.document.body);
 };
 
 export { Portal };

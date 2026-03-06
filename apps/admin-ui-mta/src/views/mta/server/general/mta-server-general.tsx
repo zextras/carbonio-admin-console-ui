@@ -7,6 +7,9 @@ import {
   Button,
   Container,
   InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  ListRow,
   Padding,
   Row,
   Text,
@@ -44,10 +47,7 @@ import {
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';
-import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
-import InheritedSelect from '../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
 import { validateIpAddress } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {

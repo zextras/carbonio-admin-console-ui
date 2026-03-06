@@ -9,6 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
+  ListRow,
   ModalOverlay,
   Row,
   Table,
@@ -25,7 +26,6 @@ import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
-import ListRow from '../../list/list-row';
 import MTAStatsMail from './mta-stats-mail';
 
 const MTAStats: FC = () => {
@@ -480,7 +480,7 @@ const MTAStats: FC = () => {
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <spinner-wc></spinner-wc>
             </Container>
           )}
           {mtaServerList.length === 0 && !requestInprogress && (

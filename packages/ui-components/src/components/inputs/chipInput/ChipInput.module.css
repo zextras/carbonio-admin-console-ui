@@ -1,0 +1,105 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* ContainerEl - cursor controlled via data-cursor attribute */
+.containerEl[data-cursor='pointer'] {
+  cursor: pointer;
+}
+
+.containerEl[data-cursor='text'] {
+  cursor: text;
+}
+
+/* ScrollContainer */
+.scrollContainer {
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollContainer[data-wrap='wrap'] {
+  scrollbar-width: auto;
+}
+
+.scrollContainer[data-wrap='wrap']::-webkit-scrollbar {
+  display: block;
+}
+
+.scrollContainer[data-has-label='true'] {
+  margin-block-start: calc(var(--font-size-extrasmall) * 1.5);
+}
+
+/* RelativeContainer */
+.relativeContainer {
+  position: relative;
+}
+
+/* InputEl */
+.inputEl {
+  border: none !important;
+  height: auto !important;
+  width: 1em;
+  outline: 0;
+  background: transparent !important;
+  font-size: var(--font-size-medium);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family);
+  color: var(--input-color);
+  transition: background 0.2s ease-out;
+  line-height: 1.5;
+  padding: 0;
+  min-width: 1em;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.inputEl:disabled {
+  color: var(--input-color-disabled);
+  pointer-events: none;
+}
+
+.inputEl::placeholder {
+  color: transparent;
+  font-size: 0;
+  user-select: none;
+}
+
+/* HiddenSpan */
+.hiddenSpan {
+  position: absolute;
+  height: 0;
+  overflow: hidden;
+  white-space: pre;
+}
+
+/* AdjustWidthInputContainer */
+.adjustWidthInputContainer {
+  position: relative;
+  flex: 1 1 auto;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Label - focus-within sibling selector */
+.adjustWidthInputContainer:focus-within ~ .label {
+  top: 0;
+  transform: translateY(0);
+  font-size: var(--font-size-extrasmall);
+}
+
+.label[data-has-items='true'] {
+  top: 0;
+  transform: translateY(0);
+  font-size: var(--font-size-extrasmall);
+}
+
+/* CustomInputDescription */
+.customInputDescription {
+  background-color: var(--description-bg-color);
+}

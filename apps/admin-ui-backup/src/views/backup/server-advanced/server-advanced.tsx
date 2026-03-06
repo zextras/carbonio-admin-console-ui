@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -27,7 +28,6 @@ import { useParams } from 'react-router';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {

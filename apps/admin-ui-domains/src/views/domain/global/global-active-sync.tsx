@@ -8,7 +8,7 @@ import {
   Button,
   Container,
   Input,
-  OverlayDivision,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -29,11 +29,9 @@ import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
-import ListRow from '../../list/list-row';
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [intMobileAntiDosServiceEnbled, setIntMobileAntiDosServiceEnbled] = useState(false);
   const [intMobileAntiDosServiceJailDuration, setIntMobileAntiDosServiceJailDuration] =
     useState('');
@@ -61,7 +59,6 @@ const GlobalActiveSync: FC = () => {
     });
   };
   const callAllRequest = (requests: any): void => {
-    setIsLoading(true);
     Promise.all(requests)
       .then((response: any) => Promise.all(response))
       .then((data: any) => {
@@ -92,7 +89,6 @@ const GlobalActiveSync: FC = () => {
             replace: true,
           });
         }
-        setIsLoading(false);
       })
       .catch((error) => {
         createSnackbar({
@@ -105,14 +101,12 @@ const GlobalActiveSync: FC = () => {
           hideButton: true,
           replace: true,
         });
-        setIsLoading(false);
       });
   };
 
   const restartJail = (): void => {
     if (mailstoresList.length > 0) {
       const request: any[] = [];
-      setIsLoading(true);
       mailstoresList.forEach((mailbox) => {
         if (mailbox?.name) {
           request.push(doStratStopJail('doStartService', mailbox.name));
@@ -125,7 +119,6 @@ const GlobalActiveSync: FC = () => {
   };
   const PurgeActiveSync = (): void => {
     if (mailstoresList.length > 0) {
-      setIsLoading(true);
       doPurgeActiveSync().then(() => {
         createSnackbar({
           key: 'success',
@@ -138,38 +131,32 @@ const GlobalActiveSync: FC = () => {
           hideButton: true,
           replace: true,
         });
-        setIsLoading(false);
       });
     }
   };
   const onSave = (): void => {
-    setIsLoading(true);
     if (mobileAntiDosServiceEnbled !== intMobileAntiDosServiceEnbled) {
       setAntiDosServiceEnabled(mobileAntiDosServiceEnbled).then(() => {
         setIntMobileAntiDosServiceEnbled(mobileAntiDosServiceEnbled);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceJailDuration !== intMobileAntiDosServiceJailDuration) {
       setAntiDosServiceJailDuration(Number(mobileAntiDosServiceJailDuration)).then(() => {
         setIntMobileAntiDosServiceJailDuration(mobileAntiDosServiceJailDuration);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceMaxRequests !== intMobileAntiDosServiceMaxRequests) {
       setAntiDosServiceMaxRequests(Number(mobileAntiDosServiceMaxRequests)).then(() => {
         setIntMobileAntiDosServiceMaxRequests(mobileAntiDosServiceMaxRequests);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     if (mobileAntiDosServiceTimeWindow !== intMobileAntiDosServiceTimeWindow) {
       setAntiDosServiceTimeWindow(Number(mobileAntiDosServiceTimeWindow)).then(() => {
         setIntMobileAntiDosServiceTimeWindow(mobileAntiDosServiceTimeWindow);
         successSnackbar();
-        setIsLoading(false);
       });
     }
     setIsDirty(false);
@@ -217,24 +204,6 @@ const GlobalActiveSync: FC = () => {
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '70.35rem',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
       <Container mainAlignment="flex-start" background="gray6">
         <Row mainAlignment="flex-start" width="100%">
           <Container orientation="vertical" mainAlignment="space-around" height="56px">

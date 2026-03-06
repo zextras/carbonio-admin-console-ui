@@ -8,7 +8,9 @@ import {
   Button,
   Container,
   CustomTextArea,
+  Displayer,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -28,8 +30,6 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import Displayer from '../../../components/displayer';
-import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { SendInviteAccounts } from './send-invite-accounts';
 
@@ -67,7 +67,6 @@ const ResourceEditDetailView: FC<any> = ({
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);
   const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [resourceName, setResourceName] = useState<string>('');
@@ -81,19 +80,6 @@ const ResourceEditDetailView: FC<any> = ({
   const { isSticky, setIsSticky } = useStickyBarStore();
   const errorMessage = useMemo(
     () => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    [t],
-  );
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-    }),
     [t],
   );
 
@@ -740,20 +726,20 @@ const ResourceEditDetailView: FC<any> = ({
 
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       label: t('label.view_mail', 'VIEW MAIL'),
       color: 'primary',
       onClick: onViewMail,
     },
     {
-      align: 'right',
-      type: 'outlined',
+      align: 'right' as const,
+      type: 'outlined' as const,
       color: 'error',
       onClick: onDeleteResource,
       label: t('label.delete', 'delete'),
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
@@ -1131,7 +1117,6 @@ const ResourceEditDetailView: FC<any> = ({
             label={t('label.description', 'Description')}
             backgroundColor="gray5"
             value={zimbraNotes}
-            size="medium"
             onChange={(e: any): any => {
               setZimbraNotes(e.target.value);
             }}
@@ -1181,7 +1166,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1190,7 +1175,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."

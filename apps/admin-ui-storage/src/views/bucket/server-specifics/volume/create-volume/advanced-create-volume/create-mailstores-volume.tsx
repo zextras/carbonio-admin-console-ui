@@ -3,42 +3,36 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button,HorizontalWizard } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
-import { Section } from '../../../../../app/component/section-component';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const WizardInSection: FC<any> = ({
-  wizard,
-  wizardFooter,
-  setToggleWizardSection,
-  externalData,
-}) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
-interface VolumeDetailObj {
+type VolumeDetailObj = {
   volumeName: string;
   volumeMain: number;
   isCurrent: boolean;
@@ -96,7 +90,7 @@ const CreateMailstoresVolume: FC<{
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: any): any => '',
+      PrevButton: (): any => '',
       NextButton: (props: any): ReactElement =>
         !props.toggleNextBtn ? (
           <Button

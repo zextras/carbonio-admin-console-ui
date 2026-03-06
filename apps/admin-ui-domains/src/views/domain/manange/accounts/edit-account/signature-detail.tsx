@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -25,8 +26,8 @@ import Composer from '../../../../../composer/composer';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
-import editorWrapperStyles from '../../../../../styles/editor-wrapper.module.css';
-import ListRow from '../../../../list/list-row';
+import styles from './signature-detail.module.css';
+
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
@@ -115,7 +116,7 @@ export const SignatureDetail: FC<any> = ({
       selectedSignature.forEach((item: string) => {
         deleteRequest.push(deleteSignature(accountId, item));
       });
-      Promise.all(deleteRequest).then((response) => {
+      Promise.all(deleteRequest).then(() => {
         deleteSignatureIntoList(selectedSignature);
       });
     } else {
@@ -466,7 +467,7 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <div className={editorWrapperStyles['editor-wrapper']}>
+              <div className={styles.editorWrapper}>
                 <Composer
                   initialValue={defaultSignatureContent}
                   value={signatureContent}

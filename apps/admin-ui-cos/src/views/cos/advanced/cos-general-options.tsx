@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, ListRow, Row, Switch, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../constants';
-import ListRow from '../../list/list-row';
 
 type AdvancedBackupAttributes = {
 	[BACKUP_ENABLED]: boolean | undefined;
@@ -38,7 +37,7 @@ const COSGeneralOptions: FC<{
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{labels.generalOptions}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

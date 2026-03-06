@@ -129,11 +129,11 @@ describe('CosListPanel', () => {
     await expect.element(page.getByText('General Information')).toBeVisible();
 
     const buttonBeforeClick = page.getByRole('button').nth(1).element();
-    expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+    expect(buttonBeforeClick.innerHTML).toContain('ChevronUpOutline');
 
     await page.getByText('Details').click();
     const buttonAfterClick = page.getByRole('button').nth(1).element();
-    expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
+    expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
   });
 
   it('should change General icon when its section is toggled', async () => {
@@ -143,10 +143,10 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General')).toBeVisible();
     const buttonBeforeClick = page.getByRole('button').first().element();
-    expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+    expect(buttonBeforeClick.innerHTML).toContain('ChevronUpOutline');
 
     await page.getByText('General', { exact: true }).click();
     const buttonAfterClick = page.getByRole('button').first().element();
-    expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
+    expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
   });
 });

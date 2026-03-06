@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -29,7 +30,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import ListRow from '../list/list-row';
 import { PageLayout } from '../page-layout';
 
 const CosServerPools: FC = () => {
@@ -437,7 +437,7 @@ const CosServerPools: FC = () => {
           width="100%"
         >
           <ListRow>
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.general_options', 'General Options')}
             </Text>
           </ListRow>

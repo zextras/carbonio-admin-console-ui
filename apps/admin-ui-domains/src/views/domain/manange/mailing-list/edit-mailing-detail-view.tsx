@@ -14,9 +14,10 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
-  OverlayDivision,
   Padding,
+  Paging,
   Row,
   Select,
   Switch,
@@ -66,22 +67,14 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import ManageAliases from '../../../components/manageAliases';
-import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, getDateTimeFromStr, isValidEmail } from '../../../utility/utils';
 
-export enum SUBSCRIBE_UNSUBSCRIBE {
-  ACCEPT = 'ACCEPT',
-  APPROVAL = 'APPROVAL',
-  REJECT = 'REJECT',
-}
-
-export enum TRUE_FALSE {
-  TRUE = 'TRUE',
-  FALSE = 'FALSE',
-}
+export const TRUE_FALSE = {
+  TRUE: 'TRUE',
+  FALSE: 'FALSE',
+} as const;
 
 const EditMailingListView: FC<any> = ({
   selectedMailingList,
@@ -117,7 +110,7 @@ const EditMailingListView: FC<any> = ({
   const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
   const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  const isRequstInProgress=false;
+  const isRequstInProgress = false;
   const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
   const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
   const [isShowError, setIsShowError] = useState<boolean>(false);
@@ -169,7 +162,7 @@ const EditMailingListView: FC<any> = ({
 
   // dist list members offset
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(15);
+  const limit = 15;
   const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
   const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
@@ -256,24 +249,6 @@ const EditMailingListView: FC<any> = ({
         label: t('label.actions', 'Actions'),
         width: '20%',
         bold: false,
-      },
-    ],
-    [t],
-  );
-
-  const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.automatically_accept', 'Automatically accept'),
-        value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT,
-      },
-      {
-        label: t('label.require_list_owner_approval', 'Require list owner approval'),
-        value: SUBSCRIBE_UNSUBSCRIBE.APPROVAL,
-      },
-      {
-        label: t('label.automatically_reject', 'Automatically reject'),
-        value: SUBSCRIBE_UNSUBSCRIBE.REJECT,
       },
     ],
     [t],
@@ -990,7 +965,7 @@ const EditMailingListView: FC<any> = ({
     getGrantML();
   }, [getGrantML, isDirty]);
 
-  const grantItems = searchGrantEmailResult.map((item: any, index) => ({
+  const grantItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -1011,7 +986,7 @@ const EditMailingListView: FC<any> = ({
     ),
   }));
 
-  const sendItems = searchGrantEmailResult.map((item: any, index) => ({
+  const sendItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -1495,7 +1470,7 @@ const EditMailingListView: FC<any> = ({
       });
 
       if (newAddedMember.length > 0) {
-        newAddedMember.forEach((item: any) => {
+        newAddedMember.forEach(() => {
           const id: any = {
             n: 'id',
             _content: selectedMailingList?.id,
@@ -1509,7 +1484,7 @@ const EditMailingListView: FC<any> = ({
       }
 
       if (removeMember.length > 0) {
-        removeMember.forEach((item: any) => {
+        removeMember.forEach(() => {
           const id: any = {
             n: 'id',
             _content: selectedMailingList?.id,
@@ -1712,7 +1687,7 @@ const EditMailingListView: FC<any> = ({
     }
   }, [selectedMailingList?.dynamic]);
 
-  const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+  const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -1733,7 +1708,7 @@ const EditMailingListView: FC<any> = ({
     ),
   }));
 
-  const searchOwnerList = searchOwnerResult.map((item: any, index) => ({
+  const searchOwnerList = searchOwnerResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -2180,7 +2155,7 @@ const EditMailingListView: FC<any> = ({
   const onDeleteHandler = useCallback(() => {
     setIsRequestInProgress(true);
     deleteDistributionList(dlId)
-      .then((data: any) => {
+      .then(() => {
         onSuccess(
           t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
             name: distributionName,
@@ -2343,24 +2318,7 @@ const EditMailingListView: FC<any> = ({
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '39.4rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -2401,7 +2359,7 @@ const EditMailingListView: FC<any> = ({
                   type="outlined"
                   color="error"
                   onClick={handleClickDeleteEvent}
-                  icon="TrashOutline"
+                  icon="Trash2Outline"
                   label={t('label.delete', 'delete')}
                 />
               </Row>
@@ -2799,11 +2757,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChange}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3124,11 +3078,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeGrantEmail}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
@@ -3276,11 +3226,7 @@ const EditMailingListView: FC<any> = ({
                           backgroundColor="gray5"
                           onChange={handleInputChangeSendEmail}
                           CustomIcon={(): any => (
-                            <icon-wc
-                              icon="FunnelOutline"
-                              size="large"
-                              color="primary"
-                            ></icon-wc>
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>

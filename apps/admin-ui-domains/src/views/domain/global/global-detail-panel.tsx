@@ -9,6 +9,7 @@ import {
   ChipItem,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -30,7 +31,6 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 
 const GlobalDetailPanel: FC = () => {
@@ -326,7 +326,7 @@ const GlobalDetailPanel: FC = () => {
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text size="extralarge" weight="bold">
+              <Text  weight="bold">
                 {t('label.settings', 'Settings')}
               </Text>
             </Row>

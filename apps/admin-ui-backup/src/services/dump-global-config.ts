@@ -6,13 +6,13 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const dumpGlobalConfig = async (serverName: string): Promise<any> => {
-	const request: any = {
-		_jsns: 'urn:zimbraAdmin',
-		module: 'ZxConfig',
-		action: 'dump_global_config'
-		// targetServers: serverName
-	};
+export const dumpGlobalConfig = async (): Promise<any> => {
+  const request: any = {
+    _jsns: 'urn:zimbraAdmin',
+    module: 'ZxConfig',
+    action: 'dump_global_config',
+    // targetServers: serverName
+  };
 
-	return postSoapFetchRequest(`/service/admin/soap/zextras`, request, 'zextras');
+  return postSoapFetchRequest(`/service/admin/soap/zextras`, request, 'zextras');
 };

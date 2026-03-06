@@ -412,7 +412,7 @@ const ServersList: FC = () => {
             <BackupServersListTable
               serverList={serverList}
               selectedRows={selectedRows}
-              onSelectionChange={(selected: any): any => null}
+              onSelectionChange={() => null}
             />
           </Row>
         </Container>

@@ -13,7 +13,6 @@ import {
   Text,
   Tooltip,
   useSnackbar,
-  useTheme,
 } from '@zextras/ui-components';
 import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
 import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
@@ -204,13 +203,13 @@ const getFileExtension = (
       };
   }
 };
-const calcColor = (label: string, theme: any): string => {
+const calcColor = (label: string): string => {
   let sum = 0;
   for (let i = 0; i < label.length; i += 1) {
     sum += label.charCodeAt(i);
   }
 
-  return theme.avatarColors[`avatar-${(sum % 50) + 1}` as keyof typeof theme.avatarColors];
+  return `var(--color-avatar-${(sum % 50) + 1})`;
 };
 const getLocationOrigin = (): string => window.location.origin;
 const getAttachmentsLink = ({
@@ -276,15 +275,13 @@ const getAttachmentsDownloadLink = ({
 
 const getAttachmentIconColors = ({
   attachments,
-  theme,
 }: {
   attachments: AttachmentPart[] | EditorAttachmentFiles[];
-  theme: any;
 }): IconColors =>
   uniqBy(
     attachments.map((att: AttachmentPart | EditorAttachmentFiles) => {
       const fileExtn = getFileExtension(att).value;
-      const color = calcColor(att.contentType ?? '', theme);
+      const color = calcColor(att.contentType ?? '');
 
       return {
         extension: fileExtn,
@@ -487,7 +484,6 @@ const AttachmentsBlock: FC<{
 
   const attachmentsCount = useMemo(() => attachments?.length || 0, [attachments]);
   const attachmentsParts = useMemo(() => map(attachments, 'name'), [attachments]);
-  const theme = useTheme();
   const actionsDownloadLink = useMemo(
     () =>
       getAttachmentsDownloadLink({
@@ -520,7 +516,7 @@ const AttachmentsBlock: FC<{
             message={message}
             isExternalMessage={isExternalMessage}
             part={att?.name ?? ''}
-            iconColors={getAttachmentIconColors({ attachments, theme })}
+            iconColors={getAttachmentIconColors({ attachments })}
             // @ts-expect-error - needs a fix
             att={att}
             getQuarantineMsgData={getQuarantineMsgData}

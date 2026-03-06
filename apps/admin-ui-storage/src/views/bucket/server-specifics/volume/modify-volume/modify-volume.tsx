@@ -7,10 +7,11 @@
 import {
   Button,
   Container,
+  Displayer,
   Input,
   Link,
+  ListRow,
   Modal,
-  OverlayDivision,
   Padding,
   Radio,
   Row,
@@ -51,24 +52,7 @@ import {
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import Displayer from '../../../../components/displayer';
-import ListRow from '../../../../list/list-row';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
-
-const getOverlayStyle = (): React.CSSProperties => ({
-  position: 'fixed',
-  width: '39.4rem',
-  top: '0rem',
-  right: 0,
-  bottom: 0,
-  height: 'auto',
-  maxHeight: '100%',
-  overflow: 'hidden',
-  background: '#0d0d0d',
-  opacity: 0.4,
-  zIndex: 11,
-  paddingTop: '2rem',
-});
 
 const ModifyVolume: FC<{
   volumeId: any;
@@ -412,7 +396,7 @@ const ModifyVolume: FC<{
   );
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       color: 'error',
       label: t('label.delete', 'delete'),
       loading: !volumeDetail?.id,
@@ -421,7 +405,7 @@ const ModifyVolume: FC<{
       },
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
@@ -720,7 +704,7 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <OverlayDivision overlayStyle={getOverlayStyle()} />}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray6"
         mainAlignment="flex-start"
@@ -729,7 +713,7 @@ const ModifyVolume: FC<{
       >
         <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
           <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('label.volume_detail_page_title', '{{message}} Details', {
                 message: volumeDetail?.name,
               })}

@@ -7,8 +7,11 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Table,
@@ -28,10 +31,8 @@ import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import ListRow from '../../list/list-row';
+
 const DomainCosLink: FC<{
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
@@ -61,7 +62,7 @@ const DomainCosLink: FC<{
   }, [userSetting?.attrs]);
 
   const customIconDetail = {
-    icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
     },
@@ -88,7 +89,7 @@ const DomainCosLink: FC<{
   }, [cosMaxAccountList, cosList]);
 
   const getCosLists = useCallback(
-    (cos: string): any => {
+    (cos: string) => {
       getCosList(cos, 0)
         .then((data) => {
           const searchResponse: any = data;
@@ -585,7 +586,7 @@ const DomainCosLink: FC<{
             ),
           },
         ]
-      : cosList.map((cos: any, index) => ({
+      : cosList.map((cos: any) => ({
           id: cos.id,
           label: cos.name,
           customComponent: (
@@ -714,7 +715,7 @@ const DomainCosLink: FC<{
           showCheckbox={isGlobalAdmin}
           multiSelect={false}
           style={{ overflow: 'auto', height: '100%' }}
-          RowFactory={HoverContentRowFactory}
+          RowFactory={HoverableRowFactory}
           HeaderFactory={CustomHeaderFactory}
         />
         {cosMaxAccountListRow.length === 0 && (

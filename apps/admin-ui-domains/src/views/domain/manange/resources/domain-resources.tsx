@@ -11,9 +11,11 @@ import {
   HoverableRowFactory,
   Input,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -28,8 +30,6 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateResource from './create-resource';
@@ -186,7 +186,7 @@ const DomainResources: FC = () => {
           if (resourceListResponse && Array.isArray(resourceListResponse)) {
             setTotalAccount(data?.searchTotal || 0);
             const rList: any[] = [];
-            resourceListResponse.forEach((item: any, index: number) => {
+            resourceListResponse.forEach((item: any) => {
               rList.push({
                 id: item?.id,
                 columns: [
@@ -242,10 +242,9 @@ const DomainResources: FC = () => {
                       {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
-                              item?.a?.find(
-                                (a: any) => a?.n === "zimbraLastLogonTimestamp",
-                              )?._content,
-                              "yyyyMMddHHmmss.SSSX",
+                              item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
+                                ?._content,
+                              'yyyyMMddHHmmss.SSSX',
                               new Date(),
                             ),
                             'yy/MM/dd | hh:mm',
@@ -417,7 +416,7 @@ const DomainResources: FC = () => {
                       attrList.push({ n: ele, _content: signtureAttr[ele] }),
                     );
                     modifyCalendarResource(resourceId, attrList)
-                      .then((modifyData) => {
+                      .then(() => {
                         setShowCreateResourceView(false);
                         successSnackBar(resourceName);
                         setIsUpdateRecord(true);
@@ -427,7 +426,7 @@ const DomainResources: FC = () => {
                       });
                   }
                 })
-                .catch((error) => {
+                .catch(() => {
                   errorSnackBar();
                 });
             } else {
@@ -568,13 +567,7 @@ const DomainResources: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (

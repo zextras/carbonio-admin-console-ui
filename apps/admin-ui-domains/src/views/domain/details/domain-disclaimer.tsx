@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -32,8 +33,7 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import editorWrapperStyles from '../../../styles/editor-wrapper.module.css';
-import ListRow from '../../list/list-row';
+import styles from './domain-disclaimer.module.css';
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();
@@ -380,7 +380,7 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <div className={editorWrapperStyles['editor-wrapper']}>
+            <div className={styles.editorWrapper}>
               <Composer
                 initialValue={defaulRichTextContent}
                 value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}

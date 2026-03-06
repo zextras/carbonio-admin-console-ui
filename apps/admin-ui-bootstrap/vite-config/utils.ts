@@ -47,13 +47,6 @@ export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): Dep
       type: 'build-vite',
     },
     {
-      name: 'styled-components',
-      entry: resolve(nodeModulesDir, 'styled-components/dist/styled-components.browser.esm.js'),
-      outputName: 'styled-components.browser.esm.mjs',
-      type: 'build-vite',
-      external: ['react', 'react-dom'],
-    },
-    {
       name: 'i18next',
       entry: resolve(nodeModulesDir, 'i18next/i18next.js'),
       outputName: 'i18next.mjs',

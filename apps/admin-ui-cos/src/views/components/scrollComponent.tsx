@@ -8,7 +8,7 @@ import { Container, Padding, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './scrollComponent.module.css';
+import styles from './scroll-component.module.css';
 
 const ScrollContainer: FC<{
   isVisible: boolean;

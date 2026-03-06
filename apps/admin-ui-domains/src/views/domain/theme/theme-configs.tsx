@@ -8,6 +8,8 @@ import {
   Container,
   DefaultTabBarItem,
   InheritedInput,
+  InheritedSelect,
+  ListRow,
   Padding,
   Row,
   SelectItem,
@@ -21,8 +23,6 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
-import ListRow from '../../list/list-row';
-import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import AdminPanelThemeConfig from './admin-panel-theme-configs';
 import EndUserThemeConfigs from './end-user-theme-configs';
 
@@ -31,7 +31,7 @@ const ReusedDefaultTabBar: FC<{
   index: any;
   selected: any;
   onClick: any;
-}> = ({ item, index, selected, onClick }): ReactElement => (
+}> = ({ item, selected, onClick }): ReactElement => (
   <DefaultTabBarItem
     item={item}
     selected={selected}

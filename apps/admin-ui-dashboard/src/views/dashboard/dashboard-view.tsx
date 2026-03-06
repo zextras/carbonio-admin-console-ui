@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from '@zextras/ui-components';
+import { Container, ListRow } from '@zextras/ui-components';
 import {
   getRights,
   useCurrentUserRights,
@@ -31,7 +31,6 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
-import ListRow from '../list/list-row';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';

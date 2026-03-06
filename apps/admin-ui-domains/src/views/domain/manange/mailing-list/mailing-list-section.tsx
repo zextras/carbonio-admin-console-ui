@@ -9,7 +9,9 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
+  Paging,
   Row,
   Switch,
   Table,
@@ -22,11 +24,11 @@ import { useTranslation } from 'react-i18next';
 
 import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import Paging from '../../../components/paging';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { isValidLdapQuery } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
+
+const LIMIT = 15;
 
 const MailingListSection: FC<any> = () => {
   const { t } = useTranslation();
@@ -54,7 +56,6 @@ const MailingListSection: FC<any> = () => {
 
   // dist list members offset
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(15);
   const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
   const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
@@ -161,7 +162,7 @@ const MailingListSection: FC<any> = () => {
             '',
           ],
         }));
-        const pagedRows = searchDlRows.slice(offset, offset + limit);
+        const pagedRows = searchDlRows.slice(offset, offset + LIMIT);
         setDynamicListMemberRows(searchDlRows);
         setDLMPagedRows(pagedRows);
         setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: dynamicListMember }));
@@ -178,7 +179,7 @@ const MailingListSection: FC<any> = () => {
             '',
           ],
         }));
-        const pagedRows = searchDlRows.slice(offset, offset + limit);
+        const pagedRows = searchDlRows.slice(offset, offset + LIMIT);
         setDLMPagedRows(pagedRows);
       }
     } else {
@@ -198,13 +199,13 @@ const MailingListSection: FC<any> = () => {
         item?.id.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredDlmTableRows(allRows);
-      const pagedRows = allRows.slice(0, limit);
+      const pagedRows = allRows.slice(0, LIMIT);
       setDLMPagedRows(pagedRows);
     } else {
       setFilterMember('');
       setDLMSearchCurrentPage(1);
       setOffset(0);
-      const pagedRows = dynamicListMemberRows.slice(0, limit);
+      const pagedRows = dynamicListMemberRows.slice(0, LIMIT);
       setFilteredDlmTableRows([]);
       setDLMPagedRows(pagedRows);
     }
@@ -441,7 +442,7 @@ const MailingListSection: FC<any> = () => {
                           filterMember ? filteredDlmTableRows.length : dynamicListMemberRows.length
                         }
                         setOffset={setOffset}
-                        pageSize={limit}
+                        pageSize={LIMIT}
                         currentPageProp={DLMCurrentPage}
                         onPageChange={setDLMSearchCurrentPage}
                       />

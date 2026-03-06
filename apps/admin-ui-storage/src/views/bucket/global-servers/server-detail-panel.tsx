@@ -5,7 +5,6 @@
  */
 
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -14,11 +13,7 @@ import {
   Table,
   Text,
 } from '@zextras/ui-components';
-import {
-  getSoapFetchRequest,
-  useIsAdvanced,
-  useMailstoreServers,
-} from '@zextras/ui-shared';
+import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -176,7 +171,7 @@ const ServersListTable: FC<{
           height="fit"
           padding={{ top: 'medium' }}
         >
-          <Button type="ghost" label={''} loading onClick={(): null => null} />
+          <spinner-wc></spinner-wc>
         </Container>
       )}
       {(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
@@ -269,11 +264,11 @@ const ServerDetailPanel: FC = () => {
                 }
               }
             })
-            .catch((error: any) => {
+            .catch(() => {
               setIsRequestInProgress(false);
             });
         })
-        .catch((error: any) => {
+        .catch(() => {
           setIsRequestInProgress(false);
         });
     } else if (!isAdvanced) {
@@ -334,7 +329,7 @@ const ServerDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('buckets.servers_list', 'Servers List')}
           </Text>
         </Row>

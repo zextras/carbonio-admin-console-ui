@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Dropdown, MultiButton } from '@zextras/ui-components';
+import { Button, Dropdown } from '@zextras/ui-components';
 import {
-	type Action,
-	ACTION_TYPES,
-	type AppRoute,
-	useActions,
-	useAppList,
+  type Action,
+  ACTION_TYPES,
+  type AppRoute,
+  useActions,
+  useAppList,
 } from '@zextras/ui-shared';
-import { groupBy, reduce } from 'lodash-es';
+import { groupBy, noop, reduce } from 'lodash-es';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -47,14 +47,7 @@ export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) 
   const location = useLocation();
   const actions = useActions({ activeRoute, location }, ACTION_TYPES.NEW);
   const [open, setOpen] = useState(false);
-  const primaryAction = useMemo(
-    () =>
-      actions?.find?.(
-        (a) => (a.group === activeRoute?.id || a.group === activeRoute?.app) && a.primary,
-      ),
-    [actions, activeRoute?.app, activeRoute?.id],
-  );
-  const secondaryActions = useSecondaryActions(actions, activeRoute);
+  const secondaryActions = useSecondaryActions(actions, activeRoute) as any;
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -62,24 +55,14 @@ export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) 
   const onOpen = useCallback(() => {
     setOpen(true);
   }, []);
-  return primaryAction ? (
-    <MultiButton
-      style={{ height: '2.625rem' }}
-      background="primary"
-      label={primaryAction?.label ?? t('new', 'New')}
-      onClick={primaryAction?.onClick}
-      items={secondaryActions}
-      disabled={!primaryAction || primaryAction?.disabled}
-    />
-  ) : (
+  return (
     <Dropdown items={secondaryActions} onClose={onClose} onOpen={onOpen}>
       <Button
         style={{ height: '2.625rem', padding: '0.5rem 0.75rem 0.5rem 0.75rem ' }}
-        background="primary"
-        items={secondaryActions}
         label={t('create', 'Create')}
         icon={open ? 'ChevronUp' : 'ChevronDown'}
         minWidth={'max-content'}
+        onClick={noop}
       />
     </Dropdown>
   );

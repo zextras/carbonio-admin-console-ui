@@ -9,6 +9,7 @@ import {
   CustomHeaderFactory,
   DropDownInput,
   HoverableRowFactory,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -24,7 +25,6 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
-import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
 
@@ -222,7 +222,7 @@ const MailingListSettingsSection: FC<any> = () => {
     }
   }, [member, searchMemberCall]);
 
-  const items = searchMemberResult.map((item: any, index) => ({
+  const items = searchMemberResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -243,7 +243,7 @@ const MailingListSettingsSection: FC<any> = () => {
     ),
   }));
 
-  const grantItems = searchGrantEmailResult.map((item: any, index) => ({
+  const grantItems = searchGrantEmailResult.map((item: any) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (

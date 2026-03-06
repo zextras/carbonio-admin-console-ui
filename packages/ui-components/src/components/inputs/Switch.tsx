@@ -4,137 +4,106 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useRef } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
+import clsx from 'clsx';
+import { CSSProperties, useMemo, useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { AnyColor, PaletteColor } from '../../types/utils';
-import { Icon } from '../basic/icon/Icon';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
+import styles from './Switch.module.css';
 
 type SwitchSize = 'medium' | 'small';
 
-const CustomIcon = styled(Icon)``;
-
-const IconWrapper = styled.div<{
-	$disabled: boolean;
-	$iconColor: AnyColor;
-}>`
-	position: relative;
-	display: flex;
-	align-items: center;
-	${({ theme, $disabled, $iconColor }): SimpleInterpolation =>
-		!$disabled &&
-		css`
-			&:focus {
-				outline: none;
-				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor as keyof typeof theme.palette].focus};
-				}
-			}
-			&:hover {
-				outline: none;
-				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor as keyof typeof theme.palette].hover};
-				}
-			}
-			&:active {
-				outline: none;
-				> ${CustomIcon} {
-					color: ${theme.palette[$iconColor as keyof typeof theme.palette].active};
-				}
-			}
-		`};
-`;
-
-const CustomText = styled(Text)`
-	user-select: none;
-	line-height: 1.5;
-`;
-
 type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
-	/** status of the Switch */
-	defaultChecked?: boolean;
-	/** Switch value */
-	value?: boolean;
-	/** Switch text */
-	label?: string;
-	/** Switch padding */
-	padding?: ContainerProps['padding'];
-	/** whether to disable the Switch or not */
-	disabled?: boolean;
-	/** click callback */
-	onClick?: (event: Event) => void;
-	/** change callback */
-	onChange?: (checked: boolean) => void;
-	/** available sizes */
-	size?: SwitchSize;
-	/** icon color */
-	iconColor?: PaletteColor;
-	ref?: React.Ref<HTMLDivElement>;
+  defaultChecked?: boolean;
+  value?: boolean;
+  label?: string;
+  padding?: ContainerProps['padding'];
+  disabled?: boolean;
+  onClick?: (event: Event) => void;
+  onChange?: (checked: boolean) => void;
+  size?: SwitchSize;
+  iconColor?: string;
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 const Switch = ({
-	defaultChecked = false,
-	value,
-	label,
-	padding,
-	disabled = false,
-	onClick,
-	onChange,
-	size = 'medium',
-	iconColor = 'gray0',
-	ref,
-	...rest
+  defaultChecked = false,
+  value,
+  label,
+  padding,
+  disabled = false,
+  onClick,
+  onChange,
+  size = 'medium',
+  iconColor = 'gray0',
+  ref,
+  ...rest
 }: SwitchProps) => {
-	const innerRef = useRef<HTMLDivElement>(null);
-	const ckbRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
-	const checked = useCheckbox({
-		ref: ckbRef,
-		defaultChecked,
-		value,
-		disabled,
-		onClick,
-		onChange
-	});
+  const innerRef = useRef<HTMLDivElement>(null);
+  const ckbRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
+  const checked = useCheckbox({
+    ref: ckbRef,
+    defaultChecked,
+    value,
+    disabled,
+    onClick,
+    onChange,
+  });
 
-	return (
-		<Container
-			ref={ckbRef}
-			orientation="horizontal"
-			width="fit"
-			height="fit"
-			padding={padding}
-			style={{ cursor: disabled ? 'default' : 'pointer' }}
-			crossAlignment="center"
-			{...rest}
-		>
-			<IconWrapper $disabled={disabled} tabIndex={disabled ? -1 : 0} $iconColor={String(iconColor)}>
-				<Icon
-					icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
-					size={size === 'medium' ? 'large' : 'medium'}
-					color={String(iconColor)}
-					disabled={disabled}
-				/>
-			</IconWrapper>
-			{label && (
-				<Padding left="small">
-					<CustomText
-						size={size === 'medium' ? 'medium' : 'small'}
-						weight="regular"
-						overflow="break-word"
-						color="gray0"
-						disabled={disabled}
-					>
-						{label}
-					</CustomText>
-				</Padding>
-			)}
-		</Container>
-	);
+  const iconWrapperStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        '--icon-color-focus': resolveThemeColor(String(iconColor), 'focus'),
+        '--icon-color-hover': resolveThemeColor(String(iconColor), 'hover'),
+        '--icon-color-active': resolveThemeColor(String(iconColor), 'active'),
+        '--icon-color-disabled': resolveThemeColor(String(iconColor), 'disabled'),
+      } as CSSProperties),
+    [iconColor],
+  );
+
+  return (
+    <Container
+      ref={ckbRef}
+      orientation="horizontal"
+      width="fit"
+      height="fit"
+      padding={padding}
+      style={{ cursor: disabled ? 'default' : 'pointer' }}
+      crossAlignment="center"
+      {...rest}
+    >
+      <div
+        className={clsx(styles.iconWrapper, disabled && styles.disabled)}
+        style={iconWrapperStyle}
+        tabIndex={disabled ? -1 : 0}
+      >
+        <icon-wc
+          icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
+          size={size === 'medium' ? 'large' : 'medium'}
+          color={String(iconColor)}
+          disabled={disabled || undefined}
+        />
+      </div>
+      {label && (
+        <Padding left="small">
+          <Text
+            className={styles.text}
+            size={size === 'medium' ? 'medium' : 'small'}
+            weight="regular"
+            overflow="break-word"
+            color="gray0"
+            disabled={disabled}
+          >
+            {label}
+          </Text>
+        </Padding>
+      )}
+    </Container>
+  );
 };
 
 export { Switch };

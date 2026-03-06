@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, SnackbarManager } from '@zextras/ui-components';
 import { getApp, getShell } from '@zextras/ui-shared';
 import React, { FC, useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -21,11 +20,7 @@ const AppContextProvider: FC<{ pkg: string; children: React.ReactNode | React.Re
   const i18n = useMemo(() => i18nFactory.getAppI18n(app), [i18nFactory, app]);
   return (
     <I18nextProvider i18n={i18n}>
-      <ModalManager>
-        <SnackbarManager>
-          <AppErrorCatcher>{children}</AppErrorCatcher>
-        </SnackbarManager>
-      </ModalManager>
+      <AppErrorCatcher>{children}</AppErrorCatcher>
     </I18nextProvider>
   );
 };

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const FIRST_PAGE = 1;
 export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
 export const LOG_AND_QUEUES = 'logandqueues';

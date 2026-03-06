@@ -7,7 +7,7 @@
 import '@zextras/ui-components/web-components';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
+import { ModalManager, SnackbarManager } from '@zextras/ui-components';
 import { useContextBridge } from '@zextras/ui-shared';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
@@ -111,15 +111,13 @@ export const Wrapper = ({
             path: '*',
             element: (
               <QueryClientProvider client={queryClient}>
-                <ThemeProvider>
-                  <SnackbarManager>
-                    <I18NextTestProvider>
-                      <ModalManager>
-                        <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
-                      </ModalManager>
-                    </I18NextTestProvider>
-                  </SnackbarManager>
-                </ThemeProvider>
+                <SnackbarManager>
+                  <I18NextTestProvider>
+                    <ModalManager>
+                      <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+                    </ModalManager>
+                  </I18NextTestProvider>
+                </SnackbarManager>
               </QueryClientProvider>
             ),
           },

@@ -60,6 +60,13 @@ import {
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
 import {
+  type CloseSnackbarFn,
+  type CreateSnackbarFn,
+  type CreateSnackbarFnArgs,
+  SnackbarManagerContext,
+  useSnackbar,
+} from './hooks/useSnackbar';
+import {
   fetchExternalSoap,
   getSoapFetchRequest,
   postSoapFetchRequest,
@@ -92,6 +99,7 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -161,6 +169,7 @@ export {
   fetchExternalSoap,
   FORUM_URL,
   getAccount,
+  getAllNotifications,
   getAllRights,
   getApp,
   getLocale,
@@ -177,6 +186,7 @@ export {
   queryClient,
   queryFnIsAdvancedSupported,
   ReactQueryProvider,
+  readUnreadNotification,
   registerActions,
   removeRoute,
   replaceHistory,
@@ -184,6 +194,7 @@ export {
   SCALING_OPTIONS,
   SEND_FEEDBACK_URL,
   SHELL_APP_ID,
+  SnackbarManagerContext,
   soapFetch,
   TRUE,
   useActions,
@@ -217,6 +228,7 @@ export {
   usePrimaryBarState,
   useRemoveLicense,
   useServerVersion,
+  useSnackbar,
   useStickyBarStore,
   useUserAccount,
   useUserAccounts,
@@ -225,3 +237,4 @@ export {
   useVersion,
   ZIMBRA_ADMIN_URN,
 };
+export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };

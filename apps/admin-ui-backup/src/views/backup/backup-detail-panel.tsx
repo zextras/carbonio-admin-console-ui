@@ -17,8 +17,7 @@ const BackupDetailPanel: FC = () => {
   const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
   const [t] = useTranslation();
   const getGlobalConfig = useCallback((): void => {
-    const serverName = window.location.hostname;
-    dumpGlobalConfig(serverName).then((data: any) => {
+    dumpGlobalConfig().then((data: any) => {
       if (data?.Body?.response?.content) {
         const parseData = JSON.parse(data.Body.response.content);
         if (parseData?.response) {
@@ -54,7 +53,7 @@ const BackupDetailPanel: FC = () => {
           </Row>
         </Row>
       ) : (
-       <Routes>
+        <Routes>
           <Route path={`/:operation`} element={<BackupDetailOperation />} />
           <Route path={`/:server/:operation`} element={<BackupDetailOperation />} />
         </Routes>

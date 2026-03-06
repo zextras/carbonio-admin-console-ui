@@ -8,6 +8,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
+  ListRow,
   Padding,
   Switch,
   Table,
@@ -17,7 +18,6 @@ import {
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 const EditHsmPolicyVolumesSection: FC<{

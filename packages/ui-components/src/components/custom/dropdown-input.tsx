@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Dropdown, Icon, Input } from '@zextras/ui-components';
-import type { FC } from 'react';
+import { Dropdown, IconName, Input } from '@zextras/ui-components';
+
+import { IconSize } from '../../web-components/icon-wc';
 
 type DropDownInputType = {
   items: any;
@@ -37,10 +38,15 @@ type DropDownInputType = {
   hasError?: boolean;
   inputDisabled?: boolean;
   isCustomIcon: boolean;
-  customIconDetail?: any;
+  customIconDetail?: {
+    icon: IconName;
+    size?: IconSize | string;
+    color?: string;
+    onClick?: (e: Event) => void;
+  };
 };
 
-export const DropDownInput: FC<DropDownInputType> = ({
+export const DropDownInput = ({
   items,
   maxWidth,
   width,
@@ -54,7 +60,7 @@ export const DropDownInput: FC<DropDownInputType> = ({
   inputDisabled,
   isCustomIcon,
   customIconDetail,
-}) => (
+}: DropDownInputType) => (
   <Dropdown
     items={items}
     maxWidth={maxWidth || '300px'}
@@ -71,13 +77,12 @@ export const DropDownInput: FC<DropDownInputType> = ({
         onChange={onChange}
         CustomIcon={() =>
           isCustomIcon ? (
-            <Icon
+            <icon-wc
               icon={customIconDetail?.icon || 'GlobeOutline'}
               size={customIconDetail?.size || 'large'}
               color={customIconDetail?.color || 'primary'}
-              onClick={customIconDetail?.onClick}
-              style={customIconDetail?.style}
-            />
+              clickHandler={customIconDetail?.onClick}
+            ></icon-wc>
           ) : (
             ''
           )

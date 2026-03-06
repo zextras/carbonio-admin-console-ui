@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Input, ListRow, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -16,7 +16,6 @@ import {
   STARTED,
   TRUE_OPERTION,
 } from '../../constants';
-import ListRow from '../list/list-row';
 import { copyTextToClipboard } from '../utility/utils';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
@@ -86,7 +85,7 @@ const OperationsWizardDetailPanel: FC<{
     <Container background="gray6">
       <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('operations.operationname_on_servername', '{{operationName}} on {{serverName}}', {
               operationName: selectedData?.name,
               serverName: selectedData?.serverName,

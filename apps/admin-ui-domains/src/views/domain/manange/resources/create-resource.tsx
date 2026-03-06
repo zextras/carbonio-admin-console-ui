@@ -4,87 +4,68 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, HorizontalWizard, useSnackbar } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+import { Button, Container, HorizontalWizard, useSnackbar, WizardInSection } from '@zextras/ui-components';
+import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Section } from '../../../app/component/section-component';
 import { ResourceContext } from './resource-context';
 import ResourceCreateSection from './resource-create-section';
 import ResourceDetailSection from './resource-detail-section';
 import ResourceSharingSection from './resource-sharing-section';
 
-interface ResourceDetailObj {
-  name: string;
-  changeNameBool: boolean;
-  domain: string;
-  description: string;
-  password: string;
-  repeatPassword: string;
-  displayName: string;
-  zimbraCOSId: any;
-  zimbraAccountStatus: any;
-  zimbraCalResType: any;
-  zimbraCalResAutoDeclineRecurring: any;
-  zimbraCalResMaxNumConflictsAllowed: string;
-  zimbraCalResMaxPercentConflictsAllowed: string;
-  zimbraPrefCalendarAutoAcceptSignatureId: any;
-  zimbraPrefCalendarAutoDeclineSignatureId: any;
-  zimbraPrefCalendarAutoDenySignatureId: any;
-  sendInviteList: any[];
-  signaturelist: any[];
-  schedulePolicyType: any;
-  signatureItems: any[];
-  zimbraNotes: string;
-}
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('label.create_resource', 'Create Resource')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+type ResourceDetailObj = {
+	name: string;
+	changeNameBool: boolean;
+	domain: string;
+	description: string;
+	password: string;
+	repeatPassword: string;
+	displayName: string;
+	zimbraCOSId: any;
+	zimbraAccountStatus: any;
+	zimbraCalResType: any;
+	zimbraCalResAutoDeclineRecurring: any;
+	zimbraCalResMaxNumConflictsAllowed: string;
+	zimbraCalResMaxPercentConflictsAllowed: string;
+	zimbraPrefCalendarAutoAcceptSignatureId: any;
+	zimbraPrefCalendarAutoDeclineSignatureId: any;
+	zimbraPrefCalendarAutoDenySignatureId: any;
+	sendInviteList: Array<any>;
+	signaturelist: Array<any>;
+	schedulePolicyType: any;
+	signatureItems: Array<any>;
+	zimbraNotes: string;
 };
 
 const CreateResource: FC<{
-  setShowCreateResourceView: any;
-  createResourceReq: any;
+	setShowCreateResourceView: any;
+	createResourceReq: any;
 }> = ({ setShowCreateResourceView, createResourceReq }) => {
-  const { t } = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [resourceDetail, setResourceDetail] = useState<ResourceDetailObj>({
-    name: '',
-    changeNameBool: false,
-    domain: '',
-    description: '',
-    password: '',
-    repeatPassword: '',
-    displayName: '',
-    zimbraCOSId: {},
-    zimbraAccountStatus: {},
-    zimbraCalResType: {},
-    zimbraCalResAutoDeclineRecurring: {},
-    zimbraCalResMaxNumConflictsAllowed: '',
-    zimbraCalResMaxPercentConflictsAllowed: '',
-    zimbraPrefCalendarAutoAcceptSignatureId: {},
-    zimbraPrefCalendarAutoDeclineSignatureId: {},
-    zimbraPrefCalendarAutoDenySignatureId: {},
-    sendInviteList: [],
-    signaturelist: [],
-    schedulePolicyType: {},
-    signatureItems: [],
-    zimbraNotes: '',
-  });
+	const { t } = useTranslation();
+	const createSnackbar = useSnackbar();
+	const [resourceDetail, setResourceDetail] = useState<ResourceDetailObj>({
+		name: '',
+		changeNameBool: false,
+		domain: '',
+		description: '',
+		password: '',
+		repeatPassword: '',
+		displayName: '',
+		zimbraCOSId: {},
+		zimbraAccountStatus: {},
+		zimbraCalResType: {},
+		zimbraCalResAutoDeclineRecurring: {},
+		zimbraCalResMaxNumConflictsAllowed: '',
+		zimbraCalResMaxPercentConflictsAllowed: '',
+		zimbraPrefCalendarAutoAcceptSignatureId: {},
+		zimbraPrefCalendarAutoDeclineSignatureId: {},
+		zimbraPrefCalendarAutoDenySignatureId: {},
+		sendInviteList: [],
+		signaturelist: [],
+		schedulePolicyType: {},
+		signatureItems: [],
+		zimbraNotes: '',
+	});
 
   const createErrorSnackbar = useCallback(
     (label: string): void => {
@@ -320,12 +301,13 @@ const CreateResource: FC<{
       }}
     >
       <ResourceContext.Provider value={{ resourceDetail, setResourceDetail }}>
-        <HorizontalWizard
-          steps={wizardSteps}
-          Wrapper={WizardInSection}
-          onComplete={onComplete}
-          setToggleWizardSection={setShowCreateResourceView}
-        />
+			<HorizontalWizard
+				steps={wizardSteps}
+				title={t('label.create_resource', 'Create Resource')}
+				Wrapper={WizardInSection}
+				onComplete={onComplete}
+				setToggleWizardSection={setShowCreateResourceView}
+			/>
       </ResourceContext.Provider>
     </Container>
   );

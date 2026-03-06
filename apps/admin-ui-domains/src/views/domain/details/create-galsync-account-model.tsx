@@ -7,6 +7,7 @@ import {
 	Button,
 	Container,
 	Input,
+	ListRow,
 	Modal,
 	Padding,
 	Row,
@@ -14,8 +15,6 @@ import {
 import { useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import ListRow from '../../list/list-row';
 
 const CreateGalsyncAccountModel: FC<{
 	open: boolean;

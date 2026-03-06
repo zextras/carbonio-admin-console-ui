@@ -4,12 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ZimbraAttribute } from '../legalholds';
+
+export type DomainItem = {
+	name: string;
+	id: string;
+	a: Array<ZimbraAttribute>;
+};
+
 export type DomainResponse = {
-	domain: {
-		name: string;
-		id: string;
-		a: { n: string; _content: string }[];
-	}[];
+	domain: Array<DomainItem>;
 	more: boolean;
 	searchTotal: number;
 	_jsns: string;
