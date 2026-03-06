@@ -5,24 +5,24 @@
  */
 import { Container, Text } from '@zextras/ui-components';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
+import { ComputedLimit } from '../../../../../../services/get-account-quota';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
 import { getPercentage, humanFileSize } from './size-utils';
 
 type EditAccountQuotaBarNewProps = {
   used: number;
-  limit: number;
+  limit: ComputedLimit;
   usedByModule: Record<string, number>;
-}
+};
 
 export const EditAccountQuotaBarNew = ({
-                                         used,
-                                         limit,
-                                         usedByModule,
-                                       }: EditAccountQuotaBarNewProps): React.JSX.Element => {
-
+  used,
+  limit,
+  usedByModule,
+}: EditAccountQuotaBarNewProps): React.JSX.Element => {
   const [t] = useTranslation();
 
   const quotaModules: QuotaBarEntry[] = useMemo(
@@ -46,11 +46,27 @@ export const EditAccountQuotaBarNew = ({
     [t, usedByModule.mailbox, usedByModule.wsc, usedByModule.files],
   );
 
-  const sizeDescription = useMemo<string>(() => {
-    return t('label.account_quota_usage', {
+  const sizeDescription = useMemo(() => {
+    if (limit.type === 'unlimited') {
+      return (
+        <Trans
+          t={t}
+          i18nKey="quota.account_quota_usage.unlimited"
+          defaults="{{used}} of <bold>Unlimited</bold> storage used"
+          values={{
+            used: humanFileSize(used, t),
+          }}
+          components={{
+            bold: <Text weight="bold" overflow={'break-word'} style={{ display: 'inline' }} />,
+          }}
+        />
+      );
+    }
+
+    return t('label.account_quota_usage.limited', {
       used: humanFileSize(used, t),
-      limit: humanFileSize(limit, t),
-      percentage: getPercentage(used, limit),
+      limit: humanFileSize(limit.value, t),
+      percentage: getPercentage(used, limit.value),
       defaultValue: '{{used}} of {{limit}} ({{percentage}}%)',
     });
   }, [t, used, limit]);
@@ -65,7 +81,9 @@ export const EditAccountQuotaBarNew = ({
           {sizeDescription}
         </Text>
       </Container>
-      <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit)} />
+      {limit.type === 'limited' && (
+        <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit.value)} />
+      )}
       <QuotaBar modules={quotaModules} limit={limit} used={used} />
     </Container>
   );

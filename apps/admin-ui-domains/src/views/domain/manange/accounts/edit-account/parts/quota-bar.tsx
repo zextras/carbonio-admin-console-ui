@@ -5,11 +5,10 @@
  */
 
 import { AnyColor, Container } from '@zextras/ui-components';
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 
-import { QuotaLegendEntry } from './quota-legend-entry';
-import { getExactPercentage } from './size-utils';
+import { ComputedLimit } from '../../../../../../services/get-account-quota';
+import { useQuotaElements } from './hooks/useQuotaElements';
 
 export interface QuotaBarEntry {
   label: string;
@@ -19,28 +18,18 @@ export interface QuotaBarEntry {
 
 interface QuotaProps {
   modules: QuotaBarEntry[];
-  limit: number;
+  limit: ComputedLimit;
   background?: AnyColor;
-  height?: string;
   used: number;
-}
-
-function computeFills(modules: QuotaBarEntry[], total: number): number[] {
-  return modules.map((m) => getExactPercentage(m.used, total));
 }
 
 export const QuotaBar = ({
   modules,
-  background = 'gray3',
-  height = '0.5rem',
   limit,
   used,
+  background = 'gray3',
 }: QuotaProps): React.JSX.Element => {
-  const fills = useMemo(() => computeFills(modules, Math.max(limit, used)), [modules, limit, used]);
-
-  const [t] = useTranslation();
-
-  const availableSpace = useMemo(() => Math.max(limit - used, 0), [limit, used]);
+  const { quotaBarSegmentsNodes, quotaLegendEntryNodes } = useQuotaElements(modules, limit, used);
 
   return (
     <Container gap="1rem" crossAlignment="flex-start">
@@ -50,37 +39,15 @@ export const QuotaBar = ({
         crossAlignment="flex-start"
         mainAlignment="flex-start"
         orientation="horizontal"
-        height={height}
-        minHeight={height}
+        height={'0.5rem'}
+        minHeight={'0.5rem'}
         width="100%"
         data-testid={'quota-bar'}
       >
-        {modules.map((module, index) => (
-          <Container
-            key={module.label}
-            background={module.color}
-            width={`${Math.min(fills[index] ?? 0, 100)}%`}
-            height="100%"
-            flexShrink={0}
-            borderRadius="none"
-            data-testid={'quota-bar-module-segment'}
-          />
-        ))}
+        {quotaBarSegmentsNodes}
       </Container>
       <Container orientation="horizontal" mainAlignment="flex-start" gap="1rem" wrap="wrap">
-        {modules.map((module) => (
-          <QuotaLegendEntry
-            key={module.label}
-            label={module.label}
-            used={module.used}
-            color={module.color}
-          />
-        ))}
-        <QuotaLegendEntry
-          label={t('quota.available', 'Available')}
-          used={availableSpace}
-          color="gray3"
-        />
+        {quotaLegendEntryNodes}
       </Container>
     </Container>
   );

@@ -591,7 +591,11 @@ const EditAccount: FC<{
 
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isTotalQuotaActive || !isAdvanced) {
+      if (
+        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
+        !isTotalQuotaActive ||
+        !isAdvanced
+      ) {
         return;
       }
 
