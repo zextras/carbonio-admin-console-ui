@@ -28,7 +28,7 @@ importers:
         specifier: ^12.0.2
         version: 12.0.6(semantic-release@25.0.3(typescript@5.9.3))
       '@tsconfig/node14':
-        specifier: ^14.1.0
+        specifier: ^14.1.8
         version: 14.1.8
       '@vitejs/plugin-react':
         specifier: ^5.0.2
