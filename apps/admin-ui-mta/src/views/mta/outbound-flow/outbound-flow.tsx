@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -19,11 +20,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  useAppConfigStore,
-  useCurrentUserRights,
-  useMtaServers,
-} from '@zextras/ui-shared';
+import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +46,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
@@ -272,7 +268,7 @@ const MTAOutBoundFlow: FC = () => {
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
-        .then((data) => {
+        .then(() => {
           createSnackbar({
             key: 'success',
             severity: 'success',

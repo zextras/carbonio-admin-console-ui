@@ -9,14 +9,13 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
+  ListRow,
   Table,
   Text,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import ListRow from '../list/list-row';
 
 function getVersionTextStyle(): React.CSSProperties {
   return {

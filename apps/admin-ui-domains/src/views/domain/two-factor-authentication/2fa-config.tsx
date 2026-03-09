@@ -8,6 +8,7 @@ import {
   ChipInput,
   ChipItem,
   Container,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -19,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { isValidIpRange, twoFactorWhatToTrust } from '../../utility/utils';
 
 type TwoFactorPolicy = {

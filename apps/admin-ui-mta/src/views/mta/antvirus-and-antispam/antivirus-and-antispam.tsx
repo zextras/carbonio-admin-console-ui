@@ -6,8 +6,10 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -18,11 +20,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  useAppConfigStore,
-  useCurrentUserRights,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
+import { useAppConfigStore, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -49,8 +47,6 @@ import {
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import ListRow from '../../list/list-row';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
@@ -145,7 +141,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
-        .then((data) => {
+        .then(() => {
           createSnackbar({
             key: 'success',
             severity: 'success',

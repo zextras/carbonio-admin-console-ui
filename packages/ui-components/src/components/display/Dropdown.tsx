@@ -7,17 +7,17 @@
 import '../../web-components/divider-wc';
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
+import clsx from 'clsx';
 import React, {
+  CSSProperties,
   HTMLAttributes,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import {
@@ -30,7 +30,7 @@ import {
   KeyboardPresetObj,
   useKeyboard,
 } from '../../hooks/useKeyboard';
-import { pseudoClasses } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
@@ -39,17 +39,8 @@ import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
+import styles from './Dropdown.module.css';
 import { Tooltip } from './Tooltip';
-
-const ContainerEl = styled(Container)<{
-  $selectedBackgroundColor?: AnyColor;
-  $disabled: boolean;
-}>`
-  user-select: none;
-  outline: none;
-  ${({ theme, $disabled, $selectedBackgroundColor }): SimpleInterpolation =>
-    !$disabled && pseudoClasses(theme, String($selectedBackgroundColor ?? 'gray5'))};
-`;
 
 type ListItemContentProps = {
   icon?: IconName;
@@ -94,6 +85,21 @@ function ListItemContent({
   );
 }
 
+function useContainerElStyle(
+  selected: boolean | undefined,
+  selectedBackgroundColor?: AnyColor,
+): CSSProperties {
+  return useMemo<CSSProperties>(() => {
+    const bgColor = selected && selectedBackgroundColor ? selectedBackgroundColor : 'gray5';
+    return {
+      '--dropdown-item-bg': resolveThemeColor(String(bgColor), 'regular'),
+      '--dropdown-item-bg-hover': resolveThemeColor(String(bgColor), 'hover'),
+      '--dropdown-item-bg-focus': resolveThemeColor(String(bgColor), 'focus'),
+      '--dropdown-item-bg-active': resolveThemeColor(String(bgColor), 'active'),
+    } as CSSProperties;
+  }, [selected, selectedBackgroundColor]);
+}
+
 type PopperListItemProps = ListItemContentProps &
   HTMLAttributes<HTMLDivElement> & {
     onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
@@ -115,19 +121,18 @@ function PopperListItem({
   tooltipLabel,
   ...rest
 }: Readonly<PopperListItemProps>): React.JSX.Element {
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
   return (
-    <ContainerEl
+    <Container
       data-keep-open={keepOpen}
-      className={selected ? 'zapp-selected' : ''}
+      className={clsx(styles.containerEl, disabled && styles.disabled, selected && 'zapp-selected')}
+      style={containerStyle}
       orientation="horizontal"
       mainAlignment="flex-start"
       padding={{ vertical: 'small', horizontal: 'large' }}
-      style={{ cursor: onClick && !disabled ? 'pointer' : 'default' }}
+      background={selected && selectedBackgroundColor ? selectedBackgroundColor : undefined}
       onClick={(!disabled && onClick) || undefined}
       tabIndex={disabled ? -1 : 0}
-      $disabled={disabled}
-      $selectedBackgroundColor={selected ? selectedBackgroundColor : undefined}
-      background={selected && selectedBackgroundColor ? selectedBackgroundColor : undefined}
       data-testid={'dropdown-item'}
       {...rest}
     >
@@ -141,7 +146,7 @@ function PopperListItem({
           tooltipLabel={tooltipLabel}
         />
       )}
-    </ContainerEl>
+    </Container>
   );
 }
 
@@ -172,6 +177,7 @@ function NestListItem({
     setInnerDropdownListElement(node);
   }, []);
   const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
 
   useEffect(
     () => () => {
@@ -266,17 +272,15 @@ function NestListItem({
   }, [closeOnMouseLeave, open]);
 
   return (
-    <ContainerEl
+    <Container
       data-keep-open={keepOpen}
       ref={itemRef}
-      className={selected ? 'zapp-selected' : ''}
+      className={clsx(styles.containerEl, disabled && styles.disabled, selected && 'zapp-selected')}
+      style={containerStyle}
       orientation="horizontal"
       mainAlignment="flex-start"
-      style={{ cursor: onClick && !disabled ? 'pointer' : 'default' }}
       onClick={disabled ? undefined : onClick}
       tabIndex={disabled ? undefined : 0}
-      $disabled={disabled}
-      $selectedBackgroundColor={selected ? selectedBackgroundColor : undefined}
       data-testid={'dropdown-item'}
       onMouseEnter={openNestedDropdown}
       {...rest}
@@ -308,62 +312,9 @@ function NestListItem({
           <icon-wc size="medium" icon="ChevronRight"></icon-wc>
         </Container>
       </Dropdown>
-    </ContainerEl>
+    </Container>
   );
 }
-
-const PopperDropdownWrapper = styled.div<{ $display: string }>`
-  position: relative;
-  display: ${({ $display }): string => $display};
-  width: ${({ $display }): string => ($display === 'block' ? '100%' : 'auto')};
-`;
-const PopperList = styled.div<{
-  $width: string;
-  $maxWidth: string;
-  $maxHeight: string;
-  $triggerRef: React.RefObject<HTMLElement | null>;
-  $open: boolean;
-}>`
-  position: fixed;
-  display: none;
-  visibility: hidden;
-  pointer-events: none;
-  background-color: ${({ theme }): string => theme.palette.gray5.regular};
-  box-shadow: ${({ theme }): string => theme.shadows.regular};
-  z-index: 999;
-
-  max-width: ${({ $width, $maxWidth }): string => ($width === '100%' ? '100%' : $maxWidth)};
-  max-height: ${({ $maxHeight }): string => $maxHeight};
-  width: ${({ $width, $triggerRef }): string =>
-    $width === '100%' && $triggerRef.current ? `${$triggerRef.current.clientWidth}px` : $width};
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }): string => theme.palette.gray3.regular};
-    border-radius: 0.25rem;
-  }
-
-  &,
-  > [tabindex='-1']:focus {
-    outline: none;
-  }
-
-  ${({ $open }): SimpleInterpolation =>
-    $open &&
-    css`
-      display: block;
-      visibility: visible;
-      pointer-events: auto;
-    `};
-`;
 
 interface DropdownItem {
   type?: 'divider';
@@ -380,45 +331,25 @@ interface DropdownItem {
 }
 
 type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
-  /** Whether to disable the Dropdown or not */
   disabled?: boolean;
-  /** Array of items to display */
   items: Array<DropdownItem>;
-  /** Css display property */
   display?: 'block' | 'inline-block';
-  /** Dropdown width type */
   width?: string;
-  /** Css max-width property */
   maxWidth?: string;
-  /** Css max-height property */
   maxHeight?: string;
-  /** whether to manage the keyboard events for dropdown trigger */
   handleTriggerEvents?: boolean;
-  /** whether to disable the re-focus of trigger */
   disableRestoreFocus?: boolean;
-  /** whether to focus the first item of the Dropdown on open */
   disableAutoFocus?: boolean;
-  /** whether user can select multiple items of dropdown aka do not close popover on item click */
   multiple?: boolean;
-  /** Callback for opened Dropdown */
   onOpen?: () => void;
-  /** Callback for closed Dropdown */
   onClose?: () => void;
-  /** Only one component can be passed as children */
   children: React.ReactElement;
-  /** trigger ref that can be used instead of lost children ref caused by cloneElement */
   triggerRef?: React.Ref<HTMLElement> | null;
-  /** Placement of the dropdown */
   placement?: Placement;
-  /** Flag to disable the Portal implementation */
   disablePortal?: boolean;
-  /** Whether the Component is visible or not */
   forceOpen?: boolean;
-  /** Whether to preventDefault on Dropdown click */
   preventDefault?: boolean;
-  /** Item Text size */
   itemTextSize?: React.ComponentPropsWithRef<typeof Text>['size'];
-  /** Ref assign to the dropdown list popper container */
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 
@@ -444,7 +375,6 @@ const Dropdown = ({
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
-  const { windowObj } = useContext(ThemeContext);
   const [open, setOpen] = useState<boolean>(forceOpen);
   const openRef = useRef<boolean>(open);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
@@ -524,7 +454,6 @@ const Dropdown = ({
         !clickedOnDropdown &&
         !clickedOnTrigger &&
         !clickedOnNestedItem &&
-        // check if the attribute is in the event path
         !e
           .composedPath?.()
           ?.some((el) => el instanceof Element && el.hasAttribute?.('data-keep-open'))
@@ -663,14 +592,14 @@ const Dropdown = ({
 
   useEffect(() => {
     if (open) {
-      windowObj.document.addEventListener('click', clickOutsidePopper, true);
+      window.document.addEventListener('click', clickOutsidePopper, true);
     }
 
     return (): void => {
-      windowObj.document.removeEventListener('click', clickOutsidePopper, true);
-      windowObj.document.removeEventListener('contextmenu', clickOutsidePopper, true);
+      window.document.removeEventListener('click', clickOutsidePopper, true);
+      window.document.removeEventListener('contextmenu', clickOutsidePopper, true);
     };
-  }, [open, closePopper, clickOutsidePopper, windowObj.document]);
+  }, [open, closePopper, clickOutsidePopper]);
 
   useEffect(() => {
     const startSentinelRefElement = startSentinelRef.current;
@@ -732,7 +661,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           return (
-            (type === 'divider' && <divider-wc></divider-wc>) ||
+            (type === 'divider' && <divider-wc key={id}></divider-wc>) ||
             (subItems && (
               <NestListItem
                 icon={icon}
@@ -780,31 +709,34 @@ const Dropdown = ({
     } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
   }, [children, innerTriggerRef, triggerComponentLeftClickHandler]);
 
-  const popperListProps = useMemo(
-    () => ({ onClick: popperListPreventDefaultHandler }),
-    [popperListPreventDefaultHandler],
-  );
+  const popperListStyle = useMemo<CSSProperties>(() => {
+    const triggerWidth = innerTriggerRef.current?.clientWidth;
+
+    return {
+      width: width === '100%' && triggerWidth ? `${triggerWidth}px` : width,
+      maxWidth: width === '100%' ? '100%' : maxWidth,
+      '--popper-max-height': maxHeight,
+    } as CSSProperties;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width, maxWidth, maxHeight, open, innerTriggerRef]);
 
   return (
-    <PopperDropdownWrapper $display={display} {...rest}>
+    <div className={styles.popperDropdownWrapper} data-display={display} {...rest}>
       {triggerComponent}
       <Portal show={open} disablePortal={disablePortal}>
-        <PopperList
+        <div
           ref={dropdownRef}
-          $open={open}
-          $width={width}
-          $maxWidth={maxWidth}
-          $maxHeight={maxHeight}
-          $triggerRef={innerTriggerRef}
+          className={clsx(styles.popperList, open && styles.open)}
+          style={popperListStyle}
           data-testid="dropdown-popper-list"
-          {...popperListProps}
+          onClick={popperListPreventDefaultHandler}
         >
           <div tabIndex={0} ref={startSentinelRef} />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
           <div tabIndex={0} ref={endSentinelRef} />
-        </PopperList>
+        </div>
       </Portal>
-    </PopperDropdownWrapper>
+    </div>
   );
 };
 

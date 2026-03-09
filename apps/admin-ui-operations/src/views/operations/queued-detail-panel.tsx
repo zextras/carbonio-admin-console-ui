@@ -101,7 +101,7 @@ const QuededDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('operations.queued_panel_heading', 'Queued Operations')}
           </Text>
         </Row>

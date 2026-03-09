@@ -3,11 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ListRow from '../../../list/list-row';
 import { ResourceContext } from './resource-context';
 import { SendInviteAccounts } from './send-invite-accounts';
 

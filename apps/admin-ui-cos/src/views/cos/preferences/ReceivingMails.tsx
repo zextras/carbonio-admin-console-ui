@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Select, SelectItem, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, SelectItem, Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 import { AttributeValue } from '../constants/types';
 import { findSelectItemWithFallback } from '../utils';
 
@@ -111,7 +110,7 @@ export const ReceivingMails = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.receiving_mails', 'Receiving Mails')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, IconName, Text } from '@zextras/ui-components';
+import { Container, IconName, ListRow, Text } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import ListRow from '../list/list-row';
 
 const QuickAccess: FC<{
   openOperationView: (operation: string) => void;

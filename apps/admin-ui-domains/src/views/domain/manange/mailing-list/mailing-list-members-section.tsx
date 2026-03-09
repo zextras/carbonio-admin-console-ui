@@ -9,6 +9,7 @@ import {
   CustomHeaderFactory,
   DropDownInput,
   HoverableRowFactory,
+  ListRow,
   Padding,
   Row,
   Table,
@@ -23,7 +24,6 @@ import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
 
@@ -176,7 +176,7 @@ const MailingListMembersSection: FC<any> = () => {
     }
   }, [member, searchMemberCall]);
 
-  const items = searchMemberResult.map((item: any, index) => ({
+  const items = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (

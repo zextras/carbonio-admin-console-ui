@@ -4,74 +4,73 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container,HorizontalWizard } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
-import { Section } from '../../../app/component/section-component';
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('label.restore_account', 'Restore Account')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose={false}
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={t('label.restore_account', 'Restore Account')}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose={false}
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
-	const RestoreDeleteAccountWizard: FC<{
-	setShowRestoreAccountWizard: any;
-	restoreAccountRequest: any;
-	isRequestWorkInProgress: any;
+const RestoreDeleteAccountWizard: FC<{
+  setShowRestoreAccountWizard: any;
+  restoreAccountRequest: any;
+  isRequestWorkInProgress: any;
 }> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress }) => {
-	const { t } = useTranslation();
-	const navigate = useNavigate();
-	const location = useLocation();
-	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
-	interface AccountDetailObj {
-		name: string;
-		id: string;
-		createDate: string;
-		status: string;
-		copyAccount: string;
-		dateTime: string | null;
-		lastAvailableStatus: boolean;
-		hsmApply: boolean;
-		dataSource: boolean;
-		isEmailNotificationEnable: boolean;
-		notificationReceiver: string;
-		copyDomain: string;
-		serverName: string;
-	}
-	const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
-		name: '',
-		id: '',
-		createDate: '',
-		status: '',
-		copyAccount: '',
-		dateTime: null,
-		lastAvailableStatus: false,
-		hsmApply: false,
-		dataSource: false,
-		isEmailNotificationEnable: false,
-		notificationReceiver: '',
-		copyDomain: '',
-		serverName: ''
-	});
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
+  interface AccountDetailObj {
+    name: string;
+    id: string;
+    createDate: string;
+    status: string;
+    copyAccount: string;
+    dateTime: string | null;
+    lastAvailableStatus: boolean;
+    hsmApply: boolean;
+    dataSource: boolean;
+    isEmailNotificationEnable: boolean;
+    notificationReceiver: string;
+    copyDomain: string;
+    serverName: string;
+  }
+  const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
+    name: '',
+    id: '',
+    createDate: '',
+    status: '',
+    copyAccount: '',
+    dateTime: null,
+    lastAvailableStatus: false,
+    hsmApply: false,
+    dataSource: false,
+    isEmailNotificationEnable: false,
+    notificationReceiver: '',
+    copyDomain: '',
+    serverName: '',
+  });
 
   const onRestoreAccount = useCallback(() => {
     restoreAccountRequest(
@@ -91,13 +90,13 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
     );
   }, [restoreAccountDetail, restoreAccountRequest]);
 
-	const backToFirstTab = useCallback(() => {
-		const lastloc = location?.pathname;
-		navigate(lastloc.replace('/restore_account', ''));
-		setTimeout(() => {
-			navigate(lastloc);
-		}, 100);
-	}, [location, navigate]);
+  const backToFirstTab = useCallback(() => {
+    const lastloc = location?.pathname;
+    navigate(lastloc.replace('/restore_account', ''));
+    setTimeout(() => {
+      navigate(lastloc);
+    }, 100);
+  }, [location, navigate]);
 
   useEffect(() => {
     if (isRequestWorkInProgress === false) {
@@ -125,7 +124,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
             onClick={backToFirstTab}
           />
         ),
-        PrevButton: (props: any) => <></>,
+        PrevButton: () => <></>,
         NextButton: (props: any) => (
           <Button
             {...props}

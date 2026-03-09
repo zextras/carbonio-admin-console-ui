@@ -1,0 +1,36 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.iconWrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.iconWrapper:focus {
+	outline: none;
+}
+
+.iconWrapper:focus > icon-wc {
+	color: var(--icon-color-focus);
+}
+
+.iconWrapper:hover:not(.disabled) > icon-wc {
+	color: var(--icon-color-hover);
+}
+
+.iconWrapper:active:not(.disabled) > icon-wc {
+	color: var(--icon-color-active);
+}
+
+.iconWrapper.disabled > icon-wc {
+	color: var(--icon-color-disabled);
+}
+
+.text {
+	user-select: none;
+	line-height: 1.5;
+}

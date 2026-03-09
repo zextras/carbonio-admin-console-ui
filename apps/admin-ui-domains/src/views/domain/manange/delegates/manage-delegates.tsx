@@ -9,10 +9,13 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
+  ListRow,
   ModalOverlay,
+  Paging,
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -52,11 +55,8 @@ import { InitDomainForDelegation } from '../../../../services/init-domain-for-de
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import EditAccount from '../accounts/edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
@@ -152,14 +152,10 @@ const ManageDelegates: FC = () => {
         (domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
       );
       if (domainCosMaxAccountArray && domainCosMaxAccountArray.length > 0) {
-        const domainCosMaxAccounts = domainCosMaxAccountArray.map(
-          (domainContent: any, index: any) => ({
-            id: domainContent._content?.split(':')[0],
-            value: domainContent._content?.split(':')[1]
-              ? domainContent._content?.split(':')[1]
-              : -1,
-          }),
-        );
+        const domainCosMaxAccounts = domainCosMaxAccountArray.map((domainContent: any) => ({
+          id: domainContent._content?.split(':')[0],
+          value: domainContent._content?.split(':')[1] ? domainContent._content?.split(':')[1] : -1,
+        }));
         SetCosMaxAccountList(domainCosMaxAccounts);
       } else {
         SetCosMaxAccountList([]);
@@ -1117,13 +1113,7 @@ const ManageDelegates: FC = () => {
                     height="auto"
                     padding={{ top: 'medium' }}
                   >
-                    <Button
-                      type="ghost"
-                      color="primary"
-                      label=""
-                      loading
-                      onClick={(): null => null}
-                    />
+                    <spinner-wc></spinner-wc>
                   </Container>
                 )}
                 {allAccount?.length === 0 && !isRequestInProgress && (

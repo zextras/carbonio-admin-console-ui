@@ -9,12 +9,9 @@
     "**/*.d.ts",
     "**/*.js",
     "**/*.jsx",
-    "apps/**/src/**/*",
-    "apps/**/types/**/*",
-    "apps/**/translations/**/*",
+    "apps/**/*",
     "scripts/**/*",
-    "packages/test-utils/**/*",
-    "packages/ui-components/**/*"
+    "packages/**/*"
   ],
   "exclude": ["node_modules", "**/node_modules", "**/dist", "**/build", "**/.turbo"]
 }

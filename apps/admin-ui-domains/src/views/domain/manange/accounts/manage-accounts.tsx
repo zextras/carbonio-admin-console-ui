@@ -12,10 +12,12 @@ import {
   Input,
   ModalOverlay,
   Padding,
+  Paging,
   Row,
   Table,
   Text,
   Tooltip,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -67,8 +69,6 @@ import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useTotalQuotaActive } from '../../../app/hooks/useTotalQuotaActive';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';
@@ -306,7 +306,6 @@ const ManageAccounts: FC = () => {
 
   const [signatureList, setSignatureList] = useState<any[]>([]);
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
   const generateSignatureList = (signatureResponse: any): void => {
@@ -318,7 +317,6 @@ const ManageAccounts: FC = () => {
     getSingatures(id).then((data) => {
       const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
       generateSignatureList(signatureResponse);
-      setSignatureData(signatureResponse);
     });
   }, []);
 
@@ -558,8 +556,8 @@ const ManageAccounts: FC = () => {
             label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
-            replace: true
-          })
+            replace: true,
+          });
         }
       });
     },
@@ -1299,13 +1297,7 @@ const ManageAccounts: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {accountList.length === 0 && !isRequestInProgress && (

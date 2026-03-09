@@ -5,14 +5,15 @@
  */
 
 import {
-  Button,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  Paging,
   Row,
   Table,
   Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
@@ -24,8 +25,6 @@ import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import TrackNumberPerPage from '../app/shared/track-number-per-page';
-import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
@@ -352,13 +351,7 @@ const CosList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               )}
               {cosList.length === 0 && !isRequestInProgress && (

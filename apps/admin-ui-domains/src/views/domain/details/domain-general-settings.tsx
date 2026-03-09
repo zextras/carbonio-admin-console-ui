@@ -11,20 +11,15 @@ import {
   Container,
   CustomTextArea,
   Input,
+  ListRow,
   Modal,
-  OverlayDivision,
   Padding,
   Row,
   Select,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  replaceHistory,
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { replaceHistory, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -50,7 +45,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { getDateFromStr, getFormatedDate, isValidEmail, timeZoneList } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
@@ -158,7 +152,6 @@ const DomainGeneralSettings: FC = () => {
   const [zimbraHelpAdminURL, setZimbraHelpAdminURL] = useState<string>('');
   const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [zimbraDomainDefaultCOSId, setZimbraDomainDefaultCOSId] = useState<string>('');
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
@@ -211,7 +204,6 @@ const DomainGeneralSettings: FC = () => {
   });
   const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(true);
   const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
-  const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -339,13 +331,9 @@ const DomainGeneralSettings: FC = () => {
         setZimbraDomainMaxAccounts('');
       }
 
-      if (obj.zimbraMailDomainQuota) {
-        setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
-      } else {
+      if (!obj.zimbraMailDomainQuota) {
         obj.zimbraMailDomainQuota = '';
-        setZimbraMailDomainQuota('');
       }
-
       if (obj.carbonioNotificationFrom) {
         setCarbonioNotificationFrom(obj.carbonioNotificationFrom);
       } else {
@@ -367,14 +355,10 @@ const DomainGeneralSettings: FC = () => {
         (domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
       );
       if (domainCosMaxAccountArray && domainCosMaxAccountArray.length > 0) {
-        const domainCosMaxAccounts = domainCosMaxAccountArray.map(
-          (domainContent: any, index: any) => ({
-            id: domainContent._content?.split(':')[0],
-            value: domainContent._content?.split(':')[1]
-              ? domainContent._content?.split(':')[1]
-              : -1,
-          }),
-        );
+        const domainCosMaxAccounts = domainCosMaxAccountArray.map((domainContent: any) => ({
+          id: domainContent._content?.split(':')[0],
+          value: domainContent._content?.split(':')[1] ? domainContent._content?.split(':')[1] : -1,
+        }));
         SetCosMaxAccountList(domainCosMaxAccounts);
       } else {
         SetCosMaxAccountList([]);
@@ -483,7 +467,6 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-    setZimbraMailDomainQuota(domainData.zimbraDomainAggregateQuota);
     const getItem = cosItems.find(
       (item: any) => item.value === domainData.zimbraDomainDefaultCOSId,
     );
@@ -819,24 +802,7 @@ const DomainGeneralSettings: FC = () => {
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '70.35rem',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Row mainAlignment="flex-start" width="100%">
         <Container
           orientation="vertical"
@@ -879,504 +845,492 @@ const DomainGeneralSettings: FC = () => {
         width="100%"
         height="calc(100vh - 150px)"
       >
-        {loading ? (
-          <></>
-        ) : (
-          <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-            <Container
-              height="fit"
-              crossAlignment="flex-start"
-              background="gray6"
-              padding={{ all: 'small' }}
-            >
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.name', 'Name')}
-                    value={domainName}
-                    backgroundColor="gray6"
-                    data-testid={'input-domain-name'}
-                  />
-                </Container>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.id', 'Id')}
-                    value={domainData.zimbraId}
-                    backgroundColor="gray6"
-                    data-testid={'input-domain-id'}
-                  />
-                </Container>
-              </ListRow>
-
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t(
-                      'label.max_manageable_account_for_the_domain',
-                      'Max manageable account for the domain (0=unlimited)',
-                    )}
-                    value={zimbraDomainMaxAccounts}
-                    backgroundColor="gray6"
-                    onChange={(e: any): any => {
-                      setZimbraDomainMaxAccounts(e.target.value);
-                    }}
-                    disabled={!isGlobalAdmin}
-                  />
-                </Container>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.creation_date', 'Creation Date')}
-                    value={domainCreationDate}
-                    backgroundColor="gray6"
-                  />
-                </Container>
-              </ListRow>
-
-              <ListRow></ListRow>
-
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Select
-                    items={serviceProtocolItems}
-                    background="gray5"
-                    label={t('label.public_service_protocol', 'Public Service Protocol')}
-                    showCheckbox={false}
-                    onChange={onPublicServiceProtocolChange}
-                    selection={selectedPublicServiceProtocol}
-                  />
-                </Container>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.public_service_hostname', 'Public Service Host Name')}
-                    value={publicServiceHostName}
-                    backgroundColor="gray5"
-                    onChange={(e: any): any => {
-                      setPublicServiceHostName(e.target.value);
-                    }}
-                  />
-                </Container>
-
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.public_service_port', 'Public Service Port')}
-                    value={zimbraPublicServicePort}
-                    backgroundColor="gray5"
-                    onChange={(e: any): any => {
-                      setZimbraPublicServicePort(e.target.value);
-                    }}
-                  />
-                </Container>
-              </ListRow>
-
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Select
-                    items={timezones}
-                    background="gray5"
-                    label={t('label.timezone', 'Time Zone')}
-                    showCheckbox={false}
-                    onChange={onTimeZoneChange}
-                    selection={selectedTimeZone}
-                  />
-                </Container>
-              </ListRow>
-              <Container
-                orientation="horizontal"
-                width="98%"
-                crossAlignment="center"
-                mainAlignment="space-between"
-                style={{ margin: '8px' }}
-              >
-                <divider-wc></divider-wc>
+        <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+          <Container
+            height="fit"
+            crossAlignment="flex-start"
+            background="gray6"
+            padding={{ all: 'small' }}
+          >
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.name', 'Name')}
+                  value={domainName}
+                  backgroundColor="gray6"
+                  data-testid={'input-domain-name'}
+                />
               </Container>
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Select
-                    items={cosItems}
-                    background="gray5"
-                    label={t('label.default_class_of_service', 'Default Class of Service')}
-                    showCheckbox={false}
-                    onChange={(e: any): any => {
-                      setZimbraDomainDefaultCOSId(
-                        cosItems.find((item: any) => item.value === e)?.value,
-                      );
-                    }}
-                    selection={
-                      zimbraDomainDefaultCOSId === ''
-                        ? cosItems[-1]
-                        : cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
-                    }
-                  />
-                </Container>
-                <Container padding={{ all: 'small' }}>
-                  <Select
-                    items={domainStatusItems}
-                    background="gray5"
-                    label={t('label.status', 'Status')}
-                    defaultSelection={domainStatusItems[0]}
-                    showCheckbox={false}
-                    onChange={onDomainStatusChange}
-                    selection={domainStatus}
-                  />
-                </Container>
-              </ListRow>
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <Input
-                    label={t('label.description', 'Description')}
-                    value={description}
-                    backgroundColor="gray5"
-                    onChange={(e: any): any => {
-                      setDescription(e.target.value);
-                    }}
-                  />
-                </Container>
-              </ListRow>
-              <ListRow>
-                <Container padding={{ all: 'small' }}>
-                  <CustomTextArea
-                    label={t('label.notes', 'Notes')}
-                    value={zimbraNotes}
-                    backgroundColor="gray5"
-                    onChange={(e: any): any => {
-                      setZimbraNotes(e.target.value);
-                    }}
-                  />
-                </Container>
-              </ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.id', 'Id')}
+                  value={domainData.zimbraId}
+                  backgroundColor="gray6"
+                  data-testid={'input-domain-id'}
+                />
+              </Container>
+            </ListRow>
 
-              {isAdvanced && (
-                <ListRow>
-                  <Container
-                    padding={{ all: 'small' }}
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                  >
-                    <Text size="small" weight="bold">
-                      {t(
-                        'domains.generalSettings.AllowSearchUserFromSpecificDomains',
-                        'Search users in specific domains',
-                      )}
-                    </Text>
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t(
+                    'label.max_manageable_account_for_the_domain',
+                    'Max manageable account for the domain (0=unlimited)',
+                  )}
+                  value={zimbraDomainMaxAccounts}
+                  backgroundColor="gray6"
+                  onChange={(e: any): any => {
+                    setZimbraDomainMaxAccounts(e.target.value);
+                  }}
+                  disabled={!isGlobalAdmin}
+                />
+              </Container>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.creation_date', 'Creation Date')}
+                  value={domainCreationDate}
+                  backgroundColor="gray6"
+                />
+              </Container>
+            </ListRow>
 
-                    <Padding top="small" />
-                    <DomainListChipInput
-                      domainList={domainList}
-                      setDomainList={setDomainList}
-                      domainName={domainName}
-                    />
-                  </Container>
-                </ListRow>
-              )}
-              <Row
+            <ListRow></ListRow>
+
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Select
+                  items={serviceProtocolItems}
+                  background="gray5"
+                  label={t('label.public_service_protocol', 'Public Service Protocol')}
+                  showCheckbox={false}
+                  onChange={onPublicServiceProtocolChange}
+                  selection={selectedPublicServiceProtocol}
+                />
+              </Container>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.public_service_hostname', 'Public Service Host Name')}
+                  value={publicServiceHostName}
+                  backgroundColor="gray5"
+                  onChange={(e: any): any => {
+                    setPublicServiceHostName(e.target.value);
+                  }}
+                />
+              </Container>
+
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.public_service_port', 'Public Service Port')}
+                  value={zimbraPublicServicePort}
+                  backgroundColor="gray5"
+                  onChange={(e: any): any => {
+                    setZimbraPublicServicePort(e.target.value);
+                  }}
+                />
+              </Container>
+            </ListRow>
+
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Select
+                  items={timezones}
+                  background="gray5"
+                  label={t('label.timezone', 'Time Zone')}
+                  showCheckbox={false}
+                  onChange={onTimeZoneChange}
+                  selection={selectedTimeZone}
+                />
+              </Container>
+            </ListRow>
+            <Container
+              orientation="horizontal"
+              width="98%"
+              crossAlignment="center"
+              mainAlignment="space-between"
+              style={{ margin: '8px' }}
+            >
+              <divider-wc></divider-wc>
+            </Container>
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Select
+                  items={cosItems}
+                  background="gray5"
+                  label={t('label.default_class_of_service', 'Default Class of Service')}
+                  showCheckbox={false}
+                  onChange={(e: any): any => {
+                    setZimbraDomainDefaultCOSId(
+                      cosItems.find((item: any) => item.value === e)?.value,
+                    );
+                  }}
+                  selection={
+                    zimbraDomainDefaultCOSId === ''
+                      ? cosItems[-1]
+                      : cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
+                  }
+                />
+              </Container>
+              <Container padding={{ all: 'small' }}>
+                <Select
+                  items={domainStatusItems}
+                  background="gray5"
+                  label={t('label.status', 'Status')}
+                  defaultSelection={domainStatusItems[0]}
+                  showCheckbox={false}
+                  onChange={onDomainStatusChange}
+                  selection={domainStatus}
+                />
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <Input
+                  label={t('label.description', 'Description')}
+                  value={description}
+                  backgroundColor="gray5"
+                  onChange={(e: any): any => {
+                    setDescription(e.target.value);
+                  }}
+                />
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container padding={{ all: 'small' }}>
+                <CustomTextArea
+                  label={t('label.notes', 'Notes')}
+                  value={zimbraNotes}
+                  backgroundColor="gray5"
+                  onChange={(e: any): any => {
+                    setZimbraNotes(e.target.value);
+                  }}
+                />
+              </Container>
+            </ListRow>
+
+            {isAdvanced && (
+              <ListRow>
+                <Container
+                  padding={{ all: 'small' }}
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                >
+                  <Text size="small" weight="bold">
+                    {t(
+                      'domains.generalSettings.AllowSearchUserFromSpecificDomains',
+                      'Search users in specific domains',
+                    )}
+                  </Text>
+
+                  <Padding top="small" />
+                  <DomainListChipInput
+                    domainList={domainList}
+                    setDomainList={setDomainList}
+                    domainName={domainName}
+                  />
+                </Container>
+              </ListRow>
+            )}
+            <Row
+              mainAlignment="flex-start"
+              width="100%"
+              background="gray6"
+              padding={{ top: 'large' }}
+            >
+              <Text size="medium" weight="bold" color="gray0">
+                {t('label.domain_system_notifications', 'Domain System Notifications')}
+              </Text>
+            </Row>
+            <ListRow>
+              <Container
                 mainAlignment="flex-start"
-                width="100%"
-                background="gray6"
-                padding={{ top: 'large' }}
+                crossAlignment="flex-start"
+                padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
               >
-                <Text size="medium" weight="bold" color="gray0">
-                  {t('label.domain_system_notifications', 'Domain System Notifications')}
-                </Text>
-              </Row>
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
-                >
-                  <Input
-                    label={t('label.notification_sender', 'Notification Sender')}
-                    backgroundColor="gray5"
-                    value={carbonioNotificationFrom}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                      setCarbonioNotificationFrom(e.target.value);
-                    }}
-                    hasError={hasCarbonioNotificationFromError}
-                    description={
-                      hasCarbonioNotificationFromError
-                        ? t('label.notification_error_msg', 'Enter a valid email address.')
-                        : undefined
-                    }
-                  />
-                </Container>
-              </ListRow>
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
-                >
-                  <ChipInput
-                    placeholder={t('label.send_notifications_to', 'Send notifications to...')}
-                    background="gray5"
-                    defaultValue={carbonioNotificationRecipients}
-                    value={carbonioNotificationRecipients}
-                    onChange={(emails: Array<ChipItem>): void => {
-                      const data: objectType[] = [];
-                      map(emails, (email: objectType) => {
-                        if (isValidEmail(email.label ?? '')) data.push(email);
-                      });
-                      setCarbonioNotificationRecipients(data);
-                    }}
-                    hasError={some(carbonioNotificationRecipients || [], { error: true })}
-                    maxChips={null}
-                  />
-                </Container>
-              </ListRow>
-              <DomainCosLink
-                cosMaxAccountList={cosMaxAccountList}
-                domainId={domainData.zimbraId}
-                defaultCosId={zimbraDomainDefaultCOSId}
-                domainName={domainName}
-              />
-              <ListRow>
-                <Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
-                  <Button
-                    type="outlined"
-                    label={t('label.delete_domain', 'Delete Domain')}
-                    color="error"
-                    size="extralarge"
-                    width="fill"
-                    onClick={onDeleteDomain}
-                    style={{ width: '100%' }}
-                  />
-                  <Modal
-                    title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
-                    open={openConfirmDialog}
-                    showCloseIcon
-                    onClose={(): void => {
-                      setConfirmDomainName('');
-                      setOpenConfirmDialog(false);
-                    }}
-                    customFooter={
-                      <Container orientation="horizontal" mainAlignment="space-between">
-                        <Container
-                          orientation="horizontal"
-                          mainAlignment="flex-start"
-                          width="10rem"
-                        >
-                          <Button
-                            label={t('label.need_help', 'NEED HELP?')}
-                            type="outlined"
-                            color="primary"
-                            onClick={(): void => {
-                              setConfirmDomainName('');
-                              setOpenConfirmDialog(false);
-                            }}
-                            width="fill"
-                          />
-                        </Container>
-                        <Container orientation="horizontal" mainAlignment="flex-end">
-                          <Padding all="small">
-                            <Button
-                              label={t('label.cancel', 'CANCEL')}
-                              color="secondary"
-                              onClick={(): void => {
-                                setConfirmDomainName('');
-                                setOpenConfirmDialog(false);
-                              }}
-                            />
-                          </Padding>
-
-                          <Button
-                            label={t('label.delete', 'DELETE')}
-                            color="error"
-                            onClick={onDeleteDomain}
-                            disabled={isRequstInProgress}
-                          />
-                        </Container>
+                <Input
+                  label={t('label.notification_sender', 'Notification Sender')}
+                  backgroundColor="gray5"
+                  value={carbonioNotificationFrom}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    setCarbonioNotificationFrom(e.target.value);
+                  }}
+                  hasError={hasCarbonioNotificationFromError}
+                  description={
+                    hasCarbonioNotificationFromError
+                      ? t('label.notification_error_msg', 'Enter a valid email address.')
+                      : undefined
+                  }
+                />
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+              >
+                <ChipInput
+                  placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+                  background="gray5"
+                  defaultValue={carbonioNotificationRecipients}
+                  value={carbonioNotificationRecipients}
+                  onChange={(emails: Array<ChipItem>): void => {
+                    const data: objectType[] = [];
+                    map(emails, (email: objectType) => {
+                      if (isValidEmail(email.label ?? '')) data.push(email);
+                    });
+                    setCarbonioNotificationRecipients(data);
+                  }}
+                  hasError={some(carbonioNotificationRecipients || [], { error: true })}
+                  maxChips={null}
+                />
+              </Container>
+            </ListRow>
+            <DomainCosLink
+              cosMaxAccountList={cosMaxAccountList}
+              domainId={domainData.zimbraId}
+              defaultCosId={zimbraDomainDefaultCOSId}
+              domainName={domainName}
+            />
+            <ListRow>
+              <Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
+                <Button
+                  type="outlined"
+                  label={t('label.delete_domain', 'Delete Domain')}
+                  color="error"
+                  size="extralarge"
+                  width="fill"
+                  onClick={onDeleteDomain}
+                  style={{ width: '100%' }}
+                />
+                <Modal
+                  title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+                  open={openConfirmDialog}
+                  showCloseIcon
+                  onClose={(): void => {
+                    setConfirmDomainName('');
+                    setOpenConfirmDialog(false);
+                  }}
+                  customFooter={
+                    <Container orientation="horizontal" mainAlignment="space-between">
+                      <Container orientation="horizontal" mainAlignment="flex-start" width="10rem">
+                        <Button
+                          label={t('label.need_help', 'NEED HELP?')}
+                          type="outlined"
+                          color="primary"
+                          onClick={(): void => {
+                            setConfirmDomainName('');
+                            setOpenConfirmDialog(false);
+                          }}
+                          width="fill"
+                        />
                       </Container>
-                    }
-                  >
-                    <Padding all="medium">
-                      <Text overflow="break-word" weight="regular">
-                        {t('label.delete_domain_error_msg', {
-                          domainName,
-                          defaultValue:
-                            'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?',
-                        })}
-                      </Text>
-                    </Padding>
-                  </Modal>
-
-                  {/* Open Delete Forcefully domains */}
-
-                  <Modal
-                    title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
-                    open={openDeleteDomainConfirmDialog}
-                    showCloseIcon
-                    onClose={(): void => {
-                      setConfirmDomainName('');
-                      setOpenDeleteDomainConfirmDialog(false);
-                      setDomainDirectoies({
-                        account: [],
-                        dl: [],
-                        alias: [],
-                        calresource: [],
-                      });
-                    }}
-                    customFooter={
-                      <Container orientation="horizontal" mainAlignment="space-between">
-                        <Container
-                          orientation="horizontal"
-                          mainAlignment="flex-start"
-                          width="10rem"
-                        >
+                      <Container orientation="horizontal" mainAlignment="flex-end">
+                        <Padding all="small">
                           <Button
                             label={t('label.cancel', 'CANCEL')}
                             color="secondary"
                             onClick={(): void => {
                               setConfirmDomainName('');
-                              setOpenDeleteDomainConfirmDialog(false);
-                              setDomainDirectoies({
-                                account: [],
-                                dl: [],
-                                alias: [],
-                                calresource: [],
-                              });
+                              setOpenConfirmDialog(false);
                             }}
                           />
-                        </Container>
-                        <Container orientation="horizontal" mainAlignment="flex-end">
-                          <Padding right="small">
-                            <Button
-                              label={t('label.force_delete', 'Force Delete')}
-                              color="error"
-                              onClick={onDeleteAccountAndDomain}
-                              disabled={isRequstInProgress}
-                            />
-                          </Padding>
-                          {domainStatus.value !== domainStatusItems[1].value ? (
-                            <Button
-                              label={t('label.close_domain', 'CLOSE DOMAIN')}
-                              color="primary"
-                              onClick={onCloseDomain}
-                            />
-                          ) : (
-                            <></>
-                          )}
-                        </Container>
-                      </Container>
-                    }
-                  >
-                    <Padding all="medium">
-                      <Text overflow="break-word" weight="regular">
-                        {t('label.delete_domain_with_all_resources_pre_msg', {
-                          domainName,
-                          defaultValue: 'Domain {{domainName}} is not empty and contains',
-                        })}
-                      </Text>
-                      <br />
-                      {domainDirectoies.account.length ? (
-                        <Text overflow="break-word" weight="regular">
-                          {domainDirectoies.account.length} {t('label.accounts', 'Accounts')}
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                      {filter(domainDirectoies.account, {
-                        zimbraIsSystemAccount: 'TRUE',
-                      }).length ? (
-                        <Text overflow="break-word" weight="regular">
-                          {
-                            filter(domainDirectoies.account, {
-                              zimbraIsSystemAccount: 'TRUE',
-                            }).length
-                          }{' '}
-                          {t('label.system_account', 'System Accounts')}
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                      {domainDirectoies.dl.length ? (
-                        <Text overflow="break-word" weight="regular">
-                          {domainDirectoies.dl.length}{' '}
-                          {t('label.distribution_list', 'Distribution List')}
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                      {domainDirectoies.alias.length ? (
-                        <Text overflow="break-word" weight="regular">
-                          {domainDirectoies.alias.length} {t('label.aliases', 'Aliases')}
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                      {domainDirectoies.calresource.length ? (
-                        <Text overflow="break-word" weight="regular">
-                          {domainDirectoies.calresource.length} {t('label.resources', 'Resources')}
-                        </Text>
-                      ) : (
-                        <></>
-                      )}
-                      <br />
-                      {domainStatus.value !== domainStatusItems[1].value ? (
-                        <>
-                          <Text overflow="break-word" weight="regular">
-                            {t('label.delete_domain_with_all_resources_close_domain', {
-                              defaultValue:
-                                'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.',
-                            })}
-                          </Text>
-                          <br />
+                        </Padding>
 
-                          <Text overflow="break-word" weight="regular">
-                            {t('label.delete_domain_with_all_resources_permanently_remove', {
-                              defaultValue:
-                                'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.',
-                            })}
-                          </Text>
-                          <br />
-                        </>
-                      ) : (
-                        <>
-                          <Text overflow="break-word" weight="regular">
-                            {t(
-                              'label.permanently_delete_domain_with_all_resources_permanently_remove',
-                              {
-                                defaultValue:
-                                  'Permanently remove all the accounts and domain objects. This operation cannot be reverted.',
-                              },
-                            )}
-                          </Text>
-                          <br />
-                        </>
-                      )}
-                      <Text overflow="break-word" weight="regular">
-                        <Trans
-                          i18nKey="label.type_domain_name"
-                          defaults={`To confirm, type here the domain name <bold>"{{domainName}}"</bold>:`}
-                          components={{ bold: <strong /> }}
-                          values={{
-                            domainName,
-                          }}
-                          t={t}
+                        <Button
+                          label={t('label.delete', 'DELETE')}
+                          color="error"
+                          onClick={onDeleteDomain}
+                          disabled={isRequstInProgress}
                         />
-                      </Text>
-                      <ListRow>
-                        <Container padding={{ top: 'large' }}>
-                          <Input
-                            value={confirmDomainName}
-                            backgroundColor="gray5"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                              setConfirmDomainName(e.target.value);
-                              if (isEqual(e.target.value, domainName)) {
-                                setIsRequestInProgress(false);
-                              } else {
-                                setIsRequestInProgress(true);
-                              }
-                            }}
+                      </Container>
+                    </Container>
+                  }
+                >
+                  <Padding all="medium">
+                    <Text overflow="break-word" weight="regular">
+                      {t('label.delete_domain_error_msg', {
+                        domainName,
+                        defaultValue:
+                          'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?',
+                      })}
+                    </Text>
+                  </Padding>
+                </Modal>
+
+                {/* Open Delete Forcefully domains */}
+
+                <Modal
+                  title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+                  open={openDeleteDomainConfirmDialog}
+                  showCloseIcon
+                  onClose={(): void => {
+                    setConfirmDomainName('');
+                    setOpenDeleteDomainConfirmDialog(false);
+                    setDomainDirectoies({
+                      account: [],
+                      dl: [],
+                      alias: [],
+                      calresource: [],
+                    });
+                  }}
+                  customFooter={
+                    <Container orientation="horizontal" mainAlignment="space-between">
+                      <Container orientation="horizontal" mainAlignment="flex-start" width="10rem">
+                        <Button
+                          label={t('label.cancel', 'CANCEL')}
+                          color="secondary"
+                          onClick={(): void => {
+                            setConfirmDomainName('');
+                            setOpenDeleteDomainConfirmDialog(false);
+                            setDomainDirectoies({
+                              account: [],
+                              dl: [],
+                              alias: [],
+                              calresource: [],
+                            });
+                          }}
+                        />
+                      </Container>
+                      <Container orientation="horizontal" mainAlignment="flex-end">
+                        <Padding right="small">
+                          <Button
+                            label={t('label.force_delete', 'Force Delete')}
+                            color="error"
+                            onClick={onDeleteAccountAndDomain}
+                            disabled={isRequstInProgress}
                           />
-                        </Container>
-                      </ListRow>
-                    </Padding>
-                  </Modal>
-                </Container>
-              </ListRow>
-            </Container>
-          </Row>
-        )}
+                        </Padding>
+                        {domainStatus.value !== domainStatusItems[1].value ? (
+                          <Button
+                            label={t('label.close_domain', 'CLOSE DOMAIN')}
+                            color="primary"
+                            onClick={onCloseDomain}
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </Container>
+                    </Container>
+                  }
+                >
+                  <Padding all="medium">
+                    <Text overflow="break-word" weight="regular">
+                      {t('label.delete_domain_with_all_resources_pre_msg', {
+                        domainName,
+                        defaultValue: 'Domain {{domainName}} is not empty and contains',
+                      })}
+                    </Text>
+                    <br />
+                    {domainDirectoies.account.length ? (
+                      <Text overflow="break-word" weight="regular">
+                        {domainDirectoies.account.length} {t('label.accounts', 'Accounts')}
+                      </Text>
+                    ) : (
+                      <></>
+                    )}
+                    {filter(domainDirectoies.account, {
+                      zimbraIsSystemAccount: 'TRUE',
+                    }).length ? (
+                      <Text overflow="break-word" weight="regular">
+                        {
+                          filter(domainDirectoies.account, {
+                            zimbraIsSystemAccount: 'TRUE',
+                          }).length
+                        }{' '}
+                        {t('label.system_account', 'System Accounts')}
+                      </Text>
+                    ) : (
+                      <></>
+                    )}
+                    {domainDirectoies.dl.length ? (
+                      <Text overflow="break-word" weight="regular">
+                        {domainDirectoies.dl.length}{' '}
+                        {t('label.distribution_list', 'Distribution List')}
+                      </Text>
+                    ) : (
+                      <></>
+                    )}
+                    {domainDirectoies.alias.length ? (
+                      <Text overflow="break-word" weight="regular">
+                        {domainDirectoies.alias.length} {t('label.aliases', 'Aliases')}
+                      </Text>
+                    ) : (
+                      <></>
+                    )}
+                    {domainDirectoies.calresource.length ? (
+                      <Text overflow="break-word" weight="regular">
+                        {domainDirectoies.calresource.length} {t('label.resources', 'Resources')}
+                      </Text>
+                    ) : (
+                      <></>
+                    )}
+                    <br />
+                    {domainStatus.value !== domainStatusItems[1].value ? (
+                      <>
+                        <Text overflow="break-word" weight="regular">
+                          {t('label.delete_domain_with_all_resources_close_domain', {
+                            defaultValue:
+                              'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.',
+                          })}
+                        </Text>
+                        <br />
+
+                        <Text overflow="break-word" weight="regular">
+                          {t('label.delete_domain_with_all_resources_permanently_remove', {
+                            defaultValue:
+                              'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.',
+                          })}
+                        </Text>
+                        <br />
+                      </>
+                    ) : (
+                      <>
+                        <Text overflow="break-word" weight="regular">
+                          {t(
+                            'label.permanently_delete_domain_with_all_resources_permanently_remove',
+                            {
+                              defaultValue:
+                                'Permanently remove all the accounts and domain objects. This operation cannot be reverted.',
+                            },
+                          )}
+                        </Text>
+                        <br />
+                      </>
+                    )}
+                    <Text overflow="break-word" weight="regular">
+                      <Trans
+                        i18nKey="label.type_domain_name"
+                        defaults={`To confirm, type here the domain name <bold>"{{domainName}}"</bold>:`}
+                        components={{ bold: <strong /> }}
+                        values={{
+                          domainName,
+                        }}
+                        t={t}
+                      />
+                    </Text>
+                    <ListRow>
+                      <Container padding={{ top: 'large' }}>
+                        <Input
+                          value={confirmDomainName}
+                          backgroundColor="gray5"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                            setConfirmDomainName(e.target.value);
+                            if (isEqual(e.target.value, domainName)) {
+                              setIsRequestInProgress(false);
+                            } else {
+                              setIsRequestInProgress(true);
+                            }
+                          }}
+                        />
+                      </Container>
+                    </ListRow>
+                  </Padding>
+                </Modal>
+              </Container>
+            </ListRow>
+          </Container>
+        </Row>
       </Container>
 
       <RouteLeavingGuard when={isDirty} onSave={onSave}>

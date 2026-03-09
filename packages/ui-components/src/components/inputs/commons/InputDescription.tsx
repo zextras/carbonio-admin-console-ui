@@ -3,15 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import styled from 'styled-components';
 
-import { Text } from '../../basic/text/Text';
+import React from 'react';
 
-export const InputDescription = styled(Text).attrs({
-	overflow: 'break-word',
-	size: 'extrasmall'
-})`
-	line-height: 1.5;
-	padding-top: 0.25rem;
-	min-height: calc(${({ theme, size }): string => theme.sizes.font[size]} * 1.5);
-`;
+import { Text, TextProps } from '../../basic/text/Text';
+import styles from './InputDescription.module.css';
+
+type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size'>;
+
+export const InputDescription = ({ ...props }: InputDescriptionProps): React.JSX.Element => (
+  <Text overflow="break-word" size="extrasmall" className={styles.inputDescription} {...props} />
+);

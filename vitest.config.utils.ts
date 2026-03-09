@@ -18,7 +18,6 @@ export function getOptimizeDepsInclude() {
     'ua-parser-js',
     'i18next-http-backend',
     'lodash-es',
-    'styled-components',
     // date-fns locales
     'date-fns/locale/zh-CN',
     'date-fns/locale/nl',

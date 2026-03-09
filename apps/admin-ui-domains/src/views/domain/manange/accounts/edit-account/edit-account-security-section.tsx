@@ -12,7 +12,10 @@ import {
   HorizontalWizard,
   HoverableRowFactory,
   InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -20,6 +23,7 @@ import {
   Table,
   Text,
   useSnackbar,
+  WizardInSection,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
@@ -31,34 +35,12 @@ import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import staticCodesStyles from '../../../../../styles/static-codes.module.css';
-import { Section } from '../../../../app/component/section-component';
 import CustomChip from '../../../../components/customChip';
-import ListRow from '../../../../list/list-row';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
@@ -167,12 +149,9 @@ const EditAccountSecuritySection: FC = () => {
                   <Padding top="large">
                     <Row mainAlignment="center">
                       <Row background="gray5" style={{ maxWidth: '350px' }}>
-                        <div className={staticCodesStyles['static-codes-wrapper']}>
+                        <div className={styles.staticCodesWrapper}>
                           {map(pinCodes, (singleCode: any) => (
-                            <label
-                              key={singleCode.code}
-                              className={staticCodesStyles['static-code']}
-                            >
+                            <label key={singleCode.code} className={styles.staticCode}>
                               {singleCode.code}
                             </label>
                           ))}
@@ -314,29 +293,26 @@ const EditAccountSecuritySection: FC = () => {
       },
     ],
     [
-      accountDetail?.name,
-      domainName,
+      handleEmailChange,
+      handleSendOTPEmail,
+      hasEmailError,
+      isSendDisabled,
       pinCodes,
       qrData,
       secrateCode,
       sendEmailTo,
-      createSnackbar,
       t,
-      handleEmailChange,
-      hasEmailError,
-      isSendDisabled,
     ],
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
-  const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '',
-  );
+  const zimbraPasswordLockoutDurationType =
+    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '';
   const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
     useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
-  const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
-    useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+  const zimbraPasswordLockoutFailureLifetimeType =
+    accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
   const headers: any = useMemo(
@@ -577,7 +553,7 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text size="extralarge" color="gray0" weight="bold">
+                      <Text  color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
                       </Text>
                       <Row padding={{ top: 'large' }}></Row>
@@ -703,6 +679,7 @@ const EditAccountSecuritySection: FC = () => {
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
                 <HorizontalWizard
                   steps={wizardSteps}
+                  title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
                   Wrapper={WizardInSection}
                   setToggleWizardSection={setShowCreateOTP}
                 />
@@ -713,7 +690,7 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('label.backup', 'Backup')}
           </Text>
           <Row mainAlignment="flex-start" width="100%">
@@ -786,7 +763,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.password', 'Password')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">
@@ -1027,7 +1004,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('label.forgotten_password', 'Forgotten Password')}
             </Text>
             <Row mainAlignment="center" width="100%">
@@ -1094,7 +1071,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.failed_login_policy', 'Failed Login Policy')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">

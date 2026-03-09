@@ -11,13 +11,13 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Input,
-  OverlayDivision,
+  ListRow,
   Padding,
+  Paging,
   Row,
   Switch,
   Table,
   Text,
-  useScreenMode,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
@@ -26,12 +26,20 @@ import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BackupAccountItem, DomainResponse } from '../../../types';
+import {
+  ApiError,
+  BackupAccountItem,
+  BackupAccountsApiResponse,
+  DomainItem,
+  DomainResponse,
+  LegalHoldOperationResponse,
+  ServerBackupResponse,
+  TableRow,
+} from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import {
   ERROR_LABLE,
   MAX_DOMAIN_DISPLAY,
-  MOBILE,
   RECORD_DISPLAY_LIMIT,
   SET,
   TRUE,
@@ -39,21 +47,8 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
-import Paging from '../components/paging';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
 import RestoreAccountView from './restore/restore-account';
-
-const getOverlayStyle = () => ({
-  width: '20rem',
-  right: 0,
-  bottom: 0,
-  height: '8rem',
-  overflow: 'hidden',
-  background: '#0d0d0d',
-  opacity: 0.4,
-  zIndex: 11,
-});
 
 const absoluteContainerItemStyle: React.CSSProperties = {
   position: 'absolute',
@@ -68,16 +63,15 @@ const customIconStyle = {
 
 const LegalHoldPanel: FC = () => {
   const [t] = useTranslation();
-  const screenMode = useScreenMode();
   const [totalItem, setTotalItem] = useState(1);
   const accountLimit = RECORD_DISPLAY_LIMIT;
   const [accountOffset, setAccountOffset] = useState<number>(0);
   const createSnackbar = useSnackbar();
   const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
+  const [selectedAccountRows, setSelectedAccountRows] = useState<Array<BackupAccountItem>>([]);
   const [isShowRestoreView, setIsShowRestoreView] = useState<boolean>(false);
-  const [accountRows, setAccountRows] = useState<any>([]);
+  const [accountRows, setAccountRows] = useState<Array<TableRow>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isShowError, setIsShowError] = useState(false);
   const [searchAccountName, setSearchAccountName] = useState<string>('');
@@ -89,9 +83,7 @@ const LegalHoldPanel: FC = () => {
     'label.something_wrong_error_msg',
     'Something went wrong. Please try again.',
   );
-  const [domainList, setDomainList] = useState<
-    { name: string; id: string; a: { n: string; _content: string }[] }[]
-  >([]);
+  const [domainList, setDomainList] = useState<Array<DomainItem>>([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const { data: domainData } = useDomainInformation();
   const domainName = domainData?.name || '';
@@ -118,7 +110,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision overlayStyle={getOverlayStyle()} />
+          <spinner-wc></spinner-wc>
         </Container>
       ),
     },
@@ -189,7 +181,7 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setBackupAccountAndPage = useCallback(
-    (backupAccounts: Array<BackupAccountItem> | undefined, page: number) => {
+    (backupAccounts: Array<BackupAccountItem> | null, page: number) => {
       if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
         setBackupAccountList(backupAccounts);
       } else {
@@ -206,18 +198,19 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setBackupAccountPage = useCallback(
-    (data: any, page: number) => {
+    (data: BackupAccountsApiResponse, page: number) => {
       let backupAccounts;
       const allServers = Object.keys(data);
       let allServerAccounts: Array<BackupAccountItem> = [];
       const maxPageList: Array<number> = [];
       let backupPage = page;
       allServers.forEach((item: string) => {
-        if (data[item]?.response?.accounts) {
-          allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+        const serverData = data[item] as ServerBackupResponse;
+        if (serverData?.response?.accounts) {
+          allServerAccounts = allServerAccounts.concat(serverData.response.accounts);
         }
-        if (data[item]?.response?.maxPage >= 0) {
-          maxPageList.push(data[item]?.response?.maxPage);
+        if (serverData?.response?.maxPage !== undefined && serverData.response.maxPage >= 0) {
+          maxPageList.push(serverData.response.maxPage);
         }
       });
       if (allServerAccounts && allServerAccounts.length > 0) {
@@ -229,7 +222,7 @@ const LegalHoldPanel: FC = () => {
           }
         }
       }
-      setBackupAccountAndPage(backupAccounts, backupPage);
+      setBackupAccountAndPage(backupAccounts ?? null, backupPage);
     },
     [setBackupAccountAndPage],
   );
@@ -240,12 +233,12 @@ const LegalHoldPanel: FC = () => {
       setDisableSwitch(true);
       setAccountRows([]);
       const domainNameItem =
-        selectedDomainName === '' || selectedDomainName === undefined
+        selectedDomainName === ''
           ? domainName
           : selectedDomainName;
       const url = `/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&filter=${searchText}&legalHold=${isShowOnlyLegalHoldAccount}`;
-      getSoapFetchRequest(url)
-        .then((data: any) => {
+      getSoapFetchRequest<BackupAccountsApiResponse>(url)
+        .then((data) => {
           setIsRequestInProgress(false);
           setDisableSwitch(false);
           const error = data?.all_server?.error?.message;
@@ -257,16 +250,16 @@ const LegalHoldPanel: FC = () => {
             return;
           }
 
-          if (backupAccounts === undefined && !!data) {
-            setBackupAccountPage(data, page);
+          if (!backupAccounts && !!data) {
+            setBackupAccountPage(data, page ?? 0);
           } else {
-            setBackupAccountAndPage(backupAccounts, page);
+            setBackupAccountAndPage(backupAccounts ?? null, page ?? 0);
           }
         })
-        .catch((error: any) => {
+        .catch((error: ApiError) => {
           setIsRequestInProgress(false);
           setDisableSwitch(false);
-          showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
+          showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ?? errorMessage);
         });
     },
     [
@@ -417,15 +410,16 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setUnsetLegalHoldResponse = useCallback(
-    (data: any, status: string, id: string, serverName: string) => {
+    (data: LegalHoldOperationResponse, status: string, id: string, serverName: string) => {
       if (data?.accounts?.length) {
         setAccountAfterLegalHold(status, id, serverName);
       } else {
         const allServers = Object.keys(data);
-        let allServerAccounts: Array<Record<string, unknown>> = [];
+        let allServerAccounts: Array<BackupAccountItem> = [];
         allServers.forEach((item: string) => {
-          if (data[item]?.response?.accounts) {
-            allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+          const serverData = data[item] as ServerBackupResponse;
+          if (serverData?.response?.accounts) {
+            allServerAccounts = allServerAccounts.concat(serverData.response.accounts);
           }
         });
         if (allServerAccounts.length) {
@@ -456,11 +450,11 @@ const LegalHoldPanel: FC = () => {
       height: '1.25rem',
       cursor: 'pointer',
     },
-    icon: searchDomainName === '' ? 'ChevronDown' : 'CloseOutline',
+    icon: searchDomainName === '' ? ('ChevronDown' as const) : ('CloseOutline' as const),
   };
 
   const selectedDomain = useCallback(
-    (domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
+    (domain: DomainItem) => {
       setIsDomainSelect(true);
       setSearchDomainName(domain?.name);
       setSelectedDomainName(domain?.name);
@@ -540,7 +534,7 @@ const LegalHoldPanel: FC = () => {
           },
         ]
       : domainList.map(
-          (domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+          (domain: DomainItem) => ({
             id: domain.id,
             label: domain.name,
             customComponent: (
@@ -730,13 +724,7 @@ const LegalHoldPanel: FC = () => {
                     padding={{ top: 'medium' }}
                     style={absoluteContainerItemStyle}
                   >
-                    <Button
-                      type="ghost"
-                      color="primary"
-                      label=""
-                      loading
-                      onClick={(): null => null}
-                    />
+                    <spinner-wc></spinner-wc>
                   </Container>
                 )}
 
@@ -770,7 +758,7 @@ const LegalHoldPanel: FC = () => {
                       crossAlignment="flex-start"
                       width="fill"
                       style={{
-                        height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 25rem)',
+                        height: 'calc(100vh - 25rem)',
                       }}
                       padding={{ all: 'large' }}
                     >
@@ -783,7 +771,7 @@ const LegalHoldPanel: FC = () => {
                           overflow: 'auto',
                           height: '100%',
                         }}
-                        selectedRows={selectedAccountRows}
+                        selectedRows={selectedAccountRows.map((item) => `${item.id}-${item.serverName}`) as [] | [string]}
                         RowFactory={HoverableRowFactory}
                         HeaderFactory={CustomHeaderFactory}
                       />

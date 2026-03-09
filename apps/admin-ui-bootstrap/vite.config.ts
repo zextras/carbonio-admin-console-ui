@@ -14,6 +14,7 @@ import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from './vite-config/utils';
+import tailwindcss from '@tailwindcss/vite';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
@@ -82,7 +83,7 @@ export default defineConfig(({ command, mode }) => {
       ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
       react({
         babel: {
-          plugins: ['babel-plugin-styled-components'],
+          plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
         },
       }),
       svgr({
@@ -95,6 +96,7 @@ export default defineConfig(({ command, mode }) => {
         include: '**/*.svg',
         exclude: '**/src/assets/**/*.svg',
       }),
+      tailwindcss(),
       {
         name: 'trailing-slash-redirect',
         configureServer(server) {
@@ -114,6 +116,11 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     ],
+    css: {
+      modules: {
+        localsConvention: 'camelCaseOnly',
+      },
+    },
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       BASE_PATH: JSON.stringify(basePath),

@@ -10,6 +10,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
@@ -34,7 +35,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
@@ -466,7 +466,7 @@ const HSMsettingPanel: FC = () => {
       policy += `${criteriaScale.toString()}:`;
     }
     if (hsmPolicyDetail?.policyCriteria.length > 0) {
-      hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
+      hsmPolicyDetail?.policyCriteria.forEach((item: any) => {
         policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
       });
     }
@@ -747,7 +747,6 @@ const HSMsettingPanel: FC = () => {
                 <Padding right="medium">
                   <Button
                     label={t('hsm.new', 'New')}
-                    icon=""
                     type="outlined"
                     color="primary"
                     onClick={(): void => {
@@ -761,7 +760,6 @@ const HSMsettingPanel: FC = () => {
                   <Button
                     label={t('hsm.run_all', 'Run All')}
                     type="outlined"
-                    icon=""
                     color="primary"
                     onClick={(): void => {
                       runAllHSMpolicy();
@@ -774,7 +772,6 @@ const HSMsettingPanel: FC = () => {
                   label={t('hsm.delete', 'Delete')}
                   color="error"
                   type="outlined"
-                  icon=""
                   onClick={(): void => {
                     setShowDeletePolicyView(true);
                   }}

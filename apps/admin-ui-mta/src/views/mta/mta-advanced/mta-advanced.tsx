@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Radio,
   RadioGroup,
@@ -39,7 +40,6 @@ import {
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {

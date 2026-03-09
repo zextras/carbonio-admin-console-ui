@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Select, SelectItem, Switch, Text } from '@zextras/ui-components';
+import { Container, ListRow, Row, Select, SelectItem, Switch, Text } from '@zextras/ui-components';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
 import { AttributeValue } from '../constants/types';
 import { findSelectItemWithFallback } from '../utils';
@@ -75,7 +74,7 @@ export const CalendarOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.calendar_options', 'Calendar Options')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

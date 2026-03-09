@@ -7,21 +7,20 @@
 import { soapFetch } from '@zextras/ui-shared';
 
 export const getSessions = async (
-	type: string,
-	accountName: string,
-	offset?: number,
-	limit?: number
+  type: string,
+  accountName: string,
+  offset?: number,
 ): Promise<any> =>
-	soapFetch(
-		`GetSessions`,
-		{
-			_jsns: 'urn:zimbraAdmin',
-			type,
-			offset: offset || 0,
-			sortBy: 'nameAsc',
-			refresh: 1
-		},
-		{
-			otherAccount: accountName
-		}
-	);
+  soapFetch(
+    `GetSessions`,
+    {
+      _jsns: 'urn:zimbraAdmin',
+      type,
+      offset: offset || 0,
+      sortBy: 'nameAsc',
+      refresh: 1,
+    },
+    {
+      otherAccount: accountName,
+    },
+  );

@@ -7,7 +7,7 @@ import {
   Container,
   CustomTextArea,
   Input,
-  Padding,
+ ListRow, Padding,
   Row,
   Select,
   SingleSelectionOnChange,
@@ -16,10 +16,9 @@ import {
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
-import { TimeItems } from '../../../../types/general';
+import {  AccountType  } from '../../../../types/account';
+import {  TimeItems  } from '../../../../types/general';
 import { ComputedLimit } from '../../../services/get-cos-quota';
-import ListRow from '../../list/list-row';
 import COSQuotasNew from './cos-quotas-new';
 
 type QuotaProps = {
@@ -102,7 +101,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.quotas}
       </Text>
       <Row mainAlignment="flex-start" width="100%">

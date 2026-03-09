@@ -7,6 +7,9 @@
 import {
   Container,
   DropDownInput,
+  ListItems,
+  type ListItemType,
+  ListPanelItem,
   Padding,
   Row,
   Text,
@@ -65,14 +68,7 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
-import styles from './domain-list-panel.module.css';
 import GlobalListPanel from './global-list-panel';
-
-interface ManageOptions {
-  [key: string]: string | boolean;
-}
 
 const DomainListPanel: FC = () => {
   const [t] = useTranslation();
@@ -101,7 +97,7 @@ const DomainListPanel: FC = () => {
   const { data: backupData } = useBackupServers({
     enabled: isAdvanced,
   });
-  const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
+  const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
   const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
   const [isShowError, setIsShowError] = useState(false);
@@ -118,7 +114,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <div className={styles.overlayStyle} />
+          <spinner-wc></spinner-wc>
         </Container>
       ),
     },
@@ -314,7 +310,7 @@ const DomainListPanel: FC = () => {
     [t, isDomainSelect, is2FAAvailable, isDisclaimerEnable],
   );
 
-  const allManageOptions = useMemo(
+  const allListItemType = useMemo(
     () => [
       {
         id: ACCOUNTS,
@@ -394,22 +390,22 @@ const DomainListPanel: FC = () => {
   const manageItems = useMemo(
     () =>
       !isAdvanced
-        ? allManageOptions.filter(
-            (item: ManageOptions) =>
+        ? allListItemType.filter(
+            (item: ListItemType) =>
               item?.id !== RESTORE_ACCOUNT &&
               item?.id !== ACTIVE_SYNC &&
               item?.id !== DELEGATES_DOMAIN_ADMINS &&
               item?.id !== SECURITY_GROUP,
           )
-        : allManageOptions,
-    [allManageOptions, isAdvanced],
+        : allListItemType,
+    [allListItemType, isAdvanced],
   );
 
   const detailItems = useMemo(
     () =>
       !isAdvanced
         ? detailOptions.filter(
-            (item: ManageOptions) =>
+            (item: ListItemType) =>
               item?.id !== WHITELABEL_SETTINGS &&
               item?.id !== SAML &&
               item?.id !== TWO_FACTOR_AUTHENTICATION,
@@ -423,7 +419,7 @@ const DomainListPanel: FC = () => {
     () =>
       !isAdvanced
         ? globalOptionItems.filter(
-            (item: ManageOptions) =>
+            (item: ListItemType) =>
               item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
               item?.id !== GLOBAL_2FA_ROUTE &&
               item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
@@ -434,14 +430,14 @@ const DomainListPanel: FC = () => {
 
   useEffect(() => {
     if (backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
-      const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
-      setManageOptions(options);
+      const options = manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT);
+      setListItemType(options);
     }
   }, [manageItems, isDomainSelect, backupData]);
 
   useMemo(() => {
-    setManageOptions(
-      manageItems.map((item: ManageOptions) => {
+    setListItemType(
+      manageItems.map((item: ListItemType) => {
         item.isSelected = isDomainSelect;
         return item;
       }),
@@ -479,11 +475,8 @@ const DomainListPanel: FC = () => {
         setIsDomainSelect(false);
       }
     },
-    style: {
-      width: '1.25rem',
-      height: '1.25rem',
-    },
-    icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline',
+    size: '1.25rem',
+    icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
   const items =
@@ -494,7 +487,10 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc className={styles.customIcon} icon="InfoOutline"></icon-wc>
+                    <icon-wc
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                      icon="InfoOutline"
+                    ></icon-wc>
                   </Padding>
                 </Row>
                 <Row
@@ -521,7 +517,6 @@ const DomainListPanel: FC = () => {
             label: domain.name,
             customComponent: (
               <Row
-                className={styles.selectItem}
                 style={{
                   display: 'block',
                   textAlign: 'left',

@@ -6,192 +6,184 @@
 
 import { map } from 'lodash-es';
 import React, { HTMLAttributes, useCallback, useMemo } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
-import { getColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
+import styles from './TabBar.module.css';
 
-const CustomText = styled(Text)`
-	line-height: 1.5;
-`;
-
-const DefaultTabBarItemContainer = styled(Container)<{
-	$forceWidthEquallyDistributed: boolean;
-	$selected: boolean;
-	$underlineColor: AnyColor;
-	$disabled?: boolean;
-}>`
-	outline: none;
-	min-width: 0;
-	flex-basis: fit-content;
-	${({ $forceWidthEquallyDistributed }): SimpleInterpolation =>
-		$forceWidthEquallyDistributed &&
-		css`
-			flex-basis: unset;
-		`};
-	flex-grow: 1;
-	height: 100%;
-	transition: 0.2s ease-out;
-	border-bottom: ${({ theme, $selected, $underlineColor }): string =>
-		$selected
-			? `0.0625rem solid ${getColor($underlineColor, theme)}`
-			: '0.0625rem solid transparent'};
-	cursor: pointer;
-	user-select: none;
-
-	&:hover {
-		background: ${({ theme, background = 'transparent', $disabled }): string =>
-			getColor(`${background}.${$disabled ? 'disabled' : 'hover'}`, theme)};
-	}
-	&:focus {
-		background: ${({ theme, background = 'transparent', $disabled }): string =>
-			getColor(`${background}.${$disabled ? 'disabled' : 'focus'}`, theme)};
-	}
-`;
+function getThemeColorVar(colorName: string, state: string): string {
+  if (!colorName) return '';
+  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+  if (hexPattern.test(colorName)) {
+    return colorName;
+  }
+  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
+}
 
 interface Item {
-	id: string;
-	label: string | React.ReactElement;
-	CustomComponent?: React.ComponentType<DefaultTabBarItemProps & HTMLAttributes<HTMLDivElement>>;
-	disabled?: boolean;
+  id: string;
+  label: string | React.ReactElement;
+  CustomComponent?: React.ComponentType<DefaultTabBarItemProps & HTMLAttributes<HTMLDivElement>>;
+  disabled?: boolean;
 }
 
 type TabBarProps = Omit<ContainerProps, 'onChange'> & {
-	/** List of elements, can have extra attributes to pass down to the CustomComponent */
-	items: Array<Item>;
-	/** id of the selected item */
-	selected: string;
-	/** change callback, is called with the new selected id */
-	onChange: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent, selectedId: string) => void;
-	/** background color of the tabBar */
-	background: AnyColor;
-	/** underline color of the selected tab */
-	underlineColor?: AnyColor;
-	/** Force tabs to have all the same width */
-	forceWidthEquallyDistributed?: boolean;
+  items: Array<Item>;
+  selected: string;
+  onChange: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent, selectedId: string) => void;
+  background?: AnyColor;
+  underlineColor?: AnyColor;
+  forceWidthEquallyDistributed?: boolean;
 };
 
 type DefaultTabBarItemProps = ContainerProps & {
-	item: Item;
-	selected: boolean;
-	background: AnyColor;
-	onClick: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => void;
-	underlineColor: AnyColor;
-	forceWidthEquallyDistributed: boolean;
+  item: Item;
+  selected: boolean;
+  background?: AnyColor;
+  onClick: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => void;
+  underlineColor: AnyColor;
+  forceWidthEquallyDistributed: boolean;
 };
 
+function getTabItemStyleVars(
+  underlineColor: AnyColor,
+  background?: AnyColor,
+  disabled?: boolean,
+): React.CSSProperties {
+  const bgColorBase = background ?? 'transparent';
+  return {
+    '--tab-underline-color': getThemeColorVar(underlineColor, 'regular'),
+    '--tab-bg-regular': getThemeColorVar(bgColorBase, 'regular'),
+    '--tab-bg-hover': disabled ? 'transparent' : getThemeColorVar(bgColorBase, 'hover'),
+    '--tab-bg-focus': disabled ? 'transparent' : getThemeColorVar(bgColorBase, 'focus'),
+  } as React.CSSProperties;
+}
+
 const DefaultTabBarItem = (
-	{
-		item,
-		selected,
-		background,
-		onClick,
-		underlineColor = 'primary',
-		forceWidthEquallyDistributed = false,
-		children,
-		...rest
-	}: DefaultTabBarItemProps,
-	ref?: React.Ref<HTMLDivElement>
+  {
+    item,
+    selected,
+    background,
+    onClick,
+    underlineColor = 'primary',
+    forceWidthEquallyDistributed = false,
+    children,
+    style,
+    ...rest
+  }: DefaultTabBarItemProps,
+  ref?: React.Ref<HTMLDivElement>,
 ) => {
-	const activationCb = useCallback(
-		(ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
-			if (!item.disabled) {
-				onClick(ev);
-			}
-		},
-		[item.disabled, onClick]
-	);
+  const activationCb = useCallback(
+    (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
+      if (!item.disabled) {
+        onClick(ev);
+      }
+    },
+    [item.disabled, onClick],
+  );
 
-	const combinedRef = useCombinedRefs<HTMLDivElement>(ref);
+  const combinedRef = useCombinedRefs<HTMLDivElement>(ref);
 
-	const keyEvents = useMemo(() => getKeyboardPreset('button', activationCb), [activationCb]);
-	useKeyboard(combinedRef, keyEvents);
+  const keyEvents = useMemo(() => getKeyboardPreset('button', activationCb), [activationCb]);
+  useKeyboard(combinedRef, keyEvents);
 
-	return (
-		<DefaultTabBarItemContainer
-			padding={{ horizontal: 'small' }}
-			onClick={activationCb}
-			$selected={selected}
-			background={background}
-			borderRadius="none"
-			$disabled={item.disabled}
-			$underlineColor={underlineColor}
-			ref={combinedRef}
-			$forceWidthEquallyDistributed={forceWidthEquallyDistributed}
-			{...rest}
-		>
-			{children || (
-				<CustomText
-					overflow="ellipsis"
-					size="small"
-					color={selected ? 'text' : 'secondary'}
-					disabled={item.disabled}
-				>
-					{item.label}
-				</CustomText>
-			)}
-		</DefaultTabBarItemContainer>
-	);
+  const tabItemClassName = [
+    styles.tabItem,
+    forceWidthEquallyDistributed && styles.tabItemEquallyDistributed,
+    selected && styles.tabItemSelected,
+    item.disabled && styles.tabItemDisabled,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const tabItemStyle = {
+    ...getTabItemStyleVars(underlineColor, background, item.disabled),
+    ...style,
+  };
+
+  return (
+    <Container
+      padding={{ horizontal: 'small' }}
+      onClick={activationCb}
+      borderRadius="none"
+      ref={combinedRef}
+      style={tabItemStyle}
+      className={tabItemClassName}
+      {...rest}
+    >
+      {children || (
+        <Text
+          overflow="ellipsis"
+          size="small"
+          color={selected ? 'text' : 'secondary'}
+          disabled={item.disabled}
+          className={styles.labelText}
+        >
+          {item.label}
+        </Text>
+      )}
+    </Container>
+  );
 };
 
 const TabBar = ({
-	items,
-	selected,
-	onChange,
-	background,
-	underlineColor = 'primary',
-	forceWidthEquallyDistributed = false,
-	ref,
-	...rest
+  items,
+  selected,
+  onChange,
+  background,
+  underlineColor = 'primary',
+  forceWidthEquallyDistributed = false,
+  ref,
+  ...rest
 }: TabBarProps) => {
-	const onItemClickCb = useCallback(
-		(id: string) =>
-			(ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent): void => {
-				onChange(ev, id);
-			},
-		[onChange]
-	);
-	return (
-		<Container
-			ref={ref}
-			orientation="horizontal"
-			background={background}
-			mainAlignment="flex-start"
-			{...rest}
-		>
-			{map(items, (item, index) =>
-				item.CustomComponent ? (
-					<item.CustomComponent
-						data-testid={`tab${index}`}
-						key={item.id}
-						item={item}
-						selected={item.id === selected}
-						onClick={onItemClickCb(item.id)}
-						tabIndex={item.disabled ? undefined : 0}
-						background={background}
-						underlineColor={underlineColor}
-						forceWidthEquallyDistributed={forceWidthEquallyDistributed}
-					/>
-				) : (
-					<DefaultTabBarItem
-						data-testid={`tab${index}`}
-						key={item.id}
-						item={item}
-						selected={item.id === selected}
-						background={background}
-						onClick={onItemClickCb(item.id)}
-						tabIndex={item.disabled ? undefined : 0}
-						underlineColor={underlineColor}
-						forceWidthEquallyDistributed={forceWidthEquallyDistributed}
-					/>
-				)
-			)}
-		</Container>
-	);
+  const onItemClickCb = useCallback(
+    (id: string) =>
+      (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent): void => {
+        onChange(ev, id);
+      },
+    [onChange],
+  );
+  return (
+    <Container
+      ref={ref}
+      orientation="horizontal"
+      background={background}
+      mainAlignment="flex-start"
+      {...rest}
+    >
+      {map(items, (item, index) =>
+        item.CustomComponent ? (
+          <item.CustomComponent
+            data-testid={`tab${index}`}
+            key={item.id}
+            item={item}
+            selected={item.id === selected}
+            onClick={onItemClickCb(item.id)}
+            tabIndex={item.disabled ? undefined : 0}
+            background={background}
+            underlineColor={underlineColor}
+            forceWidthEquallyDistributed={forceWidthEquallyDistributed}
+          />
+        ) : (
+          <DefaultTabBarItem
+            data-testid={`tab${index}`}
+            key={item.id}
+            item={item}
+            selected={item.id === selected}
+            background={background}
+            onClick={onItemClickCb(item.id)}
+            tabIndex={item.disabled ? undefined : 0}
+            underlineColor={underlineColor}
+            forceWidthEquallyDistributed={forceWidthEquallyDistributed}
+          />
+        ),
+      )}
+    </Container>
+  );
 };
 
 export { DefaultTabBarItem, TabBar };

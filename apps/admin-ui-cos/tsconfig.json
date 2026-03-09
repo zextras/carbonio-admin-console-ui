@@ -3,6 +3,12 @@
   "include": ["src/**/*", "types/**/*", "global.d.ts"],
   "exclude": ["node_modules", "dist", "build"],
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "outDir": "./dist-types"
-  }
+  },
+  "references": [
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/ui-shared" },
+    { "path": "../../packages/test-utils" }
+  ]
 }

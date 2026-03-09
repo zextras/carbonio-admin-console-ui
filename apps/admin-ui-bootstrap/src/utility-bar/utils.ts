@@ -5,12 +5,12 @@
  */
 
 import {
-	type AppRoute,
-	type PrimaryAccessoryView,
-	type SecondaryAccessoryView,
-	useAppStore,
-	useCurrentRoute,
-	type UtilityView,
+  type AppRoute,
+  type PrimaryAccessoryView,
+  type SecondaryAccessoryView,
+  useAppStore,
+  useCurrentRoute,
+  type UtilityView,
 } from '@zextras/ui-shared';
 import { filter, intersection } from 'lodash-es';
 import { useMemo } from 'react';

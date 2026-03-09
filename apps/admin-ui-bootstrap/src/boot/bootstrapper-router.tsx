@@ -17,7 +17,7 @@ const ContextBridge: FC = () => {
   const location = useLocation();
   const createSnackbar = useSnackbar();
 
-  const createModal = useContext(ModalManagerContext) as Function;
+  const createModal = useContext(ModalManagerContext) as unknown as Function;
 
   const history = useMemo(
     () => ({

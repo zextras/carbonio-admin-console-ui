@@ -143,16 +143,10 @@ describe('PrivacyView', () => {
   });
 
   it('hides save and cancel buttons when cancel is clicked', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
 
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponseMock(mockConfigData));
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
 
     setupBrowserTest(<PrivacyView />);
 

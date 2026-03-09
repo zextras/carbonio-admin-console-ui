@@ -5,7 +5,6 @@
  */
 
 export const MAX_DOMAIN_DISPLAY = 20;
-export const FIRST_PAGE = 1;
 export const DASHBOARD = 'dashboard';
 export const SERVICES_ROUTE_ID = 'services';
 export const RECORD_DISPLAY_LIMIT = 10;

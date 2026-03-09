@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { useAppConfigStore } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -33,7 +25,6 @@ const GlobalTheme: FC = () => {
   const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -138,7 +129,7 @@ const GlobalTheme: FC = () => {
   const modifyConfigRequest = (attributes: Array<any>): void => {
     setIsLoading(true);
     modifyConfig(attributes)
-      .then((data) => {
+      .then(() => {
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -259,24 +250,7 @@ const GlobalTheme: FC = () => {
 
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '70.35rem',
-            top: '6.5rem',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -337,7 +311,6 @@ const GlobalTheme: FC = () => {
           <ResetTheme
             title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
             isOpenResetDialog={isOpenResetDialog}
-            isRequestInProgress={isRequestInProgress}
             closeHandler={closeHandler}
             onResetHandler={onResetHandler}
           />

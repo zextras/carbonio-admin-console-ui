@@ -5,42 +5,27 @@
  */
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
+import clsx from 'clsx';
 import React, {
   HTMLAttributes,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
 } from 'react';
-import styled, { css, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
 import { setupFloating } from '../../utils/floating-ui';
 import { Portal } from '../utilities/Portal';
-
-const PopperContainer = styled.div<{ $open: boolean }>`
-  display: none;
-  position: absolute;
-  ${({ $open }): SimpleInterpolation =>
-    $open &&
-    css`
-      display: block;
-      z-index: 99;
-    `};
-`;
-
-const PopperWrapper = styled.div`
-  outline: 0;
-`;
+import styles from './Popper.module.css';
 
 type PopperProps = HTMLAttributes<HTMLDivElement> & {
   /** Whether the popper is open or not */
   open?: boolean;
   /** Ref to the DOM element triggering the popper */
-  anchorEl: React.RefObject<HTMLElement>;
+  anchorEl: React.RefObject<HTMLElement | null>;
   /** Optional parameter to anchor the popper to a virtual element, defined by his x, y coordinates (ex. \{x: 2, y: 2\}) */
   placement?: Placement;
   /** Callback for closed Popper */
@@ -58,7 +43,6 @@ const Popper = ({
   children,
   ref,
 }: PopperProps) => {
-  const { windowObj } = useContext(ThemeContext);
   const popperRef = useCombinedRefs<HTMLDivElement>(ref);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -128,14 +112,14 @@ const Popper = ({
     let listenerTimeout: ReturnType<typeof setTimeout>;
     if (open) {
       listenerTimeout = setTimeout(() => {
-        windowObj.document.addEventListener('click', closePopper);
+        window.document.addEventListener('click', closePopper);
       }, 1);
     }
     return (): void => {
-      windowObj.document.removeEventListener('click', closePopper);
+      window.document.removeEventListener('click', closePopper);
       listenerTimeout && clearTimeout(listenerTimeout);
     };
-  }, [open, closePopper, windowObj]);
+  }, [open, closePopper]);
 
   useEffect(() => {
     const startSentinelRefSave = startSentinelRef.current;
@@ -152,15 +136,17 @@ const Popper = ({
     };
   }, [open, startSentinelRef, endSentinelRef, onStartSentinelFocus, onEndSentinelFocus]);
 
+  const popperContainerClassName = clsx(styles.popperContainer, open && styles.open);
+
   return (
     <Portal show={open} disablePortal={false}>
-      <PopperContainer ref={popperRef} $open={open} data-testid="popper">
+      <div ref={popperRef} className={popperContainerClassName} data-testid="popper">
         <div tabIndex={0} ref={startSentinelRef} />
-        <PopperWrapper ref={wrapperRef} tabIndex={-1}>
+        <div ref={wrapperRef} tabIndex={-1} className={styles.popperWrapper}>
           {children}
-        </PopperWrapper>
+        </div>
         <div tabIndex={0} ref={endSentinelRef} />
-      </PopperContainer>
+      </div>
     </Portal>
   );
 };

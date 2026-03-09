@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Button,
-  Container,
-  HorizontalWizard,
-  OverlayDivision,
-  Padding,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, HorizontalWizard, Padding, useSnackbar, WizardInSection } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,30 +12,11 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { Section } from '../../../../app/component/section-component';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account.new.create_account_wizard', 'Create Account Wizard')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
-
-interface AccountDetailObj {
+type AccountDetailObj = {
   name: string;
   givenName: string;
   initials: string;
@@ -477,24 +451,7 @@ const CreateAccount: FC<{
   );
   return (
     <>
-      {isLoading && (
-        <OverlayDivision
-          overlayStyle={{
-            position: 'fixed',
-            width: '39.4rem',
-            top: '0',
-            right: '0',
-            bottom: '0',
-            height: 'auto',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            background: '#0d0d0d',
-            opacity: '0.4',
-            zIndex: '11',
-            paddingTop: '2rem',
-          }}
-        />
-      )}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -513,13 +470,14 @@ const CreateAccount: FC<{
         <AccountContext.Provider
           value={{ accountDetail, setAccountDetail, setShowCreateAccountView }}
         >
-          <HorizontalWizard
-            steps={wizardStepItems}
-            Wrapper={WizardInSection}
-            onComplete={onComplete}
-            activeStep={activeStep}
-            setToggleWizardSection={setShowCreateAccountView}
-          />
+					<HorizontalWizard
+						steps={wizardStepItems}
+						title={t('account.new.create_account_wizard', 'Create Account Wizard')}
+						Wrapper={WizardInSection}
+						onComplete={onComplete}
+						activeStep={activeStep}
+						setToggleWizardSection={setShowCreateAccountView}
+					/>
         </AccountContext.Provider>
       </Container>
     </>

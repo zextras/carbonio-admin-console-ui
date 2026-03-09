@@ -9,6 +9,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  ListRow,
   Row,
   Table,
   Text,
@@ -17,7 +18,6 @@ import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
-import ListRow from '../../../list/list-row';
 import { MailingListContext } from './mailinglist-context';
 
 const MailingListCreateSection: FC<any> = () => {

@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+import {
+  Container,
+  DropDownInput,
+  ListItems,
+  ListPanelItem,
+  Padding,
+  Row,
+  Text,
+} from '@zextras/ui-components';
 import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
@@ -22,8 +30,6 @@ import {
   SERVERS_LIST,
 } from '../../constants';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
@@ -183,7 +189,7 @@ const BucketListPanel: FC = () => {
   };
 
   const customIconDetail = {
-    icon: searchVolumeName === '' ? 'HardDriveOutline' : 'CloseOutline',
+    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
       setIsVolumeListExpand(!isVolumeListExpand);
       setIsShowError(false);
