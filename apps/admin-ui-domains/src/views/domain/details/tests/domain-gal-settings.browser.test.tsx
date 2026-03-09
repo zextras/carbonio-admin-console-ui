@@ -53,10 +53,6 @@ const MAILSTORE_SERVERS = [
     { id: 'server-2', name: 'mail2.example.com', a: [{ n: 'description', _content: 'Secondary' }] },
 ];
 
-type SoapRequestBody = {
-    Body: Record<string, unknown>;
-};
-
 function setupGalApiInterceptors(): void {
     worker.use(
         http.post('/service/admin/soap/GetAccountRequest', () =>
