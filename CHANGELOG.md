@@ -1,3 +1,20 @@
+## [0.13.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.2...v0.13.0-devel.3) (2026-03-10)
+
+### Features
+
+* merge ([2e9a847](https://github.com/zextras/carbonio-admin-console-ui/commit/2e9a847e8079c2c11dd1a32b31517fc72d421da0))
+* test ([ef71ee5](https://github.com/zextras/carbonio-admin-console-ui/commit/ef71ee5771fa346c81bc2a0032de840e176f1b11))
+* tests ([767a5a1](https://github.com/zextras/carbonio-admin-console-ui/commit/767a5a129dfb06ece9f7eaf5c1f83f11bdb0be0c))
+* tests ([48f2ea6](https://github.com/zextras/carbonio-admin-console-ui/commit/48f2ea66b578b1ad806c8c7c4ac1562857abfff1))
+
+### Bug Fixes
+
+* fix copilot suggestions ([995e144](https://github.com/zextras/carbonio-admin-console-ui/commit/995e144223b2b171ab64b99cc26649be153b02b2))
+* fix imports ([4c222d4](https://github.com/zextras/carbonio-admin-console-ui/commit/4c222d43c7a97c8fecba9e5e6a8cd0cc80355dfb))
+* fix imports ([df1fa66](https://github.com/zextras/carbonio-admin-console-ui/commit/df1fa66a1f8a5b43212b0777cac4236456ac7649))
+* fix type ([b718f6b](https://github.com/zextras/carbonio-admin-console-ui/commit/b718f6b9ad3a361578eb5b26c50bce7b5a43aa3b))
+* removed import ([d94150a](https://github.com/zextras/carbonio-admin-console-ui/commit/d94150a744f403f4cdbaabc7ef708c6c2c731949))
+
 ## [0.13.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.1...v0.13.0-devel.2) (2026-03-04)
 
 ### Features
