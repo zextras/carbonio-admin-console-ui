@@ -77,7 +77,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
   }, [quotaValue]);
 
   return (
-    <Container padding={{ bottom: 'small' }} gap={'1rem'}>
+    <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
         <Switch
           iconColor="primary"

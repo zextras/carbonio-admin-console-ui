@@ -7,7 +7,8 @@ import {
   Container,
   CustomTextArea,
   Input,
- ListRow, Padding,
+  ListRow,
+  Padding,
   Row,
   Select,
   SingleSelectionOnChange,
@@ -16,8 +17,8 @@ import {
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {  AccountType  } from '../../../../types/account';
-import {  TimeItems  } from '../../../../types/general';
+import { AccountType } from '../../../../types/account';
+import { TimeItems } from '../../../../types/general';
 import { ComputedLimit } from '../../../services/get-cos-quota';
 import COSQuotasNew from './cos-quotas-new';
 
@@ -101,9 +102,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text  weight="bold">
-        {labels.quotas}
-      </Text>
+      <Text weight="bold">{labels.quotas}</Text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
           height="fit"
@@ -111,18 +110,8 @@ const COSQuotas: FC<QuotaProps> = ({
           background={'gray6'}
           padding={{ top: 'large' }}
         >
-          {isTotalQuotaActive && (
-            <ListRow>
-              <COSQuotasNew
-                totalComputedQuotaLimit={totalComputedQuotaLimit}
-                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
-                onChange={onTotalQuotaChange}
-                readonlyCOS={readonlyCOS}
-              />
-            </ListRow>
-          )}
-          <ListRow>
-            {!isTotalQuotaActive && (
+          <ListRow crossAlignment={'flex-end'}>
+            {!isTotalQuotaActive ? (
               <>
                 {isAdvanced && initFileQuotaLimitGBValue && (
                   <Container padding={{ right: 'small' }}>
@@ -169,6 +158,13 @@ const COSQuotas: FC<QuotaProps> = ({
                   )}
                 </Container>
               </>
+            ) : (
+              <COSQuotasNew
+                totalComputedQuotaLimit={totalComputedQuotaLimit}
+                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
+                onChange={onTotalQuotaChange}
+                readonlyCOS={readonlyCOS}
+              />
             )}
             <Container>
               <Input
