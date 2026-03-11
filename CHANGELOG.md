@@ -1,3 +1,9 @@
+## [0.13.0-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.3...v0.13.0-devel.4) (2026-03-11)
+
+### Features
+
+* implement COS quota management with unlimited quota support ([f7f19b0](https://github.com/zextras/carbonio-admin-console-ui/commit/f7f19b0aa77d5cd5672a5ea65519f76c174a1ccb)), closes [#1104](https://github.com/zextras/carbonio-admin-console-ui/issues/1104)
+
 ## [0.13.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.2...v0.13.0-devel.3) (2026-03-10)
 
 ### Features
