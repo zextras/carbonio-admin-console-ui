@@ -47,6 +47,7 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
+import { useTotalQuotaActive } from '../../app/hooks/useTotalQuotaActive';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import {
@@ -62,6 +63,7 @@ import DomainListChipInput from './parts/domain-list-chip-input';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const timezones = useMemo(() => timeZoneList(t), [t]);
   const cosList = useDomainStore((state) => state.cosList);
   const domainInformation = useDomainStore((state) => state.domain?.a);
@@ -218,7 +220,7 @@ const DomainGeneralSettings: FC = () => {
   const [initDomainQuotaGB, setInitDomainQuotaGB] = useState<string>('');
 
   useEffect(() => {
-    if (domainData.zimbraId) {
+    if (isTotalQuotaActive && domainData.zimbraId) {
       getDomainQuota(domainData.zimbraId).then((result) => {
         if (result.type === 'success') {
           const gb = String(BytesToGB(result.limit));
@@ -227,7 +229,7 @@ const DomainGeneralSettings: FC = () => {
         }
       });
     }
-  }, [domainData.zimbraId]);
+  }, [domainData.zimbraId, isTotalQuotaActive]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -493,7 +495,9 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-    setDomainQuotaGB(initDomainQuotaGB);
+    if (isTotalQuotaActive) {
+      setDomainQuotaGB(initDomainQuotaGB);
+    }
     const getItem = cosItems.find(
       (item: any) => item.value === domainData.zimbraDomainDefaultCOSId,
     );
@@ -618,7 +622,7 @@ const DomainGeneralSettings: FC = () => {
 
     modifyDomain(body).then(handleSuccess).catch(handleError);
 
-    if (domainQuotaGB !== initDomainQuotaGB) {
+    if (isTotalQuotaActive && domainQuotaGB !== initDomainQuotaGB) {
       const quotaPromise =
         domainQuotaGB === ''
           ? unsetDomainQuota(domainData.zimbraId)
@@ -1057,34 +1061,38 @@ const DomainGeneralSettings: FC = () => {
               </Container>
             </ListRow>
 
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              background="gray6"
-              padding={{ top: 'large', left: 'small' }}
-            >
-              <Text size="small" weight="bold" color="gray0">
-                {t('label.totalQuotaSetting', 'Total Quota Setting')}
-              </Text>
-            </Row>
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <Input
-                  label={t(
-                    'label.max_quota_for_account_in_this_domain',
-                    'max quota for account in this domain (GB)',
-                  )}
-                  value={domainQuotaGB}
-                  backgroundColor="gray5"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    const digits = e.target.value.replace(/[^0-9]/g, '');
-                    setDomainQuotaGB(digits.replace(/^0+/, ''));
-                  }}
-                  disabled={!isGlobalAdmin}
-                />
-              </Container>
-              <Container padding={{ all: 'small' }} />
-            </ListRow>
+            {isTotalQuotaActive && (
+              <>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  background="gray6"
+                  padding={{ top: 'large', left: 'small' }}
+                >
+                  <Text size="small" weight="bold" color="gray0">
+                    {t('label.totalQuotaSetting', 'Total Quota Setting')}
+                  </Text>
+                </Row>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <Input
+                      label={t(
+                        'label.max_quota_for_account_in_this_domain',
+                        'max quota for account in this domain (GB)',
+                      )}
+                      value={domainQuotaGB}
+                      backgroundColor="gray5"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                        const digits = e.target.value.replace(/[^0-9]/g, '');
+                        setDomainQuotaGB(digits.replace(/^0+/, ''));
+                      }}
+                      disabled={!isGlobalAdmin}
+                    />
+                  </Container>
+                  <Container padding={{ all: 'small' }} />
+                </ListRow>
+              </>
+            )}
 
             {isAdvanced && (
               <ListRow>
