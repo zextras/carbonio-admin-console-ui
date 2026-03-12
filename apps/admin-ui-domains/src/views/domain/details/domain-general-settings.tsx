@@ -220,7 +220,7 @@ const DomainGeneralSettings: FC = () => {
   const [initDomainQuotaGB, setInitDomainQuotaGB] = useState<string>('');
 
   useEffect(() => {
-    if (isTotalQuotaActive && domainData.zimbraId) {
+    if (isTotalQuotaActive && isAdvanced && domainData.zimbraId) {
       getDomainQuota(domainData.zimbraId).then((result) => {
         if (result.type === 'success') {
           const gb = String(BytesToGB(result.limit));
@@ -229,7 +229,7 @@ const DomainGeneralSettings: FC = () => {
         }
       });
     }
-  }, [domainData.zimbraId, isTotalQuotaActive]);
+  }, [domainData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -495,7 +495,7 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-    if (isTotalQuotaActive) {
+    if (isTotalQuotaActive && isAdvanced) {
       setDomainQuotaGB(initDomainQuotaGB);
     }
     const getItem = cosItems.find(
@@ -622,7 +622,7 @@ const DomainGeneralSettings: FC = () => {
 
     modifyDomain(body).then(handleSuccess).catch(handleError);
 
-    if (isTotalQuotaActive && domainQuotaGB !== initDomainQuotaGB) {
+    if (isTotalQuotaActive && isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
       const quotaPromise =
         domainQuotaGB === ''
           ? unsetDomainQuota(domainData.zimbraId)
@@ -1061,7 +1061,7 @@ const DomainGeneralSettings: FC = () => {
               </Container>
             </ListRow>
 
-            {isTotalQuotaActive && (
+            {isAdvanced && isTotalQuotaActive && (
               <>
                 <Row
                   mainAlignment="flex-start"
