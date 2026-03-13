@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	useAppConfigStore,	useCurrentUserRights,	useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import { 	Button,	Container,	Input,	Modal,	Padding,	Row,	Select,	SelectItem,	Switch,	Table,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  find,isEqual  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -21,8 +21,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useAppConfigStore((state) => state.config);
-	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const { data: configInformation = [], invalidate } = useAllConfig();
 	const [mtaAntiVirusAndAntispamInitialDetail, setMtaAntiVirusAndAntispamInitialDetail] =
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
@@ -39,7 +38,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
-	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -67,44 +65,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[setInitialValue, setValue]
 	);
 
-	const updateGlobalConfig = useCallback(
-		(attributes: Array<Record<string, string>>): void => {
-			attributes.forEach((ele: Record<string, string>) => {
-				if (
-					ele?.n !== CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL &&
-					ele?.n !== ZIMBRA_CLAM_AVDATABASE_MIRROR
-				) {
-					updateConfig(ele?.n, ele._content);
-				}
-			});
-			removeConfigItems({ n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL });
-			removeConfigItems({ n: ZIMBRA_CLAM_AVDATABASE_MIRROR });
-			const customURL = attributes.filter(
-				(item) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
-			);
-			if (customURL.length > 0) {
-				updateConfig(
-					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-					mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
-				);
-			}
-			const avDatabaseMirror = attributes.filter(
-				(item) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
-			);
-			if (avDatabaseMirror.length > 0) {
-				updateConfig(
-					ZIMBRA_CLAM_AVDATABASE_MIRROR,
-					mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
-				);
-			}
-		},
-		[
-			mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
-			mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
-			removeConfigItems,
-			updateConfig
-		]
-	);
+	const updateGlobalConfig = useCallback((): void => {
+		invalidate();
+	}, [invalidate]);
 
 	const modifyConfigRequest = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
@@ -118,7 +81,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					updateGlobalConfig(attributes);
+					updateGlobalConfig();
 				})
 				.catch((error) => {
 					createSnackbar({
