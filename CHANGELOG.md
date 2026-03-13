@@ -1,3 +1,12 @@
+## [0.12.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.5...v0.12.6) (2026-03-13)
+
+### Bug Fixes
+
+* handle nullable string ([7268a5f](https://github.com/zextras/carbonio-admin-console-ui/commit/7268a5f11d61f9e77f57696c72c7c7b1cfad3f77))
+* handle nullable string ([#1105](https://github.com/zextras/carbonio-admin-console-ui/issues/1105)) ([c9f699a](https://github.com/zextras/carbonio-admin-console-ui/commit/c9f699a0901f180e558aa08c22688a8763bd5646))
+* sonarqube issue fixed ([20fd34b](https://github.com/zextras/carbonio-admin-console-ui/commit/20fd34bec522ea846fb9b4cb79804d9d50d703be))
+* sonarqube issue fixed ([ab9b63a](https://github.com/zextras/carbonio-admin-console-ui/commit/ab9b63ac428a461094880e9de3c34e29ae37f59b))
+
 ## [0.12.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.4...v0.12.5) (2026-02-27)
 
 ### Bug Fixes
