@@ -32,13 +32,9 @@ describe('getDomainQuota', () => {
       limit: 1000000000,
     };
 
-    createAPIInterceptor(
-      'get',
-      `/services/storages/admin/quota/config/domains/${domainId}`,
-      () => {
-        return HttpResponse.json(apiResponse, { status: 200 });
-      },
-    );
+    createAPIInterceptor('get', `/services/storages/admin/quota/config/domains/${domainId}`, () => {
+      return HttpResponse.json(apiResponse, { status: 200 });
+    });
 
     const result = await getDomainQuota(domainId);
 
@@ -48,21 +44,17 @@ describe('getDomainQuota', () => {
     } satisfies Awaited<ReturnType<typeof getDomainQuota>>);
   });
 
-  it('should return not-found if the API returns 404', async () => {
+  it('should return not-set if the API returns 404', async () => {
     const domainId = '12345';
 
-    createAPIInterceptor(
-      'get',
-      `/services/storages/admin/quota/config/domains/${domainId}`,
-      () => {
-        return HttpResponse.json({}, { status: 404 });
-      },
-    );
+    createAPIInterceptor('get', `/services/storages/admin/quota/config/domains/${domainId}`, () => {
+      return HttpResponse.json({}, { status: 404 });
+    });
 
     const result = await getDomainQuota(domainId);
 
     expect(result).toEqual({
-      type: 'not-found',
+      type: 'not-set',
     });
   });
 

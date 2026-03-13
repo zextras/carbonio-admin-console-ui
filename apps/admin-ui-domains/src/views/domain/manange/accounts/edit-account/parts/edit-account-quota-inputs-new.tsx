@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Padding, Row, Switch, SwitchProps, Text } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,6 +23,14 @@ export const EditAccountQuotaInputsNew = ({
   onChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
+
+  const domainQuotaConstraint = useDomainStore((state) => {
+    if (state.domain.id) {
+      return state.domainsQuota[state.domain.id];
+    } else {
+      return undefined;
+    }
+  });
 
   useEffect(() => {
     setQuotaValue(
@@ -84,7 +92,12 @@ export const EditAccountQuotaInputsNew = ({
     <Container crossAlignment={'flex-start'} mainAlignment={'flex-start'} height={'fit'}>
       <Padding top={'large'} left={'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
-          <Switch iconColor="primary" onClick={switchOnChange} value={switchValue} />
+          <Switch
+            iconColor="primary"
+            onClick={switchOnChange}
+            value={switchValue}
+            disabled={typeof domainQuotaConstraint === 'number'}
+          />
           <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
         </Container>
       </Padding>

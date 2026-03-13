@@ -16,7 +16,7 @@ type GetDomainQuotaResponse =
       limit: number;
     }
   | {
-      type: 'not-found';
+      type: 'not-set';
     }
   | {
       type: 'error';
@@ -37,7 +37,7 @@ export const getDomainQuota = async (domainId: string): Promise<GetDomainQuotaRe
   try {
     const response = await fetch(url, { headers });
     if (response.status === 404) {
-      return { type: 'not-found' } satisfies GetDomainQuotaResponse;
+      return { type: 'not-set' } satisfies GetDomainQuotaResponse;
     }
     if (!response.ok) {
       throw new Error(response.statusText);
