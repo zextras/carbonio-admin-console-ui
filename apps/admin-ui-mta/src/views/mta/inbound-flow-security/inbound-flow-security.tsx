@@ -279,10 +279,6 @@ const MTAInboundFlowSecurity: FC = () => {
     }
   }, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
 
-  const updateGlobalConfig = useCallback((): void => {
-    invalidate();
-  }, [invalidate]);
-
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
@@ -295,7 +291,7 @@ const MTAInboundFlowSecurity: FC = () => {
             hideButton: true,
             replace: true,
           });
-          updateGlobalConfig();
+          invalidate();
         })
         .catch((error) => {
           createSnackbar({
@@ -310,7 +306,7 @@ const MTAInboundFlowSecurity: FC = () => {
           });
         });
     },
-    [createSnackbar, t, updateGlobalConfig],
+    [createSnackbar, invalidate, t],
   );
 
   const setMtaRestrictions = useCallback(
