@@ -3,11 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore, useCurrentUserRights  } from '@zextras/admin-ui-bootstrap';
-import { 	Button,	ChipInput,	Container,	Padding,	Row,	Switch,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
-import {  find, isEqual, uniq  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo,useState  } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import {
+  Button,
+  ChipInput,
+  Container,
+  ListRow,
+  Padding,
+  Row,
+  Switch,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { queryClient, useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
+import { find, isEqual, uniq } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {  MtaInboundSecurity  } from '../../../../types';
 import { 	_REJECT_UNKNOWN_CLIENT_HOSTNAME,	CONFIG,	FALSE,	REJECT_INVALID_HELO_HOSTNAME,	REJECT_NON_FQDN_HELO_HOSTNAME,	REJECT_NON_FQDN_SENDER,	REJECT_SENDER_LOGIN_MISMATCH,	REJECT_UNKNOWN_CLIENT_HOSTNAME,	REJECT_UNKNOWN_HELO_HOSTNAME,	REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,	REJECT_UNKNOWN_SENDER_DOMAIN,	TRUE,	ZIMBRA_MTA_BLOCKED_EXTENSION,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,	ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,	ZIMBRA_MTA_RESTRICTION,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS } from '../../../constants';
@@ -16,14 +27,11 @@ import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
-	const [t] = useTranslation();
-	const createSnackbar = useSnackbar();
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useAppConfigStore((state) => state.config);
-	const updateConfig = useAppConfigStore((state) => state.updateConfig);
-	const addConfig = useAppConfigStore((state) => state.addConfig);
-	const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
-	const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
+  const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
+  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const { data: configInformation = [] } = useAllConfig();
+  const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
 	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
 		useState<MtaInboundSecurity>();
@@ -52,34 +60,36 @@ const MTAInboundFlowSecurity: FC = () => {
 		[setInitialValue, setValue]
 	);
 
-	const setBlockExtensionData = useCallback(() => {
-		const findBlockExtension = configInformation.filter(
-			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION
-		);
-		if (findBlockExtension && findBlockExtension.length > 0) {
-			const allExtensions: Array<Record<string, string>> = [];
-			findBlockExtension.forEach((item: Record<string, string>) => {
-				allExtensions.push({ label: item?._content });
-			});
-			setInitialValue(
-				ZIMBRA_MTA_BLOCKED_EXTENSION,
-				findBlockExtension.map((item: Record<string, string>) => item?._content)
-			);
-			if (allExtensions) {
-				setValue(
-					ZIMBRA_MTA_BLOCKED_EXTENSION,
-					allExtensions.map((item: Record<string, string>) => item?.label)
-				);
-			}
-			setMtaBlockExtension(allExtensions);
-		}
-		const findCommonBlockExtension = configInformation.filter(
-			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION
-		);
-		if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
-			setCommonBlockedExtensions(findCommonBlockExtension.map((item: any) => item?._content));
-		}
-	}, [configInformation, setInitialValue, setValue]);
+  const setBlockExtensionData = useCallback(() => {
+    const findBlockExtension = configInformation.filter(
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION,
+    );
+    if (findBlockExtension && findBlockExtension.length > 0) {
+      const allExtensions: Array<Record<string, string>> = [];
+      findBlockExtension.forEach((item: Record<string, string>) => {
+        allExtensions.push({ label: item?._content });
+      });
+      setInitialValue(
+        ZIMBRA_MTA_BLOCKED_EXTENSION,
+        findBlockExtension.map((item: Record<string, string>) => item?._content),
+      );
+      setValue(
+        ZIMBRA_MTA_BLOCKED_EXTENSION,
+        allExtensions.map((item: Record<string, string>) => item?.label),
+      );
+      setMtaBlockExtension(allExtensions);
+    } else {
+      setInitialValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
+      setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
+      setMtaBlockExtension([]);
+    }
+    const findCommonBlockExtension = configInformation.filter(
+      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
+    );
+    if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
+      setCommonBlockedExtensions(findCommonBlockExtension.map((item: any) => item?._content));
+    }
+  }, [configInformation, setInitialValue, setValue]);
 
 	const setBlockExtensionWarningData = useCallback(() => {
 		const zimbraMtaBlockedExtensionWarnAdmin = configInformation.filter(
@@ -249,74 +259,39 @@ const MTAInboundFlowSecurity: FC = () => {
 		}
 	}, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
 
-	const updateGlobalConfig = useCallback(
-		(attributes: Array<Record<string, string>>): void => {
-			const attributeWithoutExtension = attributes.filter(
-				(item: Record<string, string>) =>
-					item?.n !== ZIMBRA_MTA_BLOCKED_EXTENSION && item?.n !== ZIMBRA_MTA_RESTRICTION
-			);
-			const attributeWithExtension = attributes.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION
-			);
+  const updateGlobalConfig = useCallback((): void => {
+    queryClient.invalidateQueries({ queryKey: ['all-config'] });
+  }, []);
 
-			const zimbraMtaRestriction = attributes.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION
-			);
-			removeConfigItems({ n: ZIMBRA_MTA_RESTRICTION });
-			if (zimbraMtaRestriction && zimbraMtaRestriction.length > 0) {
-				addConfig(zimbraMtaRestriction);
-			}
-			if (attributeWithoutExtension && attributeWithoutExtension.length > 0) {
-				attributeWithoutExtension.forEach((ele: Record<string, string>) => {
-					updateConfig(ele?.n, ele._content);
-				});
-			}
-
-			if (attributeWithExtension && attributeWithExtension.length > 0) {
-				attributeWithExtension.forEach((item: Record<string, string>) => {
-					removeConfigItems(item);
-				});
-				if (attributeWithExtension.length === 1 && attributeWithExtension[0]?._content === '') {
-					removeConfigItems(attributeWithExtension[0]);
-				} else {
-					setTimeout(() => {
-						addConfig(attributeWithExtension);
-					}, 100);
-				}
-			}
-		},
-		[updateConfig, addConfig, removeConfigItems]
-	);
-
-	const modifyConfigRequest = useCallback(
-		(attributes: Array<Record<string, string>>): void => {
-			modifyConfig(attributes)
-				.then((data) => {
-					createSnackbar({
-						key: 'success',
-						severity: 'success',
-						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					updateGlobalConfig(attributes);
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[createSnackbar, t, updateGlobalConfig]
-	);
+  const modifyConfigRequest = useCallback(
+    (attributes: Array<Record<string, string>>): void => {
+      modifyConfig(attributes)
+        .then(() => {
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+          updateGlobalConfig();
+        })
+        .catch((error) => {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: error?.message
+              ? error?.message
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        });
+    },
+    [createSnackbar, t, updateGlobalConfig],
+  );
 
 	const setMtaRestrictions = useCallback(
 		(attributes: Array<Record<string, string>>) => {
@@ -404,30 +379,26 @@ const MTAInboundFlowSecurity: FC = () => {
 		]
 	);
 
-	const onSave = useCallback(() => {
-		const attributes: Array<Record<string, string>> = [];
-		setMtaRestrictions(attributes);
-		setValueForSave(attributes);
-		if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
-			const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
-			if (blockedExtension) {
-				if (blockedExtension.length === 0) {
-					attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
-				} else {
-					blockedExtension.forEach((item: string) => {
-						attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
-					});
-				}
-			}
-		}
-		attributes.push({
-			n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin ? TRUE : FALSE
-		});
-		attributes.push({
-			n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient ? TRUE : FALSE
-		});
+  const onSave = useCallback(() => {
+    const attributes: Array<Record<string, string>> = [];
+    setMtaRestrictions(attributes);
+    setValueForSave(attributes);
+    const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
+    if (blockedExtension && blockedExtension.length > 0) {
+      blockedExtension.forEach((item: string) => {
+        attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
+      });
+    } else {
+      attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
+    }
+    attributes.push({
+      n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+      _content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin ? TRUE : FALSE,
+    });
+    attributes.push({
+      n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+      _content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient ? TRUE : FALSE,
+    });
 
 		attributes.push({
 			n: ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
