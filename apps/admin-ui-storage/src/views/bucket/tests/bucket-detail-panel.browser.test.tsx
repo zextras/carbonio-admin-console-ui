@@ -31,8 +31,8 @@ function buildBucket(overrides: Partial<BucketEntry> = {}): BucketEntry {
 		storeType: 'S3',
 		uuid: 'bucket-uuid-1',
 		notes: 'Test bucket notes',
-		accessKey: 'AKIAIOSFODNN7EXAMPLE',
-		secret: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+		accessKey: 'TESTACCESSKEY',
+		secret: 'TESTSECRETKEY',
 		region: 'US_EAST_1',
 		...overrides,
 	};

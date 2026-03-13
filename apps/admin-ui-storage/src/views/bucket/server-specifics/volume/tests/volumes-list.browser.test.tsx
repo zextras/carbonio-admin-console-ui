@@ -161,7 +161,7 @@ function renderWithContext(): React.ReactElement {
 			compressionThreshold: 0,
 			volumeAllocation: 0,
 		},
-		setVolumeDetail: (): void => {},
+		setVolumeDetail: (): void => { },
 	};
 
 	return (
