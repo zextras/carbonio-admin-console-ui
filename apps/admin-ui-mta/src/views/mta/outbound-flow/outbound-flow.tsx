@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore, useCurrentUserRights, useMtaServers  } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import { 	Button,	ChipInput,	Container,	Input,	Padding,	Row,	Select,	Switch,	Table,	Text,	Tooltip,	useSnackbar } from '@zextras/ui-components';
 import {  find, isEqual, join, map, some, split, trim  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -22,8 +22,7 @@ const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useAppConfigStore((state) => state.config);
-	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const { data: configInformation = [], invalidate } = useAllConfig();
 	const { data: mtaServersList = [] } = useMtaServers();
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 
@@ -226,14 +225,9 @@ const MTAOutBoundFlow: FC = () => {
 		}
 	}, [mtaOutboundDetail, mtaOutboundFlowInitialDetail, networkValue]);
 
-	const updateGlobalConfig = useCallback(
-		(attributes: Array<Record<string, string>>): void => {
-			attributes.forEach((ele: Record<string, string>) => {
-				updateConfig(ele?.n, ele._content);
-			});
-		},
-		[updateConfig]
-	);
+	const updateGlobalConfig = useCallback((): void => {
+		invalidate();
+	}, [invalidate]);
 
 	const modifyConfigRequest = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
@@ -247,7 +241,7 @@ const MTAOutBoundFlow: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					updateGlobalConfig(attributes);
+					updateGlobalConfig();
 				})
 				.catch((error) => {
 					createSnackbar({
