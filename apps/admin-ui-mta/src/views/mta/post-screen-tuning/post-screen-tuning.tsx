@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useAppConfigStore  } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import { 	Button,	Container,	Icon,	Input,	Padding,	Row,	Select,	SelectItem,	Switch,	Text,	useSnackbar } from '@zextras/ui-components';
 import {  isEqual  } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,8 +26,7 @@ const MTAPostScreenTuning: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const configInformation = useAppConfigStore((state) => state.config);
-	const updateConfig = useAppConfigStore((state) => state.updateConfig);
+	const { data: configInformation = [], invalidate } = useAllConfig();
 	const [mtaPostTuningInitialDetail, setMtaPostTuningInitialDetail] = useState<MtaPostTuning>();
 	const [mtaPostTuningDetail, setMtaPostTuningDetail] = useState<MtaPostTuning>();
 	const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
@@ -506,14 +505,9 @@ const MTAPostScreenTuning: FC = () => {
 		);
 	}, [mtaPostTuningInitialDetail, setValue]);
 
-	const updateGlobalConfig = useCallback(
-		(attributes: Array<Record<string, string>>): void => {
-			attributes.forEach((ele: Record<string, string>) => {
-				updateConfig(ele?.n, ele._content);
-			});
-		},
-		[updateConfig]
-	);
+		const updateGlobalConfig = useCallback((): void => {
+		invalidate();
+	}, [invalidate]);
 
 	const modifyConfigRequest = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
@@ -527,7 +521,7 @@ const MTAPostScreenTuning: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					updateGlobalConfig(attributes);
+					updateGlobalConfig();
 				})
 				.catch((error) => {
 					createSnackbar({

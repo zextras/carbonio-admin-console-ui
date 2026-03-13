@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { queryClient } from '@zextras/admin-ui-bootstrap/testing';
 import {
   Button,
   ChipInput,
@@ -51,7 +50,7 @@ const MTAInboundFlowSecurity: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const { data: configInformation = [] } = useAllConfig();
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
   const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
@@ -281,8 +280,8 @@ const MTAInboundFlowSecurity: FC = () => {
   }, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
 
   const updateGlobalConfig = useCallback((): void => {
-    queryClient.invalidateQueries({ queryKey: ['all-config'] });
-  }, []);
+    invalidate();
+  }, [invalidate]);
 
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
