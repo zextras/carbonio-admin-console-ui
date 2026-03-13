@@ -312,7 +312,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replace(/[^a-zA-Z]/g, '');
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/[^a-zA-Z]/g, '');
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
@@ -322,7 +322,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replace(/[^a-zA-Z]/g, '');
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/[^a-zA-Z]/g, '');
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
@@ -332,7 +332,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replace(/[^a-zA-Z]/g, '');
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/[^a-zA-Z]/g, '');
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
@@ -342,7 +342,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replace(/[^a-zA-Z]/g, '');
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/[^a-zA-Z]/g, '');
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
@@ -352,7 +352,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replace(
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(
 				/[^a-zA-Z]/g,
 				''
 			);
@@ -369,7 +369,7 @@ const MTAPostScreenTuning: FC = () => {
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL) {
-			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replace(/[^a-zA-Z]/g, '');
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(/[^a-zA-Z]/g, '');
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
@@ -418,7 +418,7 @@ const MTAPostScreenTuning: FC = () => {
 			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -432,7 +432,7 @@ const MTAPostScreenTuning: FC = () => {
 			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -446,7 +446,7 @@ const MTAPostScreenTuning: FC = () => {
 			setDnsblTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -460,7 +460,7 @@ const MTAPostScreenTuning: FC = () => {
 			setPipeliningTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -474,7 +474,7 @@ const MTAPostScreenTuning: FC = () => {
 			setNonSMTPCommandTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -488,7 +488,7 @@ const MTAPostScreenTuning: FC = () => {
 			setBareNewLineTTLUnit(findOption || intervalOptions[2]);
 			setValue(
 				ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
-				`${mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replace(/[^0-9]/g, '')}${
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(/\D/g, '')}${
 					findOption?.value
 				}`
 			);
@@ -933,7 +933,7 @@ const MTAPostScreenTuning: FC = () => {
 									'DNS Blacklist Min Time to Live (value)'
 								)}
 								backgroundColor="gray5"
-								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replace(/[^0-9]/g, '')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/\D/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
 								}}
@@ -964,7 +964,7 @@ const MTAPostScreenTuning: FC = () => {
 									'DNS Blacklist Max Time to Live (value)'
 								)}
 								backgroundColor="gray5"
-								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replace(/[^0-9]/g, '')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/\D/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
 								}}
@@ -1004,7 +1004,7 @@ const MTAPostScreenTuning: FC = () => {
 								backgroundColor="gray5"
 								value={
 									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
-									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replace(/[^0-9]/g, '')
+									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')
 								}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
@@ -1086,8 +1086,8 @@ const MTAPostScreenTuning: FC = () => {
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
-								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replace(
-									/[^0-9]/g,
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(
+									/\D/g,
 									''
 								)}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1158,8 +1158,8 @@ const MTAPostScreenTuning: FC = () => {
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
-								value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replace(
-									/[^0-9]/g,
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(
+									/\D/g,
 									''
 								)}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1230,7 +1230,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
-								value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replace(/[^0-9]/g, '')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/\D/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
 								}}
