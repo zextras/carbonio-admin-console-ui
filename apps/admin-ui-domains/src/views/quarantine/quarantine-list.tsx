@@ -4,29 +4,43 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useAppConfigStore  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Collapse,  Container,  Icon,  Input,  Modal,  ModalOverlay,  OverlayDivision,  Padding,  Row,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import { useAllConfig } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  Collapse,
+  Container,
+  Icon,
+  Input,
+  Modal,
+  ModalOverlay,
+  OverlayDivision,
+  Padding,
+  Row,
+  Table,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import logo from '../../assets/ninja_robo.svg';
-import {  batchService  } from '../../services/batch-service';
-import {  bounceMsgRequest  } from '../../services/bounce-message';
-import {  createAccountRequest  } from '../../services/create-account';
-import {  deleteAccount  } from '../../services/delete-account-service';
-import {  getAccountRequest  } from '../../services/get-account';
-import {  getAllConfig  } from '../../services/get-all-config';
-import {  getDelegateAuthRequest  } from '../../services/get-delegate-auth-request';
-import {  getQuarantineMessages  } from '../../services/get-quarantine-messages-service';
-import {  msgActionRequest  } from '../../services/message-action';
-import {  modifyConfig  } from '../../services/modify-config';
+import { batchService } from '../../services/batch-service';
+import { bounceMsgRequest } from '../../services/bounce-message';
+import { createAccountRequest } from '../../services/create-account';
+import { deleteAccount } from '../../services/delete-account-service';
+import { getAccountRequest } from '../../services/get-account';
+import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request';
+import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
+import { msgActionRequest } from '../../services/message-action';
+import { modifyConfig } from '../../services/modify-config';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
-import {  MessageTableHeaders, RandomString  } from '../utility/utils';
+import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -323,7 +337,7 @@ const QuarantineList: FC = () => {
   const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
   const [openDeliverDialog, setOpenDeliverDialog] = useState<boolean>(false);
   const [messageListData, setMessageListData] = useState([]);
-  const { config, setConfig } = useAppConfigStore((state) => state);
+  const { data: config = [], invalidate } = useAllConfig();
   const [messageSelection, setMessageSelection] = useState<string[]>([]);
   const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
   const [showTextMsgView, setShowTextMsgView] = useState<boolean>(false);
@@ -379,14 +393,6 @@ const QuarantineList: FC = () => {
     ],
     [t],
   );
-
-  const getAllConfigData = useCallback((): void => {
-    getAllConfig().then((res) => {
-      if (res?.a) {
-        setConfig(res.a);
-      }
-    });
-  }, [setConfig]);
 
   const participantTypeFromSoap = (ta: SoapEmailParticipantRole): ParticipantRoleType => {
     switch (ta) {
@@ -901,7 +907,7 @@ const QuarantineList: FC = () => {
                 hideButton: true,
                 replace: true,
               });
-              getAllConfigData();
+              invalidate();
               getQuarantineMsgData();
               if (deleteAccountName) {
                 getAccountRequest('', deleteAccountName, 0).then((res) => {
@@ -925,7 +931,7 @@ const QuarantineList: FC = () => {
             });
         }
 
-        getAllConfigData();
+        invalidate();
       })
       .catch((error) => {
         createSnackbar({
@@ -941,7 +947,7 @@ const QuarantineList: FC = () => {
       });
   }, [
     createSnackbar,
-    getAllConfigData,
+    invalidate,
     getQuarantineMsgData,
     quarantineAccountName,
     quarantineDomaintName,

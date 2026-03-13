@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  useAppConfigStore,
+  useAllConfig,
   useCurrentUserRights,
   useMtaServers,
 } from '@zextras/admin-ui-bootstrap';
@@ -63,7 +63,7 @@ const MTAServerGeneral: FC = () => {
   const [networkValue, setNetworkValue] = useState<Array<any>>([]);
   const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
   const { data: mtaServerList = [] } = useMtaServers();
-  const configInformation = useAppConfigStore((state) => state.config);
+  const { data: configInformation = [] } = useAllConfig();
   const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
     { n: string; _content: string }[]
   >([]);

@@ -33,6 +33,25 @@ async function expectMailMessagesSizeSectionVisible() {
   await expect.element(page.getByText('Custom max size mail messages (MB)')).toBeVisible();
 }
 
+function getAllConfigResponse(zimbraMtaMaxMessageSize: string) {
+  return {
+    a: [
+      { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
+      { n: 'zimbraAmavisLogLevel', _content: '2' },
+      { n: 'zimbraAmavisSALogLevel', _content: '0' },
+      { n: 'zimbraMtaSmtpdTlsLoglevel', _content: '1' },
+      { n: 'zimbraMtaLmtpTlsLoglevel', _content: '1' },
+      { n: 'zimbraClamAVMaxThreads', _content: '10' },
+      { n: 'zimbraLmtpNumThreads', _content: '20' },
+      { n: 'zimbraMilterNumThreads', _content: '5' },
+      { n: 'zimbraMilterMaxConnections', _content: '100' },
+      { n: 'zimbraMtaSmtpSaslAuthEnable', _content: 'yes' },
+      { n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' },
+      { n: 'zimbraMtaMaxMessageSize', _content: zimbraMtaMaxMessageSize },
+    ],
+  };
+}
+
 describe('MTAAdvanced', () => {
   const setupConfigStore = (): void => {
     useAppConfigStore.getState().setConfig([
@@ -54,6 +73,7 @@ describe('MTAAdvanced', () => {
   beforeEach(() => {
     grantUserConfigRights();
     setupConfigStore();
+    createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse('10485760'));
   });
 
   afterEach(() => {
@@ -213,6 +233,8 @@ describe('MTAAdvanced', () => {
   }, 20000);
 
   it('should handle component initialization with no message size limit', async () => {
+    createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse(''));
+
     // Setup config without message size to test the no-limit initial state
     useAppConfigStore.getState().setConfig([
       { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
@@ -264,6 +286,8 @@ describe('MTAAdvanced', () => {
   });
 
   it('should trigger setLimitMaxMessageSize(true) when clicking custom size radio', async () => {
+    createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse(''));
+
     // Setup config without message size to start with "No size limit" selected
     useAppConfigStore.getState().setConfig([
       { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },

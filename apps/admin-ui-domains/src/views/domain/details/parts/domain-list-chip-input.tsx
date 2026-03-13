@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
 	ChipInput,
 	ChipInputProps,
@@ -26,7 +26,7 @@ const DomainListChipInput: FC<{
 	setDomainList: (domainList: DomainsByFeature[]) => void;
 }> = ({ domainList, setDomainList, domainName }) => {
 	const [t] = useTranslation();
-	const config = useAppConfigStore((state) => state.config);
+	const { data: config = [] } = useAllConfig();
 	const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
 	const getAllDomainList = useCallback(
 		(searchQuery: string): void => {
