@@ -16,7 +16,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

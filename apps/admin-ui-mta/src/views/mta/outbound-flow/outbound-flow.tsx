@@ -20,7 +20,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -255,15 +255,6 @@ const MTAOutBoundFlow: FC = () => {
     }
   }, [mtaOutboundDetail, mtaOutboundFlowInitialDetail, networkValue]);
 
-  const updateGlobalConfig = useCallback(
-    (attributes: Array<Record<string, string>>): void => {
-      attributes.forEach((ele: Record<string, string>) => {
-        updateConfig(ele?.n, ele._content);
-      });
-    },
-    [updateConfig],
-  );
-
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
@@ -276,7 +267,7 @@ const MTAOutBoundFlow: FC = () => {
             hideButton: true,
             replace: true,
           });
-          updateGlobalConfig(attributes);
+          invalidate();
         })
         .catch((error) => {
           createSnackbar({
@@ -291,7 +282,7 @@ const MTAOutBoundFlow: FC = () => {
           });
         });
     },
-    [createSnackbar, t, updateGlobalConfig],
+    [createSnackbar, invalidate, t],
   );
 
   const onSave = useCallback(() => {

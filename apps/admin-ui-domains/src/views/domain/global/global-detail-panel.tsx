@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
@@ -17,7 +16,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore } from '@zextras/ui-shared';
+import { useAllConfig } from '@zextras/ui-shared';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -305,9 +304,7 @@ const GlobalDetailPanel: FC = () => {
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text  weight="bold">
-                {t('label.settings', 'Settings')}
-              </Text>
+              <Text weight="bold">{t('label.settings', 'Settings')}</Text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">

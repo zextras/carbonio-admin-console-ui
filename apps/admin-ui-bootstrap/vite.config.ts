@@ -160,11 +160,6 @@ export default defineConfig(({ command, mode }) => {
                 target: proxyTarget,
                 changeOrigin: true,
                 secure: false,
-              },
-              '/login': withLocationRewrite({
-                target: proxyTarget,
-                changeOrigin: true,
-                secure: false,
               }),
               '/service': withLocationRewrite({
                 target: proxyTarget,
