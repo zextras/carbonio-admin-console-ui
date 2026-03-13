@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useAppConfigStore } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
@@ -45,8 +45,7 @@ const GlobalTheme: FC = () => {
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-  const { data: configInformation = [] } = useAllConfig();
-  const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -139,10 +138,6 @@ const GlobalTheme: FC = () => {
     }
   }, [configInformation, setInitalValues]);
 
-  const updateGlobalConfig = (attributes: Array<any>): void => {
-    updateAllConfig(attributes);
-  };
-
   useEffect(() => {
     if (globalTheme && !isEqual(globalTheme, intialThemeConfig)) {
       setIsDirty(true);
@@ -163,7 +158,7 @@ const GlobalTheme: FC = () => {
           hideButton: true,
           replace: true,
         });
-        updateGlobalConfig(attributes);
+        invalidate();
         setIsLoading(false);
       })
       .catch((error) => {
