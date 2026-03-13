@@ -3,13 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import clsx from 'clsx';
 import React from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
+import { Button } from '../../basic/button/Button';
 import { Text } from '../../basic/text/Text';
 import { Tooltip } from '../../display/Tooltip';
-import { IconButton } from '../../inputs/IconButton';
 import { Row } from '../../layout/Row';
+import styles from './ModalHeader.module.css';
 
 type ModalHeaderProps = {
 	centered?: boolean;
@@ -20,45 +21,32 @@ type ModalHeaderProps = {
 	closeIconTooltip?: string;
 };
 
-const ModalTitle = styled(Text)<{ $centered: boolean }>`
-	box-sizing: border-box;
-	width: 100%;
-	flex-grow: 1;
-	flex-basis: 0;
-	line-height: 1.5;
-	padding: ${(props): string =>
-		`${props.theme.sizes.padding.small} ${props.theme.sizes.padding.small} ${props.theme.sizes.padding.small} 0`};
-	${({ $centered }): SimpleInterpolation =>
-		$centered &&
-		css`
-			text-align: center;
-		`};
-`;
-
-const ModalHeader = ({
+function ModalHeader({
 	centered,
 	onClose,
 	showCloseIcon,
 	title,
 	type,
-	closeIconTooltip
-}: ModalHeaderProps): React.JSX.Element => (
-	<Row width="100%" padding={{ bottom: 'small' }}>
-		<ModalTitle
-			$centered={!!centered}
-			color={type === 'error' ? 'error' : undefined}
-			size="medium"
-			weight="bold"
-		>
-			{title}
-		</ModalTitle>
-		{showCloseIcon && onClose && (
-			<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
-				<IconButton icon="Close" size="large" onClick={onClose} />
-			</Tooltip>
-		)}
-	</Row>
-);
+	closeIconTooltip,
+}: ModalHeaderProps): React.JSX.Element {
+	return (
+		<Row width="100%" padding={{ bottom: 'small' }}>
+			<Text
+				className={clsx(styles.modalTitle, centered && styles.centered)}
+				color={type === 'error' ? 'error' : undefined}
+				size="medium"
+				weight="bold"
+			>
+				{title}
+			</Text>
+			{showCloseIcon && onClose && (
+				<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
+					<Button icon="Close" size="large" onClick={onClose} type="ghost" color="text" />
+				</Tooltip>
+			)}
+		</Row>
+	);
+}
 
 export type { ModalHeaderProps };
 export { ModalHeader };

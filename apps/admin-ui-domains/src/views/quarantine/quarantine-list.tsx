@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Collapse,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   ModalOverlay,
-  OverlayDivision,
   Padding,
   Row,
   Table,
@@ -21,11 +21,11 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../assets/ninja_robo.svg';
 import { batchService } from '../../services/batch-service';
@@ -37,27 +37,9 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 58.75rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 type AttachmentPart = {
   part?: string;
@@ -283,8 +265,8 @@ const MessageListTable: FC<{
             multiSelect={false}
             selectedRows={selectedRows}
             onSelectionChange={onSelectionChange}
-            RowFactory={CustomRowFactory}
             HeaderFactory={CustomHeaderFactory}
+            RowFactory={HoverableRowFactory}
           />
           {requestInprogress && (
             <Container
@@ -293,7 +275,7 @@ const MessageListTable: FC<{
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <spinner-wc></spinner-wc>
             </Container>
           )}
           {tableRows.length === 0 && !requestInprogress && (
@@ -1259,13 +1241,7 @@ const QuarantineList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <spinner-wc></spinner-wc>
                 </Container>
               </>
             )}
@@ -1354,7 +1330,7 @@ const QuarantineList: FC = () => {
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+          {messageViewLoading && <spinner-wc></spinner-wc>}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"
@@ -1399,7 +1375,6 @@ const QuarantineList: FC = () => {
                   size="large"
                   weight="bold"
                   // @ts-expect-error - needs a fix
-
                   color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
                   style={{ display: 'flex', paddingLeft: '0.25rem' }}
                 >
@@ -1407,15 +1382,14 @@ const QuarantineList: FC = () => {
                 </Text>
                 <Tooltip placement="top" label={message.reason}>
                   <Text style={{ paddingLeft: '0.25rem' }}>
-                    <Icon
+                    <icon-wc
                       color={
                         // @ts-expect-error - needs a fix
-
                         message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
                       }
                       size="large"
                       icon={'QuestionMarkCircleOutline'}
-                    />
+                    ></icon-wc>
                   </Text>
                 </Tooltip>
               </Row>
@@ -1545,7 +1519,7 @@ const QuarantineList: FC = () => {
                     type="ghost"
                   />
                 </Row>
-                <Collapse orientation="vertical" open={showTextMsgView}>
+                <Collapse open={showTextMsgView}>
                   <Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
                     <Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
                       {message?.body?.content}

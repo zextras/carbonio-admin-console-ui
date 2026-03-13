@@ -1,42 +1,65 @@
 # Carbonio Admin UI Monorepo
 
-A monorepo containing Carbonio Admin Console UI and related packages, managed with pnpm workspaces and Turborepo.
+Carbonio Admin Console UI is the web-based administrative interface for [Zextras Carbonio](https://www.zextras.com/carbonio/), providing domain management, backup, storage, MTA configuration, and other administrative capabilities through a micro-frontend architecture.
 
-## Overview
+It is organized as a monorepo of 12 admin modules and shared packages, managed with pnpm workspaces and Turborepo.
 
-This monorepo houses the administrative interface for Zextras Carbonio, organized into modular applications and shared packages.
+## Quick Start
 
-## Prerequisites
+### Prerequisites
 
-- **Node.js** - Version >=22.14.0 (enforced by package.json engines field)
-- **pnpm** - Version 10.15.0 (enforced by packageManager field)
+- **Node.js** >= 22.14.0
+- **pnpm** 10.15.0
 
-## Getting Started
-
-### Initial Setup
-
-Clone the repository and install all dependencies:
+### Building
 
 ```bash
-# Install dependencies across all workspaces
+# Install dependencies
 pnpm install
+
+# Build all applications
+pnpm build
+
+# Start the dev server
+pnpm dev
 ```
 
-### Full Reset
-
-If you encounter dependency issues or need a clean slate:
+To build the distributable packages (deb/rpm) using [YAP](https://github.com/m0rf30/yap) in a container:
 
 ```bash
-pnpm reset
+make build                         # Build JS apps and package for Ubuntu 22.04
+make build TARGET=ubuntu-noble     # Build for Ubuntu 24.04
+make build TARGET=rocky-9          # Build for Rocky Linux 9
 ```
 
-This command will:
+Other available `make` targets (run `make help` for the full list):
 
-- Remove all `node_modules` directories
-- Delete `pnpm-lock.yaml`
-- Clear Turbo cache
-- Prune the pnpm store
-- Reinstall all dependencies
+| Target            | Description                                          |
+| ----------------- | ---------------------------------------------------- |
+| `make install`    | Install all dependencies                             |
+| `make build-dev`  | Build JS apps in development mode, without packaging |
+| `make test`       | Run tests                                            |
+| `make lint`       | Run ESLint and TypeScript type checks                |
+| `make clean`      | Remove build artifacts and cache                     |
+| `make reset`      | Full clean reinstall                                 |
+| `make deploy`     | Deploy to `TEST_HOST` defined in `.env`              |
+| `make deploy-dev` | Deploy development build to `TEST_HOST`              |
+
+## Installation
+
+This package is distributed as part of the [Carbonio platform](https://zextras.com/carbonio). To install:
+
+### Ubuntu (Jammy/Noble)
+
+```bash
+apt-get install carbonio-admin-console-ui
+```
+
+### Rocky Linux (8/9)
+
+```bash
+yum install carbonio-admin-console-ui
+```
 
 ## Development Server
 
@@ -69,15 +92,12 @@ All scripts use Turborepo for efficient task orchestration across workspaces.
 
 ### Building
 
-#### `pnpm build`
-
-Builds all applications in the correct order, respecting dependencies.
-
 ```bash
-pnpm build
+pnpm build      # Build all applications in dependency order
+pnpm build:dev  # Build in development mode (no cache)
 ```
 
-This command:
+`pnpm build`:
 
 - Builds the shell application (admin-ui-bootstrap)
 - Builds all admin modules
@@ -86,76 +106,35 @@ This command:
 
 ### Deployment
 
-#### `pnpm run deploy <hostname>`
-
-Deploys the unified package to a remote host.
-
 ```bash
-pnpm run deploy <hostname>
+pnpm run deploy <hostname>      # Build and deploy to a remote host
+pnpm run deploy:dev <hostname>  # Deploy development build
 ```
 
-This script:
+The deploy script:
 
 - Runs `pnpm build`
-- Creates .deb packages using Docker and YAP
+- Creates .deb packages using YAP
 - Uploads the package to the remote host
 - Installs the package via apt
 
 ### Testing
 
-#### `pnpm test`
-
-Runs the test suite across all packages once.
-
 ```bash
-pnpm test
-```
-
-#### `pnpm test:ci`
-
-Runs tests with coverage reporting, optimized for CI/CD pipelines.
-
-```bash
-pnpm test:ci
+pnpm test     # Run tests once across all packages
+pnpm test:ci  # Run tests with coverage reporting (CI mode)
 ```
 
 ### Code Quality
 
-#### `pnpm type-check`
-
-Runs TypeScript type checking across all packages without emitting files.
-
 ```bash
-pnpm type-check
-```
-
-#### `pnpm lint`
-
-Runs ESLint across all packages to enforce code quality standards.
-
-```bash
-pnpm lint
-```
-
-#### `pnpm lint:fix`
-
-Automatically fixes ESLint issues where possible.
-
-```bash
-pnpm lint:fix
-```
-
-#### `pnpm type-lint`
-
-Combines type-checking and linting for comprehensive code quality checks.
-
-```bash
-pnpm type-lint
+pnpm type-check  # TypeScript type checking
+pnpm lint        # Run ESLint
+pnpm lint:fix    # Auto-fix ESLint issues
+pnpm type-lint   # Type check + lint combined
 ```
 
 ### Working with Individual Apps
-
-You can test, or run scripts for specific apps:
 
 ```bash
 # Run tests for a specific app
@@ -178,7 +157,7 @@ Packages reference each other using the `workspace:*` protocol:
 ```json
 {
   "dependencies": {
-    "@zextras/admin-ui-bootstrap": "workspace:*",
+    "@zextras/ui-shared": "workspace:*",
     "@zextras/ui-components": "workspace:*"
   }
 }
@@ -206,8 +185,8 @@ pnpm add <package> -r
 The admin console uses a micro-frontend architecture:
 
 1. **Shell** (`admin-ui-bootstrap`) - Provides the runtime environment, routing, and shared state
-2. **Modules** (other apps) - Independent features loaded dynamically by the shell
-3. **Shared Dependencies** - Vendored common libraries (React, tanstack-query , etc.) loaded once as a singleton
+1. **Modules** (other apps) - Independent features loaded dynamically by the shell
+1. **Shared Dependencies** - Vendored common libraries (React, tanstack-query , etc.) loaded once as a singleton
 
 ### Import Maps
 
@@ -240,7 +219,7 @@ Modules are loaded based on their `priority` value defined in each app's `packag
 
 The monorepo contains 12 applications organized as:
 
-```
+```text
 apps/
 ├── admin-ui-bootstrap/      # Shell application (priority: -1)
 ├── admin-ui-dashboard/      # Dashboard overview (priority: 3)
@@ -258,7 +237,7 @@ apps/
 
 ### Packages (packages/)
 
-```
+```text
 packages/
 ├── ui-components/    # @zextras/ui-components - Shared UI component library
 └── test-utils/       # admin-ui-test-utils - Testing utilities and mocks
@@ -302,7 +281,7 @@ pnpm test:ci
 
 Follow the **commitizen** convention:
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]
@@ -328,7 +307,7 @@ Follow the **commitizen** convention:
 
 **Examples:**
 
-```
+```text
 feat[admin-ui-domains](domain-list): add pagination controls
 fix[admin-ui-bootstrap](auth): resolve token refresh race condition
 chore[root](pnpm-lock): update @types/react to 19.2.11
@@ -348,7 +327,6 @@ chore[root](pnpm-lock): update @types/react to 19.2.11
 If you encounter dependency-related errors:
 
 ```bash
-# Run full reset
 pnpm reset
 ```
 
@@ -364,13 +342,14 @@ If builds fail unexpectedly:
    rm -rf .turbo
    ```
 
-2. **Clean build outputs:**
+1. **Clean and reinstall:**
 
    ```bash
-   pnpm --filter @zextras/admin-ui-bootstrap clean
+   pnpm reset
    ```
 
-3. **Check Node.js version:**
+1. **Check Node.js version:**
+
    ```bash
    node --version  # Should be >=22.14.0
    ```
@@ -385,12 +364,13 @@ If tests timeout or hang:
    timeout 120 pnpm test
    ```
 
-2. **Check for `test.only` or `it.only`:**
+1. **Check for `test.only` or `it.only`:**
 
    - Never remove `.only` from tests
    - These indicate tests currently under development
 
-3. **Verify browser availability:**
+1. **Verify browser availability:**
+
    ```bash
    pnpm exec playwright install chromium
    ```
@@ -409,20 +389,21 @@ If imports fail to resolve:
    }
    ```
 
-2. **Clean and reinstall:**
+1. **Clean and reinstall:**
 
    ```bash
    rm -rf node_modules pnpm-lock.yaml
    pnpm install
    ```
 
-3. **Check TypeScript paths in tsconfig.json**
+1. **Check TypeScript paths in tsconfig.json**
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to contribute to this project.
 
 ## License
 
-This project is licensed under **AGPL-3.0-only**.
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
 
-### License Files
-
-- **Main License:** `LICENSES/AGPL-3.0-only.txt`
-- **REUSE Compliance:** This project follows the REUSE specification for license management
+This project follows the [REUSE specification](https://reuse.software/) for license management. The full license text is also available at `LICENSES/AGPL-3.0-only.txt`.

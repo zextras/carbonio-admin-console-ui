@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch } from '@zextras/ui-shared';
+
+import type { DomainResponse } from '../../types';
 
 export const getDomainList = async (
-	searchKeyWord: string | undefined,
+	searchKeyWord: string,
 	offset: number,
 	limit?: number
-): Promise<any> =>
+): Promise<DomainResponse> =>
 	soapFetch(`SearchDirectory`, {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,

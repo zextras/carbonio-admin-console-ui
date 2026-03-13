@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
-import { Container, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 

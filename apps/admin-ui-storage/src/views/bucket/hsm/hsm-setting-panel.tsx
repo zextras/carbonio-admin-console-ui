@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
@@ -17,6 +19,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -32,9 +35,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
@@ -466,7 +466,7 @@ const HSMsettingPanel: FC = () => {
       policy += `${criteriaScale.toString()}:`;
     }
     if (hsmPolicyDetail?.policyCriteria.length > 0) {
-      hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
+      hsmPolicyDetail?.policyCriteria.forEach((item: any) => {
         policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
       });
     }
@@ -747,7 +747,6 @@ const HSMsettingPanel: FC = () => {
                 <Padding right="medium">
                   <Button
                     label={t('hsm.new', 'New')}
-                    icon=""
                     type="outlined"
                     color="primary"
                     onClick={(): void => {
@@ -761,7 +760,6 @@ const HSMsettingPanel: FC = () => {
                   <Button
                     label={t('hsm.run_all', 'Run All')}
                     type="outlined"
-                    icon=""
                     color="primary"
                     onClick={(): void => {
                       runAllHSMpolicy();
@@ -774,7 +772,6 @@ const HSMsettingPanel: FC = () => {
                   label={t('hsm.delete', 'Delete')}
                   color="error"
                   type="outlined"
-                  icon=""
                   onClick={(): void => {
                     setShowDeletePolicyView(true);
                   }}
@@ -804,7 +801,7 @@ const HSMsettingPanel: FC = () => {
             multiSelect={false}
             selectedRows={selectedPolicies}
             HeaderFactory={CustomHeaderFactory}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
           />
         </ListRow>
         <ListRow>

@@ -5,15 +5,13 @@
  */
 
 import type { OutputOptions, RollupOptions } from 'rollup';
-
-import { colorLog } from '../../../scripts/utils';
-import { getSharedDepNames } from './utils';
+import { colorLog, getSharedDepNames } from './utils';
 
 /**
  * Creates standardized rollup options for the ESM bootstrap application (shell).
  * The shell externalizes shared dependencies - they are loaded via import maps
  * which point to separately built shared-deps bundles.
- * This ensures a single instance of React/styled-components/etc across shell and sub-apps.
+ * This ensures a single instance of React/etc across shell and sub-apps.
  *
  * Sub-apps are imported via static dynamic imports and code-split into separate chunks.
  */

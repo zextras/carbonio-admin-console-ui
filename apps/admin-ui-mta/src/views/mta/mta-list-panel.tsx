@@ -4,11 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  replaceHistory,
-  useGlobalCarbonioSendAnalytics,
-  useMtaServers,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+  Container,
+  DropDownInput,
+  ListItems,
+  ListPanelItem,
+  Padding,
+  Row,
+  Text,
+} from '@zextras/ui-components';
+import { replaceHistory, useGlobalCarbonioSendAnalytics, useMtaServers } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,8 +27,6 @@ import {
   QUEUE,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 
 const MTAListPanel: FC = () => {
   const [t] = useTranslation();
@@ -164,7 +166,7 @@ const MTAListPanel: FC = () => {
 
   const customIconDetail = useMemo(
     () => ({
-      icon: searchServer === '' ? 'HardDriveOutline' : 'CloseOutline',
+      icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
       onClick: handleCustomIconClick,
     }),
     [searchServer, handleCustomIconClick],

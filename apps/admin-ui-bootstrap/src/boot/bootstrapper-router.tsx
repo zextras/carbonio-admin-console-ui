@@ -5,12 +5,11 @@
  */
 
 import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
+import { BASENAME, useBridge } from '@zextras/ui-shared';
 import { FC, useContext, useMemo } from 'react';
 import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
-import { BASENAME } from '../constants';
 import ShellView from '../shell/shell-view';
-import { useBridge } from '../store/context-bridge';
 import { AppLoaderMounter } from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {
@@ -18,7 +17,7 @@ const ContextBridge: FC = () => {
   const location = useLocation();
   const createSnackbar = useSnackbar();
 
-  const createModal = useContext(ModalManagerContext) as Function;
+  const createModal = useContext(ModalManagerContext) as unknown as Function;
 
   const history = useMemo(
     () => ({

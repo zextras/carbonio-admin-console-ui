@@ -7,6 +7,7 @@
 import {
   Container,
   Input,
+  ListRow,
   Row,
   Select,
   SingleSelectionOnChange,
@@ -16,7 +17,6 @@ import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../types/general';
-import ListRow from '../../list/list-row';
 
 type EmailRetentionPolicyProps = {
   zimbraMailMessageLifetimeNum: string | undefined;
@@ -68,7 +68,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
+      <Text  weight="bold">
         {labels.email.retentionPolicy}
       </Text>
       <Row mainAlignment="flex-start" width="100%">

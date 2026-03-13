@@ -1,0 +1,27 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.externalContainer {
+	display: block;
+}
+
+.list {
+	overflow-y: auto;
+	overflow-y: overlay;
+}
+
+.list::-webkit-scrollbar {
+	width: 0.5rem;
+}
+
+.list::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+.list::-webkit-scrollbar-thumb {
+	background-color: var(--color-gray3-regular);
+	border-radius: 0.25rem;
+}

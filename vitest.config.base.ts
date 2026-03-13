@@ -8,11 +8,14 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
-import { optimizeDepsInclude } from './vitest.config.utils';
+import { getOptimizeDepsInclude } from './vitest.config.utils';
 
 function jsdomProjectConfig() {
   return {
     plugins: [],
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
     test: {
       name: 'unit',
       environment: 'jsdom',
@@ -25,10 +28,7 @@ function jsdomProjectConfig() {
       },
       alias: {
         'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
-        '@zextras/admin-ui-bootstrap': path.resolve(
-          __dirname,
-          './__mocks__/@zextras/admin-ui-bootstrap.js',
-        ),
+        '@zextras/ui-shared': path.resolve(__dirname, './__mocks__/@zextras/ui-shared.js'),
       },
       include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
@@ -38,21 +38,55 @@ function jsdomProjectConfig() {
       mockReset: true,
       restoreMocks: true,
       testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      maxConcurrency: 3,
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      include: getOptimizeDepsInclude(),
     },
   };
 }
 
 function browserProjectConfig() {
   return {
-    resolve: {
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
+    test: {
+      name: 'browser',
+      maxConcurrency: 3,
+      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+      sequence: {
+        groupOrder: 2,
+      },
+      fileParallelism: false,
+      retry: 2,
+      include: ['**/*.browser.test.{ts,tsx}'],
+      browser: {
+        enabled: true,
+        provider: playwright() as any,
+        instances: [{ browser: 'chromium' as const }],
+        viewport: { width: 834, height: 2000 },
+        headless: !!process.env.CI,
+        screenshotFailures: !process.env.CI,
+        providerOptions: { launch: { timeout: 60_000 } },
+      },
+      exclude: ['dist/**', 'node_modules/**'],
+      globals: true,
+      css: true,
+      clearMocks: true,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
           './packages/test-utils/src/index.browser.ts',
         ),
+        // TODO: @zextras/ui-shared alias causes browser tests to fail with "Failed to fetch dynamically imported module"
+        // The issue is that the setup file path resolution doesn't work in browser mode
+        // '@zextras/ui-shared': path.resolve(
+        //   __dirname,
+        //   './packages/ui-shared/src/exports.ts',
+        // ),
         'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
         'tinymce/models/dom': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/themes/silver': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
@@ -85,31 +119,6 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    test: {
-      name: 'browser',
-      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-      sequence: {
-        groupOrder: 2,
-      },
-      fileParallelism: false,
-      retry: 2,
-
-      include: ['**/*.browser.test.{ts,tsx}'],
-      browser: {
-        enabled: true,
-        provider: playwright() as any,
-        instances: [{ browser: 'chromium' as const }],
-        viewport: { width: 834, height: 2000 },
-        headless: !!process.env.CI,
-        screenshotFailures: !process.env.CI,
-      },
-      exclude: ['dist/**', 'node_modules/**'],
-      globals: true,
-      css: true,
-      clearMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
-      hookTimeout: 15_000,
-    },
     plugins: [
       react(),
       svgr({
@@ -123,7 +132,7 @@ function browserProjectConfig() {
       }),
     ],
     optimizeDeps: {
-      include: optimizeDepsInclude,
+      include: getOptimizeDepsInclude(),
     },
   };
 }
@@ -135,6 +144,7 @@ export default defineConfig({
   test: {
     globals: true,
     passWithNoTests: true,
+    maxConcurrency: 3,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
 
     coverage: {

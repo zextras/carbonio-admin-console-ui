@@ -4,32 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Text } from '@zextras/ui-components';
+import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
-import styled from 'styled-components';
-
-import { BadgeInfo } from '../../types';
-
-const MiniBadge = styled(Container)<{ badge: BadgeInfo }>`
-  position: absolute;
-  bottom: 25%;
-  right: 25%;
-  transform: translate(30%, 30%);
-  background: ${({ badge, theme }): string => theme.palette[badge?.color ?? 'primary'].regular};
-  min-width: 12px;
-  min-height: 12px;
-  line-height: 12px;
-  border-radius: 8px;
-  user-select: none;
-  cursor: pointer;
-  pointer-events: none;
-`;
 
 type BadgeWrapProps = {
   badge: BadgeInfo;
   isExpanded: boolean;
   children?: React.ReactNode;
-  ref?: React.Ref<Element>;
+  ref?: React.Ref<HTMLDivElement>;
 };
+
+function getBadgeStyle(badgeColor: string | undefined): React.CSSProperties {
+  return {
+    position: 'absolute',
+    bottom: '25%',
+    right: '25%',
+    transform: 'translate(30%, 30%)',
+    background: `var(--color-${badgeColor ?? 'primary'}-regular)`,
+    minWidth: '12px',
+    minHeight: '12px',
+    lineHeight: '12px',
+    borderRadius: '8px',
+    userSelect: 'none',
+    cursor: 'pointer',
+    pointerEvents: 'none',
+  };
+}
 
 const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
   <Container
@@ -39,13 +39,13 @@ const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
     ref={ref}
   >
     {badge.show && (
-      <MiniBadge badge={badge} height="fit" width="fit">
+      <Container height="fit" width="fit" style={getBadgeStyle(badge.color)}>
         {badge.showCount ? (
           <Text size="extrasmall" style={{ padding: '2px 4px', fontSize: '10px' }} color="gray6">
             {badge.count ?? 0}
           </Text>
         ) : null}
-      </MiniBadge>
+      </Container>
     )}
     {children}
   </Container>

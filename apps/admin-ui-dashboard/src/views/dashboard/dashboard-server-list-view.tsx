@@ -4,24 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, Icon, Table, Text } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  ListRow,
+  Table,
+  Text,
+} from '@zextras/ui-components';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ListRow from '../list/list-row';
-
-const VersionText = styled(Text)`
-  background: ${({ theme }): string => theme.palette.primary.regular};
-  width: 4.813rem;
-  border-radius: 3.125rem;
-  padding: 0.188rem 0 0 0;
-  height: 1.188rem;
-  text-align: center;
-`;
+function getVersionTextStyle(): React.CSSProperties {
+  return {
+    background: 'var(--color-primary-regular)',
+    width: '4.813rem',
+    borderRadius: '3.125rem',
+    padding: '0.188rem 0 0 0',
+    height: '1.188rem',
+    textAlign: 'center',
+  };
+}
 
 const DashboardServerList: FC<{
   goToMailStoreServerList: () => void;
@@ -48,29 +53,31 @@ const DashboardServerList: FC<{
           >
             {item?.name}
           </Text>,
-          <VersionText
+          <Text
             size="small"
             weight="regular"
             color="gray6"
             key={item?.name}
+            style={getVersionTextStyle()}
             onClick={(event: { stopPropagation: () => void }): void => {
               event.stopPropagation();
             }}
           >
             {serverVersion}
-          </VersionText>,
+          </Text>,
           isAdvanced ? (
-            <VersionText
+            <Text
               size="small"
               weight="regular"
               color="gray6"
               key={item?.name}
+              style={getVersionTextStyle()}
               onClick={(event: { stopPropagation: () => void }): void => {
                 event.stopPropagation();
               }}
             >
               {serverVersion}
-            </VersionText>
+            </Text>
           ) : (
             ''
           ),
@@ -135,7 +142,7 @@ const DashboardServerList: FC<{
         >
           <ListRow>
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
-              <Icon icon="HardDriveOutline" height={'1.5rem'} width="1.5rem" />
+              <icon-wc icon="HardDriveOutline" size="large"></icon-wc>
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
               <Text size="medium" color="gray0" weight="bold">
@@ -173,7 +180,7 @@ const DashboardServerList: FC<{
             showCheckbox={false}
             multiSelect={false}
             style={{ overflow: 'auto', height: '100%' }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>

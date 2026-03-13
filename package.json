@@ -30,6 +30,7 @@
     "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "react": "^19.1.0"
   },
   "devDependencies": {
@@ -37,7 +38,7 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.2",
-    "@tsconfig/node14": "^14.1.0",
+    "@tsconfig/vite-react": "^7.0.2",
     "@vitejs/plugin-react": "^5.0.2",
     "@vitest/browser": "^4.0.5",
     "@vitest/browser-playwright": "^4.0.5",
@@ -75,19 +76,10 @@
     "Firefox ESR",
     "not dead"
   ],
-  "pnpm": {
-    "overrides": {
-      "styled-components": "5.3.11"
-    },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "styled-components": "5.3.11"
-      }
-    }
-  },
   "msw": {
     "workerDirectory": [
       "./packages/test-utils/public",
+      "./packages/ui-shared/public",
       "./apps/admin-ui-bootstrap/public",
       "./apps/admin-ui-console/public",
       "./apps/admin-ui-dashboard/public",

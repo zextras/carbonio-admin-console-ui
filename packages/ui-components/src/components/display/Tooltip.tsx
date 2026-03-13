@@ -5,7 +5,6 @@
  */
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
-import { rgba } from 'polished';
 import {
 	cloneElement,
 	createRef,
@@ -15,52 +14,48 @@ import {
 	useRef,
 	useState
 } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { setupFloating } from '../../utils/floating-ui';
 import { Text, TextProps } from '../basic/text/Text';
 import { Portal } from '../utilities/Portal';
+import styles from './Tooltip.module.css';
 
 type TooltipWrapperProps = TextProps & {
 	open: boolean;
+	maxWidth: string;
 };
 
 const TooltipWrapper = ({
 	open,
+	maxWidth,
 	children,
 	size = 'extrasmall',
 	overflow = 'break-word',
+	className,
+	style,
 	...rest
 }: TooltipWrapperProps) => {
 	if (!open) return null;
 
+	const tooltipStyle = {
+		maxWidth,
+		...style,
+	};
+
 	return (
-		<Text size={size} overflow={overflow} data-testid={'tooltip'} {...rest}>
+		<Text
+			size={size}
+			overflow={overflow}
+			data-testid={'tooltip'}
+			className={className}
+			style={tooltipStyle}
+			{...rest}
+		>
 			{children}
 		</Text>
 	);
 };
-const TooltipWrapperWithCss = styled(TooltipWrapper)<{ $maxWidth: string }>`
-	display: none;
-	position: absolute;
-	top: -1000px;
-	left: -1000px;
-	z-index: 5000;
-
-	max-width: ${({ $maxWidth }): string => $maxWidth};
-	padding: ${({ theme }): string => theme.sizes.padding.small};
-	background: ${({ theme }): string => theme.palette.gray3.regular};
-	border-radius: ${({ theme }): string => theme.borderRadius};
-	user-select: none;
-	box-shadow: 0 0 0.25rem 0 ${({ theme }): string => rgba(theme.palette.gray0.regular, 0.5)};
-
-	${({ open }): SimpleInterpolation =>
-		open &&
-		css`
-			display: block;
-		`};
-`;
 
 type TooltipProps = TextProps & {
 	/** Tooltip text */
@@ -170,9 +165,15 @@ const Tooltip = ({
 				ref: combinedTriggerRef as React.RefObject<HTMLElement>
 			} as Partial<React.HTMLAttributes<HTMLElement>>)}
 			<Portal show={open && !disabled} disablePortal={disablePortal}>
-				<TooltipWrapperWithCss ref={tooltipRef} open={open} $maxWidth={maxWidth} {...rest}>
+				<TooltipWrapper
+					ref={tooltipRef}
+					open={open}
+					maxWidth={maxWidth}
+					className={styles.tooltip}
+					{...rest}
+				>
 					{label}
-				</TooltipWrapperWithCss>
+				</TooltipWrapper>
 			</Portal>
 		</>
 	);

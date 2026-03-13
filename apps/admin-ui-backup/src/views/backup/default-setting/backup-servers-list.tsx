@@ -4,14 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Row, Table, Text, Tooltip } from '@zextras/ui-components';
+import {
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Row,
+  Table,
+  Text,
+  Tooltip,
+} from '@zextras/ui-components';
+import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -148,7 +154,7 @@ const BackupServersListTable: FC<{
             {s?.description}
           </Text>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <icon-wc icon="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -169,7 +175,7 @@ const BackupServersListTable: FC<{
             </Row>
           </Row>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <icon-wc icon="FolderOutline"></icon-wc>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -203,7 +209,7 @@ const BackupServersListTable: FC<{
       multiSelect={false}
       selectedRows={selectedRows}
       onSelectionChange={onSelectionChange}
-      RowFactory={CustomRowFactory}
+      RowFactory={HoverableRowFactory}
       HeaderFactory={CustomHeaderFactory}
     />
   );
@@ -406,7 +412,7 @@ const ServersList: FC = () => {
             <BackupServersListTable
               serverList={serverList}
               selectedRows={selectedRows}
-              onSelectionChange={(selected: any): any => null}
+              onSelectionChange={() => null}
             />
           </Row>
         </Container>

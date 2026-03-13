@@ -5,7 +5,6 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import styled from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver/useIntersectionObserver';
@@ -13,28 +12,7 @@ import { getKeyboardPreset, KeyboardPresetObj, useKeyboard } from '../../../hook
 import { AnyColor } from '../../../types/utils';
 import { Container, ContainerProps } from '../../layout/Container';
 import { ListItemProps } from '../ListItem';
-
-const ExternalContainer = styled(Container)`
-	display: block;
-`;
-
-const StyledList = styled(Container)`
-	overflow-y: auto;
-	overflow-y: overlay;
-
-	&::-webkit-scrollbar {
-		width: 0.5rem;
-	}
-
-	&::-webkit-scrollbar-track {
-		background-color: transparent;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background-color: ${({ theme }): string => theme.palette.gray3.regular};
-		border-radius: 0.25rem;
-	}
-`;
+import styles from './List.module.css';
 
 type ListProps = ContainerProps & {
 	/** intersectionObserverInitOptions of the intersectionObserver inside BottomElement */
@@ -119,8 +97,13 @@ const List = ({
 	}, [children, observe, unobserve]);
 
 	return (
-		<ExternalContainer ref={listRef} {...rest}>
-			<StyledList orientation="vertical" mainAlignment="flex-start" crossAlignment="stretch">
+		<Container ref={listRef} className={styles.externalContainer} {...rest}>
+			<Container
+				orientation="vertical"
+				mainAlignment="flex-start"
+				crossAlignment="stretch"
+				className={styles.list}
+			>
 				{listItems}
 				{onListBottom && (
 					<div
@@ -129,8 +112,8 @@ const List = ({
 						data-testid={'list-bottom-element'}
 					/>
 				)}
-			</StyledList>
-		</ExternalContainer>
+			</Container>
+		</Container>
 	);
 };
 

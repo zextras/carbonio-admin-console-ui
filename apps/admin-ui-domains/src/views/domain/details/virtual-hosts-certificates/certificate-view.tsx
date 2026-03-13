@@ -8,6 +8,7 @@ import {
 	Button,
 	Container,
 	Input,
+	ListRow,
 	Row,
 	Text,
 	Tooltip,
@@ -19,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { objectType } from '../../../../../types';
 import { SHORT } from '../../../../constants';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
-import ListRow from '../../../list/list-row';
 import { GenerateCertificateModal } from './generate-certificate-modal';
 
 interface CertificateViewProps {

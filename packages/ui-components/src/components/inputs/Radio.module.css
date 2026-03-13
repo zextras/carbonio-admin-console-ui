@@ -1,0 +1,74 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.radioInput {
+	&:focus-visible {
+		outline: none;
+	}
+	width: var(--radio-outer-diameter);
+	height: var(--radio-outer-diameter);
+	min-width: fit-content;
+	flex-shrink: 0;
+	box-sizing: border-box;
+	margin: 0;
+	appearance: none;
+	border-radius: 50%;
+	outline: none;
+	border: var(--radio-border-width) solid var(--radio-color);
+	padding: var(--radio-padding);
+	background-clip: content-box;
+	background-color: var(--radio-color);
+	box-shadow: inset 0 0 0 var(--radio-inner-diameter) var(--radio-bg-color);
+	transition-property: box-shadow;
+	transition-duration: 0.2s;
+	transition-timing-function: ease-out;
+}
+
+.radioInput:not(:disabled) {
+	cursor: pointer;
+}
+
+.radioInput:hover:not(:disabled) {
+	border-color: var(--radio-color-hover);
+	background-color: var(--radio-color-hover);
+}
+
+.radioInput:focus:not(:disabled) {
+	border-color: var(--radio-color-focus);
+	background-color: var(--radio-color-focus);
+}
+
+.radioInput:active:not(:disabled) {
+	border-color: var(--radio-color-active);
+	background-color: var(--radio-color-active);
+}
+
+.radioInput:disabled {
+	border-color: var(--radio-color-disabled);
+	background-color: var(--radio-color-disabled);
+}
+
+.radioInput:checked {
+	box-shadow: inset 0 0 0 0 var(--radio-bg-color);
+}
+
+.label {
+	line-height: 1.5;
+	font-size: var(--label-font-size);
+}
+
+.label:not(.labelDisabled) {
+	cursor: pointer;
+}
+
+.radioContainer {
+	outline: none;
+}
+
+.radioContainer:not(.radioContainerDisabled):hover .radioInput {
+	border-color: var(--radio-color-hover);
+	background-color: var(--radio-color-hover);
+}

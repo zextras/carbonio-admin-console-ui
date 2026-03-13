@@ -3,12 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -17,6 +19,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,9 +30,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ListRow from '../list/list-row';
 import { PageLayout } from '../page-layout';
 
 const CosServerPools: FC = () => {
@@ -437,7 +437,7 @@ const CosServerPools: FC = () => {
           width="100%"
         >
           <ListRow>
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.general_options', 'General Options')}
             </Text>
           </ListRow>
@@ -474,7 +474,7 @@ const CosServerPools: FC = () => {
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
                         CustomIcon={(): any => (
-                          <Icon icon="FunnelOutline" size="large" color="primary" />
+                          <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                         )}
                         onChange={(e: any): any => {
                           setSearchServer(e.target.value);
@@ -527,7 +527,7 @@ const CosServerPools: FC = () => {
                   showCheckbox={false}
                   selectedRows={selectedTableRowsId}
                   HeaderFactory={CustomHeaderFactory}
-                  RowFactory={CustomRowFactory}
+                  RowFactory={HoverableRowFactory}
                 />
               </Row>
             </>

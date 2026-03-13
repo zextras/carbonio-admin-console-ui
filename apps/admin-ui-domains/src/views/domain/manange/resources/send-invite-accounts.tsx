@@ -6,9 +6,11 @@
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
-  Icon,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Table,
@@ -22,10 +24,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import ListRow from '../../../list/list-row';
 import { isValidEmail } from '../../../utility/utils';
 
 export const SendInviteAccounts: FC<any> = ({
@@ -165,7 +164,7 @@ export const SendInviteAccounts: FC<any> = ({
     }
   }, [newSentInviteValue, searchMemberCall]);
 
-  const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+  const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -274,7 +273,9 @@ export const SendInviteAccounts: FC<any> = ({
                 label={t('label.search_an_account', 'Search for an account')}
                 backgroundColor="gray5"
                 value={searchAccountName}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                )}
                 onChange={(e: any): any => {
                   setSearchAccountName(e.target.value);
                 }}
@@ -304,7 +305,7 @@ export const SendInviteAccounts: FC<any> = ({
                 setSendInviteDeleteBtnDisabled(true);
               }
             }}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>

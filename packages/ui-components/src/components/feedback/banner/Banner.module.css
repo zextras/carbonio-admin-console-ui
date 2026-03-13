@@ -1,0 +1,54 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.infoContainer {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+
+.infoContainer > *:not(:first-child) {
+	padding-top: 0.25rem;
+}
+
+.bannerText {
+	overflow: visible;
+}
+
+.wrapAndGrowContainer {
+	flex-basis: calc(var(--wrap-flex-basis) + var(--icon-size-large) + 1rem);
+}
+
+.actionsContainer {
+	align-self: stretch;
+}
+
+.closeContainer {
+	align-self: var(--close-align-self);
+}
+
+/* Banner container - default order (single line) */
+.bannerContainer .wrapAndGrowContainer {
+	order: 1;
+}
+
+.bannerContainer .actionsContainer {
+	order: 2;
+}
+
+.bannerContainer .closeContainer {
+	order: 3;
+}
+
+/* Multiline ordering */
+.bannerContainer.multiline .closeContainer {
+	order: 2;
+}
+
+.bannerContainer.multiline .actionsContainer {
+	order: 3;
+}

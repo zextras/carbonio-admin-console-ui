@@ -21,9 +21,10 @@ export default tseslint.config(
   {
     ignores: [
       '**/node_modules/**',
-      'dist/**',
+      '**/dist/**',
+      '**/dist-types/**',
       '**/build/**',
-      'coverage/**',
+      '**/coverage/**',
       '**/*vitest*',
       '**/*.config.*',
       '**/.prettierrc.js',
@@ -48,11 +49,12 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'no-console': ['error', { allow: ['error'] }],
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      // '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
       'no-duplicate-imports': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',

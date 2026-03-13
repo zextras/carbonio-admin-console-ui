@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
-  Icon,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -17,10 +16,10 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { MtaPostTuning } from '../../../../types';
 import {
@@ -45,15 +44,15 @@ import {
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 type SelectValue = SelectItem[] | string | null;
 
+const containerStyle = {
+  borderRadius: '0.125rem 0.125rem 0 0',
+  borderBottom: '0.063rem solid #2196D3',
+  marginTop: '0.938rem',
+  marginBottom: '0.938rem',
+};
 const MTAPostScreenTuning: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -785,12 +784,7 @@ const MTAPostScreenTuning: FC = () => {
             width="100%"
             background="#D3EBF8"
             padding={{ all: 'small' }}
-            style={{
-              borderRadius: '0.125rem 0.125rem 0 0',
-              borderBottom: '0.063rem solid #2196D3',
-              marginTop: '0.938rem',
-              marginBottom: '0.938rem',
-            }}
+            style={containerStyle}
             height="auto"
           >
             <Container
@@ -801,7 +795,11 @@ const MTAPostScreenTuning: FC = () => {
             >
               <Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" color="#2196D3"></CustomIcon>
+                  <icon-wc
+                    icon="InfoOutline"
+                    color="#2196D3"
+                    style={{ width: '1.25rem', height: '1.25rem' }}
+                  ></icon-wc>
                 </Padding>
               </Container>
               <Container
@@ -967,7 +965,7 @@ const MTAPostScreenTuning: FC = () => {
                   'DNS Blacklist Min Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
                 }}
@@ -997,7 +995,7 @@ const MTAPostScreenTuning: FC = () => {
                   'DNS Blacklist Max Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
                 }}
@@ -1035,7 +1033,10 @@ const MTAPostScreenTuning: FC = () => {
               <Input
                 label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')}
+                value={
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')
+                }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
                 }}
@@ -1116,8 +1117,8 @@ const MTAPostScreenTuning: FC = () => {
               <Input
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(
-                  /\D/g,
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
+                  /[^0-9]/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1188,8 +1189,8 @@ const MTAPostScreenTuning: FC = () => {
               <Input
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(
-                  /\D/g,
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
+                  /[^0-9]/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1260,7 +1261,7 @@ const MTAPostScreenTuning: FC = () => {
               <Input
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
                 }}

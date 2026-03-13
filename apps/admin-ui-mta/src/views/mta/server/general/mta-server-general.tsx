@@ -4,19 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  useAllConfig,
-  useCurrentUserRights,
-  useMtaServers,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  ListRow,
   Padding,
   Row,
   Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,11 +43,7 @@ import {
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';
-import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
-import InheritedInput from '../../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
 import { validateIpAddress } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {

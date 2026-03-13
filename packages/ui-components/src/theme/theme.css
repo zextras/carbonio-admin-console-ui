@@ -1,0 +1,228 @@
+/*
+ * SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*  this file defines CSS variables that map to the colors defined in Theme.palette */
+
+:root {
+  /* Primary palette - matches Theme.palette.primary */
+  --color-primary-regular: #2b73d2;
+  --color-primary-hover: #225ca8;
+  --color-primary-active: #1e5092;
+  --color-primary-focus: #225ca8;
+  --color-primary-disabled: #aac8ee;
+  --color-primary-highlight: #d5e3f6;
+
+  /* Secondary palette - matches Theme.palette.secondary */
+  --color-secondary-regular: #828282;
+  --color-secondary-hover: #696969;
+  --color-secondary-active: #5c5c5c;
+  --color-secondary-focus: #696969;
+  --color-secondary-disabled: #cccccc;
+
+  /* Header palette - matches Theme.palette.header */
+  --color-header-regular: #cfd5dc;
+  --color-header-hover: #b1bbc6;
+  --color-header-active: #a3aebc;
+  --color-header-focus: #b1bbc6;
+  --color-header-disabled: #cfd5dc;
+
+  /* Gray scale - matches Theme.palette.gray0-6 */
+  --color-gray0-regular: #414141;
+  --color-gray0-hover: #282828;
+  --color-gray0-active: #1b1b1b;
+  --color-gray0-focus: #282828;
+  --color-gray0-disabled: #cccccc;
+
+  --color-gray1-regular: #828282;
+  --color-gray1-hover: #696969;
+  --color-gray1-active: #5c5c5c;
+  --color-gray1-focus: #696969;
+  --color-gray1-disabled: #cccccc;
+
+  --color-gray2-regular: #cfd5dc;
+  --color-gray2-hover: #b1bbc6;
+  --color-gray2-active: #a3aebc;
+  --color-gray2-focus: #b1bbc6;
+  --color-gray2-disabled: #cfd5dc;
+
+  --color-gray3-regular: #e6e9ed;
+  --color-gray3-hover: #c8cfd8;
+  --color-gray3-active: #bac2cd;
+  --color-gray3-focus: #c8cfd8;
+  --color-gray3-disabled: #e6e9ed;
+
+  --color-gray4-regular: #eeeff3;
+  --color-gray4-hover: #d0d3de;
+  --color-gray4-active: #c1c5d3;
+  --color-gray4-focus: #d0d3de;
+  --color-gray4-disabled: #eeeff3;
+
+  --color-gray5-regular: #f5f6f8;
+  --color-gray5-hover: #d7dbe3;
+  --color-gray5-active: #c8ced9;
+  --color-gray5-focus: #d7dbe3;
+  --color-gray5-disabled: #f5f6f8;
+
+  --color-gray6-regular: #ffffff;
+  --color-gray6-hover: #e6e6e6;
+  --color-gray6-active: #d9d9d9;
+  --color-gray6-focus: #e6e6e6;
+  --color-gray6-disabled: #ffffff;
+
+  /* Semantic colors - matches Theme.palette */
+  --color-warning-regular: #ffc107;
+  --color-warning-hover: #d39e00;
+  --color-warning-active: #ba8b00;
+  --color-warning-focus: #d39e00;
+  --color-warning-disabled: #ffe699;
+
+  --color-error-regular: #d74942;
+  --color-error-hover: #be3028;
+  --color-error-active: #a92a24;
+  --color-error-focus: #be3028;
+  --color-error-disabled: #edaeab;
+
+  --color-success-regular: #8bc34a;
+  --color-success-hover: #71a436;
+  --color-success-active: #639030;
+  --color-success-focus: #71a436;
+  --color-success-disabled: #cee6b2;
+
+  --color-info-regular: #2196d3;
+  --color-info-hover: #1a75a7;
+  --color-info-active: #176691;
+  --color-info-focus: #1a75a7;
+  --color-info-disabled: #a7d7f1;
+
+  /* Text - matches Theme.palette.text */
+  --color-text-regular: #333333;
+  --color-text-hover: #1a1a1a;
+  --color-text-active: #0d0d0d;
+  --color-text-focus: #1a1a1a;
+  --color-text-disabled: #cccccc;
+
+  /* Black & White - matches Theme.palette.black/white */
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  /* Banner colors - matches Theme.palette */
+  --color-successBanner: #e6f2d8;
+  --color-warningBanner: #fff7de;
+  --color-infoBanner: #d3ebf8;
+  --color-errorBanner: #f6d6d5;
+
+  /* Transparent - matches Theme.palette.transparent */
+  --color-transparent: rgba(0, 0, 0, 0);
+  --color-transparent-hover: rgba(0, 0, 0, 0.05);
+  --color-transparent-active: rgba(0, 0, 0, 0.1);
+  --color-transparent-focus: rgba(0, 0, 0, 0.05);
+  --color-transparent-disabled: rgba(0, 0, 0, 0);
+
+  /* Current color - matches Theme.palette.currentColor */
+  --color-currentColor: currentColor;
+
+  /* Icon sizes - matches Theme.sizes.icon */
+  --icon-size-small: 0.75rem;
+  --icon-size-medium: 1rem;
+  --icon-size-large: 1.5rem;
+
+  /* Font sizes - matches Theme.sizes.font */
+  --font-size-extrasmall: 0.75rem;
+  --font-size-small: 0.875rem;
+  --font-size-medium: 1rem;
+  --font-size-large: 1.125rem;
+  --font-size-extralarge: 1.25rem;
+
+  /* Padding sizes - matches Theme.sizes.padding */
+  --padding-size-extrasmall: 0.25rem;
+  --padding-size-small: 0.5rem;
+  --padding-size-medium: 0.75rem;
+  --padding-size-large: 1rem;
+  --padding-size-extralarge: 1.5rem;
+
+  /* Avatar sizes - matches Theme.sizes.avatar */
+  --avatar-small-diameter: 1rem;
+  --avatar-small-font: 0.3125rem;
+  --avatar-medium-diameter: 2rem;
+  --avatar-medium-font: 0.75rem;
+  --avatar-large-diameter: 3rem;
+  --avatar-large-font: 1.125rem;
+  --avatar-extralarge-diameter: 4rem;
+  --avatar-extralarge-font: 1.75rem;
+
+  /* Border radius - matches Theme.borderRadius */
+  --border-radius: 0.125rem;
+
+  /* Font family - matches Theme.fonts */
+  --font-family: 'Roboto', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Highlight palette - calculated from primary colors */
+  --color-highlight-regular: #d5e3f6;
+  --color-highlight-hover: #abc6ed;
+  --color-highlight-active: #96b8e9;
+  --color-highlight-focus: #abc6ed;
+  --color-highlight-disabled: #d5e3f6;
+
+  /* Avatar colors - matches Theme.avatarColors */
+  --color-avatar-1: #EF9A9A;
+  --color-avatar-2: #F48FB1;
+  --color-avatar-3: #CE93D8;
+  --color-avatar-4: #B39DDB;
+  --color-avatar-5: #9FA8DA;
+  --color-avatar-6: #90CAF9;
+  --color-avatar-7: #81D4FA;
+  --color-avatar-8: #80DEEA;
+  --color-avatar-9: #80CBC4;
+  --color-avatar-10: #A5D6A7;
+  --color-avatar-11: #C5E1A5;
+  --color-avatar-12: #E6EE9C;
+  --color-avatar-13: #FFE082;
+  --color-avatar-14: #FFCC80;
+  --color-avatar-15: #FFAB91;
+  --color-avatar-16: #BCAAA4;
+  --color-avatar-17: #E57373;
+  --color-avatar-18: #F06292;
+  --color-avatar-19: #BA68C8;
+  --color-avatar-20: #9575CD;
+  --color-avatar-21: #7986CB;
+  --color-avatar-22: #64B5F6;
+  --color-avatar-23: #4FC3F7;
+  --color-avatar-24: #4DD0E1;
+  --color-avatar-25: #4DB6AC;
+  --color-avatar-26: #81C784;
+  --color-avatar-27: #AED581;
+  --color-avatar-28: #DCE775;
+  --color-avatar-29: #FFD54F;
+  --color-avatar-30: #FFB74D;
+  --color-avatar-31: #FF8A65;
+  --color-avatar-32: #A1887F;
+  --color-avatar-33: #0097A7;
+  --color-avatar-34: #EF5350;
+  --color-avatar-35: #EC407A;
+  --color-avatar-36: #AB47BC;
+  --color-avatar-37: #7E57C2;
+  --color-avatar-38: #5C6BC0;
+  --color-avatar-39: #42A5F5;
+  --color-avatar-40: #29B6F6;
+  --color-avatar-41: #26C6DA;
+  --color-avatar-42: #26A69A;
+  --color-avatar-43: #66BB6A;
+  --color-avatar-44: #9CCC65;
+  --color-avatar-45: #D4E157;
+  --color-avatar-46: #FFCA28;
+  --color-avatar-47: #FFA726;
+  --color-avatar-48: #FF7043;
+  --color-avatar-49: #8D6E63;
+  --color-avatar-50: #0288D1;
+
+  /* Shadows - matches Theme.shadows */
+  --shadow-regular: 0 0 0.25rem 0 rgba(166, 166, 166, 0.5);
+  --shadow-snackbar: -2px 2px 5px 0 rgba(0, 0, 0, 0.25);
+}

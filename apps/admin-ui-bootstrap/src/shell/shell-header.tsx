@@ -3,77 +3,44 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { type AppRoute, CARBONIO_LOGO_URL, useLoginConfigStore } from '@zextras/ui-shared';
+import React, { FC } from 'react';
 
-import { Container, Padding, useScreenMode } from '@zextras/ui-components';
-import React, { FC, useMemo } from 'react';
-import styled from 'styled-components';
-
-import { AppRoute } from '../../types';
-import { CARBONIO_LOGO_URL } from '../constants';
-import { useLoginConfigStore } from '../store/login/store';
 import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
 
-const CustomImg = styled.img`
-  height: 2rem;
-`;
+const styles = {
+  root: 'flex flex-row w-full h-[60px] justify-between items-center bg-gray3-regular px-lg py-sm box-border',
+  leftSection: 'flex flex-row items-center gap-xl',
+  logoAnchor: 'flex h-8 items-center',
+  rightSection: 'flex flex-row justify-end items-center',
+};
 
 const ShellHeader: FC<{
-  activeRoute: AppRoute;
+  activeRoute: AppRoute | undefined;
   children?: React.ReactNode;
 }> = ({ activeRoute, children }) => {
-  const screenMode = useScreenMode();
   const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
     useLoginConfigStore();
-  const logoSrc = useMemo(() => {
-    return carbonioAdminUiAppLogo || carbonioAdminUiDarkAppLogo;
-  }, [carbonioAdminUiDarkAppLogo, carbonioAdminUiAppLogo]);
 
-  const logoUrl = useMemo(() => carbonioLogoURL || CARBONIO_LOGO_URL, [carbonioLogoURL]);
+  const logoSrc = carbonioAdminUiAppLogo || carbonioAdminUiDarkAppLogo;
+  const logoUrl = carbonioLogoURL || CARBONIO_LOGO_URL;
 
   return (
-    <Container
-      orientation="horizontal"
-      background="gray3"
-      width="fill"
-      height="60px"
-      minHeight="60px"
-      maxHeight="60px"
-      mainAlignment="space-between"
-      padding={{
-        left: screenMode === 'desktop' ? 'large' : 'small',
-        right: screenMode === 'desktop' ? 'large' : 'extrasmall',
-        vertical: 'small',
-      }}
-    >
-      <Container
-        orientation="horizontal"
-        width="75%"
-        maxWidth="75%"
-        mainAlignment="space-between"
-        crossAlignment="center"
-      >
-        <Container
-          orientation="horizontal"
-          mainAlignment="flex-start"
-          crossAlignment="center"
-          width="auto"
-        >
-          <Container width="auto" height={32} crossAlignment="flex-start">
-            <a target="_blank" href={logoUrl} rel="noreferrer">
-              {logoSrc ? <CustomImg src={logoSrc} /> : <Logo height="2rem" />}
-            </a>
-          </Container>
-
-          <Padding horizontal="extralarge">
-            <CreationButton activeRoute={activeRoute} />
-          </Padding>
-        </Container>
-      </Container>
-      <Container orientation="horizontal" width="25%" mainAlignment="flex-end">
-        {children}
-      </Container>
-    </Container>
+    <header className={styles.root}>
+      <div className={styles.leftSection}>
+        <a className={styles.logoAnchor} target="_blank" href={logoUrl} rel="noreferrer">
+          {logoSrc ? (
+            <img src={logoSrc} alt="logo" style={{ height: '2rem' }} />
+          ) : (
+            <Logo height="2rem" />
+          )}
+        </a>
+        <CreationButton activeRoute={activeRoute} />
+      </div>
+      <div className={styles.rightSection}>{children}</div>
+    </header>
   );
 };
-export default ShellHeader;
+
+export { ShellHeader };

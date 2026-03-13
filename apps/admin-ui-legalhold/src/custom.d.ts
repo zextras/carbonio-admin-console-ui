@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 declare module '*.svg' {
-	const content: any;
+	const content: string;
 	export default content;
 }
 
 declare module '*.json' {
-	const content: any;
+	const content: Record<string, string>;
 	export default content;
 }

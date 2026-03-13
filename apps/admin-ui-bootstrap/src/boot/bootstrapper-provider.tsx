@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { I18nFactory, SHELL_APP_ID, useI18nStore } from '@zextras/ui-shared';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 
-import { SHELL_APP_ID } from '../constants';
-import I18nFactory from '../i18n/i18n-factory';
-import { useI18nStore } from '../store/i18n/store';
 import { BootstrapperContext } from './bootstrapper-context';
 
 type BootstrapperContextProviderProps = {

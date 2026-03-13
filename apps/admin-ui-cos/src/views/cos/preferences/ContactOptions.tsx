@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, ListRow, Row, Switch, Text } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 
 interface ContactOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
@@ -29,7 +28,7 @@ export const ContactOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.contact_options', 'Contact Options')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

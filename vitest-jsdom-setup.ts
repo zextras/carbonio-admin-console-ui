@@ -4,12 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { server } from 'admin-ui-test-utils';
-import { cleanup } from '@testing-library/react';
-import { noop } from 'lodash-es';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
+// IMPORTANT: Stub globals BEFORE importing anything that might use them
 vi.stubGlobal('BASE_PATH', '');
+
+import { cleanup } from '@testing-library/react';
+import { noop } from 'lodash-es';
+import { server } from 'admin-ui-test-utils';
 
 // Mock localStorage for jsdom
 const localStorageMock = (() => {

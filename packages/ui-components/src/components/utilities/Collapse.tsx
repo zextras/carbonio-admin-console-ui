@@ -5,65 +5,21 @@
  */
 
 import React, { HTMLAttributes, useMemo } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { Container } from '../layout/Container';
+import styles from './Collapse.module.css';
 import { Transition } from './Transition';
 
-const CollapseEl = styled.div<{
-	$crossSize?: string;
-	$orientation: 'horizontal' | 'vertical';
-	$disableTransition: boolean;
-	$open: boolean;
-}>`
-	${({ $crossSize, $orientation }): SimpleInterpolation =>
-		$crossSize && `${$orientation === 'horizontal' ? 'height' : 'width'}: ${$crossSize};`};
-	${({ $orientation }): string => ($orientation === 'horizontal' ? 'width' : 'height')}: 0;
-	visibility: hidden;
-	overflow: hidden;
-	pointer-events: none;
-
-	${({ $disableTransition, $open, $orientation }): SimpleInterpolation =>
-		$disableTransition &&
-		$open &&
-		css`
-			${$orientation === 'horizontal' ? 'width' : 'height'}: fit-content;
-			visibility: visible;
-			pointer-events: auto;
-		`};
-`;
-
 type CollapseProps = HTMLAttributes<HTMLDivElement> & {
-	/** Orientation of the collapsing action */
-	orientation?: 'vertical' | 'horizontal';
-	/** control prop */
 	open: boolean;
-	/** Size of the collapse element on the opposite axis
-	 * (e.g. height if the collapse orientation is horizontal) */
-	crossSize?: string;
-	/** Disable the transition */
-	disableTransition?: boolean;
-	/** Content */
 	children: React.ReactNode | React.ReactNode[];
 	ref?: React.Ref<HTMLDivElement>;
 };
 
-const Collapse = ({
-	children,
-	open,
-	orientation = 'horizontal',
-	crossSize,
-	disableTransition = false,
-	ref,
-	...rest
-}: CollapseProps) => {
+export const Collapse = ({ children, open, ref, ...rest }: CollapseProps) => {
 	const collapseRef = useCombinedRefs<HTMLElement>(ref);
 
-	const propToTransition = useMemo<'width' | 'height'>(
-		() => (orientation === 'horizontal' ? 'width' : 'height'),
-		[orientation]
-	);
+	const propToTransition = 'height';
 
 	const propScrollLabel = useMemo<`scroll${Capitalize<typeof propToTransition>}`>(
 		() =>
@@ -72,7 +28,7 @@ const Collapse = ({
 					typeof propToTransition
 				>
 			}`,
-		[propToTransition]
+		[propToTransition],
 	);
 
 	return (
@@ -80,58 +36,22 @@ const Collapse = ({
 			ref={collapseRef}
 			apply={open}
 			from={{
-				[propToTransition]: '0px'
+				[propToTransition]: '0px',
 			}}
 			to={{
 				[propToTransition]: (): string =>
 					`${collapseRef.current ? collapseRef.current[propScrollLabel] : 0}px`,
-				visibility: 'visible'
+				visibility: 'visible',
 			}}
 			end={{
 				[propToTransition]: 'auto',
 				visibility: 'visible',
-				pointerEvents: 'auto'
+				pointerEvents: 'auto',
 			}}
-			disabled={disableTransition}
 		>
-			<CollapseEl
-				$crossSize={crossSize}
-				$open={open}
-				$orientation={orientation}
-				$disableTransition={disableTransition}
-				{...rest}
-			>
+			<div className={styles.collapse} {...rest}>
 				{children}
-			</CollapseEl>
+			</div>
 		</Transition>
 	);
 };
-
-const CollapserNotch = styled.div`
-	width: 0.25rem;
-	height: 1.5rem;
-	background: ${({ theme }): string => theme.palette.gray1.regular};
-	border-radius: ${({ theme }): string => theme.borderRadius};
-`;
-
-type CollapserProps = {
-	clickCallback: React.ReactEventHandler;
-	ref?: React.Ref<HTMLDivElement>;
-};
-
-const Collapser = ({ clickCallback, ref }: CollapserProps) => {
-	return (
-		<Container
-			ref={ref}
-			style={{ cursor: 'pointer' }}
-			padding={{ horizontal: 'extrasmall' }}
-			height="fill"
-			width={12}
-			onClick={clickCallback}
-		>
-			<CollapserNotch />
-		</Container>
-	);
-};
-
-export { Collapse, Collapser };

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { PostHogProvider } from '@posthog/react';
-import { useConfigurationAttribute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useConfigurationAttribute, useIsAdvanced } from '@zextras/ui-shared';
 import type { PostHogConfig } from 'posthog-js';
 import React, { useMemo } from 'react';
 

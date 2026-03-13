@@ -10,7 +10,6 @@ export const GENERAL_INFORMATION = 'general_information';
 export const ADVANCED = 'advanced';
 export const NOT_SET = 'not_set';
 export const MANAGE_APP_ID = 'manage';
-export const FIRST_PAGE = 1;
 export const ACCOUNTS = 'accounts';
 export const DASHBOARD = 'dashboard';
 export const SERVICES_ROUTE_ID = 'services';
@@ -35,35 +34,14 @@ export const IS_COS_DETAIL_LIST_EXPANDED = 'isCosDetailListExpanded';
 export const IS_GENERAL_LIST_EXPANDED = 'isGeneralListExpanded';
 export const BACKUP_ENABLED = 'backupEnabled';
 export const BACKUP_SELF_UNDELETE_ALLOWED = 'backupSelfUndeleteAllowed';
-export const paginationItems: Array<{ label: string; value: number }> = [
-	{
-		label: '5',
-		value: 5
-	},
-	{
-		label: '10',
-		value: 10
-	},
-	{
-		label: '15',
-		value: 15
-	},
-	{
-		label: '25',
-		value: 25
-	},
-	{
-		label: '50',
-		value: 50
-	},
-	{
-		label: '100',
-		value: 100
-	}
-];
 export const PRIMARY_BAR_COS = 'pb_cos';
 export const GLOBAL = 'global';
 export const LIST_COS = 'listCos';
 export const CREATE_COS = 'createCos';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+
+// Storages API constants
+export const STORAGES_API_BASE_URL = '/services/storages/admin';
+export const STORAGES_API_VERSION = '2';
+export const STORAGES_API_VERSION_HEADER = 'X-API-Version';

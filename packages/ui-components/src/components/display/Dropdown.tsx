@@ -6,18 +6,18 @@
 
 import '../../web-components/divider-wc';
 
-import { flip, limitShift, Placement, shift, VirtualElement } from '@floating-ui/dom';
+import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
+import clsx from 'clsx';
 import React, {
+  CSSProperties,
   HTMLAttributes,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation, ThemeContext } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import {
@@ -30,35 +30,24 @@ import {
   KeyboardPresetObj,
   useKeyboard,
 } from '../../hooks/useKeyboard';
-import { pseudoClasses } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
-import { Icon } from '../basic/icon/Icon';
+import { IconName } from '../../web-components/icon-registry';
 import { Text } from '../basic/text/Text';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
+import styles from './Dropdown.module.css';
 import { Tooltip } from './Tooltip';
 
-const ContainerEl = styled(Container)<{
-  $selectedBackgroundColor?: AnyColor;
-  $disabled: boolean;
-}>`
-  user-select: none;
-  outline: none;
-  ${({ theme, $disabled, $selectedBackgroundColor }): SimpleInterpolation =>
-    !$disabled && pseudoClasses(theme, String($selectedBackgroundColor ?? 'gray5'))};
-`;
-
 type ListItemContentProps = {
-  icon?: string;
+  icon?: IconName;
   label: string;
   selected?: boolean;
   disabled?: boolean;
-  itemIconSize: React.ComponentPropsWithRef<typeof Icon>['size'];
   itemTextSize: React.ComponentProps<typeof Text>['size'];
-  itemPaddingBetween: keyof DefaultTheme['sizes']['padding'];
   tooltipLabel?: string;
 };
 
@@ -67,22 +56,20 @@ function ListItemContent({
   label,
   selected,
   disabled,
-  itemIconSize,
   itemTextSize,
-  itemPaddingBetween,
   tooltipLabel,
 }: Readonly<ListItemContentProps>): React.JSX.Element {
   return (
     <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
       <Container orientation="horizontal" mainAlignment="flex-start">
         {icon && (
-          <Padding right={itemPaddingBetween}>
-            <Icon
+          <Padding right="small">
+            <icon-wc
               icon={icon}
-              size={itemIconSize}
+              size="medium"
               color={disabled ? 'secondary' : 'text'}
               style={{ pointerEvents: 'none' }}
-            />
+            ></icon-wc>
           </Padding>
         )}
         <Text
@@ -96,6 +83,21 @@ function ListItemContent({
       </Container>
     </Tooltip>
   );
+}
+
+function useContainerElStyle(
+  selected: boolean | undefined,
+  selectedBackgroundColor?: AnyColor,
+): CSSProperties {
+  return useMemo<CSSProperties>(() => {
+    const bgColor = selected && selectedBackgroundColor ? selectedBackgroundColor : 'gray5';
+    return {
+      '--dropdown-item-bg': resolveThemeColor(String(bgColor), 'regular'),
+      '--dropdown-item-bg-hover': resolveThemeColor(String(bgColor), 'hover'),
+      '--dropdown-item-bg-focus': resolveThemeColor(String(bgColor), 'focus'),
+      '--dropdown-item-bg-active': resolveThemeColor(String(bgColor), 'active'),
+    } as CSSProperties;
+  }, [selected, selectedBackgroundColor]);
 }
 
 type PopperListItemProps = ListItemContentProps &
@@ -114,26 +116,23 @@ function PopperListItem({
   customComponent,
   disabled = false,
   selectedBackgroundColor,
-  itemIconSize,
   itemTextSize,
   keepOpen,
-  itemPaddingBetween,
   tooltipLabel,
   ...rest
 }: Readonly<PopperListItemProps>): React.JSX.Element {
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
   return (
-    <ContainerEl
+    <Container
       data-keep-open={keepOpen}
-      className={selected ? 'zapp-selected' : ''}
+      className={clsx(styles.containerEl, disabled && styles.disabled, selected && 'zapp-selected')}
+      style={containerStyle}
       orientation="horizontal"
       mainAlignment="flex-start"
       padding={{ vertical: 'small', horizontal: 'large' }}
-      style={{ cursor: onClick && !disabled ? 'pointer' : 'default' }}
+      background={selected && selectedBackgroundColor ? selectedBackgroundColor : undefined}
       onClick={(!disabled && onClick) || undefined}
       tabIndex={disabled ? -1 : 0}
-      $disabled={disabled}
-      $selectedBackgroundColor={selected ? selectedBackgroundColor : undefined}
-      background={selected && selectedBackgroundColor ? selectedBackgroundColor : undefined}
       data-testid={'dropdown-item'}
       {...rest}
     >
@@ -143,18 +142,15 @@ function PopperListItem({
           label={label}
           selected={selected}
           disabled={disabled}
-          itemIconSize={itemIconSize}
           itemTextSize={itemTextSize}
-          itemPaddingBetween={itemPaddingBetween}
           tooltipLabel={tooltipLabel}
         />
       )}
-    </ContainerEl>
+    </Container>
   );
 }
 
-type NestListItemProps = PopperListItemProps &
-  Pick<DropdownProps, 'onOpen' | 'onClose' | 'dropdownListRef' | 'items'>;
+type NestListItemProps = PopperListItemProps & Pick<DropdownProps, 'onOpen' | 'onClose' | 'items'>;
 
 function NestListItem({
   icon,
@@ -165,11 +161,8 @@ function NestListItem({
   disabled = false,
   items,
   selectedBackgroundColor,
-  itemIconSize,
   itemTextSize,
-  itemPaddingBetween,
   keepOpen,
-  dropdownListRef = null,
   tooltipLabel,
   onOpen,
   onClose,
@@ -180,20 +173,11 @@ function NestListItem({
   const [innerDropdownListElement, setInnerDropdownListElement] = useState<HTMLDivElement | null>(
     null,
   );
-  const setDropdownListRef = useCallback<React.RefCallback<HTMLDivElement>>(
-    (node) => {
-      setInnerDropdownListElement(node);
-      if (dropdownListRef) {
-        if (typeof dropdownListRef === 'function') {
-          dropdownListRef(node);
-        } else {
-          dropdownListRef.current = node;
-        }
-      }
-    },
-    [dropdownListRef],
-  );
+  const setDropdownListRef = useCallback<React.RefCallback<HTMLDivElement>>((node) => {
+    setInnerDropdownListElement(node);
+  }, []);
   const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
+  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
 
   useEffect(
     () => () => {
@@ -288,17 +272,15 @@ function NestListItem({
   }, [closeOnMouseLeave, open]);
 
   return (
-    <ContainerEl
+    <Container
       data-keep-open={keepOpen}
       ref={itemRef}
-      className={selected ? 'zapp-selected' : ''}
+      className={clsx(styles.containerEl, disabled && styles.disabled, selected && 'zapp-selected')}
+      style={containerStyle}
       orientation="horizontal"
       mainAlignment="flex-start"
-      style={{ cursor: onClick && !disabled ? 'pointer' : 'default' }}
       onClick={disabled ? undefined : onClick}
       tabIndex={disabled ? undefined : 0}
-      $disabled={disabled}
-      $selectedBackgroundColor={selected ? selectedBackgroundColor : undefined}
       data-testid={'dropdown-item'}
       onMouseEnter={openNestedDropdown}
       {...rest}
@@ -308,10 +290,7 @@ function NestListItem({
         items={items}
         forceOpen={open}
         placement="right-start"
-        selectedBackgroundColor={selectedBackgroundColor}
-        itemIconSize={itemIconSize}
         itemTextSize={itemTextSize}
-        itemPaddingBetween={itemPaddingBetween}
         dropdownListRef={setDropdownListRef}
         disablePortal
       >
@@ -326,77 +305,22 @@ function NestListItem({
               label={label}
               selected={selected}
               disabled={disabled}
-              itemIconSize={itemIconSize}
               itemTextSize={itemTextSize}
-              itemPaddingBetween={itemPaddingBetween}
               tooltipLabel={tooltipLabel}
             />
           )}
-          <Icon size={itemIconSize} icon="ChevronRight" />
+          <icon-wc size="medium" icon="ChevronRight"></icon-wc>
         </Container>
       </Dropdown>
-    </ContainerEl>
+    </Container>
   );
 }
-
-const PopperDropdownWrapper = styled.div<{ $display: string }>`
-  position: relative;
-  display: ${({ $display }): string => $display};
-  width: ${({ $display }): string => ($display === 'block' ? '100%' : 'auto')};
-`;
-const PopperList = styled.div<{
-  $width: string;
-  $maxWidth: string;
-  $maxHeight: string;
-  $triggerRef: React.RefObject<HTMLElement | null>;
-  $open: boolean;
-}>`
-  position: fixed;
-  display: none;
-  visibility: hidden;
-  pointer-events: none;
-  background-color: ${({ theme }): string => theme.palette.gray5.regular};
-  box-shadow: ${({ theme }): string => theme.shadows.regular};
-  z-index: 999;
-
-  max-width: ${({ $width, $maxWidth }): string => ($width === '100%' ? '100%' : $maxWidth)};
-  max-height: ${({ $maxHeight }): string => $maxHeight};
-  width: ${({ $width, $triggerRef }): string =>
-    $width === '100%' && $triggerRef.current ? `${$triggerRef.current.clientWidth}px` : $width};
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }): string => theme.palette.gray3.regular};
-    border-radius: 0.25rem;
-  }
-
-  &,
-  > [tabindex='-1']:focus {
-    outline: none;
-  }
-
-  ${({ $open }): SimpleInterpolation =>
-    $open &&
-    css`
-      display: block;
-      visibility: visible;
-      pointer-events: auto;
-    `};
-`;
 
 interface DropdownItem {
   type?: 'divider';
   id: string;
   label?: string;
-  icon?: string;
+  icon?: IconName;
   onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
   selected?: boolean;
   customComponent?: React.ReactNode;
@@ -407,53 +331,25 @@ interface DropdownItem {
 }
 
 type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
-  /** Whether to disable the Dropdown or not */
   disabled?: boolean;
-  /** Array of items to display */
   items: Array<DropdownItem>;
-  /** Css display property */
   display?: 'block' | 'inline-block';
-  /** Dropdown width type */
   width?: string;
-  /** Css max-width property */
   maxWidth?: string;
-  /** Css max-height property */
   maxHeight?: string;
-  /** whether to manage the keyboard events for dropdown trigger */
   handleTriggerEvents?: boolean;
-  /** whether to disable the re-focus of trigger */
   disableRestoreFocus?: boolean;
-  /** whether to focus the first item of the Dropdown on open */
   disableAutoFocus?: boolean;
-  /** whether user can select multiple items of dropdown aka do not close popover on item click */
   multiple?: boolean;
-  /** Open dropdown on right click at cursor position */
-  contextMenu?: boolean;
-  /** Callback for opened Dropdown */
   onOpen?: () => void;
-  /** Callback for closed Dropdown */
   onClose?: () => void;
-  /** Only one component can be passed as children */
   children: React.ReactElement;
-  /** trigger ref that can be used instead of lost children ref caused by cloneElement */
   triggerRef?: React.Ref<HTMLElement> | null;
-  /** Placement of the dropdown */
   placement?: Placement;
-  /** Flag to disable the Portal implementation */
   disablePortal?: boolean;
-  /** Whether the Component is visible or not */
   forceOpen?: boolean;
-  /** Whether to preventDefault on Dropdown click */
   preventDefault?: boolean;
-  /** Customize selected background color */
-  selectedBackgroundColor?: AnyColor;
-  /** Item Icon size */
-  itemIconSize?: React.ComponentPropsWithRef<typeof Icon>['size'];
-  /** Item Text size */
   itemTextSize?: React.ComponentPropsWithRef<typeof Text>['size'];
-  /** Item Padding Between */
-  itemPaddingBetween?: keyof DefaultTheme['sizes']['padding'];
-  /** Ref assign to the dropdown list popper container */
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 
@@ -470,21 +366,15 @@ const Dropdown = ({
   disableRestoreFocus = false,
   disableAutoFocus = false,
   multiple = false,
-  contextMenu = false,
   onOpen,
   onClose,
   children,
   triggerRef = null,
   disablePortal = false,
-  preventDefault = true,
-  selectedBackgroundColor,
-  itemIconSize = 'medium',
   itemTextSize = 'medium',
-  itemPaddingBetween = 'small',
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
-  const { windowObj } = useContext(ThemeContext);
   const [open, setOpen] = useState<boolean>(forceOpen);
   const openRef = useRef<boolean>(open);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
@@ -492,7 +382,6 @@ const Dropdown = ({
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const startSentinelRef = useRef<HTMLDivElement | null>(null);
   const endSentinelRef = useRef<HTMLDivElement | null>(null);
-  const [position, setPosition] = useState<VirtualElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
   useEffect(() => {
@@ -549,36 +438,12 @@ const Dropdown = ({
     [children, toggleOpen],
   );
 
-  const triggerComponentRightClickHandler = useCallback<React.MouseEventHandler<HTMLElement>>(
-    (e) => {
-      e.preventDefault();
-      const virtualElement: VirtualElement = {
-        getBoundingClientRect: () => ({
-          width: 0,
-          height: 0,
-          top: e.clientY,
-          right: e.clientX,
-          bottom: e.clientY,
-          left: e.clientX,
-          x: e.clientX,
-          y: e.clientY,
-        }),
-      };
-      setPosition(virtualElement);
-      if (!disabled && !openRef.current) {
-        openPopper();
-      }
-    },
-    [disabled, openPopper],
-  );
-
   const clickOutsidePopper = useCallback(
     (e: Event) => {
       const clickedOnDropdown =
         dropdownRef.current &&
         (e.target === dropdownRef.current || dropdownRef.current.contains(e.target as Node | null));
       const clickedOnTrigger =
-        !contextMenu &&
         innerTriggerRef.current &&
         (e.target === innerTriggerRef.current ||
           innerTriggerRef.current?.contains(e.target as Node | null));
@@ -589,7 +454,6 @@ const Dropdown = ({
         !clickedOnDropdown &&
         !clickedOnTrigger &&
         !clickedOnNestedItem &&
-        // check if the attribute is in the event path
         !e
           .composedPath?.()
           ?.some((el) => el instanceof Element && el.hasAttribute?.('data-keep-open'))
@@ -597,7 +461,7 @@ const Dropdown = ({
         closePopper();
       }
     },
-    [closePopper, contextMenu, dropdownRef, innerTriggerRef],
+    [closePopper, dropdownRef, innerTriggerRef],
   );
 
   const onStartSentinelFocus = useCallback(() => {
@@ -699,7 +563,7 @@ const Dropdown = ({
   useLayoutEffect(() => {
     let cleanup: ReturnType<typeof setupFloating>;
     if (open) {
-      const popperReference = contextMenu ? position : innerTriggerRef.current;
+      const popperReference = innerTriggerRef.current;
       if (popperReference && dropdownRef.current) {
         cleanup = setupFloating(popperReference, dropdownRef.current, {
           placement,
@@ -711,7 +575,7 @@ const Dropdown = ({
     return (): void => {
       cleanup?.();
     };
-  }, [open, placement, contextMenu, position, dropdownRef, innerTriggerRef]);
+  }, [open, placement, dropdownRef, innerTriggerRef]);
 
   const setPopperItemsRefAndFocus = useCallback<React.RefCallback<HTMLDivElement | null>>(
     (node) => {
@@ -728,15 +592,14 @@ const Dropdown = ({
 
   useEffect(() => {
     if (open) {
-      windowObj.document.addEventListener('click', clickOutsidePopper, true);
-      contextMenu && windowObj.document.addEventListener('contextmenu', clickOutsidePopper, true);
+      window.document.addEventListener('click', clickOutsidePopper, true);
     }
 
     return (): void => {
-      windowObj.document.removeEventListener('click', clickOutsidePopper, true);
-      windowObj.document.removeEventListener('contextmenu', clickOutsidePopper, true);
+      window.document.removeEventListener('click', clickOutsidePopper, true);
+      window.document.removeEventListener('contextmenu', clickOutsidePopper, true);
     };
-  }, [open, closePopper, clickOutsidePopper, contextMenu, windowObj.document]);
+  }, [open, closePopper, clickOutsidePopper]);
 
   useEffect(() => {
     const startSentinelRefElement = startSentinelRef.current;
@@ -798,7 +661,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           return (
-            (type === 'divider' && <divider-wc></divider-wc>) ||
+            (type === 'divider' && <divider-wc key={id}></divider-wc>) ||
             (subItems && (
               <NestListItem
                 icon={icon}
@@ -810,11 +673,7 @@ const Dropdown = ({
                 customComponent={customComponent}
                 disabled={itemDisabled}
                 items={subItems}
-                selectedBackgroundColor={selectedBackgroundColor}
-                itemIconSize={itemIconSize}
                 itemTextSize={itemTextSize}
-                itemPaddingBetween={itemPaddingBetween}
-                dropdownListRef={nestedRef}
                 {...itemProps}
               />
             )) || (
@@ -827,10 +686,7 @@ const Dropdown = ({
                 key={id}
                 customComponent={customComponent}
                 disabled={itemDisabled}
-                selectedBackgroundColor={selectedBackgroundColor}
-                itemIconSize={itemIconSize}
                 itemTextSize={itemTextSize}
-                itemPaddingBetween={itemPaddingBetween}
                 {...itemProps}
               />
             )
@@ -839,63 +695,48 @@ const Dropdown = ({
       );
     }
     return null;
-  }, [
-    items,
-    listItemClickHandler,
-    selectedBackgroundColor,
-    itemIconSize,
-    itemTextSize,
-    itemPaddingBetween,
-  ]);
+  }, [items, listItemClickHandler, itemTextSize]);
 
   const popperListPreventDefaultHandler = useCallback<React.MouseEventHandler>((event) => {
     event?.preventDefault?.();
   }, []);
 
   const triggerComponent = useMemo(() => {
-    const props = contextMenu
-      ? { onContextMenu: triggerComponentRightClickHandler }
-      : { onClick: triggerComponentLeftClickHandler };
+    const props = { onClick: triggerComponentLeftClickHandler };
     return React.cloneElement(children, {
       ref: innerTriggerRef,
       ...props,
     } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
-  }, [
-    children,
-    innerTriggerRef,
-    contextMenu,
-    triggerComponentLeftClickHandler,
-    triggerComponentRightClickHandler,
-  ]);
+  }, [children, innerTriggerRef, triggerComponentLeftClickHandler]);
 
-  const popperListProps = useMemo(
-    () =>
-      contextMenu
-        ? { onContextMenu: popperListPreventDefaultHandler }
-        : { onClick: popperListPreventDefaultHandler },
-    [contextMenu, popperListPreventDefaultHandler],
-  );
+  const popperListStyle = useMemo<CSSProperties>(() => {
+    const triggerWidth = innerTriggerRef.current?.clientWidth;
+
+    return {
+      width: width === '100%' && triggerWidth ? `${triggerWidth}px` : width,
+      maxWidth: width === '100%' ? '100%' : maxWidth,
+      '--popper-max-height': maxHeight,
+    } as CSSProperties;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width, maxWidth, maxHeight, open, innerTriggerRef]);
 
   return (
-    <PopperDropdownWrapper $display={display} {...rest}>
+    <div className={styles.popperDropdownWrapper} data-display={display} {...rest}>
       {triggerComponent}
       <Portal show={open} disablePortal={disablePortal}>
-        <PopperList
+        <div
           ref={dropdownRef}
-          $open={open}
-          $width={width}
-          $maxWidth={maxWidth}
-          $maxHeight={maxHeight}
-          $triggerRef={innerTriggerRef}
+          className={clsx(styles.popperList, open && styles.open)}
+          style={popperListStyle}
           data-testid="dropdown-popper-list"
-          {...popperListProps}
+          onClick={popperListPreventDefaultHandler}
         >
           <div tabIndex={0} ref={startSentinelRef} />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
           <div tabIndex={0} ref={endSentinelRef} />
-        </PopperList>
+        </div>
       </Portal>
-    </PopperDropdownWrapper>
+    </div>
   );
 };
 

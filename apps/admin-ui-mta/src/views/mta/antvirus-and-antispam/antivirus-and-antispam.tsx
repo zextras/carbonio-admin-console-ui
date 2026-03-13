@@ -3,11 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -18,6 +20,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -44,9 +47,6 @@ import {
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ListRow from '../../list/list-row';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
@@ -585,7 +585,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       });
       return;
     }
-
     if (!isValidHostname(antiVirusMirrorsAddText)) {
       createSnackbar({
         key: 'error',
@@ -1068,7 +1067,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
               headers={antiVirusMirrorHeader}
               showCheckbox={false}
               selectedRows={selectedAntivirusMirrors}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
@@ -1084,7 +1083,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
               headers={additionalVirusDefinitionHeader}
               showCheckbox={false}
               selectedRows={selectedAdditionalAntivirusDefinition}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
@@ -1122,7 +1121,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
             />
           </Container>
         </Container>
-
         <Container
           orientation="horizontal"
           mainAlignment="space-between"

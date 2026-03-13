@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/ui-components';
+import { ModalManager, SnackbarManager } from '@zextras/ui-components';
 import i18next, { type i18n } from 'i18next';
 import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -44,12 +44,10 @@ export const Wrapper = ({ initialRouterEntries, children }: WrapperProps): React
     initialEntries={initialRouterEntries}
     initialIndex={(initialRouterEntries?.length || 1) - 1}
   >
-    <ThemeProvider>
-      <SnackbarManager>
-        <I18NextTestProvider>
-          <ModalManager>{children}</ModalManager>
-        </I18NextTestProvider>
-      </SnackbarManager>
-    </ThemeProvider>
+    <SnackbarManager>
+      <I18NextTestProvider>
+        <ModalManager>{children}</ModalManager>
+      </I18NextTestProvider>
+    </SnackbarManager>
   </MemoryRouter>
 );

@@ -4,23 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore, useStickyBarStore  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  CustomTextArea,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format, parse  } from 'date-fns';
-import {  isEqual  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Displayer,
+  Input,
+  ListRow,
+  Modal,
+  Padding,
+  Row,
+  Select,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
+import { format, parse } from 'date-fns';
+import { isEqual } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  deleteCalendarResource  } from '../../../../services/delete-cal-resource-service';
-import {  getCalenderResource  } from '../../../../services/get-cal-resource-service';
-import {  getDelegateAuthRequest  } from '../../../../services/get-delegate-auth-request';
-import {  modifyCalendarResource  } from '../../../../services/modify-cal-resource-service';
-import {  renameCalendarResource  } from '../../../../services/rename-cal-resource-service';
-import {  setPasswordRequest  } from '../../../../services/set-password-service';
-import Displayer from '../../../components/displayer';
-import ListRow from '../../../list/list-row';
-import {  RouteLeavingGuard  } from '../../../ui-extras/nav-guard';
-import {  SendInviteAccounts  } from './send-invite-accounts';
+import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
+import { getCalenderResource } from '../../../../services/get-cal-resource-service';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
+import { setPasswordRequest } from '../../../../services/set-password-service';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { SendInviteAccounts } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
   LOCATION: 'Location',
@@ -56,7 +67,6 @@ const ResourceEditDetailView: FC<any> = ({
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);
   const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [resourceName, setResourceName] = useState<string>('');
@@ -70,19 +80,6 @@ const ResourceEditDetailView: FC<any> = ({
   const { isSticky, setIsSticky } = useStickyBarStore();
   const errorMessage = useMemo(
     () => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    [t],
-  );
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-    }),
     [t],
   );
 
@@ -729,20 +726,20 @@ const ResourceEditDetailView: FC<any> = ({
 
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       label: t('label.view_mail', 'VIEW MAIL'),
       color: 'primary',
       onClick: onViewMail,
     },
     {
-      align: 'right',
-      type: 'outlined',
+      align: 'right' as const,
+      type: 'outlined' as const,
       color: 'error',
       onClick: onDeleteResource,
       label: t('label.delete', 'delete'),
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
@@ -1120,7 +1117,6 @@ const ResourceEditDetailView: FC<any> = ({
             label={t('label.description', 'Description')}
             backgroundColor="gray5"
             value={zimbraNotes}
-            size="medium"
             onChange={(e: any): any => {
               setZimbraNotes(e.target.value);
             }}
@@ -1170,7 +1166,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1179,7 +1175,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <Text  overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."
@@ -1188,11 +1184,11 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <Icon
+              <icon-wc
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              />
+              ></icon-wc>
             </Row>
           </Container>
         </Modal>
