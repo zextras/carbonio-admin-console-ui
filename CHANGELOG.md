@@ -1,31 +1,11 @@
-## [0.13.0-devel.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.3...v0.13.0-devel.4) (2026-03-11)
-
-### Features
-
-* implement COS quota management with unlimited quota support ([f7f19b0](https://github.com/zextras/carbonio-admin-console-ui/commit/f7f19b0aa77d5cd5672a5ea65519f76c174a1ccb)), closes [#1104](https://github.com/zextras/carbonio-admin-console-ui/issues/1104)
-
-## [0.13.0-devel.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.2...v0.13.0-devel.3) (2026-03-10)
-
-### Features
-
-* merge ([2e9a847](https://github.com/zextras/carbonio-admin-console-ui/commit/2e9a847e8079c2c11dd1a32b31517fc72d421da0))
-* test ([ef71ee5](https://github.com/zextras/carbonio-admin-console-ui/commit/ef71ee5771fa346c81bc2a0032de840e176f1b11))
-* tests ([767a5a1](https://github.com/zextras/carbonio-admin-console-ui/commit/767a5a129dfb06ece9f7eaf5c1f83f11bdb0be0c))
-* tests ([48f2ea6](https://github.com/zextras/carbonio-admin-console-ui/commit/48f2ea66b578b1ad806c8c7c4ac1562857abfff1))
+## [0.12.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.5...v0.12.6) (2026-03-13)
 
 ### Bug Fixes
 
-* fix copilot suggestions ([995e144](https://github.com/zextras/carbonio-admin-console-ui/commit/995e144223b2b171ab64b99cc26649be153b02b2))
-* fix imports ([4c222d4](https://github.com/zextras/carbonio-admin-console-ui/commit/4c222d43c7a97c8fecba9e5e6a8cd0cc80355dfb))
-* fix imports ([df1fa66](https://github.com/zextras/carbonio-admin-console-ui/commit/df1fa66a1f8a5b43212b0777cac4236456ac7649))
-* fix type ([b718f6b](https://github.com/zextras/carbonio-admin-console-ui/commit/b718f6b9ad3a361578eb5b26c50bce7b5a43aa3b))
-* removed import ([d94150a](https://github.com/zextras/carbonio-admin-console-ui/commit/d94150a744f403f4cdbaabc7ef708c6c2c731949))
-
-## [0.13.0-devel.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.1...v0.13.0-devel.2) (2026-03-04)
-
-### Features
-
-* support unlimited quota for single account ([9f05adb](https://github.com/zextras/carbonio-admin-console-ui/commit/9f05adb04616a211048ff0bbe45ffcb35838bb45))
+* handle nullable string ([7268a5f](https://github.com/zextras/carbonio-admin-console-ui/commit/7268a5f11d61f9e77f57696c72c7c7b1cfad3f77))
+* handle nullable string ([#1105](https://github.com/zextras/carbonio-admin-console-ui/issues/1105)) ([c9f699a](https://github.com/zextras/carbonio-admin-console-ui/commit/c9f699a0901f180e558aa08c22688a8763bd5646))
+* sonarqube issue fixed ([20fd34b](https://github.com/zextras/carbonio-admin-console-ui/commit/20fd34bec522ea846fb9b4cb79804d9d50d703be))
+* sonarqube issue fixed ([ab9b63a](https://github.com/zextras/carbonio-admin-console-ui/commit/ab9b63ac428a461094880e9de3c34e29ae37f59b))
 
 ## [0.12.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.4...v0.12.5) (2026-02-27)
 

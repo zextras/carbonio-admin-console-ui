@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
-import { useAppConfigStore } from '@zextras/ui-shared';
+import { useAllConfig } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,14 +15,12 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
-
 const GlobalTheme: FC = () => {
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-  const configInformation = useAppConfigStore((state) => state.config);
-  const updateAllConfig = useAppConfigStore((state) => state.updateAllConfig);
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
@@ -114,10 +112,6 @@ const GlobalTheme: FC = () => {
     }
   }, [configInformation, setInitalValues]);
 
-  const updateGlobalConfig = (attributes: Array<any>): void => {
-    updateAllConfig(attributes);
-  };
-
   useEffect(() => {
     if (globalTheme && !isEqual(globalTheme, intialThemeConfig)) {
       setIsDirty(true);
@@ -138,7 +132,7 @@ const GlobalTheme: FC = () => {
           hideButton: true,
           replace: true,
         });
-        updateGlobalConfig(attributes);
+        invalidate();
         setIsLoading(false);
       })
       .catch((error) => {

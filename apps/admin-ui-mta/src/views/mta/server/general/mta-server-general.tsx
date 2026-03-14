@@ -16,11 +16,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  useAppConfigStore,
-  useCurrentUserRights,
-  useMtaServers,
-} from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -63,7 +59,7 @@ const MTAServerGeneral: FC = () => {
   const [networkValue, setNetworkValue] = useState<Array<any>>([]);
   const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
   const { data: mtaServerList = [] } = useMtaServers();
-  const configInformation = useAppConfigStore((state) => state.config);
+  const { data: configInformation = [] } = useAllConfig();
   const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
     { n: string; _content: string }[]
   >([]);
