@@ -8,9 +8,9 @@ import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
-import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from './vite-config/utils';
 import tailwindcss from '@tailwindcss/vite';
@@ -79,11 +79,21 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
+      ...(isServeCommand ? [] : [postBuildPlugin()]),
       react({
         babel: {
           plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
         },
+      }),
+      svgr({
+        svgrOptions: {
+          ref: true,
+          svgo: false,
+          titleProp: true,
+          exportType: 'default',
+        },
+        include: '**/*.svg',
+        exclude: '**/src/assets/**/*.svg',
       }),
       tailwindcss(),
       {
