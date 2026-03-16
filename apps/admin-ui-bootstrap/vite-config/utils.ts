@@ -87,7 +87,7 @@ export function getSharedDepsConfig(nodeModulesDir: string, isDev: boolean): Dep
     },
     {
       name: 'posthog-js',
-      entry: resolve(nodeModulesDir, 'posthog-js/dist/array.full.no-external.js'),
+      entry: resolve(nodeModulesDir, 'posthog-js/dist/module.js'),
       outputName: 'posthog.mjs',
       type: 'build-vite',
     },

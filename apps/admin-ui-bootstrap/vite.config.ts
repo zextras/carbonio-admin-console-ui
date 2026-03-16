@@ -8,7 +8,6 @@ import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import svgr from 'vite-plugin-svgr';
 
 import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
 import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
@@ -85,16 +84,6 @@ export default defineConfig(({ command, mode }) => {
         babel: {
           plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
         },
-      }),
-      svgr({
-        svgrOptions: {
-          ref: true,
-          svgo: false,
-          titleProp: true,
-          exportType: 'default',
-        },
-        include: '**/*.svg',
-        exclude: '**/src/assets/**/*.svg',
       }),
       tailwindcss(),
       {

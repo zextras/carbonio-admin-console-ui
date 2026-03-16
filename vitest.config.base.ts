@@ -6,7 +6,6 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
-import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
 
@@ -119,18 +118,7 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    plugins: [
-      react(),
-      svgr({
-        svgrOptions: {
-          ref: true,
-          svgo: false,
-          titleProp: true,
-          exportType: 'default',
-        },
-        include: '**/*.svg',
-      }),
-    ],
+    plugins: [react()],
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
     },
@@ -158,7 +146,7 @@ export default defineConfig({
         '**/[.]**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',
-        '**/{karma,rollup,vite,vitest,ava,babel,nyc,build}.config.*',
+        '**/{karma,vite,vitest,ava,babel,nyc,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
         '**/*.config.{js,ts}',
         '**/*.test.{ts,tsx}',
