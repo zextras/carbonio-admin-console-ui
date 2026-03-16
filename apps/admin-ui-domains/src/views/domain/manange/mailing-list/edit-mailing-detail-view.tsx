@@ -43,6 +43,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import {
   ALL,
+  ASC,
+  DESC,
   DL,
   EDOM,
   EMAIL,
@@ -105,7 +107,6 @@ const EditMailingListView: FC<any> = ({
   const [dlMembershipList, setDlMembershipList] = useState<any>([]);
   const [dlmTableRows, setDlmTableRows] = useState<any>([]);
   const [ownersList, setOwnersList] = useState<any[]>([]);
-  const [ownerTableRows, setOwnerTableRows] = useState<any[]>([]);
   const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<any[]>([]);
   const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
@@ -146,6 +147,10 @@ const EditMailingListView: FC<any> = ({
   const [filteredGrantEmailRows, setFilteredGrantEmailRows] = useState<any>([]);
   const [filterSendEmail, setFilterSendEmail] = useState<string>('');
   const [filteredSendEmailRows, setFilteredSendEmailRows] = useState<any>([]);
+  const [filterOwner, setFilterOwner] = useState<string>('');
+  const [filteredOwnerRows, setFilteredOwnerRows] = useState<any>([]);
+  const [ownerTableRows, setOwnerTableRows] = useState<any[]>([]);
+
 
   // sendrightsCheckMarks
   const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
@@ -201,15 +206,31 @@ const EditMailingListView: FC<any> = ({
         label: t('label.owners', 'Owners'),
         width: '80%',
         bold: true,
+        sortable: true,
+        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+          const sortFn = (a: any, b: any): number => {
+            const nameA = a?.columns[0]?.props?.children?.toLowerCase() || '';
+            const nameB = b?.columns[0]?.props?.children?.toLowerCase() || '';
+            if (order === ASC) {
+              return nameA.localeCompare(nameB);
+            } else {
+              return nameB.localeCompare(nameA);
+            }
+          };
+          setOwnerTableRows([...ownerTableRows].sort(sortFn));
+          if (filterOwner) {
+            setFilteredOwnerRows([...filteredOwnerRows].sort(sortFn));
+          }
+        },
       },
       {
         id: 'actions',
         label: t('label.actions', 'Actions'),
         width: '20%',
-        bold: false,
+        bold: true
       },
     ],
-    [t],
+    [t, ownerTableRows, filterOwner, filteredOwnerRows],
   );
 
   const grantEmailHeaders: any[] = useMemo(
@@ -641,7 +662,10 @@ const EditMailingListView: FC<any> = ({
 
   useEffect(() => {
     if (ownersList && ownersList.length > 0) {
-      const allRows = ownersList.map((item: any) => ({
+      const sortedOwners = [...ownersList].sort((a: any, b: any) =>
+        (a?.name?.toLowerCase() || '').localeCompare(b?.name?.toLowerCase() || ''),
+      );
+      const allRows = sortedOwners.map((item: any) => ({
         id: item?.name,
         columns: [
           <Text
@@ -658,9 +682,9 @@ const EditMailingListView: FC<any> = ({
           <Button
             key="delete_owner_btn"
             type="ghost"
-            color={'text'}
+            color="error"
             size="medium"
-            icon="CloseOutline"
+            icon="Trash2Outline"
             style={{ position: 'inherit' }}
             aria-label={t('label.delete', 'Delete')}
             onClick={(): void => deleteSingleRow(item?.name, 'owner')}
@@ -2219,8 +2243,8 @@ const EditMailingListView: FC<any> = ({
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'security',
-      label: t('label.security', 'SECURITY'),
+      id: 'owners',
+      label: t('label.owners', 'OWNERS'),
       CustomComponent: ReusedDefaultTabBar,
     },
     !selectedMailingList?.dynamic && {
@@ -2277,6 +2301,20 @@ const EditMailingListView: FC<any> = ({
     } else {
       setFilterSendEmail('');
       setFilteredSendEmailRows(sendEmailTableRows);
+    }
+  };
+
+  const handleInputChangeOwner = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value;
+    if (value != '') {
+      setFilterOwner(value);
+      const allRows = ownerTableRows.filter((item: any) =>
+        item.id?.toLowerCase().includes(value.toLowerCase()),
+      );
+      setFilteredOwnerRows(allRows);
+    } else {
+      setFilterOwner('');
+      setFilteredOwnerRows(ownerTableRows);
     }
   };
 
@@ -2847,7 +2885,7 @@ const EditMailingListView: FC<any> = ({
           </Container>
         )}
 
-        {selectedTab === 'security' && (
+        {selectedTab === 'owners' && (
           <Container
             padding={{ left: 'large', right: 'large', bottom: 'large' }}
             mainAlignment="flex-start"
@@ -2857,12 +2895,12 @@ const EditMailingListView: FC<any> = ({
             width={'58.75rem'}
             style={{ overflow: 'auto' }}
           >
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
+            <Row padding={{top: 'medium' }}>
               <Text weight="bold" color="gray0">
-                {t('label.owners_settings_lbl', 'Owners’ Settings')}
+                {t('domain.distributionList.manageOwners', 'Manage owners')}
               </Text>
             </Row>
-            <ListRow padding={{ left: 'small', right: 'small' }}>
+            <ListRow padding={{ top: 'small' }}>
               <Text
                 size="medium"
                 color="secondary"
@@ -2876,50 +2914,40 @@ const EditMailingListView: FC<any> = ({
               </Text>
             </ListRow>
 
-            <ListRow padding={{ all: 'small' }}>
+            <ListRow>
               <Container
                 orientation="vertical"
-                mainAlignment="space-around"
+                mainAlignment="flex-start"
                 background="gray6"
-                height="58px"
               >
-                <Row
-                  orientation="horizontal"
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  width="100%"
-                >
-                  <Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
-                    <DropDownInput
-                      width="100%"
-                      items={searchOwnerList}
-                      inputLabel={t(
-                        'account_details.start_typing_account',
-                        'Start typing an Account / Group to add it to the rights',
-                      )}
-                      size="medium"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                        setSearchOwner(e.target.value);
-                      }}
-                      inputValue={searchOwner}
-                      isCustomIcon={false}
-                      hasError={isShowOwnerError}
-                    />
-                  </Row>
-                  <Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
-                    <Padding left="large" right="large">
-                      <Button
-                        type="outlined"
-                        key="add-button"
-                        label={t('label.add', 'Add')}
-                        color="primary"
-                        iconPlacement="right"
-                        onClick={onAddOwner}
-                        size="extralarge"
-                        disabled={searchOwner === ''}
-                      />
-                    </Padding>
-                  </Row>
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ bottom: 'large', top: 'large' }}>
+                  <DropDownInput
+                    width="100%"
+                    items={searchOwnerList}
+                    inputLabel={t(
+                      'domain.distributionList.addOwnersByEmail',
+                      'Add owners by email address',
+                    )}
+                    size="medium"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                      setSearchOwner(e.target.value);
+                    }}
+                    inputValue={searchOwner}
+                    isCustomIcon={false}
+                    hasError={isShowOwnerError}
+                  />
+                </Row>
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ bottom: 'large' }}>
+                  <Button
+                    icon="Plus"
+                    key="add-button"
+                    label={t('label.addOwners', 'Add Owners')}
+                    color="primary"
+                    iconPlacement="left"
+                    onClick={onAddOwner}
+                    size="medium"
+                    disabled={searchOwner === ''}
+                  />
                 </Row>
               </Container>
               {isShowOwnerError && (
@@ -2934,16 +2962,37 @@ const EditMailingListView: FC<any> = ({
                 </Row>
               )}
             </ListRow>
-
-            <ListRow padding={{ all: 'small' }}>
+            <divider-wc />
+            <ListRow>
               <Container
                 padding={{
+                  top: 'extralarge',
                   bottom: 'small',
                 }}
                 mainAlignment="flex-start"
               >
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" padding={{ bottom: 'large' }} width="100%">
+                  <Text weight="bold" color="gray0">
+                    {t('domain.distributionList.manageOwners', 'Manage owners')}
+                  </Text>
+                </Row>
+                {ownerTableRows.length > 0 && (
+                  <ListRow>
+                    <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
+                      <Input
+                        label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                        value={filterOwner}
+                        backgroundColor="gray5"
+                        onChange={handleInputChangeOwner}
+                        CustomIcon={(): any => (
+                          <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        )}
+                      />
+                    </Row>
+                  </ListRow>
+                )}
                 <Table
-                  rows={ownerTableRows}
+                  rows={filterOwner ? filteredOwnerRows : ownerTableRows}
                   headers={ownerHeaders}
                   showCheckbox={false}
                   selectedRows={selectedOwnerListMember}
