@@ -37,5 +37,14 @@ export function createBootstrapRollupOptions(): RollupOptions {
   return {
     external: sharedExternals,
     output,
+    onwarn(warning, warn) {
+      if (
+        warning.code === 'SOURCEMAP_BROKEN' &&
+        warning.plugin === '@tailwindcss/vite:generate:build'
+      ) {
+        return;
+      }
+      warn(warning);
+    },
   };
 }
