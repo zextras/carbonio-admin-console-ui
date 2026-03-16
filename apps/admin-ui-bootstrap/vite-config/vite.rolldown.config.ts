@@ -6,7 +6,7 @@
 
 import type { BuildOptions } from 'vite';
 
-export function createBootstrapRollupOptions(): BuildOptions['rolldownOptions'] {
+export function createBootstrapRolldownOptions(): BuildOptions['rolldownOptions'] {
   return {
     output: {
       entryFileNames: 'shell.mjs',

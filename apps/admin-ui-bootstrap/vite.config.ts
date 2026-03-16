@@ -10,7 +10,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
+import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from './vite-config/utils';
 import tailwindcss from '@tailwindcss/vite';
@@ -128,7 +128,7 @@ export default defineConfig(({ command, mode }) => {
       outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
       emptyOutDir: true,
       sourcemap: isDev,
-      rollupOptions: createBootstrapRollupOptions(),
+      rollupOptions: createBootstrapRolldownOptions(),
     },
     base: isServeCommand ? '/carbonioAdmin/' : basePath,
     publicDir: 'assets',

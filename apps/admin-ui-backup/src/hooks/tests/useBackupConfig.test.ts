@@ -6,9 +6,9 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSnackbar } from '@zextras/ui-components';
-import { useCurrentUserRights,useUserAccounts } from '@zextras/ui-shared';
+import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';
-import { afterEach, beforeEach, describe, expect, it, Mock,vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 vi.mock('@zextras/ui-shared');
 
