@@ -5,7 +5,9 @@
  */
 import {
   Container,
+  IconCheckbox,
   Input,
+  InputProps,
   Padding,
   Row,
   Switch,
@@ -95,6 +97,41 @@ export const EditAccountQuotaInputsNew = ({
     return typeof quotaValue === 'number' ? quotaValue : '';
   }, [quotaValue]);
 
+  const onChangeReset = useCallback(() => {
+    //TODO
+  }, []);
+
+  //TODO
+  const inheritedValue = '';
+
+  const CustomElement = useCallback<NonNullable<InputProps['CustomIcon']>>(
+    () => (
+      <Tooltip
+        label={
+          <>
+            <Row>
+              <Text weight="bold">
+                {t('account_details.inherited_value_was', 'The inherited value was')} :
+              </Text>
+              <Text>{`  ${inheritedValue || ''}`}</Text>
+            </Row>
+            <Padding top="small">
+              <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+            </Padding>
+          </>
+        }
+      >
+        <IconCheckbox
+          icon="RefreshOutline"
+          onClick={onChangeReset}
+          style={{ cursor: 'pointer' }}
+          onChange={(): null => null}
+        />
+      </Tooltip>
+    ),
+    [onChangeReset, t],
+  );
+
   if (!isAdvanced) {
     return null;
   }
@@ -126,6 +163,7 @@ export const EditAccountQuotaInputsNew = ({
           onChange={inputOnChange}
           value={inputValue}
           disabled={switchValue}
+          CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
         />
         {totalQuotaSource === 'global' && (
           <Tooltip placement={'top-end'} label={'Quota inherited from the global configuration'}>
