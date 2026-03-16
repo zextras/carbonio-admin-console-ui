@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text } from '@zextras/ui-components';
-import { useMemo } from 'react';
+import { Container, Text, Tooltip } from '@zextras/ui-components';
+import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { ComputedLimit } from '../../../../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
 import { getPercentage, humanFileSize } from './size-utils';
@@ -16,12 +16,14 @@ type EditAccountQuotaBarNewProps = {
   used: number;
   limit: ComputedLimit;
   usedByModule: Record<string, number>;
+  source: QuotaSource;
 };
 
 export const EditAccountQuotaBarNew = ({
   used,
   limit,
   usedByModule,
+  source,
 }: EditAccountQuotaBarNewProps): React.JSX.Element => {
   const [t] = useTranslation();
 
@@ -77,9 +79,29 @@ export const EditAccountQuotaBarNew = ({
         <Text size="medium" weight="bold" color="regular">
           {t('label.storage_usage', 'Storage usage')}
         </Text>
-        <Text size="small" color="regular">
-          {sizeDescription}
-        </Text>
+        <Container orientation={'horizontal'} width={'fit'} gap={'0.25rem'}>
+          <Text size="small" color="regular">
+            {sizeDescription}
+          </Text>
+          {source === 'global' && (
+            <Tooltip placement={'top-end'} label={'Quota inherited from the global configuration'}>
+              <icon-wc icon="GlobeOutline" size="large"></icon-wc>
+            </Tooltip>
+          )}
+          {source === 'domain' && (
+            <Tooltip placement={'top-end'} label={'Quota inherited from the domain settings.'}>
+              <icon-wc icon="AtOutline" size="large"></icon-wc>
+            </Tooltip>
+          )}
+          {source === 'cos' && (
+            <Tooltip
+              placement={'top-end'}
+              label={'Quota inherited from the assigned Class of Service'}
+            >
+              <icon-wc icon="SettingsModOutline" size="large"></icon-wc>
+            </Tooltip>
+          )}
+        </Container>
       </Container>
       {limit.type === 'limited' && (
         <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit.value)} />

@@ -5,7 +5,8 @@
  */
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { page } from 'vitest/browser';
+import { describe, expect, it } from 'vitest';
+import { page, userEvent } from 'vitest/browser';
 
 import { EditAccountQuotaBarNew } from '../edit-account-quota-bar-new';
 
@@ -13,6 +14,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should render the quota bar with the correct usage and limit', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={512 * 1024 * 1024}
         limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
         usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
@@ -25,6 +27,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should render the correct number of modules with the correct colors', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={500000000}
         limit={{ type: 'limited', value: 1000000000 }}
         usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
@@ -41,6 +44,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show correct size description when quota limit is unlimited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'unlimited' }}
         usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
@@ -53,6 +57,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show correct size description when quota limit is limited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={512 * 1024 * 1024}
         limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
         usedByModule={{
@@ -69,6 +74,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should not show available element in the legend when the limit is unlimited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'unlimited' }}
         usedByModule={{
@@ -86,6 +92,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show available element in the legend when the limit is limited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
         usedByModule={{
@@ -103,6 +110,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show warning banner when limit is limited and usage is between 80 and 100%', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        source={'account'}
         used={850 * 1024 * 1024}
         limit={{ type: 'limited', value: 1 * 1024 * 1024 * 1024 }}
         usedByModule={{
@@ -118,5 +126,100 @@ describe('EditAccountQuotaBarNew', () => {
         'This account is approaching its storage limit. Increase storage quota or notify the user to free up space.',
       ),
     ).toBeVisible();
+  });
+
+  describe('Source icon', () => {
+    it('should show global icon when totalQuotaSource is global', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'global'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: GlobeOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is global', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'global'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      const globalIcon = page.getByTestId('icon: GlobeOutline');
+      await userEvent.hover(globalIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the global configuration'))
+        .toBeVisible();
+    });
+
+    it('should show domain icon when totalQuotaSource is domain', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'domain'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: AtOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is domain', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'domain'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      const domainIcon = page.getByTestId('icon: AtOutline');
+      await userEvent.hover(domainIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the domain settings.'))
+        .toBeVisible();
+    });
+
+    it('should show cos icon when totalQuotaSource is cos', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'cos'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: SettingsModOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is cos', async () => {
+      await setupBrowserTest(
+        <EditAccountQuotaBarNew
+          source={'cos'}
+          used={512 * 1024 * 1024}
+          limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
+          usedByModule={{ mailbox: 300000000, files: 100000000, wsc: 100000000 }}
+        />,
+      );
+
+      const cosIcon = page.getByTestId('icon: SettingsModOutline');
+      await userEvent.hover(cosIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the assigned Class of Service'))
+        .toBeVisible();
+    });
   });
 });

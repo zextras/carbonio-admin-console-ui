@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useDomainStore } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
@@ -25,6 +26,10 @@ function setupNotAdvancedTest(component: React.ReactElement) {
 }
 
 describe('EditAccountQuotaInputsNew', () => {
+  afterEach(() => {
+    useDomainStore.setState({ domain: { id: undefined }, domainsQuota: {} });
+  });
+
   it('should render the total quota input when advanced is supported', async () => {
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
@@ -134,6 +139,42 @@ describe('EditAccountQuotaInputsNew', () => {
     await userEvent.type(input, '0');
 
     expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
+  });
+
+  it('should disable the unlimited switch when domainQuotaConstraint is defined', async () => {
+    useDomainStore.setState({
+      domain: { id: 'test-domain' },
+      domainsQuota: { 'test-domain': 10737418240 },
+    });
+
+    await setupAdvancedTest(
+      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+    );
+
+    // Verify the component is rendered first
+    await expect.element(page.getByText('Unlimited quota')).toBeVisible();
+
+    // Check that the switch is disabled by verifying the icon wrapper has tabindex="-1"
+    const iconWrapper = document.querySelector('[class*="iconWrapper"]');
+    expect(iconWrapper?.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('should enable the unlimited switch when domainQuotaConstraint is not-set', async () => {
+    useDomainStore.setState({
+      domain: { id: 'test-domain' },
+      domainsQuota: { 'test-domain': 'not-set' },
+    });
+
+    await setupAdvancedTest(
+      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+    );
+
+    // Verify the component is rendered first
+    await expect.element(page.getByText('Unlimited quota')).toBeVisible();
+
+    // Check that the switch is disabled by verifying the icon wrapper has tabindex="-1"
+    const iconWrapper = document.querySelector('[class*="iconWrapper"]');
+    expect(iconWrapper?.getAttribute('tabindex')).toBe('0');
   });
 
   describe('Source icon', () => {

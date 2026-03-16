@@ -1070,15 +1070,15 @@ const DomainGeneralSettings: FC = () => {
                   padding={{ top: 'large', left: 'small' }}
                 >
                   <Text size="small" weight="bold" color="gray0">
-                    {t('label.totalQuotaSetting', 'Total Quota Setting')}
+                    {t('label.accountQuotaSetting', 'Account Quota Settings')}
                   </Text>
                 </Row>
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
                       label={t(
-                        'label.max_quota_for_account_in_this_domain',
-                        'max quota for account in this domain (GB)',
+                        'label.max_quota_per_account_in_this_domain',
+                        'Max quota per account in this domain (GB)',
                       )}
                       value={domainQuotaGB}
                       backgroundColor="gray5"

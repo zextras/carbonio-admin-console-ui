@@ -128,17 +128,20 @@ export const EditAccountQuotaInputsNew = ({
           disabled={switchValue}
         />
         {totalQuotaSource === 'global' && (
-          <Tooltip label={'Quota inherited from the global configuration'}>
+          <Tooltip placement={'top-end'} label={'Quota inherited from the global configuration'}>
             <icon-wc icon="GlobeOutline" size="large"></icon-wc>
           </Tooltip>
         )}
         {totalQuotaSource === 'domain' && (
-          <Tooltip label={'Quota inherited from the domain settings.'}>
+          <Tooltip placement={'top-end'} label={'Quota inherited from the domain settings.'}>
             <icon-wc icon="AtOutline" size="large"></icon-wc>
           </Tooltip>
         )}
         {totalQuotaSource === 'cos' && (
-          <Tooltip label={'Quota inherited from the assigned Class of Service'}>
+          <Tooltip
+            placement={'top-end'}
+            label={'Quota inherited from the assigned Class of Service'}
+          >
             <icon-wc icon="SettingsModOutline" size="large"></icon-wc>
           </Tooltip>
         )}
