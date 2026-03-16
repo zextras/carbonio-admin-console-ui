@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
-import { useAppConfigStore, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { useAllConfig, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,14 +18,13 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
-
 const DomainTheme: FC = () => {
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
-  const configInformation = useAppConfigStore((state) => state.config);
+  const { data: configInformation = [] } = useAllConfig();
   const domainInformation = useDomainStore((state) => state.domainWithoutConfig?.a);
   const setDomain = useDomainStore((state) => state.setDomain);
   const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);

@@ -16,7 +16,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore } from '@zextras/ui-shared';
+import { useAllConfig } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -57,8 +57,7 @@ const MTAPostScreenTuning: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const configInformation = useAppConfigStore((state) => state.config);
-  const updateConfig = useAppConfigStore((state) => state.updateConfig);
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const [mtaPostTuningInitialDetail, setMtaPostTuningInitialDetail] = useState<MtaPostTuning>();
   const [mtaPostTuningDetail, setMtaPostTuningDetail] = useState<MtaPostTuning>();
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
@@ -343,7 +342,10 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^a-zA-Z]/g, '');
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(
+        /[^a-zA-Z]/g,
+        '',
+      );
       const findOption = intervalOptions.find(
         (item: Record<string, string>) => item?.value === unit,
       );
@@ -353,7 +355,10 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^a-zA-Z]/g, '');
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(
+        /[^a-zA-Z]/g,
+        '',
+      );
       const findOption = intervalOptions.find(
         (item: Record<string, string>) => item?.value === unit,
       );
@@ -363,7 +368,7 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^a-zA-Z]/g, '');
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/[^a-zA-Z]/g, '');
       const findOption = intervalOptions.find(
         (item: Record<string, string>) => item?.value === unit,
       );
@@ -373,7 +378,10 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^a-zA-Z]/g, '');
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(
+        /[^a-zA-Z]/g,
+        '',
+      );
       const findOption = intervalOptions.find(
         (item: Record<string, string>) => item?.value === unit,
       );
@@ -383,7 +391,7 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(
         /[^a-zA-Z]/g,
         '',
       );
@@ -400,7 +408,10 @@ const MTAPostScreenTuning: FC = () => {
 
   useEffect(() => {
     if (mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL) {
-      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(/[^a-zA-Z]/g, '');
+      const unit = mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(
+        /[^a-zA-Z]/g,
+        '',
+      );
       const findOption = intervalOptions.find(
         (item: Record<string, string>) => item?.value === unit,
       );
@@ -449,7 +460,7 @@ const MTAPostScreenTuning: FC = () => {
       setDnsblMinTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -463,7 +474,7 @@ const MTAPostScreenTuning: FC = () => {
       setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -477,7 +488,7 @@ const MTAPostScreenTuning: FC = () => {
       setDnsblTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -491,7 +502,7 @@ const MTAPostScreenTuning: FC = () => {
       setPipeliningTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -505,7 +516,7 @@ const MTAPostScreenTuning: FC = () => {
       setNonSMTPCommandTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -519,7 +530,7 @@ const MTAPostScreenTuning: FC = () => {
       setBareNewLineTTLUnit(findOption || intervalOptions[2]);
       setValue(
         ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
-        `${mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(/[^0-9]/g, '')}${
+        `${mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(/\D/g, '')}${
           findOption?.value
         }`,
       );
@@ -537,15 +548,6 @@ const MTAPostScreenTuning: FC = () => {
     );
   }, [mtaPostTuningInitialDetail, setValue]);
 
-  const updateGlobalConfig = useCallback(
-    (attributes: Array<Record<string, string>>): void => {
-      attributes.forEach((ele: Record<string, string>) => {
-        updateConfig(ele?.n, ele._content);
-      });
-    },
-    [updateConfig],
-  );
-
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
@@ -558,7 +560,7 @@ const MTAPostScreenTuning: FC = () => {
             hideButton: true,
             replace: true,
           });
-          updateGlobalConfig(attributes);
+          invalidate();
         })
         .catch((error) => {
           createSnackbar({
@@ -573,7 +575,7 @@ const MTAPostScreenTuning: FC = () => {
           });
         });
     },
-    [createSnackbar, t, updateGlobalConfig],
+    [createSnackbar, invalidate, t],
   );
 
   const setSaveValue = useCallback(

@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 import { soapFetch } from '../network/fetch';
 import { Attribute } from '../store/shared/domains/types';
@@ -25,26 +26,37 @@ const getAllConfigQueryFn = async (): Promise<Array<Attribute>> => {
 
 export const useAllConfig = (options: ConfigOptions = {}) => {
   const { enabled = true, ...queryOptions } = options;
+  const queryClient = useQueryClient();
 
-  return useQuery({
+  const queryResult = useQuery({
     queryKey: ['all-config'],
     queryFn: getAllConfigQueryFn,
     enabled,
-    staleTime: 30 * 60 * 1000, // 30 minutes - config changes rarely
-    gcTime: 60 * 60 * 1000, // 1 hour - keep in cache longer
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     retry: 3,
     retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     ...queryOptions,
   });
+
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['all-config'] });
+  }, [queryClient]);
+
+  return {
+    ...queryResult,
+    invalidate,
+  };
 };
 
 export const useConfigAttribute = (key: string, options: ConfigOptions = {}) => {
-  const { data: allConfig, ...result } = useAllConfig(options);
+  const { data: allConfig, invalidate, ...result } = useAllConfig(options);
 
   return {
     ...result,
     data: allConfig?.find((attr) => attr.n === key)?._content,
+    invalidate,
   };
 };
