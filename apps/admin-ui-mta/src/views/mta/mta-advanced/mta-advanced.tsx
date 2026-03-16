@@ -18,7 +18,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,8 +46,7 @@ const MTAAdvanced: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const configInformation = useAppConfigStore((state) => state.config);
-  const updateConfig = useAppConfigStore((state) => state.updateConfig);
+  const { data: configInformation = [], invalidate } = useAllConfig();
 
   const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
   const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
@@ -339,23 +338,6 @@ const MTAAdvanced: FC = () => {
     }, 10);
   }, [mtaAdvancedInitialDetail]);
 
-  const updateGlobalConfig = useCallback(
-    (attributes: Array<Record<string, string>>): void => {
-      attributes.forEach((ele: Record<string, string>) => {
-        updateConfig(ele?.n, ele._content);
-      });
-      setTimeout(() => {
-        if (attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)) {
-          updateConfig(
-            ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-            attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)?._content,
-          );
-        }
-      }, 10);
-    },
-    [updateConfig],
-  );
-
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
@@ -368,7 +350,7 @@ const MTAAdvanced: FC = () => {
             hideButton: true,
             replace: true,
           });
-          updateGlobalConfig(attributes);
+          invalidate();
         })
         .catch((error) => {
           createSnackbar({
@@ -383,7 +365,7 @@ const MTAAdvanced: FC = () => {
           });
         });
     },
-    [createSnackbar, t, updateGlobalConfig],
+    [createSnackbar, invalidate, t],
   );
 
   const onSave = useCallback(() => {

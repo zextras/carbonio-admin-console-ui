@@ -15,7 +15,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore, useCurrentUserRights } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual, uniq } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -50,10 +50,7 @@ const MTAInboundFlowSecurity: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const configInformation = useAppConfigStore((state) => state.config);
-  const updateConfig = useAppConfigStore((state) => state.updateConfig);
-  const addConfig = useAppConfigStore((state) => state.addConfig);
-  const removeConfigItems = useAppConfigStore((state) => state.removeConfigItems);
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
 
   const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
@@ -280,45 +277,6 @@ const MTAInboundFlowSecurity: FC = () => {
     }
   }, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
 
-  const updateGlobalConfig = useCallback(
-    (attributes: Array<Record<string, string>>): void => {
-      const attributeWithoutExtension = attributes.filter(
-        (item: Record<string, string>) =>
-          item?.n !== ZIMBRA_MTA_BLOCKED_EXTENSION && item?.n !== ZIMBRA_MTA_RESTRICTION,
-      );
-      const attributeWithExtension = attributes.filter(
-        (item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION,
-      );
-
-      const zimbraMtaRestriction = attributes.filter(
-        (item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION,
-      );
-      removeConfigItems({ n: ZIMBRA_MTA_RESTRICTION });
-      if (zimbraMtaRestriction && zimbraMtaRestriction.length > 0) {
-        addConfig(zimbraMtaRestriction);
-      }
-      if (attributeWithoutExtension && attributeWithoutExtension.length > 0) {
-        attributeWithoutExtension.forEach((ele: Record<string, string>) => {
-          updateConfig(ele?.n, ele._content);
-        });
-      }
-
-      if (attributeWithExtension && attributeWithExtension.length > 0) {
-        attributeWithExtension.forEach((item: Record<string, string>) => {
-          removeConfigItems(item);
-        });
-        if (attributeWithExtension.length === 1 && attributeWithExtension[0]?._content === '') {
-          removeConfigItems(attributeWithExtension[0]);
-        } else {
-          setTimeout(() => {
-            addConfig(attributeWithExtension);
-          }, 100);
-        }
-      }
-    },
-    [updateConfig, addConfig, removeConfigItems],
-  );
-
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
@@ -331,7 +289,7 @@ const MTAInboundFlowSecurity: FC = () => {
             hideButton: true,
             replace: true,
           });
-          updateGlobalConfig(attributes);
+          invalidate();
         })
         .catch((error) => {
           createSnackbar({
@@ -346,7 +304,7 @@ const MTAInboundFlowSecurity: FC = () => {
           });
         });
     },
-    [createSnackbar, t, updateGlobalConfig],
+    [createSnackbar, invalidate, t],
   );
 
   const setMtaRestrictions = useCallback(
