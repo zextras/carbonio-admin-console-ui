@@ -9,11 +9,13 @@ import { useMemo } from 'react';
 import type { QuotaSource } from '../../../../../../services/get-account-quota';
 
 type TotalQuotaSourceIconProps = {
-  source?: QuotaSource;
+  source: QuotaSource;
+  onClick?: (event: Event) => void;
 };
 
 export const TotalQuotaSourceIcon = ({
   source,
+  onClick,
 }: TotalQuotaSourceIconProps): React.JSX.Element | null => {
   const icon = useMemo(() => {
     if (source === 'global') {
@@ -53,7 +55,7 @@ export const TotalQuotaSourceIcon = ({
 
   return (
     <Tooltip placement={'top-end'} label={tooltipLabel}>
-      <icon-wc icon={icon} size="large"></icon-wc>
+      <icon-wc icon={icon} size="large" clickHandler={onClick} />
     </Tooltip>
   );
 };

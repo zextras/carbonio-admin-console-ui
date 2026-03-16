@@ -99,8 +99,9 @@ export const EditAccountQuotaInputsNew = ({
   }, [quotaValue]);
 
   const onChangeReset = useCallback(() => {
-    //TODO
-  }, []);
+    setQuotaValue(undefined);
+    onChange(undefined);
+  }, [onChange]);
 
   //TODO
   const inheritedValue = '';
@@ -157,16 +158,23 @@ export const EditAccountQuotaInputsNew = ({
         mainAlignment="space-between"
         crossAlignment="center"
       >
-        <Input
-          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-          background={'gray5'}
-          inputName="totalQuota"
-          onChange={inputOnChange}
-          value={inputValue}
-          disabled={switchValue}
-          CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
-        />
-        <TotalQuotaSourceIcon source={totalQuotaSource} />
+        <Container
+          orientation={'horizontal'}
+          gap={'0.5rem'}
+          mainAlignment={'flex-start'}
+          crossAlignment={'center'}
+        >
+          <Input
+            label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+            background={'gray5'}
+            inputName="totalQuota"
+            onChange={inputOnChange}
+            value={inputValue}
+            disabled={switchValue}
+            CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
+          />
+          <TotalQuotaSourceIcon source={totalQuotaSource} onClick={onChangeReset} />
+        </Container>
       </Row>
     </Container>
   );

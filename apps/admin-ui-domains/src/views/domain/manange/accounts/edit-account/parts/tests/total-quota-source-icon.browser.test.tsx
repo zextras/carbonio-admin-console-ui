@@ -49,6 +49,8 @@ describe('TotalQuotaSourceIcon', () => {
     expect(container.innerHTML).toBe('');
   });
 
+  // TODO move this test to edit-account-quota-inputs-new.test.tsx
+  // among with at least a test tio check that the icon is correctly rendered in that component when the source is account and that the click handler is correctly called
   it('should render nothing when source is undefined', async () => {
     const { container } = await setupBrowserTest(<TotalQuotaSourceIcon source={undefined} />);
 
