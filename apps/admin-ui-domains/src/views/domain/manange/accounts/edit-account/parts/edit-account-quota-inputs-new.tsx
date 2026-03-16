@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
+import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaInputsNewProps = {
   totalComputedQuotaLimit?: number | 'unlimited';
@@ -165,24 +166,7 @@ export const EditAccountQuotaInputsNew = ({
           disabled={switchValue}
           CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
         />
-        {totalQuotaSource === 'global' && (
-          <Tooltip placement={'top-end'} label={'Quota inherited from the global configuration'}>
-            <icon-wc icon="GlobeOutline" size="large"></icon-wc>
-          </Tooltip>
-        )}
-        {totalQuotaSource === 'domain' && (
-          <Tooltip placement={'top-end'} label={'Quota inherited from the domain settings.'}>
-            <icon-wc icon="AtOutline" size="large"></icon-wc>
-          </Tooltip>
-        )}
-        {totalQuotaSource === 'cos' && (
-          <Tooltip
-            placement={'top-end'}
-            label={'Quota inherited from the assigned Class of Service'}
-          >
-            <icon-wc icon="SettingsModOutline" size="large"></icon-wc>
-          </Tooltip>
-        )}
+        <TotalQuotaSourceIcon source={totalQuotaSource} />
       </Row>
     </Container>
   );
