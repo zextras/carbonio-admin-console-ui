@@ -3,23 +3,34 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Padding, Row, Switch, SwitchProps, Text } from '@zextras/ui-components';
+import {
+  Container,
+  Input,
+  Padding,
+  Row,
+  Switch,
+  SwitchProps,
+  Text,
+  Tooltip,
+} from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ComputedLimit } from '../../../../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
 
 type EditAccountQuotaInputsNewProps = {
   totalComputedQuotaLimit?: number | 'unlimited';
   initialTotalComputedQuotaLimit?: number | 'unlimited';
+  totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
 };
 
 export const EditAccountQuotaInputsNew = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
+  totalQuotaSource,
   onChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
@@ -102,10 +113,11 @@ export const EditAccountQuotaInputsNew = ({
         </Container>
       </Padding>
       <Row
+        wrap={'nowrap'}
         width="100%"
         padding={{ top: 'large', left: 'large' }}
         mainAlignment="space-between"
-        crossAlignment="flex-start"
+        crossAlignment="center"
       >
         <Input
           label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
@@ -115,6 +127,21 @@ export const EditAccountQuotaInputsNew = ({
           value={inputValue}
           disabled={switchValue}
         />
+        {totalQuotaSource === 'global' && (
+          <Tooltip label={'Quota inherited from the global configuration'}>
+            <icon-wc icon="GlobeOutline" size="large"></icon-wc>
+          </Tooltip>
+        )}
+        {totalQuotaSource === 'domain' && (
+          <Tooltip label={'Quota inherited from the domain settings.'}>
+            <icon-wc icon="AtOutline" size="large"></icon-wc>
+          </Tooltip>
+        )}
+        {totalQuotaSource === 'cos' && (
+          <Tooltip label={'Quota inherited from the assigned Class of Service'}>
+            <icon-wc icon="SettingsModOutline" size="large"></icon-wc>
+          </Tooltip>
+        )}
       </Row>
     </Container>
   );

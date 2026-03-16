@@ -649,10 +649,12 @@ const EditAccount: FC<{
             setInitAccountDetail((prev) => ({
               ...prev,
               totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
             }));
             setAccountDetail((prev) => ({
               ...prev,
               totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
             }));
           } else {
             throw new Error(response.error);

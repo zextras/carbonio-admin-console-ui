@@ -13,11 +13,12 @@ import {
 export type LimitedComputedLimit = { type: 'limited'; value: number };
 export type UnlimitedComputedLimit = { type: 'unlimited' };
 export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
+export type QuotaSource = 'global' | 'domain' | 'cos' | 'account';
 
 export type GetAccountQuotaRawResponse = {
   total: {
     used: number;
-    computedLimit: ComputedLimit;
+    computedLimit: ComputedLimit & { source: QuotaSource };
   };
   modules: {
     mailbox: { used: number };
@@ -30,6 +31,7 @@ type GetAccountQuotaResponse =
   | {
       type: 'success';
       totalComputedLimit: ComputedLimit;
+      totalLimitSource: QuotaSource;
       totalUsed: number;
       usedByModules: {
         mailbox: number;
@@ -63,9 +65,15 @@ export const getAccountQuota = async (accountId: string): Promise<GetAccountQuot
     })
     .then((data) => {
       const { total } = data;
+      const totalComputedLimit =
+        total.computedLimit.type === 'limited'
+          ? { value: total.computedLimit.value, type: total.computedLimit.type }
+          : { type: total.computedLimit.type };
+
       return {
         type: 'success',
-        totalComputedLimit: total.computedLimit,
+        totalComputedLimit,
+        totalLimitSource: total.computedLimit.source,
         totalUsed: total.used,
         usedByModules: {
           mailbox: data.modules.mailbox.used,

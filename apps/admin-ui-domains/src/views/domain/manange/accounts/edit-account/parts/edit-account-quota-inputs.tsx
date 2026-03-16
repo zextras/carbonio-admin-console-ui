@@ -65,6 +65,7 @@ export const EditAccountQuotaInputs = ({
             ? 'unlimited'
             : initialAccountDetail.totalComputedQuotaLimit.value
         }
+        totalQuotaSource={accountDetail.totalQuotaSource}
         onChange={onTotalComputedQuotaLimitChange}
       />
     );

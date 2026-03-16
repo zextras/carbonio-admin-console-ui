@@ -135,4 +135,99 @@ describe('EditAccountQuotaInputsNew', () => {
 
     expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
   });
+
+  describe('Source icon', () => {
+    it('should show global icon when totalQuotaSource is global', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'global'}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: GlobeOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is global', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'global'}
+        />,
+      );
+
+      const globalIcon = page.getByTestId('icon: GlobeOutline');
+      await userEvent.hover(globalIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the global configuration'))
+        .toBeVisible();
+    });
+
+    it('should show domain icon when totalQuotaSource is domain', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'domain'}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: AtOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is domain', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'domain'}
+        />,
+      );
+
+      const domainIcon = page.getByTestId('icon: AtOutline');
+      await userEvent.hover(domainIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the domain settings.'))
+        .toBeVisible();
+    });
+
+    it('should show cos icon when totalQuotaSource is cos', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'cos'}
+        />,
+      );
+
+      await expect.element(page.getByTestId('icon: SettingsModOutline')).toBeVisible();
+    });
+
+    it('should show proper tooltip when hovering icon and totalQuotaSource is cos', async () => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={onChangeMock}
+          totalQuotaSource={'cos'}
+        />,
+      );
+
+      const cosIcon = page.getByTestId('icon: SettingsModOutline');
+      await userEvent.hover(cosIcon);
+
+      await expect
+        .element(page.getByText('Quota inherited from the assigned Class of Service'))
+        .toBeVisible();
+    });
+  });
 });

@@ -45,6 +45,7 @@ import {
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
+  TOTAL_QUOTA_SOURCE,
   TOTAL_QUOTA_USED,
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
@@ -552,6 +553,7 @@ const ManageAccounts: FC = () => {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
           setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
           setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
+          setAccDetailValue(TOTAL_QUOTA_SOURCE, res.totalLimitSource);
         } else {
           createSnackbar({
             key: 'retrieveAccountQuotaError',
