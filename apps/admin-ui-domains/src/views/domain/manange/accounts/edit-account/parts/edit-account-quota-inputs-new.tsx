@@ -109,7 +109,7 @@ export const EditAccountQuotaInputsNew = ({
       if (typeof cosComputedLimit === 'number') {
         return BytesToGB(Math.min(domainQuotaConstraint, cosComputedLimit));
       }
-      return domainQuotaConstraint;
+      return BytesToGB(domainQuotaConstraint);
     }
     return cosComputedLimit === 'unlimited'
       ? t('account_details.unlimited', 'Unlimited')

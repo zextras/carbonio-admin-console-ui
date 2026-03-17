@@ -28,7 +28,7 @@ describe('TotalQuotaSourceIcon', () => {
     await expect.element(icon).toBeVisible();
 
     await userEvent.hover(icon);
-    await expect.element(page.getByText('Quota inherited from the domain settings.')).toBeVisible();
+    await expect.element(page.getByText('Quota inherited from the domain settings')).toBeVisible();
   });
 
   it('should render cos icon and tooltip when source is cos', async () => {

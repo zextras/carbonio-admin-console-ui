@@ -29,7 +29,7 @@ export const TotalQuotaSourceIcon = React.memo(
       source === 'global'
         ? t('label.quota.source.global', 'Quota inherited from the global configuration')
         : source === 'domain'
-        ? t('label.quota.source.domain', 'Quota inherited from the domain settings.')
+        ? t('label.quota.source.domain', 'Quota inherited from the domain settings')
         : source === 'cos'
         ? t('label.quota.source.cos', 'Quota inherited from the assigned Class of Service')
         : undefined;

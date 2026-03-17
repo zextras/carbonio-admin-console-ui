@@ -187,7 +187,7 @@ describe('EditAccountQuotaBarNew', () => {
       await userEvent.hover(domainIcon);
 
       await expect
-        .element(page.getByText('Quota inherited from the domain settings.'))
+        .element(page.getByText('Quota inherited from the domain settings'))
         .toBeVisible();
     });
 
