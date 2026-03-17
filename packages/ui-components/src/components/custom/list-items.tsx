@@ -6,6 +6,7 @@
 
 import { type FC, type JSX, useCallback } from 'react';
 
+import { Text } from '../basic/text/Text';
 import { List } from '../display/List/List';
 import { ListItem } from '../display/ListItem';
 import { Container } from '../layout/Container';
