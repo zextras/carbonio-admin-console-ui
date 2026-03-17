@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Tooltip } from '@zextras/ui-components';
-import { useMemo } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { QuotaSource } from '../../../../../../services/get-account-quota';
 
@@ -13,41 +14,28 @@ type TotalQuotaSourceIconProps = {
   onClick?: (event: Event) => void;
 };
 
-export const TotalQuotaSourceIcon = ({
+export const TotalQuotaSourceIcon = React.memo(({
   source,
   onClick,
 }: TotalQuotaSourceIconProps): React.JSX.Element | null => {
-  const icon = useMemo(() => {
-    if (source === 'global') {
-      return 'GlobeOutline';
-    }
+  const { t } = useTranslation();
+  const icon =
+    source === 'global'
+      ? 'GlobeOutline'
+      : source === 'domain'
+        ? 'AtOutline'
+        : source === 'cos'
+          ? 'SettingsModOutline'
+          : undefined;
 
-    if (source === 'domain') {
-      return 'AtOutline';
-    }
-
-    if (source === 'cos') {
-      return 'SettingsModOutline';
-    }
-
-    return undefined;
-  }, [source]);
-
-  const tooltipLabel = useMemo(() => {
-    if (source === 'global') {
-      return 'Quota inherited from the global configuration';
-    }
-
-    if (source === 'domain') {
-      return 'Quota inherited from the domain settings.';
-    }
-
-    if (source === 'cos') {
-      return 'Quota inherited from the assigned Class of Service';
-    }
-
-    return undefined;
-  }, [source]);
+  const tooltipLabel =
+    source === 'global'
+      ? t('label.quota.source.global', 'Quota inherited from the global configuration')
+      : source === 'domain'
+        ? t('label.quota.source.domain', 'Quota inherited from the domain settings.')
+        : source === 'cos'
+          ? t('label.quota.source.cos', 'Quota inherited from the assigned Class of Service')
+          : undefined;
 
   if (!icon || !tooltipLabel) {
     return null;
@@ -58,4 +46,6 @@ export const TotalQuotaSourceIcon = ({
       <icon-wc icon={icon} size="large" clickHandler={onClick} />
     </Tooltip>
   );
-};
+});
+
+TotalQuotaSourceIcon.displayName = 'TotalQuotaSourceIcon';

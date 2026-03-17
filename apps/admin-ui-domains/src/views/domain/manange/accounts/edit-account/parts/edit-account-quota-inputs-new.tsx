@@ -173,7 +173,9 @@ export const EditAccountQuotaInputsNew = ({
             disabled={switchValue}
             CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
           />
-          <TotalQuotaSourceIcon source={totalQuotaSource} onClick={onChangeReset} />
+          {totalQuotaSource !== undefined && (
+            <TotalQuotaSourceIcon source={totalQuotaSource} onClick={onChangeReset} />
+          )}
         </Container>
       </Row>
     </Container>
