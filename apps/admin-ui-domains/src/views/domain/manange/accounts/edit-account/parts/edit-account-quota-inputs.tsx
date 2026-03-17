@@ -6,7 +6,7 @@
 import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
 import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
-import { AccountDetail } from '../../account-context';
+import { AccountDetail, CosDetail } from '../../account-context';
 import { EditAccountQuotaInputsLegacy } from './edit-account-quota-inputs-legacy';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
 
@@ -20,6 +20,7 @@ type EditAccountQuotaInputsProps = {
   setFocusableMailboxQuota: (value: boolean) => void;
   setHighlightMailboxQuota: (value: boolean) => void;
   accountDetail: AccountDetail;
+  cosDetail: CosDetail;
   initialAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
@@ -34,6 +35,7 @@ export const EditAccountQuotaInputs = ({
   setFocusableMailboxQuota,
   setHighlightMailboxQuota,
   accountDetail,
+  cosDetail,
   initialAccountDetail,
   setAccountDetail,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
@@ -51,6 +53,13 @@ export const EditAccountQuotaInputs = ({
   if (isTotalQuotaActive) {
     return (
       <EditAccountQuotaInputsNew
+        cosComputedLimit={
+          cosDetail.totalComputedQuotaLimit === undefined
+            ? undefined
+            : cosDetail.totalComputedQuotaLimit.type === 'unlimited'
+            ? 'unlimited'
+            : cosDetail.totalComputedQuotaLimit.value
+        }
         totalComputedQuotaLimit={
           accountDetail.totalComputedQuotaLimit === undefined
             ? undefined

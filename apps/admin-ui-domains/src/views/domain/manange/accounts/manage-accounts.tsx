@@ -65,6 +65,7 @@ import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
+import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
@@ -547,7 +548,7 @@ const ManageAccounts: FC = () => {
   );
 
   const retrieveAccountQuotaByAccountId = useCallback(
-    (accountId: string): void => {
+    (accountId: string, cosIdOfAccount: string): void => {
       getAccountQuota(accountId).then((res) => {
         if (res.type === 'success') {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
@@ -563,6 +564,14 @@ const ManageAccounts: FC = () => {
             hideButton: true,
             replace: true,
           });
+        }
+      });
+      getCosQuota(cosIdOfAccount).then((res) => {
+        if (res.type === 'success') {
+          setCosDetail((prev: any) => ({
+            ...prev,
+            [TOTAL_COMPUTED_QUOTA_LIMIT]: res.totalComputedLimit,
+          }));
         }
       });
       if (domainId) {
@@ -623,7 +632,7 @@ const ManageAccounts: FC = () => {
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
             if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id);
+              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
             }
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);

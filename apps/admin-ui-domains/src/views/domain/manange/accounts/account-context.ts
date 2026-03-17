@@ -28,6 +28,10 @@ export type AccountDetail = Record<string, any> & {
   totalQuotaSource?: QuotaSource;
 };
 
+export type CosDetail = Record<string, any> & {
+  totalComputedQuotaLimit?: ComputedLimit;
+};
+
 type AccountContext = {
   accountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
@@ -35,7 +39,7 @@ type AccountContext = {
   setInitAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
   accSpecificDetail: any;
   setAccSpecificDetail: (arg: any) => void;
-  cosDetail: any;
+  cosDetail: CosDetail;
   directMemberList: any[];
   inDirectMemberList: any[];
   setSignatureItems: (arg: any) => void;

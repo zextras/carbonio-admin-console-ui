@@ -758,6 +758,7 @@ const EditAccountGeneralSection: FC<{
           </Row>
         )}
         <EditAccountQuotaInputs
+          cosDetail={cosDetail}
           accountDetail={accountDetail}
           initialAccountDetail={initAccountDetail}
           setAccountDetail={setAccountDetail}

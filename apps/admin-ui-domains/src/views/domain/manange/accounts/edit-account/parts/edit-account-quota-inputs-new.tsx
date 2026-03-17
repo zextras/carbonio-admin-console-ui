@@ -25,6 +25,7 @@ import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 type EditAccountQuotaInputsNewProps = {
   totalComputedQuotaLimit?: number | 'unlimited';
   initialTotalComputedQuotaLimit?: number | 'unlimited';
+  cosComputedLimit?: number | 'unlimited';
   totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
 };
@@ -32,6 +33,7 @@ type EditAccountQuotaInputsNewProps = {
 export const EditAccountQuotaInputsNew = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
+  cosComputedLimit,
   totalQuotaSource,
   onChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
@@ -102,8 +104,19 @@ export const EditAccountQuotaInputsNew = ({
     onChange(undefined);
   }, [onChange]);
 
-  //TODO
-  const inheritedValue = '';
+  const inheritedValue = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number') {
+      if (typeof cosComputedLimit === 'number') {
+        return BytesToGB(Math.min(domainQuotaConstraint, cosComputedLimit));
+      }
+      return domainQuotaConstraint;
+    }
+    return cosComputedLimit === 'unlimited'
+      ? t('account_details.unlimited', 'Unlimited')
+      : typeof cosComputedLimit === 'number'
+      ? BytesToGB(cosComputedLimit)
+      : undefined;
+  }, [cosComputedLimit, domainQuotaConstraint, t]);
 
   const CustomElement = () => (
     <Tooltip
