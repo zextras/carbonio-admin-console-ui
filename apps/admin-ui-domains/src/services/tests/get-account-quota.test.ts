@@ -46,10 +46,11 @@ describe('getAccountQuota', () => {
     });
 
     const result = await getAccountQuota(accountId);
+    const totalComputedLimit = { ...apiResponse.total.computedLimit, source: undefined };
 
     expect(result).toEqual({
       type: 'success',
-      totalComputedLimit: apiResponse.total.computedLimit,
+      totalComputedLimit,
       totalLimitSource: apiResponse.total.computedLimit.source,
       totalUsed: apiResponse.total.used,
       usedByModules: {
