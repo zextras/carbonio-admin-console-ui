@@ -70,7 +70,5 @@ type AccountContext = {
   setDefaultCOS: (arg: any) => void;
   allowedDeletePassword: boolean;
   setAllowedDeletePassword: (arg: boolean) => void;
-  hasQuotaError: boolean;
-  setHasQuotaError: (arg: boolean) => void;
 };
 export const AccountContext = createContext({} as AccountContext);

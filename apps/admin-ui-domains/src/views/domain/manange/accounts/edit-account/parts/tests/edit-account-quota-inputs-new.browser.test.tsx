@@ -5,82 +5,24 @@
  */
 import { useDomainStore } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import React, { useState } from 'react';
+import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { AccountContext } from '../../../account-context';
 import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
 
 const defaultQuotaLimit = 10737418240;
 
-function createAccountContextValue(
-  hasQuotaError: boolean,
-  setHasQuotaError: (value: boolean) => void,
-) {
-  return {
-    hasQuotaError,
-    setHasQuotaError,
-    accountDetail: {},
-    setAccountDetail: () => {},
-    initAccountDetail: {},
-    setInitAccountDetail: () => {},
-    accSpecificDetail: {},
-    setAccSpecificDetail: () => {},
-    cosDetail: {},
-    directMemberList: [],
-    inDirectMemberList: [],
-    setSignatureItems: () => {},
-    setSignatureList: () => {},
-    setDirectMemberList: () => {},
-    setInDirectMemberList: () => {},
-    otpList: {},
-    identitiesList: [],
-    folderList: [],
-    setFolderList: () => {},
-    getListOtp: {},
-    getIdentitiesList: {},
-    deligateDetail: {},
-    setDeligateDetail: () => {},
-    credentialList: {},
-    getCredentialList: {},
-    initialGlobalRights: {},
-    setinitialGlobalRights: () => {},
-    globalRights: {},
-    setGlobalRights: () => {},
-    deleteAdministrationRights: [],
-    setDeleteAdministrationRights: () => {},
-    userSessionList: [],
-    setAllUserSessionList: () => {},
-    allUserSessionList: [],
-    setUserSessionList: () => {},
-    defaultCOS: {},
-    setDefaultCOS: () => {},
-    allowedDeletePassword: false,
-    setAllowedDeletePassword: () => {},
-  };
-}
-
-function setupTestWithAdvanced(component: React.ReactElement, isAdvanced: boolean) {
-  const queryClient = getQueryClient();
-  queryClient.setQueryData(['advanced-supported'], { supported: isAdvanced });
-
-  const WrappedComponent = () => {
-    const [hasQuotaError, setHasQuotaError] = useState(false);
-    const contextValue = createAccountContextValue(hasQuotaError, setHasQuotaError);
-
-    return <AccountContext.Provider value={contextValue}>{component}</AccountContext.Provider>;
-  };
-
-  return setupBrowserTest(<WrappedComponent />, { queryClient });
-}
-
 function setupAdvancedTest(component: React.ReactElement) {
-  return setupTestWithAdvanced(component, true);
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(['advanced-supported'], { supported: true });
+  return setupBrowserTest(component, { queryClient });
 }
 
 function setupNotAdvancedTest(component: React.ReactElement) {
-  return setupTestWithAdvanced(component, false);
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(['advanced-supported'], { supported: false });
+  return setupBrowserTest(component, { queryClient });
 }
 
 describe('EditAccountQuotaInputsNew', () => {
@@ -90,7 +32,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render the total quota input when advanced is supported', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
 
     await expect.element(page.getByText('Total quota(GB)')).toBeVisible();
@@ -98,7 +44,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render nothing when advanced is not supported', async () => {
     const { container } = await setupNotAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
 
     expect(container.innerHTML).toBe('');
@@ -106,7 +56,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should allow numeric input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await input.fill('123');
@@ -116,7 +70,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render an empty input when a zero value is passed as prop', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={0} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={0}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
 
@@ -125,7 +83,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render an empty input when an undefined value is passed as prop', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={undefined} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={undefined}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
 
@@ -134,7 +96,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should strip non-numeric characters from input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={0} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={0}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await userEvent.type(input, 'abc');
@@ -144,7 +110,11 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should strip a zero value from input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={20000} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={20000}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
@@ -158,6 +128,7 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
+        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -176,6 +147,7 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
+        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -190,6 +162,7 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
+        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -206,7 +179,11 @@ describe('EditAccountQuotaInputsNew', () => {
     });
 
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
 
     // Verify the component is rendered first
@@ -224,7 +201,11 @@ describe('EditAccountQuotaInputsNew', () => {
     });
 
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew totalComputedQuotaLimit={defaultQuotaLimit} onChange={vi.fn()} />,
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />,
     );
 
     // Verify the component is rendered first
@@ -242,6 +223,7 @@ describe('EditAccountQuotaInputsNew', () => {
         totalComputedQuotaLimit={defaultQuotaLimit}
         totalQuotaSource="account"
         onChange={onChangeMock}
+        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -261,6 +243,7 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource={source}
           onChange={onChangeMock}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -277,6 +260,7 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
+        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -300,6 +284,7 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -318,6 +303,7 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -336,6 +322,7 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -368,6 +355,7 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -392,6 +380,7 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -416,6 +405,7 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -440,6 +430,7 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -462,6 +453,7 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="domain"
           onChange={vi.fn()}
+          onQuotaErrorChange={vi.fn()}
         />,
       );
 

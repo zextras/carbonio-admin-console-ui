@@ -23,6 +23,7 @@ type EditAccountQuotaInputsProps = {
   cosDetail: CosDetail;
   initialAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
+  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountQuotaInputs = ({
@@ -38,6 +39,7 @@ export const EditAccountQuotaInputs = ({
   cosDetail,
   initialAccountDetail,
   setAccountDetail,
+  onQuotaErrorChange,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
   const isTotalQuotaActive = useTotalQuotaActive();
 
@@ -76,6 +78,7 @@ export const EditAccountQuotaInputs = ({
         }
         totalQuotaSource={accountDetail.totalQuotaSource}
         onChange={onTotalComputedQuotaLimitChange}
+        onQuotaErrorChange={onQuotaErrorChange}
       />
     );
   }

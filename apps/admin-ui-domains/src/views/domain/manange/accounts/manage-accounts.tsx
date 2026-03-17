@@ -312,7 +312,6 @@ const ManageAccounts: FC = () => {
   const [signatureList, setSignatureList] = useState<any[]>([]);
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
 
   const generateSignatureList = (signatureResponse: any): void => {
     if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -1174,8 +1173,6 @@ const ManageAccounts: FC = () => {
       setDefaultCOS,
       allowedDeletePassword,
       setAllowedDeletePassword,
-      hasQuotaError,
-      setHasQuotaError,
     }),
     [
       accountDetail,
@@ -1199,7 +1196,6 @@ const ManageAccounts: FC = () => {
       allUserSessionList,
       defaultCOS,
       allowedDeletePassword,
-      hasQuotaError,
     ],
   );
 

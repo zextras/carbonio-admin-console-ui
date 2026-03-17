@@ -123,7 +123,6 @@ const EditAccount: FC<{
     deleteAdministrationRights,
     setDefaultCOS,
     cosDetail,
-    hasQuotaError,
   } = context;
   const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const isAdvanced = useIsAdvanced();
@@ -149,6 +148,7 @@ const EditAccount: FC<{
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
 
   const getDomainLists = useCallback(
     (offset: number): any => {
@@ -1111,7 +1111,9 @@ const EditAccount: FC<{
           style={{ overflow: 'auto' }}
         >
           {/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
-          {change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
+          {change === GENERAL_SECTION && (
+            <EditAccountGeneralSection setChange={setChange} onQuotaErrorChange={setHasQuotaError} />
+          )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
           {change === USER_PREFERENCES && (

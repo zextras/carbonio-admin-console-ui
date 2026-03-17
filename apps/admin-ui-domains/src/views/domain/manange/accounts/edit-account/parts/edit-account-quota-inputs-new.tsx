@@ -15,12 +15,11 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaInputsNewProps = {
@@ -29,6 +28,7 @@ type EditAccountQuotaInputsNewProps = {
   cosComputedLimit?: number | 'unlimited';
   totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
+  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountQuotaInputsNew = ({
@@ -37,9 +37,9 @@ export const EditAccountQuotaInputsNew = ({
   cosComputedLimit,
   totalQuotaSource,
   onChange,
+  onQuotaErrorChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
-  const { setHasQuotaError } = useContext(AccountContext);
 
   const domainQuotaConstraint = useDomainStore((state) => {
     if (state.domain.id) {
@@ -133,8 +133,8 @@ export const EditAccountQuotaInputsNew = ({
   }, [domainQuotaConstraint, quotaValue]);
 
   useEffect(() => {
-    setHasQuotaError(hasError);
-  }, [hasError, setHasQuotaError]);
+    onQuotaErrorChange(hasError);
+  }, [hasError, onQuotaErrorChange]);
 
   const onChangeReset = useCallback(() => {
     setQuotaValue(undefined);
