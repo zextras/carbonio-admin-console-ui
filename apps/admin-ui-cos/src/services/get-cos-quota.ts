@@ -13,15 +13,16 @@ import {
 export type LimitedComputedLimit = { type: 'limited'; value: number };
 export type UnlimitedComputedLimit = { type: 'unlimited' };
 export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
+export type QuotaSource = 'global' | 'domain' | 'cos' | 'account';
 
 export type GetCosQuotaRawResponse = {
-  computedLimit: ComputedLimit;
+  computedLimit: ComputedLimit & { source: QuotaSource };
 };
 
 type GetCosQuotaResponse =
   | {
       type: 'success';
-      totalComputedLimit: ComputedLimit;
+      totalComputedLimit: ComputedLimit & { source: QuotaSource };
     }
   | {
       type: 'error';
