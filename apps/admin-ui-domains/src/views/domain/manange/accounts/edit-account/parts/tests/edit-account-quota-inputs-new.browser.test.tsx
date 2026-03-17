@@ -229,4 +229,67 @@ describe('EditAccountQuotaInputsNew', () => {
     const resetIcons = document.querySelectorAll('[data-testid="icon: RefreshOutline"]');
     expect(resetIcons).toHaveLength(0);
   });
+
+  describe('Domain quota constraint description', () => {
+    it('should show proper description under the input when a domain constraint is set', async () => {
+      const domainConstraint = 10737418240; // 10 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={vi.fn()}
+        />,
+      );
+
+      // Verify the description is shown with the correct constraint value
+      const description = page.getByText(/The maximum allowed value is 10 GB/);
+      await expect.element(description).toBeVisible();
+    });
+
+    it('should not show description under the input when a domain constraint is not set', async () => {
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': 'not-set' },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={vi.fn()}
+        />,
+      );
+
+      // Verify the description is not shown
+      expect(document.body.textContent).not.toContain('maximum allowed value');
+    });
+
+    it('should show a proper error description when user tries to exceed the constraint value', async () => {
+      const domainConstraint = 10737418240; // 10 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          onChange={vi.fn()}
+        />,
+      );
+
+      // Get the input and enter a value that exceeds the constraint (15 GB)
+      const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+      await userEvent.clear(input);
+      await userEvent.type(input, '15');
+
+      // Verify the error description is shown
+      await expect.element(
+        page.getByText(/This value exceeds the domain limit \(10 GB\)\. Please enter a lower value\./),
+      ).toBeVisible();
+    });
+  });
 });

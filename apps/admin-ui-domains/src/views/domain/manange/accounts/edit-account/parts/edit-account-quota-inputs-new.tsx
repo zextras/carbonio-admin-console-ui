@@ -99,6 +99,34 @@ export const EditAccountQuotaInputsNew = ({
     return typeof quotaValue === 'number' ? quotaValue : '';
   }, [quotaValue]);
 
+  const inputDescription = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number') {
+      const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
+      const exceedsConstraint = quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
+
+      if (exceedsConstraint) {
+        return t('label.exceeds_domain_limit', {
+          defaultValue: `This value exceeds the domain limit (${BytesToGB(domainQuotaConstraint)} GB). Please enter a lower value.`,
+          limit: BytesToGB(domainQuotaConstraint),
+        });
+      }
+
+      return t('label.maximum_allowed_value', {
+        defaultValue: `The maximum allowed value is ${BytesToGB(domainQuotaConstraint)} GB`,
+        value: BytesToGB(domainQuotaConstraint),
+      });
+    }
+    return undefined;
+  }, [domainQuotaConstraint, quotaValue, t]);
+
+  const hasError = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number' && typeof quotaValue === 'number') {
+      const quotaValueInBytes = GbToBytes(quotaValue);
+      return quotaValueInBytes > domainQuotaConstraint;
+    }
+    return false;
+  }, [domainQuotaConstraint, quotaValue]);
+
   const onChangeReset = useCallback(() => {
     setQuotaValue(undefined);
     onChange(undefined);
@@ -174,12 +202,14 @@ export const EditAccountQuotaInputsNew = ({
           crossAlignment={'center'}
         >
           <Input
+            description={inputDescription}
             label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
             background={'gray5'}
             inputName="totalQuota"
             onChange={inputOnChange}
             value={inputValue}
             disabled={switchValue}
+            hasError={hasError}
             CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
           />
           {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
