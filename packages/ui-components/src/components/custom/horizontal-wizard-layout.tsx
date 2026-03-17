@@ -5,11 +5,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Padding, Row, Text } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '../basic/button/Button';
+import { Text } from '../basic/text/Text';
+import { Padding } from '../layout/Padding';
+import { Row } from '../layout/Row';
 import styles from './horizontal-wizard-layout.module.css';
 
 const StepNavigator: FC<{
@@ -299,13 +302,13 @@ export const HorizontalWizardLayout = ({
     </Row>
   );
 
-	return (
-		<Wrapper
-			title={title}
-			wizard={wizard}
-			wizardFooter={wizardFooter}
-			setToggleWizardSection={setToggleWizardSection}
-			externalData={externalData}
-		/>
-	);
+  return (
+    <Wrapper
+      title={title}
+      wizard={wizard}
+      wizardFooter={wizardFooter}
+      setToggleWizardSection={setToggleWizardSection}
+      externalData={externalData}
+    />
+  );
 };

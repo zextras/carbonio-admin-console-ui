@@ -3,8 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Padding, Text } from '@zextras/ui-components';
 import { FC } from 'react';
+
+import { Text } from '../basic/text/Text';
+import { Container } from '../layout/Container';
+import { Padding } from '../layout/Padding';
 
 type PrimaryBarTooltipItem = {
   header: string | React.ReactNode;

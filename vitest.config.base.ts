@@ -80,12 +80,6 @@ function browserProjectConfig() {
           __dirname,
           './packages/test-utils/src/index.browser.ts',
         ),
-        // TODO: @zextras/ui-shared alias causes browser tests to fail with "Failed to fetch dynamically imported module"
-        // The issue is that the setup file path resolution doesn't work in browser mode
-        // '@zextras/ui-shared': path.resolve(
-        //   __dirname,
-        //   './packages/ui-shared/src/exports.ts',
-        // ),
         'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
         'tinymce/models/dom': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/themes/silver': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
@@ -126,8 +120,10 @@ function browserProjectConfig() {
 }
 
 export default defineConfig({
-  esbuild: {
-    target: 'es2022',
+  server: {
+    fs: {
+      allow: ['../..'], // allow monorepo root
+    },
   },
   test: {
     globals: true,

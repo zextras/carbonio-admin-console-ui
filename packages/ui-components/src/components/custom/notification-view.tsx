@@ -4,18 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Container,
-  CustomHeaderFactory,
-  DefaultTabBarItem,
-  HoverableRowFactory,
-  ModalOverlay,
-  TabBar,
-  Table,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { getAllNotifications, readUnreadNotification } from '@zextras/ui-shared';
+import { getAllNotifications, readUnreadNotification, useSnackbar } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { orderBy } from 'lodash-es';
 import {
@@ -29,7 +18,14 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Text } from '../basic/text/Text';
+import { Table } from '../display/Table';
+import { Container } from '../layout/Container';
+import { DefaultTabBarItem, TabBar } from '../navigation/TabBar';
+import { CustomHeaderFactory } from './custom-table-header-factory';
+import HoverableRowFactory from './hoverable-row-factory';
 import { ListRow } from './list-row';
+import { ModalOverlay } from './modal-overlay';
 import { NotificationDetail } from './notification-detail';
 
 const DESC = 'desc';
