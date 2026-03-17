@@ -7,7 +7,6 @@ import {
   Container,
   IconCheckbox,
   Input,
-  InputProps,
   Padding,
   Row,
   Switch,
@@ -106,32 +105,29 @@ export const EditAccountQuotaInputsNew = ({
   //TODO
   const inheritedValue = '';
 
-  const CustomElement = useCallback<NonNullable<InputProps['CustomIcon']>>(
-    () => (
-      <Tooltip
-        label={
-          <>
-            <Row>
-              <Text weight="bold">
-                {t('account_details.inherited_value_was', 'The inherited value was')} :
-              </Text>
-              <Text>{`  ${inheritedValue || ''}`}</Text>
-            </Row>
-            <Padding top="small">
-              <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
-            </Padding>
-          </>
-        }
-      >
-        <IconCheckbox
-          icon="RefreshOutline"
-          onClick={onChangeReset}
-          style={{ cursor: 'pointer' }}
-          onChange={(): null => null}
-        />
-      </Tooltip>
-    ),
-    [onChangeReset, t],
+  const CustomElement = () => (
+    <Tooltip
+      label={
+        <>
+          <Row>
+            <Text weight="bold">
+              {t('account_details.inherited_value_was', 'The inherited value was')} :
+            </Text>
+            <Text>{`  ${inheritedValue || ''}`}</Text>
+          </Row>
+          <Padding top="small">
+            <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+          </Padding>
+        </>
+      }
+    >
+      <IconCheckbox
+        icon="RefreshOutline"
+        onClick={onChangeReset}
+        style={{ cursor: 'pointer' }}
+        onChange={(): null => null}
+      />
+    </Tooltip>
   );
 
   if (!isAdvanced) {
@@ -173,9 +169,7 @@ export const EditAccountQuotaInputsNew = ({
             disabled={switchValue}
             CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
           />
-          {totalQuotaSource !== undefined && (
-            <TotalQuotaSourceIcon source={totalQuotaSource} onClick={onChangeReset} />
-          )}
+          {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
         </Container>
       </Row>
     </Container>

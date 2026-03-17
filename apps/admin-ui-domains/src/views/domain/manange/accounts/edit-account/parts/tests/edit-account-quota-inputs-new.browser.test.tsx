@@ -176,4 +176,57 @@ describe('EditAccountQuotaInputsNew', () => {
     const iconWrapper = document.querySelector('[class*="iconWrapper"]');
     expect(iconWrapper?.getAttribute('tabindex')).toBe('0');
   });
+
+  it('should render the reset icon when source is account and call onClick handler when clicked', async () => {
+    const onChangeMock = vi.fn();
+    await setupAdvancedTest(
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        totalQuotaSource="account"
+        onChange={onChangeMock}
+      />,
+    );
+
+    const resetIcon = page.getByTestId('icon: RefreshOutline');
+    await expect.element(resetIcon).toBeVisible();
+
+    await userEvent.click(resetIcon);
+    expect(onChangeMock).toHaveBeenCalledWith(undefined);
+  });
+
+  it.each(['global', 'domain', 'cos'] as const)(
+    'should not render the reset icon when source is %s',
+    async (source) => {
+      const onChangeMock = vi.fn();
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          totalQuotaSource={source}
+          onChange={onChangeMock}
+        />,
+      );
+
+      await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toBeVisible();
+
+      const resetIcons = document.querySelectorAll('[data-testid="icon: RefreshOutline"]');
+      expect(resetIcons).toHaveLength(0);
+    },
+  );
+
+  it('should not render the reset icon when source is undefined', async () => {
+    const onChangeMock = vi.fn();
+    await setupAdvancedTest(
+      <EditAccountQuotaInputsNew
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        onChange={onChangeMock}
+      />,
+    );
+
+    // Verify the input is rendered
+    await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toBeVisible();
+
+    // Verify the reset icon is not rendered
+    const resetIcons = document.querySelectorAll('[data-testid="icon: RefreshOutline"]');
+    expect(resetIcons).toHaveLength(0);
+  });
 });

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text, Tooltip } from '@zextras/ui-components';
+import { Container, Text } from '@zextras/ui-components';
 import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -11,6 +11,7 @@ import { ComputedLimit, QuotaSource } from '../../../../../../services/get-accou
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
 import { getPercentage, humanFileSize } from './size-utils';
+import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaBarNewProps = {
   used: number;
@@ -83,24 +84,7 @@ export const EditAccountQuotaBarNew = ({
           <Text size="small" color="regular">
             {sizeDescription}
           </Text>
-          {source === 'global' && (
-            <Tooltip placement={'top-end'} label={'Quota inherited from the global configuration'}>
-              <icon-wc icon="GlobeOutline" size="large"></icon-wc>
-            </Tooltip>
-          )}
-          {source === 'domain' && (
-            <Tooltip placement={'top-end'} label={'Quota inherited from the domain settings.'}>
-              <icon-wc icon="AtOutline" size="large"></icon-wc>
-            </Tooltip>
-          )}
-          {source === 'cos' && (
-            <Tooltip
-              placement={'top-end'}
-              label={'Quota inherited from the assigned Class of Service'}
-            >
-              <icon-wc icon="SettingsModOutline" size="large"></icon-wc>
-            </Tooltip>
-          )}
+          <TotalQuotaSourceIcon source={source} />
         </Container>
       </Container>
       {limit.type === 'limited' && (
