@@ -5,24 +5,82 @@
  */
 import { useDomainStore } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import React from 'react';
+import React, { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { AccountContext } from '../../../account-context';
 import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
 
 const defaultQuotaLimit = 10737418240;
 
-function setupAdvancedTest(component: React.ReactElement) {
+function createAccountContextValue(
+  hasQuotaError: boolean,
+  setHasQuotaError: (value: boolean) => void,
+) {
+  return {
+    hasQuotaError,
+    setHasQuotaError,
+    accountDetail: {},
+    setAccountDetail: () => {},
+    initAccountDetail: {},
+    setInitAccountDetail: () => {},
+    accSpecificDetail: {},
+    setAccSpecificDetail: () => {},
+    cosDetail: {},
+    directMemberList: [],
+    inDirectMemberList: [],
+    setSignatureItems: () => {},
+    setSignatureList: () => {},
+    setDirectMemberList: () => {},
+    setInDirectMemberList: () => {},
+    otpList: {},
+    identitiesList: [],
+    folderList: [],
+    setFolderList: () => {},
+    getListOtp: {},
+    getIdentitiesList: {},
+    deligateDetail: {},
+    setDeligateDetail: () => {},
+    credentialList: {},
+    getCredentialList: {},
+    initialGlobalRights: {},
+    setinitialGlobalRights: () => {},
+    globalRights: {},
+    setGlobalRights: () => {},
+    deleteAdministrationRights: [],
+    setDeleteAdministrationRights: () => {},
+    userSessionList: [],
+    setAllUserSessionList: () => {},
+    allUserSessionList: [],
+    setUserSessionList: () => {},
+    defaultCOS: {},
+    setDefaultCOS: () => {},
+    allowedDeletePassword: false,
+    setAllowedDeletePassword: () => {},
+  };
+}
+
+function setupTestWithAdvanced(component: React.ReactElement, isAdvanced: boolean) {
   const queryClient = getQueryClient();
-  queryClient.setQueryData(['advanced-supported'], { supported: true });
-  return setupBrowserTest(component, { queryClient });
+  queryClient.setQueryData(['advanced-supported'], { supported: isAdvanced });
+
+  const WrappedComponent = () => {
+    const [hasQuotaError, setHasQuotaError] = useState(false);
+    const contextValue = createAccountContextValue(hasQuotaError, setHasQuotaError);
+
+    return <AccountContext.Provider value={contextValue}>{component}</AccountContext.Provider>;
+  };
+
+  return setupBrowserTest(<WrappedComponent />, { queryClient });
+}
+
+function setupAdvancedTest(component: React.ReactElement) {
+  return setupTestWithAdvanced(component, true);
 }
 
 function setupNotAdvancedTest(component: React.ReactElement) {
-  const queryClient = getQueryClient();
-  queryClient.setQueryData(['advanced-supported'], { supported: false });
-  return setupBrowserTest(component, { queryClient });
+  return setupTestWithAdvanced(component, false);
 }
 
 describe('EditAccountQuotaInputsNew', () => {
@@ -287,9 +345,128 @@ describe('EditAccountQuotaInputsNew', () => {
       await userEvent.type(input, '15');
 
       // Verify the error description is shown
-      await expect.element(
-        page.getByText(/This value exceeds the domain limit \(10 GB\)\. Please enter a lower value\./),
-      ).toBeVisible();
+      await expect
+        .element(
+          page.getByText(
+            /This value exceeds the domain limit \(10 GB\)\. Please enter a lower value\./,
+          ),
+        )
+        .toBeVisible();
+    });
+  });
+
+  describe('Tooltip cases', () => {
+    it('should show tooltip with inherited value (10 GB) from domain when source is account', async () => {
+      const domainConstraint = 10737418240; // 10 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          totalQuotaSource="account"
+          onChange={vi.fn()}
+        />,
+      );
+
+      const resetIcon = page.getByTestId('icon: RefreshOutline');
+      await userEvent.hover(resetIcon);
+
+      // Verify tooltip shows inherited value with the calculated value (10)
+      await expect.element(page.getByText(/The inherited value was: 10/)).toBeVisible();
+      await expect.element(page.getByText('Click to revert')).toBeVisible();
+    });
+
+    it('should show tooltip with inherited value (5 GB) from COS when source is account', async () => {
+      const cosLimit = 5368709120; // 5 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': 'not-set' },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          cosComputedLimit={cosLimit}
+          totalQuotaSource="account"
+          onChange={vi.fn()}
+        />,
+      );
+
+      const resetIcon = page.getByTestId('icon: RefreshOutline');
+      await userEvent.hover(resetIcon);
+
+      // Verify tooltip shows inherited value from COS with the calculated value (5)
+      await expect.element(page.getByText(/The inherited value was: 5/)).toBeVisible();
+    });
+
+    it('should show tooltip with minimum value (5 GB) when both domain (10 GB) and COS (5 GB) quotas are set: COS wins', async () => {
+      const domainConstraint = 10737418240; // 10 GB in bytes
+      const cosLimit = 5368709120; // 5 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          cosComputedLimit={cosLimit}
+          totalQuotaSource="account"
+          onChange={vi.fn()}
+        />,
+      );
+
+      const resetIcon = page.getByTestId('icon: RefreshOutline');
+      await userEvent.hover(resetIcon);
+
+      // Should show the minimum value (5 GB from COS) in the inherited value tooltip
+      await expect.element(page.getByText(/The inherited value was: 5/)).toBeVisible();
+    });
+
+    it('should show tooltip with minimum value (5 GB) when both domain (5 GB) and COS (10 GB) quotas are set: Domain wins', async () => {
+      const domainConstraint = 5368709120; // 10 GB in bytes
+      const cosLimit = 10737418240; // 5 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          cosComputedLimit={cosLimit}
+          totalQuotaSource="account"
+          onChange={vi.fn()}
+        />,
+      );
+
+      const resetIcon = page.getByTestId('icon: RefreshOutline');
+      await userEvent.hover(resetIcon);
+
+      // Should show the minimum value (5 GB from COS) in the inherited value tooltip
+      await expect.element(page.getByText(/The inherited value was: 5/)).toBeVisible();
+    });
+
+    it('should not show tooltip when source is not account', async () => {
+      const domainConstraint = 10737418240; // 10 GB in bytes
+      useDomainStore.setState({
+        domain: { id: 'test-domain' },
+        domainsQuota: { 'test-domain': domainConstraint },
+      });
+
+      await setupAdvancedTest(
+        <EditAccountQuotaInputsNew
+          totalComputedQuotaLimit={defaultQuotaLimit}
+          totalQuotaSource="domain"
+          onChange={vi.fn()}
+        />,
+      );
+
+      expect(document.body.textContent).not.toContain('The inherited value was');
+      expect(document.body.textContent).not.toContain('Click to revert');
     });
   });
 });

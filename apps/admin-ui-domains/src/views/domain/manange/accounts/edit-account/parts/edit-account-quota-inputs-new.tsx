@@ -159,12 +159,11 @@ export const EditAccountQuotaInputsNew = ({
     <Tooltip
       label={
         <>
-          <Row>
-            <Text weight="bold">
-              {t('account_details.inherited_value_was', 'The inherited value was')} :
-            </Text>
-            <Text>{`  ${inheritedValue || ''}`}</Text>
-          </Row>
+          <Text weight="bold">
+            {t('account_details.inherited_value_was', 'The inherited value was: {{value}}', {
+              value: inheritedValue || '',
+            })}
+          </Text>
           <Padding top="small">
             <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
           </Padding>
