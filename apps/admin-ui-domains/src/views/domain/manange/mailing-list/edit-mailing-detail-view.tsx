@@ -605,9 +605,9 @@ const EditMailingListView: FC<any> = ({
             selectedMailingList?.dynamic ? null : (
               <Button
                 type="ghost"
-                color={'text'}
+                color={'error'}
                 size="medium"
-                icon="CloseOutline"
+                icon="Trash2Outline"
                 style={{ position: 'inherit' }}
                 aria-label={t('label.delete', 'Delete')}
                 onClick={(): void => deleteSingleRow(item, 'distListMember')}
@@ -726,16 +726,31 @@ const EditMailingListView: FC<any> = ({
               ? t('account_details.send_check', 'Send As')
               : t('account_details.send_on_behalf_of_check', 'Send On Behalf Of')}
           </Text>,
-          <Button
-            key="delete_send_email_btn"
-            type="ghost"
-            color={'text'}
-            size="medium"
-            icon="CloseOutline"
-            style={{ position: 'inherit' }}
-            aria-label={t('label.delete', 'Delete')}
-            onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
-          />,
+          <Container
+            key='send_email_actions'
+            orientation="horizontal"
+            mainAlignment="flex-start"
+          >
+            <Button
+              type="ghost"
+              color={'info'}
+              size="medium"
+              icon="EditOutline"
+              style={{ position: 'inherit', marginRight: '0.5rem' }}
+              aria-label={t('label.edit', 'Edit')}
+              onClick={(): void => alert('Edit functionality is not implemented yet')}
+            // onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
+            />
+            <Button
+              type="ghost"
+              color={'error'}
+              size="medium"
+              icon="Trash2Outline"
+              style={{ position: 'inherit' }}
+              aria-label={t('label.delete', 'Delete')}
+              onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
+            />
+          </Container>,
         ],
       }));
       setSendEmailTableRows(allRows);
@@ -2066,9 +2081,9 @@ const EditMailingListView: FC<any> = ({
           <Button
             key={item + '_delete'}
             type="ghost"
-            color={'text'}
+            color={'error'}
             size="medium"
-            icon="CloseOutline"
+            icon="Trash2Outline"
             style={{ position: 'inherit' }}
             aria-label={t('label.delete', 'Delete')}
             onClick={(): void => deleteSingleRow(item, 'grantEmail')}
@@ -2248,8 +2263,13 @@ const EditMailingListView: FC<any> = ({
       CustomComponent: ReusedDefaultTabBar,
     },
     !selectedMailingList?.dynamic && {
-      id: 'delegates',
-      label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
+      id: 'sendas',
+      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: 'sendto',
+      label: t('label.sendto', 'SEND TO').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
@@ -2902,7 +2922,7 @@ const EditMailingListView: FC<any> = ({
             </Row>
             <ListRow padding={{ top: 'small' }}>
               <Text
-                size="medium"
+                size="small"
                 color="secondary"
                 style={{ whiteSpace: 'normal' }}
                 overflow="break-word"
@@ -3031,6 +3051,324 @@ const EditMailingListView: FC<any> = ({
               </ListRow>
             )}
 
+            {/* <Row
+              mainAlignment="flex-start"
+              width="100%"
+              padding={{ top: 'small', bottom: 'small' }}
+            >
+              <Container padding={{ bottom: 'small' }}>
+                <divider-wc />
+              </Container>
+            </Row>
+
+            <Row padding={{ bottom: 'medium' }}>
+              <Text weight="bold" color="gray0">
+                {t('label.sending_options', 'Sending Options')}
+              </Text>
+            </Row>
+            <ListRow padding={{ all: 'small' }}>
+              <Container>
+                <Select
+                  items={grantTypeOptions}
+                  background="gray5"
+                  label={t(
+                    'label.who_can_send_mails_to_this_list',
+                    'Who can send mails TO this list?',
+                  )}
+                  showCheckbox={false}
+                  onChange={onGrantTypeChange}
+                  selection={grantType}
+                />
+              </Container>
+            </ListRow>
+
+            {grantType?.value === EMAIL && (
+              <Container
+                padding={{ left: 'large', right: 'large', bottom: 'large' }}
+                height={'auto'}
+              >
+                <ListRow padding={{ all: 'small' }}>
+                  <Container
+                    orientation="vertical"
+                    mainAlignment="space-around"
+                    background="gray6"
+                    height="58px"
+                  >
+                    <ListRow>
+                      <Container
+                        mainAlignment="flex-start"
+                        crossAlignment="flex-start"
+                        orientation="horizontal"
+                        padding={{ top: 'large', right: 'small' }}
+                        width="100%"
+                      >
+                        <Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
+                          <DropDownInput
+                            items={grantItems}
+                            inputLabel={t(
+                              'account_details.start_typing_account',
+                              'Start typing an Account / Group to add it to the rights',
+                            )}
+                            size="medium"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                              setGrantEmailItem(e.target.value);
+                            }}
+                            inputValue={grantEmailItem}
+                            isCustomIcon={false}
+                            inputDisabled={grantType?.value !== EMAIL}
+                          />
+                        </Row>
+                        <Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
+                          <Padding left="large" right="large">
+                            <Button
+                              type="outlined"
+                              key="add-button"
+                              label={t('label.add', 'Add')}
+                              color="primary"
+                              iconPlacement="right"
+                              onClick={onAddGrantEmail}
+                              size="extralarge"
+                              disabled={grantEmailItem === ''}
+                            />
+                          </Padding>
+                        </Row>
+                      </Container>
+                    </ListRow>
+                  </Container>
+                </ListRow>
+
+                <ListRow padding={{ all: 'small' }}>
+                  <Container padding={{ bottom: 'large', top: 'large' }}>
+                    {grantEmailTableRows.length > 0 && (
+                      <>
+                        <Input
+                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                          value={filterGrantEmail}
+                          backgroundColor="gray5"
+                          onChange={handleInputChangeGrantEmail}
+                          CustomIcon={(): any => (
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                          )}
+                        />
+                        <Container padding={{ bottom: 'small' }}>
+                          <divider-wc />
+                        </Container>
+                      </>
+                    )}
+                    <Table
+                      rows={filterGrantEmail ? filteredGrantEmailRows : grantEmailTableRows}
+                      headers={grantEmailHeaders}
+                      showCheckbox={false}
+                      selectedRows={selectedGrantEmail}
+                      RowFactory={HoverableRowFactory}
+                      HeaderFactory={CustomHeaderFactory}
+                    />
+                  </Container>
+                </ListRow>
+
+                {grantEmailTableRows.length === 0 && (
+                  <ListRow padding={{ all: 'small' }}>
+                    <Container
+                      background="gray6"
+                      height="fit-content"
+                      mainAlignment="center"
+                      crossAlignment="center"
+                    >
+                      <Padding value="57px 0 0 0" width="100%">
+                        <Row mainAlignment="center" width="100%">
+                          <img src={helmetLogo} alt="logo" />
+                        </Row>
+                      </Padding>
+                      <Padding vertical="extralarge" width="100%">
+                        <Row mainAlignment="center" width="100%">
+                          <Text size="large" color="secondary" weight="regular">
+                            {t('label.there_are_not_member_here', 'There aren’t members here.')}
+                          </Text>
+                        </Row>
+                        <Row mainAlignment="center" width="100%">
+                          <Text size="large" color="secondary" weight="regular">
+                            {searchUserLabelValue}
+                          </Text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                )}
+              </Container>
+            )} */}
+          </Container>
+        )}
+
+        {selectedTab === 'sendas' && (
+          <Container
+            padding={{ left: 'large', right: 'large' }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            height="calc(100vh - 3.6rem)"
+            background="white"
+            width={'58.75rem'}
+            style={{ overflow: 'auto' }}
+          >
+            <Row mainAlignment="flex-start"
+          crossAlignment="flex-start" orientation="vertical" padding={{ bottom: 'medium', top: 'medium' }}>
+              <Text size="medium" color="gray0" weight="bold">
+                {t(`domain.distributionList.managePermission`, `Manage permissions`)}
+              </Text>
+              <Text
+                size="small"
+                color="secondary"
+                style={{ marginTop: '0.5rem' }}
+                overflow="break-word"
+              >
+                {t(
+                  'domain.distributionList.sendAs.managePermission_description_msg',
+                  'Allow others to send emails as this distribution list',
+                )}
+              </Text>
+            </Row>
+            <Container padding={{ right: 'large', bottom: 'large' }} height={'auto'}>
+              <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+                <DropDownInput
+                  items={sendItems}
+                  inputLabel={t(
+                    'domain.distributionList.sendAs.addSendersByEmail',
+                    'Add senders by email address',
+                  )}
+                  size="medium"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    setSendEmailItem(e.target.value);
+                  }}
+                  inputValue={sendEmailItem}
+                  isCustomIcon={false}
+                  inputDisabled={selectedMailingList?.dynamic}
+                />
+              </Row>
+              <Container mainAlignment="flex-start">
+                <Row width="100%" padding={{ top: 'extralarge' }} mainAlignment="flex-start">
+                  <Text size="small" color="gray0" weight="bold">
+                    {t('domain.distributionList.sendAs.permissionLevel', 'Permission level')}
+                  </Text>
+                </Row>
+                <Row width="50%" padding={{ top: 'small' }} mainAlignment="flex-start">
+                  <Row width="50%" mainAlignment="flex-start">
+                    <Checkbox
+                      iconColor="primary"
+                      value={sendRightCheck}
+                      onClick={(): void => {
+                        if (!sendRightCheck) {
+                          setSendBehalfRightCheck(false);
+                        }
+                        setSendRightCheck(!sendRightCheck);
+                      }}
+                      label={t('account_details.send_check', 'Send')}
+                    />
+                  </Row>
+                  <Row width="50%" mainAlignment="flex-start">
+                    <Checkbox
+                      iconColor="primary"
+                      value={sendBehalfRightCheck}
+                      onClick={(): void => {
+                        if (!sendBehalfRightCheck) {
+                          setSendRightCheck(false);
+                        }
+                        setSendBehalfRightCheck(!sendBehalfRightCheck);
+                      }}
+                      label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
+                    />
+                  </Row>
+                </Row>
+              </Container>
+              <Container mainAlignment="flex-start">
+                <Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
+                  <Button
+                    label={t(
+                      'account_details.add_the_account_group_with_selected_rights',
+                      'ADD THE ACCOUNT / GROUP WITH SELECTED RIGHTS',
+                    )}
+                    onClick={(): void => onAddSendEmail()}
+                    width="fill"
+                    type="outlined"
+                    disabled={!(sendRightCheck || sendBehalfRightCheck) || !sendEmailItem?.length}
+                  />
+                </Row>
+              </Container>
+              <Row width="100%" padding={{ top: 'medium' }}>
+                <divider-wc color="gray2" />
+              </Row>
+
+              <ListRow padding={{ all: 'small' }}>
+                <Container padding={{ bottom: 'large', top: 'large' }}>
+                  {sendEmailTableRows.length > 0 && (
+                    <ListRow>
+                      <Row width="100%" mainAlignment="flex-start" padding={{ top: 'medium' }}>
+                        <Input
+                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                          value={filterSendEmail}
+                          backgroundColor="gray5"
+                          onChange={handleInputChangeSendEmail}
+                          CustomIcon={(): any => (
+                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                          )}
+                        />
+                        <Container padding={{ bottom: 'small' }}>
+                          <divider-wc />
+                        </Container>
+                      </Row>
+                    </ListRow>
+                  )}
+                  <Table
+                    rows={filterSendEmail ? filteredSendEmailRows : sendEmailTableRows}
+                    headers={sendEmailHeaders}
+                    showCheckbox={false}
+                    selectedRows={selectedSendEmail}
+                    RowFactory={HoverableRowFactory}
+                    HeaderFactory={CustomHeaderFactory}
+                  />
+                </Container>
+              </ListRow>
+
+              {sendEmailTableRows.length === 0 && (
+                <ListRow padding={{ all: 'small' }}>
+                  <Container
+                    background="gray6"
+                    height="fit-content"
+                    mainAlignment="center"
+                    crossAlignment="center"
+                  >
+                    <Padding value="57px 0 0 0" width="100%">
+                      <Row mainAlignment="center" width="100%">
+                        <img src={helmetLogo} alt="logo" />
+                      </Row>
+                    </Padding>
+                    <Padding vertical="extralarge" width="100%">
+                      <Row mainAlignment="center" width="100%">
+                        <Text size="large" color="secondary" weight="regular">
+                          {t('label.there_are_not_member_here', 'There aren’t members here.')}
+                        </Text>
+                      </Row>
+                      <Row mainAlignment="center" width="100%">
+                        <Text size="large" color="secondary" weight="regular">
+                          {searchUserLabelValue}
+                        </Text>
+                      </Row>
+                    </Padding>
+                  </Container>
+                </ListRow>
+              )}
+            </Container>
+          </Container>
+        )}
+
+        {selectedTab === 'sendto' && (
+          <Container
+            padding={{ left: 'large', right: 'large' }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            height="calc(100vh - 3.6rem)"
+            background="white"
+            width={'58.75rem'}
+            style={{ overflow: 'auto' }}
+          >
             <Row
               mainAlignment="flex-start"
               width="100%"
@@ -3176,154 +3514,6 @@ const EditMailingListView: FC<any> = ({
                 )}
               </Container>
             )}
-          </Container>
-        )}
-
-        {selectedTab === 'delegates' && (
-          <Container
-            padding={{ left: 'large', right: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
-            background="white"
-            width={'58.75rem'}
-            style={{ overflow: 'auto' }}
-          >
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
-              <Text size="medium" color="gray0" weight="bold">
-                {t(`label.delegate's_general_send_settings`, `Delegate's general Send Settings`)}
-              </Text>
-            </Row>
-            <Container padding={{ left: 'large', right: 'large', bottom: 'large' }} height={'auto'}>
-              <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-                <DropDownInput
-                  items={sendItems}
-                  inputLabel={t(
-                    'account_details.start_typing_account',
-                    'Start typing an Account / Group to add it to the rights',
-                  )}
-                  size="medium"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setSendEmailItem(e.target.value);
-                  }}
-                  inputValue={sendEmailItem}
-                  isCustomIcon={false}
-                  inputDisabled={selectedMailingList?.dynamic}
-                />
-              </Row>
-              <Container mainAlignment="flex-start">
-                <Row width="100%" padding={{ top: 'extralarge' }} mainAlignment="flex-start">
-                  <Text size="small" color="gray0" weight="bold">
-                    {t('label.sending_options', 'Send options')}
-                  </Text>
-                </Row>
-                <Row width="50%" padding={{ top: 'small' }} mainAlignment="flex-start">
-                  <Row width="50%" mainAlignment="flex-start">
-                    <Checkbox
-                      iconColor="primary"
-                      value={sendRightCheck}
-                      onClick={(): void => {
-                        if (!sendRightCheck) {
-                          setSendBehalfRightCheck(false);
-                        }
-                        setSendRightCheck(!sendRightCheck);
-                      }}
-                      label={t('account_details.send_check', 'Send')}
-                    />
-                  </Row>
-                  <Row width="50%" mainAlignment="flex-start">
-                    <Checkbox
-                      iconColor="primary"
-                      value={sendBehalfRightCheck}
-                      onClick={(): void => {
-                        if (!sendBehalfRightCheck) {
-                          setSendRightCheck(false);
-                        }
-                        setSendBehalfRightCheck(!sendBehalfRightCheck);
-                      }}
-                      label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
-                    />
-                  </Row>
-                </Row>
-              </Container>
-              <Container mainAlignment="flex-start">
-                <Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
-                  <Button
-                    label={t(
-                      'account_details.add_the_account_group_with_selected_rights',
-                      'ADD THE ACCOUNT / GROUP WITH SELECTED RIGHTS',
-                    )}
-                    onClick={(): void => onAddSendEmail()}
-                    width="fill"
-                    type="outlined"
-                    disabled={!(sendRightCheck || sendBehalfRightCheck) || !sendEmailItem?.length}
-                  />
-                </Row>
-              </Container>
-              <Row width="100%" padding={{ top: 'medium' }}>
-                <divider-wc color="gray2" />
-              </Row>
-
-              <ListRow padding={{ all: 'small' }}>
-                <Container padding={{ bottom: 'large', top: 'large' }}>
-                  {sendEmailTableRows.length > 0 && (
-                    <ListRow>
-                      <Row width="100%" mainAlignment="flex-start" padding={{ top: 'medium' }}>
-                        <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
-                          value={filterSendEmail}
-                          backgroundColor="gray5"
-                          onChange={handleInputChangeSendEmail}
-                          CustomIcon={(): any => (
-                            <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
-                          )}
-                        />
-                        <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
-                        </Container>
-                      </Row>
-                    </ListRow>
-                  )}
-                  <Table
-                    rows={filterSendEmail ? filteredSendEmailRows : sendEmailTableRows}
-                    headers={sendEmailHeaders}
-                    showCheckbox={false}
-                    selectedRows={selectedSendEmail}
-                    RowFactory={HoverableRowFactory}
-                    HeaderFactory={CustomHeaderFactory}
-                  />
-                </Container>
-              </ListRow>
-
-              {sendEmailTableRows.length === 0 && (
-                <ListRow padding={{ all: 'small' }}>
-                  <Container
-                    background="gray6"
-                    height="fit-content"
-                    mainAlignment="center"
-                    crossAlignment="center"
-                  >
-                    <Padding value="57px 0 0 0" width="100%">
-                      <Row mainAlignment="center" width="100%">
-                        <img src={helmetLogo} alt="logo" />
-                      </Row>
-                    </Padding>
-                    <Padding vertical="extralarge" width="100%">
-                      <Row mainAlignment="center" width="100%">
-                        <Text size="large" color="secondary" weight="regular">
-                          {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                        </Text>
-                      </Row>
-                      <Row mainAlignment="center" width="100%">
-                        <Text size="large" color="secondary" weight="regular">
-                          {searchUserLabelValue}
-                        </Text>
-                      </Row>
-                    </Padding>
-                  </Container>
-                </ListRow>
-              )}
-            </Container>
           </Container>
         )}
 
