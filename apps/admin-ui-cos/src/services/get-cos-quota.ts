@@ -13,7 +13,7 @@ import {
 export type LimitedComputedLimit = { type: 'limited'; value: number };
 export type UnlimitedComputedLimit = { type: 'unlimited' };
 export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
-export type QuotaSource = 'global' | 'domain' | 'cos' | 'account';
+export type QuotaSource = 'global' | 'cos';
 
 export type GetCosQuotaRawResponse = {
   computedLimit: ComputedLimit & { source: QuotaSource };
