@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { render } from 'vitest-browser-react';
 import { describe, expect, test, vi } from 'vitest';
 import { page } from 'vitest/browser';
+import { render } from 'vitest-browser-react';
 
 import { Section, WizardInSection } from './index';
 
