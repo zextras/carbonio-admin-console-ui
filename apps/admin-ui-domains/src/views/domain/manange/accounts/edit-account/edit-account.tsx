@@ -123,6 +123,7 @@ const EditAccount: FC<{
     deleteAdministrationRights,
     setDefaultCOS,
     cosDetail,
+    hasQuotaError,
   } = context;
   const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const isAdvanced = useIsAdvanced();
@@ -1036,6 +1037,7 @@ const EditAccount: FC<{
                     label={t('label.save', 'Save')}
                     color="primary"
                     onClick={modifyAccountReq}
+                    disabled={hasQuotaError}
                   />
                 </Padding>
               </Container>

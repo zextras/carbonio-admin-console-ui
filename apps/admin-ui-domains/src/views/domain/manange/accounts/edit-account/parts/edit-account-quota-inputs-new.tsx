@@ -15,11 +15,12 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
+import { AccountContext } from '../../account-context';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaInputsNewProps = {
@@ -38,6 +39,7 @@ export const EditAccountQuotaInputsNew = ({
   onChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
+  const { setHasQuotaError } = useContext(AccountContext);
 
   const domainQuotaConstraint = useDomainStore((state) => {
     if (state.domain.id) {
@@ -102,11 +104,14 @@ export const EditAccountQuotaInputsNew = ({
   const inputDescription = useMemo(() => {
     if (typeof domainQuotaConstraint === 'number') {
       const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
-      const exceedsConstraint = quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
+      const exceedsConstraint =
+        quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
 
       if (exceedsConstraint) {
         return t('label.exceeds_domain_limit', {
-          defaultValue: `This value exceeds the domain limit (${BytesToGB(domainQuotaConstraint)} GB). Please enter a lower value.`,
+          defaultValue: `This value exceeds the domain limit (${BytesToGB(
+            domainQuotaConstraint,
+          )} GB). Please enter a lower value.`,
           limit: BytesToGB(domainQuotaConstraint),
         });
       }
@@ -126,6 +131,10 @@ export const EditAccountQuotaInputsNew = ({
     }
     return false;
   }, [domainQuotaConstraint, quotaValue]);
+
+  useEffect(() => {
+    setHasQuotaError(hasError);
+  }, [hasError, setHasQuotaError]);
 
   const onChangeReset = useCallback(() => {
     setQuotaValue(undefined);
