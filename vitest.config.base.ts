@@ -9,9 +9,17 @@ import path from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
 
+function reactPluginWithDecorators() {
+  return react({
+    babel: {
+      plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+    },
+  });
+}
+
 function jsdomProjectConfig() {
   return {
-    plugins: [],
+    plugins: [reactPluginWithDecorators()],
     define: {
       BASE_PATH: JSON.stringify(''),
     },
@@ -112,7 +120,7 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    plugins: [react()],
+    plugins: [reactPluginWithDecorators()],
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
     },
