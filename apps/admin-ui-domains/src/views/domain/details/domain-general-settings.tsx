@@ -1089,7 +1089,6 @@ const DomainGeneralSettings: FC = () => {
                       disabled={!isGlobalAdmin}
                     />
                   </Container>
-                  <Container padding={{ all: 'small' }} />
                 </ListRow>
               </>
             )}
