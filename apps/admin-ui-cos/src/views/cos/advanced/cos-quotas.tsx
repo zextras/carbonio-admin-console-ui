@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
-import { ComputedLimit } from '../../../services/get-cos-quota';
+import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
 import COSQuotasNew from './cos-quotas-new';
 
 type QuotaProps = {
@@ -41,6 +41,7 @@ type QuotaProps = {
   onZimbraQuotaWarnIntervalNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraQuotaWarnIntervalTypeChange: SingleSelectionOnChange;
   totalComputedQuotaLimit?: ComputedLimit;
+  totalQuotaSource?: QuotaSource;
   initialTotalComputedQuotaLimit?: ComputedLimit;
   onTotalQuotaChange: (value?: ComputedLimit) => void;
 };
@@ -64,6 +65,7 @@ const COSQuotas: FC<QuotaProps> = ({
   onZimbraQuotaWarnIntervalNumChange,
   onZimbraQuotaWarnIntervalTypeChange,
   totalComputedQuotaLimit,
+  totalQuotaSource,
   initialTotalComputedQuotaLimit,
   onTotalQuotaChange,
 }) => {
@@ -161,6 +163,7 @@ const COSQuotas: FC<QuotaProps> = ({
             ) : (
               <COSQuotasNew
                 totalComputedQuotaLimit={totalComputedQuotaLimit}
+                totalQuotaSource={totalQuotaSource}
                 initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
                 onChange={onTotalQuotaChange}
                 readonlyCOS={readonlyCOS}

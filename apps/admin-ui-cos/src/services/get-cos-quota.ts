@@ -22,7 +22,8 @@ export type GetCosQuotaRawResponse = {
 type GetCosQuotaResponse =
   | {
       type: 'success';
-      totalComputedLimit: ComputedLimit & { source: QuotaSource };
+      totalComputedLimit: ComputedLimit;
+      totalQuotaSource: QuotaSource;
     }
   | {
       type: 'error';
@@ -49,9 +50,15 @@ export const getCosQuota = async (cosId: string): Promise<GetCosQuotaResponse> =
       return response.json() as Promise<GetCosQuotaRawResponse>;
     })
     .then((data) => {
+      const totalComputedLimit =
+        data.computedLimit.type === 'limited'
+          ? { value: data.computedLimit.value, type: data.computedLimit.type }
+          : { type: data.computedLimit.type };
+
       return {
         type: 'success',
-        totalComputedLimit: data.computedLimit,
+        totalComputedLimit,
+        totalQuotaSource: data.computedLimit.source,
       } satisfies GetCosQuotaResponse;
     })
     .catch((error) => {
