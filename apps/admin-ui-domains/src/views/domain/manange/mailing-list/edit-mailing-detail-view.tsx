@@ -111,11 +111,10 @@ const EditMailingListView: FC<any> = ({
   const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<any[]>([]);
   const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
-  const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  const isRequstInProgress = false;
-  const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
-  const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
-  const [isShowError, setIsShowError] = useState<boolean>(false);
+  // const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
+  // const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
+  // const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
+  // const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [searchMember, setSearchMember] = useState<string>('');
   const [searchOwner, setSearchOwner] = useState<string>('');
@@ -156,9 +155,11 @@ const EditMailingListView: FC<any> = ({
 
 
   // sendrightsCheckMarks
-  const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
-  const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
+  // const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
+  // const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
   const [radioPermisionValue, setRadioPermisionValue] = useState<string>('sendAs');
+  const [editingEmailItem, setEditingEmailItem] = useState<any>(null);
+  const [editPermissionValue, setEditPermissionValue] = useState<string>('sendAs');
 
   // sendEmails
   const [sendEmails, setSendEmails] = useState<any>([]);
@@ -742,8 +743,11 @@ const EditMailingListView: FC<any> = ({
               icon="EditOutline"
               style={{ position: 'inherit', marginRight: '0.5rem' }}
               aria-label={t('label.edit', 'Edit')}
-              onClick={(): void => setIsOpenEditPermissionDialog(true)}
-            // onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
+              onClick={(): void => {
+                setEditingEmailItem(item);
+                setEditPermissionValue(item?.sendAcl === 'sendAsDistList' ? 'sendAs' : 'sendOnBehalfOf');
+                setIsOpenEditPermissionDialog(true);
+              }}
             />
             <Button
               type="ghost"
@@ -1717,18 +1721,18 @@ const EditMailingListView: FC<any> = ({
     }
   }, [previousDetail?.memberURL, memberURL]);
 
-  useEffect(() => {
-    if (openAddMailingListDialog) {
-      setSearchMailingListOrUser('');
-      setIsShowError(false);
-    }
-  }, [openAddMailingListDialog]);
+  // useEffect(() => {
+  //   if (openAddMailingListDialog) {
+  //     setSearchMailingListOrUser('');
+  //     setIsShowError(false);
+  //   }
+  // }, [openAddMailingListDialog]);
 
-  useEffect(() => {
-    if (selectedMailingList?.dynamic) {
-      setIsAddToOwnerList(true);
-    }
-  }, [selectedMailingList?.dynamic]);
+  // useEffect(() => {
+  //   if (selectedMailingList?.dynamic) {
+  //     setIsAddToOwnerList(true);
+  //   }
+  // }, [selectedMailingList?.dynamic]);
 
   const searchMemberItems = searchMemberResult.map((item: any) => ({
     id: item.id,
@@ -3258,7 +3262,7 @@ const EditMailingListView: FC<any> = ({
                   </Text>
                 </Row>
                 <Row width="100%" padding={{ top: 'large', bottom: 'large' }} mainAlignment="flex-start">
-                    <RadioGroup value={radioPermisionValue} onChange={(value: string): void => setRadioPermisionValue(value)}>
+                    <RadioGroup value={radioPermisionValue} onChange={(value: string | undefined): void => { if (value) setRadioPermisionValue(value); }}>
                       <Radio
                         key="sendAs"
                         label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
@@ -3576,7 +3580,19 @@ const EditMailingListView: FC<any> = ({
                     key={'modal-save-button'}
                     label={t('domain.distributionList.sendAs.saveChanges', 'SAVE CHANGES')}
                     color="primary"
-                    onClick={() => alert('SAVE CHANGES call.....')}  //{onDeleteHandler}
+                    onClick={(): void => {
+                      if (editingEmailItem) {
+                        const newAcl = editPermissionValue === 'sendAs' ? 'sendAsDistList' : 'sendOnBehalfOfDistList';
+                        const updatedList = sendEmailsList.map((item: any) =>
+                          item?.name === editingEmailItem?.name ? { ...item, sendAcl: newAcl } : item
+                        );
+                        setSendEmailsList(updatedList);
+                        setSendEmails(updatedList);
+                        setIsDirty(true);
+                        setEditingEmailItem(null);
+                        setIsOpenEditPermissionDialog(false);
+                      }
+                    }}
                     disabled={isRequestInProgress}
                   />
                 </Row>
@@ -3585,38 +3601,23 @@ const EditMailingListView: FC<any> = ({
             showCloseIcon
             onClose={closeEditPermissionHandler}
           >
-            <Container
-              height="fit-content"
-              mainAlignment="center"
-              crossAlignment="center"
-            >
-              <Row width="100%" height="fit-content" mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }} orientation="vertical">
-                <RadioGroup>
-                  <Radio 
-                    key={'send-as-option'}
-                    label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
-                    value="sendAs"
-                    onClick={(): void => {
-                      alert('send as');
-                    }}
-                    iconColor="primary"
-                    padding={{ bottom: 'large' }}
-                  />
-                  <Radio
-                    key={'send-on-behalf-of-option'}
-                    label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
-                    value="sendOnBehalfOf"
-                    onClick={(): void => {
-                      alert('send on behalf of');
-                    }}
-                    iconColor="primary"
-                  />
-                </RadioGroup>
-              </Row>
-            </Container>
+            <RadioGroup value={editPermissionValue} onChange={(value: string | undefined): void => { if (value) setEditPermissionValue(value); }}>
+              <Radio
+                key={'send-as-option'}
+                label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
+                value="sendAs"
+                iconColor="primary"
+                padding={{ bottom: 'large' }}
+              />
+              <Radio
+                key={'send-on-behalf-of-option'}
+                label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
+                value="sendOnBehalfOf"
+                iconColor="primary"
+              />
+            </RadioGroup>
           </Modal>
         )}
-
         {/* <Modal
           title={
             <Trans
