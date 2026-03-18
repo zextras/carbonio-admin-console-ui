@@ -6,8 +6,6 @@
 
 export function getOptimizeDepsInclude() {
   return [
-    '@zextras/ui-components',
-    '@zextras/ui-shared',
     'react',
     'react-dom',
     'react-dom/client',
