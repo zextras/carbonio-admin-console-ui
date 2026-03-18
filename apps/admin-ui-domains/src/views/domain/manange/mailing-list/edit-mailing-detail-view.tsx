@@ -6,7 +6,6 @@
 
 import {
   Button,
-  Checkbox,
   Container,
   CustomHeaderFactory,
   CustomTextArea,
@@ -18,6 +17,8 @@ import {
   Modal,
   Padding,
   Paging,
+  Radio,
+  RadioGroup,
   Row,
   Select,
   Switch,
@@ -126,6 +127,7 @@ const EditMailingListView: FC<any> = ({
   const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
   const [isShowMemberError, setIsShowMemberError] = useState<boolean>(false);
   const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
+  const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
   const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
   const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
   const domainList = useDomainStore((state) => state.domainList);
@@ -133,6 +135,7 @@ const EditMailingListView: FC<any> = ({
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+  const [isOpenEditPermissionDialog, setIsOpenEditPermissionDialog] = useState<boolean>(false);
   const [totalGrantRights, setTotalGrantRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -237,7 +240,7 @@ const EditMailingListView: FC<any> = ({
     () => [
       {
         id: 'grantEmail',
-        label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
+        label: t('domain.distributionList.sendTo.account', 'Account'),
         width: '80%',
         bold: true,
       },
@@ -245,7 +248,7 @@ const EditMailingListView: FC<any> = ({
         id: 'actions',
         label: t('label.actions', 'Actions'),
         width: '20%',
-        bold: false,
+        bold: true,
       },
     ],
     [t],
@@ -255,13 +258,13 @@ const EditMailingListView: FC<any> = ({
     () => [
       {
         id: 'sendEmail',
-        label: t('label.delegates', 'Delegates'),
+        label: t('domain.distributionList.sendAs.authorizedSenders', 'Authorized senders'),
         width: '50%',
         bold: true,
       },
       {
         id: 'sendAcl',
-        label: t('label.rights', 'Rights'),
+        label: t('domain.distributionList.sendAs.permissionLevel', 'Permission level'),
         width: '30%',
         bold: true,
       },
@@ -269,7 +272,7 @@ const EditMailingListView: FC<any> = ({
         id: 'actions',
         label: t('label.actions', 'Actions'),
         width: '20%',
-        bold: false,
+        bold: true,
       },
     ],
     [t],
@@ -723,8 +726,8 @@ const EditMailingListView: FC<any> = ({
             }}
           >
             {item?.sendAcl === 'sendAsDistList'
-              ? t('account_details.send_check', 'Send As')
-              : t('account_details.send_on_behalf_of_check', 'Send On Behalf Of')}
+              ? t('domain.distributionList.sendAs.sendAs', 'Send As')
+              : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
           </Text>,
           <Container
             key='send_email_actions'
@@ -738,7 +741,7 @@ const EditMailingListView: FC<any> = ({
               icon="EditOutline"
               style={{ position: 'inherit', marginRight: '0.5rem' }}
               aria-label={t('label.edit', 'Edit')}
-              onClick={(): void => alert('Edit functionality is not implemented yet')}
+              onClick={(): void => setIsOpenEditPermissionDialog(true)}
             // onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
             />
             <Button
@@ -769,53 +772,53 @@ const EditMailingListView: FC<any> = ({
     [ownersList],
   );
 
-  const onAddToList = useCallback((): void => {
-    const attrs = '';
-    const types = 'distributionlists,aliases,accounts,resources';
-    const query = `(mail=${searchMailingListOrUser})`;
-    searchDirectory(attrs, types, '', query, 0, 2).then((data) => {
-      const accountExists = data?.dl || data?.account;
-      if (!!accountExists && accountExists[0]) {
-        setIsShowError(false);
-        if (isAddToOwnerList) {
-          if (ownersList.find((item: any) => item?.name === searchMailingListOrUser)) {
-            setIsShowError(true);
-            setOwnerErrorMessage(
-              t(
-                'label.distribution_list_already_in_list_error',
+  // const onAddToList = useCallback((): void => {
+  //   const attrs = '';
+  //   const types = 'distributionlists,aliases,accounts,resources';
+  //   const query = `(mail=${searchMailingListOrUser})`;
+  //   searchDirectory(attrs, types, '', query, 0, 2).then((data) => {
+  //     const accountExists = data?.dl || data?.account;
+  //     if (!!accountExists && accountExists[0]) {
+  //       setIsShowError(false);
+  //       if (isAddToOwnerList) {
+  //         if (ownersList.find((item: any) => item?.name === searchMailingListOrUser)) {
+  //           setIsShowError(true);
+  //           setOwnerErrorMessage(
+  //             t(
+  //               'label.distribution_list_already_in_list_error',
 
-                'The Distribution List / User is already in the list',
-              ),
-            );
-          } else {
-            setOwnersList(
-              ownersList.concat({ id: accountExists[0]?.id, name: accountExists[0]?.name }),
-            );
-            setOpenAddMailingListDialog(false);
-          }
-        } else if (dlm.find((item: any) => item === searchMailingListOrUser)) {
-          setIsShowError(true);
-          setOwnerErrorMessage(
-            t(
-              'label.distribution_list_already_in_list_error',
-              'The Distribution List / User is already in the list',
-            ),
-          );
-        } else {
-          setDlm(dlm.concat(accountExists[0]?.name));
-          setOpenAddMailingListDialog(false);
-        }
-      } else {
-        setIsShowError(true);
-        setOwnerErrorMessage(
-          t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
-          ),
-        );
-      }
-    });
-  }, [t, isAddToOwnerList, searchMailingListOrUser, dlm, ownersList]);
+  //               'The Distribution List / User is already in the list',
+  //             ),
+  //           );
+  //         } else {
+  //           setOwnersList(
+  //             ownersList.concat({ id: accountExists[0]?.id, name: accountExists[0]?.name }),
+  //           );
+  //           setOpenAddMailingListDialog(false);
+  //         }
+  //       } else if (dlm.find((item: any) => item === searchMailingListOrUser)) {
+  //         setIsShowError(true);
+  //         setOwnerErrorMessage(
+  //           t(
+  //             'label.distribution_list_already_in_list_error',
+  //             'The Distribution List / User is already in the list',
+  //           ),
+  //         );
+  //       } else {
+  //         setDlm(dlm.concat(accountExists[0]?.name));
+  //         setOpenAddMailingListDialog(false);
+  //       }
+  //     } else {
+  //       setIsShowError(true);
+  //       setOwnerErrorMessage(
+  //         t(
+  //           'label.distribution_list_not_exists_error_msg',
+  //           'The Distribution List / User does not exist. Please check the spelling and try again.',
+  //         ),
+  //       );
+  //     }
+  //   });
+  // }, [t, isAddToOwnerList, searchMailingListOrUser, dlm, ownersList]);
 
   const [grantType, setGrantType] = useState<any>([]);
   const [grantEmails, setGrantEmails] = useState<any>([]);
@@ -2031,18 +2034,20 @@ const EditMailingListView: FC<any> = ({
       if (allEmails !== null && allEmails !== undefined) {
         const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: `${t('label.invalid_email_address', 'Invalid email address')} ${
-              inValidEmailAddress[0]
-            }`,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+          setIsShowSenderToError(true);
+          // createSnackbar({
+          //   key: 'error',
+          //   severity: 'error',
+          //   label: `${t('label.invalid_email_address', 'Invalid email address')} ${
+          //     inValidEmailAddress[0]
+          //   }`,
+          //   autoHideTimeout: 3000,
+          //   hideButton: true,
+          //   replace: true,
+          // });
         } else {
           setGrantEmailItem('');
+          setIsShowSenderToError(false);
           const sortedList = sortedUniq(allEmails);
           const emails = uniq(grantEmailsList.concat(sortedList));
           setGrantEmailsList(emails);
@@ -2171,6 +2176,10 @@ const EditMailingListView: FC<any> = ({
 
   const closeHandler = useCallback(() => {
     setIsOpenDeleteDialog(false);
+  }, []);
+
+  const closeEditPermissionHandler = useCallback(() => {
+    setIsOpenEditPermissionDialog(false);
   }, []);
 
   const onSuccess = useCallback(
@@ -2940,7 +2949,7 @@ const EditMailingListView: FC<any> = ({
                 mainAlignment="flex-start"
                 background="gray6"
               >
-                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ bottom: 'large', top: 'large' }}>
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
                   <DropDownInput
                     width="100%"
                     items={searchOwnerList}
@@ -2957,7 +2966,18 @@ const EditMailingListView: FC<any> = ({
                     hasError={isShowOwnerError}
                   />
                 </Row>
-                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ bottom: 'large' }}>
+                {isShowOwnerError && (
+                  <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{top: 'small' }}>
+                    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+                      <Padding right={'0'}>
+                        <Text size="extrasmall" weight="regular" color="error">
+                          {ownerErrorMessage}
+                        </Text>
+                      </Padding>
+                    </Container>
+                  </Row>
+                )}
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ top: 'large', bottom: 'large' }}>
                   <Button
                     icon="Plus"
                     key="add-button"
@@ -2970,17 +2990,6 @@ const EditMailingListView: FC<any> = ({
                   />
                 </Row>
               </Container>
-              {isShowOwnerError && (
-                <Row>
-                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                    <Padding right={'0'}>
-                      <Text size="extrasmall" weight="regular" color="error">
-                        {ownerErrorMessage}
-                      </Text>
-                    </Padding>
-                  </Container>
-                </Row>
-              )}
             </ListRow>
             <divider-wc />
             <ListRow>
@@ -2993,7 +3002,7 @@ const EditMailingListView: FC<any> = ({
               >
                 <Row mainAlignment="flex-start" crossAlignment="flex-start" padding={{ bottom: 'large' }} width="100%">
                   <Text weight="bold" color="gray0">
-                    {t('domain.distributionList.manageOwners', 'Manage owners')}
+                    {t('domain.distributionList.ownersList', 'Owners List')}
                   </Text>
                 </Row>
                 {ownerTableRows.length > 0 && (
@@ -3204,7 +3213,7 @@ const EditMailingListView: FC<any> = ({
             padding={{ left: 'large', right: 'large' }}
             mainAlignment="flex-start"
             crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
+            height="calc(100vh - 6rem)"
             background="white"
             width={'58.75rem'}
             style={{ overflow: 'auto' }}
@@ -3226,13 +3235,13 @@ const EditMailingListView: FC<any> = ({
                 )}
               </Text>
             </Row>
-            <Container padding={{ right: 'large', bottom: 'large' }} height={'auto'}>
+            <Container padding={{ bottom: 'large' }} height={'auto'}>
               <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
                 <DropDownInput
                   items={sendItems}
                   inputLabel={t(
                     'domain.distributionList.sendAs.addSendersByEmail',
-                    'Add senders by email address',
+                    'Add senders by email address'
                   )}
                   size="medium"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -3249,8 +3258,32 @@ const EditMailingListView: FC<any> = ({
                     {t('domain.distributionList.sendAs.permissionLevel', 'Permission level')}
                   </Text>
                 </Row>
-                <Row width="50%" padding={{ top: 'small' }} mainAlignment="flex-start">
-                  <Row width="50%" mainAlignment="flex-start">
+                <Row width="100%" padding={{ top: 'large', bottom: 'large' }} mainAlignment="flex-start">
+                  <RadioGroup>
+                    <Radio
+                      label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
+                      value="sendAs"
+                      onClick={(): void => {
+                        alert('send as');
+                      }}
+                      iconColor="primary"
+                    />
+                    <Text size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
+                      {t('domain.distributionList.sendAs.permissionLevelSendMsg', 'Allows a user to send emails that appear to come directly from a distribution list, with no indication of who actually sent it')}
+                    </Text>
+                    <Radio
+                      label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
+                      value="sendOnBehalfOf"
+                      onClick={(): void => {
+                        alert('send on behalf of');
+                      }}
+                      iconColor="primary"
+                    />
+                    <Text size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
+                      {t('domain.distributionList.sendAs.permissionLevelSendOnBehalfOfMsg', 'Allows a user to send an email where the recipient sees e.g. "name.surname@mail.com on behalf of a distribution list”')}
+                    </Text>
+                  </RadioGroup>
+                  {/* <Row width="50%" mainAlignment="flex-start">
                     <Checkbox
                       iconColor="primary"
                       value={sendRightCheck}
@@ -3275,19 +3308,19 @@ const EditMailingListView: FC<any> = ({
                       }}
                       label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
                     />
-                  </Row>
+                  </Row> */}
                 </Row>
               </Container>
               <Container mainAlignment="flex-start">
-                <Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
+                <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ bottom: 'large' }}>
                   <Button
-                    label={t(
-                      'account_details.add_the_account_group_with_selected_rights',
-                      'ADD THE ACCOUNT / GROUP WITH SELECTED RIGHTS',
-                    )}
+                    icon="Plus"
+                    key="add-button"
+                    label={t('domain.distributionList.sendAs.addAccount', 'ADD ACCOUNT')}
+                    color="primary"
+                    iconPlacement="left"
                     onClick={(): void => onAddSendEmail()}
-                    width="fill"
-                    type="outlined"
+                    size="medium"
                     disabled={!(sendRightCheck || sendBehalfRightCheck) || !sendEmailItem?.length}
                   />
                 </Row>
@@ -3296,13 +3329,18 @@ const EditMailingListView: FC<any> = ({
                 <divider-wc color="gray2" />
               </Row>
 
-              <ListRow padding={{ all: 'small' }}>
-                <Container padding={{ bottom: 'large', top: 'large' }}>
+              <ListRow>
+                <Container padding={{ bottom: 'large', top: 'extralarge' }}>
+                  <Row mainAlignment="flex-start" crossAlignment="flex-start" padding={{ bottom: 'large' }} width="100%">
+                    <Text weight="bold" color="gray0">
+                      {t('domain.distributionList.sendAs.authorizedSenders', 'Authorized senders from this distribution list')}
+                    </Text>
+                  </Row>
                   {sendEmailTableRows.length > 0 && (
                     <ListRow>
-                      <Row width="100%" mainAlignment="flex-start" padding={{ top: 'medium' }}>
+                      <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
                         <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                          label={t('domain.distributionList.sendAs.searchSenders', 'Search senders')}
                           value={filterSendEmail}
                           backgroundColor="gray5"
                           onChange={handleInputChangeSendEmail}
@@ -3310,9 +3348,6 @@ const EditMailingListView: FC<any> = ({
                             <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
-                        <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
-                        </Container>
                       </Row>
                     </ListRow>
                   )}
@@ -3369,29 +3404,31 @@ const EditMailingListView: FC<any> = ({
             width={'58.75rem'}
             style={{ overflow: 'auto' }}
           >
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              padding={{ top: 'small', bottom: 'small' }}
-            >
-              <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
-              </Container>
-            </Row>
-
-            <Row padding={{ bottom: 'medium' }}>
-              <Text weight="bold" color="gray0">
-                {t('label.sending_options', 'Sending Options')}
+            <Row mainAlignment="flex-start" crossAlignment="flex-start" orientation="vertical" padding={{ bottom: 'medium', top: 'medium' }}>
+              <Text size="medium" color="gray0" weight="bold">
+                {t(`domain.distributionList.managePermission`, `Manage permissions`)}
+              </Text>
+              <Text
+                size="small"
+                color="secondary"
+                style={{ marginTop: '0.5rem' }}
+                overflow="break-word"
+              >
+                {t(
+                  'domain.distributionList.sendTo.managePermissionDescriptionMsg',
+                  'Control who can send emails to this distribution list',
+                )}
               </Text>
             </Row>
-            <ListRow padding={{ all: 'small' }}>
+
+            <ListRow>
               <Container>
                 <Select
                   items={grantTypeOptions}
                   background="gray5"
                   label={t(
-                    'label.who_can_send_mails_to_this_list',
-                    'Who can send mails TO this list?',
+                    'domain.distributionList.sendTo.acceptMessageFrom',
+                    'Accept message from',
                   )}
                   showCheckbox={false}
                   onChange={onGrantTypeChange}
@@ -3402,65 +3439,74 @@ const EditMailingListView: FC<any> = ({
 
             {grantType?.value === EMAIL && (
               <Container
-                padding={{ left: 'large', right: 'large', bottom: 'large' }}
+                padding={{ bottom: 'large' }}
                 height={'auto'}
               >
-                <ListRow padding={{ all: 'small' }}>
+                <ListRow>
                   <Container
                     orientation="vertical"
-                    mainAlignment="space-around"
+                    mainAlignment="flex-start"
                     background="gray6"
-                    height="58px"
                   >
-                    <ListRow>
-                      <Container
-                        mainAlignment="flex-start"
-                        crossAlignment="flex-start"
-                        orientation="horizontal"
-                        padding={{ top: 'large', right: 'small' }}
-                        width="100%"
-                      >
-                        <Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
-                          <DropDownInput
-                            items={grantItems}
-                            inputLabel={t(
-                              'account_details.start_typing_account',
-                              'Start typing an Account / Group to add it to the rights',
-                            )}
-                            size="medium"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                              setGrantEmailItem(e.target.value);
-                            }}
-                            inputValue={grantEmailItem}
-                            isCustomIcon={false}
-                            inputDisabled={grantType?.value !== EMAIL}
-                          />
-                        </Row>
-                        <Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
-                          <Padding left="large" right="large">
-                            <Button
-                              type="outlined"
-                              key="add-button"
-                              label={t('label.add', 'Add')}
-                              color="primary"
-                              iconPlacement="right"
-                              onClick={onAddGrantEmail}
-                              size="extralarge"
-                              disabled={grantEmailItem === ''}
-                            />
+                    <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+                      <DropDownInput
+                        items={grantItems}
+                        inputLabel={t(
+                          'domain.distributionList.sendTo.addSendersByEmail',
+                          'Add senders by email address',
+                        )}
+                        size="medium"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                          setGrantEmailItem(e.target.value);
+                        }}
+                        inputValue={grantEmailItem}
+                        isCustomIcon={false}
+                        inputDisabled={grantType?.value !== EMAIL}
+                        width='100%'
+                      />
+                    </Row>
+                    {isShowSenderToError && (
+                      <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
+                        <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+                          <Padding right={'0'}>
+                            <Text size="extrasmall" weight="regular" color="error">
+                              {t(
+                                'domain.distributionList.sendTo.invalidAccountErrorMessage',
+                                'The Sender email does not exist or is invalid. Please check it and try again.',
+                              )}
+                            </Text>
                           </Padding>
-                        </Row>
-                      </Container>
-                    </ListRow>
+                        </Container>
+                      </Row>
+                    )}
+                    <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%" padding={{ top: 'large', bottom: 'large' }}>
+                      <Button
+                        icon='Plus'
+                        label={t('domain.distributionList.sendAs.addAccount', 'ADD ACCOUNT')}
+                        color="primary"
+                        iconPlacement="left"
+                        onClick={onAddGrantEmail}
+                        size="medium"
+                        disabled={grantEmailItem === ''}
+                      />
+                    </Row>
                   </Container>
                 </ListRow>
-
-                <ListRow padding={{ all: 'small' }}>
+                <Row width="100%">
+                <divider-wc color="gray2" />
+              </Row>
+                <ListRow>
                   <Container padding={{ bottom: 'large', top: 'large' }}>
+                    <Row mainAlignment="flex-start" crossAlignment="flex-start" padding={{ bottom: 'large' }} width="100%">
+                    <Text weight="bold" color="gray0">
+                      {t('domain.distributionList.sendTo.authorizedSenders', 'Authorized senders to this distribution list')}
+                    </Text>
+                  </Row>
                     {grantEmailTableRows.length > 0 && (
-                      <>
+                      <ListRow>
+                      <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
                         <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                          label={t('domain.distributionList.sendTo.searchSenders', 'Search senders')}
                           value={filterGrantEmail}
                           backgroundColor="gray5"
                           onChange={handleInputChangeGrantEmail}
@@ -3468,10 +3514,8 @@ const EditMailingListView: FC<any> = ({
                             <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
                           )}
                         />
-                        <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
-                        </Container>
-                      </>
+                        </Row>
+                        </ListRow>
                     )}
                     <Table
                       rows={filterGrantEmail ? filteredGrantEmailRows : grantEmailTableRows}
@@ -3517,7 +3561,68 @@ const EditMailingListView: FC<any> = ({
           </Container>
         )}
 
-        <Modal
+        {isOpenEditPermissionDialog && (
+          <Modal
+            size="small"
+            title={t('domain.distributionList.sendAs.editPermissionLevel', 'Edit permission level')}
+            open={isOpenEditPermissionDialog}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Row style={{ gap: '1rem' }}>
+                  <Button
+                    key={'modal-cancel-button'}
+                    label={t('label.cancel', 'Cancel')}
+                    color="secondary"
+                    type="outlined"
+                    onClick={closeEditPermissionHandler}
+                    disabled={isRequestInProgress}
+                  />
+                  <Button
+                    key={'modal-save-button'}
+                    label={t('domain.distributionList.sendAs.saveChanges', 'SAVE CHANGES')}
+                    color="primary"
+                    onClick={() => alert('SAVE CHANGES call.....')}  //{onDeleteHandler}
+                    disabled={isRequestInProgress}
+                  />
+                </Row>
+              </Container>
+            }
+            showCloseIcon
+            onClose={closeEditPermissionHandler}
+          >
+            <Container
+              height="fit-content"
+              mainAlignment="center"
+              crossAlignment="center"
+            >
+              <Row width="100%" height="fit-content" mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }} orientation="vertical">
+                <RadioGroup>
+                  <Radio 
+                    key={'send-as-option'}
+                    label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
+                    value="sendAs"
+                    onClick={(): void => {
+                      alert('send as');
+                    }}
+                    iconColor="primary"
+                    padding={{ bottom: 'large' }}
+                  />
+                  <Radio
+                    key={'send-on-behalf-of-option'}
+                    label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
+                    value="sendOnBehalfOf"
+                    onClick={(): void => {
+                      alert('send on behalf of');
+                    }}
+                    iconColor="primary"
+                  />
+                </RadioGroup>
+              </Row>
+            </Container>
+          </Modal>
+        )}
+
+        {/* <Modal
           title={
             <Trans
               i18nKey="label.would_you_like_to_add_ml"
@@ -3617,7 +3722,7 @@ const EditMailingListView: FC<any> = ({
               />
             </Container>
           </Container>
-        </Modal>
+        </Modal> */}
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
           <Text>
             {t(
