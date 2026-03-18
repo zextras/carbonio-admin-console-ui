@@ -21,7 +21,8 @@ describe('getCosQuota', () => {
 
     expect(result).toEqual({
       type: 'success',
-      totalComputedLimit: { type: 'limited', value: 10737418240, source: 'cos' },
+      totalComputedLimit: { type: 'limited', value: 10737418240 },
+      totalQuotaSource: 'cos',
     });
   });
 
@@ -36,7 +37,8 @@ describe('getCosQuota', () => {
 
     expect(result).toEqual({
       type: 'success',
-      totalComputedLimit: { type: 'unlimited', source: 'global' },
+      totalComputedLimit: { type: 'unlimited' },
+      totalQuotaSource: 'global',
     });
   });
 
