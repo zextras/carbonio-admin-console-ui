@@ -3,11 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Padding, Row, Text } from '@zextras/ui-components';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
+import { Text } from '../basic/text/Text';
+import { Container } from '../layout/Container';
+import { Padding } from '../layout/Padding';
+import { Row } from '../layout/Row';
 import styles from './breadcrumb.module.css';
 
 type BreadcrumbItem = {

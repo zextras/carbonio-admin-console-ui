@@ -3,9 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
 import type { FC } from 'react';
+
+import { Button } from '../basic/button/Button';
+import { Text } from '../basic/text/Text';
+import { Container } from '../layout/Container';
+import { Padding } from '../layout/Padding';
+import { Row } from '../layout/Row';
 
 type ListPanelItemProps = {
   title: string;

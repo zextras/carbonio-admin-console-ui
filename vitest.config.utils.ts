@@ -6,7 +6,6 @@
 
 export function getOptimizeDepsInclude() {
   return [
-    '@zextras/ui-components',
     'react',
     'react-dom',
     'react-dom/client',
@@ -38,5 +37,7 @@ export function getOptimizeDepsInclude() {
     'date-fns/locale/vi',
     'date-fns/locale/bs',
     'date-fns/locale/sl',
+    'msw',
+    'msw/browser',
   ];
 }

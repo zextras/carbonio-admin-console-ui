@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// Side-effect imports to load global type declarations
-import "./fonts/fonts.d.ts";
-import "./web-components/web-components.d.ts";
+/* eslint-disable-next-line @typescript-eslint/triple-slash-reference */
+/// <reference path="./fonts/fonts.d.ts" />
+
+// Side-effect import to propagate global JSX IntrinsicElements declarations
+import './web-components/web-components-types';

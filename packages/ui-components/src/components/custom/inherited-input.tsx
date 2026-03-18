@@ -3,10 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { IconCheckbox, Input, Padding, Row, Text, Tooltip } from '@zextras/ui-components';
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Text } from '../basic/text/Text';
+import { Tooltip } from '../display/Tooltip';
+import { IconCheckbox } from '../inputs/IconCheckbox';
+import { Input } from '../inputs/Input';
+import { Padding } from '../layout/Padding';
+import { Row } from '../layout/Row';
 import styles from './inherited-input.module.css';
 
 interface InheritedInputProps {
