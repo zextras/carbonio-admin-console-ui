@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, IconName, Padding, Row, Tooltip } from '@zextras/ui-components';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { IconName } from '../../web-components/icon-registry';
+import { Button } from '../basic/button/Button';
+import { Tooltip } from '../display/Tooltip';
+import { Padding } from '../layout/Padding';
+import { Row } from '../layout/Row';
 
 type DisplayerButton = {
   align?: 'left' | 'right';

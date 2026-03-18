@@ -6,13 +6,32 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
-import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
+import svgr from 'vite-plugin-svgr';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
+
+function getPlugins() {
+  return [
+    react({
+      babel: {
+        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+      },
+    }),
+    svgr({
+      svgrOptions: {
+        ref: true,
+        svgo: false,
+        titleProp: true,
+        exportType: 'default',
+      },
+      include: '**/*.svg',
+    }),
+  ];
+}
 
 function jsdomProjectConfig() {
   return {
-    plugins: [],
+    plugins: getPlugins(),
     define: {
       BASE_PATH: JSON.stringify(''),
     },
@@ -81,12 +100,6 @@ function browserProjectConfig() {
           __dirname,
           './packages/test-utils/src/index.browser.ts',
         ),
-        // TODO: @zextras/ui-shared alias causes browser tests to fail with "Failed to fetch dynamically imported module"
-        // The issue is that the setup file path resolution doesn't work in browser mode
-        // '@zextras/ui-shared': path.resolve(
-        //   __dirname,
-        //   './packages/ui-shared/src/exports.ts',
-        // ),
         'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
         'tinymce/models/dom': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
         'tinymce/themes/silver': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
@@ -119,18 +132,7 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    plugins: [
-      react(),
-      svgr({
-        svgrOptions: {
-          ref: true,
-          svgo: false,
-          titleProp: true,
-          exportType: 'default',
-        },
-        include: '**/*.svg',
-      }),
-    ],
+    plugins: getPlugins(),
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
     },
@@ -138,8 +140,10 @@ function browserProjectConfig() {
 }
 
 export default defineConfig({
-  esbuild: {
-    target: 'es2022',
+  server: {
+    fs: {
+      allow: ['../..'], // allow monorepo root
+    },
   },
   test: {
     globals: true,
@@ -158,7 +162,7 @@ export default defineConfig({
         '**/[.]**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',
-        '**/{karma,rollup,vite,vitest,ava,babel,nyc,build}.config.*',
+        '**/{karma,vite,vitest,ava,babel,nyc,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
         '**/*.config.{js,ts}',
         '**/*.test.{ts,tsx}',

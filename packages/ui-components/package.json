@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "test": "vitest run",
+    "test:watch": "vitest --browser --watch --open",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet",
     "build": "echo 'No build needed - apps import TypeScript source directly'",
