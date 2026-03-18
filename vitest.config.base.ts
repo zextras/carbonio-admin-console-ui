@@ -7,19 +7,31 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
+import svgr from 'vite-plugin-svgr';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
 
-function reactPluginWithDecorators() {
-  return react({
-    babel: {
-      plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
-    },
-  });
+function getPlugins() {
+  return [
+    react({
+      babel: {
+        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+      },
+    }),
+    svgr({
+      svgrOptions: {
+        ref: true,
+        svgo: false,
+        titleProp: true,
+        exportType: 'default',
+      },
+      include: '**/*.svg',
+    }),
+  ];
 }
 
 function jsdomProjectConfig() {
   return {
-    plugins: [reactPluginWithDecorators()],
+    plugins: getPlugins(),
     define: {
       BASE_PATH: JSON.stringify(''),
     },
@@ -120,7 +132,7 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    plugins: [reactPluginWithDecorators()],
+    plugins: getPlugins(),
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
     },
