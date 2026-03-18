@@ -158,6 +158,7 @@ const EditMailingListView: FC<any> = ({
   // sendrightsCheckMarks
   const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
   const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
+  const [radioPermisionValue, setRadioPermisionValue] = useState<string>('sendAs');
 
   // sendEmails
   const [sendEmails, setSendEmails] = useState<any>([]);
@@ -1939,12 +1940,10 @@ const EditMailingListView: FC<any> = ({
           });
         } else {
           setSendEmailItem('');
-          setSendRightCheck(false);
-          setSendBehalfRightCheck(false);
           allEmails.forEach((item: any, index: any) => {
-            if (sendRightCheck && !sendBehalfRightCheck) {
+            if (radioPermisionValue === 'sendAs') {
               allEmails[index] = { name: item, sendAcl: 'sendAsDistList' };
-            } else if (!sendRightCheck && sendBehalfRightCheck) {
+            } else if (radioPermisionValue === 'sendOnBehalfOf') {
               allEmails[index] = { name: item, sendAcl: 'sendOnBehalfOfDistList' };
             }
           });
@@ -1965,7 +1964,7 @@ const EditMailingListView: FC<any> = ({
         });
       }
     }
-  }, [sendEmailsList, createSnackbar, sendEmailItem, sendRightCheck, sendBehalfRightCheck, t]);
+  }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, grantEmailItem]);
 
   const getSearchOwnerList = useCallback(
     (searchKeyword: string) => {
@@ -3259,30 +3258,26 @@ const EditMailingListView: FC<any> = ({
                   </Text>
                 </Row>
                 <Row width="100%" padding={{ top: 'large', bottom: 'large' }} mainAlignment="flex-start">
-                  <RadioGroup>
-                    <Radio
-                      label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
-                      value="sendAs"
-                      onClick={(): void => {
-                        alert('send as');
-                      }}
-                      iconColor="primary"
-                    />
-                    <Text size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
+                    <RadioGroup value={radioPermisionValue} onChange={(value: string): void => setRadioPermisionValue(value)}>
+                      <Radio
+                        key="sendAs"
+                        label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
+                        value="sendAs"
+                        iconColor="primary"
+                      />
+                      <Text key="sendAs-description" size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
                       {t('domain.distributionList.sendAs.permissionLevelSendMsg', 'Allows a user to send emails that appear to come directly from a distribution list, with no indication of who actually sent it')}
-                    </Text>
-                    <Radio
-                      label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
-                      value="sendOnBehalfOf"
-                      onClick={(): void => {
-                        alert('send on behalf of');
-                      }}
-                      iconColor="primary"
-                    />
-                    <Text size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
+                      </Text>
+                      <Radio
+                        key="sendOnBehalfOf"
+                        label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
+                        value="sendOnBehalfOf"
+                        iconColor="primary"
+                      />
+                      <Text key="sendOnBehalfOf-description" size="small" color="secondary" style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}>
                       {t('domain.distributionList.sendAs.permissionLevelSendOnBehalfOfMsg', 'Allows a user to send an email where the recipient sees e.g. "name.surname@mail.com on behalf of a distribution list”')}
-                    </Text>
-                  </RadioGroup>
+                      </Text>
+                    </RadioGroup>
                   {/* <Row width="50%" mainAlignment="flex-start">
                     <Checkbox
                       iconColor="primary"
@@ -3321,7 +3316,7 @@ const EditMailingListView: FC<any> = ({
                     iconPlacement="left"
                     onClick={(): void => onAddSendEmail()}
                     size="medium"
-                    disabled={!(sendRightCheck || sendBehalfRightCheck) || !sendEmailItem?.length}
+                    disabled={!radioPermisionValue || !sendEmailItem?.length}
                   />
                 </Row>
               </Container>
