@@ -289,7 +289,9 @@ describe('EditAccountQuotaInputsNew', () => {
       );
 
       // Verify the description is shown with the correct constraint value
-      const description = page.getByText(/The maximum allowed value is 10 GB/);
+      const description = page.getByText(
+        /The maximum allowed value is 10 GB. Unlimited is not available./,
+      );
       await expect.element(description).toBeVisible();
     });
 

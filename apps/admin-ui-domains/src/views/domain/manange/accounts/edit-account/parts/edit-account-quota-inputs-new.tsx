@@ -117,7 +117,9 @@ export const EditAccountQuotaInputsNew = ({
       }
 
       return t('label.maximum_allowed_value', {
-        defaultValue: `The maximum allowed value is ${BytesToGB(domainQuotaConstraint)} GB`,
+        defaultValue: `The maximum allowed value is ${BytesToGB(
+          domainQuotaConstraint,
+        )} GB. Unlimited is not available.`,
         value: BytesToGB(domainQuotaConstraint),
       });
     }
@@ -207,7 +209,7 @@ export const EditAccountQuotaInputsNew = ({
           orientation={'horizontal'}
           gap={'0.5rem'}
           mainAlignment={'flex-start'}
-          crossAlignment={'center'}
+          crossAlignment={'flex-start'}
         >
           <Input
             description={inputDescription}
@@ -220,7 +222,11 @@ export const EditAccountQuotaInputsNew = ({
             hasError={hasError}
             CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
           />
-          {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
+          {totalQuotaSource !== undefined && (
+            <Padding top={'medium'}>
+              <TotalQuotaSourceIcon source={totalQuotaSource} />
+            </Padding>
+          )}
         </Container>
       </Row>
     </Container>
