@@ -97,6 +97,8 @@ const EditMailingListView: FC<any> = ({
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<string>('general');
+  const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
+  const [pendingTab, setPendingTab] = useState<string | null>(null);
 
 
 
@@ -1301,7 +1303,16 @@ const EditMailingListView: FC<any> = ({
             items={items}
             selected={selectedTab}
             onChange={(ev: unknown, selectedId: string): void => {
-              setSelectedTab(selectedId);
+              if (
+                isDirty &&
+                (selectedTab === 'general' || selectedTab === 'sendto') &&
+                selectedId !== selectedTab
+              ) {
+                setPendingTab(selectedId);
+                setIsOpenUnsavedDialog(true);
+              } else {
+                setSelectedTab(selectedId);
+              }
             }}
             width="100%"
             background="gray6"
@@ -1390,6 +1401,62 @@ const EditMailingListView: FC<any> = ({
             isShowSenderToError={isShowSenderToError}
             setIsShowSenderToError={setIsShowSenderToError}
           />
+        )}
+
+        {isOpenUnsavedDialog && (
+          <Modal
+            size="small"
+            title={t('domain.distributionList.unsavedChanges', 'Unsaved Changes')}
+            open={isOpenUnsavedDialog}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Row style={{ gap: '1rem' }}>
+                  <Button
+                    label={t('domain.distributionList.exitWithoutSave', 'Exit without Save')}
+                    color="secondary"
+                    type="outlined"
+                    onClick={(): void => {
+                      onUndo();
+                      if (pendingTab) {
+                        setSelectedTab(pendingTab);
+                      }
+                      setPendingTab(null);
+                      setIsOpenUnsavedDialog(false);
+                    }}
+                  />
+                  <Button
+                    label={t('domain.distributionList.saveAndExit', 'Save & Exit')}
+                    color="primary"
+                    onClick={(): void => {
+                      onSave();
+                      if (pendingTab) {
+                        setSelectedTab(pendingTab);
+                      }
+                      setPendingTab(null);
+                      setIsOpenUnsavedDialog(false);
+                    }}
+                  />
+                </Row>
+              </Container>
+            }
+            showCloseIcon
+            onClose={(): void => {
+              setPendingTab(null);
+              setIsOpenUnsavedDialog(false);
+            }}
+          >
+            <Container
+              padding={{ top: 'extralarge', bottom: 'extralarge' }}
+              mainAlignment='flex-start'
+            >
+              <Text size="large" overflow="break-word">
+                {t(
+                  'domain.distributionList.unsavedChangesMessage',
+                  'Are you sure you want to leave this page without saving?',
+                )}
+              </Text>
+            </Container>
+          </Modal>
         )}
 
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
