@@ -175,9 +175,9 @@ export const MembersTab: FC<MembersTabProps> = ({
               selectedMailingList?.dynamic ? null : (
                 <Button
                   type="ghost"
-                  color={'text'}
+                  color={'error'}
                   size="medium"
-                  icon="CloseOutline"
+                  icon="Trash2Outline"
                   style={{ position: 'inherit' }}
                   aria-label={t('label.delete', 'Delete')}
                   onClick={(): void => {
@@ -452,7 +452,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         padding={{ left: 'large', right: 'large', bottom: 'large' }}
         mainAlignment="flex-start"
         crossAlignment="flex-start"
-        height="calc(100vh - 3.6rem)"
+        height="calc(100vh - 6.6rem)"
         background="white"
         width={'58.75rem'}
         style={{ overflow: 'auto' }}
@@ -554,22 +554,15 @@ export const MembersTab: FC<MembersTabProps> = ({
           </>
         )}
         <divider-wc />
-            <ListRow
-              padding={{
-                top: 'small',
-                bottom: isShowMemberError ? 'extrasmall' : 'small',
-                left: 'small',
-                right: 'small',
-              }}
-            >
-              <Container
+        <ListRow>
+          <Container
             padding={{
               top: 'extralarge',
               bottom: 'small',
             }}
             mainAlignment="flex-start"
           >
-              <Row
+            <Row
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               padding={{ bottom: 'large' }}
@@ -579,64 +572,60 @@ export const MembersTab: FC<MembersTabProps> = ({
                 {t('domain.distributionList.ownersList', 'Owners List')}
               </Text>
             </Row>
-              <Row  width="auto" mainAlignment="flex-start" crossAlignment="flex-start">
-                {(dlmTableRows.length > 0 || filterMember !== '') && (
-                  <>
-                    <Input
-                      label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
-                      value={filterMember}
-                      backgroundColor="gray5"
-                      onChange={handleInputChange}
-                      CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
-                      )}
-                    />
-                    <Container padding={{ bottom: 'small' }}>
-                      <divider-wc />
-                    </Container>
-                  </>
-                )}
-                <Table
-                  rows={DLMPagedRows}
-                  headers={memberHeaders}
-                  showCheckbox={false}
-                  selectedRows={selectedDistributionListMember}
-                  RowFactory={HoverableRowFactory}
-                  HeaderFactory={CustomHeaderFactory}
-                  onSelectionChange={(selectedRows) => {
-                    setSelectedDistributionListMember(selectedRows);
-                  }}
-                />
-                <Container
-                  style={{
-                    position: 'sticky',
-                    bottom: '-4rem',
-                  }}
-                >
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    background="gray6"
-                    width="100%"
-                    padding={{ right: 'extralarge' }}
-                    height="auto"
-                  >
-                    <Container crossAlignment="flex-start">
-                      <Paging
-                        totalItem={
-                          filterMember ? filteredDlmTableRows.length : dlmTableRows.length
-                        }
-                        setOffset={setOffset}
-                        pageSize={limit}
-                        currentPageProp={DLMCurrentPage}
-                        onPageChange={setDLMSearchCurrentPage}
-                      />
-                    </Container>
-                  </Container>
+            {(dlmTableRows.length > 0 || filterMember !== '') && (
+              <ListRow>
+                <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
+                  <Input
+                    label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
+                    value={filterMember}
+                    backgroundColor="gray5"
+                    onChange={handleInputChange}
+                    CustomIcon={(): any => (
+                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                    )}
+                  />
+                </Row>
+              </ListRow>
+            )}
+            <Table
+              rows={DLMPagedRows}
+              headers={memberHeaders}
+              showCheckbox={false}
+              selectedRows={selectedDistributionListMember}
+              RowFactory={HoverableRowFactory}
+              HeaderFactory={CustomHeaderFactory}
+              onSelectionChange={(selectedRows) => {
+                setSelectedDistributionListMember(selectedRows);
+              }}
+            />
+            <Container
+              style={{
+                position: 'sticky',
+                bottom: '-4rem',
+              }}
+            >
+              <Container
+                orientation="horizontal"
+                mainAlignment="space-between"
+                background="gray6"
+                width="100%"
+                padding={{ right: 'extralarge' }}
+                height="auto"
+              >
+                <Container crossAlignment="flex-start">
+                  <Paging
+                    totalItem={filterMember ? filteredDlmTableRows.length : dlmTableRows.length}
+                    setOffset={setOffset}
+                    pageSize={limit}
+                    currentPageProp={DLMCurrentPage}
+                    onPageChange={setDLMSearchCurrentPage}
+                  />
                 </Container>
-              </Row>
               </Container>
-            </ListRow>
+            </Container>
+          </Container>
+        </ListRow>
+
         {dlmTableRows.length === 0 && !selectedMailingList?.dynamic && filterMember !== '' && (
           <ListRow padding={{ all: 'small' }}>
             <Container
