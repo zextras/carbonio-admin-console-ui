@@ -16,7 +16,7 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAppConfigStore } from '@zextras/ui-shared';
+import { useAllConfig } from '@zextras/ui-shared';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ import {
   ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
-import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
 import { isValidEmail } from '../../utility/utils';
 
@@ -44,10 +43,9 @@ const GlobalDetailPanel: FC = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   const [globalDisclaimerDetail, setGlobalDisclaimerDetail] = useState<GlobalDisclaimerType>();
-  const [globalConfigData, setGlobalConfigData] = useState<Array<any>>([]);
   const [globalDisclaimerInitialDetail, setGlobalDisclaimerInitialDetail] =
     useState<GlobalDisclaimerType>();
-  const updateConfig = useAppConfigStore((state) => state.updateConfig);
+  const { data: configInformation = [], invalidate } = useAllConfig();
   const setGlobalInitialValue = useCallback((key: string, value: unknown): void => {
     setGlobalDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
   }, []);
@@ -112,9 +110,23 @@ const GlobalDetailPanel: FC = () => {
   };
 
   useEffect(() => {
-    if (globalConfigData && globalConfigData.length > 0) {
-      const data = globalConfigData;
-      const zimbraDomainMandatoryMailSignatureEnabled = data.filter(
+    if (configInformation && configInformation.length > 0) {
+      const propertiesToExtract = ['carbonioNotificationFrom', 'carbonioNotificationRecipients'];
+
+      const obj: { [key: string]: string | { label: string }[] } = {};
+      propertiesToExtract.forEach((property) => {
+        const items = filter(configInformation, { n: property });
+        if (property === 'carbonioNotificationRecipients') {
+          obj[property] = items.map((item) => ({ label: item._content }));
+        } else {
+          const item = items[0];
+          obj[property] = item?._content;
+        }
+      });
+      setCarbonioNotificationData(obj);
+      setInitCarbonioNotificationData(obj);
+
+      const zimbraDomainMandatoryMailSignatureEnabled = configInformation.filter(
         (item: Record<string, string>) =>
           item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
       );
@@ -127,7 +139,7 @@ const GlobalDetailPanel: FC = () => {
         setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
       }
 
-      const zimbraAmavisOutboundDisclaimersOnly = data.filter(
+      const zimbraAmavisOutboundDisclaimersOnly = configInformation.filter(
         (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
       );
       if (zimbraAmavisOutboundDisclaimersOnly[0]?._content) {
@@ -139,7 +151,7 @@ const GlobalDetailPanel: FC = () => {
         setInitialAndCurrentValue(ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY, false);
       }
 
-      const carbonioSearchAllDomainsByFeature = data.filter(
+      const carbonioSearchAllDomainsByFeature = configInformation.filter(
         (item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
       );
       if (carbonioSearchAllDomainsByFeature[0]?._content) {
@@ -151,43 +163,13 @@ const GlobalDetailPanel: FC = () => {
         setInitialAndCurrentValue(CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, false);
       }
     }
-  }, [globalConfigData, setInitialAndCurrentValue]);
-
-  const getAllConfigData = async (): Promise<void> => {
-    getAllConfig().then((res) => {
-      const propertiesToExtract = ['carbonioNotificationFrom', 'carbonioNotificationRecipients'];
-
-      const obj: { [key: string]: string | { label: string }[] } = {};
-      propertiesToExtract.forEach((property) => {
-        const items = filter(res.a, { n: property });
-        if (property === 'carbonioNotificationRecipients') {
-          obj[property] = items.map((item) => ({ label: item._content }));
-        } else {
-          const item = items[0];
-          obj[property] = item?._content;
-        }
-      });
-      setCarbonioNotificationData(obj);
-      setInitCarbonioNotificationData(obj);
-      if (res?.a) {
-        setGlobalConfigData(res?.a);
-      }
-    });
-  };
+  }, [configInformation, setInitialAndCurrentValue]);
 
   const callRequest = useCallback(
     (attributes: Attribute[]) => {
       modifyConfig(attributes)
         .then(() => {
-          getAllConfigData();
-          updateConfig(
-            ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-            globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE,
-          );
-          updateConfig(
-            CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-            globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature ? TRUE : FALSE,
-          );
+          invalidate();
           createSnackbar({
             key: 'success',
             severity: 'success',
@@ -258,8 +240,8 @@ const GlobalDetailPanel: FC = () => {
       globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
       globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
       globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+      invalidate,
       t,
-      updateConfig,
     ],
   );
 
@@ -310,10 +292,6 @@ const GlobalDetailPanel: FC = () => {
     }
   };
 
-  useEffect(() => {
-    getAllConfigData();
-  }, []);
-
   return (
     <Container
       orientation="column"
@@ -326,9 +304,7 @@ const GlobalDetailPanel: FC = () => {
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text  weight="bold">
-                {t('label.settings', 'Settings')}
-              </Text>
+              <Text weight="bold">{t('label.settings', 'Settings')}</Text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">

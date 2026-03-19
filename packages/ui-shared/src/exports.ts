@@ -110,7 +110,6 @@ import { useI18nStore } from './store/i18n/store';
 import { useActions } from './store/integrations/hooks';
 import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
-import { useAppConfigStore, useConfigurationAttribute } from './store/shared/app-config/store';
 import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
@@ -201,14 +200,12 @@ export {
   useActivateLicense,
   useAllConfig,
   useAllServers,
-  useAppConfigStore,
   useAppList,
   useAppRoutes,
   useAppStore,
   useBackupServers,
   useBridge,
   useConfigAttribute,
-  useConfigurationAttribute,
   useContextBridge,
   useCurrentRoute,
   useCurrentUserRights,

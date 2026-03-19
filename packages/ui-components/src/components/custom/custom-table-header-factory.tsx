@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Checkbox, Container, Row, Select, Text } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { Text } from '../basic/text/Text';
+import { Checkbox } from '../inputs/Checkbox';
+import { Select } from '../inputs/Select';
+import { Container } from '../layout/Container';
+import { Row } from '../layout/Row';
 
 const ASC = 'asc';
 const DESC = 'desc';

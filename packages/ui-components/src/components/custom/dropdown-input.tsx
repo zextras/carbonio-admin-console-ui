@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Dropdown, IconName, Input } from '@zextras/ui-components';
 
+import { IconName } from '../../web-components/icon-registry';
 import { IconSize } from '../../web-components/icon-wc';
+import { Dropdown } from '../display/Dropdown';
+import { Input } from '../inputs/Input';
 
 type DropDownInputType = {
   items: any;

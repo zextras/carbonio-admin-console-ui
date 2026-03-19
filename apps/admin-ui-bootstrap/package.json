@@ -64,12 +64,11 @@
     "@types/react-dom": "^19.2.0",
     "@types/ua-parser-js": "^0.7.39",
     "@vitejs/plugin-react": "^5.0.2",
-    "@vitest/browser": "^4.0.5",
-    "@vitest/browser-preview": "^4.0.14",
-    "@vitest/coverage-istanbul": "^4.0.5",
+    "@vitest/browser": "^4.1.0",
+    "@vitest/browser-preview": "^4.1.0",
+    "@vitest/coverage-istanbul": "^4.1.0",
     "admin-ui-test-utils": "workspace:*",
     "babel-plugin-i18next-extract": "^1.1.0",
-    "cjs-module-lexer": "^2.2.0",
     "clsx": "^2.1.1",
     "eslint": "^9.34.0",
     "eslint-plugin-css-modules": "^2.12.0",
@@ -81,9 +80,9 @@
     "tailwindcss": "^4.2.1",
     "typescript": "^5.7.2",
     "typescript-plugin-css-modules": "^5.2.0",
-    "vite": "^7.2.6",
-    "vitest": "^4.0.5",
-    "vitest-browser-react": "^2.0.2"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0",
+    "vitest-browser-react": "^2.1.0"
   },
   "files": [
     "dist/",

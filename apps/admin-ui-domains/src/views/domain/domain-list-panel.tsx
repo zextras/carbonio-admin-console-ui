@@ -18,7 +18,7 @@ import {
 import {
   getAllRights,
   replaceHistory,
-  useAppConfigStore,
+  useAllConfig,
   useBackupServers,
   useCurrentUserRights,
   useDomainStore,
@@ -102,7 +102,7 @@ const DomainListPanel: FC = () => {
   const { data: rights } = useCurrentUserRights();
   const [isShowError, setIsShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const globalConfigInformation = useAppConfigStore((state) => state.config);
+  const { data: globalConfigInformation = [] } = useAllConfig();
   const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
   useEffect(() => {

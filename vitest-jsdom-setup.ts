@@ -11,7 +11,9 @@ vi.stubGlobal('BASE_PATH', '');
 
 import { cleanup } from '@testing-library/react';
 import { noop } from 'lodash-es';
-import { server } from 'admin-ui-test-utils';
+import { getSetupServer } from './packages/test-utils/src/jsdom/server';
+
+const server = getSetupServer();
 
 // Mock localStorage for jsdom
 const localStorageMock = (() => {
@@ -37,12 +39,12 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock,
   writable: true,
 });
 
-window.matchMedia = function matchMedia(query: string): MediaQueryList {
+globalThis.matchMedia = function matchMedia(query: string): MediaQueryList {
   return {
     matches: false,
     media: query,
@@ -89,11 +91,11 @@ window.resizeTo = function resizeTo(width, height): void {
   }).dispatchEvent(new this.Event('resize'));
 };
 
-window.fetch = require('node-fetch');
+globalThis.fetch = require('node-fetch');
 
 beforeEach(() => {
   // cleanup local storage
-  window.localStorage.clear();
+  globalThis.localStorage.clear();
 });
 
 beforeAll(() => {

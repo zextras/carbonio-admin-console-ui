@@ -10,8 +10,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
-import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
+import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
 import { getWorkspaceRoot } from './vite-config/utils';
 import tailwindcss from '@tailwindcss/vite';
@@ -80,7 +79,7 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
+      ...(isServeCommand ? [] : [postBuildPlugin()]),
       react({
         babel: {
           plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
@@ -129,7 +128,7 @@ export default defineConfig(({ command, mode }) => {
       outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
       emptyOutDir: true,
       sourcemap: isDev,
-      rollupOptions: createBootstrapRollupOptions(),
+      rollupOptions: createBootstrapRolldownOptions(),
     },
     base: isServeCommand ? '/carbonioAdmin/' : basePath,
     publicDir: 'assets',
@@ -152,11 +151,6 @@ export default defineConfig(({ command, mode }) => {
                 secure: false,
               },
               '/zx': {
-                target: proxyTarget,
-                changeOrigin: true,
-                secure: false,
-              },
-              '/services': {
                 target: proxyTarget,
                 changeOrigin: true,
                 secure: false,
