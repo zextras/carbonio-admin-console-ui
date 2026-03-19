@@ -136,6 +136,8 @@ const EditMailingListView: FC<any> = ({
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteOwnerDialog, setIsOpenDeleteOwnerDialog] = useState<boolean>(false);
   const [ownerToDelete, setOwnerToDelete] = useState<any>(null);
+  const [isOpenDeleteSendEmailDialog, setIsOpenDeleteSendEmailDialog] = useState<boolean>(false);
+  const [sendEmailToDelete, setSendEmailToDelete] = useState<any>(null);
   const [isOpenEditPermissionDialog, setIsOpenEditPermissionDialog] = useState<boolean>(false);
   const [totalGrantRights, setTotalGrantRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -761,7 +763,10 @@ const EditMailingListView: FC<any> = ({
               icon="Trash2Outline"
               style={{ position: 'inherit' }}
               aria-label={t('label.delete', 'Delete')}
-              onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
+              onClick={(): void => {
+                setSendEmailToDelete(item);
+                setIsOpenDeleteSendEmailDialog(true);
+              }}
             />
           </Container>,
         ],
@@ -1379,73 +1384,6 @@ const EditMailingListView: FC<any> = ({
       }
     }
 
-    /* Send As / On Behalf Of List */
-    if (
-      previousDetail?.sendEmailsList !== undefined &&
-      !isEqual(previousDetail?.sendEmailsList, sendEmailsList)
-    ) {
-      const newAddedSendEmailMember: any[] = [];
-      sendEmailsList.forEach((item: any) => {
-        if (
-          !previousDetail?.sendEmailsList.find(
-            (i: any) => i?.name === item?.name && i?.sendAcl === item?.sendAcl,
-          )
-        ) {
-          newAddedSendEmailMember.push(item);
-        }
-      });
-      const removeSendEmailMember: any[] = [];
-      previousDetail?.sendEmailsList.forEach((item: any) => {
-        if (
-          !sendEmailsList.find((i: any) => i?.name === item?.name && i?.sendAcl === item?.sendAcl)
-        ) {
-          removeSendEmailMember.push(item);
-        }
-      });
-
-      if (newAddedSendEmailMember.length > 0) {
-        newAddedSendEmailMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'grantRights',
-            right: {
-              right: item?.sendAcl,
-              grantee: {
-                by: 'name',
-                type: 'email',
-                _content: item?.name ? item?.name : item,
-              },
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-
-      if (removeSendEmailMember.length > 0) {
-        removeSendEmailMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'revokeRights',
-            right: {
-              right: item?.sendAcl,
-              grantee: {
-                by: 'name',
-                type: 'email',
-                _content: item?.name ? item?.name : item,
-              },
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-    }
-
     /* Dynamic Member List */
     if (
       selectedMailingList?.dynamic &&
@@ -1604,14 +1542,7 @@ const EditMailingListView: FC<any> = ({
     }
   }, [previousDetail?.ownerOfList, ownerOfList]);
 
-  useEffect(() => {
-    if (
-      previousDetail?.sendEmailsList !== undefined &&
-      !isEqual(previousDetail?.sendEmailsList, sendEmailsList)
-    ) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.sendEmailsList, sendEmailsList]);
+
 
   useEffect(() => {
     if (
@@ -1950,10 +1881,73 @@ const EditMailingListView: FC<any> = ({
             }
           });
           const sortedList = sortedUniq(allEmails);
-          const emails = uniq(sendEmailsList.concat(sortedList));
-          setSendEmailsList(emails);
-          setSendEmails(emails);
-          setIsDirty(true);
+          const newSenders = sortedList.filter(
+            (item: any) => !sendEmailsList.find((s: any) => s?.name === item?.name && s?.sendAcl === item?.sendAcl),
+          );
+          if (newSenders.length === 0) return;
+          setIsRequestInProgress(true);
+          const addRequests = newSenders.map((item: any) => {
+            const dl: any = {
+              by: 'id',
+              _content: selectedMailingList?.id,
+            };
+            const action: any = {
+              op: 'grantRights',
+              right: {
+                right: item?.sendAcl,
+                grantee: {
+                  by: 'name',
+                  type: 'email',
+                  _content: item?.name,
+                },
+              },
+            };
+            return distributionListAction(dl, action);
+          });
+          Promise.all(addRequests)
+            .then((responses: any) => {
+              const fault = responses.find((r: any) => r?.Fault);
+              if (fault) {
+                createSnackbar({
+                  key: 'error',
+                  severity: 'error',
+                  label: fault?.Fault?.Reason?.Text,
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              } else {
+                const updatedEmails = uniq(sendEmailsList.concat(newSenders));
+                setSendEmailsList(updatedEmails);
+                setSendEmails(updatedEmails);
+                setPreviousDetail((prevState: any) => ({
+                  ...prevState,
+                  sendEmailsList: updatedEmails,
+                }));
+                createSnackbar({
+                  key: 'success',
+                  severity: 'success',
+                  label: t('label.sender_added_successfully', 'Authorized sender has been added successfully'),
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              }
+              setIsRequestInProgress(false);
+            })
+            .catch((error: any) => {
+              createSnackbar({
+                key: 'error',
+                severity: 'error',
+                label: error?.message
+                  ? error?.message
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                autoHideTimeout: 3000,
+                hideButton: true,
+                replace: true,
+              });
+              setIsRequestInProgress(false);
+            });
         }
       } else if (allEmails === undefined) {
         createSnackbar({
@@ -1966,7 +1960,7 @@ const EditMailingListView: FC<any> = ({
         });
       }
     }
-  }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, grantEmailItem]);
+  }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, grantEmailItem, selectedMailingList?.id]);
 
   const getSearchOwnerList = useCallback(
     (searchKeyword: string) => {
@@ -2254,6 +2248,86 @@ const EditMailingListView: FC<any> = ({
     createSnackbar,
     t,
     closeDeleteOwnerHandler,
+  ]);
+
+  const closeDeleteSendEmailHandler = useCallback(() => {
+    setIsOpenDeleteSendEmailDialog(false);
+    setSendEmailToDelete(null);
+  }, []);
+
+  const onDeleteSendEmailConfirm = useCallback(() => {
+    if (!sendEmailToDelete) return;
+    setIsRequestInProgress(true);
+    const dl: any = {
+      by: 'id',
+      _content: selectedMailingList?.id,
+    };
+    const action: any = {
+      op: 'revokeRights',
+      right: {
+        right: sendEmailToDelete?.sendAcl,
+        grantee: {
+          by: 'name',
+          type: 'email',
+          _content: sendEmailToDelete?.name,
+        },
+      },
+    };
+    distributionListAction(dl, action)
+      .then((response: any) => {
+        if (response?.Fault) {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: response?.Fault?.Reason?.Text,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        } else {
+          const updatedEmails = sendEmailsList.filter(
+            (item: any) => !(item?.name === sendEmailToDelete?.name && item?.sendAcl === sendEmailToDelete?.sendAcl),
+          );
+          setSendEmailsList(updatedEmails);
+          setSendEmails(updatedEmails);
+          setSelectedSendEmail([]);
+          setPreviousDetail((prevState: any) => ({
+            ...prevState,
+            sendEmailsList: updatedEmails,
+          }));
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.sender_deleted_successfully', 'Authorized sender has been removed successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        }
+        setIsRequestInProgress(false);
+        closeDeleteSendEmailHandler();
+      })
+      .catch((error: any) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error?.message
+            ? error?.message
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        setIsRequestInProgress(false);
+        closeDeleteSendEmailHandler();
+      });
+  }, [
+    sendEmailToDelete,
+    selectedMailingList?.id,
+    sendEmailsList,
+    createSnackbar,
+    t,
+    closeDeleteSendEmailHandler,
   ]);
 
   const closeEditPermissionHandler = useCallback(() => {
@@ -3658,14 +3732,72 @@ const EditMailingListView: FC<any> = ({
                     onClick={(): void => {
                       if (editingEmailItem) {
                         const newAcl = editPermissionValue === 'sendAs' ? 'sendAsDistList' : 'sendOnBehalfOfDistList';
-                        const updatedList = sendEmailsList.map((item: any) =>
-                          item?.name === editingEmailItem?.name ? { ...item, sendAcl: newAcl } : item
-                        );
-                        setSendEmailsList(updatedList);
-                        setSendEmails(updatedList);
-                        setIsDirty(true);
-                        setEditingEmailItem(null);
-                        setIsOpenEditPermissionDialog(false);
+                        if (editingEmailItem?.sendAcl === newAcl) {
+                          setEditingEmailItem(null);
+                          setIsOpenEditPermissionDialog(false);
+                          return;
+                        }
+                        setIsRequestInProgress(true);
+                        const dl: any = { by: 'id', _content: selectedMailingList?.id };
+                        const revokeAction: any = {
+                          op: 'revokeRights',
+                          right: {
+                            right: editingEmailItem?.sendAcl,
+                            grantee: { by: 'name', type: 'email', _content: editingEmailItem?.name },
+                          },
+                        };
+                        const grantAction: any = {
+                          op: 'grantRights',
+                          right: {
+                            right: newAcl,
+                            grantee: { by: 'name', type: 'email', _content: editingEmailItem?.name },
+                          },
+                        };
+                        distributionListAction(dl, revokeAction)
+                          .then((revokeRes: any) => {
+                            if (revokeRes?.Fault) {
+                              throw new Error(revokeRes?.Fault?.Reason?.Text);
+                            }
+                            return distributionListAction(dl, grantAction);
+                          })
+                          .then((grantRes: any) => {
+                            if (grantRes?.Fault) {
+                              throw new Error(grantRes?.Fault?.Reason?.Text);
+                            }
+                            const updatedList = sendEmailsList.map((item: any) =>
+                              item?.name === editingEmailItem?.name ? { ...item, sendAcl: newAcl } : item
+                            );
+                            setSendEmailsList(updatedList);
+                            setSendEmails(updatedList);
+                            setPreviousDetail((prevState: any) => ({
+                              ...prevState,
+                              sendEmailsList: updatedList,
+                            }));
+                            createSnackbar({
+                              key: 'success',
+                              severity: 'success',
+                              label: t('label.permission_updated_successfully', 'Permission level has been updated successfully'),
+                              autoHideTimeout: 3000,
+                              hideButton: true,
+                              replace: true,
+                            });
+                            setEditingEmailItem(null);
+                            setIsOpenEditPermissionDialog(false);
+                            setIsRequestInProgress(false);
+                          })
+                          .catch((error: any) => {
+                            createSnackbar({
+                              key: 'error',
+                              severity: 'error',
+                              label: error?.message
+                                ? error?.message
+                                : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                              autoHideTimeout: 3000,
+                              hideButton: true,
+                              replace: true,
+                            });
+                            setIsRequestInProgress(false);
+                          });
                       }
                     }}
                     disabled={isRequestInProgress}
@@ -3803,6 +3935,50 @@ const EditMailingListView: FC<any> = ({
           </Text>
           <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
         </RouteLeavingGuard>
+        {isOpenDeleteSendEmailDialog && (
+          <Modal
+            size="small"
+            title={t('label.delete_authorized_sender', 'Delete authorized sender')}
+            open={isOpenDeleteSendEmailDialog}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Row style={{ gap: '1rem' }}>
+                  <Button
+                    label={t('label.cancel', 'Cancel')}
+                    color="secondary"
+                    type="outlined"
+                    onClick={closeDeleteSendEmailHandler}
+                    disabled={isRequestInProgress}
+                  />
+                  <Button
+                    label={t('label.delete', 'Delete')}
+                    color="error"
+                    onClick={onDeleteSendEmailConfirm}
+                    disabled={isRequestInProgress}
+                  />
+                </Row>
+              </Container>
+            }
+            showCloseIcon
+            onClose={closeDeleteSendEmailHandler}
+          >
+            <Container
+              padding={{ top: 'extralarge', bottom: 'extralarge' }}
+              style={{ textAlign: 'center' }}
+            >
+              <Text size={'extralarge'} overflow="break-word">
+                <Trans
+                  i18nKey="label.are_you_sure_delete_sender"
+                  defaults="Are you sure you want to remove <bold>{{name}}</bold> from the authorized senders list?"
+                  components={{ bold: <strong /> }}
+                  values={{
+                    name: sendEmailToDelete?.name,
+                  }}
+                />
+              </Text>
+            </Container>
+          </Modal>
+        )}
         {isOpenDeleteOwnerDialog && (
           <Modal
             size="small"
