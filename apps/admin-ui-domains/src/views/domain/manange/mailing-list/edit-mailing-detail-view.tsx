@@ -138,6 +138,8 @@ const EditMailingListView: FC<any> = ({
   const [ownerToDelete, setOwnerToDelete] = useState<any>(null);
   const [isOpenDeleteSendEmailDialog, setIsOpenDeleteSendEmailDialog] = useState<boolean>(false);
   const [sendEmailToDelete, setSendEmailToDelete] = useState<any>(null);
+  const [isOpenDeleteMemberDialog, setIsOpenDeleteMemberDialog] = useState<boolean>(false);
+  const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
   const [isOpenEditPermissionDialog, setIsOpenEditPermissionDialog] = useState<boolean>(false);
   const [totalGrantRights, setTotalGrantRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -619,7 +621,10 @@ const EditMailingListView: FC<any> = ({
                 icon="Trash2Outline"
                 style={{ position: 'inherit' }}
                 aria-label={t('label.delete', 'Delete')}
-                onClick={(): void => deleteSingleRow(item, 'distListMember')}
+                onClick={(): void => {
+                  setMemberToDelete(item);
+                  setIsOpenDeleteMemberDialog(true);
+                }}
               />
             ),
           ],
@@ -652,7 +657,10 @@ const EditMailingListView: FC<any> = ({
                   icon="CloseOutline"
                   style={{ position: 'inherit' }}
                   aria-label={t('label.delete', 'Delete')}
-                  onClick={(): void => deleteSingleRow(item, 'distListMember')}
+                  onClick={(): void => {
+                    setMemberToDelete(item);
+                    setIsOpenDeleteMemberDialog(true);
+                  }}
                 />
               ),
             ],
@@ -1340,50 +1348,6 @@ const EditMailingListView: FC<any> = ({
       }
     }
 
-    /* Members List */
-    if (previousDetail?.dlm !== undefined && !isEqual(previousDetail?.dlm, dlm)) {
-      const newAddedMember: any[] = [];
-      dlm.forEach((item: any) => {
-        if (!previousDetail?.dlm.includes(item)) {
-          newAddedMember.push(item);
-        }
-      });
-      const removeMember: any[] = [];
-      previousDetail?.dlm.forEach((item: any) => {
-        if (!dlm.includes(item)) {
-          removeMember.push(item);
-        }
-      });
-
-      if (newAddedMember.length > 0) {
-        newAddedMember.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: item,
-          };
-          request.push(addDistributionListMember(id, dlmItem));
-        });
-      }
-
-      if (removeMember.length > 0) {
-        removeMember.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: item,
-          };
-          request.push(removeDistributionListMember(id, dlmItem));
-        });
-      }
-    }
-
     /* Dynamic Member List */
     if (
       selectedMailingList?.dynamic &&
@@ -1526,12 +1490,6 @@ const EditMailingListView: FC<any> = ({
       setIsDirty(true);
     }
   }, [previousDetail?.zimbraHideInGal, zimbraHideInGal]);
-
-  useEffect(() => {
-    if (previousDetail?.dlm !== undefined && !isEqual(previousDetail?.dlm, dlm)) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.dlm, dlm]);
 
   useEffect(() => {
     if (
@@ -1719,10 +1677,66 @@ const EditMailingListView: FC<any> = ({
           );
         } else {
           const sortedList = sortedUniq(allEmails);
-          setDlm(uniq(dlm.concat(sortedList)));
-          setIsShowMemberError(false);
-          setSearchMember('');
-          setMemberErrorMessage('');
+          const newMembers = sortedList.filter((item: any) => !dlm.includes(item));
+          if (newMembers.length === 0) return;
+          setIsRequestInProgress(true);
+          const addRequests = newMembers.map((item: any) => {
+            const id: any = {
+              n: 'id',
+              _content: selectedMailingList?.id,
+            };
+            const dlmItem: any = {
+              n: 'dlm',
+              _content: item,
+            };
+            return addDistributionListMember(id, dlmItem);
+          });
+          Promise.all(addRequests)
+            .then((responses: any) => {
+              const fault = responses.find((r: any) => r?.Fault);
+              if (fault) {
+                createSnackbar({
+                  key: 'error',
+                  severity: 'error',
+                  label: fault?.Fault?.Reason?.Text,
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              } else {
+                const updatedDlm = uniq(dlm.concat(newMembers));
+                setDlm(updatedDlm);
+                setPreviousDetail((prevState: any) => ({
+                  ...prevState,
+                  dlm: updatedDlm,
+                }));
+                setIsShowMemberError(false);
+                setSearchMember('');
+                setMemberErrorMessage('');
+                createSnackbar({
+                  key: 'success',
+                  severity: 'success',
+                  label: t('label.member_added_successfully', 'Member has been added successfully'),
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              }
+              setIsRequestInProgress(false);
+            })
+            .catch((error: any) => {
+              createSnackbar({
+                key: 'error',
+                severity: 'error',
+                label: error?.message
+                  ? error?.message
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                autoHideTimeout: 3000,
+                hideButton: true,
+                replace: true,
+              });
+              setIsRequestInProgress(false);
+            });
         }
       } else if (allEmails === undefined) {
         setMemberErrorMessage(
@@ -1734,7 +1748,7 @@ const EditMailingListView: FC<any> = ({
         setIsShowMemberError(true);
       }
     }
-  }, [searchMember, t, dlm]);
+  }, [searchMember, t, dlm, selectedMailingList?.id, createSnackbar]);
 
   const onAddOwner = useCallback((): void => {
     if (searchOwner !== '') {
@@ -2248,6 +2262,82 @@ const EditMailingListView: FC<any> = ({
     createSnackbar,
     t,
     closeDeleteOwnerHandler,
+  ]);
+
+  const closeDeleteMemberHandler = useCallback(() => {
+    setIsOpenDeleteMemberDialog(false);
+    setMemberToDelete(null);
+  }, []);
+
+  const onDeleteMemberConfirm = useCallback(() => {
+    if (!memberToDelete) return;
+    setIsRequestInProgress(true);
+    const id: any = {
+      n: 'id',
+      _content: selectedMailingList?.id,
+    };
+    const dlmItem: any = {
+      n: 'dlm',
+      _content: memberToDelete,
+    };
+    removeDistributionListMember(id, dlmItem)
+      .then((response: any) => {
+        if (response?.Fault) {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: response?.Fault?.Reason?.Text,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        } else {
+          const updatedDlm = dlm.filter((item: any) => item !== memberToDelete);
+          setDlm(updatedDlm);
+          setSelectedDistributionListMember([]);
+          setPreviousDetail((prevState: any) => ({
+            ...prevState,
+            dlm: updatedDlm,
+          }));
+          if (DLMPagedRows.length === 1) {
+            setDLMSearchCurrentPage(1);
+            setOffset(0);
+            setFilterMember('');
+          }
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.member_deleted_successfully', 'Member has been removed successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        }
+        setIsRequestInProgress(false);
+        closeDeleteMemberHandler();
+      })
+      .catch((error: any) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error?.message
+            ? error?.message
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        setIsRequestInProgress(false);
+        closeDeleteMemberHandler();
+      });
+  }, [
+    memberToDelete,
+    selectedMailingList?.id,
+    dlm,
+    DLMPagedRows,
+    createSnackbar,
+    t,
+    closeDeleteMemberHandler,
   ]);
 
   const closeDeleteSendEmailHandler = useCallback(() => {
@@ -3935,6 +4025,50 @@ const EditMailingListView: FC<any> = ({
           </Text>
           <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
         </RouteLeavingGuard>
+        {isOpenDeleteMemberDialog && (
+          <Modal
+            size="small"
+            title={t('label.delete_member', 'Delete member')}
+            open={isOpenDeleteMemberDialog}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Row style={{ gap: '1rem' }}>
+                  <Button
+                    label={t('label.cancel', 'Cancel')}
+                    color="secondary"
+                    type="outlined"
+                    onClick={closeDeleteMemberHandler}
+                    disabled={isRequestInProgress}
+                  />
+                  <Button
+                    label={t('label.delete', 'Delete')}
+                    color="error"
+                    onClick={onDeleteMemberConfirm}
+                    disabled={isRequestInProgress}
+                  />
+                </Row>
+              </Container>
+            }
+            showCloseIcon
+            onClose={closeDeleteMemberHandler}
+          >
+            <Container
+              padding={{ top: 'extralarge', bottom: 'extralarge' }}
+              style={{ textAlign: 'center' }}
+            >
+              <Text size={'extralarge'} overflow="break-word">
+                <Trans
+                  i18nKey="label.are_you_sure_delete_member"
+                  defaults="Are you sure you want to remove <bold>{{name}}</bold> from the members list?"
+                  components={{ bold: <strong /> }}
+                  values={{
+                    name: memberToDelete,
+                  }}
+                />
+              </Text>
+            </Container>
+          </Modal>
+        )}
         {isOpenDeleteSendEmailDialog && (
           <Modal
             size="small"
