@@ -230,8 +230,8 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           setIsShowOwnerError(true);
           setOwnerErrorMessage(
             t(
-              'label.distribution_list_not_exists_error_msg',
-              'The Distribution List / User does not exist. Please check the spelling and try again.',
+              'domain.distributionList.invalidEmailErrorMsg',
+              'The account does not exist. Please check the spelling and try again.'
             ),
           );
         } else if (ownersList.find((item: any) => item?.name === searchOwner)) {
@@ -317,8 +317,8 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         setIsShowOwnerError(true);
         setOwnerErrorMessage(
           t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
+            'domain.distributionList.invalidEmailErrorMsg',
+            'The account does not exist. Please check the spelling and try again.',
           ),
         );
       }
@@ -584,7 +584,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               <Row style={{ gap: '1rem' }}>
                 <Button
                   label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
-                  color="secondary"
+                  color="gray0"
                   type="outlined"
                   onClick={closeDeleteOwnerHandler}
                   disabled={isRequestInProgress}

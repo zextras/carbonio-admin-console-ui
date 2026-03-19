@@ -246,8 +246,8 @@ export const MembersTab: FC<MembersTabProps> = ({
           setIsShowMemberError(true);
           setMemberErrorMessage(
             t(
-              'label.distribution_list_not_exists_error_msg',
-              'The Distribution List / User does not exist. Please check the spelling and try again.',
+              'domain.distributionList.invalidEmailErrorMsg',
+              'The account does not exist. Please check the spelling and try again.'
             ),
           );
         } else if (dlm.find((item: any) => item === searchMember)) {
@@ -330,8 +330,8 @@ export const MembersTab: FC<MembersTabProps> = ({
       } else if (allEmails === undefined) {
         setMemberErrorMessage(
           t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
+            'domain.distributionList.invalidEmailErrorMsg',
+            'The account does not exist. Please check the spelling and try again.'
           ),
         );
         setIsShowMemberError(true);
@@ -665,7 +665,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               <Row style={{ gap: '1rem' }}>
                 <Button
                   label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
-                  color="secondary"
+                  color="gray0"
                   type="outlined"
                   onClick={closeDeleteMemberHandler}
                   disabled={isRequestInProgress}

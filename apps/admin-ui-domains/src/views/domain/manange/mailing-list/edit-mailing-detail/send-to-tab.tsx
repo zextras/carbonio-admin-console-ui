@@ -270,6 +270,7 @@ export const SendToTab: FC<SendToTabProps> = ({
                   isCustomIcon={false}
                   inputDisabled={grantType?.value !== EMAIL}
                   width="100%"
+                  hasError={isShowSenderToError}
                 />
               </Row>
               {isShowSenderToError && (
@@ -287,8 +288,8 @@ export const SendToTab: FC<SendToTabProps> = ({
                     <Padding right={'0'}>
                       <Text size="extrasmall" weight="regular" color="error">
                         {t(
-                          'domain.distributionList.sendTo.invalidAccountErrorMessage',
-                          'The Sender email does not exist or is invalid. Please check it and try again.',
+                          'domain.distributionList.invalidEmailErrorMsg',
+                          'The account does not exist. Please check the spelling and try again.'
                         )}
                       </Text>
                     </Padding>

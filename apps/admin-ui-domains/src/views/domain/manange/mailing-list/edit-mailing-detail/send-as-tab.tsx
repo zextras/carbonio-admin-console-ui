@@ -66,6 +66,8 @@ export const SendAsTab: FC<SendAsTabProps> = ({
   const [editingEmailItem, setEditingEmailItem] = useState<any>(null);
   const [editPermissionValue, setEditPermissionValue] = useState('sendAs');
   const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
+  const [isShowSendEmailError, setIsShowSendEmailError] = useState(false);
+  const [sendEmailErrorMessage, setSendEmailErrorMessage] = useState<string | null>('');
 
   const {
     filterValue: filterSendEmail,
@@ -211,17 +213,15 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       if (allEmails !== null && allEmails !== undefined) {
         const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: `${t('label.invalid_email_address', 'Invalid email address')} ${
-              inValidEmailAddress[0]
-            }`,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+          setIsShowSendEmailError(true);
+          setSendEmailErrorMessage(
+            t(
+              'domain.distributionList.invalidEmailErrorMsg',
+              'The account does not exist. Please check the spelling and try again.',
+            ),
+          );
         } else {
+          setIsShowSendEmailError(false);
           setSendEmailItem('');
           allEmails.forEach((item: any, index: any) => {
             if (radioPermisionValue === 'sendAs') {
@@ -309,14 +309,13 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             });
         }
       } else if (allEmails === undefined) {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: `${t('label.invalid_email_address', 'Invalid email address')} ${sendEmailItem}`,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+        setIsShowSendEmailError(true);
+        setSendEmailErrorMessage(
+          t(
+            'domain.distributionList.invalidEmailErrorMsg',
+            'The account does not exist. Please check the spelling and try again.',
+          ),
+        );
       }
     }
   }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, selectedMailingList?.id, setSendEmailsList, setSendEmails, setPreviousDetail, setIsRequestInProgress]);
@@ -466,8 +465,25 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               inputValue={sendEmailItem}
               isCustomIcon={false}
               inputDisabled={selectedMailingList?.dynamic}
+              hasError={isShowSendEmailError}
             />
           </Row>
+          {isShowSendEmailError && (
+            <Row
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              width="100%"
+              padding={{ top: 'small' }}
+            >
+              <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+                <Padding right={'0'}>
+                  <Text size="extrasmall" weight="regular" color="error">
+                    {sendEmailErrorMessage}
+                  </Text>
+                </Padding>
+              </Container>
+            </Row>
+          )}
           <Container mainAlignment="flex-start">
             <Row width="100%" padding={{ top: 'extralarge' }} mainAlignment="flex-start">
               <Text size="small" color="gray0" weight="bold">
@@ -778,7 +794,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               <Row style={{ gap: '1rem' }}>
                 <Button
                   label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
-                  color="secondary"
+                  color="gray0"
                   type="outlined"
                   onClick={closeDeleteSendEmailHandler}
                   disabled={isRequestInProgress}
@@ -799,7 +815,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
             mainAlignment="flex-start"
           >
-            <Text size={'large'} overflow="break-word" lineHeight={1.5}>
+            <Text size={'large'} overflow="break-word">
               <Trans
                 i18nKey="domain.distributionList.sendAs.removeAuthorizedSenderMsg"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> with permission level <bold>{{permission}}</bold> from the list?"
