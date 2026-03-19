@@ -1199,17 +1199,19 @@ const EditMailingListView: FC<any> = ({
       label: t('label.owners', 'OWNERS'),
       CustomComponent: ReusedDefaultTabBar,
     },
-    !selectedMailingList?.dynamic && {
-      id: 'sendas',
-      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
-      CustomComponent: ReusedDefaultTabBar,
-    },
     {
       id: 'sendto',
       label: t('label.sendto', 'SEND TO').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
+  if(!selectedMailingList?.dynamic) {
+    items.push({
+      id: 'sendas',
+      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    });
+  }
 
   return (
     <>

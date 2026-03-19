@@ -489,11 +489,71 @@ export const MembersTab: FC<MembersTabProps> = ({
         )}
         {!selectedMailingList?.dynamic && (
           <>
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
+            <Row padding={{ bottom: 'small', top: 'medium' }}>
               <Text size="medium" weight="bold" color="gray0">
                 {t('label.members', 'Members')}
               </Text>
             </Row>
+            <ListRow>
+              <Container orientation="vertical" mainAlignment="flex-start" background="gray6">
+                <Row mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    width="100%"
+                    padding={{ top: 'large' }}
+                >
+                  <DropDownInput
+                    width="100%"
+                    items={searchMemberItems}
+                    inputLabel={t(
+                      'label.type_accounts_paste_them_here',
+                      'Type the Accounts or paste them here',
+                    )}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                      setSearchMember(e.target.value);
+                    }}
+                    inputValue={searchMember}
+                    isCustomIcon={false}
+                    hasError={isShowMemberError}
+                  />
+                </Row>
+                {isShowMemberError && (
+                  <Row
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    width="100%"
+                    padding={{ top: 'small' }}
+                  >
+                    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+                      <Padding right={'0'}>
+                        <Text size="extrasmall" weight="regular" color="error">
+                          {memberErrorMessage}
+                        </Text>
+                      </Padding>
+                    </Container>
+                  </Row>
+                )}
+
+                <Row mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  width="100%"
+                  padding={{ top: 'large', bottom: 'large' }}
+                >
+                  <Button
+                    icon="Plus"
+                    key="add-members-button"
+                    label={t('domain.distributionList.members.addMembers', 'Add Members')}
+                    color="primary"
+                    iconPlacement="left"
+                    onClick={onAdd}
+                    size="medium"
+                    disabled={searchMember === ''}
+                  />
+                </Row>
+              </Container>
+            </ListRow>
+          </>
+        )}
+        <divider-wc />
             <ListRow
               padding={{
                 top: 'small',
@@ -503,75 +563,23 @@ export const MembersTab: FC<MembersTabProps> = ({
               }}
             >
               <Container
-                orientation="vertical"
-                mainAlignment="space-around"
-                background="gray6"
-                height="58px"
-              >
-                <Row
-                  orientation="horizontal"
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  width="100%"
-                >
-                  <Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-                    <DropDownInput
-                      width="100%"
-                      items={searchMemberItems}
-                      inputLabel={t(
-                        'label.type_accounts_paste_them_here',
-                        'Type the Accounts or paste them here',
-                      )}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                        setSearchMember(e.target.value);
-                      }}
-                      inputValue={searchMember}
-                      isCustomIcon={false}
-                      hasError={isShowMemberError}
-                    />
-                  </Row>
-
-                  <Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
-                    <Padding left="large" right="large">
-                      <Button
-                        type="outlined"
-                        key="add-button"
-                        label={t('label.add', 'Add')}
-                        color="primary"
-                        iconPlacement="right"
-                        onClick={onAdd}
-                        size="extralarge"
-                        disabled={searchMember === ''}
-                      />
-                    </Padding>
-                  </Row>
-                </Row>
-              </Container>
-            </ListRow>
-            {isShowMemberError && (
-              <Row>
-                <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                  <Padding right={'0'}>
-                    <Text size="extrasmall" weight="regular" color="error">
-                      {memberErrorMessage}
-                    </Text>
-                  </Padding>
-                </Container>
-              </Row>
-            )}
-          </>
-        )}
-        <Row padding={{ all: 'small' }}>
-          <Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-            <ListRow
-              padding={{
-                top: 'small',
-                bottom: isShowMemberError ? 'extrasmall' : 'small',
-                left: 'small',
-                right: 'small',
-              }}
+            padding={{
+              top: 'extralarge',
+              bottom: 'small',
+            }}
+            mainAlignment="flex-start"
+          >
+              <Row
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ bottom: 'large' }}
+              width="100%"
             >
-              <Row width="auto" mainAlignment="flex-start" crossAlignment="flex-start">
+              <Text weight="bold" color="gray0">
+                {t('domain.distributionList.ownersList', 'Owners List')}
+              </Text>
+            </Row>
+              <Row  width="auto" mainAlignment="flex-start" crossAlignment="flex-start">
                 {(dlmTableRows.length > 0 || filterMember !== '') && (
                   <>
                     <Input
@@ -627,9 +635,8 @@ export const MembersTab: FC<MembersTabProps> = ({
                   </Container>
                 </Container>
               </Row>
+              </Container>
             </ListRow>
-          </Container>
-        </Row>
         {dlmTableRows.length === 0 && !selectedMailingList?.dynamic && filterMember !== '' && (
           <ListRow padding={{ all: 'small' }}>
             <Container
@@ -658,15 +665,6 @@ export const MembersTab: FC<MembersTabProps> = ({
             </Container>
           </ListRow>
         )}
-        <Row
-          mainAlignment="flex-start"
-          width="100%"
-          padding={{ top: 'small', bottom: 'small' }}
-        >
-          <Container padding={{ bottom: 'small' }}>
-            <divider-wc />
-          </Container>
-        </Row>
       </Container>
       {isOpenDeleteMemberDialog && (
         <Modal
