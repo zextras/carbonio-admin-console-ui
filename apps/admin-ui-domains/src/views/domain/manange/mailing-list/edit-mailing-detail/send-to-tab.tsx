@@ -31,13 +31,11 @@ import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
 
 type SendToTabProps = {
-  selectedMailingList: any;
   grantTypeOptions: Array<any>;
   grantType: any;
   onGrantTypeChange: (v: any) => void;
   grantEmailsList: Array<any>;
   setGrantEmailsList: (v: Array<any>) => void;
-  grantEmails: Array<any>;
   setGrantEmails: (v: Array<any>) => void;
   setIsDirty: (v: boolean) => void;
   searchUserLabelValue: string;
@@ -46,13 +44,11 @@ type SendToTabProps = {
 };
 
 export const SendToTab: FC<SendToTabProps> = ({
-  selectedMailingList,
   grantTypeOptions,
   grantType,
   onGrantTypeChange,
   grantEmailsList,
   setGrantEmailsList,
-  grantEmails,
   setGrantEmails,
   setIsDirty,
   searchUserLabelValue,

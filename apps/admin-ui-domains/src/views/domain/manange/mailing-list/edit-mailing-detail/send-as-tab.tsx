@@ -35,9 +35,7 @@ import { useTableFilter } from './hooks/use-table-filter';
 type SendAsTabProps = {
   sendEmailsList: Array<any>;
   setSendEmailsList: (list: Array<any>) => void;
-  sendEmails: Array<any>;
   setSendEmails: (list: Array<any>) => void;
-  previousDetail: any;
   setPreviousDetail: (fn: any) => void;
   selectedMailingList: any;
   isRequestInProgress: boolean;
@@ -48,9 +46,7 @@ type SendAsTabProps = {
 export const SendAsTab: FC<SendAsTabProps> = ({
   sendEmailsList,
   setSendEmailsList,
-  sendEmails,
   setSendEmails,
-  previousDetail,
   setPreviousDetail,
   selectedMailingList,
   isRequestInProgress,

@@ -1366,9 +1366,7 @@ const EditMailingListView: FC<any> = ({
           <SendAsTab
             sendEmailsList={sendEmailsList}
             setSendEmailsList={setSendEmailsList}
-            sendEmails={sendEmails}
             setSendEmails={setSendEmails}
-            previousDetail={previousDetail}
             setPreviousDetail={setPreviousDetail}
             selectedMailingList={selectedMailingList}
             isRequestInProgress={isRequestInProgress}
@@ -1379,13 +1377,11 @@ const EditMailingListView: FC<any> = ({
 
         {selectedTab === 'sendto' && (
           <SendToTab
-            selectedMailingList={selectedMailingList}
             grantTypeOptions={grantTypeOptions}
             grantType={grantType}
             onGrantTypeChange={onGrantTypeChange}
             grantEmailsList={grantEmailsList}
             setGrantEmailsList={setGrantEmailsList}
-            grantEmails={grantEmails}
             setGrantEmails={setGrantEmails}
             setIsDirty={setIsDirty}
             searchUserLabelValue={searchUserLabelValue}
