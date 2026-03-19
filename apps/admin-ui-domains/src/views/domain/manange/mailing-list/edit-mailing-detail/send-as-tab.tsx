@@ -771,20 +771,20 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       {isOpenDeleteSendEmailDialog && (
         <Modal
           size="small"
-          title={t('label.delete_authorized_sender', 'Delete authorized sender')}
+          title={t('domain.distributionList.sendAs.removeAuthorizedSender', 'Remove authorized sender')}
           open={isOpenDeleteSendEmailDialog}
           customFooter={
             <Container orientation="horizontal" mainAlignment="flex-end">
               <Row style={{ gap: '1rem' }}>
                 <Button
-                  label={t('label.cancel', 'Cancel')}
+                  label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
                   color="secondary"
                   type="outlined"
                   onClick={closeDeleteSendEmailHandler}
                   disabled={isRequestInProgress}
                 />
                 <Button
-                  label={t('label.delete', 'Delete')}
+                  label={t('domain.distributionList.yesRemoveIt', 'YES, REMOVE IT')}
                   color="error"
                   onClick={onDeleteSendEmailConfirm}
                   disabled={isRequestInProgress}
@@ -797,15 +797,18 @@ export const SendAsTab: FC<SendAsTabProps> = ({
         >
           <Container
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
-            style={{ textAlign: 'center' }}
+            mainAlignment="flex-start"
           >
-            <Text size={'extralarge'} overflow="break-word">
+            <Text size={'large'} overflow="break-word" lineHeight={1.5}>
               <Trans
-                i18nKey="label.are_you_sure_delete_sender"
-                defaults="Are you sure you want to remove <bold>{{name}}</bold> from the authorized senders list?"
+                i18nKey="domain.distributionList.sendAs.removeAuthorizedSenderMsg"
+                defaults="Are you sure you want to remove <bold>{{name}}</bold> with permission level <bold>{{permission}}</bold> from the list?"
                 components={{ bold: <strong /> }}
                 values={{
                   name: sendEmailToDelete?.name,
+                  permission: sendEmailToDelete?.sendAcl === 'sendAsDistList'
+                    ? t('domain.distributionList.sendAs.sendAs', 'Send As')
+                    : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of'),
                 }}
               />
             </Text>

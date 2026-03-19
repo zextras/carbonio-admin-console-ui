@@ -577,20 +577,20 @@ export const OwnersTab: FC<OwnersTabProps> = ({
       {isOpenDeleteOwnerDialog && (
         <Modal
           size="small"
-          title={t('label.delete_owner', 'Delete owner')}
+          title={t('domain.distributionList.owners.removeOwner', 'Remove owner')}
           open={isOpenDeleteOwnerDialog}
           customFooter={
             <Container orientation="horizontal" mainAlignment="flex-end">
               <Row style={{ gap: '1rem' }}>
                 <Button
-                  label={t('label.cancel', 'Cancel')}
+                  label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
                   color="secondary"
                   type="outlined"
                   onClick={closeDeleteOwnerHandler}
                   disabled={isRequestInProgress}
                 />
                 <Button
-                  label={t('label.delete', 'Delete')}
+                  label={t('domain.distributionList.yesRemoveIt', 'YES, REMOVE IT')}
                   color="error"
                   onClick={onDeleteOwnerConfirm}
                   disabled={isRequestInProgress}
@@ -603,9 +603,9 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         >
           <Container
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
-            style={{ textAlign: 'center' }}
+            mainAlignment="flex-start"
           >
-            <Text size={'extralarge'} overflow="break-word">
+            <Text size={'large'} overflow="break-word">
               <Trans
                 i18nKey="label.are_you_sure_delete_owner"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the owners list?"

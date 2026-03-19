@@ -569,7 +569,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               width="100%"
             >
               <Text weight="bold" color="gray0">
-                {t('domain.distributionList.ownersList', 'Owners List')}
+                {t('domain.distributionList.members.membersList', 'Members List')}
               </Text>
             </Row>
             {(dlmTableRows.length > 0 || filterMember !== '') && (
@@ -658,20 +658,20 @@ export const MembersTab: FC<MembersTabProps> = ({
       {isOpenDeleteMemberDialog && (
         <Modal
           size="small"
-          title={t('label.delete_member', 'Delete member')}
+          title={t('domain.distributionList.members.removeMember', 'Remove member')}
           open={isOpenDeleteMemberDialog}
           customFooter={
-            <Container orientation="horizontal" mainAlignment="flex-end">
+            <Container orientation="horizontal" mainAlignment="flex-end" style={{ gap: '1rem' }}>
               <Row style={{ gap: '1rem' }}>
                 <Button
-                  label={t('label.cancel', 'Cancel')}
+                  label={t('domain.distributionList.NoCancel', 'NO, CANCEL')}
                   color="secondary"
                   type="outlined"
                   onClick={closeDeleteMemberHandler}
                   disabled={isRequestInProgress}
                 />
                 <Button
-                  label={t('label.delete', 'Delete')}
+                  label={t('domain.distributionList.yesRemoveIt', 'YES, REMOVE IT')}
                   color="error"
                   onClick={onDeleteMemberConfirm}
                   disabled={isRequestInProgress}
@@ -684,9 +684,9 @@ export const MembersTab: FC<MembersTabProps> = ({
         >
           <Container
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
-            style={{ textAlign: 'center' }}
+              mainAlignment="flex-start"
           >
-            <Text size={'extralarge'} overflow="break-word">
+            <Text size={'large'} overflow="break-word">
               <Trans
                 i18nKey="label.are_you_sure_delete_member"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the members list?"
