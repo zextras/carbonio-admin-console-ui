@@ -134,6 +134,8 @@ const EditMailingListView: FC<any> = ({
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+  const [isOpenDeleteOwnerDialog, setIsOpenDeleteOwnerDialog] = useState<boolean>(false);
+  const [ownerToDelete, setOwnerToDelete] = useState<any>(null);
   const [isOpenEditPermissionDialog, setIsOpenEditPermissionDialog] = useState<boolean>(false);
   const [totalGrantRights, setTotalGrantRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -692,7 +694,10 @@ const EditMailingListView: FC<any> = ({
             icon="Trash2Outline"
             style={{ position: 'inherit' }}
             aria-label={t('label.delete', 'Delete')}
-            onClick={(): void => deleteSingleRow(item?.name, 'owner')}
+            onClick={(): void => {
+              setOwnerToDelete(item);
+              setIsOpenDeleteOwnerDialog(true);
+            }}
           />,
         ],
       }));
@@ -1374,61 +1379,6 @@ const EditMailingListView: FC<any> = ({
       }
     }
 
-    /* Owner List */
-    if (
-      previousDetail?.ownersList !== undefined &&
-      !isEqual(previousDetail?.ownersList, ownersList)
-    ) {
-      const newAddedOwnerMember: any[] = [];
-      ownersList.forEach((item: any) => {
-        if (!previousDetail?.ownersList.includes(item)) {
-          newAddedOwnerMember.push(item);
-        }
-      });
-      const removeOwnerMember: any[] = [];
-      previousDetail?.ownersList.forEach((item: any) => {
-        if (!ownersList.includes(item)) {
-          removeOwnerMember.push(item);
-        }
-      });
-
-      if (newAddedOwnerMember.length > 0) {
-        newAddedOwnerMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'addOwners',
-            owner: {
-              by: 'name',
-              type: getOwnerType(item?.name),
-              _content: item?.name,
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-
-      if (removeOwnerMember.length > 0) {
-        removeOwnerMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'removeOwners',
-            owner: {
-              by: 'name',
-              type: getOwnerType(item?.name),
-              _content: item?.name,
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-    }
-
     /* Send As / On Behalf Of List */
     if (
       previousDetail?.sendEmailsList !== undefined &&
@@ -1653,15 +1603,6 @@ const EditMailingListView: FC<any> = ({
       setIsDirty(true);
     }
   }, [previousDetail?.ownerOfList, ownerOfList]);
-
-  useEffect(() => {
-    if (
-      previousDetail?.ownersList !== undefined &&
-      !isEqual(previousDetail?.ownersList, ownersList)
-    ) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.ownersList, ownersList]);
 
   useEffect(() => {
     if (
@@ -1891,11 +1832,68 @@ const EditMailingListView: FC<any> = ({
         } else {
           setIsShowOwnerError(false);
           const sortedList = sortedUniq(allEmails);
-          setOwnersList(
-            uniq(ownersList.concat(sortedList.map((item: any) => ({ name: item, id: item })))),
-          );
-          setSearchOwner('');
-          setMemberErrorMessage('');
+          const newOwners = sortedList.map((item: any) => ({ name: item, id: item }));
+          setIsRequestInProgress(true);
+          const addOwnerRequests = newOwners.map((owner: any) => {
+            const dl: any = {
+              by: 'id',
+              _content: selectedMailingList?.id,
+            };
+            const action: any = {
+              op: 'addOwners',
+              owner: {
+                by: 'name',
+                type: getOwnerType(owner?.name),
+                _content: owner?.name,
+              },
+            };
+            return distributionListAction(dl, action);
+          });
+          Promise.all(addOwnerRequests)
+            .then((responses: any) => {
+              const fault = responses.find((r: any) => r?.Fault);
+              if (fault) {
+                createSnackbar({
+                  key: 'error',
+                  severity: 'error',
+                  label: fault?.Fault?.Reason?.Text,
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              } else {
+                const updatedOwners = uniq(ownersList.concat(newOwners));
+                setOwnersList(updatedOwners);
+                setPreviousDetail((prevState: any) => ({
+                  ...prevState,
+                  ownersList: updatedOwners,
+                }));
+                setSearchOwner('');
+                setMemberErrorMessage('');
+                createSnackbar({
+                  key: 'success',
+                  severity: 'success',
+                  label: t('label.owner_added_successfully', 'Owner has been added successfully'),
+                  autoHideTimeout: 3000,
+                  hideButton: true,
+                  replace: true,
+                });
+              }
+              setIsRequestInProgress(false);
+            })
+            .catch((error: any) => {
+              createSnackbar({
+                key: 'error',
+                severity: 'error',
+                label: error?.message
+                  ? error?.message
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                autoHideTimeout: 3000,
+                hideButton: true,
+                replace: true,
+              });
+              setIsRequestInProgress(false);
+            });
         }
       } else if (allEmails === undefined) {
         setIsShowOwnerError(true);
@@ -1907,7 +1905,7 @@ const EditMailingListView: FC<any> = ({
         );
       }
     }
-  }, [searchOwner, t, ownersList]);
+  }, [searchOwner, t, ownersList, selectedMailingList?.id, getOwnerType, createSnackbar]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchSendEmail = useCallback(
@@ -2180,6 +2178,83 @@ const EditMailingListView: FC<any> = ({
   const closeHandler = useCallback(() => {
     setIsOpenDeleteDialog(false);
   }, []);
+
+  const closeDeleteOwnerHandler = useCallback(() => {
+    setIsOpenDeleteOwnerDialog(false);
+    setOwnerToDelete(null);
+  }, []);
+
+  const onDeleteOwnerConfirm = useCallback(() => {
+    if (!ownerToDelete) return;
+    setIsRequestInProgress(true);
+    const dl: any = {
+      by: 'id',
+      _content: selectedMailingList?.id,
+    };
+    const action: any = {
+      op: 'removeOwners',
+      owner: {
+        by: 'name',
+        type: getOwnerType(ownerToDelete?.name),
+        _content: ownerToDelete?.name,
+      },
+    };
+    distributionListAction(dl, action)
+      .then((response: any) => {
+        if (response?.Fault) {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: response?.Fault?.Reason?.Text,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        } else {
+          const updatedOwners = ownersList.filter(
+            (item: any) => item?.name !== ownerToDelete?.name,
+          );
+          setOwnersList(updatedOwners);
+          setSelectedOwnerListMember([]);
+          setPreviousDetail((prevState: any) => ({
+            ...prevState,
+            ownersList: updatedOwners,
+          }));
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.owner_deleted_successfully', 'Owner has been removed successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        }
+        setIsRequestInProgress(false);
+        closeDeleteOwnerHandler();
+      })
+      .catch((error: any) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error?.message
+            ? error?.message
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        setIsRequestInProgress(false);
+        closeDeleteOwnerHandler();
+      });
+  }, [
+    ownerToDelete,
+    selectedMailingList?.id,
+    getOwnerType,
+    ownersList,
+    createSnackbar,
+    t,
+    closeDeleteOwnerHandler,
+  ]);
 
   const closeEditPermissionHandler = useCallback(() => {
     setIsOpenEditPermissionDialog(false);
@@ -3728,6 +3803,50 @@ const EditMailingListView: FC<any> = ({
           </Text>
           <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
         </RouteLeavingGuard>
+        {isOpenDeleteOwnerDialog && (
+          <Modal
+            size="small"
+            title={t('label.delete_owner', 'Delete owner')}
+            open={isOpenDeleteOwnerDialog}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Row style={{ gap: '1rem' }}>
+                  <Button
+                    label={t('label.cancel', 'Cancel')}
+                    color="secondary"
+                    type="outlined"
+                    onClick={closeDeleteOwnerHandler}
+                    disabled={isRequestInProgress}
+                  />
+                  <Button
+                    label={t('label.delete', 'Delete')}
+                    color="error"
+                    onClick={onDeleteOwnerConfirm}
+                    disabled={isRequestInProgress}
+                  />
+                </Row>
+              </Container>
+            }
+            showCloseIcon
+            onClose={closeDeleteOwnerHandler}
+          >
+            <Container
+              padding={{ top: 'extralarge', bottom: 'extralarge' }}
+              style={{ textAlign: 'center' }}
+            >
+              <Text size={'extralarge'} overflow="break-word">
+                <Trans
+                  i18nKey="label.are_you_sure_delete_owner"
+                  defaults="Are you sure you want to remove <bold>{{name}}</bold> from the owners list?"
+                  components={{ bold: <strong /> }}
+                  values={{
+                    name: ownerToDelete?.name,
+                  }}
+                />
+              </Text>
+            </Container>
+          </Modal>
+        )}
         {isOpenDeleteDialog && (
           <Modal
             size="medium"
