@@ -1,3 +1,10 @@
+## [0.12.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.7...v0.12.8) (2026-03-20)
+
+### Bug Fixes
+
+* **[admin-ui-domains] edit-account-general-section:** export as named export ([6ef6461](https://github.com/zextras/carbonio-admin-console-ui/commit/6ef6461777b4d555224450be78180547e121eb5c))
+* **[admin-ui-storage] hsm-setting-panel:** update timer ref type ([821deca](https://github.com/zextras/carbonio-admin-console-ui/commit/821decac6eb9ed996690d0e5ce6dc83eac1f33a3))
+
 ## [0.12.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.6...v0.12.7) (2026-03-13)
 
 ### Bug Fixes
