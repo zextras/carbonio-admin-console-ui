@@ -4,15 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '@zextras/ui-components';
-
-import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, OPERATIONS_ROUTE_ID, PRIMARY_BAR_OPERATIONS } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();

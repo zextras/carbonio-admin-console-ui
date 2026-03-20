@@ -4,17 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { ModalManager, SnackbarManager } from '@zextras/ui-components';
+import { I18nFactory, ReactQueryProvider, useBridge } from '@zextras/ui-shared';
 import { FC, use } from 'react';
 
-import I18nFactory from '../i18n/i18n-factory';
-import { ReactQueryProvider } from '../providers/react-query-provider';
-import { useBridge } from '../store/context-bridge';
-import { TrackerProvider } from '../tracker/provider';
 import { BootstrapperContextProvider } from './bootstrapper-provider';
 import { BootstrapperRouter } from './bootstrapper-router';
 import { ErrorPage } from './error-page';
 import { init } from './init';
-import { ThemeProvider } from './theme-provider';
 
 const i18nFactory = new I18nFactory();
 const initPromise = init(i18nFactory);
@@ -38,18 +34,14 @@ export const Bootstrapper = () => {
 
   return (
     <ReactQueryProvider>
-      <ThemeProvider>
-        <SnackbarManager>
-          <ModalManager>
-            <TrackerProvider>
-              <BootstrapperContextProvider i18nFactory={i18nFactory}>
-                <TBridge i18nFactory={i18nFactory} />
-                <BootstrapperRouter />
-              </BootstrapperContextProvider>
-            </TrackerProvider>
-          </ModalManager>
-        </SnackbarManager>
-      </ThemeProvider>
+      <SnackbarManager>
+        <ModalManager>
+          <BootstrapperContextProvider i18nFactory={i18nFactory}>
+            <TBridge i18nFactory={i18nFactory} />
+            <BootstrapperRouter />
+          </BootstrapperContextProvider>
+        </ModalManager>
+      </SnackbarManager>
     </ReactQueryProvider>
   );
 };

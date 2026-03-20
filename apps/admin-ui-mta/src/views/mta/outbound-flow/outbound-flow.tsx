@@ -3,12 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -18,6 +20,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,10 +45,7 @@ import {
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
@@ -258,7 +258,7 @@ const MTAOutBoundFlow: FC = () => {
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
-        .then((data) => {
+        .then(() => {
           createSnackbar({
             key: 'success',
             severity: 'success',
@@ -749,7 +749,7 @@ const MTAOutBoundFlow: FC = () => {
               rows={instancesTableRows}
               headers={instanceTableHeader}
               showCheckbox={false}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>

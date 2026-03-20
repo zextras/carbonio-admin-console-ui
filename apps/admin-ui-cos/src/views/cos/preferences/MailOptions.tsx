@@ -6,6 +6,7 @@
 import {
 	Container,
 	Input,
+	ListRow,
 	Padding,
 	Row,
 	Select,
@@ -17,7 +18,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 import { bytesToHumanReadable, charactorSet, conversationGroupBy } from '../../utility/utils';
 import { AttributeValue } from '../constants/types';
 
@@ -81,7 +81,7 @@ export const MailOptions = ({
 			padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<Text  weight="bold">
 				{t('label.mailing_options', 'Mail Options')}
 			</Text>
 			<Row mainAlignment="flex-start" width="100%">

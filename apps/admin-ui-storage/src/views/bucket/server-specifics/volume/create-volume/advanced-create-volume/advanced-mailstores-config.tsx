@@ -7,6 +7,7 @@ import {
 	Container,
 	Input,
 	Link,
+	ListRow,
 	Padding,
 	Radio,
 	Row,
@@ -24,7 +25,6 @@ import {
 	SECONDARY_TYPE_VALUE
 } from '../../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
-import ListRow from '../../../../../list/list-row';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresConfig: FC<{

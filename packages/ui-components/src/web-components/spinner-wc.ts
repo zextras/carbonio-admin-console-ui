@@ -4,14 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import './theme.css';
+import '../theme/theme.css';
 
 import { css, html, LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
 
-/**
- * A simple loading spinner web component
- * @element spinner-wc
- */
 export class SpinnerWC extends LitElement {
   static override styles = css`
     :host {
@@ -35,11 +32,8 @@ export class SpinnerWC extends LitElement {
     }
   `;
 
-  static override properties = {
-    color: { type: String, reflect: true },
-  };
-
-  color = 'primary';
+  @property({ type: String, reflect: true })
+  accessor color = 'primary';
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -50,7 +44,7 @@ export class SpinnerWC extends LitElement {
     return html`
       <div
         class="spinner"
-        style="border-color: var(--color-${this.color}); border-right-color: transparent;"
+        style="border-color: var(--color-${this.color}-regular); border-right-color: transparent;"
         role="status"
         aria-busy="true"
         aria-label="Loading"
@@ -59,12 +53,12 @@ export class SpinnerWC extends LitElement {
   }
 }
 
-if (!customElements.get('spinner-wc')) {
-  customElements.define('spinner-wc', SpinnerWC);
-}
-
 declare global {
   interface HTMLElementTagNameMap {
     'spinner-wc': SpinnerWC;
   }
+}
+
+if (!customElements.get('spinner-wc')) {
+  customElements.define('spinner-wc', SpinnerWC);
 }

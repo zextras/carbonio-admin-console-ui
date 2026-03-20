@@ -7,7 +7,6 @@
 export const ADVANCED = 'advanced';
 export const ACTIVE = 'active';
 export const MANAGE_APP_ID = 'manage';
-export const FIRST_PAGE = 1;
 export const DASHBOARD = 'dashboard';
 export const TRUE = 'TRUE';
 export const FALSE = 'FALSE';
@@ -105,32 +104,6 @@ export const RELEASE = 'release';
 export const REQUEUE = 'requeue';
 export const DELETE = 'delete';
 export const QUEUE = 'queue';
-export const paginationItems: Array<{ label: string; value: number }> = [
-	{
-		label: '5',
-		value: 5
-	},
-	{
-		label: '10',
-		value: 10
-	},
-	{
-		label: '15',
-		value: 15
-	},
-	{
-		label: '25',
-		value: 25
-	},
-	{
-		label: '50',
-		value: 50
-	},
-	{
-		label: '100',
-		value: 100
-	}
-];
 export const ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS = 'zimbraMtaSmtpdSenderLoginMaps';
 export const MTA_SERVER_GENERAL = 'mta_server_general';
 export const PRIMARY_BAR_MTA = 'pb_mta';

@@ -4,18 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  addRoute,
-  registerActions,
-  removeRoute,
-  useCurrentUserRights,
-} from '@zextras/admin-ui-bootstrap';
-import { Icon } from '@zextras/ui-components';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
 import {
   APP_ID,
@@ -28,21 +22,9 @@ import {
   MANAGE,
   MANAGE_APP_ID,
   PRIMARY_BAR_COS,
-  SERVICES_ROUTE_ID,
 } from './constants';
-import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useCosStore } from './store/cos/store';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-
-const PrimaryBarIcon = styled(Icon)`
-  &:hover {
-    background: transparent;
-  }
-  @media (max-width: 60rem) {
-    padding: 0 0 0 0.188rem;
-  }
-`;
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -109,18 +91,6 @@ const App: FC = () => {
     [cosTooltipItems],
   );
 
-  const cosPrimaryBar = useCallback(
-    () => (
-      <PrimaryBarIcon
-        icon={SettingsModOutline}
-        size="large"
-        onClick={(): void => {
-          navigate(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`);
-        }}
-      />
-    ),
-    [navigate],
-  );
   useEffect(() => {
     if (showCOS) {
       addRoute({
@@ -128,7 +98,7 @@ const App: FC = () => {
         position: 2,
         visible: true,
         label: t('label.cos', 'COS') || '',
-        primaryBar: cosPrimaryBar,
+        primaryBar: 'SettingsModOutline',
         appView: AppView,
         primarybarSection: { ...managementSection },
         tooltip: CosTooltipView,
@@ -137,7 +107,7 @@ const App: FC = () => {
     } else {
       removeRoute(COS_ROUTE_ID);
     }
-  }, [CosTooltipView, cosPrimaryBar, managementSection, showCOS, t]);
+  }, [CosTooltipView, managementSection, showCOS, t]);
 
   useEffect(() => {
     registerActions({

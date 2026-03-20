@@ -8,7 +8,10 @@ import {
   Button,
   Checkbox,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -21,9 +24,6 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 const HSMpolicySettings: FC<any> = () => {
@@ -561,7 +561,7 @@ const HSMpolicySettings: FC<any> = () => {
             showCheckbox={false}
             multiSelect={false}
             selectedRows={selectedPolicies}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
@@ -666,7 +666,7 @@ const HSMpolicySettings: FC<any> = () => {
                     setSelectedSourceVolume(selected);
                   }
                 }}
-                RowFactory={CustomRowFactory}
+                RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
             )}
@@ -734,7 +734,7 @@ const HSMpolicySettings: FC<any> = () => {
                     setSelectedDestinationVolume(selected);
                   }
                 }}
-                RowFactory={CustomRowFactory}
+                RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
             )}

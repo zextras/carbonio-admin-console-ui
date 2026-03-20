@@ -6,13 +6,35 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
-import svgr from 'vite-plugin-svgr';
 import { playwright } from '@vitest/browser-playwright';
-import { optimizeDepsInclude } from './vitest.config.utils';
+import svgr from 'vite-plugin-svgr';
+import { getOptimizeDepsInclude } from './vitest.config.utils';
+
+function getPlugins() {
+  return [
+    react({
+      babel: {
+        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+      },
+    }),
+    svgr({
+      svgrOptions: {
+        ref: true,
+        svgo: false,
+        titleProp: true,
+        exportType: 'default',
+      },
+      include: '**/*.svg',
+    }),
+  ];
+}
 
 function jsdomProjectConfig() {
   return {
-    plugins: [],
+    plugins: getPlugins(),
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
     test: {
       name: 'unit',
       environment: 'jsdom',
@@ -25,10 +47,7 @@ function jsdomProjectConfig() {
       },
       alias: {
         'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
-        '@zextras/admin-ui-bootstrap': path.resolve(
-          __dirname,
-          './__mocks__/@zextras/admin-ui-bootstrap.js',
-        ),
+        '@zextras/ui-shared': path.resolve(__dirname, './__mocks__/@zextras/ui-shared.js'),
       },
       include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
@@ -38,16 +57,44 @@ function jsdomProjectConfig() {
       mockReset: true,
       restoreMocks: true,
       testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      maxConcurrency: 3,
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      include: getOptimizeDepsInclude(),
     },
   };
 }
 
 function browserProjectConfig() {
   return {
-    resolve: {
+    define: {
+      BASE_PATH: JSON.stringify(''),
+    },
+    test: {
+      name: 'browser',
+      maxConcurrency: 3,
+      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+      sequence: {
+        groupOrder: 2,
+      },
+      fileParallelism: false,
+      retry: 2,
+      include: ['**/*.browser.test.{ts,tsx}'],
+      browser: {
+        enabled: true,
+        provider: playwright() as any,
+        instances: [{ browser: 'chromium' as const }],
+        viewport: { width: 834, height: 2000 },
+        headless: !!process.env.CI,
+        screenshotFailures: !process.env.CI,
+        providerOptions: { launch: { timeout: 60_000 } },
+      },
+      exclude: ['dist/**', 'node_modules/**'],
+      globals: true,
+      css: true,
+      clearMocks: true,
+      testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
@@ -85,56 +132,23 @@ function browserProjectConfig() {
         'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
       },
     },
-    test: {
-      name: 'browser',
-      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-      sequence: {
-        groupOrder: 2,
-      },
-      fileParallelism: false,
-      retry: 2,
-
-      include: ['**/*.browser.test.{ts,tsx}'],
-      browser: {
-        enabled: true,
-        provider: playwright() as any,
-        instances: [{ browser: 'chromium' as const }],
-        viewport: { width: 834, height: 2000 },
-        headless: !!process.env.CI,
-        screenshotFailures: !process.env.CI,
-      },
-      exclude: ['dist/**', 'node_modules/**'],
-      globals: true,
-      css: true,
-      clearMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
-      hookTimeout: 15_000,
-    },
-    plugins: [
-      react(),
-      svgr({
-        svgrOptions: {
-          ref: true,
-          svgo: false,
-          titleProp: true,
-          exportType: 'default',
-        },
-        include: '**/*.svg',
-      }),
-    ],
+    plugins: getPlugins(),
     optimizeDeps: {
-      include: optimizeDepsInclude,
+      include: getOptimizeDepsInclude(),
     },
   };
 }
 
 export default defineConfig({
-  esbuild: {
-    target: 'es2022',
+  server: {
+    fs: {
+      allow: ['../..'], // allow monorepo root
+    },
   },
   test: {
     globals: true,
     passWithNoTests: true,
+    maxConcurrency: 3,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
 
     coverage: {
@@ -148,7 +162,7 @@ export default defineConfig({
         '**/[.]**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',
-        '**/{karma,rollup,vite,vitest,ava,babel,nyc,build}.config.*',
+        '**/{karma,vite,vitest,ava,babel,nyc,build}.config.*',
         '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
         '**/*.config.{js,ts}',
         '**/*.test.{ts,tsx}',

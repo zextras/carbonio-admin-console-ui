@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row } from "@zextras/ui-components";
+import { Container, Input, ListRow, Row } from "@zextras/ui-components";
 import { format } from "date-fns";
 import { FC, useContext, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import ListRow from "../../../list/list-row";
 import { RestoreDeleteAccountContext } from "./restore-delete-account-context";
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {

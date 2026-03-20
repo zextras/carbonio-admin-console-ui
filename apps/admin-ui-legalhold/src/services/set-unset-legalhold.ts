@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/admin-ui-bootstrap';
+import { fetchExternalSoap } from '@zextras/ui-shared';
+
+import type { SetUnsetLegalHoldResponse } from '../../types';
 
 export const setUnsetLegalHold = async (
 	status: string,
 	id: string,
 	servers: string
-): Promise<any> =>
+): Promise<SetUnsetLegalHoldResponse> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/backup/legalHold?targetServers=${servers}`, {
 		ui: true,
 		command: status,

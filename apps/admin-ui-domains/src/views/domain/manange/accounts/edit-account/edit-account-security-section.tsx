@@ -4,13 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HorizontalWizard,
+  HoverableRowFactory,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -18,68 +23,24 @@ import {
   Table,
   Text,
   useSnackbar,
+  WizardInSection,
 } from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section-component';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
-import ListRow from '../../../../list/list-row';
-import InheritedInput from '../../../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
-
-const StaticCodesContainer = styled(Row)`
-  max-width: 350px;
-`;
-const StaticCodesWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  column-count: 2;
-  padding: 16px;
-`;
-const StaticCode = styled.label`
-  display: block;
-  font-family: monospace;
-  padding: 4.95px 0;
-`;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
@@ -181,19 +142,21 @@ const EditAccountSecuritySection: FC = () => {
               mainAlignment="space-between"
             >
               <Row width="40%" mainAlignment="flex-start">
-                <QRCode data-testid="qrcode-password" size={179} value={qrData} />
+                <QRCodeSVG data-testid="qrcode-password" size={179} value={qrData} />
               </Row>
               <Row width="60%" mainAlignment="flex-start">
                 <Container>
                   <Padding top="large">
                     <Row mainAlignment="center">
-                      <StaticCodesContainer background="gray5">
-                        <StaticCodesWrapper>
+                      <Row background="gray5" style={{ maxWidth: '350px' }}>
+                        <div className={styles.staticCodesWrapper}>
                           {map(pinCodes, (singleCode: any) => (
-                            <StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
+                            <label key={singleCode.code} className={styles.staticCode}>
+                              {singleCode.code}
+                            </label>
                           ))}
-                        </StaticCodesWrapper>
-                      </StaticCodesContainer>
+                        </div>
+                      </Row>
                     </Row>
                   </Padding>
                 </Container>
@@ -330,29 +293,26 @@ const EditAccountSecuritySection: FC = () => {
       },
     ],
     [
-      accountDetail?.name,
-      domainName,
+      handleEmailChange,
+      handleSendOTPEmail,
+      hasEmailError,
+      isSendDisabled,
       pinCodes,
       qrData,
       secrateCode,
       sendEmailTo,
-      createSnackbar,
       t,
-      handleEmailChange,
-      hasEmailError,
-      isSendDisabled,
     ],
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
-  const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '',
-  );
+  const zimbraPasswordLockoutDurationType =
+    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '';
   const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
     useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
-  const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
-    useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+  const zimbraPasswordLockoutFailureLifetimeType =
+    accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
   const headers: any = useMemo(
@@ -593,7 +553,7 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text size="extralarge" color="gray0" weight="bold">
+                      <Text  color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
                       </Text>
                       <Row padding={{ top: 'large' }}></Row>
@@ -660,7 +620,6 @@ const EditAccountSecuritySection: FC = () => {
                   mainAlignment="space-between"
                   crossAlignment="flex-start"
                   width="fill"
-                  // height="calc(100vh - 340px)"
                 >
                   {otpList.length !== 0 && (
                     <Table
@@ -669,7 +628,7 @@ const EditAccountSecuritySection: FC = () => {
                       multiSelect={false}
                       onSelectionChange={setSelectedRows}
                       style={{ overflow: 'auto', height: '100%' }}
-                      RowFactory={CustomRowFactory}
+                      RowFactory={HoverableRowFactory}
                       HeaderFactory={CustomHeaderFactory}
                     />
                   )}
@@ -720,6 +679,7 @@ const EditAccountSecuritySection: FC = () => {
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
                 <HorizontalWizard
                   steps={wizardSteps}
+                  title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
                   Wrapper={WizardInSection}
                   setToggleWizardSection={setShowCreateOTP}
                 />
@@ -730,7 +690,7 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <Text  weight="bold">
             {t('label.backup', 'Backup')}
           </Text>
           <Row mainAlignment="flex-start" width="100%">
@@ -774,7 +734,11 @@ const EditAccountSecuritySection: FC = () => {
             >
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
+                  <icon-wc
+                    icon="InfoOutline"
+                    color="primary"
+                    style={{ width: '20px', height: '20px' }}
+                  ></icon-wc>
                 </Padding>
               </Row>
               <Row
@@ -799,7 +763,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.password', 'Password')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">
@@ -1040,7 +1004,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('label.forgotten_password', 'Forgotten Password')}
             </Text>
             <Row mainAlignment="center" width="100%">
@@ -1107,7 +1071,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <Text  weight="bold">
               {t('cos.failed_login_policy', 'Failed Login Policy')}
             </Text>
             <Row mainAlignment="flex-start" width="100%">

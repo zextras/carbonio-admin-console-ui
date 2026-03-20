@@ -3,17 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Banner, Container, Padding } from '@zextras/ui-components';
+import {
+  Banner,
+  Container,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  Padding,
+} from '@zextras/ui-components';
+import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
 import { TRUE } from '../constants';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
-import InheritedInput from '../views/utility/inherited-components/inherited-input';
-import InheritedSelect from '../views/utility/inherited-components/inherited-select';
-import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
   featuresDetail: AccountType;

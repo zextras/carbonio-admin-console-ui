@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { PostHogProvider } from '@posthog/react';
-import { useConfigurationAttribute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { useAllConfig, useIsAdvanced } from '@zextras/ui-shared';
 import type { PostHogConfig } from 'posthog-js';
 import React, { useMemo } from 'react';
 
@@ -16,12 +16,21 @@ const PH_PROJECT_API_KEY = 'phc_fMgU1UPSHulWuJCHXbrjyqoEoXwcb7rZJy69HdD7x2h';
 export const TrackerProvider = ({
   children,
 }: React.PropsWithChildren<Record<never, never>>): React.JSX.Element => {
-  const feedbackPermission = useConfigurationAttribute('carbonioAllowFeedback') === 'TRUE';
+  const { data: config, isLoading } = useAllConfig();
+
+  const carbonioSendAnalyticsEnabled =
+    config?.find((cf) => cf.n === 'carbonioSendAnalytics')?._content === 'TRUE';
+
+  const feedbackPermission =
+    config?.find((cf) => cf.n === 'carbonioAllowFeedback')?._content === 'TRUE';
+
   const isAdvanced = useIsAdvanced();
+
   const showPostHogSurveys = useMemo(
     () => !isAdvanced && feedbackPermission,
     [isAdvanced, feedbackPermission],
   );
+
   const options = useMemo(
     (): Partial<PostHogConfig> => ({
       api_host: PH_API_HOST,
@@ -29,13 +38,16 @@ export const TrackerProvider = ({
       opt_out_capturing_by_default: false,
       disable_session_recording: true,
       mask_all_text: true,
-      disable_surveys: showPostHogSurveys,
+      disable_surveys: !showPostHogSurveys,
       autocapture: false,
     }),
     [showPostHogSurveys],
   );
-  const carbonioSendAnalyticsEnabled =
-    useConfigurationAttribute('carbonioSendAnalytics') === 'TRUE';
+
+  if (isLoading) {
+    return <>{children}</>;
+  }
+
   if (carbonioSendAnalyticsEnabled) {
     return (
       <PostHogProvider apiKey={PH_PROJECT_API_KEY} options={options}>
@@ -44,5 +56,6 @@ export const TrackerProvider = ({
       </PostHogProvider>
     );
   }
+
   return <>{children}</>;
 };

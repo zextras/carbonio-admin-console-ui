@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useStickyBarStore  } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Input,  Row,  Select,  Text,  useSnackbar } from "@zextras/ui-components";
+import { Button, Container, Displayer, Input, ListRow, Row, Select, Text, useSnackbar } from "@zextras/ui-components";
+import {  useStickyBarStore  } from "@zextras/ui-shared";
 import {  format  } from "date-fns";
 import {  FC, useCallback, useEffect, useMemo, useState  } from "react";
 import {  useTranslation  } from "react-i18next";
@@ -15,8 +15,6 @@ import {  getMobileDeviceDetail  } from "../../../../services/get-mobile-device-
 import {  resetDevice  } from "../../../../services/reset-device";
 import {  suspendDevice  } from "../../../../services/suspend-device";
 import {  wipeDevice  } from "../../../../services/wipe-device";
-import Displayer from "../../../components/displayer";
-import ListRow from "../../../list/list-row";
 import ActiveDeviceConfirmation from "./active-device-confirmation";
 
 type MobileDeviceDetail = {
@@ -315,7 +313,7 @@ const ActiveDeviceDetail: FC<{
 
   const buttons = [
     {
-      align: "right",
+      align: "right" as const,
       label: t("label.wipe_device", "Wipe Device"),
       tooltiplabel: t(
         "label.wipe_device_factory_settings",
@@ -329,7 +327,7 @@ const ActiveDeviceDetail: FC<{
       },
     },
     {
-      align: "right",
+      align: "right" as const,
       label: t("label.reset_device", "Reset Device"),
       tooltiplabel: t(
         "label.logoff_from_every_device",
@@ -344,7 +342,7 @@ const ActiveDeviceDetail: FC<{
       disable: isDetailRequestInProgess,
     },
     {
-      align: "right",
+      align: "right" as const,
       color: "primary",
       label: t("label.suspend", "Suspend"),
       tooltiplabel: t(
@@ -360,7 +358,7 @@ const ActiveDeviceDetail: FC<{
       disable: isDetailRequestInProgess || isOperationRequestInProgress,
     },
     {
-      align: "left",
+      align: "left" as const,
       icon: isSticky ? "Pin3Outline" : "Unpin3Outline",
       onClick: (): void => {
         setIsSticky(!isSticky);

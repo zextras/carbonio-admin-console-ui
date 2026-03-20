@@ -1,0 +1,39 @@
+.primaryBarContainer {
+  min-width: 44px;
+  max-width: 192px;
+  width: 44px;
+  transition: width 300ms;
+  overflow-x: hidden;
+}
+
+.primaryBarRow {
+  background-color: var(--color-gray6-regular);
+  cursor: pointer;
+}
+
+.primaryBarRow:hover {
+  background: var(--color-gray6-hover);
+}
+
+.primaryBarRow[data-active='true'] {
+  background-color: var(--color-primary-highlight);
+}
+
+.primaryBarRow[data-active='true']:hover {
+  background: var(--color-gray4-hover);
+}
+
+.primaryBarButton {
+  background: transparent;
+}
+
+.primaryBarButton:hover {
+  background: transparent;
+}
+
+.customText {
+  width: 75%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}

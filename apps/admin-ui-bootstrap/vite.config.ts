@@ -10,10 +10,10 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRollupOptions } from './vite-config/vite.rollup.config';
-import { buildSharedDepsPlugin } from './vite-config/vite-plugin-build-shared-deps';
+import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config';
 import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
-import { getWorkspaceRoot } from '../../scripts/utils';
+import { getWorkspaceRoot } from './vite-config/utils';
+import tailwindcss from '@tailwindcss/vite';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
@@ -79,8 +79,12 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      ...(isServeCommand ? [] : [buildSharedDepsPlugin({ isDev }), postBuildPlugin()]),
-      react(),
+      ...(isServeCommand ? [] : [postBuildPlugin()]),
+      react({
+        babel: {
+          plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+        },
+      }),
       svgr({
         svgrOptions: {
           ref: true,
@@ -91,6 +95,7 @@ export default defineConfig(({ command, mode }) => {
         include: '**/*.svg',
         exclude: '**/src/assets/**/*.svg',
       }),
+      tailwindcss(),
       {
         name: 'trailing-slash-redirect',
         configureServer(server) {
@@ -110,6 +115,11 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     ],
+    css: {
+      modules: {
+        localsConvention: 'camelCaseOnly',
+      },
+    },
     define: {
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
       BASE_PATH: JSON.stringify(basePath),
@@ -118,7 +128,7 @@ export default defineConfig(({ command, mode }) => {
       outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
       emptyOutDir: true,
       sourcemap: isDev,
-      rollupOptions: createBootstrapRollupOptions(),
+      rollupOptions: createBootstrapRolldownOptions(),
     },
     base: isServeCommand ? '/carbonioAdmin/' : basePath,
     publicDir: 'assets',

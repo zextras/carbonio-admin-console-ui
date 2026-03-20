@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input,Row } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
-import ListRow from '../../../../../list/list-row';
 import { volumeTypeList } from '../../../../../utility/utils';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 

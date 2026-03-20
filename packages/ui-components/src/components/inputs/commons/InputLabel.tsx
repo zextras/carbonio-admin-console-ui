@@ -3,44 +3,39 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import clsx from 'clsx';
+import { CSSProperties, FC, LabelHTMLAttributes, useMemo } from 'react';
 
-import styled, { SimpleInterpolation } from 'styled-components';
+import { resolveThemeColor } from '../../../theme/theme-utils';
+import styles from './InputLabel.module.css';
 
-import { getColor } from '../../../theme/theme-utils';
+type InputLabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
+  $hasError?: boolean;
+  $hasFocus?: boolean;
+  $disabled?: boolean;
+};
 
-export const InputLabel = styled.label.attrs<
-	{
-		$hasError?: boolean;
-		$hasFocus?: boolean;
-		$disabled?: boolean;
-	},
-	{ $textColor: string }
->(({ $hasError, $hasFocus }) => ({
-	$textColor: ($hasError && 'error') || ($hasFocus && 'primary') || 'secondary'
-}))<{
-	$hasError?: boolean;
-	$hasFocus?: boolean;
-	$disabled?: boolean;
-}>`
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	left: 0;
-	font-size: ${({ theme }): string => theme.sizes.font.medium};
-	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-	font-family: ${({ theme }): string => theme.fonts.default};
-	line-height: 1.5;
-	color: ${({ theme, $textColor, $disabled }): SimpleInterpolation =>
-		getColor(`${$textColor}.${$disabled ? 'disabled' : 'regular'}`, theme)};
-	transition:
-		transform 150ms ease-out,
-		font-size 150ms ease-out,
-		top 150ms ease-out,
-		left 150ms ease-out;
-	cursor: inherit;
-	user-select: none;
-	max-width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-`;
+export const InputLabel: FC<InputLabelProps> = ({
+  $hasError,
+  $hasFocus,
+  $disabled,
+  className,
+  style,
+  ...rest
+}) => {
+  const labelColor = useMemo(() => {
+    const color = ($hasError && 'error') || ($hasFocus && 'primary') || 'secondary';
+    return resolveThemeColor(color, $disabled ? 'disabled' : 'regular');
+  }, [$hasError, $hasFocus, $disabled]);
+
+  const labelStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        '--label-color': labelColor,
+        ...style,
+      } as CSSProperties),
+    [labelColor, style],
+  );
+
+  return <label className={clsx(styles.label, className)} style={labelStyle} {...rest} />;
+};

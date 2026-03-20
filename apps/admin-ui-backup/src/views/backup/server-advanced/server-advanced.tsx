@@ -5,20 +5,21 @@
  */
 
 import {
-  getSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  getSoapFetchRequest,
+  useAllServers,
+  useCurrentUserRights,
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,6 @@ import { useParams } from 'react-router';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {

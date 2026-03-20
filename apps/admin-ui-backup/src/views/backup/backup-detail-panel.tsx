@@ -3,24 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, Padding, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes } from 'react-router';
 
 import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';
 import BackupDetailOperation from './backup-detail-operation';
 
 const BackupDetailPanel: FC = () => {
-  const location = useLocation();
-  const path = location.pathname;
   const globalConfig = useBackupStore((state) => state.globalConfig);
   const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
   const [t] = useTranslation();
   const getGlobalConfig = useCallback((): void => {
-    const serverName = window.location.hostname;
-    dumpGlobalConfig(serverName).then((data: any) => {
+    dumpGlobalConfig().then((data: any) => {
       if (data?.Body?.response?.content) {
         const parseData = JSON.parse(data.Body.response.content);
         if (parseData?.response) {
@@ -44,7 +41,7 @@ const BackupDetailPanel: FC = () => {
       {!Object.keys(globalConfig).length ? (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <Icon icon="CloseCircleOutline" size="large" color="white" />
+            <icon-wc icon="CloseCircleOutline" size="large" color="white"></icon-wc>
             <Padding left="large">
               <Text color="white">
                 {t(

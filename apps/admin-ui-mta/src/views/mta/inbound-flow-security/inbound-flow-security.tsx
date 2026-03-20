@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   Container,
+  ListRow,
   Padding,
   Row,
   Switch,
@@ -15,6 +15,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual, uniq } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -44,7 +45,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
   const [t] = useTranslation();
@@ -93,15 +93,13 @@ const MTAInboundFlowSecurity: FC = () => {
         ZIMBRA_MTA_BLOCKED_EXTENSION,
         findBlockExtension.map((item: Record<string, string>) => item?._content),
       );
-      setValue(
-        ZIMBRA_MTA_BLOCKED_EXTENSION,
-        allExtensions.map((item: Record<string, string>) => item?.label),
-      );
+      if (allExtensions) {
+        setValue(
+          ZIMBRA_MTA_BLOCKED_EXTENSION,
+          allExtensions.map((item: Record<string, string>) => item?.label),
+        );
+      }
       setMtaBlockExtension(allExtensions);
-    } else {
-      setInitialValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
-      setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
-      setMtaBlockExtension([]);
     }
     const findCommonBlockExtension = configInformation.filter(
       (item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
@@ -399,13 +397,17 @@ const MTAInboundFlowSecurity: FC = () => {
     const attributes: Array<Record<string, string>> = [];
     setMtaRestrictions(attributes);
     setValueForSave(attributes);
-    const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
-    if (blockedExtension && blockedExtension.length > 0) {
-      blockedExtension.forEach((item: string) => {
-        attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
-      });
-    } else {
-      attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
+    if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
+      const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
+      if (blockedExtension) {
+        if (blockedExtension.length === 0) {
+          attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
+        } else {
+          blockedExtension.forEach((item: string) => {
+            attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
+          });
+        }
+      }
     }
     attributes.push({
       n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,

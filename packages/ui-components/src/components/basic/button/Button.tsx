@@ -4,16 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import clsx from 'clsx';
 import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
-import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
-import { getColor, pseudoClasses } from '../../../theme/theme-utils';
-import { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
-import { Icon, IconProps } from '../icon/Icon';
+import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
+import { type IconName } from '../../../web-components/icon-registry';
 import { Text } from '../text/Text';
+import styles from './Button.module.css';
 
-type ButtonShape = 'regular' | 'round';
 type ButtonSize = 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
 type ButtonWidth = 'fit' | 'fill';
 type ButtonIconPlacement = 'left' | 'right';
@@ -21,70 +19,43 @@ type ButtonColorsByType =
   | ({
       type?: 'default' | 'outlined';
     } & (
+      | { color?: AnyColor }
       | {
-          /** Main color */
-          color?: AnyColor;
-        }
-      | {
-          /** Background color of the button (only for 'default' and 'outlined' types, to use instead of color for more specificity) */
           backgroundColor?: AnyColor;
-          /** Specific color of the content (only for 'default' and 'outlined' types, to use instead of color for more specificity) */
           labelColor?: AnyColor;
         }
     ))
   | {
       type: 'ghost';
-      /** Main color */
       color?: AnyColor;
     };
 type ButtonType = NonNullable<ButtonColorsByType['type']>;
 
 type ButtonSecondaryAction = {
-  /** Icon of the secondary action */
-  icon: IconProps['icon'];
-  /** Callback for the secondary action */
+  icon: IconName;
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
-  /** Disabled status for the secondary action */
   disabled?: boolean;
-  /** forceActive status for the secondary action */
   forceActive?: boolean;
-  /** Ref object to assign to secondary button */
   ref?: React.RefObject<HTMLButtonElement | null>;
 };
 
 type ButtonPropsInternal = {
-  /** Force active status */
   forceActive?: boolean;
-  /** Disabled status */
   disabled?: boolean;
-  /** Icon to display beside the label */
-  icon?: IconProps['icon'];
-  /** Icon position relative to the label  */
+  icon?: IconName;
   iconPlacement?: ButtonIconPlacement;
-  /** Text content of the button */
   label?: string;
-  /** Whether to show the loading icon */
   loading?: boolean;
-  /** Main action callback */
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
-  /** Shape of the button */
-  shape?: ButtonShape;
-  /** Width of the button */
   width?: ButtonWidth;
-  /** min width of the button */
   minWidth?: string;
-  /** Ref for the button element */
-  buttonRef?: React.Ref<HTMLButtonElement> | null;
   ref?: React.Ref<HTMLButtonElement>;
 } & (
   | {
-      /** Size variant of the button */
       size?: 'medium' | 'large' | 'extralarge';
-      /** Secondary action object (available only for medium and large buttons) */
       secondaryAction?: ButtonSecondaryAction;
     }
   | {
-      /** Size variant of the button */
       size?: ButtonSize;
       secondaryAction?: never;
     }
@@ -99,149 +70,12 @@ type StyledButtonProps = With$Prefix<{
   color: string;
   padding: string;
   gap: string;
-  shape: ButtonShape;
-  // cannot name this prop type because of conflicts with button type prop
   buttonType: ButtonType;
   iconPlacement?: ButtonIconPlacement;
   forceActive: boolean;
   width: ButtonWidth;
   minWidth?: string;
 }>;
-
-const StyledIcon = styled(Icon)<{ $loading?: boolean; $size: string }>`
-  ${({ $loading }): SimpleInterpolation =>
-    $loading &&
-    css`
-      opacity: 0;
-    `};
-  width: ${({ $size }): string => $size};
-  min-width: ${({ $size }): string => $size};
-  height: ${({ $size }): string => $size};
-  min-height: ${({ $size }): string => $size};
-  flex-shrink: 0;
-`;
-
-const StyledText = styled(Text)<{ $loading: boolean; $size: string }>`
-  user-select: none;
-  text-transform: uppercase;
-  font-size: ${({ $size }): string => $size};
-  ${({ $loading }): SimpleInterpolation =>
-    $loading &&
-    css`
-      opacity: 0;
-    `};
-`;
-
-const StyledLoadingContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const StyledButton = styled.button.attrs<
-  StyledButtonProps,
-  {
-    $border: string;
-    $outerPadding: string;
-  }
->(({ $buttonType, $padding, disabled, $minWidth }) => ({
-  $border: $buttonType === 'outlined' ? '0.0625rem solid' : 'none',
-  $outerPadding: $buttonType === 'outlined' ? `calc(${$padding} - 0.0625rem)` : $padding,
-  tabIndex: disabled ? -1 : 0,
-  $minWidth: $minWidth ?? '0',
-}))<StyledButtonProps>`
-  /* set line-height to normal so that the browser can calculate it based on the font, and the accents are not cut off */
-  line-height: normal;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  text-transform: uppercase;
-  /* padding */
-  padding: ${({ $outerPadding }): string => $outerPadding};
-  gap: ${({ $gap }): string => $gap};
-  /* width */
-  width: ${({ $width }): SimpleInterpolation =>
-    ($width === 'fill' && '100%') || ($width === 'fit' && 'auto')};
-  max-width: 100%;
-  min-width: 0;
-  /* order of elements */
-  ${StyledIcon} {
-    order: ${({ $iconPlacement = 'left' }): number | false =>
-      ($iconPlacement === 'left' && 1) || ($iconPlacement === 'right' && 2)};
-  }
-  ${StyledText} {
-    order: ${({ $iconPlacement = 'left' }): number | false =>
-      ($iconPlacement === 'left' && 2) || ($iconPlacement === 'right' && 1)};
-  }
-  /* border */
-  border: ${({ $border }): string => $border};
-  border-radius: ${({ $shape }): SimpleInterpolation =>
-    ($shape === 'regular' && '0.25rem') || ($shape === 'round' && '3.125rem')};
-  /* colors */
-  ${({ $color, $backgroundColor, theme, $forceActive }): SimpleInterpolation =>
-    $forceActive
-      ? css`
-          color: ${getColor(`${$color}.active`, theme)};
-          background-color: ${getColor(`${$backgroundColor}.active`, theme)};
-        `
-      : css`
-          ${pseudoClasses(theme, $color, 'color')};
-          ${pseudoClasses(theme, $backgroundColor, 'background-color')};
-          ${pseudoClasses(theme, $color, 'border-color')};
-        `};
-
-  /* cursor */
-  cursor: pointer;
-  &:disabled {
-    cursor: default;
-  }
-`;
-
-const StyledSecondaryAction = styled(StyledButton)<{ $loading: boolean }>`
-  flex-shrink: 0;
-  min-width: fit-content;
-  ${({ $loading }): SimpleInterpolation =>
-    $loading &&
-    css`
-      opacity: 0;
-    `};
-`;
-
-const StyledSecondaryActionPlaceholder = styled.span<{ $padding: string }>`
-  /* padding */
-  padding: ${({ $padding }): string => $padding};
-  order: 3;
-  visibility: hidden;
-`;
-
-const StyledGrid = styled.div<{ $width: 'fill' | 'fit'; $padding: string; $minWidth?: string }>`
-  width: ${({ $width }): SimpleInterpolation =>
-    ($width === 'fill' && '100%') || ($width === 'fit' && 'fit-content')};
-  max-width: 100%;
-  min-width: ${({ $minWidth }): SimpleInterpolation => $minWidth};
-
-  display: grid;
-  place-items: center;
-  align-content: center;
-  justify-content: stretch;
-
-  ${StyledButton} {
-    grid-row: 1;
-    grid-column: 1;
-  }
-
-  ${StyledSecondaryAction} {
-    grid-row: 1;
-    grid-column: 1;
-    justify-self: end;
-    margin-right: ${({ $padding }): string => $padding};
-  }
-`;
 
 const SIZES: Record<ButtonSize, { label: string; icon: string; padding: string; gap: string }> &
   Record<
@@ -292,6 +126,8 @@ const SIZES: Record<ButtonSize, { label: string; icon: string; padding: string; 
   },
 } as const;
 
+const SUPPORTS_SECONDARY_ACTION: Array<ButtonSize> = ['medium', 'large', 'extralarge'];
+
 const DEFAULT_COLORS = {
   outlined: {
     backgroundColor: 'gray6',
@@ -306,6 +142,31 @@ const DEFAULT_COLORS = {
     color: 'gray6',
   },
 } as const;
+
+function getThemeColorVar(colorName: string, state: string): string {
+  if (!colorName) return '';
+  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+  if (hexPattern.test(colorName)) {
+    return colorName;
+  }
+  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
+}
+
+function getColorStyles(colorName: string, bgName: string): Record<string, string> {
+  return {
+    '--btn-color': getThemeColorVar(colorName, 'regular'),
+    '--btn-color-hover': getThemeColorVar(colorName, 'hover'),
+    '--btn-color-active': getThemeColorVar(colorName, 'active'),
+    '--btn-color-focus': getThemeColorVar(colorName, 'focus'),
+    '--btn-color-disabled': getThemeColorVar(colorName, 'disabled'),
+    '--btn-bg': getThemeColorVar(bgName, 'regular'),
+    '--btn-bg-hover': getThemeColorVar(bgName, 'hover'),
+    '--btn-bg-active': getThemeColorVar(bgName, 'active'),
+    '--btn-bg-focus': getThemeColorVar(bgName, 'focus'),
+    '--btn-bg-disabled': getThemeColorVar(bgName, 'disabled'),
+  };
+}
 
 function getColors(
   type: ButtonType,
@@ -335,21 +196,17 @@ const Button = ({
   disabled = false,
   label,
   size = 'medium',
-  width = 'fit',
   icon,
   iconPlacement = 'right',
   onClick,
   loading = false,
   forceActive = false,
-  shape = 'regular',
   secondaryAction,
+  width = 'fit',
   minWidth,
-  buttonRef = null,
   ref,
   ...rest
 }: ButtonProps) => {
-  const innerButtonRef = useCombinedRefs<HTMLButtonElement>(buttonRef, ref);
-
   const clickHandler = useCallback(
     (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
       if (!disabled && onClick && !e.defaultPrevented) {
@@ -371,76 +228,135 @@ const Button = ({
 
   const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
 
+  const hasSecondaryAction = secondaryAction && SUPPORTS_SECONDARY_ACTION.includes(size);
+
+  const sizeConfig = SIZES[size];
+  const padding = sizeConfig.padding;
+  const gap = sizeConfig.gap;
+  const iconSize = sizeConfig.icon;
+  const textSize = sizeConfig.label;
+
+  const buttonWidth = width === 'fill' ? '100%' : 'auto';
+  const gridWidth = width === 'fill' ? '100%' : 'fit-content';
+
+  const buttonClassName = clsx(styles.button, type === 'outlined' && styles.outlined);
+
+  const colorStyles = getColorStyles(colors.color, colors.backgroundColor);
+
+  const buttonStyle: React.CSSProperties = {
+    '--btn-padding': padding,
+    '--btn-padding-adjusted': type === 'outlined' ? `calc(${padding} - 0.0625rem)` : padding,
+    '--btn-gap': gap,
+    '--btn-width': buttonWidth,
+    ...colorStyles,
+  } as React.CSSProperties;
+
+  const gridStyle: React.CSSProperties = {
+    '--btn-width': gridWidth,
+    '--btn-min-width': minWidth ?? '0',
+    '--secondary-margin': padding,
+  } as React.CSSProperties;
+
+  const secondarySizeConfig = hasSecondaryAction
+    ? SIZES[size as 'medium' | 'large' | 'extralarge'].secondaryButton
+    : null;
+
+  const secondaryButtonStyle: React.CSSProperties | null = secondarySizeConfig
+    ? ({
+        '--btn-padding': secondarySizeConfig.padding,
+        '--btn-padding-adjusted': secondarySizeConfig.padding,
+        '--btn-gap': gap,
+        '--btn-width': 'auto',
+        '--icon-size': secondarySizeConfig.icon,
+        ...colorStyles,
+      } as React.CSSProperties)
+    : null;
+
   return (
-    <StyledGrid $width={width} $minWidth={minWidth} $padding={SIZES[size].padding}>
-      <StyledButton
+    <div className={styles.grid} style={gridStyle}>
+      <button
         {...rest}
-        $backgroundColor={colors.backgroundColor}
-        $color={colors.color}
-        $forceActive={!disabled && forceActive}
-        $shape={shape}
-        $buttonType={type}
-        $padding={SIZES[size].padding}
-        $gap={SIZES[size].gap}
-        $iconPlacement={iconPlacement}
-        $width={width}
-        $minWidth={minWidth}
+        className={buttonClassName}
+        style={{ ...buttonStyle, ...rest.style }}
         disabled={disabled}
         onClick={clickHandler}
-        ref={innerButtonRef}
+        ref={ref}
+        tabIndex={disabled ? -1 : 0}
+        data-force-active={!disabled && forceActive ? 'true' : undefined}
       >
         {loading && (
-          <StyledLoadingContainer>
+          <div className={styles.loadingContainer}>
             <spinner-wc color="currentColor"></spinner-wc>
-          </StyledLoadingContainer>
+          </div>
         )}
         {icon && (
-          <StyledIcon
-            icon={icon}
-            color="currentColor"
-            $size={SIZES[size].icon}
-            $loading={loading}
-          />
+          <span
+            className={styles.icon}
+            data-loading={loading ? 'true' : undefined}
+            style={
+              {
+                '--icon-size': iconSize,
+                '--icon-order': iconPlacement === 'left' ? 1 : 2,
+              } as React.CSSProperties
+            }
+          >
+            <icon-wc icon={icon as IconName} color="currentColor" size={iconSize}></icon-wc>
+          </span>
         )}
         {label && (
-          <StyledText color="currentColor" $size={SIZES[size].label} $loading={loading}>
-            {label}
-          </StyledText>
+          <span
+            className={styles.text}
+            data-loading={loading ? 'true' : undefined}
+            style={
+              {
+                '--text-size': textSize,
+                '--text-order': iconPlacement === 'left' ? 2 : 1,
+              } as React.CSSProperties
+            }
+          >
+            <Text
+              color="currentColor"
+              style={{ '--text-font-size': textSize } as React.CSSProperties}
+            >
+              {label}
+            </Text>
+          </span>
         )}
 
-        {secondaryAction && size !== 'extrasmall' && size !== 'small' && (
-          <StyledSecondaryActionPlaceholder $padding={SIZES[size].secondaryButton.padding}>
-            <StyledIcon
-              icon={`${secondaryAction.icon}Placeholder`}
+        {hasSecondaryAction && secondarySizeConfig && (
+          <span
+            className={styles.secondaryPlaceholder}
+            style={{ '--placeholder-padding': secondarySizeConfig.padding } as React.CSSProperties}
+          >
+            <icon-wc
+              icon={secondaryAction.icon as IconName}
               color="currentColor"
-              $size={SIZES[size].secondaryButton.icon}
-            />
-          </StyledSecondaryActionPlaceholder>
+              size={secondarySizeConfig.icon}
+            ></icon-wc>
+          </span>
         )}
-      </StyledButton>
-      {secondaryAction && size !== 'extrasmall' && size !== 'small' && (
-        <StyledSecondaryAction
-          $backgroundColor={colors.backgroundColor}
-          $color={colors.color}
-          $forceActive={!secondaryAction.disabled && !!secondaryAction.forceActive}
-          $shape={shape}
-          $buttonType={(type === 'outlined' && 'default') || type}
-          $padding={SIZES[size].secondaryButton.padding}
-          $gap={SIZES[size].gap}
-          $loading={loading}
-          $width="fit"
+      </button>
+      {hasSecondaryAction && secondaryButtonStyle && secondarySizeConfig && (
+        <button
+          className={clsx(styles.button, styles.secondaryAction)}
+          style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}
           ref={secondaryAction.ref}
           onClick={secondaryActionClickHandler}
+          data-force-active={
+            !secondaryAction.disabled && !!secondaryAction.forceActive ? 'true' : undefined
+          }
+          data-loading={loading ? 'true' : undefined}
+          tabIndex={secondaryAction.disabled ? -1 : 0}
         >
-          <StyledIcon
-            icon={secondaryAction.icon}
+          <icon-wc
+            icon={secondaryAction.icon as IconName}
             color="currentColor"
-            $size={SIZES[size].secondaryButton.icon}
-          />
-        </StyledSecondaryAction>
+            size={secondarySizeConfig.icon}
+          ></icon-wc>
+        </button>
       )}
-    </StyledGrid>
+    </div>
   );
 };
 

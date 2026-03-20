@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/ui-components';
+import { Container, ListItems } from '@zextras/ui-components';
+import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
-import ListItems from '../list/list-items';
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();

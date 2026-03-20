@@ -5,18 +5,10 @@
  */
 
 import {
-  fetchExternalSoap,
-  getSoapFetchRequest,
-  postSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-  useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   Input,
-  OverlayDivision,
+  ListRow,
   Padding,
   Row,
   Select,
@@ -24,11 +16,18 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  fetchExternalSoap,
+  getSoapFetchRequest,
+  postSoapFetchRequest,
+  useAllServers,
+  useCurrentUserRights,
+  useModuleLicenseInfo,
+} from '@zextras/ui-shared';
 import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import {
   BACKUP_REALTIME,
@@ -46,23 +45,7 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -485,7 +468,7 @@ const BackupConfiguration: FC = () => {
           });
         }
       })
-      .catch((error: any) => {
+      .catch(() => {
         setIsSaveRequestInProgress(false);
         setCurrentBackupValue((prev: any) => ({
           ...prev,
@@ -952,7 +935,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isSaveRequestInProgress && <spinner-wc></spinner-wc>}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -1099,7 +1082,7 @@ const BackupConfiguration: FC = () => {
                   type="outlined"
                   label={initializeBackup}
                   color="primary"
-                  icon={showIcon ? 'PowerOutline' : ''}
+                  {...(showIcon && { icon: 'PowerOutline' })}
                   iconPlacement="right"
                   width="fill"
                   style={{ width: '100%' }}

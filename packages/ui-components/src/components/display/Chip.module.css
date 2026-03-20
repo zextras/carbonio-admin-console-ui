@@ -1,0 +1,100 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1.5;
+  transition: background-color 0.2s ease-out, color 0.2s ease-out;
+  outline: none;
+  width: fit-content;
+  height: fit-content;
+}
+
+.chip[data-shape='regular'] {
+  border-radius: calc(var(--radius-default) * 2);
+}
+
+.chip[data-shape='round'] {
+  border-radius: 100vh;
+}
+
+.chip[data-clickable='true'] {
+  cursor: pointer;
+}
+
+.chip[data-clickable='true']:hover {
+  background-color: var(--chip-bg-hover);
+}
+
+.chip[data-clickable='true']:active {
+  background-color: var(--chip-bg-active);
+}
+
+.chip[data-disabled='true'],
+.chip[data-clickable='false'] {
+  cursor: default;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.label {
+  margin-left: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content > .label:first-child {
+  padding-left: calc(var(--chip-spacing) * 2);
+}
+
+.content > .label:last-child {
+  padding-right: calc(var(--chip-spacing) * 2);
+}
+
+.actionContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: fit-content;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: fit-content;
+  padding: calc(var(--action-spacing) / 2);
+  border: none;
+  background: var(--color-gray5-regular);
+  cursor: pointer;
+  border-radius: var(--action-radius, 100vh);
+  transition: background-color 0.2s ease-out;
+}
+
+.actionButton:hover:not(:disabled) {
+  background-color: var(--color-gray5-hover, var(--color-gray6-regular));
+}
+
+.actionButton:active:not(:disabled) {
+  background-color: var(--color-gray5-active, var(--color-gray6-regular));
+}
+
+.actionButton:disabled {
+  cursor: default;
+}
+
+.actionIcon {
+  min-width: fit-content;
+  padding: calc(var(--action-spacing) / 2);
+}

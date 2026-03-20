@@ -3,20 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  Container,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { modifyConfig } from '../../../services/modify-config';
@@ -24,22 +15,6 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
-
 const GlobalTheme: FC = () => {
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -48,7 +23,6 @@ const GlobalTheme: FC = () => {
   const { data: configInformation = [], invalidate } = useAllConfig();
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -149,7 +123,7 @@ const GlobalTheme: FC = () => {
   const modifyConfigRequest = (attributes: Array<any>): void => {
     setIsLoading(true);
     modifyConfig(attributes)
-      .then((data) => {
+      .then(() => {
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -270,7 +244,7 @@ const GlobalTheme: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <spinner-wc></spinner-wc>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -331,7 +305,6 @@ const GlobalTheme: FC = () => {
           <ResetTheme
             title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
             isOpenResetDialog={isOpenResetDialog}
-            isRequestInProgress={isRequestInProgress}
             closeHandler={closeHandler}
             onResetHandler={onResetHandler}
           />

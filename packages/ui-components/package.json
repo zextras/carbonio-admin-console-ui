@@ -3,10 +3,15 @@
   "description": "UI Components for Carbonio Admin Panel",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
-  "types": "./src/index.ts",
+  "types": "./dist-types/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./web-components": "./src/web-components/index.ts"
+    ".": {
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./web-components": "./src/web-components/index.ts",
+    "./theme/tailwind-theme.css": "./src/theme/tailwind-theme.css",
+    "./theme/theme.css": "./src/theme/theme.css"
   },
   "type": "commonjs",
   "files": [
@@ -14,13 +19,13 @@
     "package.json"
   ],
   "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest --browser --watch --open",
     "lint": "eslint --cache --quiet",
     "lint:fix": "eslint --fix --cache --quiet",
-    "lint:icons": "eslint src/icons --fix",
-    "icons:build": "tsc ./src/icons/tsTemplate.ts && npx @svgr/cli svg --template ./src/icons/tsTemplate.ts --out-dir ./src/icons && npm run lint:icons",
     "build": "echo 'No build needed - apps import TypeScript source directly'",
     "clean": "rm -rf dist/* types/*",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --build"
   },
   "author": "Zextras Frontend Tribe <https://www.zextras.com/carbonio/>",
   "license": "AGPL-3.0-only",
@@ -30,21 +35,24 @@
     "*.css"
   ],
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.56.3",
-    "@svgr/cli": "^8.0.1",
-    "@types/lodash": "^4.14.196",
+    "@svgr/cli": "^8.1.0",
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/lodash-es": "^4.17.12",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@types/styled-components": "^5.1.26",
+    "clsx": "^2.1.1",
     "create-index": "2.6.0",
     "del": "^7.1.0",
+    "eslint-plugin-css-modules": "^2.12.0",
     "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-notice": "^0.9.10",
     "react": "^19.1.0",
     "react-docgen-typescript": "^2.2.2",
     "react-dom": "^19.1.0",
+    "tailwindcss": "^4.2.1",
     "ts-node": "^10 >=10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-plugin-css-modules": "^5.2.0"
   },
   "browserslist": [
     ">1%",
@@ -54,13 +62,12 @@
   ],
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
-    "styled-components": "^5.3.11"
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
     "@posthog/react": "^1.8.1",
-    "clsx": "^2.1.1",
+    "@zextras/ui-shared": "workspace:*",
     "core-js": "^3.38.1",
     "lit": "^3.3.2",
     "lodash-es": "^4.17.21",

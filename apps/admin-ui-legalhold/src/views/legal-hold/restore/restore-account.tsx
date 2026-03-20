@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, soapFetch } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DateTimePicker,
   DropDownInput,
+  HoverableRowFactory,
   Input,
   Padding,
   Row,
@@ -18,12 +19,19 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { postSoapFetchRequest, soapFetch } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { cloneDeep, debounce, unionBy } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BackupAccountItem } from '../../../../types';
+import {
+  BackupAccountItem,
+  DirectoryAccount,
+  GetAccountResponse,
+  TableRow,
+  ZimbraAttribute,
+} from '../../../../types';
 import {
   ERROR_LABLE,
   RECORD_DISPLAY_LIMIT,
@@ -32,12 +40,10 @@ import {
 } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
-  legalHoldAccount: BackupAccountItem | undefined;
+  legalHoldAccount: BackupAccountItem | null;
   setIsShowRestoreView: (value: boolean) => void;
 }> = ({ legalHoldAccount, setIsShowRestoreView }) => {
   const [t] = useTranslation();
@@ -48,20 +54,20 @@ const RestoreAccountView: FC<{
   const account = legalHoldAccount?.name ?? '';
   const accountId = legalHoldAccount?.id ?? '';
   const targetServers = legalHoldAccount?.serverName ?? '';
-  const [accountList, setAccountList] = useState<any[]>([]);
-  const [searchAccountResult, setSearchAccountResult] = useState<any[]>([]);
+  const [accountList, setAccountList] = useState<Array<DirectoryAccount>>([]);
+  const [searchAccountResult, setSearchAccountResult] = useState<Array<DirectoryAccount>>([]);
   const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
   const offset = 0;
   const limit = RECORD_DISPLAY_LIMIT;
-  const [tableRows, setTableRows] = useState<any[]>([]);
-  const [selectedRow, setSelectedRow] = useState<any>([]);
+  const [tableRows, setTableRows] = useState<Array<TableRow>>([]);
+  const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
     new Date(legalHoldAccount?.creationTimestamp ?? ''),
   );
   const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
   const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
-  const [legalHoldAccountInformation, setLegalHoldAccountInformation] = useState<any>(null);
+  const [legalHoldAccountInformation, setLegalHoldAccountInformation] = useState<DirectoryAccount | null>(null);
 
   const header = useMemo(
     () => [
@@ -98,7 +104,7 @@ const RestoreAccountView: FC<{
   const items = searchAccountResult.map((item) => ({
     id: item.id,
     label:
-      item?.a.find((rec: Record<string, string>) => rec?.n === 'displayName')?._content ??
+      item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
       item?.name,
     customComponent: [
       <Text
@@ -120,23 +126,27 @@ const RestoreAccountView: FC<{
       const type = 'distributionlists,accounts';
       const attrs = 'displayName,zimbraId';
       const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-      accountListDirectory(attrs, type, '', searchStr === '' ? '' : query, offset, limit)
+      accountListDirectory({
+        attr: attrs,
+        type,
+        domainName: '',
+        query: searchStr === '' ? '' : query,
+        offset,
+        limit,
+      })
         .then((data) => {
           const accountListResponse =
             data?.account
-              ?.filter(
-                (filteredAccount: Record<string, any>) =>
-                  filteredAccount?.id !== legalHoldAccount?.id,
+              ?.filter((filteredAccount: DirectoryAccount) =>
+                filteredAccount?.id !== legalHoldAccount?.id,
               )
-              ?.map((item: Record<string, any>) => {
-                const holdItem = item;
-                holdItem.type = 'usr';
+              ?.map((item: DirectoryAccount) => {
+                const holdItem = { ...item, type: 'usr' };
                 return holdItem;
               }) || [];
           const dlListResponse =
-            data?.dl?.map((item: Record<string, any>) => {
-              const holdItem = item;
-              holdItem.type = 'grp';
+            data?.dl?.map((item: DirectoryAccount) => {
+              const holdItem = { ...item, type: 'grp' };
               return holdItem;
             }) || [];
           const mergeAccounts = [...accountListResponse, ...dlListResponse];
@@ -172,7 +182,7 @@ const RestoreAccountView: FC<{
   }, [searchAccount, searchAccountList]);
 
   const callDeligateRequest = useCallback(
-    (request: Array<unknown>) => {
+    (request: Array<Promise<Response>>) => {
       setIsRequestInprogress(true);
       Promise.all(request)
         .then((response) => Promise.all(response))
@@ -190,7 +200,7 @@ const RestoreAccountView: FC<{
   );
 
   const enableLegalAccess = useCallback(() => {
-    const requestItem: Array<unknown> = [];
+    const requestItem: Array<Promise<Response>> = [];
     accountList.forEach((item) => {
       requestItem.push(
         postSoapFetchRequest(
@@ -250,8 +260,8 @@ const RestoreAccountView: FC<{
       setTableRows([]);
       return;
     }
-    const accountListArr: Array<unknown> = [];
-    accountList.forEach((item: any) => {
+    const accountListArr: Array<TableRow> = [];
+    accountList.forEach((item: DirectoryAccount) => {
       accountListArr.push({
         id: item?.id,
         columns: [
@@ -264,7 +274,7 @@ const RestoreAccountView: FC<{
               setSelectedRow([item?.id]);
             }}
           >
-            {item?.a.find((rec: Record<string, string>) => rec?.n === 'displayName')?._content ??
+            {item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
               item?.name}
           </Text>,
           <Text
@@ -335,7 +345,7 @@ const RestoreAccountView: FC<{
       );
       return;
     }
-    if (fromDate === undefined || fromDate === null) {
+    if (fromDate === null) {
       showSnackbar(
         ERROR_LABLE,
         ERROR_LABLE,
@@ -353,7 +363,7 @@ const RestoreAccountView: FC<{
         sourceAccountId,
         destinationAccount,
         getDate,
-        getUndeletedDate,
+        getUndeletedDate ?? null,
         unDelete,
         targetServers,
       )
@@ -374,7 +384,8 @@ const RestoreAccountView: FC<{
                 by: 'name',
                 _content: destinationAccount,
               },
-            }).then((data: any) => {
+            }).then((rawData) => {
+              const data = rawData as GetAccountResponse;
               if (Array.isArray(data?.account)) {
                 setLegalHoldAccountInformation(data?.account[0]);
               }
@@ -715,8 +726,8 @@ const RestoreAccountView: FC<{
               headers={header}
               showCheckbox={false}
               multiSelect={false}
-              selectedRows={selectedRow}
-              RowFactory={CustomRowFactory}
+              selectedRows={selectedRow as [] | [string]}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
