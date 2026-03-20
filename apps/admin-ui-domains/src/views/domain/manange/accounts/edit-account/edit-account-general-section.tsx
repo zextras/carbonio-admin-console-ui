@@ -3,9 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore, useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  ChipInput,  Container,  CustomTextArea,  DropDownInput,  Icon,  Input,  Modal,  Padding,  Quota,  Row,  Select,  Switch,  Table,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
-import {  debounce, map  } from 'lodash-es';
+import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import {
+  Button,
+  ChipInput,
+  Container,
+  CustomTextArea,
+  DropDownInput,
+  Icon,
+  Input,
+  Modal,
+  Padding,
+  Quota,
+  Row,
+  Select,
+  Switch,
+  Table,
+  Text,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
   FC,
@@ -15,26 +33,35 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import {  Attribute, objectType  } from '../../../../../../types';
-import {  ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE  } from '../../../../../constants';
-import {  endSession  } from '../../../../../services/end-session';
-import {  getDelegateAuthRequest  } from '../../../../../services/get-delegate-auth-request';
-import {  modifyAccountRequest  } from '../../../../../services/modify-account';
-import {  getDomainList  } from '../../../../../services/search-domain-service';
+import { Attribute, objectType } from '../../../../../../types';
+import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
+import { endSession } from '../../../../../services/end-session';
+import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
-import {  generateSnackbarFromError  } from '../../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import {   ABQStatus,  AccountStatus,  backupEnabledStatus,  BytesToGB,  formatZimbraDate,  GbToBytes,  isValidDecimalNumber,  localeList } from '../../../../utility/utils';
-import {  AccountContext  } from '../account-context';
-import {  AccountType  } from '../account-types/account-types';
+import {
+  ABQStatus,
+  AccountStatus,
+  backupEnabledStatus,
+  BytesToGB,
+  formatZimbraDate,
+  GbToBytes,
+  isValidDecimalNumber,
+  localeList,
+} from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
+import { AccountType } from '../account-types/account-types';
 
 type UserSession = {
   name: string;
@@ -57,7 +84,7 @@ const ZimbraAuthMethod = {
   EXTERNAL: 'ad',
 } as const;
 
-const EditAccountGeneralSection: FC<{
+export const EditAccountGeneralSection: FC<{
   setChange: any;
 }> = ({ setChange }) => {
   const createSnackbar = useSnackbar();
@@ -142,19 +169,17 @@ const EditAccountGeneralSection: FC<{
   }, [domainInformation]);
 
   const extLdapAuth = useMemo(() => {
-		if (!!domainInformation && domainInformation?.length > 0) {
-			const obj: objectType = {};
-			domainInformation?.forEach((item: Attribute) => {
-				obj[item?.n] = item._content;
-			});
-			if (
-				obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== "" 
-			) {
-				return true;
-			}
-		}
-		return false;
-	}, [domainInformation]);
+    if (!!domainInformation && domainInformation?.length > 0) {
+      const obj: objectType = {};
+      domainInformation?.forEach((item: Attribute) => {
+        obj[item?.n] = item._content;
+      });
+      if (obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== '') {
+        return true;
+      }
+    }
+    return false;
+  }, [domainInformation]);
 
   const getDomainLists = useCallback(
     (domain: string | undefined): void => {
@@ -415,9 +440,10 @@ const EditAccountGeneralSection: FC<{
       initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
     ) {
       setFileQuotaGBValue(
-        initAccountDetail?.filesQuotaLimit && initAccountDetail?.filesQuotaLimit < 9223372036854776000
+        initAccountDetail?.filesQuotaLimit &&
+          initAccountDetail?.filesQuotaLimit < 9223372036854776000
           ? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)
-          : '0.00'
+          : '0.00',
       );
     }
   }, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
@@ -629,7 +655,7 @@ const EditAccountGeneralSection: FC<{
     if (!initAccountDetail?.filesQuotaLimit) {
       return 0;
     }
-    if (initAccountDetail?.filesQuotaLimit == "9223372036854776000") {
+    if (initAccountDetail?.filesQuotaLimit == '9223372036854776000') {
       return 0;
     }
     return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
@@ -654,7 +680,8 @@ const EditAccountGeneralSection: FC<{
 
   const calculatedFilesQuotaSize: string = useMemo(
     () =>
-      initAccountDetail?.filesQuotaLimit > 0 && initAccountDetail?.filesQuotaLimit < 9223372036854776000
+      initAccountDetail?.filesQuotaLimit > 0 &&
+      initAccountDetail?.filesQuotaLimit < 9223372036854776000
         ? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} ${t(
             'label.of',
             'Of',
@@ -984,7 +1011,9 @@ const EditAccountGeneralSection: FC<{
                 label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
                 subValue={fileQuotaGBValue}
                 inheritedValue={
-                  cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000 ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2) : '0.00'
+                  cosDetail.filesQuotaLimit && cosDetail.filesQuotaLimit < 9223372036854776000
+                    ? BytesToGB(cosDetail.filesQuotaLimit).toFixed(2)
+                    : '0.00'
                 }
                 fromSubValue={cosDetail.filesQuotaLimit !== accountDetail.filesQuotaLimit}
                 onChange={changeFileQuotaLimit}
@@ -1042,7 +1071,7 @@ const EditAccountGeneralSection: FC<{
               backgroundColor="gray6"
               value={
                 accountDetail?.zimbraLastLogonTimestamp
-                  ? formatZimbraDate(accountDetail?.zimbraCreateTimestamp)
+                  ? formatZimbraDate(accountDetail?.zimbraLastLogonTimestamp)
                   : t('label.never_logged_in', 'Never logged in')
               }
               defaultValue={t('label.never_logged_in', 'Never logged in')}
@@ -1189,36 +1218,40 @@ const EditAccountGeneralSection: FC<{
           )}
         </Row>
       )}
-      
 
       {extLdapAuth && (
         <>
           <Row width="100%">
-          <divider-wc></divider-wc>
-        </Row>
-        <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
-              {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
-            </Text>
+            <divider-wc></divider-wc>
           </Row>
-          <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-            <Row width="100%" mainAlignment="space-between">
-              <Input
-                data-testid="zimbraAuthLdapExternalDn"
-                label={t(
-                  'domain.accounts.editAccount.externalldapReferenceForAuthentication',
-                  'External LDAP Reference for Authentication'
-                )}
-                backgroundColor="gray5"
-                onChange={changeAccDetail}
-                inputName="zimbraAuthLdapExternalDn"
-                value={accountDetail?.zimbraAuthLdapExternalDn || ''}
-              />
+          <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+              <Text size="small" color="gray0" weight="bold">
+                {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
+              </Text>
+            </Row>
+            <Row
+              padding={{ top: 'large', left: 'large' }}
+              width="100%"
+              mainAlignment="space-between"
+            >
+              <Row width="100%" mainAlignment="space-between">
+                <Input
+                  data-testid="zimbraAuthLdapExternalDn"
+                  label={t(
+                    'domain.accounts.editAccount.externalldapReferenceForAuthentication',
+                    'External LDAP Reference for Authentication',
+                  )}
+                  backgroundColor="gray5"
+                  onChange={changeAccDetail}
+                  inputName="zimbraAuthLdapExternalDn"
+                  value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+                />
+              </Row>
             </Row>
           </Row>
-        </Row> 
-      </>)}
+        </>
+      )}
       <Row width="100%" padding={{ top: 'medium' }}>
         <divider-wc></divider-wc>
       </Row>
@@ -1485,5 +1518,3 @@ const EditAccountGeneralSection: FC<{
     </Container>
   );
 };
-
-export default EditAccountGeneralSection;
