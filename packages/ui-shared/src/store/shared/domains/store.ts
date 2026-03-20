@@ -13,46 +13,50 @@ import { Cos, Domain } from './types';
  * Domain store state interface
  */
 interface DomainState {
-	/** The currently selected domain with full configuration */
-	domain: Domain;
-	/** The currently selected domain without configuration */
-	domainWithoutConfig: Domain;
-	/** List of available Classes of Service */
-	cosList: Array<Cos>;
-	/** Current view identifier for domain pages */
-	domainView: string;
-	/** List of all domains */
-	domainList: Array<Domain>;
-	/** Whether the current domain supports delegated admin */
-	isDomainSupportDelegatedAdmin: boolean;
-	/** Domain name for which the banner was closed */
-	closeDomainBanner: string;
-	/** Whether quick access mode is enabled */
-	isQuickAccess: boolean;
-	/** Whether certificate is available for the domain */
-	isCertificateAvailbale: boolean;
+  /** The currently selected domain with full configuration */
+  domain: Domain;
+  /** domain quota constraint for domains */
+  domainsQuota: Record<string, number | 'not-set'>;
+  /** The currently selected domain without configuration */
+  domainWithoutConfig: Domain;
+  /** List of available Classes of Service */
+  cosList: Array<Cos>;
+  /** Current view identifier for domain pages */
+  domainView: string;
+  /** List of all domains */
+  domainList: Array<Domain>;
+  /** Whether the current domain supports delegated admin */
+  isDomainSupportDelegatedAdmin: boolean;
+  /** Domain name for which the banner was closed */
+  closeDomainBanner: string;
+  /** Whether quick access mode is enabled */
+  isQuickAccess: boolean;
+  /** Whether certificate is available for the domain */
+  isCertificateAvailbale: boolean;
 
-	// Actions
-	/** Set the current domain with full configuration */
-	setDomain: (domain: Domain) => void;
-	/** Set the current domain without configuration */
-	setDomainWioutConfig: (domain: Domain) => void;
-	/** Set the list of Classes of Service */
-	setCosList: (cosList: Array<Cos>) => void;
-	/** Set the list of all domains */
-	setDomainList: (domainList: Array<Domain>) => void;
-	/** Remove/clear the current domain */
-	removeDomain: () => void;
-	/** Set the current domain view */
-	setDomainView: (domainView: string) => void;
-	/** Set whether the domain supports delegated admin */
-	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
-	/** Set the domain name for which banner was closed */
-	setCloseDomainBanner: (domainName: string) => void;
-	/** Set quick access mode */
-	setIsQuickAccess: (isQuickAccess: boolean) => void;
-	/** Set certificate availability */
-	setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
+  // Actions
+  /** Set the current domain with full configuration */
+  setDomain: (domain: Domain) => void;
+  /**Set quota constraint for a domain*/
+  setDomainQuota: (domainId: string, limit: number | 'not-set') => void;
+  /** Set the current domain without configuration */
+  setDomainWioutConfig: (domain: Domain) => void;
+  /** Set the list of Classes of Service */
+  setCosList: (cosList: Array<Cos>) => void;
+  /** Set the list of all domains */
+  setDomainList: (domainList: Array<Domain>) => void;
+  /** Remove/clear the current domain */
+  removeDomain: () => void;
+  /** Set the current domain view */
+  setDomainView: (domainView: string) => void;
+  /** Set whether the domain supports delegated admin */
+  setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
+  /** Set the domain name for which banner was closed */
+  setCloseDomainBanner: (domainName: string) => void;
+  /** Set quick access mode */
+  setIsQuickAccess: (isQuickAccess: boolean) => void;
+  /** Set certificate availability */
+  setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 }
 
 /**
@@ -77,62 +81,72 @@ interface DomainState {
  * ```
  */
 export const useDomainStore = create<DomainState>()(
-	devtools(
-		(set) => ({
-			domain: {},
-			domainWithoutConfig: {},
-			cosList: [],
-			domainView: '',
-			domainList: [],
-			isDomainSupportDelegatedAdmin: false,
-			closeDomainBanner: '',
-			isQuickAccess: false,
-			isCertificateAvailbale: false,
+  devtools(
+    (set) => ({
+      domain: {},
+      domainsQuota: {},
+      domainWithoutConfig: {},
+      cosList: [],
+      domainView: '',
+      domainList: [],
+      isDomainSupportDelegatedAdmin: false,
+      closeDomainBanner: '',
+      isQuickAccess: false,
+      isCertificateAvailbale: false,
 
-			setDomain: (domain): void => set({ domain }, false, 'setDomain'),
+      setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 
-			setDomainWioutConfig: (domainWithoutConfig): void =>
-				set({ domainWithoutConfig }, false, 'setDomainWioutConfig'),
+      setDomainQuota: (domainId, limit): void =>
+        set(
+          produce((state) => {
+            state.domainsQuota[domainId] = limit;
+          }),
+          false,
+          'setDomainQuota',
+        ),
 
-			setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
+      setDomainWioutConfig: (domainWithoutConfig): void =>
+        set({ domainWithoutConfig }, false, 'setDomainWioutConfig'),
 
-			setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
+      setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 
-			removeDomain: (): void =>
-				set(
-					produce((state) => {
-						state.domain = {};
-					}),
-					false,
-					'removeDomain'
-				),
+      setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 
-			setDomainView: (domainView): void =>
-				set(
-					produce((state) => {
-						state.domainView = domainView;
-					}),
-					false,
-					'setDomainView'
-				),
+      removeDomain: (): void =>
+        set(
+          produce((state) => {
+            state.domain = {};
+          }),
+          false,
+          'removeDomain',
+        ),
 
-			setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
-				set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
+      setDomainView: (domainView): void =>
+        set(
+          produce((state) => {
+            state.domainView = domainView;
+          }),
+          false,
+          'setDomainView',
+        ),
 
-			setCloseDomainBanner: (domainName): void =>
-				set(
-					produce((state) => {
-						state.closeDomainBanner = domainName;
-					}),
-					false,
-					'setCloseDomainBanner'
-				),
+      setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
+        set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
 
-			setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
+      setCloseDomainBanner: (domainName): void =>
+        set(
+          produce((state) => {
+            state.closeDomainBanner = domainName;
+          }),
+          false,
+          'setCloseDomainBanner',
+        ),
 
-			setIsCertificateAvailbale: (isCertificateAvailbale): void =>
-				set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale')
-		}),
-		{ name: 'DomainStore' }
-	)
+      setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
+
+      setIsCertificateAvailbale: (isCertificateAvailbale): void =>
+        set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale'),
+    }),
+    { name: 'DomainStore' },
+  ),
 );

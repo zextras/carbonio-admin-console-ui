@@ -3,8 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Row, Text } from '@zextras/ui-components';
 import React, { type FC } from 'react';
+
+import { Button } from '../../basic/button/Button';
+import { Text } from '../../basic/text/Text';
+import { Row } from '../Row';
 
 type SectionHeaderProps = {
 	title: string;

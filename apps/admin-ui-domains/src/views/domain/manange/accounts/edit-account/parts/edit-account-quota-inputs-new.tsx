@@ -3,26 +3,51 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Padding, Row, Switch, SwitchProps, Text } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import {
+  Container,
+  IconCheckbox,
+  Input,
+  Padding,
+  Row,
+  Switch,
+  SwitchProps,
+  Text,
+  Tooltip,
+} from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ComputedLimit } from '../../../../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
+import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaInputsNewProps = {
   totalComputedQuotaLimit?: number | 'unlimited';
   initialTotalComputedQuotaLimit?: number | 'unlimited';
+  cosComputedLimit?: number | 'unlimited';
+  totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
+  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountQuotaInputsNew = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
+  cosComputedLimit,
+  totalQuotaSource,
   onChange,
+  onQuotaErrorChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
+
+  const domainQuotaConstraint = useDomainStore((state) => {
+    if (state.domain.id) {
+      return state.domainsQuota[state.domain.id];
+    } else {
+      return undefined;
+    }
+  });
 
   useEffect(() => {
     setQuotaValue(
@@ -76,6 +101,86 @@ export const EditAccountQuotaInputsNew = ({
     return typeof quotaValue === 'number' ? quotaValue : '';
   }, [quotaValue]);
 
+  const inputDescription = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number') {
+      const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
+      const exceedsConstraint =
+        quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
+
+      if (exceedsConstraint) {
+        return t('label.exceeds_domain_limit', {
+          defaultValue: `This value exceeds the domain limit (${BytesToGB(
+            domainQuotaConstraint,
+          )} GB). Please enter a lower value.`,
+          limit: BytesToGB(domainQuotaConstraint),
+        });
+      }
+
+      return t('label.maximum_allowed_value', {
+        defaultValue: `The maximum allowed value is ${BytesToGB(
+          domainQuotaConstraint,
+        )} GB. Unlimited is not available.`,
+        value: BytesToGB(domainQuotaConstraint),
+      });
+    }
+    return undefined;
+  }, [domainQuotaConstraint, quotaValue, t]);
+
+  const hasError = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number' && typeof quotaValue === 'number') {
+      const quotaValueInBytes = GbToBytes(quotaValue);
+      return quotaValueInBytes > domainQuotaConstraint;
+    }
+    return false;
+  }, [domainQuotaConstraint, quotaValue]);
+
+  useEffect(() => {
+    onQuotaErrorChange(hasError);
+  }, [hasError, onQuotaErrorChange]);
+
+  const onChangeReset = useCallback(() => {
+    setQuotaValue(undefined);
+    onChange(undefined);
+  }, [onChange]);
+
+  const inheritedValue = useMemo(() => {
+    if (typeof domainQuotaConstraint === 'number') {
+      if (typeof cosComputedLimit === 'number') {
+        return BytesToGB(Math.min(domainQuotaConstraint, cosComputedLimit));
+      }
+      return BytesToGB(domainQuotaConstraint);
+    }
+    return cosComputedLimit === 'unlimited'
+      ? t('account_details.unlimited', 'Unlimited')
+      : typeof cosComputedLimit === 'number'
+      ? BytesToGB(cosComputedLimit)
+      : undefined;
+  }, [cosComputedLimit, domainQuotaConstraint, t]);
+
+  const CustomElement = () => (
+    <Tooltip
+      label={
+        <>
+          <Text weight="bold">
+            {t('account_details.inherited_value_was', 'The inherited value was: {{value}}', {
+              value: inheritedValue || '',
+            })}
+          </Text>
+          <Padding top="small">
+            <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+          </Padding>
+        </>
+      }
+    >
+      <IconCheckbox
+        icon="RefreshOutline"
+        onClick={onChangeReset}
+        style={{ cursor: 'pointer' }}
+        onChange={(): null => null}
+      />
+    </Tooltip>
+  );
+
   if (!isAdvanced) {
     return null;
   }
@@ -84,24 +189,45 @@ export const EditAccountQuotaInputsNew = ({
     <Container crossAlignment={'flex-start'} mainAlignment={'flex-start'} height={'fit'}>
       <Padding top={'large'} left={'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
-          <Switch iconColor="primary" onClick={switchOnChange} value={switchValue} />
+          <Switch
+            iconColor="primary"
+            onClick={switchOnChange}
+            value={switchValue}
+            disabled={typeof domainQuotaConstraint === 'number'}
+          />
           <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
         </Container>
       </Padding>
       <Row
+        wrap={'nowrap'}
         width="100%"
         padding={{ top: 'large', left: 'large' }}
         mainAlignment="space-between"
-        crossAlignment="flex-start"
+        crossAlignment="center"
       >
-        <Input
-          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-          background={'gray5'}
-          inputName="totalQuota"
-          onChange={inputOnChange}
-          value={inputValue}
-          disabled={switchValue}
-        />
+        <Container
+          orientation={'horizontal'}
+          gap={'0.5rem'}
+          mainAlignment={'flex-start'}
+          crossAlignment={'flex-start'}
+        >
+          <Input
+            description={inputDescription}
+            label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+            background={'gray5'}
+            inputName="totalQuota"
+            onChange={inputOnChange}
+            value={inputValue}
+            disabled={switchValue}
+            hasError={hasError}
+            CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
+          />
+          {totalQuotaSource !== undefined && (
+            <Padding top={'medium'}>
+              <TotalQuotaSourceIcon source={totalQuotaSource} />
+            </Padding>
+          )}
+        </Container>
       </Row>
     </Container>
   );

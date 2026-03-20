@@ -32,7 +32,7 @@ describe('getAccountQuota', () => {
     const apiResponse: GetAccountQuotaRawResponse = {
       total: {
         used: 500000000,
-        computedLimit: { type: 'limited', value: 1000000000 },
+        computedLimit: { type: 'limited', value: 1000000000, source: 'account' },
       },
       modules: {
         mailbox: { used: 0 },
@@ -46,10 +46,12 @@ describe('getAccountQuota', () => {
     });
 
     const result = await getAccountQuota(accountId);
+    const totalComputedLimit = { ...apiResponse.total.computedLimit, source: undefined };
 
     expect(result).toEqual({
       type: 'success',
-      totalComputedLimit: apiResponse.total.computedLimit,
+      totalComputedLimit,
+      totalLimitSource: apiResponse.total.computedLimit.source,
       totalUsed: apiResponse.total.used,
       usedByModules: {
         mailbox: apiResponse.modules.mailbox.used,

@@ -10,6 +10,7 @@ import { FC, useContext, useMemo } from 'react';
 import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
 import ShellView from '../shell/shell-view';
+import { TrackerProvider } from '../tracker/provider';
 import { AppLoaderMounter } from './app/app-loader-mounter';
 
 const ContextBridge: FC = () => {
@@ -44,8 +45,10 @@ const ContextBridge: FC = () => {
 
 export const BootstrapperRouter: FC = () => (
   <BrowserRouter basename={BASENAME}>
-    <ContextBridge />
-    <AppLoaderMounter />
-    <ShellView />
+    <TrackerProvider>
+      <ContextBridge />
+      <AppLoaderMounter />
+      <ShellView />
+    </TrackerProvider>
   </BrowserRouter>
 );

@@ -3,8 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row } from '@zextras/ui-components';
 import { type FC, type ReactNode } from 'react';
+
+import { Container } from '../Container';
+import { Row } from '../Row';
 
 type SectionFooterProps = {
 	divider: boolean;

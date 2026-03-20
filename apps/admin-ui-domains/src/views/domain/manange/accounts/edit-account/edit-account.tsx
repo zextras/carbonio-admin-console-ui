@@ -148,6 +148,7 @@ const EditAccount: FC<{
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
 
   const getDomainLists = useCallback(
     (offset: number): any => {
@@ -634,41 +635,42 @@ const EditAccount: FC<{
        * After the operation, we fetch the updated quota limit to get the
        * possible inherited quota limit
        */
-      if (accountDetail.totalComputedQuotaLimit === undefined) {
-        unsetAccountQuota(accountDetail?.zimbraId)
-          .then(notifyResult)
-          .then(() => {
-            return getAccountQuota(accountDetail?.zimbraId);
-          })
-          .then((response) => {
-            if (response.type === 'success') {
-              setInitAccountDetail((prev) => ({
-                ...prev,
-                totalComputedQuotaLimit: response.totalComputedLimit,
-              }));
-              setAccountDetail((prev) => ({
-                ...prev,
-                totalComputedQuotaLimit: response.totalComputedLimit,
-              }));
-            } else {
-              throw new Error(response.error);
-            }
-          })
-          .catch((error) => {
-            createSnackbar({
-              key: 'getAccountQuotaError',
-              severity: 'error',
-              label: error.message,
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: false,
-            });
+      const setOrUnsetPromise =
+        accountDetail.totalComputedQuotaLimit === undefined
+          ? unsetAccountQuota(accountDetail?.zimbraId)
+          : setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit);
+
+      setOrUnsetPromise
+        .then(notifyResult)
+        .then(() => {
+          return getAccountQuota(accountDetail?.zimbraId);
+        })
+        .then((response) => {
+          if (response.type === 'success') {
+            setInitAccountDetail((prev) => ({
+              ...prev,
+              totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
+            }));
+            setAccountDetail((prev) => ({
+              ...prev,
+              totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
+            }));
+          } else {
+            throw new Error(response.error);
+          }
+        })
+        .catch((error) => {
+          createSnackbar({
+            key: 'getAccountQuotaError',
+            severity: 'error',
+            label: error.message,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: false,
           });
-      } else {
-        setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit).then(
-          notifyResult,
-        );
-      }
+        });
 
       remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
     },
@@ -676,6 +678,8 @@ const EditAccount: FC<{
       accountDetail.totalComputedQuotaLimit,
       accountDetail?.zimbraId,
       createSnackbar,
+      isAdvanced,
+      isTotalQuotaActive,
       setAccountDetail,
       setInitAccountDetail,
       t,
@@ -1033,6 +1037,7 @@ const EditAccount: FC<{
                     label={t('label.save', 'Save')}
                     color="primary"
                     onClick={modifyAccountReq}
+                    disabled={hasQuotaError}
                   />
                 </Padding>
               </Container>
@@ -1106,7 +1111,9 @@ const EditAccount: FC<{
           style={{ overflow: 'auto' }}
         >
           {/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
-          {change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
+          {change === GENERAL_SECTION && (
+            <EditAccountGeneralSection setChange={setChange} onQuotaErrorChange={setHasQuotaError} />
+          )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
           {change === USER_PREFERENCES && (
@@ -1213,7 +1220,7 @@ const EditAccount: FC<{
               (accountUserType(selectedAccount) === 'System' ||
                 accountUserType(selectedAccount) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
-                  <Text color="warning"  overflow="break-word">
+                  <Text color="warning" overflow="break-word">
                     {t(
                       'label.deleting_account_warning_content',
                       'Deleting the system account could impact the system stability.',
@@ -1231,7 +1238,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1240,7 +1247,7 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Close it to preserve</bold> the data, instead."
