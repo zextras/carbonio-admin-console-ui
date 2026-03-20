@@ -73,7 +73,7 @@ import EditAccountAdministrationSection from './edit-account-administration-sect
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountDelegatesSection from './edit-account-delegates-section';
-import EditAccountGeneralSection from './edit-account-general-section';
+import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 

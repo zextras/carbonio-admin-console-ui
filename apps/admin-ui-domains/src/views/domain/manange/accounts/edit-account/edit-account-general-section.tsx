@@ -72,7 +72,7 @@ const ZimbraAuthMethod = {
   EXTERNAL: 'ad',
 } as const;
 
-const EditAccountGeneralSection: FC<{
+export const EditAccountGeneralSection: FC<{
   setChange: any;
   onQuotaErrorChange: (hasError: boolean) => void;
 }> = ({ setChange, onQuotaErrorChange }) => {
@@ -803,7 +803,7 @@ const EditAccountGeneralSection: FC<{
               backgroundColor="gray6"
               value={
                 accountDetail?.zimbraLastLogonTimestamp
-                  ? formatZimbraDate(accountDetail?.zimbraCreateTimestamp)
+                  ? formatZimbraDate(accountDetail?.zimbraLastLogonTimestamp)
                   : t('label.never_logged_in', 'Never logged in')
               }
               defaultValue={t('label.never_logged_in', 'Never logged in')}
@@ -1250,5 +1250,3 @@ const EditAccountGeneralSection: FC<{
     </Container>
   );
 };
-
-export default EditAccountGeneralSection;

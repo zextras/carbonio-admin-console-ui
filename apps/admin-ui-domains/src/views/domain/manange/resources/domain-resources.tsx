@@ -35,6 +35,8 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 
+type Timeout = ReturnType<typeof setTimeout>;
+
 const DomainResources: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -52,7 +54,8 @@ const DomainResources: FC = () => {
   const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const timer = useRef<any>(0);
+
+  const timer = useRef<Timeout | undefined>(undefined);
   const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const tableRef = useRef<HTMLTableElement>(null);

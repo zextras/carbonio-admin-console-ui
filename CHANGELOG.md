@@ -1,8 +1,19 @@
-## [0.13.0-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.4...v0.13.0-devel.5) (2026-03-20)
+## [0.12.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.6...v0.12.7) (2026-03-13)
 
-### Features
+### Bug Fixes
 
-* add domain quota management ([792ca0f](https://github.com/zextras/carbonio-admin-console-ui/commit/792ca0fa782aaef6a34c832a56e872d7b3de7aaf)), closes [#1108](https://github.com/zextras/carbonio-admin-console-ui/issues/1108)
+* **[admin-ui-bootstrap]:** add invalidate to useAllConfig (use-config) ([6a9030c](https://github.com/zextras/carbonio-admin-console-ui/commit/6a9030c9100392142d9d69d006319acb56a3c152))
+* **[admin-ui-bootstrap]:** improve proxy and redirect logic (vite.config) ([b5d461d](https://github.com/zextras/carbonio-admin-console-ui/commit/b5d461d549a8dbd50fcdf38b8db6ae718c091188))
+* **admin-ui-domains:** use useAllConfig in domain-list-chip-input ([4ad19cf](https://github.com/zextras/carbonio-admin-console-ui/commit/4ad19cf65961e0c2d067730796f7a7282b917482))
+* **admin-ui-mta:** simplify config update logic (post-screen-tuning) ([f3ee795](https://github.com/zextras/carbonio-admin-console-ui/commit/f3ee79549c35b95a314f6413fcec6f635a60eba3))
+* **apps/admin-ui-domains:** switch to useAllConfig in quarantine-list ([8a6839a](https://github.com/zextras/carbonio-admin-console-ui/commit/8a6839a6f39a7f28bee0c02b414d5cad14c711af))
+* **apps/admin-ui-domains:** use useAllConfig in domain-list-panel ([3304fd5](https://github.com/zextras/carbonio-admin-console-ui/commit/3304fd58f04d820fde82b23ce43f773373fb9c43))
+* **apps/admin-ui-domains:** use useAllConfig in domain-theme ([c4ac9cb](https://github.com/zextras/carbonio-admin-console-ui/commit/c4ac9cb002bfbe23a0650f60ef9532258ed16746))
+* **apps/admin-ui-domains:** use useAllConfig in global-detail-panel ([8e24e90](https://github.com/zextras/carbonio-admin-console-ui/commit/8e24e900d062c05b734b665665910649756b343c))
+* **apps/admin-ui-domains:** use useAllConfig in global-theme ([8eb4b7b](https://github.com/zextras/carbonio-admin-console-ui/commit/8eb4b7b25832e26f31ccc46f959b9facbe5ed0dc))
+* **apps/admin-ui-domains:** use useAllConfig in global-theme ([3827b6c](https://github.com/zextras/carbonio-admin-console-ui/commit/3827b6c0b1308f84e55a90d2b3443a9c30c991a7))
+* **apps/admin-ui-mta:** update to use useAllConfig in mta-server-general ([950e159](https://github.com/zextras/carbonio-admin-console-ui/commit/950e159821b5dded8fd6cd479355935c151b160b))
+* inbound flow security ([090123f](https://github.com/zextras/carbonio-admin-console-ui/commit/090123f54ef2c7b259b642b5e7608fcc2cc30905))
 
 ## [0.12.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.5...v0.12.6) (2026-03-13)
 
