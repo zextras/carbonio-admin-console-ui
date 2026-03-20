@@ -18,15 +18,27 @@ export type EditAccountQuotaBarProps = {
 };
 
 export const EditAccountQuotaBar = ({
-                                      onClickMailboxQuota,
-                                      onClickFilesQuota,
-                                    }: EditAccountQuotaBarProps): React.JSX.Element | null => {
+  onClickMailboxQuota,
+  onClickFilesQuota,
+}: EditAccountQuotaBarProps): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
   const isTotalQuotaActive = useTotalQuotaActive();
 
   const { initAccountDetail } = useContext(AccountContext);
-  const { totalQuotaUsed: used, totalComputedQuotaLimit: limit, totalQuotaUsedByModule: usedByModule } = initAccountDetail;
-  const dataMissing = useMemo(() => used === undefined || limit === undefined || usedByModule === undefined, [used, limit, usedByModule]);
+  const {
+    totalQuotaUsed: used,
+    totalComputedQuotaLimit: limit,
+    totalQuotaUsedByModule: usedByModule,
+    totalQuotaSource: source,
+  } = initAccountDetail;
+  const dataMissing = useMemo(
+    () =>
+      used === undefined ||
+      limit === undefined ||
+      usedByModule === undefined ||
+      source === undefined,
+    [used, limit, usedByModule, source],
+  );
 
   if (!isTotalQuotaActive) {
     return (
@@ -40,5 +52,12 @@ export const EditAccountQuotaBar = ({
   if (!isAdvanced || dataMissing) {
     return null;
   }
-  return <EditAccountQuotaBarNew used={used!} limit={limit!} usedByModule={usedByModule!} />;
+  return (
+    <EditAccountQuotaBarNew
+      used={used!}
+      limit={limit!}
+      usedByModule={usedByModule!}
+      source={source!}
+    />
+  );
 };

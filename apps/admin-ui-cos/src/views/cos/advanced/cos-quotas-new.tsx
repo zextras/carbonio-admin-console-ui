@@ -3,15 +3,25 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Switch, SwitchProps, Text } from '@zextras/ui-components';
+import {
+  Container,
+  IconCheckbox,
+  Input,
+  Padding,
+  Switch,
+  SwitchProps,
+  Text,
+  Tooltip,
+} from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ComputedLimit } from '../../../services/get-cos-quota';
+import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
 
 type COSQuotasNewProps = {
   totalComputedQuotaLimit: ComputedLimit | undefined;
+  totalQuotaSource?: QuotaSource;
   initialTotalComputedQuotaLimit: ComputedLimit | undefined;
   onChange: (value?: ComputedLimit) => void;
   readonlyCOS: boolean;
@@ -19,6 +29,7 @@ type COSQuotasNewProps = {
 
 const COSQuotasNew: FC<COSQuotasNewProps> = ({
   totalComputedQuotaLimit,
+  totalQuotaSource,
   initialTotalComputedQuotaLimit,
   onChange,
   readonlyCOS,
@@ -76,6 +87,41 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     return typeof quotaValue === 'number' ? String(quotaValue) : '';
   }, [quotaValue]);
 
+  const icon = totalQuotaSource === 'global' ? 'GlobeOutline' : undefined;
+
+  const tooltipLabel =
+    totalQuotaSource === 'global'
+      ? t('label.quota.source.global', 'Quota inherited from the global configuration')
+      : undefined;
+
+  const showQuotaSourceIcon = totalQuotaSource !== undefined && totalQuotaSource !== 'cos';
+
+  const onChangeReset = useCallback(() => {
+    setQuotaValue(undefined);
+    onChange(undefined);
+  }, [onChange]);
+
+  const CustomElement = () => (
+    <Tooltip
+      label={
+        <>
+          <Padding top="small">
+            <Text weight="bold">
+              {t('cos_quota.click_to_revert', 'Click to revert to the inherited value')}
+            </Text>
+          </Padding>
+        </>
+      }
+    >
+      <IconCheckbox
+        icon="RefreshOutline"
+        onClick={onChangeReset}
+        style={{ cursor: 'pointer' }}
+        onChange={(): null => null}
+      />
+    </Tooltip>
+  );
+
   return (
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
@@ -87,14 +133,27 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
         />
         <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
       </Container>
-      <Input
-        label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-        value={inputValue}
-        backgroundColor="gray5"
-        inputName="totalQuota"
-        onChange={inputOnChange}
-        disabled={readonlyCOS || switchValue}
-      />
+      <Container
+        orientation={'horizontal'}
+        gap={'0.5rem'}
+        mainAlignment={'flex-start'}
+        crossAlignment={'center'}
+      >
+        <Input
+          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+          value={inputValue}
+          backgroundColor="gray5"
+          inputName="totalQuota"
+          onChange={inputOnChange}
+          disabled={readonlyCOS || switchValue}
+          CustomIcon={totalQuotaSource === 'cos' ? CustomElement : undefined}
+        />
+        {showQuotaSourceIcon && (
+          <Tooltip placement={'top-end'} label={tooltipLabel}>
+            <icon-wc icon={icon} size="large" />
+          </Tooltip>
+        )}
+      </Container>
     </Container>
   );
 };

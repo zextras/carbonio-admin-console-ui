@@ -13,17 +13,15 @@ import {
 export type LimitedComputedLimit = { type: 'limited'; value: number };
 export type UnlimitedComputedLimit = { type: 'unlimited' };
 export type ComputedLimit = LimitedComputedLimit | UnlimitedComputedLimit;
-export type QuotaSource = 'global' | 'cos';
 
 export type GetCosQuotaRawResponse = {
-  computedLimit: ComputedLimit & { source: QuotaSource };
+  computedLimit: ComputedLimit;
 };
 
 type GetCosQuotaResponse =
   | {
       type: 'success';
       totalComputedLimit: ComputedLimit;
-      totalQuotaSource: QuotaSource;
     }
   | {
       type: 'error';
@@ -50,15 +48,9 @@ export const getCosQuota = async (cosId: string): Promise<GetCosQuotaResponse> =
       return response.json() as Promise<GetCosQuotaRawResponse>;
     })
     .then((data) => {
-      const totalComputedLimit =
-        data.computedLimit.type === 'limited'
-          ? { value: data.computedLimit.value, type: data.computedLimit.type }
-          : { type: data.computedLimit.type };
-
       return {
         type: 'success',
-        totalComputedLimit,
-        totalQuotaSource: data.computedLimit.source,
+        totalComputedLimit: data.computedLimit,
       } satisfies GetCosQuotaResponse;
     })
     .catch((error) => {

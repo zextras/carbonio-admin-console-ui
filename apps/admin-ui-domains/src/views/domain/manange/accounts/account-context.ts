@@ -5,7 +5,7 @@
  */
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { ComputedLimit } from '../../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource } from '../../../../services/get-account-quota';
 
 export type AccountDetail = Record<string, any> & {
   carbonioFeatureWscEnabled?: string;
@@ -25,6 +25,11 @@ export type AccountDetail = Record<string, any> & {
   totalComputedQuotaLimit?: ComputedLimit;
   totalQuotaUsed?: number;
   totalQuotaUsedByModule?: Record<string, number>;
+  totalQuotaSource?: QuotaSource;
+};
+
+export type CosDetail = Record<string, any> & {
+  totalComputedQuotaLimit?: ComputedLimit;
 };
 
 type AccountContext = {
@@ -34,7 +39,7 @@ type AccountContext = {
   setInitAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
   accSpecificDetail: any;
   setAccSpecificDetail: (arg: any) => void;
-  cosDetail: any;
+  cosDetail: CosDetail;
   directMemberList: any[];
   inDirectMemberList: any[];
   setSignatureItems: (arg: any) => void;

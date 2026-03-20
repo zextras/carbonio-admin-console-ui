@@ -42,16 +42,28 @@ import {
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
+import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
+import { setDomainQuota } from '../../../services/set-domain-quota';
+import { unsetDomainQuota } from '../../../services/unset-domain-quota';
+import { useTotalQuotaActive } from '../../app/hooks/useTotalQuotaActive';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { getDateFromStr, getFormatedDate, isValidEmail, timeZoneList } from '../../utility/utils';
+import {
+  BytesToGB,
+  GbToBytes,
+  getDateFromStr,
+  getFormatedDate,
+  isValidEmail,
+  timeZoneList,
+} from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const timezones = useMemo(() => timeZoneList(t), [t]);
   const cosList = useDomainStore((state) => state.cosList);
   const domainInformation = useDomainStore((state) => state.domain?.a);
@@ -204,6 +216,20 @@ const DomainGeneralSettings: FC = () => {
   });
   const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(true);
   const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
+  const [domainQuotaGB, setDomainQuotaGB] = useState<string>('');
+  const [initDomainQuotaGB, setInitDomainQuotaGB] = useState<string>('');
+
+  useEffect(() => {
+    if (isTotalQuotaActive && isAdvanced && domainData.zimbraId) {
+      getDomainQuota(domainData.zimbraId).then((result) => {
+        if (result.type === 'success') {
+          const gb = String(BytesToGB(result.limit));
+          setDomainQuotaGB(gb);
+          setInitDomainQuotaGB(gb);
+        }
+      });
+    }
+  }, [domainData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -428,7 +454,7 @@ const DomainGeneralSettings: FC = () => {
       zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts,
       carbonioSearchSpecifiedDomainsByFeature: domainData.carbonioSearchSpecifiedDomainsByFeature,
     };
-    if (!isEqual(defaultDomainData, updatedData)) {
+    if (!isEqual(defaultDomainData, updatedData) || domainQuotaGB !== initDomainQuotaGB) {
       setIsDirty(true);
     } else {
       setIsDirty(false);
@@ -450,6 +476,8 @@ const DomainGeneralSettings: FC = () => {
     description,
     zimbraDomainMaxAccounts,
     domainList,
+    domainQuotaGB,
+    initDomainQuotaGB,
   ]);
   const onCancel = (): void => {
     setSelectedPublicServiceProtocol(
@@ -467,6 +495,9 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
+    if (isTotalQuotaActive && isAdvanced) {
+      setDomainQuotaGB(initDomainQuotaGB);
+    }
     const getItem = cosItems.find(
       (item: any) => item.value === domainData.zimbraDomainDefaultCOSId,
     );
@@ -590,6 +621,28 @@ const DomainGeneralSettings: FC = () => {
     const body = createRequestBody();
 
     modifyDomain(body).then(handleSuccess).catch(handleError);
+
+    if (isTotalQuotaActive && isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
+      const quotaPromise =
+        domainQuotaGB === ''
+          ? unsetDomainQuota(domainData.zimbraId)
+          : setDomainQuota(domainData.zimbraId, GbToBytes(Number(domainQuotaGB)));
+
+      quotaPromise.then((result) => {
+        if (result.type === 'success') {
+          setInitDomainQuotaGB(domainQuotaGB);
+        } else {
+          createSnackbar({
+            key: 'quota-error',
+            severity: 'error',
+            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        }
+      });
+    }
   };
 
   const deleteOnlyDomain = useCallback((): void => {
@@ -1007,6 +1060,38 @@ const DomainGeneralSettings: FC = () => {
                 />
               </Container>
             </ListRow>
+
+            {isAdvanced && isTotalQuotaActive && (
+              <>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  background="gray6"
+                  padding={{ top: 'large', left: 'small' }}
+                >
+                  <Text size="small" weight="bold" color="gray0">
+                    {t('label.accountQuotaSetting', 'Account Quota Settings')}
+                  </Text>
+                </Row>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <Input
+                      label={t(
+                        'label.max_quota_per_account_in_this_domain',
+                        'Max quota per account in this domain (GB)',
+                      )}
+                      value={domainQuotaGB}
+                      backgroundColor="gray5"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                        const digits = e.target.value.replace(/[^0-9]/g, '');
+                        setDomainQuotaGB(digits.replace(/^0+/, ''));
+                      }}
+                      disabled={!isGlobalAdmin}
+                    />
+                  </Container>
+                </ListRow>
+              </>
+            )}
 
             {isAdvanced && (
               <ListRow>
