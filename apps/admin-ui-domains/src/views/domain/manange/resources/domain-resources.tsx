@@ -52,7 +52,7 @@ const DomainResources: FC = () => {
   const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const timer = useRef<number>(0);
+  const timer = useRef<any>(0);
   const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const tableRef = useRef<HTMLTableElement>(null);
