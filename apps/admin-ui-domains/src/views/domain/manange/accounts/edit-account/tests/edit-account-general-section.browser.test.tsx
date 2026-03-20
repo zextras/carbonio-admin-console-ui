@@ -106,7 +106,7 @@ function setupTest(contextOverrides: Record<string, unknown> = {}) {
 
   return setupBrowserTest(
     <AccountContext.Provider value={mockContext as any}>
-      <EditAccountGeneralSection setChange={vi.fn()} />
+      <EditAccountGeneralSection setChange={vi.fn()} onQuotaErrorChange={vi.fn()} />
     </AccountContext.Provider>,
     { queryClient },
   );

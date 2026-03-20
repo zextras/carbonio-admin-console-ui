@@ -35,6 +35,8 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 
+type Timeout = ReturnType<typeof setTimeout>;
+
 const DomainResources: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
