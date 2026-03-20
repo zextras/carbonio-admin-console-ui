@@ -74,7 +74,8 @@ const ZimbraAuthMethod = {
 
 const EditAccountGeneralSection: FC<{
   setChange: any;
-}> = ({ setChange }) => {
+  onQuotaErrorChange: (hasError: boolean) => void;
+}> = ({ setChange, onQuotaErrorChange }) => {
   const createSnackbar = useSnackbar();
   const {
     accountDetail,
@@ -758,6 +759,7 @@ const EditAccountGeneralSection: FC<{
           </Row>
         )}
         <EditAccountQuotaInputs
+          cosDetail={cosDetail}
           accountDetail={accountDetail}
           initialAccountDetail={initAccountDetail}
           setAccountDetail={setAccountDetail}
@@ -769,6 +771,7 @@ const EditAccountGeneralSection: FC<{
           setHighlightFileQuota={setHighlightFileQuota}
           setFocusableMailboxQuota={setFocusableMailboxQuota}
           setHighlightMailboxQuota={setHighlightMailboxQuota}
+          onQuotaErrorChange={onQuotaErrorChange}
         />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">

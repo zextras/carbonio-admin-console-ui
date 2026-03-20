@@ -1,3 +1,9 @@
+## [0.13.0-devel.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.4...v0.13.0-devel.5) (2026-03-20)
+
+### Features
+
+* add domain quota management ([792ca0f](https://github.com/zextras/carbonio-admin-console-ui/commit/792ca0fa782aaef6a34c832a56e872d7b3de7aaf)), closes [#1108](https://github.com/zextras/carbonio-admin-console-ui/issues/1108)
+
 ## [0.12.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.5...v0.12.6) (2026-03-13)
 
 ### Bug Fixes

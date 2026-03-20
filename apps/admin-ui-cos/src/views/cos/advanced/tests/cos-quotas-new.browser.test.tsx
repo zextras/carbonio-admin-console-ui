@@ -148,6 +148,41 @@ describe('COSQuotasNew (browser)', () => {
     await expect.element(input).toBeDisabled();
   });
 
+  it('should render revert icon when quota source is cos', async () => {
+    await setupBrowserTest(
+      <COSQuotasNew
+        totalComputedQuotaLimit={limitedQuota}
+        totalQuotaSource={'cos'}
+        initialTotalComputedQuotaLimit={limitedQuota}
+        onChange={vi.fn()}
+        readonlyCOS={false}
+      />,
+    );
+
+    const revertIcon = page.getByTestId('icon: RefreshOutline');
+    await expect.element(revertIcon).toBeVisible();
+
+    await userEvent.hover(revertIcon);
+    await expect.element(page.getByText('Click to revert to the inherited value')).toBeVisible();
+  });
+
+  it('should call onChange with undefined when revert icon is clicked', async () => {
+    const onChangeMock = vi.fn();
+    await setupBrowserTest(
+      <COSQuotasNew
+        totalComputedQuotaLimit={limitedQuota}
+        totalQuotaSource={'cos'}
+        initialTotalComputedQuotaLimit={limitedQuota}
+        onChange={onChangeMock}
+        readonlyCOS={false}
+      />,
+    );
+
+    await userEvent.click(page.getByTestId('icon: RefreshOutline'));
+
+    expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
+  });
+
   it('should render empty input when quota limit is undefined', async () => {
     await setupBrowserTest(
       <COSQuotasNew
