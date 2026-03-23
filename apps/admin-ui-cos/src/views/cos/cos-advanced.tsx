@@ -30,7 +30,7 @@ import {
 } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
-import { ComputedLimit, getCosQuota } from '../../services/get-cos-quota';
+import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
@@ -246,9 +246,13 @@ const CosAdvanced: FC = () => {
   const [totalComputedQuotaLimit, setTotalComputedQuotaLimit] = useState<ComputedLimit | undefined>(
     undefined,
   );
+  const [totalQuotaSource, setTotalQuotaSource] = useState<QuotaSource | undefined>(undefined);
   const [initialTotalComputedQuotaLimit, setInitialTotalComputedQuotaLimit] = useState<
     ComputedLimit | undefined
   >(undefined);
+  const [initialTotalQuotaSource, setInitialTotalQuotaSource] = useState<QuotaSource | undefined>(
+    undefined,
+  );
 
   const setValue = useCallback<
     (key: keyof AccountType, value: AccountType[keyof AccountType]) => void
@@ -608,7 +612,9 @@ const CosAdvanced: FC = () => {
     getCosQuota(cosId).then((res) => {
       if (res.type === 'success') {
         setTotalComputedQuotaLimit(res.totalComputedLimit);
+        setTotalQuotaSource(res.totalQuotaSource);
         setInitialTotalComputedQuotaLimit(res.totalComputedLimit);
+        setInitialTotalQuotaSource(res.totalQuotaSource);
       }
     });
   }, []);
@@ -645,6 +651,7 @@ const CosAdvanced: FC = () => {
 
   const onTotalQuotaChange = useCallback((value?: ComputedLimit) => {
     setTotalComputedQuotaLimit(value);
+    setTotalQuotaSource(value !== undefined ? 'cos' : 'global');
     setIsDirty(true);
   }, []);
 
@@ -654,6 +661,7 @@ const CosAdvanced: FC = () => {
     setFileQuotaLimitGBValue(initFileQuotaLimitGBValue);
     if (isTotalQuotaActive) {
       setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
+      setTotalQuotaSource(initialTotalQuotaSource);
     }
     setIsDirty(false);
   };
@@ -1366,6 +1374,7 @@ const CosAdvanced: FC = () => {
           onZimbraQuotaWarnIntervalNumChange={onZimbraQuotaWarnIntervalNumChange}
           onZimbraQuotaWarnIntervalTypeChange={onZimbraQuotaWarnIntervalTypeChange}
           totalComputedQuotaLimit={totalComputedQuotaLimit}
+          totalQuotaSource={totalQuotaSource}
           initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
           onTotalQuotaChange={onTotalQuotaChange}
         />

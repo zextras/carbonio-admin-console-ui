@@ -13,7 +13,7 @@ describe('getCosQuota', () => {
   it('should return success with a limited computed limit', async () => {
     createAPIInterceptor('get', '/services/storages/admin/quota/cos/cos-123', () =>
       HttpResponse.json({
-        computedLimit: { type: 'limited', value: 10737418240 },
+        computedLimit: { type: 'limited', value: 10737418240, source: 'cos' },
       }),
     );
 
@@ -22,13 +22,14 @@ describe('getCosQuota', () => {
     expect(result).toEqual({
       type: 'success',
       totalComputedLimit: { type: 'limited', value: 10737418240 },
+      totalQuotaSource: 'cos',
     });
   });
 
   it('should return success with an unlimited computed limit', async () => {
     createAPIInterceptor('get', '/services/storages/admin/quota/cos/cos-456', () =>
       HttpResponse.json({
-        computedLimit: { type: 'unlimited' },
+        computedLimit: { type: 'unlimited', source: 'global' },
       }),
     );
 
@@ -37,12 +38,15 @@ describe('getCosQuota', () => {
     expect(result).toEqual({
       type: 'success',
       totalComputedLimit: { type: 'unlimited' },
+      totalQuotaSource: 'global',
     });
   });
 
   it('should return error when the response is not ok', async () => {
-    createAPIInterceptor('get', '/services/storages/admin/quota/cos/cos-err', () =>
-      new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
+    createAPIInterceptor(
+      'get',
+      '/services/storages/admin/quota/cos/cos-err',
+      () => new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
     );
 
     const result = await getCosQuota('cos-err');

@@ -151,28 +151,28 @@ export const ABQ_DISABLED = 'Disabled';
 export const paginationItems: Array<{ label: string; value: number }> = [
   {
     label: '5',
-		value: 5
+    value: 5,
   },
   {
     label: '10',
-		value: 10
+    value: 10,
   },
   {
     label: '15',
-		value: 15
+    value: 15,
   },
   {
     label: '25',
-		value: 25
+    value: 25,
   },
   {
     label: '50',
-		value: 50
+    value: 50,
   },
   {
     label: '100',
-		value: 100
-	}
+    value: 100,
+  },
 ];
 export const HELPDESK_ADMINS = '__helpdesk_admins';
 export const PRIMARY_BAR_DOMAINS = 'pb_domains';
@@ -188,6 +188,7 @@ export const FETCH_DATA_LIMIT = 50;
 export const TOTAL_COMPUTED_QUOTA_LIMIT = 'totalComputedQuotaLimit';
 export const TOTAL_QUOTA_USED = 'totalQuotaUsed';
 export const TOTAL_QUOTA_USED_BY_MODULE = 'totalQuotaUsedByModule';
+export const TOTAL_QUOTA_SOURCE = 'totalQuotaSource';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';

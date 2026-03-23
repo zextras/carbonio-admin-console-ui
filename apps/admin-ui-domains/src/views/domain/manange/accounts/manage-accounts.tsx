@@ -45,6 +45,7 @@ import {
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
+  TOTAL_QUOTA_SOURCE,
   TOTAL_QUOTA_USED,
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
@@ -64,6 +65,8 @@ import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
+import { getCosQuota } from '../../../../services/get-cos-quota';
+import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
@@ -95,6 +98,8 @@ const ManageAccounts: FC = () => {
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
   const domainName = useDomainStore((state) => state.domain?.name);
+  const domainId = useDomainStore((state) => state.domain?.id);
+  const setDomainQuota = useDomainStore((state) => state.setDomainQuota);
   const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
   const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
   const [cosDetail, setCosDetail] = useState<any>({});
@@ -543,12 +548,13 @@ const ManageAccounts: FC = () => {
   );
 
   const retrieveAccountQuotaByAccountId = useCallback(
-    (accountId: string): void => {
+    (accountId: string, cosIdOfAccount: string): void => {
       getAccountQuota(accountId).then((res) => {
         if (res.type === 'success') {
           setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
           setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
           setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
+          setAccDetailValue(TOTAL_QUOTA_SOURCE, res.totalLimitSource);
         } else {
           createSnackbar({
             key: 'retrieveAccountQuotaError',
@@ -560,8 +566,23 @@ const ManageAccounts: FC = () => {
           });
         }
       });
+      getCosQuota(cosIdOfAccount).then((res) => {
+        if (res.type === 'success') {
+          setCosDetail((prev: any) => ({
+            ...prev,
+            [TOTAL_COMPUTED_QUOTA_LIMIT]: res.totalComputedLimit,
+          }));
+        }
+      });
+      if (domainId) {
+        getDomainQuota(domainId).then((res) => {
+          if (res.type !== 'error') {
+            setDomainQuota(domainId, res.type === 'success' ? res.limit : 'not-set');
+          }
+        });
+      }
     },
-    [createSnackbar, setAccDetailValue, t],
+    [createSnackbar, domainId, setAccDetailValue, setDomainQuota, t],
   );
 
   const getAccountDetail = useCallback(
@@ -611,7 +632,7 @@ const ManageAccounts: FC = () => {
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
             if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id);
+              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
             }
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);

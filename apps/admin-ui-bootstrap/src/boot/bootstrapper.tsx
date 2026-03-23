@@ -7,7 +7,6 @@ import { ModalManager, SnackbarManager } from '@zextras/ui-components';
 import { I18nFactory, ReactQueryProvider, useBridge } from '@zextras/ui-shared';
 import { FC, use } from 'react';
 
-import { TrackerProvider } from '../tracker/provider';
 import { BootstrapperContextProvider } from './bootstrapper-provider';
 import { BootstrapperRouter } from './bootstrapper-router';
 import { ErrorPage } from './error-page';
@@ -37,12 +36,10 @@ export const Bootstrapper = () => {
     <ReactQueryProvider>
       <SnackbarManager>
         <ModalManager>
-          <TrackerProvider>
-            <BootstrapperContextProvider i18nFactory={i18nFactory}>
-              <TBridge i18nFactory={i18nFactory} />
-              <BootstrapperRouter />
-            </BootstrapperContextProvider>
-          </TrackerProvider>
+          <BootstrapperContextProvider i18nFactory={i18nFactory}>
+            <TBridge i18nFactory={i18nFactory} />
+            <BootstrapperRouter />
+          </BootstrapperContextProvider>
         </ModalManager>
       </SnackbarManager>
     </ReactQueryProvider>

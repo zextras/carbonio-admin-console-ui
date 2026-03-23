@@ -39,6 +39,8 @@ import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 
+type Timeout = ReturnType<typeof setTimeout>;
+
 const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
@@ -62,7 +64,7 @@ const HSMsettingPanel: FC = () => {
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
   const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
-  const timer = useRef<number>(0);
+  const timer = useRef<Timeout | undefined>(undefined);
   const storageNotLicenced = t(
     'label.storage_hsm_not_licensed',
     'Cannot complete operation: storages_hsm not licensed.',
