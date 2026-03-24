@@ -1202,18 +1202,23 @@ const EditMailingListView: FC<any> = ({
       CustomComponent: ReusedDefaultTabBar,
     },
     {
+      id: 'sendas',
+      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
       id: 'sendto',
       label: t('label.sendto', 'SEND TO').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
-  if(!selectedMailingList?.dynamic) {
-    items.push({
-      id: 'sendas',
-      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
-      CustomComponent: ReusedDefaultTabBar,
-    });
-  }
+  // if(!selectedMailingList?.dynamic) {
+  //   items.push({
+  //     id: 'sendas',
+  //     label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
+  //     CustomComponent: ReusedDefaultTabBar,
+  //   });
+  // }
 
   return (
     <>
@@ -1375,7 +1380,7 @@ const EditMailingListView: FC<any> = ({
           />
         )}
 
-        {selectedTab === 'sendas' && !selectedMailingList?.dynamic && (
+        {selectedTab === 'sendas' && (
           <SendAsTab
             sendEmailsList={sendEmailsList}
             setSendEmailsList={setSendEmailsList}

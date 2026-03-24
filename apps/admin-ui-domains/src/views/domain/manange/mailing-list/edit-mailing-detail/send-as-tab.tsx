@@ -464,7 +464,6 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               }}
               inputValue={sendEmailItem}
               isCustomIcon={false}
-              inputDisabled={selectedMailingList?.dynamic}
               hasError={isShowSendEmailError}
             />
           </Row>
