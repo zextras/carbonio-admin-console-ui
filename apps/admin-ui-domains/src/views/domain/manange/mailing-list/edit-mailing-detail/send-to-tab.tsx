@@ -62,6 +62,7 @@ export const SendToTab: FC<SendToTabProps> = ({
   const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
   const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
   const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
+  const [senderToErrorMessage, setSenderToErrorMessage] = useState<string>('');
 
   const {
     filterValue: filterGrantEmail,
@@ -136,9 +137,24 @@ export const SendToTab: FC<SendToTabProps> = ({
         const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
           setIsShowSenderToError(true);
+          setSenderToErrorMessage(
+            t(
+              'domain.distributionList.invalidEmailErrorMsg',
+              'The account does not exist. Please check the spelling and try again.',
+            ),
+          );
+        } else if (grantEmailsList.find((item: any) => item === grantEmailItem)) {
+          setIsShowSenderToError(true);
+          setSenderToErrorMessage(
+            t(
+              'label.distribution_list_already_in_list_error',
+              'The Distribution List / User is already in the list',
+            ),
+          );
         } else {
           setGrantEmailItem('');
           setIsShowSenderToError(false);
+          setSenderToErrorMessage('');
           const sortedList = sortedUniq(allEmails);
           const emails = uniq(grantEmailsList.concat(sortedList));
           setGrantEmailsList(emails);
@@ -287,10 +303,7 @@ export const SendToTab: FC<SendToTabProps> = ({
                   >
                     <Padding right={'0'}>
                       <Text size="extrasmall" weight="regular" color="error">
-                        {t(
-                          'domain.distributionList.invalidEmailErrorMsg',
-                          'The account does not exist. Please check the spelling and try again.'
-                        )}
+                        {senderToErrorMessage}
                       </Text>
                     </Padding>
                   </Container>

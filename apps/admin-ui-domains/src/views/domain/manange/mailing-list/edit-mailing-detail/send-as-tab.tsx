@@ -220,6 +220,23 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
+        } else if (
+          sendEmailsList.find(
+            (s: any) =>
+              s?.name === sendEmailItem &&
+              s?.sendAcl ===
+                (radioPermisionValue === 'sendAs'
+                  ? 'sendAsDistList'
+                  : 'sendOnBehalfOfDistList'),
+          )
+        ) {
+          setIsShowSendEmailError(true);
+          setSendEmailErrorMessage(
+            t(
+              'label.distribution_list_already_in_list_error',
+              'The Distribution List / User is already in the list',
+            ),
+          );
         } else {
           setIsShowSendEmailError(false);
           setSendEmailItem('');
@@ -672,6 +689,25 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                       if (editingEmailItem?.sendAcl === newAcl) {
                         setEditingEmailItem(null);
                         setIsOpenEditPermissionDialog(false);
+                        return;
+                      }
+                      if (
+                        sendEmailsList.find(
+                          (s: any) =>
+                            s?.name === editingEmailItem?.name && s?.sendAcl === newAcl,
+                        )
+                      ) {
+                        createSnackbar({
+                          key: 'error',
+                          severity: 'error',
+                          label: t(
+                            'label.distribution_list_already_in_list_error',
+                            'The Distribution List / User is already in the list',
+                          ),
+                          autoHideTimeout: 3000,
+                          hideButton: true,
+                          replace: true,
+                        });
                         return;
                       }
                       setIsRequestInProgress(true);
