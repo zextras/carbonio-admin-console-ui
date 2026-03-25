@@ -179,7 +179,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -348,7 +348,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -493,7 +493,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -635,7 +635,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -786,7 +786,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -931,7 +931,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1076,7 +1076,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1218,7 +1218,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1363,7 +1363,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1508,7 +1508,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1650,7 +1650,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -1795,7 +1795,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0(@babel/core@7.29.0)
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
@@ -2062,7 +2062,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0
       '@babel/preset-env':
-        specifier: ^7.29.0
+        specifier: ^7.29.2
         version: 7.29.2(@babel/core@7.29.0)
       '@babel/preset-react':
         specifier: ^7.28.5
