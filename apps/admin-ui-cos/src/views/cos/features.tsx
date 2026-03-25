@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedSwitch, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, InheritedSwitch, ListRow, Padding, Row, Text } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -98,7 +98,7 @@ export const Features: FC<{
             orientation="vertical"
             padding={{ bottom: 'large' }}
           >
-            <Text  weight="bold">
+            <Text weight="bold">
               {t('cos.features.twoFactorAuthenticator', 'Two-Factor authenticator')}
             </Text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -114,7 +114,7 @@ export const Features: FC<{
                 disabled={readonlyFeatures}
               />
             </Row>
-            <Padding left={'extralarge'}>
+            <Padding left={'extralarge'} bottom={'large'}>
               <Row padding={{ left: 'small' }}>
                 <Text color="gray1" size="small" overflow="break-word">
                   {t(
@@ -124,6 +124,54 @@ export const Features: FC<{
                 </Text>
               </Row>
             </Padding>
+            {isAdvanced && (
+              <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
+                <Text weight="bold">
+                  {t(
+                    'domain.accounts.twoFactorAuthSetupEnforcement',
+                    'Two-Factor authenticator setup enforcement',
+                  )}
+                </Text>
+                {/* <Row mainAlignment="flex-start" width="100%"> */}
+                  <Container
+                    height="fit"
+                    crossAlignment="flex-start"
+                    background="gray6"
+                    padding={{ top: 'large' }}
+                  >
+                    <ListRow>
+                      <Container crossAlignment="flex-start">
+                        <InheritedSwitch
+                          subValue={cosDetail?.carbonioOtpWizardFromUntrusted}
+                          onChange={changeSwitchOption}
+                          label={t(
+                            'domain.accounts.enforceOnUntrustedNetworks',
+                            'Enforce on Untrusted Networks',
+                          )}
+                          iconColor="primary"
+                          inheritedValue={cosDetail?.carbonioOtpWizardFromUntrusted}
+                          fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
+                          inputName={'carbonioOtpWizardFromUntrusted'}
+                          onChangeReset={(): void =>
+                            setEmptyValue?.('carbonioOtpWizardFromUntrusted')
+                          }
+                        />
+                        <Padding left={'extralarge'}>
+                          <Row padding={{ left: 'small' }}>
+                            <Text color="gray1" size="small" overflow="break-word">
+                              {t(
+                                'domain.accounts.enforceOnUntrustedNetworksInfo',
+                                'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                              )}
+                            </Text>
+                          </Row>
+                        </Padding>
+                      </Container>
+                    </ListRow>
+                  </Container>
+                {/* </Row> */}
+              </Row>
+            )}
           </Container>
           <divider-wc></divider-wc>
         </Row>
@@ -141,9 +189,7 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text  weight="bold">
-            {t('label.mail', 'Mail')}
-          </Text>
+          <Text weight="bold">{t('label.mail', 'Mail')}</Text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
@@ -199,9 +245,7 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text  weight="bold">
-            {t('label.contacts', 'Contacts')}
-          </Text>
+          <Text weight="bold">{t('label.contacts', 'Contacts')}</Text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureContactsEnabled}
@@ -223,9 +267,7 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text  weight="bold">
-            {t('label.calendar', 'Calendar')}
-          </Text>
+          <Text weight="bold">{t('label.calendar', 'Calendar')}</Text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
@@ -255,9 +297,7 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text  weight="bold">
-            {t('label.files', 'Files')}
-          </Text>
+          <Text weight="bold">{t('label.files', 'Files')}</Text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureFilesEnabled}
@@ -292,9 +332,7 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text  weight="bold">
-            {t('label.tasks', 'Tasks')}
-          </Text>
+          <Text weight="bold">{t('label.tasks', 'Tasks')}</Text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureTasksEnabled}
