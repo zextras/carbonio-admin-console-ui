@@ -802,6 +802,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             onChange={(value: string | undefined): void => {
               if (value) setEditPermissionValue(value);
             }}
+            style={{marginTop:'1rem', marginBottom:'0.5rem'}}
           >
             <Radio
               key={'send-as-option'}
