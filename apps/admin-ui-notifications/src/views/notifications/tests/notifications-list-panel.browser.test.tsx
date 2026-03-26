@@ -22,7 +22,7 @@ describe('NotificationsListPanel', () => {
 		vi.resetAllMocks();
 		queryClient = getQueryClient();
 		queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-		grantUserConfigRights();
+		grantUserConfigRights(queryClient);
 	});
 
 	afterEach(() => {
