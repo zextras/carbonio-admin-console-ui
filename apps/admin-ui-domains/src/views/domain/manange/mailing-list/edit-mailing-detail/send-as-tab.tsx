@@ -334,6 +334,14 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           ),
         );
       }
+    } else {
+      setIsShowSendEmailError(true);
+      setSendEmailErrorMessage(
+        t(
+          'domain.distributionList.blankEmailErrorMsg',
+          'Please enter at least one email address',
+        ),
+      );
     }
   }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, selectedMailingList?.id, setSendEmailsList, setSendEmails, setPreviousDetail, setIsRequestInProgress]);
 
@@ -572,7 +580,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 iconPlacement="left"
                 onClick={(): void => onAddSendEmail()}
                 size="medium"
-                disabled={!radioPermisionValue || !sendEmailItem?.length}
+                disabled={!radioPermisionValue}
               />
             </Row>
           </Container>
@@ -668,7 +676,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 <Button
                   key={'modal-cancel-button'}
                   label={t('label.cancel', 'Cancel')}
-                  color="secondary"
+                  color="gray0"
                   type="outlined"
                   onClick={closeEditPermissionHandler}
                   disabled={isRequestInProgress}

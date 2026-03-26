@@ -322,6 +322,14 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           ),
         );
       }
+    } else {
+      setIsShowOwnerError(true);
+      setOwnerErrorMessage(
+        t(
+          'domain.distributionList.blankEmailErrorMsg',
+          'Please enter at least one email address',
+        ),
+      );
     }
   }, [searchOwner, t, ownersList, selectedMailingList?.id, getOwnerType, createSnackbar, setOwnersList, setPreviousDetail, setIsRequestInProgress]);
 
@@ -495,7 +503,6 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                 iconPlacement="left"
                 onClick={onAddOwner}
                 size="medium"
-                disabled={searchOwner === ''}
               />
             </Row>
           </Container>

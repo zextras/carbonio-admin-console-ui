@@ -336,6 +336,14 @@ export const MembersTab: FC<MembersTabProps> = ({
         );
         setIsShowMemberError(true);
       }
+    } else {
+      setIsShowMemberError(true);
+      setMemberErrorMessage(
+        t(
+          'domain.distributionList.blankEmailErrorMsg',
+          'Please enter at least one email address',
+        ),
+      );
     }
   }, [searchMember, t, dlm, selectedMailingList?.id, createSnackbar, setDlm, setPreviousDetail, setIsRequestInProgress]);
 
@@ -546,7 +554,6 @@ export const MembersTab: FC<MembersTabProps> = ({
                     iconPlacement="left"
                     onClick={onAdd}
                     size="medium"
-                    disabled={searchMember === ''}
                   />
                 </Row>
               </Container>

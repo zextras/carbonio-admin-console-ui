@@ -171,6 +171,14 @@ export const SendToTab: FC<SendToTabProps> = ({
           replace: true,
         });
       }
+    } else {
+      setIsShowSenderToError(true);
+      setSenderToErrorMessage(
+        t(
+          'domain.distributionList.blankEmailErrorMsg',
+          'Please enter at least one email address',
+        ),
+      );
     }
   }, [grantEmailsList, createSnackbar, grantEmailItem, t, setGrantEmailsList, setGrantEmails, setIsDirty, setIsShowSenderToError]);
 
@@ -322,7 +330,6 @@ export const SendToTab: FC<SendToTabProps> = ({
                   iconPlacement="left"
                   onClick={onAddGrantEmail}
                   size="medium"
-                  disabled={grantEmailItem === ''}
                 />
               </Row>
             </Container>

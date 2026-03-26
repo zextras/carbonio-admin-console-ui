@@ -1418,7 +1418,7 @@ const EditMailingListView: FC<any> = ({
                 <Row style={{ gap: '1rem' }}>
                   <Button
                     label={t('domain.distributionList.exitWithoutSave', 'Exit without Save')}
-                    color="secondary"
+                    color="gray0"
                     type="outlined"
                     onClick={(): void => {
                       onUndo();
