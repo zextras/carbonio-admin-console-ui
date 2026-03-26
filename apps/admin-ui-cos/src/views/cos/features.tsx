@@ -133,42 +133,43 @@ export const Features: FC<{
                   )}
                 </Text>
                 {/* <Row mainAlignment="flex-start" width="100%"> */}
-                  <Container
-                    height="fit"
-                    crossAlignment="flex-start"
-                    background="gray6"
-                    padding={{ top: 'large' }}
-                  >
-                    <ListRow>
-                      <Container crossAlignment="flex-start">
-                        <InheritedSwitch
-                          subValue={cosDetail?.carbonioOtpWizardFromUntrusted}
-                          onChange={changeSwitchOption}
-                          label={t(
-                            'domain.accounts.enforceOnUntrustedNetworks',
-                            'Enforce on Untrusted Networks',
-                          )}
-                          iconColor="primary"
-                          inheritedValue={cosDetail?.carbonioOtpWizardFromUntrusted}
-                          fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
-                          inputName={'carbonioOtpWizardFromUntrusted'}
-                          onChangeReset={(): void =>
-                            setEmptyValue?.('carbonioOtpWizardFromUntrusted')
-                          }
-                        />
-                        <Padding left={'extralarge'}>
-                          <Row padding={{ left: 'small' }}>
-                            <Text color="gray1" size="small" overflow="break-word">
-                              {t(
-                                'domain.accounts.enforceOnUntrustedNetworksInfo',
-                                'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
-                              )}
-                            </Text>
-                          </Row>
-                        </Padding>
-                      </Container>
-                    </ListRow>
-                  </Container>
+                <Container
+                  height="fit"
+                  crossAlignment="flex-start"
+                  background="gray6"
+                  padding={{ top: 'large' }}
+                >
+                  <ListRow>
+                    <Container crossAlignment="flex-start">
+                      <InheritedSwitch
+                        subValue={featuresDetail?.carbonioOtpWizardFromUntrusted}
+                        onChange={changeSwitchOption}
+                        label={t(
+                          'domain.accounts.enforceOnUntrustedNetworks',
+                          'Enforce on Untrusted Networks',
+                        )}
+                        iconColor="primary"
+                        inheritedValue={cosDetail?.carbonioOtpWizardFromUntrusted}
+                        fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
+                        inputName={'carbonioOtpWizardFromUntrusted'}
+                        onChangeReset={(): void =>
+                          setEmptyValue?.('carbonioOtpWizardFromUntrusted')
+                        }
+                        disabled={readonlyFeatures}
+                      />
+                      <Padding left={'extralarge'}>
+                        <Row padding={{ left: 'small' }}>
+                          <Text color="gray1" size="small" overflow="break-word">
+                            {t(
+                              'domain.accounts.enforceOnUntrustedNetworksInfo',
+                              'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                            )}
+                          </Text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                </Container>
                 {/* </Row> */}
               </Row>
             )}
