@@ -144,7 +144,7 @@ export const Features: FC<{
                         subValue={featuresDetail?.carbonioOtpWizardFromUntrusted}
                         onChange={changeSwitchOption}
                         label={t(
-                          'domain.accounts.enforceOnUntrustedNetworks',
+                          'cos.features.enforceOnUntrustedNetworks',
                           'Enforce on Untrusted Networks',
                         )}
                         iconColor="primary"
