@@ -128,7 +128,7 @@ export const Features: FC<{
               <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
                 <Text weight="bold">
                   {t(
-                    'domain.accounts.twoFactorAuthSetupEnforcement',
+                    'cos.features.twoFactorAuthSetupEnforcement',
                     'Two-Factor authenticator setup enforcement',
                   )}
                 </Text>
