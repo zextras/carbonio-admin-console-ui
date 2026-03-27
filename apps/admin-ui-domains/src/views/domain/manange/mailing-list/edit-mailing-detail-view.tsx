@@ -1485,7 +1485,7 @@ const EditMailingListView: FC<any> = ({
                 <Row style={{ gap: '1rem' }}>
                   <Button
                     label={t('label.cancel', 'Cancel')}
-                    color="secondary"
+                    color="gray0"
                     type="outlined"
                     onClick={closeHandler}
                     disabled={isRequestInProgress}
@@ -1503,19 +1503,19 @@ const EditMailingListView: FC<any> = ({
             onClose={closeHandler}
           >
             <Container
-              padding={{ top: 'extralarge', bottom: 'extralarge' }}
-              style={{ textAlign: 'center' }}
+              padding={{ top: 'large', bottom: 'extralarge' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
             >
-              <Padding bottom="small">
+              <Padding bottom="large">
                 {totalGrantRights !== 0 && (
-                  <Container padding={{ bottom: 'extralarge' }}>
-                    <Text size={'extralarge'} overflow="break-word">
+                  <Container >
+                    <Text size={'large'} overflow="break-word">
                       <Trans
                         i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
-                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
                         components={{
-                          bold: <strong />,
-                          br: <br />,
+                          bold: <strong />
                         }}
                         values={{
                           totalAccRights: totalGrantRights,
@@ -1524,7 +1524,7 @@ const EditMailingListView: FC<any> = ({
                     </Text>
                   </Container>
                 )}
-                <Text size={'extralarge'} overflow="break-word">
+                <Text size={'large'} overflow="break-word">
                   <Trans
                     i18nKey="label.are_you_sure_delete_distribution_list"
                     defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
