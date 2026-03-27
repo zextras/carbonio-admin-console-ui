@@ -51,7 +51,7 @@
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.2.1",
     "ts-node": "^10 >=10.9.2",
-    "typescript": "^5.7.2",
+    "typescript": "^6.0.0",
     "typescript-plugin-css-modules": "^5.2.0"
   },
   "browserslist": [

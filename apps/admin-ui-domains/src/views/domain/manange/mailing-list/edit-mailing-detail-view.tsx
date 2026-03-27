@@ -2223,7 +2223,7 @@ const EditMailingListView: FC<any> = ({
       label: t('label.security', 'SECURITY'),
       CustomComponent: ReusedDefaultTabBar,
     },
-    !selectedMailingList?.dynamic && {
+    {
       id: 'delegates',
       label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
