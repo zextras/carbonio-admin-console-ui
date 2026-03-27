@@ -152,7 +152,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           <Container key="send_email_actions" orientation="horizontal" mainAlignment="flex-start">
             <Button
               type="ghost"
-              color={'info'}
+              color="primary"
               size="medium"
               icon="EditOutline"
               style={{ position: 'inherit', marginRight: '0.5rem' }}
@@ -465,7 +465,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           </Text>
           <Text
             size="small"
-            color="secondary"
+            color="gray0"
             style={{ marginTop: '0.5rem' }}
             overflow="break-word"
           >
@@ -534,7 +534,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 <Text
                   key="sendAs-description"
                   size="small"
-                  color="secondary"
+                  color="gray0"
                   style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}
                 >
                   {t(
@@ -554,7 +554,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 <Text
                   key="sendOnBehalfOf-description"
                   size="small"
-                  color="secondary"
+                  color="gray0"
                   style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}
                 >
                   {t(

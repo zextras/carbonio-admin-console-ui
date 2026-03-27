@@ -438,7 +438,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         <ListRow padding={{ top: 'small' }}>
           <Text
             size="small"
-            color="secondary"
+            color="gray0"
             style={{ whiteSpace: 'normal' }}
             overflow="break-word"
           >

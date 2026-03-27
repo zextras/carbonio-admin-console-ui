@@ -487,12 +487,6 @@ export const MembersTab: FC<MembersTabProps> = ({
                 </Container>
               </Container>
             </ListRow>
-            <divider-wc />
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
-              <Text size="medium" weight="bold" color="gray0">
-                {t('label.members', 'Members')}
-              </Text>
-            </Row>
           </>
         )}
         {!selectedMailingList?.dynamic && (

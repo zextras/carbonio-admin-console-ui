@@ -243,7 +243,7 @@ export const SendToTab: FC<SendToTabProps> = ({
         </Text>
         <Text
           size="small"
-          color="secondary"
+          color="gray0"
           style={{ marginTop: '0.5rem' }}
           overflow="break-word"
         >
