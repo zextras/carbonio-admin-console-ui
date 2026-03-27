@@ -222,12 +222,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           );
         } else if (
           sendEmailsList.find(
-            (s: any) =>
-              s?.name === sendEmailItem &&
-              s?.sendAcl ===
-                (radioPermisionValue === 'sendAs'
-                  ? 'sendAsDistList'
-                  : 'sendOnBehalfOfDistList'),
+            (s: any) => s?.name === sendEmailItem,
           )
         ) {
           setIsShowSendEmailError(true);
@@ -251,7 +246,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           const newSenders = sortedList.filter(
             (item: any) =>
               !sendEmailsList.find(
-                (s: any) => s?.name === item?.name && s?.sendAcl === item?.sendAcl,
+                (s: any) => s?.name === item?.name,
               ),
           );
           if (newSenders.length === 0) return;
