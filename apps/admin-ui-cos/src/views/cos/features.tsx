@@ -132,7 +132,6 @@ export const Features: FC<{
                     'Two-Factor authenticator setup enforcement',
                   )}
                 </Text>
-                {/* <Row mainAlignment="flex-start" width="100%"> */}
                 <Container
                   height="fit"
                   crossAlignment="flex-start"
