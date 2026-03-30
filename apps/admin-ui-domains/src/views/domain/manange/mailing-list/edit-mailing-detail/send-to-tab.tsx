@@ -347,7 +347,7 @@ export const SendToTab: FC<SendToTabProps> = ({
               >
                 <Text weight="bold" color="gray0">
                   {t(
-                    'domain.distributionList.sendTo.authorizedSenders',
+                    'domain.distributionList.sendTo.authorizedSendersToList',
                     'Authorized senders to this distribution list',
                   )}
                 </Text>

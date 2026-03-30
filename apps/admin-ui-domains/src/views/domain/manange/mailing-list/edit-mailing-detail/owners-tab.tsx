@@ -286,7 +286,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                   key: 'success',
                   severity: 'success',
                   label: t(
-                    'label.owner_added_successfully',
+                    'domain.distributionList.ownerAddedSuccessfully',
                     'Owner has been added successfully',
                   ),
                   autoHideTimeout: 3000,
@@ -378,7 +378,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             key: 'success',
             severity: 'success',
             label: t(
-              'label.owner_deleted_successfully',
+              'domain.distributionList.ownerDeletedSuccessfully',
               'Owner has been removed successfully',
             ),
             autoHideTimeout: 3000,
@@ -498,7 +498,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               <Button
                 icon="Plus"
                 key="add-button"
-                label={t('label.addOwners', 'Add Owners')}
+                label={t('domain.distributionList.addOwners', 'Add Owners')}
                 color="primary"
                 iconPlacement="left"
                 onClick={onAddOwner}
@@ -614,7 +614,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           >
             <Text size={'large'} overflow="break-word">
               <Trans
-                i18nKey="label.are_you_sure_delete_owner"
+                i18nKey="domain.distributionList.owners.areYouSureDeleteOwner"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the owners list?"
                 components={{ bold: <strong /> }}
                 values={{

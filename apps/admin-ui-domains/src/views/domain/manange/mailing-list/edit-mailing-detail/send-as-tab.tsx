@@ -293,7 +293,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                   key: 'success',
                   severity: 'success',
                   label: t(
-                    'label.sender_added_successfully',
+                    'domain.distributionList.sendAs.senderAddedSuccessfully',
                     'Authorized sender has been added successfully',
                   ),
                   autoHideTimeout: 3000,
@@ -393,7 +393,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             key: 'success',
             severity: 'success',
             label: t(
-              'label.sender_deleted_successfully',
+              'domain.distributionList.sendAs.senderRemovedSuccessfully',
               'Authorized sender has been removed successfully',
             ),
             autoHideTimeout: 3000,
@@ -465,7 +465,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             overflow="break-word"
           >
             {t(
-              'domain.distributionList.sendAs.managePermission_description_msg',
+              'domain.distributionList.sendAs.managePermissionDescriptionMsg',
               'Allow others to send emails as this distribution list',
             )}
           </Text>
@@ -593,7 +593,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               >
                 <Text weight="bold" color="gray0">
                   {t(
-                    'domain.distributionList.sendAs.authorizedSenders',
+                    'domain.distributionList.sendAs.authorizedSendersList',
                     'Authorized senders from this distribution list',
                   )}
                 </Text>
@@ -763,7 +763,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                             key: 'success',
                             severity: 'success',
                             label: t(
-                              'label.permission_updated_successfully',
+                              'domain.distributionList.sendAs.permissionUpdatedSuccessfully',
                               'Permission level has been updated successfully',
                             ),
                             autoHideTimeout: 3000,

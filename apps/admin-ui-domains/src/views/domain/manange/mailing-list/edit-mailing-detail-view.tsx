@@ -77,10 +77,6 @@ const EditMailingListView: FC<any> = ({
   const [dlMembershipList, setDlMembershipList] = useState<any>([]);
   const [ownersList, setOwnersList] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
-  // const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  // const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
-  // const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
-  // const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [memberURL, setMemberURL] = useState<string>();
   const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
@@ -99,8 +95,6 @@ const EditMailingListView: FC<any> = ({
   const [selectedTab, setSelectedTab] = useState<string>('general');
   const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
   const [pendingTab, setPendingTab] = useState<string | null>(null);
-
-
 
   // sendEmails
   const [sendEmails, setSendEmails] = useState<any>([]);
@@ -1135,7 +1129,6 @@ const EditMailingListView: FC<any> = ({
     setIsOpenDeleteDialog(false);
   }, []);
 
-
   const onSuccess = useCallback(
     (message: string) => {
       createSnackbar({
@@ -1203,23 +1196,16 @@ const EditMailingListView: FC<any> = ({
     },
     {
       id: 'sendas',
-      label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
+      label: t('domain.distributionList.sendAs', 'SEND AS').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
       id: 'sendto',
-      label: t('label.sendto', 'SEND TO').toLocaleUpperCase(),
+      label: t('domain.distributionList.sendTo', 'SEND TO').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
-  // if(!selectedMailingList?.dynamic) {
-  //   items.push({
-  //     id: 'sendas',
-  //     label: t('label.sendas', 'SEND AS').toLocaleUpperCase(),
-  //     CustomComponent: ReusedDefaultTabBar,
-  //   });
-  // }
-
+  
   return (
     <>
       {isLoading && <spinner-wc></spinner-wc>}

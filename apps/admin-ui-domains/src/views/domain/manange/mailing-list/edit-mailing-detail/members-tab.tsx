@@ -300,7 +300,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                   key: 'success',
                   severity: 'success',
                   label: t(
-                    'label.member_added_successfully',
+                    'domain.distributionList.memberAddedSuccessfully',
                     'Member has been added successfully',
                   ),
                   autoHideTimeout: 3000,
@@ -413,7 +413,7 @@ export const MembersTab: FC<MembersTabProps> = ({
             key: 'success',
             severity: 'success',
             label: t(
-              'label.member_deleted_successfully',
+              'domain.distributionList.memberDeletedSuccessfully',
               'Member has been removed successfully',
             ),
             autoHideTimeout: 3000,
@@ -689,7 +689,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           >
             <Text size={'large'} overflow="break-word">
               <Trans
-                i18nKey="label.are_you_sure_delete_member"
+                i18nKey="domain.distributionList.members.areYouSureDeleteMember"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the members list?"
                 components={{ bold: <strong /> }}
                 values={{
