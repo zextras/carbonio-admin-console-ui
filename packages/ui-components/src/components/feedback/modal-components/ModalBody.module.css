@@ -5,13 +5,11 @@
  */
 
 .modalBody {
-  overflow-y: auto;
   max-width: 100%;
   box-sizing: border-box;
   width: 100%;
   padding-top: var(--padding-large);
   padding-bottom: var(--padding-large);
-  flex-grow: 1;
 }
 
 .modalBody.centered {
