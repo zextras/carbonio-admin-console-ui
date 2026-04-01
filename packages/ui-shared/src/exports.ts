@@ -66,6 +66,7 @@ import {
   SnackbarManagerContext,
   useSnackbar,
 } from './hooks/useSnackbar';
+import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
   fetchExternalSoap,
   getSoapFetchRequest,
@@ -227,6 +228,7 @@ export {
   useServerVersion,
   useSnackbar,
   useStickyBarStore,
+  useTotalQuotaActive,
   useUserAccount,
   useUserAccounts,
   useUserSettings,
