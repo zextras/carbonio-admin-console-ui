@@ -12,9 +12,9 @@ import {
     setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
+import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
-import { Route, Routes } from 'react-router';
 
 import ServerAdvanced from '../server-advanced';
 
