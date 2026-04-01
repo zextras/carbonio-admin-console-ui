@@ -5,7 +5,7 @@
  */
 import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
-import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
+import { useTotalQuotaActive } from '@zextras/ui-shared';
 import { AccountDetail, CosDetail } from '../../account-context';
 import { EditAccountQuotaInputsLegacy } from './edit-account-quota-inputs-legacy';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
