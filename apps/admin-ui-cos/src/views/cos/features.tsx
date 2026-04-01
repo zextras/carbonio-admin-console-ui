@@ -3,9 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedSwitch, ListRow, Padding, Row, Text } from '@zextras/ui-components';
+import {
+  Container,
+  DateTimePicker,
+  InheritedSwitch,
+  ListRow,
+  Padding,
+  Row,
+  Text,
+} from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
@@ -36,6 +44,58 @@ export const Features: FC<{
       }));
     },
     [featuresDetail, setFeaturesDetail],
+  );
+
+  const gracePeriodDefaultDate = useMemo(() => {
+    const gentimeValue =
+      accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
+      featuresDetail?.carbonioOtpGracePeriodEndingTime;
+    if (gentimeValue) {
+      const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
+      if (match) {
+        return new Date(
+          Date.UTC(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3]),
+            Number(match[4]),
+            Number(match[5]),
+            Number(match[6]),
+          ),
+        );
+      }
+    }
+    if (featuresDetail?.carbonioOtpGracePeriodEnabled) {
+      const date = new Date();
+      date.setMonth(date.getMonth() + 1);
+      return date;
+    }
+    return null;
+  }, [
+    accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
+    featuresDetail?.carbonioOtpGracePeriodEndingTime,
+    featuresDetail?.carbonioOtpGracePeriodEnabled,
+  ]);
+  const handleFromDateChange = useCallback(
+    (d: Date | null) => {
+      if (!d) {
+        setFeaturesDetail((prev: Record<string, string>) => ({
+          ...prev,
+          carbonioOtpGracePeriodEndingTime: '',
+        }));
+        return;
+      }
+      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+        d.getUTCDate(),
+      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+        d.getUTCMinutes(),
+      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+      setFeaturesDetail((prev: Record<string, string>) => ({
+        ...prev,
+        carbonioOtpGracePeriodEndingTime: gentime,
+      }));
+    },
+    [setFeaturesDetail],
   );
 
   return (
@@ -160,13 +220,60 @@ export const Features: FC<{
                         <Row padding={{ left: 'small' }}>
                           <Text color="gray1" size="small" overflow="break-word">
                             {t(
-                              'domain.accounts.enforceOnUntrustedNetworksInfo',
+                              'cos.features.enforceOnUntrustedNetworksInfo',
                               'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
                             )}
                           </Text>
                         </Row>
                       </Padding>
                     </Container>
+                  </ListRow>
+                  <ListRow padding={{ top: 'large' }}>
+                    <Container crossAlignment="flex-start">
+                      <InheritedSwitch
+                        subValue={featuresDetail?.carbonioOtpGracePeriodEnabled}
+                        onChange={changeSwitchOption}
+                        label={t(
+                          'cos.features.allowSetupDeferralDuringGracePeriod',
+                          'Allow setup deferral during grace period',
+                        )}
+                        iconColor="primary"
+                        inheritedValue={cosDetail?.carbonioOtpGracePeriodEnabled}
+                        fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
+                        inputName={'carbonioOtpGracePeriodEnabled'}
+                        onChangeReset={(): void => setEmptyValue?.('carbonioOtpGracePeriodEnabled')}
+                      />
+                      <Padding left={'extralarge'}>
+                        <Row padding={{ left: 'small' }}>
+                          <Text color="gray1" size="small" overflow="break-word">
+                            {t(
+                              'cos.features.allowSetupDeferralDuringGracePeriodInfo',
+                              'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+                            )}
+                          </Text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                  <ListRow padding={{ top: 'large' }}>
+                    <Padding left={'extralarge'} width="100%">
+                      <Row width="100%" padding={{ top: 'large' }}>
+                        <DateTimePicker
+                          disabled={featuresDetail?.carbonioOtpGracePeriodEnabled === 'FALSE'}
+                          width={'21.625rem'}
+                          className="fffff"
+                          label={t(
+                            'domain.accounts.gracePeriodExpirationDate',
+                            'Set grace period expiration date',
+                          )}
+                          onChange={handleFromDateChange}
+                          dateFormat="dd/MM/yyyy"
+                          includeTime={false}
+                          minDate={new Date()}
+                          defaultValue={gracePeriodDefaultDate}
+                        />
+                      </Row>
+                    </Padding>
                   </ListRow>
                 </Container>
                 {/* </Row> */}
