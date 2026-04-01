@@ -177,7 +177,7 @@ export const DateTimePicker = ({
       mainAlignment="flex-start"
       className={styles.styler}
     >
-      {/* @ts-expect-error - needs a fix // error is on unused property */}
+      {/* @ts-expect-error - datePickerProps spread may include selectsMultiple as boolean */}
       <DatePicker
         showPopperArrow={false}
         selected={dateTime}
@@ -191,7 +191,6 @@ export const DateTimePicker = ({
         onCalendarClose={updateDateTime}
         onSelect={updateDateTime}
         onBlur={updateDateTime}
-        width={width}
         {...datePickerProps}
       />
     </Container>
