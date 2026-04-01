@@ -20,7 +20,7 @@ function ModalBody({ maxHeight, centered, children, ref, ...rest }: ModalBodyPro
 	return (
 		<div
 			className={clsx(styles.modalBody, centered && styles.centered)}
-			style={{ maxHeight }}
+			style={{ maxHeight, overflowY: maxHeight ? 'auto' : undefined }}
 			ref={ref}
 			{...rest}
 		>
