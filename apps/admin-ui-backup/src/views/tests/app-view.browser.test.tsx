@@ -244,9 +244,14 @@ describe('AppView', () => {
 			await expect
 				.element(page.getByText('Global Server Settings'))
 				.toBeVisible();
-			await expect
-				.element(page.getByText('Server Config'))
-				.toBeVisible();
+
+			const serverConfigText = page.getByText('Server Config');
+			await expect.element(serverConfigText).toBeVisible();
+			await expect.element(serverConfigText).toHaveStyle({ opacity: '0.5' });
+
+			const advancedText = page.getByText('Advanced', { exact: true });
+			await expect.element(advancedText).toBeVisible();
+			await expect.element(advancedText).toHaveStyle({ opacity: '0.5' });
 		});
 	});
 
