@@ -191,7 +191,7 @@ describe('DoneDetailPanel', () => {
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('Details')).toBeVisible();
         await page.getByTestId('icon: CloseOutline').click();
-        expect(page.getByText('Operation Type').elements()).toHaveLength(0);
+        await expect.poll(() => page.getByText('Operation Type').elements()).toHaveLength(0);
     });
 
     it('should filter operations by search text', async () => {
@@ -205,7 +205,7 @@ describe('DoneDetailPanel', () => {
         await userEvent.type(searchInput, 'doBackup');
 
         await expect.element(page.getByText('doBackup')).toBeVisible();
-        expect(page.getByText('doExport').elements()).toHaveLength(0);
+        await expect.poll(() => page.getByText('doExport').elements()).toHaveLength(0);
     });
 
     it('should filter operations by author', async () => {
@@ -218,7 +218,7 @@ describe('DoneDetailPanel', () => {
         await userEvent.type(searchInput, 'user@test.com');
 
         await expect.element(page.getByText('doExport')).toBeVisible();
-        expect(page.getByText('doBackup').elements()).toHaveLength(0);
+        await expect.poll(() => page.getByText('doBackup').elements()).toHaveLength(0);
     });
 
     it('should show COPY button in wizard for done operations', async () => {
