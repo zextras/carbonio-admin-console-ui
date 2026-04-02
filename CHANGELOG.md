@@ -1,3 +1,9 @@
+## [0.13.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.9...v0.13.0-devel.10) (2026-04-02)
+
+### Features
+
+* tests on adminUI operations ([#1130](https://github.com/zextras/carbonio-admin-console-ui/issues/1130)) ([39ab55e](https://github.com/zextras/carbonio-admin-console-ui/commit/39ab55e4abeac044d3b159d33c3c950d1c4df5d0))
+
 ## [0.13.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.8...v0.13.0-devel.9) (2026-04-02)
 
 ### Bug Fixes
