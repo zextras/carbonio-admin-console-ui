@@ -1,3 +1,9 @@
+## [0.13.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.8...v0.13.0-devel.9) (2026-04-02)
+
+### Bug Fixes
+
+* error when create a new distribution list ([#1128](https://github.com/zextras/carbonio-admin-console-ui/issues/1128)) ([11e4070](https://github.com/zextras/carbonio-admin-console-ui/commit/11e4070c398ab7f808ed052db61676f86c5e1571))
+
 ## [0.13.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.7...v0.13.0-devel.8) (2026-03-30)
 
 ### Features
