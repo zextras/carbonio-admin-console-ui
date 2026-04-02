@@ -257,13 +257,13 @@ export const Features: FC<{
                   </ListRow>
                   <ListRow padding={{ top: 'large' }}>
                     <Padding left={'extralarge'} width="100%">
-                      <Row width="100%" padding={{ top: 'large' }}>
+                      <Row width="100%">
                         <DateTimePicker
                           disabled={featuresDetail?.carbonioOtpGracePeriodEnabled === 'FALSE'}
                           width={'21.625rem'}
                           className="fffff"
                           label={t(
-                            'domain.accounts.gracePeriodExpirationDate',
+                            'cos.features.gracePeriodExpirationDate',
                             'Set grace period expiration date',
                           )}
                           onChange={handleFromDateChange}

@@ -812,7 +812,7 @@ const EditAccountSecuritySection: FC = () => {
               </ListRow>
               <ListRow padding={{ top: 'large' }}>
                 <Padding left={'extralarge'} width="100%">
-                  <Row width="100%" padding={{ top: 'large' }}>
+                  <Row width="100%">
                     <DateTimePicker
                       disabled={accountDetail?.carbonioOtpGracePeriodEnabled === FALSE}
                       width={'21.625rem'}
