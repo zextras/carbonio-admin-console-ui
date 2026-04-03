@@ -7,7 +7,6 @@
 import { useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { useContext, useMemo } from 'react';
 
-
 import { AccountContext } from '../../account-context';
 import { EditAccountQuotaBarLegacy } from './edit-account-quota-bar-legacy';
 import { EditAccountQuotaBarNew } from './edit-account-quota-bar-new';
