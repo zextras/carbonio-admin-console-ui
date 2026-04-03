@@ -77,7 +77,6 @@ const CreateMailingList: FC<{
       mailingListDetail?.dynamic,
       mailingListDetail?.displayName,
       mailingListDetail?.zimbraHideInGal,
-      mailingListDetail?.zimbraIsACLGroup,
       mailingListDetail?.zimbraMailStatus,
       mailingListDetail?.zimbraNotes,
       mailingListDetail?.memberURL,
