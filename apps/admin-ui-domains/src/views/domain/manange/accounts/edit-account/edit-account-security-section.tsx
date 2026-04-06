@@ -9,6 +9,7 @@ import {
   ChipInput,
   Container,
   CustomHeaderFactory,
+  DateTimePicker,
   HorizontalWizard,
   HoverableRowFactory,
   InheritedInput,
@@ -32,7 +33,7 @@ import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useSta
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
-import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { DISABLED, ENABLED, FALSE, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import CustomChip from '../../../../components/customChip';
@@ -532,6 +533,58 @@ const EditAccountSecuritySection: FC = () => {
     },
     [accountDetail, setAccountDetail],
   );
+  const handleFromDateChange = useCallback(
+    (d: Date | null) => {
+      if (!d) {
+        setAccountDetail((prev: any) => ({
+          ...prev,
+          carbonioOtpGracePeriodEndingTime: '',
+        }));
+        return;
+      }
+      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+        d.getUTCDate(),
+      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+        d.getUTCMinutes(),
+      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+      setAccountDetail((prev: any) => ({
+        ...prev,
+        carbonioOtpGracePeriodEndingTime: gentime,
+      }));
+    },
+    [setAccountDetail],
+  );
+
+  const gracePeriodDefaultDate = useMemo(() => {
+    const gentimeValue =
+      accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
+      accountDetail?.carbonioOtpGracePeriodEndingTime;
+    if (gentimeValue) {
+      const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
+      if (match) {
+        return new Date(
+          Date.UTC(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3]),
+            Number(match[4]),
+            Number(match[5]),
+            Number(match[6]),
+          ),
+        );
+      }
+    }
+    if (accountDetail?.carbonioOtpGracePeriodEnabled) {
+      const date = new Date();
+      date.setMonth(date.getMonth() + 1);
+      return date;
+    }
+    return null;
+  }, [
+    accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
+    accountDetail?.carbonioOtpGracePeriodEndingTime,
+    accountDetail?.carbonioOtpGracePeriodEnabled,
+  ]);
 
   return (
     <Container
@@ -553,7 +606,7 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text  color="gray0" weight="bold">
+                      <Text color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
                       </Text>
                       <Row padding={{ top: 'large' }}></Row>
@@ -603,7 +656,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Button
                   type="outlined"
                   label={t('label.DELETE', 'DELETE')}
-                  icon="CloseOutline"
+                  icon="Trash2Outline"
                   iconPlacement="right"
                   color="error"
                   disabled={!selectedRows?.length}
@@ -690,9 +743,100 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text  weight="bold">
-            {t('label.backup', 'Backup')}
+          <Text weight="bold">
+            {t(
+              'domain.accounts.twoFactorAuthSetupEnforcement',
+              'Two-Factor authenticator setup enforcement',
+            )}
           </Text>
+          <Row mainAlignment="flex-start" width="100%">
+            <Container
+              height="fit"
+              crossAlignment="flex-start"
+              background="gray6"
+              padding={{ top: 'large' }}
+            >
+              <ListRow>
+                <Container crossAlignment="flex-start">
+                  <InheritedSwitch
+                    subValue={accountDetail?.carbonioOtpWizardFromUntrusted}
+                    onChange={changeSwitchOption}
+                    label={t(
+                      'domain.accounts.enforceOnUntrustedNetworks',
+                      'Enforce on Untrusted Networks',
+                    )}
+                    iconColor="primary"
+                    inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
+                    fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
+                    inputName={'carbonioOtpWizardFromUntrusted'}
+                    onChangeReset={(): void => setEmptyValue('carbonioOtpWizardFromUntrusted')}
+                  />
+                  <Padding left={'extralarge'}>
+                    <Row padding={{ left: 'small' }}>
+                      <Text color="gray1" size="small" overflow="break-word">
+                        {t(
+                          'domain.accounts.enforceOnUntrustedNetworksInfo',
+                          'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                        )}
+                      </Text>
+                    </Row>
+                  </Padding>
+                </Container>
+              </ListRow>
+              <ListRow padding={{ top: 'large' }}>
+                <Container crossAlignment="flex-start">
+                  <InheritedSwitch
+                    subValue={accountDetail?.carbonioOtpGracePeriodEnabled}
+                    onChange={changeSwitchOption}
+                    label={t(
+                      'domain.accounts.allowSetupDeferralDuringGracePeriod',
+                      'Allow setup deferral during grace period',
+                    )}
+                    iconColor="primary"
+                    inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
+                    fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
+                    inputName={'carbonioOtpGracePeriodEnabled'}
+                    onChangeReset={(): void => setEmptyValue('carbonioOtpGracePeriodEnabled')}
+                  />
+                  <Padding left={'extralarge'}>
+                    <Row padding={{ left: 'small' }}>
+                      <Text color="gray1" size="small" overflow="break-word">
+                        {t(
+                          'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
+                          'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+                        )}
+                      </Text>
+                    </Row>
+                  </Padding>
+                </Container>
+              </ListRow>
+              <ListRow padding={{ top: 'large' }}>
+                <Padding left={'extralarge'} width="100%">
+                  <Row width="100%">
+                    <DateTimePicker
+                      disabled={accountDetail?.carbonioOtpGracePeriodEnabled === FALSE}
+                      width={'21.625rem'}
+                      className="fffff"
+                      label={t(
+                        'domain.accounts.gracePeriodExpirationDate',
+                        'Set grace period expiration date',
+                      )}
+                      onChange={handleFromDateChange}
+                      dateFormat="dd/MM/yyyy"
+                      includeTime={false}
+                      minDate={new Date()}
+                      defaultValue={gracePeriodDefaultDate}
+                    />
+                  </Row>
+                </Padding>
+              </ListRow>
+            </Container>
+          </Row>
+        </Row>
+      )}
+      {isAdvanced && (
+        <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+          <Text weight="bold">{t('label.backup', 'Backup')}</Text>
           <Row mainAlignment="flex-start" width="100%">
             <Container
               height="fit"
@@ -763,9 +907,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text  weight="bold">
-              {t('cos.password', 'Password')}
-            </Text>
+            <Text weight="bold">{t('cos.password', 'Password')}</Text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
@@ -1004,9 +1146,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text  weight="bold">
-              {t('label.forgotten_password', 'Forgotten Password')}
-            </Text>
+            <Text weight="bold">{t('label.forgotten_password', 'Forgotten Password')}</Text>
             <Row mainAlignment="center" width="100%">
               <Container
                 height="fit"
@@ -1071,9 +1211,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text  weight="bold">
-              {t('cos.failed_login_policy', 'Failed Login Policy')}
-            </Text>
+            <Text weight="bold">{t('cos.failed_login_policy', 'Failed Login Policy')}</Text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
