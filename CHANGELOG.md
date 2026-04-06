@@ -1,3 +1,9 @@
+## [0.13.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.10...v0.13.0-devel.11) (2026-04-06)
+
+### Features
+
+* enforce on untrusted networks ([#1121](https://github.com/zextras/carbonio-admin-console-ui/issues/1121)) ([d9363b1](https://github.com/zextras/carbonio-admin-console-ui/commit/d9363b1391e628e3ec49b1028241adbdd84e09f9))
+
 ## [0.13.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.9...v0.13.0-devel.10) (2026-04-02)
 
 ### Features
