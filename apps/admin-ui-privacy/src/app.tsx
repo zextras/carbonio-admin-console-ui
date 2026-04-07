@@ -6,7 +6,7 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, PRIMARY_BAR_PRIVACY, PRIVACY_ROUTE_ID } from './constants';
@@ -17,35 +17,28 @@ const App: FC = () => {
 
   const hasAllConfigRights = useHasAllRights();
 
-  const privacyTooltipItems = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.privacy_lbl"
-              defaults="<bold>Privacy</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.privacy_primarybar_tooltip"
-              defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
+  const PrivacyTooltipView = useMemo(
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.privacy_lbl"
+            defaults="<bold>Privacy</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.privacy_primarybar_tooltip"
+            defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
     [t],
-  );
-
-  const PrivacyTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={privacyTooltipItems} />,
-    [privacyTooltipItems],
   );
 
   const managementSection = useMemo(
@@ -63,11 +56,11 @@ const App: FC = () => {
         route: PRIVACY_ROUTE_ID,
         position: 6,
         visible: true,
-        label: t('label.privacy', 'Privacy') || '',
+        label: t('label.privacy', 'Privacy'),
         primaryBar: 'ShieldOutline',
         appView: AppView,
         primarybarSection: { ...managementSection },
-        tooltip: PrivacyTooltipView,
+        tooltip: () => PrivacyTooltipView,
         trackerLabel: PRIMARY_BAR_PRIVACY,
       });
     } else {

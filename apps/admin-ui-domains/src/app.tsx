@@ -54,32 +54,29 @@ const App: FC = () => {
     [t],
   );
 
-  const DomainTooltipView: FC = useCallback(() => {
-    const domainsTooltipItems = [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.domains_lbl"
-              defaults="<bold>Domains</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.domain_primarybar_tooltip"
-              defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ];
-
-    return <PrimaryBarTooltip items={domainsTooltipItems} />;
-  }, [t]);
+  const DomainTooltipView: FC = useCallback(
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.domains_lbl"
+            defaults="<bold>Domains</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.domain_primarybar_tooltip"
+            defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
+  );
 
   useEffect(() => {
     addRoute({
