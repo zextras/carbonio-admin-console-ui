@@ -6,7 +6,7 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -18,27 +18,20 @@ const App: FC = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const homeTooltipItems = useMemo(
-    () => [
-      {
-        header: (
-          <Trans
-            i18nKey="label.dashboard"
-            defaults="<bold>Dashboard</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        ),
-        options: [],
-      },
-    ],
+  const HomeTooltipView: FC = useCallback(
+    () => (
+      <PrimaryBarTooltip>
+        <Trans
+          i18nKey="label.dashboard"
+          defaults="<bold>Dashboard</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </PrimaryBarTooltip>
+    ),
     [t],
   );
 
-  const HomeTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={homeTooltipItems} />,
-    [homeTooltipItems],
-  );
   useEffect(() => {
     addRoute({
       route: DASHBOARD,
