@@ -73,21 +73,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
         placement="right"
         onClose={(): void => setOpen(false)}
       >
-        {!view?.tooltip ? (
-          <Container
-            orientation="horizontal"
-            mainAlignment="flex-start"
-            background="gray3"
-            height="fit"
-            crossAlignment="flex-start"
-          >
-            <Padding value="8px">
-              <Text>{view.label}</Text>
-            </Padding>
-          </Container>
-        ) : (
-          <view.tooltip />
-        )}
+        {view?.tooltip && <view.tooltip />}
       </Popper>
     </>
   );

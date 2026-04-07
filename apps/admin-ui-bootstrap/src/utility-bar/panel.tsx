@@ -8,7 +8,6 @@ import { useUtilityBarStore } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useEffect, useMemo } from 'react';
 
-import AppContextProvider from '../boot/app/app-context-provider';
 import styles from './panel.module.css';
 import { useUtilityViews } from './utils';
 
@@ -24,11 +23,7 @@ export const ShellUtilityPanel: FC = () => {
   return currentPanel ? (
     <div className={styles.spacer} data-mode={mode}>
       <Container className={styles.panel} data-mode={mode} mainAlignment="flex-start">
-        {currentPanel && (
-          <AppContextProvider pkg={currentPanel?.id}>
-            <currentPanel.component mode={mode} setMode={setMode} />
-          </AppContextProvider>
-        )}
+        {currentPanel && <currentPanel.component mode={mode} setMode={setMode} />}
       </Container>
     </div>
   ) : null;
