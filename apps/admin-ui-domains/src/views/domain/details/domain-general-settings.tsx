@@ -65,6 +65,7 @@ import {
 } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
+import QuotaReportDownloadButton from './quota-report-download-button';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
@@ -1093,6 +1094,9 @@ const DomainGeneralSettings: FC = () => {
                       }}
                       disabled={!isGlobalAdmin}
                     />
+                  </Container>
+                  <Container crossAlignment="flex-end" padding={{ all: 'small' }}>
+                    <QuotaReportDownloadButton domainName={domainName} />
                   </Container>
                 </ListRow>
               </>
