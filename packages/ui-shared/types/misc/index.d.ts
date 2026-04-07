@@ -19,8 +19,6 @@ export interface II18nFactory {
 
 export type DRPropValues = 'auto' | 'enabled' | 'disabled';
 
-export type PackageDependentFunction = (app: string) => Function;
-
 export type ContextBridgeState = {
   functions: Record<string, Function>;
   add: (content: Partial<Omit<ContextBridgeState, 'add'>>) => void;
