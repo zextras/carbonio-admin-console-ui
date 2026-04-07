@@ -14,10 +14,6 @@ export const useContextBridge = create<ContextBridgeState>((set) => ({
   functions: {},
   add: ({ functions }): void => {
     set((s) => ({
-      packageDependentFunctions: reduce({}, (acc, f, key) => {
-        acc[key] = f;
-        return acc;
-      }),
       functions: reduce(
         functions ?? {},
         (acc, f, key) => {
