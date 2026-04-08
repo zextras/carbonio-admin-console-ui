@@ -676,6 +676,7 @@ const MTAAdvanced: FC = () => {
         >
           <Container crossAlignment="flex-start">
             <Input
+              isRequiredField
               label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraClamAVMaxThreads}
@@ -688,6 +689,7 @@ const MTAAdvanced: FC = () => {
 
           <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
+              isRequiredField
               label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraLmtpNumThreads}
@@ -699,6 +701,7 @@ const MTAAdvanced: FC = () => {
           </Container>
           <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
+              isRequiredField
               label={t('mta.milter_threads', 'MILTER threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraMilterNumThreads}
@@ -720,6 +723,7 @@ const MTAAdvanced: FC = () => {
         >
           <Container crossAlignment="flex-start" height="auto">
             <Input
+              isRequiredField
               label={t(
                 'mta.reject_concurrent_milter_connection_above',
                 'Reject concurrent MILTER connections above (value)',
@@ -804,6 +808,7 @@ const MTAAdvanced: FC = () => {
                 padding={{ left: 'extralarge', top: 'large' }}
               >
                 <Input
+                  isRequiredField
                   label={t(
                     'mta.advanced.max_size_for_mail_messages',
                     'Max size for mail messages (MB)',
