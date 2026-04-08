@@ -91,6 +91,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ right: 'small', bottom: 'small' }}>
         <Container padding={{ top: 'small' }}>
           <Input
+            isRequiredField
             label={t('label.display_name', 'Display Name')}
             value={displayName}
             backgroundColor="gray5"
@@ -101,6 +102,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         </Container>
         <Container padding={{ left: 'large', top: 'small' }}>
           <Input
+            isRequiredField
             label={t('label.address', 'Address')}
             value={distributionName}
             backgroundColor="gray5"
@@ -143,7 +145,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
               value={zimbraDistributionListSendShareMessageToNewMembers}
               label={t(
                 'label.send_new_members_notification_for_share_assigned_to_this_group',
-                'Send new members a notification for the share/delegation assigned to this group',
+                'Send to new members a notification for the share/delegation assigned to this group',
               )}
               onClick={(): void => {
                 setIsDirty(true);
