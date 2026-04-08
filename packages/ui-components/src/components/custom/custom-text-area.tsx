@@ -25,6 +25,7 @@ type TextareaProps = {
   onEnter?: (e: KeyboardEvent) => void;
   rows?: number;
   ref?: React.Ref<HTMLDivElement>;
+  isRequiredField?: boolean;
 };
 
 type CustomTextAreaType = React.FC<TextareaProps> & {
@@ -32,6 +33,7 @@ type CustomTextAreaType = React.FC<TextareaProps> & {
 };
 
 const CustomTextArea: CustomTextAreaType = ({
+  isRequiredField = false,
   autoFocus = false,
   autoComplete = 'off',
   backgroundColor = 'gray6',
@@ -91,6 +93,8 @@ const CustomTextArea: CustomTextAreaType = ({
       {...rest}
     >
       <textarea
+        required={isRequiredField}
+        aria-required={isRequiredField}
         className={styles.textarea}
         autoFocus={autoFocus || undefined}
         autoComplete={autoComplete || 'off'}
