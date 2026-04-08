@@ -272,6 +272,7 @@ const CreateAccountDetailSection: FC = () => {
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
             <PasswordInput
+              isRequiredField
               backgroundColor="gray5"
               label={t('label.password', 'Password')}
               onChange={changeAccDetail}
@@ -282,6 +283,7 @@ const CreateAccountDetailSection: FC = () => {
           </Row>
           <Row width="48%" mainAlignment="flex-start">
             <PasswordInput
+              isRequiredField
               backgroundColor="gray5"
               label={t('label.repeat_password', 'Repeat Password')}
               onChange={changeAccDetail}

@@ -865,6 +865,7 @@ export const EditAccountGeneralSection: FC<{
             <>
               <Row width="49%" mainAlignment="flex-start">
                 <Input
+                  isRequiredField
                   backgroundColor="gray5"
                   label={t('label.password', 'Password')}
                   onChange={changeAccDetail}
@@ -877,6 +878,7 @@ export const EditAccountGeneralSection: FC<{
               </Row>
               <Row width="49%" mainAlignment="flex-start">
                 <Input
+                  isRequiredField
                   backgroundColor="gray5"
                   label={t('label.repeat_password', 'Repeat Password')}
                   onChange={changeAccDetail}
