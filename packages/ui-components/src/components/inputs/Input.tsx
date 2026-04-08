@@ -31,6 +31,7 @@ type InputProps = ContainerProps & {
   hasError?: boolean;
   autoFocus?: boolean;
   autoComplete?: string;
+  isRequiredField?: boolean;
   inputName?: string;
   CustomIcon?: React.ComponentType<{ hasError: boolean; hasFocus: boolean; disabled: boolean }>;
   type?: string;
@@ -50,6 +51,7 @@ const Input = ({
   borderColor = INPUT_DIVIDER_COLOR,
   backgroundColor = INPUT_BACKGROUND_COLOR,
   defaultValue,
+  isRequiredField = false,
   disabled = false,
   textColor = 'text',
   label,
@@ -160,6 +162,8 @@ const Input = ({
             ref={innerRef}
             type={type}
             onFocus={onInputFocus}
+            required={isRequiredField}
+            aria-required={isRequiredField}
             onBlur={onInputBlur}
             id={id}
             name={inputName ?? label}
