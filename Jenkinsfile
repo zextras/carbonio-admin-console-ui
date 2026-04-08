@@ -256,6 +256,7 @@ pipeline {
                 script {
                     echo 'Building deb/rpm packages'
                     buildStage([
+                        buildFlags: ' -sd ',
                         skipStash: true,
                         stashName: 'staging',
                         buildDirs: ['.'],
