@@ -86,6 +86,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={`${t('backup.latency_high_threshold', 'Latency High Threshold')} (${t(
                         'backup.kb',
                         'KB',
@@ -102,6 +103,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={`${t('backup.latency_low_threshold', 'Latency Low Threshold')} (${t(
                         'backup.kb',
                         'KB',
@@ -185,6 +187,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={t('backup.metatdata_size', 'Metadata Size')}
                       value={backupDetail.ZxBackup_MaxMetadataSize}
                       defaultValue={backupDetail.ZxBackup_MaxMetadataSize}
@@ -214,6 +217,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={t('backup.max_operations_account', 'Max Operations / Account')}
                       value={backupDetail.ZxBackup_MaxOperationPerAccount}
                       defaultValue={backupDetail.ZxBackup_MaxOperationPerAccount}
@@ -243,6 +247,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={t('backup.threads_for_items', 'Threads For Items')}
                       value={backupDetail.backupNumberThreadsForAccounts}
                       defaultValue={backupDetail.backupNumberThreadsForAccounts}
@@ -256,6 +261,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequiredField
                       label={t('backup.threads_for_account', 'Threads For Account')}
                       value={backupDetail.backupNumberThreadsForAccounts}
                       defaultValue={backupDetail.backupNumberThreadsForAccounts}
