@@ -827,7 +827,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
-              isRequiredField
+              isRequired
               label={t(
                 'mta.add_this_prefix_to_spam_mail_subject',
                 'Add this prefix to the Spam mail subject',

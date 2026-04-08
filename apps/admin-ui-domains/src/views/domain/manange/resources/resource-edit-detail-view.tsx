@@ -833,7 +833,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ right: 'small' }}>
               <Input
-                isRequiredField
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceName}
@@ -851,7 +851,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ left: 'small' }}>
               <Input
-                isRequiredField
+                isRequired
                 label={t('label.email', 'Email')}
                 backgroundColor="gray5"
                 value={resourceMail}
@@ -1065,7 +1065,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
-                  isRequiredField
+                  isRequired
                   label={t('label.password', 'Password')}
                   backgroundColor="gray5"
                   value={password}
@@ -1088,7 +1088,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
-                  isRequiredField
+                  isRequired
                   label={t('label.repeat_password', 'Repeat Password')}
                   backgroundColor="gray5"
                   value={repeatPassword}

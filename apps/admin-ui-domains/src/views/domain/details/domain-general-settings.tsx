@@ -963,7 +963,7 @@ const DomainGeneralSettings: FC = () => {
               </Container>
               <Container padding={{ all: 'small' }}>
                 <Input
-                  isRequiredField
+                  isRequired
                   label={t('label.public_service_hostname', 'Public Service Host Name')}
                   value={publicServiceHostName}
                   backgroundColor="gray5"
@@ -1134,7 +1134,7 @@ const DomainGeneralSettings: FC = () => {
                 padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
               >
                 <Input
-                  isRequiredField
+                  isRequired
                   label={t('label.notification_sender', 'Notification Sender')}
                   backgroundColor="gray5"
                   value={carbonioNotificationFrom}
@@ -1157,7 +1157,7 @@ const DomainGeneralSettings: FC = () => {
                 padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
               >
                 <ChipInput
-                  isRequiredField
+                  isRequired
                   placeholder={t('label.send_notifications_to', 'Send notifications to...')}
                   background="gray5"
                   defaultValue={carbonioNotificationRecipients}

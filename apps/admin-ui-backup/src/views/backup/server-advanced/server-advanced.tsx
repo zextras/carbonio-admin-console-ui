@@ -741,7 +741,7 @@ const ServerAdvanced: FC = () => {
               width="50%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyHighThreshold}
@@ -759,7 +759,7 @@ const ServerAdvanced: FC = () => {
               width="50%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyLowThreshold}
@@ -823,7 +823,7 @@ const ServerAdvanced: FC = () => {
               width="100%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
                 backgroundColor="gray5"
                 value={backupMaxMetaDataSize}
@@ -899,7 +899,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
                 backgroundColor="gray5"
                 value={backupMaxOperationPerAccount}
@@ -917,7 +917,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.compression_level', 'Compression Level')}
                 backgroundColor="gray5"
                 value={backupCompressionLevel}
@@ -938,7 +938,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.thread_number_for_items', 'Thread number for items')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForItems}
@@ -956,7 +956,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
-                isRequiredField
+                isRequired
                 label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForAccounts}

@@ -91,7 +91,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ right: 'small', bottom: 'small' }}>
         <Container padding={{ top: 'small' }}>
           <Input
-            isRequiredField
+            isRequired
             label={t('label.display_name', 'Display Name')}
             value={displayName}
             backgroundColor="gray5"
@@ -102,7 +102,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         </Container>
         <Container padding={{ left: 'large', top: 'small' }}>
           <Input
-            isRequiredField
+            isRequired
             label={t('label.address', 'Address')}
             value={distributionName}
             backgroundColor="gray5"

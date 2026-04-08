@@ -74,7 +74,7 @@ const RestoreDeleteAccountConfigSection: FC = () => {
           </Padding>
           <Padding left="large">
             <Input
-              isRequiredField
+              isRequired
               label={t('label.search', 'Search')}
               value={searchDomainNameInput}
               onChange={handleChange}

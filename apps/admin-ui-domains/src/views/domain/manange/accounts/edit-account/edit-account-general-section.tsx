@@ -586,7 +586,7 @@ export const EditAccountGeneralSection: FC<{
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="32%" mainAlignment="space-between">
             <Input
-              isRequiredField
+              isRequired
               data-testid="surname-input"
               label={t('label.surname', 'Surname')}
               backgroundColor="gray5"
@@ -827,7 +827,7 @@ export const EditAccountGeneralSection: FC<{
                   )}
                 >
                   <Input
-                    isRequiredField
+                    isRequired
                     backgroundColor="gray5"
                     label={t('label.password', 'Password')}
                     onChange={changeAccDetail}
@@ -848,7 +848,7 @@ export const EditAccountGeneralSection: FC<{
                   )}
                 >
                   <Input
-                    isRequiredField
+                    isRequired
                     backgroundColor="gray5"
                     label={t('label.repeat_password', 'Repeat Password')}
                     onChange={changeAccDetail}
@@ -865,7 +865,7 @@ export const EditAccountGeneralSection: FC<{
             <>
               <Row width="49%" mainAlignment="flex-start">
                 <Input
-                  isRequiredField
+                  isRequired
                   backgroundColor="gray5"
                   label={t('label.password', 'Password')}
                   onChange={changeAccDetail}
@@ -878,7 +878,7 @@ export const EditAccountGeneralSection: FC<{
               </Row>
               <Row width="49%" mainAlignment="flex-start">
                 <Input
-                  isRequiredField
+                  isRequired
                   backgroundColor="gray5"
                   label={t('label.repeat_password', 'Repeat Password')}
                   onChange={changeAccDetail}

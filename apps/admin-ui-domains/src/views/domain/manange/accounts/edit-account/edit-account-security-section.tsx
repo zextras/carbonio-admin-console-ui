@@ -944,7 +944,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.minimum_password_length', 'Minimum password length')}
                       subValue={accountDetail.zimbraPasswordMinLength}
                       inheritedValue={cosDetail.zimbraPasswordMinLength}
@@ -957,7 +957,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.maximum_password_length', 'Maximum password length')}
                       subValue={accountDetail.zimbraPasswordMaxLength}
                       inheritedValue={cosDetail.zimbraPasswordMaxLength}
@@ -981,7 +981,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.minimum_upper_case_characters',
                         'Minimum upper case characters',
@@ -997,7 +997,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.minimum_lower_case_characters',
                         'Minimum lower case characters',
@@ -1024,7 +1024,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
                       subValue={accountDetail.zimbraPasswordMinPunctuationChars}
                       inheritedValue={cosDetail.zimbraPasswordMinPunctuationChars}
@@ -1037,7 +1037,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
                       subValue={accountDetail.zimbraPasswordMinNumericChars}
                       inheritedValue={cosDetail.zimbraPasswordMinNumericChars}
@@ -1061,7 +1061,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
                       subValue={accountDetail.zimbraPasswordMinAge}
                       inheritedValue={cosDetail.zimbraPasswordMinAge}
@@ -1074,7 +1074,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
                       subValue={accountDetail.zimbraPasswordMaxAge}
                       inheritedValue={cosDetail.zimbraPasswordMaxAge}
@@ -1098,7 +1098,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.minimum_numeric_characters_or_punctuation_symbols',
                         'Minimum numeric characters or punctuation symbols',
@@ -1114,7 +1114,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.minimum_number_of_unique_password_history',
                         'Minimum number of unique passwords history',
@@ -1255,7 +1255,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start">
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.number_of_consecutive_failed_login_allowed',
                         'Number of consecutive failed logins allowed',
@@ -1283,7 +1283,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container width="75%" padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
                       subValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
                       inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
@@ -1322,7 +1322,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container width="75%" padding={{ right: 'small' }}>
                     <InheritedInput
-                      isRequiredField
+                      isRequired
                       label={t(
                         'cos.time_window_failed_logins_must_occur_to_lock_account',
                         'Time window in which the failed logins must occur to lock the account:',

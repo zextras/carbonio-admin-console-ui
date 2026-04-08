@@ -344,7 +344,7 @@ const GlobalDetailPanel: FC = () => {
             padding={{ top: 'large', bottom: 'small' }}
           >
             <Input
-              isRequiredField
+              isRequired
               inputName="carbonioNotificationFrom"
               label={t('label.notification_sender', 'Notification Sender')}
               backgroundColor="gray5"
@@ -371,7 +371,7 @@ const GlobalDetailPanel: FC = () => {
             padding={{ top: 'large', bottom: 'small' }}
           >
             <ChipInput
-              isRequiredField
+              isRequired
               placeholder={t('label.send_notifications_to', 'Send notifications to...')}
               background="gray5"
               defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}

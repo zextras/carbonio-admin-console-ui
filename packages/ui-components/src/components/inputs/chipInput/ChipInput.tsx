@@ -58,13 +58,13 @@ function getThemeColorVar(colorName: string, state: string): string {
  *
  */
 const AdjustWidthInput = ({
-  isRequiredField = false,
+  isRequired = false,
   color,
   ref,
   ...rest
 }: {
   color: string;
-  isRequiredField: boolean;
+  isRequired: boolean;
   ref?: React.Ref<HTMLInputElement>;
 } & InputHTMLAttributes<HTMLInputElement>) => {
   const hiddenSpanRef = useRef<HTMLSpanElement | null>(null);
@@ -107,8 +107,8 @@ const AdjustWidthInput = ({
     <div className={styles.adjustWidthInputContainer}>
       <span ref={hiddenSpanRef} className={styles.hiddenSpan} />
       <input
-        required={isRequiredField}
-        aria-required={isRequiredField}
+        required={isRequired}
+        aria-required={isRequired}
         className={styles.inputEl}
         style={inputStyle}
         {...rest}
@@ -250,7 +250,7 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   /** maxHeight of Input in case of no horizontal scroll */
   maxHeight?: string;
   onOptionsDisplayChange?: (isVisible: boolean) => void;
-  isRequiredField?: boolean;
+  isRequired?: boolean;
 };
 
 type ChipInputType = (<TValue = unknown>(
@@ -284,7 +284,7 @@ const ChipInputComponent = <TValue = unknown,>({
   maxChips = null,
   hasError = false,
   hideBorder = false,
-  isRequiredField = false,
+  isRequired = false,
   errorBackgroundColor,
   disableOptions = true,
   singleSelection = false,
@@ -717,7 +717,7 @@ const ChipInputComponent = <TValue = unknown,>({
                 />
               ))}
               <AdjustWidthInput
-                isRequiredField={isRequiredField}
+                isRequired={isRequired}
                 color="text"
                 autoComplete="off"
                 ref={inputElRef}

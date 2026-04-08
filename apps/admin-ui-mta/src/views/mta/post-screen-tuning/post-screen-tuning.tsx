@@ -854,7 +854,7 @@ const MTAPostScreenTuning: FC = () => {
           </Container>
           <Container crossAlignment="flex-start">
             <Input
-              isRequiredField
+              isRequired
               label={t('mta.access_list_path', 'Access List Path')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenAccessList}
