@@ -1,3 +1,9 @@
+## [0.13.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.11...v0.13.0-devel.12) (2026-04-08)
+
+### Bug Fixes
+
+* fetch server version dynamically ([#1137](https://github.com/zextras/carbonio-admin-console-ui/issues/1137)) ([061c895](https://github.com/zextras/carbonio-admin-console-ui/commit/061c89534585bd3c6b9c8bac5d8a41276c064b8c))
+
 ## [0.13.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.10...v0.13.0-devel.11) (2026-04-06)
 
 ### Features

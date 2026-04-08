@@ -76,3 +76,4 @@ package
 dist
 **/.vitest-attachments
 /*/*/dist-types
+/.opencode
