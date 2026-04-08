@@ -8,7 +8,7 @@ import {
   CustomHeaderFactory,
   CustomTextArea,
   HoverableRowFactory,
-  Input,
+  LabeledValue,
   ListRow,
   Row,
   Table,
@@ -138,7 +138,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.display_name', 'Display Name')}
               backgroundColor="gray6"
               value={mailingListDetail?.displayName}
@@ -150,7 +150,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.address', 'Address')}
               backgroundColor="gray6"
               value={`${mailingListDetail?.prefixName}@${mailingListDetail?.suffixName}`}
@@ -165,7 +165,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.description', 'Description')}
               backgroundColor="gray6"
               value={mailingListDetail?.description}
@@ -201,7 +201,7 @@ const MailingListCreateSection: FC<any> = () => {
               orientation="horizontal"
               padding={{ top: 'large', right: 'small' }}
             >
-              <Input
+              <LabeledValue
                 label={t('label.share_message_to_new_member', 'Share message to new members')}
                 backgroundColor="gray6"
                 value={
@@ -218,7 +218,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.hidden_from_gal', 'Hidden from GAL')}
               backgroundColor="gray6"
               value={
@@ -232,7 +232,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.can_receive_email', 'Can receive email')}
               backgroundColor="gray6"
               value={
@@ -246,7 +246,7 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.dynamic_mode', 'Dynamic Mode')}
               backgroundColor="gray6"
               value={mailingListDetail?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
@@ -291,7 +291,7 @@ const MailingListCreateSection: FC<any> = () => {
                 orientation="horizontal"
                 padding={{ top: 'small', bottom: 'medium' }}
               >
-                <Input
+                <LabeledValue
                   label={t('label.distribution_list_url', "Distribution List's URL")}
                   backgroundColor="gray6"
                   value={mailingListDetail?.memberURL}
@@ -332,7 +332,7 @@ const MailingListCreateSection: FC<any> = () => {
           </Text>
         </Row>
         <ListRow>
-          <Input
+          <LabeledValue
             label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
             backgroundColor="gray6"
             value={grantEmailType}

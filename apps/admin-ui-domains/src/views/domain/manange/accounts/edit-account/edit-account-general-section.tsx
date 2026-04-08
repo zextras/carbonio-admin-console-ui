@@ -13,6 +13,7 @@ import {
   HoverableRowFactory,
   InheritedSelect,
   Input,
+  LabeledValue,
   Modal,
   Padding,
   Paging,
@@ -687,7 +688,7 @@ export const EditAccountGeneralSection: FC<{
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <Input
+            <LabeledValue
               label={t('label.type', 'Type')}
               value={accountUserType}
               CustomIcon={(): any => (
@@ -716,7 +717,7 @@ export const EditAccountGeneralSection: FC<{
           </Row>
           {isAdvanced && (
             <Row width="49%" mainAlignment="flex-start">
-              <Input
+              <LabeledValue
                 label={t('account_details.otp_devices', 'OTP Devices')}
                 backgroundColor="gray5"
                 value={otpList?.length || 0}
@@ -775,19 +776,19 @@ export const EditAccountGeneralSection: FC<{
         />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
-            <Input
+            <LabeledValue
               label={t('label.server', 'Server')}
               backgroundColor="gray5"
               value={accountDetail?.zimbraMailHost}
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <Input label="ID" backgroundColor="gray5" value={accountDetail?.zimbraId} />
+            <LabeledValue label="ID" backgroundColor="gray5" value={accountDetail?.zimbraId} />
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
-            <Input
+            <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               backgroundColor="gray6"
               value={
@@ -798,7 +799,7 @@ export const EditAccountGeneralSection: FC<{
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <Input
+            <LabeledValue
               label={t('label.last_access', 'Last Access')}
               backgroundColor="gray6"
               value={

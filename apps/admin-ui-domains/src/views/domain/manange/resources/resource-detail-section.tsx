@@ -7,6 +7,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Row,
   Select,
@@ -304,12 +305,10 @@ const ResourceDetailSection: FC = () => {
               <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
             </Row>
             <Row width="45%">
-              <Input
+              <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray5"
                 value={resourceDetail?.domain}
-                inputName="domain"
-                disabled
               />
             </Row>
           </Container>

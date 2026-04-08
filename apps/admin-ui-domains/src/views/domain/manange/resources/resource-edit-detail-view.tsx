@@ -10,6 +10,7 @@ import {
   CustomTextArea,
   Displayer,
   Input,
+  LabeledValue,
   ListRow,
   Modal,
   Padding,
@@ -868,7 +869,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.server', 'Server')}
                 backgroundColor="gray6"
                 value={resourceDetailData?.zimbraMailHost}
@@ -1011,7 +1012,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.id_lbl', 'ID')}
                 backgroundColor="gray6"
                 value={selectedResourceList?.id}
@@ -1025,7 +1026,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ left: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.creation_date', 'Creation Date')}
                 backgroundColor="gray6"
                 value={
@@ -1166,7 +1167,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1175,7 +1176,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."

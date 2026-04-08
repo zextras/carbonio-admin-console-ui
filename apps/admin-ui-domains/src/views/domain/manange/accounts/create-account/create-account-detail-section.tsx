@@ -7,6 +7,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   PasswordInput,
   Row,
   Select,
@@ -250,11 +251,10 @@ const CreateAccountDetailSection: FC = () => {
               <icon-wc icon="AtOutline" size="large"></icon-wc>
             </Row>
             <Row width="90%" mainAlignment="flex-start" crossAlignment="flex-start">
-              <Input
+              <LabeledValue
                 label={t('label.domain_name', 'Domain Name')}
                 backgroundColor="gray6"
                 value={`${domainName} ${domainStatus ? `(${t('label.closed', 'Closed')})` : ''}`}
-                disabled
               />
             </Row>
           </Row>

@@ -8,6 +8,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Row,
   Select,
@@ -172,21 +173,19 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ all: 'small' }}>
         <Container orientation="horizontal">
           <Container padding={{ right: 'large' }}>
-            <Input
+            <LabeledValue
               label={t('label.members', 'Members')}
               value={dlmCount}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
           <Container>
-            <Input
+            <LabeledValue
               label={t('label.alias_in_the_list', 'Alias in the List')}
               value={zimbraMailAlias.length}
               backgroundColor="gray5"
               textColor={'black'}
-              disabled
             />
           </Container>
         </Container>
@@ -195,20 +194,18 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'small' }} orientation="horizontal">
           <Container padding={{ right: 'large' }}>
-            <Input
+            <LabeledValue
               label={t('label.id_lbl', 'ID')}
               value={dlId}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
           <Container>
-            <Input
+            <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               value={dlCreateDate}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
@@ -261,7 +258,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
           </Row>
           <ListRow padding={{ all: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.distribution_lists', 'Distribution Lists')}
                 value={dlMembershipListNames}
                 backgroundColor="gray5"

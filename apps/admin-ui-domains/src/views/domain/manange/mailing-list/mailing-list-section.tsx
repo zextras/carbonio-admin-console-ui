@@ -9,6 +9,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Paging,
@@ -272,7 +273,7 @@ const MailingListSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', left: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('domain.type_here_a_domain', 'Type here a domain')}
               value={mailingListDetail?.suffixName}
               backgroundColor="gray5"
