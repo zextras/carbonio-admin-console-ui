@@ -1,0 +1,39 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.value {
+  display: block;
+  width: 100%;
+  background: transparent !important;
+  font-size: var(--font-size-medium);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family);
+  color: var(--input-color);
+  line-height: 1.5;
+  padding: 0;
+}
+
+.relativeContainer {
+  position: relative;
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: var(--font-size-extrasmall);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family);
+  line-height: 1.5;
+  color: var(--label-color);
+  cursor: inherit;
+  user-select: none;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
