@@ -556,33 +556,6 @@ export const EditAccountGeneralSection: FC<{
     setHighlightMailboxQuota(true);
   }, []);
 
-  const renderInputRow = ({
-    id,
-    label,
-    inputName,
-    value,
-    width,
-    onChange,
-  }: {
-    id: string;
-    label: string;
-    inputName: string;
-    value: string;
-    width: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  }): React.JSX.Element => (
-    <Row width={width} mainAlignment="space-between">
-      <Input
-        data-testid={id}
-        label={label}
-        backgroundColor="gray5"
-        onChange={onChange}
-        inputName={inputName}
-        value={value || ''}
-      />
-    </Row>
-  );
-
   const renderSwitchRow = (
     label: string,
     value: boolean,
@@ -611,30 +584,37 @@ export const EditAccountGeneralSection: FC<{
           />
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          {renderInputRow({
-            id: 'surname-input',
-            label: t('label.surname', 'Surname'),
-            inputName: 'sn',
-            value: accountDetail?.sn,
-            width: '32%',
-            onChange: changeAccDetail,
-          })}
-          {renderInputRow({
-            id: 'middlename-input',
-            label: t('label.second_name_initials', 'Middle Name Initials'),
-            inputName: 'initials',
-            value: accountDetail?.initials,
-            width: '32%',
-            onChange: changeAccDetail,
-          })}
-          {renderInputRow({
-            id: 'name-input',
-            label: t('label.person_name', 'Name'),
-            inputName: 'givenName',
-            value: accountDetail?.givenName,
-            width: '32%',
-            onChange: changeAccDetail,
-          })}
+          <Row width="32%" mainAlignment="space-between">
+            <Input
+              isRequiredField
+              data-testid="surname-input"
+              label={t('label.surname', 'Surname')}
+              backgroundColor="gray5"
+              onChange={changeAccDetail}
+              inputName="sn"
+              value={accountDetail?.sn || ''}
+            />
+          </Row>
+          <Row width="32%" mainAlignment="space-between">
+            <Input
+              data-testid="middlename-input"
+              label={t('label.second_name_initials', 'Middle Name Initials')}
+              backgroundColor="gray5"
+              onChange={changeAccDetail}
+              inputName="initials"
+              value={accountDetail?.initials || ''}
+            />
+          </Row>
+          <Row width="32%" mainAlignment="space-between">
+            <Input
+              data-testid="name-input"
+              label={t('label.person_name', 'Name')}
+              backgroundColor="gray5"
+              onChange={changeAccDetail}
+              inputName="givenName"
+              value={accountDetail?.givenName || ''}
+            />
+          </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="47%" mainAlignment="flex-start">
@@ -847,6 +827,7 @@ export const EditAccountGeneralSection: FC<{
                   )}
                 >
                   <Input
+                    isRequiredField
                     backgroundColor="gray5"
                     label={t('label.password', 'Password')}
                     onChange={changeAccDetail}
@@ -867,6 +848,7 @@ export const EditAccountGeneralSection: FC<{
                   )}
                 >
                   <Input
+                    isRequiredField
                     backgroundColor="gray5"
                     label={t('label.repeat_password', 'Repeat Password')}
                     onChange={changeAccDetail}
