@@ -80,6 +80,7 @@ postinst() {
   for component in ${componentList}; do
     if [ -d "/opt/zextras/admin/iris/\${component}" ]; then
       ln -sf /opt/zextras/admin/iris/i18n "/opt/zextras/admin/iris/\${component}/i18n"
+      ln -sf /opt/zextras/.version "/opt/zextras/admin/iris/\${component}/.version"
     fi
   done
 }
