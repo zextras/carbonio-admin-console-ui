@@ -913,7 +913,7 @@ const CosGeneralInformation: FC = () => {
         <Button
           type="outlined"
           label="DELETE"
-          icon="CloseOutline"
+          icon="Trash2Outline"
           color="error"
           size="large"
           width="fill"

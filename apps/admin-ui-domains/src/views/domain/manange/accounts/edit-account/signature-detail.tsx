@@ -303,7 +303,7 @@ export const SignatureDetail: FC<any> = ({
               <Button
                 type="outlined"
                 label={t('label.delete', 'Delete')}
-                icon="Close"
+                icon="Trash2Outline"
                 color="error"
                 disabled={selectedSignature.length === 0}
                 onClick={onDeleteSignature}
