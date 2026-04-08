@@ -833,6 +833,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ right: 'small' }}>
               <Input
+                isRequiredField
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceName}
@@ -850,6 +851,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ left: 'small' }}>
               <Input
+                isRequiredField
                 label={t('label.email', 'Email')}
                 backgroundColor="gray5"
                 value={resourceMail}
