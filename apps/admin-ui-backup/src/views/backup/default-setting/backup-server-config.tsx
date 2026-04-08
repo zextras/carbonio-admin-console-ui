@@ -116,6 +116,7 @@ const BackupServerConfig: FC = () => {
               <Container padding={{ bottom: 'large' }}>
                 <Input
                   label={t('backup.backup_path', 'Backup Path')}
+                  isRequiredField
                   value={backupDetail.ZxBackup_DestPath}
                   defaultValue={backupDetail.ZxBackup_DestPath}
                   onChange={changeBackupDetail}
@@ -128,6 +129,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'large' }}>
                 <Input
+                  isRequiredField
                   label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
                     'label.mb',
                     'MB',
@@ -144,6 +146,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'medium' }}>
                 <Input
+                  isRequiredField
                   label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
                     'label.mb',
                     'MB',
@@ -177,6 +180,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'medium' }}>
                 <Input
+                  isRequiredField
                   label={t('backup.schedule', 'Schedule')}
                   value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
                   defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
@@ -209,6 +213,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'large' }}>
                 <Input
+                  isRequiredField
                   label={t('backup.schedule', 'Schedule')}
                   value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
                   defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
@@ -227,6 +232,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'small' }}>
                 <Input
+                  isRequiredField
                   label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
                   value={backupDetail.ZxBackup_DataRetentionDays}
                   defaultValue={backupDetail.ZxBackup_DataRetentionDays}
@@ -251,6 +257,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'small' }}>
                 <Input
+                  isRequiredField
                   label={t(
                     'backup.keep_delete_accounts_in_backup',
                     'Keep deleted accounts in the backup',
