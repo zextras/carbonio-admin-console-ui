@@ -4,64 +4,49 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.container {
+.outer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  border-radius: var(--border-radius);
-  box-sizing: border-box;
-}
-
-.outer {
-  max-width: 100%;
   width: 100%;
   height: 100%;
-  justify-content: flex-start;
   background: var(--color-gray6-regular);
 }
 
 .header {
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-around;
-  background: var(--color-gray6-regular);
+  display: flex;
+  align-items: flex-start;
+  padding: var(--padding-size-large);
   height: 58px;
+  box-sizing: border-box;
 }
 
 .content {
-  justify-content: flex-start;
-  padding: var(--padding-size-large);
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  padding: var(--padding-size-large);
   overflow: auto;
   width: 100%;
   height: calc(100vh - 200px);
+  box-sizing: border-box;
 }
 
 .inputRow {
-  flex-direction: row;
-  width: 100%;
-  height: fit-content;
+  display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+  width: 100%;
   padding: 8px 0 16px 0;
 }
 
-.inputWrapper {
-  align-items: flex-start;
-  padding: 0 var(--padding-size-medium) 0 0;
+.inputField {
   width: 74%;
-  height: 100%;
+  padding-right: var(--padding-size-medium);
+  box-sizing: border-box;
 }
 
-.buttonWrapper {
-  align-items: flex-start;
-  flex-direction: row;
+.buttonWrap {
   width: 26%;
-  height: 100%;
-  gap: 0.875rem;
+  display: flex;
 }
 
 .logo {
