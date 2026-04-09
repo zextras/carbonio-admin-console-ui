@@ -3,15 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { Button, Input, Text } from '@zextras/ui-components';
-import { useActivateLicense, useCurrentUserRights, useLicenseInfo } from '@zextras/ui-shared';
-import { find } from 'lodash-es';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useActivateLicense } from '@zextras/ui-shared';
+import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
-import { CONFIG } from '../../constants';
 import { LicenseBanner } from '../dashboard/license-banner';
 import styles from './activate-subscription.module.css';
 
@@ -27,25 +24,11 @@ export type AllModuleConfig = {
 };
 
 export const ActivateSubscription = (): React.JSX.Element => {
-  const { data: licenseData } = useLicenseInfo();
   const [licenseKey, setLicenseKey] = useState('');
-  const { data: rights } = useCurrentUserRights();
   const { t } = useTranslation();
-
   const activateLicenseMutation = useActivateLicense();
 
-  const allowSetSubsciption = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
-
-  useEffect(() => {
-    if (licenseData?.response?.authenticationToken) {
-      setLicenseKey(licenseData.response.authenticationToken);
-    }
-  }, [licenseData?.response?.authenticationToken]);
-
-  const activeLicence = (): void => {
+  const activateLicence = (): void => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
   };
 
@@ -54,36 +37,35 @@ export const ActivateSubscription = (): React.JSX.Element => {
       <LicenseBanner />
       <div className={styles.header}>
         <Text size="medium" weight="bold" color="gray0">
-          {t('label.details', 'Details')}
+          {t('label.subscriptions', 'Subscriptions')}
         </Text>
       </div>
       <divider-wc></divider-wc>
       <div className={styles.content}>
-        <Text weight="bold">{t('core.subscription.activation', 'Activation')}</Text>
+        <Text weight="bold">{t('core.subscription.activation_token', 'Activation token')}</Text>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
             <Input
-              label={t('core.subscription.token', 'Token')}
+              label={t('core.subscription.insert_token', 'Insert here the activation token')}
               backgroundColor="gray5"
               value={licenseKey}
-              disabled={!allowSetSubsciption}
-              onChange={(e: any): void => setLicenseKey(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => setLicenseKey(e.target.value)}
             />
           </div>
           <div className={styles.buttonWrap}>
             <Button
-              label={t('core.subscription.activate', 'Activate')}
-              type="outlined"
-              color={'primary'}
-              onClick={(): void => activeLicence()}
-              loading={
-                activateLicenseMutation.isPending && !activateLicenseMutation.variables?.renewal
-              }
-              size="extralarge"
+              label={t('core.subscription.activate_subscription', 'Activate subscription')}
+              onClick={(): void => activateLicence()}
             />
           </div>
         </div>
         <img src={subscription_logo} alt="logo" className={styles.logo} />
+        <p className={styles.text}>
+          {t(
+            'core.subscription.disclaimer',
+            "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",
+          )}
+        </p>
       </div>
     </div>
   );

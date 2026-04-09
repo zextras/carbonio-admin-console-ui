@@ -53,3 +53,9 @@
   display: block;
   margin: 2.5rem auto 0;
 }
+
+.text {
+  margin: 0 auto;
+  color: var(--color-gray0-regular);
+  white-space: pre-line;
+}
