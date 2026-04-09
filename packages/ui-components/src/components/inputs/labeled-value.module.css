@@ -11,14 +11,21 @@
   font-size: var(--font-size-medium);
   font-weight: var(--font-weight-regular);
   font-family: var(--font-family);
-  color: var(--input-color);
+  color: var(--text-color);
   line-height: 1.5;
   padding: 0;
 }
 
 .relativeContainer {
+  box-sizing: border-box;
   position: relative;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  min-height: inherit;
 }
 
 .label {
@@ -38,13 +45,27 @@
   text-overflow: ellipsis;
 }
 
+.outerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: fit-content;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+}
+
 .fieldWrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
   min-height: calc(var(--font-size-medium) * 1.5 + var(--font-size-extrasmall) * 1.5 + 0.125rem);
   cursor: text;
-  background: var(--input-container-bg);
+  background: var(--text-container-bg);
   transition: background 0.2s ease-out;
   box-sizing: border-box;
   width: 100%;
