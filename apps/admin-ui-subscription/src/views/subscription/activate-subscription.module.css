@@ -1,0 +1,70 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.outer {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  background: var(--color-gray6-regular);
+}
+
+.header {
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  background: var(--color-gray6-regular);
+  height: 58px;
+}
+
+.content {
+  justify-content: flex-start;
+  padding: var(--padding-size-large);
+  align-items: flex-start;
+  overflow: auto;
+  width: 100%;
+  height: calc(100vh - 200px);
+}
+
+.inputRow {
+  flex-direction: row;
+  width: 100%;
+  height: fit-content;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 8px 0 16px 0;
+}
+
+.inputWrapper {
+  align-items: flex-start;
+  padding: 0 var(--padding-size-medium) 0 0;
+  width: 74%;
+  height: 100%;
+}
+
+.buttonWrapper {
+  align-items: flex-start;
+  flex-direction: row;
+  width: 26%;
+  height: 100%;
+  gap: 0.875rem;
+}
+
+.logo {
+  display: block;
+  margin: 2.5rem auto 0;
+}

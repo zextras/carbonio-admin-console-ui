@@ -9,7 +9,7 @@ import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import { Subscription } from './subscription/subscription';
+import { ActivateSubscription } from './subscription/activate-subscription';
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
@@ -30,7 +30,7 @@ const AppView: FC = () => {
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
                   <Suspense fallback={<spinner-wc />}>
-                    <Subscription />
+                    <ActivateSubscription />
                   </Suspense>
                 </Container>
               </Container>
