@@ -72,6 +72,10 @@
 	text-overflow: ellipsis;
 }
 
+.textarea:required ~ .label::after {
+	content: '*';
+}
+
 .textarea:focus ~ .label,
 .textarea:not(:placeholder-shown) ~ .label {
 	top: calc(var(--padding-size-small) - 1px);

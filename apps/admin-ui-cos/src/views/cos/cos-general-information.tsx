@@ -600,6 +600,7 @@ const CosGeneralInformation: FC = () => {
             <ListRow>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   label={t('label.name', 'Name')}
                   backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
                   value={cosName}

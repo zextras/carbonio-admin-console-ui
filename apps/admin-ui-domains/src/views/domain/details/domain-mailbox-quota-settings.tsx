@@ -611,6 +611,7 @@ const DomainMailboxQuotaSetting: FC = () => {
                 </Container>
                 <Container padding={{ all: 'small' }}>
                   <Input
+                    isRequired
                     label={t(
                       'domain.mail_space_quota_threshold_warning',
                       'Mail Space Quota threshold (%) warning',

@@ -833,6 +833,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ right: 'small' }}>
               <Input
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceName}
@@ -850,6 +851,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ left: 'small' }}>
               <Input
+                isRequired
                 label={t('label.email', 'Email')}
                 backgroundColor="gray5"
                 value={resourceMail}
@@ -1063,6 +1065,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
+                  isRequired
                   label={t('label.password', 'Password')}
                   backgroundColor="gray5"
                   value={password}
@@ -1085,6 +1088,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
+                  isRequired
                   label={t('label.repeat_password', 'Repeat Password')}
                   backgroundColor="gray5"
                   value={repeatPassword}
@@ -1166,7 +1170,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
@@ -1175,7 +1179,7 @@ const ResourceEditDetailView: FC<any> = ({
               </Text>
             </Padding>
             <Padding bottom="medium">
-              <Text  overflow="break-word">
+              <Text overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."

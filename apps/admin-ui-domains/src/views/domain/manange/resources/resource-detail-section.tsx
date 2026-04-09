@@ -276,6 +276,7 @@ const ResourceDetailSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Input
+              isRequired
               label={t('label.resource_name', 'ResourceName')}
               backgroundColor="gray5"
               value={resourceDetail?.displayName}
@@ -293,6 +294,7 @@ const ResourceDetailSection: FC = () => {
           >
             <Row width="45%">
               <Input
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceDetail?.name}
