@@ -116,14 +116,15 @@ describe('EditAccountGeneralSection (browser)', () => {
   describe('Last Access field', () => {
     it('should display the formatted last logon timestamp', async () => {
       setupTest();
-      const lastAccessInput = page.getByRole('textbox', { name: 'Last Access' });
-      await expect.element(lastAccessInput).toHaveValue(expect.stringContaining('20 Mar 2026'));
+      const lastAccessInput = page.getByText(/20 Mar 2026/);
+
+      await expect.element(lastAccessInput).toBeVisible();
     });
 
     it('should show "Never logged in" when no last logon timestamp is set', async () => {
       setupTest({ zimbraLastLogonTimestamp: undefined });
-      const lastAccessInput = page.getByRole('textbox', { name: 'Last Access' });
-      await expect.element(lastAccessInput).toHaveValue('Never logged in');
+      const lastAccessInput = page.getByText('Never logged in', { exact: true });
+      await expect.element(lastAccessInput).toBeVisible();
     });
 
     it('should display the last logon date, not the creation date', async () => {
