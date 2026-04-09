@@ -128,10 +128,11 @@ describe('EditAccountGeneralSection (browser)', () => {
 
     it('should display the last logon date, not the creation date', async () => {
       setupTest();
-      const lastAccessInput = page.getByRole('textbox', { name: 'Last Access' });
+      const lastAccessInput = page.getByText('Last Access');
       await expect.element(lastAccessInput).toBeVisible();
       // Must show last logon (Mar 2026), not creation date (Jan 2025)
-      await expect.element(lastAccessInput).toHaveValue(expect.stringContaining('2026'));
+      const lastLogonDate = page.getByText(/20 Mar 2026 | 03:30:00 PM/);
+      await expect.element(lastLogonDate).toBeVisible();
     });
   });
 });
