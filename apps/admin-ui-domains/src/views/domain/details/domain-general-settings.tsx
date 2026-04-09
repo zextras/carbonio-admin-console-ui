@@ -912,7 +912,6 @@ const DomainGeneralSettings: FC = () => {
                   label={t('label.name', 'Name')}
                   value={domainName}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-name'}
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
@@ -920,7 +919,6 @@ const DomainGeneralSettings: FC = () => {
                   label={t('label.id', 'Id')}
                   value={domainData.zimbraId}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-id'}
                 />
               </Container>
             </ListRow>
