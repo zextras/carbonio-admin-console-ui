@@ -10,9 +10,7 @@ import { useMemo } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
-import { INPUT_BACKGROUND_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
-import { InputContainer } from './commons/InputContainer';
 import styles from './labeled-value.module.css';
 
 type InputProps = ContainerProps & {
@@ -24,35 +22,29 @@ type InputProps = ContainerProps & {
 };
 
 export const LabeledValue = ({
-  backgroundColor = INPUT_BACKGROUND_COLOR,
+  backgroundColor = 'gray5',
   textColor = 'text',
   label,
   value,
   CustomIcon,
 }: InputProps) => {
-  const labelColor = resolveThemeColor('secondary', 'regular');
-
-  const inputColor = useMemo<React.CSSProperties>(
+  const inputColor = useMemo(
     () =>
       ({
-        '--input-color': resolveThemeColor(String(textColor), 'regular'),
-        '--label-color': labelColor,
+        '--input-color': resolveThemeColor(textColor, 'regular'),
       } as React.CSSProperties),
-    [textColor, labelColor],
+    [textColor],
   );
+
+  const wrapperStyle = useMemo(() => {
+    return {
+      '--input-container-bg': resolveThemeColor(backgroundColor, 'regular'),
+    } as React.CSSProperties;
+  }, [backgroundColor]);
 
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
-      <InputContainer
-        orientation="horizontal"
-        width="fill"
-        height="fit"
-        crossAlignment={'center'}
-        borderRadius="half"
-        background={backgroundColor}
-        padding={{ horizontal: '0.75rem' }}
-        gap={'0.5rem'}
-      >
+      <div className={styles.fieldWrapper} style={wrapperStyle}>
         <Container
           className={styles.relativeContainer}
           style={inputColor}
@@ -70,7 +62,7 @@ export const LabeledValue = ({
             <CustomIcon />
           </span>
         )}
-      </InputContainer>
+      </div>
       <divider-wc color={'gray3'}></divider-wc>
     </Container>
   );
