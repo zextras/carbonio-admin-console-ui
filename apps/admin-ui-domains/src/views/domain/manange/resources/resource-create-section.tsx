@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Text } from '@zextras/ui-components';
+import { Container, LabeledValue, ListRow, Row, Text } from '@zextras/ui-components';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +43,7 @@ const ResourceCreateSection: FC = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.resource_name', 'ResourceName')}
               backgroundColor="gray6"
               value={resourceDetail?.displayName}
@@ -58,7 +58,7 @@ const ResourceCreateSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Row width="45%">
-              <Input
+              <LabeledValue
                 label={t('label.name', 'Name')}
                 backgroundColor="gray6"
                 value={resourceDetail?.name}
@@ -68,7 +68,7 @@ const ResourceCreateSection: FC = () => {
               <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
             </Row>
             <Row width="45%">
-              <Input
+              <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray6"
                 value={resourceDetail?.domain}
@@ -84,21 +84,21 @@ const ResourceCreateSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <Input
+              <LabeledValue
                 label={t('label.type', 'Type')}
                 backgroundColor="gray6"
                 value={resourceDetail?.zimbraCalResType?.label}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
-              <Input
+              <LabeledValue
                 label={t('label.status', 'Status')}
                 backgroundColor="gray6"
                 value={resourceDetail?.zimbraAccountStatus?.label}
               />
             </Container>
             <Container>
-              <Input
+              <LabeledValue
                 label={t('label.class_of_service', 'Class of Service')}
                 backgroundColor="gray6"
                 value={resourceDetail?.zimbraCOSId?.label}
@@ -114,21 +114,21 @@ const ResourceCreateSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <Input
+              <LabeledValue
                 label={t('label.auto_refuse', 'Auto-Refuse')}
                 backgroundColor="gray6"
                 value={resourceDetail?.zimbraCalResAutoDeclineRecurring?.label}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
-              <Input
+              <LabeledValue
                 label={t('label.maximum_conflict', 'Maximum Conflict')}
                 backgroundColor="gray6"
                 value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
               />
             </Container>
             <Container>
-              <Input
+              <LabeledValue
                 label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
                 backgroundColor="gray6"
                 value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
@@ -143,7 +143,7 @@ const ResourceCreateSection: FC = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <Input
+            <LabeledValue
               label={t('label.schedule_policy', 'Set Policy')}
               backgroundColor="gray6"
               value={resourceDetail?.schedulePolicyType?.label}

@@ -7,6 +7,7 @@ import {
   Button,
   Container,
   Input,
+  LabeledValue,
   Modal,
   Row,
   Select,
@@ -194,8 +195,7 @@ export const ServicesPassphrase: FC = () => {
             mainAlignment="space-between"
           >
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
-              <Input
-                inputName="label"
+              <LabeledValue
                 label={t('account_details.label', 'Label')}
                 backgroundColor="gray5"
                 value={item.label}
@@ -240,8 +240,7 @@ export const ServicesPassphrase: FC = () => {
               />
             </Row>
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
-              <Input
-                inputName="hash"
+              <LabeledValue
                 label={t('account_details.passphrasaId', 'Passphrase ID')}
                 backgroundColor="gray5"
                 value={item.id}
@@ -338,7 +337,7 @@ export const ServicesPassphrase: FC = () => {
             </Text>
           </Row>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-            <Input
+            <LabeledValue
               label={t('account_details.service_password', 'Service Password')}
               backgroundColor="gray5"
               value={createCredentialResponse.text_data?.password}
@@ -357,7 +356,6 @@ export const ServicesPassphrase: FC = () => {
                   style={{ cursor: 'pointer' }}
                 ></icon-wc>
               )}
-              disabled
               textColor={'gray1'}
             />
           </Row>

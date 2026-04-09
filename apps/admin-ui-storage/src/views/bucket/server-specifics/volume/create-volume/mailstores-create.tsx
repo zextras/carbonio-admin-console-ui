@@ -7,6 +7,7 @@
 import {
   Container,
   Input,
+  LabeledValue,
   Padding,
   Radio,
   Row,
@@ -204,7 +205,7 @@ const MailstoresCreate: FC<{
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
       <Row padding={{ top: 'large' }} width="100%">
-        <Input
+        <LabeledValue
           label={t('label.volume_server', 'Server')}
           backgroundColor="gray6"
           value={externalData}

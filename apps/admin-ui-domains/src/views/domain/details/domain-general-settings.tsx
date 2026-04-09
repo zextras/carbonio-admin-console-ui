@@ -11,6 +11,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Modal,
   Padding,
@@ -907,19 +908,17 @@ const DomainGeneralSettings: FC = () => {
           >
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.name', 'Name')}
                   value={domainName}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-name'}
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.id', 'Id')}
                   value={domainData.zimbraId}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-id'}
                 />
               </Container>
             </ListRow>
@@ -940,7 +939,7 @@ const DomainGeneralSettings: FC = () => {
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.creation_date', 'Creation Date')}
                   value={domainCreationDate}
                   backgroundColor="gray6"

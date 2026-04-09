@@ -24,7 +24,7 @@ type InputProps = ContainerProps & {
   textColor?: AnyColor;
   borderColor?: AnyColor;
   label?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef?: React.RefObject<HTMLInputElement> | null;
   value?: string | number;
   defaultValue?: string | number;
