@@ -10,7 +10,7 @@ import { find } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import logo from '../../assets/subscription_empty.svg';
+import subscription_logo from '../../assets/subscription_empty.svg';
 import { CONFIG } from '../../constants';
 import { LicenseBanner } from '../dashboard/license-banner';
 import styles from './activate-subscription.module.css';
@@ -83,7 +83,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
             />
           </div>
         </div>
-        <img src={logo} alt="logo" className={styles.logo} />
+        <img src={subscription_logo} alt="logo" className={styles.logo} />
       </div>
     </div>
   );
