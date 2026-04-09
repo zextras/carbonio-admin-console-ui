@@ -883,6 +883,7 @@ const MTAPostScreenTuning: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites}
@@ -916,6 +917,7 @@ const MTAPostScreenTuning: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold}
@@ -926,6 +928,7 @@ const MTAPostScreenTuning: FC = () => {
           </Container>
           <Container crossAlignment="flex-start">
             <Input
+              isRequired
               label={t(
                 'mta.dns_blacklist_whitelist_threshold_value',
                 'DNS Blacklist Whitelist Threshold  (value)',
@@ -961,6 +964,7 @@ const MTAPostScreenTuning: FC = () => {
               width="75%"
             >
               <Input
+                isRequired
                 label={t(
                   'mta.dns_blacklist_min_time_to_live',
                   'DNS Blacklist Min Time to Live (value)',
@@ -991,6 +995,7 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} width="75%">
               <Input
+                isRequired
                 label={t(
                   'mta.dns_blacklist_max_time_to_live',
                   'DNS Blacklist Max Time to Live (value)',
@@ -1032,6 +1037,7 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'small' }} width="75%">
               <Input
+                isRequired
                 label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
                 backgroundColor="gray5"
                 value={
@@ -1116,6 +1122,7 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
                 value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
@@ -1188,6 +1195,7 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
                 value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
@@ -1260,6 +1268,7 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
                 value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^0-9]/g, '')}
