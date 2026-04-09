@@ -720,11 +720,7 @@ const DomainSaml: FC = () => {
                     CustomIcon={(): any =>
                       samlAttrKey && (
                         <Container onClick={() => setSamlAttrKey('')} style={{ cursor: 'pointer' }}>
-                          <icon-wc
-                            icon="CloseOutline"
-                            size="large"
-                            color="secondary"
-                          ></icon-wc>
+                          <icon-wc icon="CloseOutline" size="large" color="secondary"></icon-wc>
                         </Container>
                       )
                     }
@@ -758,11 +754,7 @@ const DomainSaml: FC = () => {
                           onClick={() => setSamlAttrValue('')}
                           style={{ cursor: 'pointer' }}
                         >
-                          <icon-wc
-                            icon="CloseOutline"
-                            size="large"
-                            color="secondary"
-                          ></icon-wc>
+                          <icon-wc icon="CloseOutline" size="large" color="secondary"></icon-wc>
                         </Container>
                       )
                     }

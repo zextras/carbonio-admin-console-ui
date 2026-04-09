@@ -1110,6 +1110,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t(
                     'backup.local_volume_reload_if_you_changed_this_value',
                     'Local Volume (reload if you changed this value)',
@@ -1272,6 +1273,7 @@ const BackupConfiguration: FC = () => {
                   <ListRow>
                     <Container padding={{ bottom: 'large' }}>
                       <Input
+                        isRequired
                         label={t('backup.local_mountpoint', 'Local Mountpoint')}
                         value={manageExternalVolumeNewLocalMountpoint || ''}
                         backgroundColor="gray5"
@@ -1384,6 +1386,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   value={scheduleSmartScan}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -1459,6 +1462,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   backgroundColor="gray5"
                   value={retentionPolicySchedule}
@@ -1479,6 +1483,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_item_in_backup',
                     'Keep deleted items in the backup',
@@ -1517,6 +1522,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_account_in_the_backup',
                     'Keep deleted account in the backup',

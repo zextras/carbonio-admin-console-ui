@@ -234,6 +234,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large' }}
           >
             <Input
+              isRequired
               label={t('label.display_name', 'Display Name')}
               backgroundColor="gray5"
               value={mailingListDetail?.displayName}
@@ -251,6 +252,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large', right: 'small' }}
           >
             <Input
+              isRequired
               label={t('label.list_name', 'List Name')}
               backgroundColor="gray5"
               value={mailingListDetail?.prefixName}
@@ -355,6 +357,7 @@ const MailingListSection: FC<any> = () => {
                 padding={{ top: 'small', bottom: 'medium' }}
               >
                 <Input
+                  isRequired
                   label={t('label.distribution_list_url', "Distribution List's URL")}
                   backgroundColor="gray5"
                   value={mailingListDetail?.memberURL}

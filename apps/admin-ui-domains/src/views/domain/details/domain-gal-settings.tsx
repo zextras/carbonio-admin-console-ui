@@ -1191,10 +1191,11 @@ const DomainGalSettings: FC = () => {
               </ListRow>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   type="number"
                   label={t(
                     'label.limit_search_results_from_address_book_list_to',
-                    'Max number of results given by search in the Address Book list',
+                    'Limit search results from Address Book List to',
                   )}
                   value={zimbraGalMaxResults}
                   backgroundColor="gray5"
@@ -1203,6 +1204,7 @@ const DomainGalSettings: FC = () => {
               </Container>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   type="number"
                   label={t('domain.page_size', 'Page Size')}
                   value={zimbraGalLdapPageSize}

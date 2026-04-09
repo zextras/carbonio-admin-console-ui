@@ -181,9 +181,7 @@ describe('DomainGalSettings (browser)', () => {
   describe('General inputs', () => {
     it('should render the max results input with value from domain', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText(
-        'Max number of results given by search in the Address Book list',
-      );
+      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
       await expect.element(maxResultsInput).toBeInTheDocument();
       await expect.element(maxResultsInput).toHaveValue(100);
     });
@@ -229,9 +227,7 @@ describe('DomainGalSettings (browser)', () => {
   describe('Editing fields', () => {
     it('should show Save and Cancel when max results is changed', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText(
-        'Max number of results given by search in the Address Book list',
-      );
+      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '200');
 
@@ -251,9 +247,7 @@ describe('DomainGalSettings (browser)', () => {
 
     it('should revert changes when Cancel is clicked', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText(
-        'Max number of results given by search in the Address Book list',
-      );
+      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '999');
 
@@ -277,9 +271,7 @@ describe('DomainGalSettings (browser)', () => {
       });
 
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText(
-        'Max number of results given by search in the Address Book list',
-      );
+      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '200');
 
