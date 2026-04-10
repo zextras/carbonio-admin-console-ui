@@ -48,13 +48,13 @@ export class DsText extends LitElement {
   @property({ type: String })
   accessor color = 'text';
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   accessor size: TextSize = 'medium';
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   accessor weight: TextWeight = 'regular';
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   accessor overflow: TextOverflow = 'ellipsis';
 
   @property({ type: Boolean, reflect: true })
