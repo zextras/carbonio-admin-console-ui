@@ -10,6 +10,7 @@ import {
   Displayer,
   IconName,
   Input,
+  LabeledValue,
   Padding,
   PasswordInput,
   Row,
@@ -405,9 +406,7 @@ const EditBucketDetailPanel: FC<{
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text  weight="bold">
-            {title}
-          </Text>
+          <Text weight="bold">{title}</Text>
         </Row>
         <Row
           padding={{ all: 'small' }}
@@ -435,10 +434,9 @@ const EditBucketDetailPanel: FC<{
       <Displayer buttons={buttons} pinIcon={false} />
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
         <Row padding={{ top: 'small' }} width="100%">
-          <Input
+          <LabeledValue
             backgroundColor="gray5"
             label={t('label.bucket_type', 'Bucket Type')}
-            inputName="label"
             value={bucketDetail?.storeType || ''}
           />
         </Row>
@@ -528,10 +526,9 @@ const EditBucketDetailPanel: FC<{
           </Row>
         )}
         <Row padding={{ top: 'small' }} width="100%">
-          <Input
+          <LabeledValue
             backgroundColor="gray5"
             label={t('label.prefix', 'Prefix')}
-            inputName="label"
             value={bucketDetail?.prefix || ''}
           />
         </Row>

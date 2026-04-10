@@ -36,6 +36,7 @@ function withLocationRewrite(config: {
       proxy.on('proxyReq', (proxyReq: any, req: any) => {
         const targetUrl = new URL(config.target);
         proxyReq.setHeader('Origin', targetUrl.origin);
+        proxyReq.setHeader('Accept-Encoding', 'identity');
         if (req.headers['referer']) {
           proxyReq.setHeader(
             'Referer',
@@ -44,7 +45,7 @@ function withLocationRewrite(config: {
         }
       });
 
-      proxy.on('proxyRes', (proxyRes: any) => {
+      proxy.on('proxyRes', (proxyRes: any, _req: any, res: any) => {
         const cookies = proxyRes.headers['set-cookie'];
         if (cookies) {
           if (Array.isArray(cookies)) {
@@ -64,6 +65,32 @@ function withLocationRewrite(config: {
             'http://localhost:3000',
           );
         }
+
+        const contentType = (proxyRes.headers['content-type'] as string) ?? '';
+        const shouldRewriteBody =
+          contentType.includes('application/json') || contentType.includes('text/html');
+
+        if (shouldRewriteBody) {
+          delete proxyRes.headers['content-length'];
+
+          const chunks: Buffer[] = [];
+          const originalWrite = res.write.bind(res);
+          const originalEnd = res.end.bind(res);
+
+          res.write = (chunk: any, ..._args: any[]): boolean => {
+            if (chunk != null) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+            return true;
+          };
+
+          res.end = (chunk?: any, ..._args: any[]): any => {
+            if (chunk != null) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+            const body = Buffer.concat(chunks).toString('utf8');
+            const modified = body.replaceAll(config.target, 'http://localhost:3000');
+            res.write = originalWrite;
+            res.end = originalEnd;
+            return originalEnd(modified);
+          };
+        }
       });
     },
   };
@@ -74,7 +101,7 @@ export default defineConfig(({ command, mode }) => {
   const isDev = mode === 'development';
   const proxyTarget = getProxyTarget();
   if (isServeCommand) {
-    console.log('Proxy target:', `https://${proxyTarget}:6071`);
+    console.log('Proxy target:', proxyTarget);
   }
 
   return {
@@ -106,7 +133,13 @@ export default defineConfig(({ command, mode }) => {
               return;
             }
             if (req.url?.startsWith('/static/')) {
-              res.writeHead(301, { Location: `/carbonioAdmin${req.url}/` });
+              const urlWithoutQuery = req.url.split('?')[0];
+              const isFile = /\.[^/]+$/.test(urlWithoutQuery);
+              const normalised = req.url.endsWith('/') ? req.url.slice(0, -1) : req.url;
+              const location = isFile
+                ? `/carbonioAdmin${normalised}`
+                : `/carbonioAdmin${normalised}/`;
+              res.writeHead(301, { Location: location });
               res.end();
               return;
             }
@@ -139,22 +172,23 @@ export default defineConfig(({ command, mode }) => {
             strictPort: false,
             proxy: {
               '/carbonioAdmin/static': {
-                target: proxyTarget,
-                changeOrigin: true,
-                secure: false,
+                ...withLocationRewrite({
+                  target: proxyTarget,
+                  changeOrigin: true,
+                  secure: false,
+                }),
                 rewrite: (path) => path.replace(/^\/carbonioAdmin\/static/, '/static'),
-                followRedirects: true,
               },
               '/logout': {
                 target: proxyTarget,
                 changeOrigin: true,
                 secure: false,
               },
-              '/zx': {
+              '/zx': withLocationRewrite({
                 target: proxyTarget,
                 changeOrigin: true,
                 secure: false,
-              },
+              }),
               '/login': withLocationRewrite({
                 target: proxyTarget,
                 changeOrigin: true,

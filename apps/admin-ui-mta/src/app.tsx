@@ -26,35 +26,28 @@ const App: FC = () => {
     [t],
   );
 
-  const mtaTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.mta_lbl"
-              defaults="<bold>MTA</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.mta_primarybar_tooltip"
-              defaults="Mail Transfer Agent"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const MTATooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={mtaTooltipItem} />,
-    [mtaTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.mta_lbl"
+            defaults="<bold>MTA</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.mta_primarybar_tooltip"
+            defaults="Mail Transfer Agent"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

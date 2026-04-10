@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Row,
@@ -1109,6 +1110,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t(
                     'backup.local_volume_reload_if_you_changed_this_value',
                     'Local Volume (reload if you changed this value)',
@@ -1140,7 +1142,7 @@ const BackupConfiguration: FC = () => {
               <Container>
                 <ListRow>
                   <Container padding={{ top: 'large' }}>
-                    <Input
+                    <LabeledValue
                       label={t('backup.external_volume', 'External Volume')}
                       value={manageExternalVolumeType}
                       backgroundColor="gray5"
@@ -1149,7 +1151,7 @@ const BackupConfiguration: FC = () => {
                 </ListRow>
                 <ListRow>
                   <Container padding={{ top: 'large', bottom: 'large' }}>
-                    <Input
+                    <LabeledValue
                       label={t('backup.bucket_configuration', 'Bucket Configuration')}
                       value={
                         manageExternalVolumeType.startsWith('LOCAL')
@@ -1271,6 +1273,7 @@ const BackupConfiguration: FC = () => {
                   <ListRow>
                     <Container padding={{ bottom: 'large' }}>
                       <Input
+                        isRequired
                         label={t('backup.local_mountpoint', 'Local Mountpoint')}
                         value={manageExternalVolumeNewLocalMountpoint || ''}
                         backgroundColor="gray5"
@@ -1383,6 +1386,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   value={scheduleSmartScan}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -1458,6 +1462,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   backgroundColor="gray5"
                   value={retentionPolicySchedule}
@@ -1478,6 +1483,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_item_in_backup',
                     'Keep deleted items in the backup',
@@ -1503,10 +1509,9 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large', right: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
               <Container
@@ -1517,6 +1522,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_account_in_the_backup',
                     'Keep deleted account in the backup',
@@ -1543,11 +1549,10 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   backgroundColor="gray5"
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
             </ListRow>

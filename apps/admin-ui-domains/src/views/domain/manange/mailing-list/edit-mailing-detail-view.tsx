@@ -6,52 +6,21 @@
 
 import {
   Button,
-  Checkbox,
   Container,
-  CustomHeaderFactory,
-  CustomTextArea,
-  DefaultTabBarItem,
-  DropDownInput,
-  HoverableRowFactory,
-  Input,
-  ListRow,
   Modal,
   Padding,
-  Paging,
   Row,
-  Select,
-  Switch,
   TabBar,
-  Table,
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
-import { debounce, differenceBy, isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
-import React, {
-  ChangeEvent,
-  FC,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { differenceBy, isEqual } from 'lodash';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import {
-  ALL,
-  DL,
-  EDOM,
-  EMAIL,
-  GRP,
-  GST,
-  PUB,
-  RECORD_DISPLAY_LIMIT,
-  USR,
-} from '../../../../constants';
+import { ALL, DL, EDOM, EMAIL, GRP, GST, PUB, USR } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
 import { deleteDistributionList } from '../../../../services/delete-distribution-list';
@@ -63,13 +32,16 @@ import { getGrant } from '../../../../services/get-grant';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { searchGal } from '../../../../services/search-gal-service';
-import ManageAliases from '../../../components/manageAliases';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { getAllEmailFromString, getDateTimeFromStr, isValidEmail } from '../../../utility/utils';
+import { getDateTimeFromStr } from '../../../utility/utils';
+import { GeneralTab } from './edit-mailing-detail/general-tab';
+import { MembersTab } from './edit-mailing-detail/members-tab';
+import { OwnersTab } from './edit-mailing-detail/owners-tab';
+import { ReusedDefaultTabBar } from './edit-mailing-detail/reused-default-tab-bar';
+import { SendAsTab } from './edit-mailing-detail/send-as-tab';
+import { SendToTab } from './edit-mailing-detail/send-to-tab';
 
 export const TRUE_FALSE = {
   TRUE: 'TRUE',
@@ -103,30 +75,13 @@ const EditMailingListView: FC<any> = ({
   const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
   const [dlId, setdlId] = useState<string>('');
   const [dlMembershipList, setDlMembershipList] = useState<any>([]);
-  const [dlmTableRows, setDlmTableRows] = useState<any>([]);
   const [ownersList, setOwnersList] = useState<any[]>([]);
-  const [ownerTableRows, setOwnerTableRows] = useState<any[]>([]);
-  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<any[]>([]);
-  const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
-  const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
-  const isRequstInProgress = false;
-  const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
-  const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
-  const [isShowError, setIsShowError] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [searchMember, setSearchMember] = useState<string>('');
-  const [searchOwner, setSearchOwner] = useState<string>('');
   const [memberURL, setMemberURL] = useState<string>();
   const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
-  const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
   const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
-  const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
-  const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
-  const [isShowMemberError, setIsShowMemberError] = useState<boolean>(false);
-  const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
-  const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
-  const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
+  const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
   const domainList = useDomainStore((state) => state.domainList);
   const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
@@ -138,33 +93,13 @@ const EditMailingListView: FC<any> = ({
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<string>('general');
-
-  // filtering
-  const [filterMember, setFilterMember] = useState<string>('');
-  const [filteredDlmTableRows, setFilteredDlmTableRows] = useState<any>([]);
-  const [filterGrantEmail, setFilterGrantEmail] = useState<string>('');
-  const [filteredGrantEmailRows, setFilteredGrantEmailRows] = useState<any>([]);
-  const [filterSendEmail, setFilterSendEmail] = useState<string>('');
-  const [filteredSendEmailRows, setFilteredSendEmailRows] = useState<any>([]);
-
-  // sendrightsCheckMarks
-  const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
-  const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
+  const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
+  const [pendingTab, setPendingTab] = useState<string | null>(null);
 
   // sendEmails
   const [sendEmails, setSendEmails] = useState<any>([]);
 
-  // sendRights table
-  const [selectedSendEmail, setSelectedSendEmail] = useState<Array<any>>([]);
-  const [sendEmailItem, setSendEmailItem] = useState<string>('');
   const [sendEmailsList, setSendEmailsList] = useState<any>([]);
-  const [sendEmailTableRows, setSendEmailTableRows] = useState<any>([]);
-
-  // dist list members offset
-  const [offset, setOffset] = useState<number>(0);
-  const limit = 15;
-  const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
-  const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
   const dlCreateDate = useMemo(() => {
     if (!zimbraCreateTimestamp || zimbraCreateTimestamp === '') {
@@ -173,86 +108,6 @@ const EditMailingListView: FC<any> = ({
     const date = getDateTimeFromStr(zimbraCreateTimestamp);
     return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
   }, [zimbraCreateTimestamp]);
-
-  const memberHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'members',
-        label: t('label.members', 'Members'),
-        width: '80%',
-        bold: true,
-      },
-      !selectedMailingList?.dynamic
-        ? {
-            id: 'actions',
-            label: t('label.actions', 'Actions'),
-            width: '20%',
-            bold: false,
-          }
-        : { id: 'actions', label: '', width: '0%', bold: false },
-    ],
-    [t],
-  );
-
-  const ownerHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'owners',
-        label: t('label.owners', 'Owners'),
-        width: '80%',
-        bold: true,
-      },
-      {
-        id: 'actions',
-        label: t('label.actions', 'Actions'),
-        width: '20%',
-        bold: false,
-      },
-    ],
-    [t],
-  );
-
-  const grantEmailHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'grantEmail',
-        label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
-        width: '80%',
-        bold: true,
-      },
-      {
-        id: 'actions',
-        label: t('label.actions', 'Actions'),
-        width: '20%',
-        bold: false,
-      },
-    ],
-    [t],
-  );
-
-  const sendEmailHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'sendEmail',
-        label: t('label.delegates', 'Delegates'),
-        width: '50%',
-        bold: true,
-      },
-      {
-        id: 'sendAcl',
-        label: t('label.rights', 'Rights'),
-        width: '30%',
-        bold: true,
-      },
-      {
-        id: 'actions',
-        label: t('label.actions', 'Actions'),
-        width: '20%',
-        bold: false,
-      },
-    ],
-    [t],
-  );
 
   const rightsOptions: any[] = useMemo(
     () => [
@@ -564,226 +419,8 @@ const EditMailingListView: FC<any> = ({
     }
   }, [selectedMailingList, getMailingList, getDistributionListMembershipList]);
 
-  useEffect(() => {
-    if (dlm && dlm.length > 0) {
-      if (!filterMember) {
-        const allRows = dlm.map((item: any) => ({
-          id: item,
-          columns: [
-            <Text
-              size="small"
-              weight="regular"
-              key={item}
-              color="gray0"
-              onClick={(): void => {
-                setSelectedDistributionListMember([item]);
-              }}
-            >
-              {item}
-            </Text>,
-            selectedMailingList?.dynamic ? null : (
-              <Button
-                type="ghost"
-                color={'text'}
-                size="medium"
-                icon="CloseOutline"
-                style={{ position: 'inherit' }}
-                aria-label={t('label.delete', 'Delete')}
-                onClick={(): void => deleteSingleRow(item, 'distListMember')}
-              />
-            ),
-          ],
-        }));
-        const pagedRows = allRows.slice(offset, offset + limit);
-        setDlmTableRows(allRows);
-        setDLMPagedRows(pagedRows);
-      } else {
-        const filteredRows = dlm
-          .filter((item: any) => item.toLowerCase().includes(filterMember.toLowerCase()))
-          .map((item: any) => ({
-            id: item,
-            columns: [
-              <Text
-                size="small"
-                weight="regular"
-                key={item}
-                color="gray0"
-                onClick={(): void => {
-                  setSelectedDistributionListMember([item]);
-                }}
-              >
-                {item}
-              </Text>,
-              selectedMailingList?.dynamic ? null : (
-                <Button
-                  type="ghost"
-                  color={'text'}
-                  size="medium"
-                  icon="CloseOutline"
-                  style={{ position: 'inherit' }}
-                  aria-label={t('label.delete', 'Delete')}
-                  onClick={(): void => deleteSingleRow(item, 'distListMember')}
-                />
-              ),
-            ],
-          }));
-        const pagedRows = filteredRows.slice(offset, offset + limit);
-        setDlmTableRows(filteredRows);
-        setDLMPagedRows(pagedRows);
-      }
-    } else {
-      setDlmTableRows([]);
-      setDLMPagedRows([]);
-      setOffset(0);
-      setDLMSearchCurrentPage(1);
-    }
-  }, [dlm, offset, filterMember]);
-
-  useEffect(() => {
-    if (ownersList && ownersList.length > 0) {
-      const allRows = ownersList.map((item: any) => ({
-        id: item?.name,
-        columns: [
-          <Text
-            size="small"
-            weight="regular"
-            key={item?.id}
-            color="gray0"
-            onClick={(): void => {
-              setSelectedOwnerListMember([item?.name]);
-            }}
-          >
-            {item?.name}
-          </Text>,
-          <Button
-            key="delete_owner_btn"
-            type="ghost"
-            color={'text'}
-            size="medium"
-            icon="CloseOutline"
-            style={{ position: 'inherit' }}
-            aria-label={t('label.delete', 'Delete')}
-            onClick={(): void => deleteSingleRow(item?.name, 'owner')}
-          />,
-        ],
-      }));
-      setOwnerTableRows(allRows);
-    } else {
-      setOwnerTableRows([]);
-    }
-  }, [ownersList]);
-
-  useEffect(() => {
-    if (sendEmailsList && sendEmailsList.length > 0) {
-      const allRows = sendEmailsList.map((item: any) => ({
-        id: item?.name,
-        columns: [
-          <Text
-            size="small"
-            weight="regular"
-            key={item?.id}
-            color="gray0"
-            onClick={(): void => {
-              setSelectedSendEmail([item?.name]);
-            }}
-          >
-            {item?.name}
-          </Text>,
-          <Text
-            size="small"
-            weight="regular"
-            key={item?.id + '_acl'}
-            color="gray0"
-            onClick={(): void => {
-              setSelectedSendEmail([item?.name]);
-            }}
-          >
-            {item?.sendAcl === 'sendAsDistList'
-              ? t('account_details.send_check', 'Send As')
-              : t('account_details.send_on_behalf_of_check', 'Send On Behalf Of')}
-          </Text>,
-          <Button
-            key="delete_send_email_btn"
-            type="ghost"
-            color={'text'}
-            size="medium"
-            icon="CloseOutline"
-            style={{ position: 'inherit' }}
-            aria-label={t('label.delete', 'Delete')}
-            onClick={(): void => deleteSingleRow(item?.name, 'sendEmail')}
-          />,
-        ],
-      }));
-      setSendEmailTableRows(allRows);
-    } else {
-      setSendEmailTableRows([]);
-    }
-  }, [sendEmailsList]);
-
-  const _allOwnerLists = useMemo(
-    () =>
-      ownersList.map((item: any) => ({
-        id: item?.id,
-        name: item?.name,
-        type: item?.type,
-      })),
-    [ownersList],
-  );
-
-  const onAddToList = useCallback((): void => {
-    const attrs = '';
-    const types = 'distributionlists,aliases,accounts,resources';
-    const query = `(mail=${searchMailingListOrUser})`;
-    searchDirectory(attrs, types, '', query, 0, 2).then((data) => {
-      const accountExists = data?.dl || data?.account;
-      if (!!accountExists && accountExists[0]) {
-        setIsShowError(false);
-        if (isAddToOwnerList) {
-          if (ownersList.find((item: any) => item?.name === searchMailingListOrUser)) {
-            setIsShowError(true);
-            setOwnerErrorMessage(
-              t(
-                'label.distribution_list_already_in_list_error',
-
-                'The Distribution List / User is already in the list',
-              ),
-            );
-          } else {
-            setOwnersList(
-              ownersList.concat({ id: accountExists[0]?.id, name: accountExists[0]?.name }),
-            );
-            setOpenAddMailingListDialog(false);
-          }
-        } else if (dlm.find((item: any) => item === searchMailingListOrUser)) {
-          setIsShowError(true);
-          setOwnerErrorMessage(
-            t(
-              'label.distribution_list_already_in_list_error',
-              'The Distribution List / User is already in the list',
-            ),
-          );
-        } else {
-          setDlm(dlm.concat(accountExists[0]?.name));
-          setOpenAddMailingListDialog(false);
-        }
-      } else {
-        setIsShowError(true);
-        setOwnerErrorMessage(
-          t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
-          ),
-        );
-      }
-    });
-  }, [t, isAddToOwnerList, searchMailingListOrUser, dlm, ownersList]);
-
   const [grantType, setGrantType] = useState<any>([]);
   const [grantEmails, setGrantEmails] = useState<any>([]);
-  const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
-  const [grantEmailItem, setGrantEmailItem] = useState<string>('');
-  const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
-  const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
   const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
 
   const onGrantTypeChange = useCallback(
@@ -965,64 +602,6 @@ const EditMailingListView: FC<any> = ({
     getGrantML();
   }, [getGrantML, isDirty]);
 
-  const grantItems = searchGrantEmailResult.map((item: any) => ({
-    id: item?.id,
-    label: item?.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          setGrantEmailItem(item?.name);
-        }}
-      >
-        {item?.name}
-      </Row>
-    ),
-  }));
-
-  const sendItems = searchGrantEmailResult.map((item: any) => ({
-    id: item?.id,
-    label: item?.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          setSendEmailItem(item?.name);
-        }}
-      >
-        {item?.name}
-      </Row>
-    ),
-  }));
-
-  const searchEmailFromGal = useCallback((searchKeyword: string) => {
-    searchGal(searchKeyword).then((data) => {
-      const contactList = data?.cn;
-      if (contactList) {
-        let result: any[] = [];
-        result = contactList.map((item: any): any => ({
-          id: item?.id,
-          name: item?._attrs?.email,
-        }));
-        setSearchGrantEmailResult(result);
-      } else {
-        setSearchGrantEmailResult([]);
-      }
-    });
-  }, []);
-
   const updatePreviousDetail = (): void => {
     const latestData: any = {};
     latestData.displayName = displayName;
@@ -1094,7 +673,8 @@ const EditMailingListView: FC<any> = ({
         let isError = false;
         let errorMessage = '';
         if (grantType?.value !== EMAIL) {
-          setGrantEmailTableRows([]);
+          setGrantEmailsList([]);
+          setGrantEmails([]);
         }
         data.forEach((item: any) => {
           if (item?.Fault) {
@@ -1141,20 +721,6 @@ const EditMailingListView: FC<any> = ({
         setIsLoading(false);
       });
   };
-
-  const getOwnerType = useCallback(
-    (email?: string): any => {
-      let type = 'email';
-      const all = [..._allOwnerLists, ...allOwnerList];
-      all.forEach((item: any) => {
-        if (item?.id && item?.type && item?.email === email) {
-          type = item?.type === 'group' || item?.type === GRP ? GRP : USR;
-        }
-      });
-      return type;
-    },
-    [allOwnerList, _allOwnerLists],
-  );
 
   const onSave = (): void => {
     const attributes: any[] = [];
@@ -1279,172 +845,6 @@ const EditMailingListView: FC<any> = ({
             _content: distributionName,
           };
           request.push(removeDistributionListMember(id, dlmItem));
-        });
-      }
-    }
-
-    /* Members List */
-    if (previousDetail?.dlm !== undefined && !isEqual(previousDetail?.dlm, dlm)) {
-      const newAddedMember: any[] = [];
-      dlm.forEach((item: any) => {
-        if (!previousDetail?.dlm.includes(item)) {
-          newAddedMember.push(item);
-        }
-      });
-      const removeMember: any[] = [];
-      previousDetail?.dlm.forEach((item: any) => {
-        if (!dlm.includes(item)) {
-          removeMember.push(item);
-        }
-      });
-
-      if (newAddedMember.length > 0) {
-        newAddedMember.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: item,
-          };
-          request.push(addDistributionListMember(id, dlmItem));
-        });
-      }
-
-      if (removeMember.length > 0) {
-        removeMember.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: item,
-          };
-          request.push(removeDistributionListMember(id, dlmItem));
-        });
-      }
-    }
-
-    /* Owner List */
-    if (
-      previousDetail?.ownersList !== undefined &&
-      !isEqual(previousDetail?.ownersList, ownersList)
-    ) {
-      const newAddedOwnerMember: any[] = [];
-      ownersList.forEach((item: any) => {
-        if (!previousDetail?.ownersList.includes(item)) {
-          newAddedOwnerMember.push(item);
-        }
-      });
-      const removeOwnerMember: any[] = [];
-      previousDetail?.ownersList.forEach((item: any) => {
-        if (!ownersList.includes(item)) {
-          removeOwnerMember.push(item);
-        }
-      });
-
-      if (newAddedOwnerMember.length > 0) {
-        newAddedOwnerMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'addOwners',
-            owner: {
-              by: 'name',
-              type: getOwnerType(item?.name),
-              _content: item?.name,
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-
-      if (removeOwnerMember.length > 0) {
-        removeOwnerMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'removeOwners',
-            owner: {
-              by: 'name',
-              type: getOwnerType(item?.name),
-              _content: item?.name,
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-    }
-
-    /* Send As / On Behalf Of List */
-    if (
-      previousDetail?.sendEmailsList !== undefined &&
-      !isEqual(previousDetail?.sendEmailsList, sendEmailsList)
-    ) {
-      const newAddedSendEmailMember: any[] = [];
-      sendEmailsList.forEach((item: any) => {
-        if (
-          !previousDetail?.sendEmailsList.find(
-            (i: any) => i?.name === item?.name && i?.sendAcl === item?.sendAcl,
-          )
-        ) {
-          newAddedSendEmailMember.push(item);
-        }
-      });
-      const removeSendEmailMember: any[] = [];
-      previousDetail?.sendEmailsList.forEach((item: any) => {
-        if (
-          !sendEmailsList.find((i: any) => i?.name === item?.name && i?.sendAcl === item?.sendAcl)
-        ) {
-          removeSendEmailMember.push(item);
-        }
-      });
-
-      if (newAddedSendEmailMember.length > 0) {
-        newAddedSendEmailMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'grantRights',
-            right: {
-              right: item?.sendAcl,
-              grantee: {
-                by: 'name',
-                type: 'email',
-                _content: item?.name ? item?.name : item,
-              },
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-
-      if (removeSendEmailMember.length > 0) {
-        removeSendEmailMember.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: selectedMailingList?.id,
-          };
-          const action: any = {
-            op: 'revokeRights',
-            right: {
-              right: item?.sendAcl,
-              grantee: {
-                by: 'name',
-                type: 'email',
-                _content: item?.name ? item?.name : item,
-              },
-            },
-          };
-          request.push(distributionListAction(dl, action));
         });
       }
     }
@@ -1593,12 +993,6 @@ const EditMailingListView: FC<any> = ({
   }, [previousDetail?.zimbraHideInGal, zimbraHideInGal]);
 
   useEffect(() => {
-    if (previousDetail?.dlm !== undefined && !isEqual(previousDetail?.dlm, dlm)) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.dlm, dlm]);
-
-  useEffect(() => {
     if (
       previousDetail?.ownerOfList !== undefined &&
       !isEqual(previousDetail?.ownerOfList, ownerOfList)
@@ -1607,23 +1001,7 @@ const EditMailingListView: FC<any> = ({
     }
   }, [previousDetail?.ownerOfList, ownerOfList]);
 
-  useEffect(() => {
-    if (
-      previousDetail?.ownersList !== undefined &&
-      !isEqual(previousDetail?.ownersList, ownersList)
-    ) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.ownersList, ownersList]);
 
-  useEffect(() => {
-    if (
-      previousDetail?.sendEmailsList !== undefined &&
-      !isEqual(previousDetail?.sendEmailsList, sendEmailsList)
-    ) {
-      setIsDirty(true);
-    }
-  }, [previousDetail?.sendEmailsList, sendEmailsList]);
 
   useEffect(() => {
     if (
@@ -1673,389 +1051,6 @@ const EditMailingListView: FC<any> = ({
       setIsDirty(true);
     }
   }, [previousDetail?.memberURL, memberURL]);
-
-  useEffect(() => {
-    if (openAddMailingListDialog) {
-      setSearchMailingListOrUser('');
-      setIsShowError(false);
-    }
-  }, [openAddMailingListDialog]);
-
-  useEffect(() => {
-    if (selectedMailingList?.dynamic) {
-      setIsAddToOwnerList(true);
-    }
-  }, [selectedMailingList?.dynamic]);
-
-  const searchMemberItems = searchMemberResult.map((item: any) => ({
-    id: item.id,
-    label: item.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          setSearchMember(item?.name);
-        }}
-      >
-        {item?.name}
-      </Row>
-    ),
-  }));
-
-  const searchOwnerList = searchOwnerResult.map((item: any) => ({
-    id: item.id,
-    label: item.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          setSearchOwner(item?.name);
-        }}
-      >
-        {item?.name}
-      </Row>
-    ),
-  }));
-
-  const getSearchMemberList = useCallback(
-    (mem: string) => {
-      const attrs =
-        'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraMailStatus';
-      const types = 'accounts,distributionlists,aliases';
-      const query = `(&(!(zimbraAccountStatus=closed))(!(zimbraIsAdminGroup=TRUE))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)))`;
-
-      searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
-        .then((data) => {
-          const result: any[] = [];
-          const dl = data?.dl;
-          const account = data?.account;
-          const alias = data?.alias;
-          if (dl) {
-            dl.map((item: any) => result.push(item));
-          }
-          if (account) {
-            account.map((item: any) => result.push(item));
-          }
-          if (alias) {
-            alias.map((item: any) => result.push(item));
-          }
-          setSearchMemberResult(result);
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchMemberCall = useCallback(
-    debounce((mem) => {
-      getSearchMemberList(mem);
-    }, 700),
-    [debounce],
-  );
-  useEffect(() => {
-    if (searchMember !== '') {
-      searchMemberCall(searchMember);
-    }
-  }, [searchMember, searchMemberCall]);
-
-  const onAdd = useCallback((): void => {
-    if (searchMember !== '') {
-      const specialChars = /[ `'"<>,;]/;
-      const allEmails: any[] = specialChars.test(searchMember)
-        ? getAllEmailFromString(searchMember)
-        : [searchMember];
-      if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
-        if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          setIsShowMemberError(true);
-          setMemberErrorMessage(
-            t(
-              'label.distribution_list_not_exists_error_msg',
-              'The Distribution List / User does not exist. Please check the spelling and try again.',
-            ),
-          );
-        } else if (dlm.find((item: any) => item === searchMember)) {
-          setIsShowMemberError(true);
-          setMemberErrorMessage(
-            t(
-              'label.distribution_list_already_in_list_error',
-              'The Distribution List / User is already in the list',
-            ),
-          );
-        } else {
-          const sortedList = sortedUniq(allEmails);
-          setDlm(uniq(dlm.concat(sortedList)));
-          setIsShowMemberError(false);
-          setSearchMember('');
-          setMemberErrorMessage('');
-        }
-      } else if (allEmails === undefined) {
-        setMemberErrorMessage(
-          t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
-          ),
-        );
-        setIsShowMemberError(true);
-      }
-    }
-  }, [searchMember, t, dlm]);
-
-  const onAddOwner = useCallback((): void => {
-    if (searchOwner !== '') {
-      const specialChars = /[ `'"<>,;]/;
-      const allEmails: any[] = specialChars.test(searchOwner)
-        ? getAllEmailFromString(searchOwner)
-        : [searchOwner];
-      if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
-        if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          setIsShowOwnerError(true);
-          setOwnerErrorMessage(
-            t(
-              'label.distribution_list_not_exists_error_msg',
-              'The Distribution List / User does not exist. Please check the spelling and try again.',
-            ),
-          );
-        } else if (ownersList.find((item: any) => item?.name === searchOwner)) {
-          setIsShowOwnerError(true);
-          setOwnerErrorMessage(
-            t(
-              'label.distribution_list_already_in_list_error',
-              'The Distribution List / User is already in the list',
-            ),
-          );
-        } else {
-          setIsShowOwnerError(false);
-          const sortedList = sortedUniq(allEmails);
-          setOwnersList(
-            uniq(ownersList.concat(sortedList.map((item: any) => ({ name: item, id: item })))),
-          );
-          setSearchOwner('');
-          setMemberErrorMessage('');
-        }
-      } else if (allEmails === undefined) {
-        setIsShowOwnerError(true);
-        setOwnerErrorMessage(
-          t(
-            'label.distribution_list_not_exists_error_msg',
-            'The Distribution List / User does not exist. Please check the spelling and try again.',
-          ),
-        );
-      }
-    }
-  }, [searchOwner, t, ownersList]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchSendEmail = useCallback(
-    debounce((searchWord) => {
-      searchEmailFromGal(searchWord);
-    }, 700),
-    [debounce],
-  );
-
-  useEffect(() => {
-    if (sendEmailItem !== '') {
-      searchSendEmail(sendEmailItem);
-    }
-  }, [sendEmailItem, searchSendEmail]);
-
-  const onAddSendEmail = useCallback(() => {
-    if (sendEmailItem !== '') {
-      const specialChars = /[ `'"<>,;]/;
-      const allEmails: any[] = specialChars.test(sendEmailItem)
-        ? getAllEmailFromString(sendEmailItem)
-        : [sendEmailItem];
-      if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
-        if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: `${t('label.invalid_email_address', 'Invalid email address')} ${
-              inValidEmailAddress[0]
-            }`,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          setSendEmailItem('');
-          setSendRightCheck(false);
-          setSendBehalfRightCheck(false);
-          allEmails.forEach((item: any, index: any) => {
-            if (sendRightCheck && !sendBehalfRightCheck) {
-              allEmails[index] = { name: item, sendAcl: 'sendAsDistList' };
-            } else if (!sendRightCheck && sendBehalfRightCheck) {
-              allEmails[index] = { name: item, sendAcl: 'sendOnBehalfOfDistList' };
-            }
-          });
-          const sortedList = sortedUniq(allEmails);
-          const emails = uniq(sendEmailsList.concat(sortedList));
-          setSendEmailsList(emails);
-          setSendEmails(emails);
-          setIsDirty(true);
-        }
-      } else if (allEmails === undefined) {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: `${t('label.invalid_email_address', 'Invalid email address')} ${grantEmailItem}`,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      }
-    }
-  }, [sendEmailsList, createSnackbar, sendEmailItem, sendRightCheck, sendBehalfRightCheck, t]);
-
-  const getSearchOwnerList = useCallback(
-    (searchKeyword: string) => {
-      searchGal(searchKeyword).then((data) => {
-        const contactList = data?.cn;
-        if (contactList) {
-          let result: any[] = [];
-          result = contactList.map((item: any): any => ({
-            id: item?.id,
-            name: item?._attrs?.email,
-          }));
-          setAllOwnerList(
-            uniqBy(
-              allOwnerList.concat(
-                contactList.map((item: any) => ({
-                  id: item?.id,
-                  name: item?._attrs?.email,
-                  type: item?._attrs?.type,
-                })),
-              ),
-              'id',
-            ),
-          );
-          setSearchOwnerResult(result);
-        } else {
-          setSearchOwnerResult([]);
-        }
-      });
-    },
-    [allOwnerList],
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchOwnerCall = useCallback(
-    debounce((mem) => {
-      getSearchOwnerList(mem);
-    }, 700),
-    [debounce],
-  );
-  useEffect(() => {
-    if (searchOwner !== '') {
-      searchOwnerCall(searchOwner);
-    }
-  }, [searchOwner, searchOwnerCall]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchGrantEmail = useCallback(
-    debounce((searchWord) => {
-      searchEmailFromGal(searchWord);
-    }, 700),
-    [debounce],
-  );
-
-  useEffect(() => {
-    if (grantEmailItem !== '') {
-      searchGrantEmail(grantEmailItem);
-    }
-  }, [grantEmailItem, searchGrantEmail]);
-
-  const onAddGrantEmail = useCallback(() => {
-    if (grantEmailItem !== '') {
-      const specialChars = /[ `'"<>,;]/;
-      const allEmails: any[] = specialChars.test(grantEmailItem)
-        ? getAllEmailFromString(grantEmailItem)
-        : [grantEmailItem];
-      if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
-        if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: `${t('label.invalid_email_address', 'Invalid email address')} ${
-              inValidEmailAddress[0]
-            }`,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          setGrantEmailItem('');
-          const sortedList = sortedUniq(allEmails);
-          const emails = uniq(grantEmailsList.concat(sortedList));
-          setGrantEmailsList(emails);
-          setGrantEmails(emails);
-          setIsDirty(true);
-        }
-      } else if (allEmails === undefined) {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: `${t('label.invalid_email_address', 'Invalid email address')} ${grantEmailItem}`,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      }
-    }
-  }, [grantEmailsList, createSnackbar, grantEmailItem, t]);
-
-  useMemo(() => {
-    if (grantEmailsList && grantEmailsList.length > 0) {
-      const allRows = grantEmailsList.map((item: any) => ({
-        id: item,
-        columns: [
-          <Text
-            size="small"
-            weight="regular"
-            key={item}
-            color="gray0"
-            onClick={(): void => {
-              setSelectedGrantEmail([item]);
-            }}
-          >
-            {item}
-          </Text>,
-          <Button
-            key={item + '_delete'}
-            type="ghost"
-            color={'text'}
-            size="medium"
-            icon="CloseOutline"
-            style={{ position: 'inherit' }}
-            aria-label={t('label.delete', 'Delete')}
-            onClick={(): void => deleteSingleRow(item, 'grantEmail')}
-          />,
-        ],
-      }));
-      setGrantEmailTableRows(allRows);
-    } else {
-      setGrantEmailTableRows([]);
-    }
-  }, [grantEmailsList]);
 
   const handleClickDeleteEvent = useCallback(() => {
     const getGrantBody: any = {};
@@ -2183,30 +1178,6 @@ const EditMailingListView: FC<any> = ({
     setTotalGrantRights(totalRights);
   }, [granteeTotalRights, targetTotalRights]);
 
-  const ReusedDefaultTabBar: FC<{
-    item: any;
-    index: any;
-    selected: any;
-    onClick: any;
-  }> = ({ item, index, selected, onClick }): ReactElement => (
-    <DefaultTabBarItem
-      item={item}
-      tabIndex={index}
-      selected={selected}
-      onClick={onClick}
-      orientation="horizontal"
-      background="gray6"
-      underlineColor="primary"
-      forceWidthEquallyDistributed={false}
-    >
-      <Row padding="small">
-        <Text size="small" color={selected ? 'primary' : 'gray'}>
-          {item.label}
-        </Text>
-      </Row>
-    </DefaultTabBarItem>
-  );
-
   const items: any = [
     {
       id: 'general',
@@ -2219,103 +1190,22 @@ const EditMailingListView: FC<any> = ({
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'security',
-      label: t('label.security', 'SECURITY'),
+      id: 'owners',
+      label: t('label.owners', 'OWNERS'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'delegates',
-      label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
+      id: 'sendas',
+      label: t('domain.distributionList.sendAs', 'SEND AS').toLocaleUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: 'sendto',
+      label: t('domain.distributionList.sendTo', 'SEND TO').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    if (value != '') {
-      setFilterMember(value);
-      setDLMSearchCurrentPage(1);
-      setOffset(0);
-      const allRows = dlmTableRows.filter((item: any) =>
-        item?.id.toLowerCase().includes(value.toLowerCase()),
-      );
-      setFilteredDlmTableRows(allRows);
-      const pagedRows = allRows.slice(0, limit);
-      setDLMPagedRows(pagedRows);
-    } else {
-      setFilterMember('');
-      setDLMSearchCurrentPage(1);
-      setOffset(0);
-      const pagedRows = dlmTableRows.slice(0, limit);
-      setFilteredDlmTableRows([]);
-      setDLMPagedRows(pagedRows);
-    }
-  };
-
-  const handleInputChangeGrantEmail = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    if (value != '') {
-      setFilterGrantEmail(value);
-      const allRows = grantEmailTableRows.filter((item: any) =>
-        item?.id.toLowerCase().includes(value.toLowerCase()),
-      );
-      setFilteredGrantEmailRows(allRows);
-    } else {
-      setFilterGrantEmail('');
-      setFilteredGrantEmailRows(grantEmailTableRows);
-    }
-  };
-
-  const handleInputChangeSendEmail = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    if (value != '') {
-      setFilterSendEmail(value);
-      const allRows = sendEmailTableRows.filter((item: any) =>
-        item.id?.toLowerCase().includes(value.toLowerCase()),
-      );
-      setFilteredSendEmailRows(allRows);
-    } else {
-      setFilterSendEmail('');
-      setFilteredSendEmailRows(sendEmailTableRows);
-    }
-  };
-
-  const deleteSingleRow = (itemName: string, type: string): void => {
-    if (type === 'grantEmail') {
-      const _grant = grantEmailsList.filter((item: any) => itemName !== item);
-      const _grant_filtered = filteredGrantEmailRows.filter((item: any) => itemName !== item.id);
-      setGrantEmailsList(_grant);
-      setFilteredGrantEmailRows(_grant_filtered);
-      setSelectedGrantEmail([]);
-      setGrantEmails(_grant);
-      setIsDirty(true);
-    } else if (type === 'distListMember') {
-      const _dlm = dlm.filter((item: any) => itemName !== item);
-      const _dlm_filtered = filteredDlmTableRows.filter((item: any) => itemName !== item.id);
-      setFilteredDlmTableRows(_dlm_filtered);
-      setDlm(_dlm);
-      setSelectedDistributionListMember([]);
-      if (DLMPagedRows.length === 1) {
-        setDLMSearchCurrentPage(1);
-        setOffset(0);
-        setFilterMember('');
-      }
-    } else if (type === 'owner') {
-      const _ownerList = ownersList.filter((item: any) => itemName !== item.name);
-      setOwnersList(_ownerList);
-      setSelectedOwnerListMember([]);
-    } else if (type === 'sendEmail') {
-      const _sendList = sendEmailsList.filter((item: any) => itemName !== item.name);
-      const _send_filtered = filteredSendEmailRows.filter((item: any) => itemName !== item.id);
-      setFilteredSendEmailRows(_send_filtered);
-      const sortedList = sortedUniq(_sendList);
-      const emails = uniq(sortedList);
-      setSendEmailsList(emails);
-      setSendEmails(emails);
-      setSelectedSendEmail([]);
-    }
-  };
-
+  
   return (
     <>
       {isLoading && <ds-spinner></ds-spinner>}
@@ -2404,9 +1294,17 @@ const EditMailingListView: FC<any> = ({
             items={items}
             selected={selectedTab}
             onChange={(ev: unknown, selectedId: string): void => {
-              setSelectedTab(selectedId);
+              if (
+                isDirty &&
+                (selectedTab === 'general' || selectedTab === 'sendto') &&
+                selectedId !== selectedTab
+              ) {
+                setPendingTab(selectedId);
+                setIsOpenUnsavedDialog(true);
+              } else {
+                setSelectedTab(selectedId);
+              }
             }}
-            //onClick={setClick}
             width="100%"
             background="gray6"
           />
@@ -2414,971 +1312,144 @@ const EditMailingListView: FC<any> = ({
         </Container>
 
         {selectedTab === 'general' && (
-          <Container
-            padding={{ left: 'large', right: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
-            background="white"
-            width={'58.75rem'}
-            style={{ overflow: 'auto' }}
-          >
-            <Row padding={{ top: 'medium', bottom: 'medium' }}>
-              <Text size="medium" weight="bold" color="gray0">
-                {t('domain.list_details', 'List Details')}
-              </Text>
-            </Row>
-
-            <ListRow padding={{ right: 'small', bottom: 'small' }}>
-              <Container padding={{ top: 'small' }}>
-                <Input
-                  label={t('label.display_name', 'Display Name')}
-                  value={displayName}
-                  backgroundColor="gray5"
-                  onChange={(e: any): any => {
-                    setDisplayName(e.target.value);
-                  }}
-                />
-              </Container>
-              <Container padding={{ left: 'large', top: 'small' }}>
-                <Input
-                  label={t('label.address', 'Address')}
-                  value={distributionName}
-                  backgroundColor="gray5"
-                  onChange={(e: any): any => {
-                    setDistributionName(e.target.value);
-                  }}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ right: 'small', top: 'small' }}>
-                <Select
-                  items={rightsOptions}
-                  background="gray5"
-                  label={t('label.status', 'Status')}
-                  showCheckbox={false}
-                  onChange={onRightsChange}
-                  selection={zimbraMailStatus}
-                />
-              </Container>
-            </ListRow>
-            <Container
-              height="fit"
-              padding={{ left: 'small', top: 'large', right: 'small', bottom: 'small' }}
-            >
-              <ManageAliases
-                listAliases={zimbraMailAlias}
-                setListAliases={setZimbraMailAlias}
-                setAliasChange={(): void => ((): any => true)()}
-              />
-            </Container>
-            {!selectedMailingList?.dynamic && (
-              <ListRow padding={{ all: 'small' }}>
-                <Container
-                  padding={{ top: 'small' }}
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                >
-                  <Switch
-                    value={zimbraDistributionListSendShareMessageToNewMembers}
-                    label={t(
-                      'label.send_new_members_notification_for_share_assigned_to_this_group',
-                      'Send new members a notification for the share/delegation assigned to this group',
-                    )}
-                    onClick={(): void => {
-                      setIsDirty(true);
-                      setZimbraDistributionListSendShareMessageToNewMembers(
-                        !zimbraDistributionListSendShareMessageToNewMembers,
-                      );
-                    }}
-                    iconColor="primary"
-                  />
-                </Container>
-              </ListRow>
-            )}
-            <ListRow padding={{ left: 'small', right: 'small', bottom: 'small' }}>
-              <Container mainAlignment="flex-start" crossAlignment="flex-start">
-                <Switch
-                  value={zimbraHideInGal}
-                  label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
-                  onClick={(): void => {
-                    setIsDirty(true);
-                    setZimbraHideInGal(!zimbraHideInGal);
-                  }}
-                  iconColor="primary"
-                />
-              </Container>
-            </ListRow>
-            <ListRow padding={{ all: 'small' }}>
-              <Container orientation="horizontal">
-                <Container padding={{ right: 'large' }}>
-                  <Input
-                    label={t('label.members', 'Members')}
-                    value={dlm.length}
-                    backgroundColor="gray5"
-                    disabled
-                    textColor={'black'}
-                  />
-                </Container>
-                <Container>
-                  <Input
-                    label={t('label.alias_in_the_list', 'Alias in the List')}
-                    value={zimbraMailAlias.length}
-                    backgroundColor="gray5"
-                    textColor={'black'}
-                    disabled
-                  />
-                </Container>
-              </Container>
-            </ListRow>
-
-            <ListRow padding={{ all: 'small' }}>
-              <Container padding={{ bottom: 'small' }} orientation="horizontal">
-                <Container padding={{ right: 'large' }}>
-                  <Input
-                    label={t('label.id_lbl', 'ID')}
-                    value={dlId}
-                    backgroundColor="gray5"
-                    disabled
-                    textColor={'black'}
-                  />
-                </Container>
-                <Container>
-                  <Input
-                    label={t('label.creation_date', 'Creation Date')}
-                    value={dlCreateDate}
-                    backgroundColor="gray5"
-                    disabled
-                    textColor={'black'}
-                  />
-                </Container>
-              </Container>
-            </ListRow>
-            <Row padding={{ top: 'large' }}>
-              <Text size="medium" weight="bold" color="gray0">
-                {t('label.description', 'Description')}
-              </Text>
-            </Row>
-            <ListRow padding={{ all: 'small' }}>
-              <Container padding={{ bottom: 'medium' }}>
-                <Input
-                  value={description}
-                  label={t(
-                    'label.note_label',
-                    'Write something that will easily make you remember this element',
-                  )}
-                  backgroundColor="gray5"
-                  onChange={(e: any): any => {
-                    setDescription(e.target.value);
-                  }}
-                />
-              </Container>
-            </ListRow>
-            <Row padding={{ top: 'large' }}>
-              <Text size="medium" weight="bold" color="gray0">
-                {t('label.notes', 'Notes')}
-              </Text>
-            </Row>
-            <ListRow padding={{ all: 'small' }}>
-              <Container padding={{ bottom: 'medium' }}>
-                <CustomTextArea
-                  value={zimbraNotes}
-                  label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
-                  onChange={(e: any): any => {
-                    setZimbraNotes(e.target.value);
-                  }}
-                />
-              </Container>
-            </ListRow>
-
-            {!selectedMailingList?.dynamic && (
-              <>
-                <Row padding={{ top: 'small' }}>
-                  <Text size="medium" weight="bold" color="gray0">
-                    {t('label.this_list_included_in', 'This list is included in')}
-                  </Text>
-                </Row>
-                <ListRow padding={{ all: 'small' }}>
-                  <Container padding={{ bottom: 'small' }}>
-                    <Input
-                      label={t('label.distribution_lists', 'Distribution Lists')}
-                      value={dlMembershipListNames}
-                      backgroundColor="gray5"
-                      textColor={'black'}
-                    />
-                  </Container>
-                </ListRow>
-              </>
-            )}
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              padding={{ top: 'small', bottom: 'small' }}
-            >
-              <Container padding={{ bottom: 'small' }}>
-                <ds-divider />
-              </Container>
-            </Row>
-          </Container>
+          <GeneralTab
+            displayName={displayName}
+            setDisplayName={setDisplayName}
+            distributionName={distributionName}
+            setDistributionName={setDistributionName}
+            zimbraHideInGal={zimbraHideInGal}
+            setZimbraHideInGal={setZimbraHideInGal}
+            zimbraNotes={zimbraNotes}
+            setZimbraNotes={setZimbraNotes}
+            description={description}
+            setDescription={setDescription}
+            zimbraDistributionListSendShareMessageToNewMembers={zimbraDistributionListSendShareMessageToNewMembers}
+            setZimbraDistributionListSendShareMessageToNewMembers={setZimbraDistributionListSendShareMessageToNewMembers}
+            zimbraMailStatus={zimbraMailStatus}
+            onRightsChange={onRightsChange}
+            rightsOptions={rightsOptions}
+            zimbraMailAlias={zimbraMailAlias}
+            setZimbraMailAlias={setZimbraMailAlias}
+            dlCreateDate={dlCreateDate}
+            dlId={dlId}
+            dlmCount={dlm.length}
+            selectedMailingList={selectedMailingList}
+            dlMembershipListNames={dlMembershipListNames}
+            setIsDirty={setIsDirty}
+          />
         )}
 
         {selectedTab === 'members' && (
-          <Container
-            padding={{ left: 'large', right: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
-            background="white"
-            width={'58.75rem'}
-            style={{ overflow: 'auto' }}
-          >
-            {selectedMailingList?.dynamic && (
-              <>
-                <Row padding={{ bottom: 'medium', top: 'medium' }}>
-                  <Text size="medium" weight="bold" color="gray0">
-                    {t('label.dynamic_mode', 'Dynamic Mode')}
-                  </Text>
-                </Row>
-                <ListRow padding={{ all: 'small' }}>
-                  <Container orientation="horizontal">
-                    <Container>
-                      <Input
-                        label={t('label.distribution_list_url', "Distribution List's URL")}
-                        value={memberURL}
-                        backgroundColor="gray5"
-                        onChange={(e: any): any => {
-                          setMemberURL(e.target.value);
-                        }}
-                        disabled={!isGlobalAdmin}
-                      />
-                    </Container>
-                  </Container>
-                </ListRow>
-                <ds-divider />
-                <Row padding={{ bottom: 'medium', top: 'medium' }}>
-                  <Text size="medium" weight="bold" color="gray0">
-                    {t('label.members', 'Members')}
-                  </Text>
-                </Row>
-              </>
-            )}
-            {!selectedMailingList?.dynamic && (
-              <>
-                <Row padding={{ bottom: 'medium', top: 'medium' }}>
-                  <Text size="medium" weight="bold" color="gray0">
-                    {t('label.members', 'Members')}
-                  </Text>
-                </Row>
-                <ListRow
-                  padding={{
-                    top: 'small',
-                    bottom: isShowMemberError ? 'extrasmall' : 'small',
-                    left: 'small',
-                    right: 'small',
-                  }}
-                >
-                  <Container
-                    orientation="vertical"
-                    mainAlignment="space-around"
-                    background="gray6"
-                    height="58px"
-                  >
-                    <Row
-                      orientation="horizontal"
-                      mainAlignment="flex-start"
-                      crossAlignment="flex-start"
-                      width="100%"
-                    >
-                      <Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-                        <DropDownInput
-                          width="100%"
-                          items={searchMemberItems}
-                          inputLabel={t(
-                            'label.type_accounts_paste_them_here',
-                            'Type the Accounts or paste them here',
-                          )}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                            setSearchMember(e.target.value);
-                          }}
-                          inputValue={searchMember}
-                          isCustomIcon={false}
-                          hasError={isShowMemberError}
-                        />
-                      </Row>
-
-                      <Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
-                        <Padding left="large" right="large">
-                          <Button
-                            type="outlined"
-                            key="add-button"
-                            label={t('label.add', 'Add')}
-                            color="primary"
-                            iconPlacement="right"
-                            onClick={onAdd}
-                            size="extralarge"
-                            disabled={searchMember === ''}
-                          />
-                        </Padding>
-                      </Row>
-                    </Row>
-                  </Container>
-                </ListRow>
-                {isShowMemberError && (
-                  <Row>
-                    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                      <Padding right={'0'}>
-                        <Text size="extrasmall" weight="regular" color="error">
-                          {memberErrorMessage}
-                        </Text>
-                      </Padding>
-                    </Container>
-                  </Row>
-                )}
-              </>
-            )}
-            <Row padding={{ all: 'small' }}>
-              <Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-                <ListRow
-                  padding={{
-                    top: 'small',
-                    bottom: isShowMemberError ? 'extrasmall' : 'small',
-                    left: 'small',
-                    right: 'small',
-                  }}
-                >
-                  <Row width="auto" mainAlignment="flex-start" crossAlignment="flex-start">
-                    {(dlmTableRows.length > 0 || filterMember !== '') && (
-                      <>
-                        <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
-                          value={filterMember}
-                          backgroundColor="gray5"
-                          onChange={handleInputChange}
-                          CustomIcon={(): any => (
-                            <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                          )}
-                        />
-                        <Container padding={{ bottom: 'small' }}>
-                          <ds-divider />
-                        </Container>
-                      </>
-                    )}
-                    <Table
-                      rows={DLMPagedRows}
-                      headers={memberHeaders}
-                      showCheckbox={false}
-                      selectedRows={selectedDistributionListMember}
-                      RowFactory={HoverableRowFactory}
-                      HeaderFactory={CustomHeaderFactory}
-                      onSelectionChange={(selectedRows) => {
-                        setSelectedDistributionListMember(selectedRows);
-                      }}
-                    />
-                    <Container
-                      style={{
-                        position: 'sticky',
-                        bottom: '-4rem',
-                      }}
-                    >
-                      <Container
-                        orientation="horizontal"
-                        mainAlignment="space-between"
-                        background="gray6"
-                        width="100%"
-                        padding={{ right: 'extralarge' }}
-                        height="auto"
-                      >
-                        <Container crossAlignment="flex-start">
-                          <Paging
-                            totalItem={
-                              filterMember ? filteredDlmTableRows.length : dlmTableRows.length
-                            }
-                            setOffset={setOffset}
-                            pageSize={limit}
-                            currentPageProp={DLMCurrentPage}
-                            onPageChange={setDLMSearchCurrentPage}
-                          />
-                        </Container>
-                      </Container>
-                    </Container>
-                  </Row>
-                </ListRow>
-              </Container>
-            </Row>
-            {dlmTableRows.length === 0 && !selectedMailingList?.dynamic && filterMember !== '' && (
-              <ListRow padding={{ all: 'small' }}>
-                <Container
-                  background="gray6"
-                  height="fit-content"
-                  mainAlignment="center"
-                  crossAlignment="center"
-                >
-                  <Padding value="57px 0 0 0" width="100%">
-                    <Row mainAlignment="center" width="100%">
-                      <img src={helmetLogo} alt="logo" />
-                    </Row>
-                  </Padding>
-                  <Padding vertical="extralarge" width="100%">
-                    <Row mainAlignment="center" width="100%">
-                      <Text size="large" color="secondary" weight="regular">
-                        {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                      </Text>
-                    </Row>
-                    <Row mainAlignment="center" width="100%">
-                      <Text size="large" color="secondary" weight="regular">
-                        {searchUserLabelValue}
-                      </Text>
-                    </Row>
-                  </Padding>
-                </Container>
-              </ListRow>
-            )}
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              padding={{ top: 'small', bottom: 'small' }}
-            >
-              <Container padding={{ bottom: 'small' }}>
-                <ds-divider />
-              </Container>
-            </Row>
-          </Container>
+          <MembersTab
+            dlm={dlm}
+            setDlm={setDlm}
+            setPreviousDetail={setPreviousDetail}
+            selectedMailingList={selectedMailingList}
+            isRequestInProgress={isRequestInProgress}
+            setIsRequestInProgress={setIsRequestInProgress}
+            searchUserLabelValue={searchUserLabelValue}
+            isGlobalAdmin={isGlobalAdmin}
+            memberURL={memberURL}
+            setMemberURL={setMemberURL}
+          />
         )}
 
-        {selectedTab === 'security' && (
-          <Container
-            padding={{ left: 'large', right: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
-            background="white"
-            width={'58.75rem'}
-            style={{ overflow: 'auto' }}
-          >
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
-              <Text weight="bold" color="gray0">
-                {t('label.owners_settings_lbl', 'Owners’ Settings')}
-              </Text>
-            </Row>
-            <ListRow padding={{ left: 'small', right: 'small' }}>
-              <Text
-                size="medium"
-                color="secondary"
-                style={{ whiteSpace: 'normal' }}
-                overflow="break-word"
-              >
-                {t(
-                  'label.owners_description_msg_1',
-                  'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.',
-                )}
-              </Text>
-            </ListRow>
-
-            <ListRow padding={{ all: 'small' }}>
-              <Container
-                orientation="vertical"
-                mainAlignment="space-around"
-                background="gray6"
-                height="58px"
-              >
-                <Row
-                  orientation="horizontal"
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  width="100%"
-                >
-                  <Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
-                    <DropDownInput
-                      width="100%"
-                      items={searchOwnerList}
-                      inputLabel={t(
-                        'account_details.start_typing_account',
-                        'Start typing an Account / Group to add it to the rights',
-                      )}
-                      size="medium"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                        setSearchOwner(e.target.value);
-                      }}
-                      inputValue={searchOwner}
-                      isCustomIcon={false}
-                      hasError={isShowOwnerError}
-                    />
-                  </Row>
-                  <Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
-                    <Padding left="large" right="large">
-                      <Button
-                        type="outlined"
-                        key="add-button"
-                        label={t('label.add', 'Add')}
-                        color="primary"
-                        iconPlacement="right"
-                        onClick={onAddOwner}
-                        size="extralarge"
-                        disabled={searchOwner === ''}
-                      />
-                    </Padding>
-                  </Row>
-                </Row>
-              </Container>
-              {isShowOwnerError && (
-                <Row>
-                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                    <Padding right={'0'}>
-                      <Text size="extrasmall" weight="regular" color="error">
-                        {ownerErrorMessage}
-                      </Text>
-                    </Padding>
-                  </Container>
-                </Row>
-              )}
-            </ListRow>
-
-            <ListRow padding={{ all: 'small' }}>
-              <Container
-                padding={{
-                  bottom: 'small',
-                }}
-                mainAlignment="flex-start"
-              >
-                <Table
-                  rows={ownerTableRows}
-                  headers={ownerHeaders}
-                  showCheckbox={false}
-                  selectedRows={selectedOwnerListMember}
-                  RowFactory={HoverableRowFactory}
-                  HeaderFactory={CustomHeaderFactory}
-                />
-              </Container>
-            </ListRow>
-
-            {ownerTableRows.length === 0 && (
-              <ListRow padding={{ all: 'small' }}>
-                <Container
-                  background="gray6"
-                  height="fit-content"
-                  mainAlignment="center"
-                  crossAlignment="center"
-                >
-                  <Padding value="57px 0 0 0" width="100%">
-                    <Row mainAlignment="center" width="100%">
-                      <img src={helmetLogo} alt="logo" />
-                    </Row>
-                  </Padding>
-                  <Padding vertical="extralarge" width="100%">
-                    <Row mainAlignment="center" width="100%">
-                      <Text size="large" color="secondary" weight="regular">
-                        {t('label.there_are_no_owners', 'There aren’t owners here.')}
-                      </Text>
-                    </Row>
-                    <Row mainAlignment="center" width="100%">
-                      <Text size="large" color="secondary" weight="regular">
-                        {searchUserLabelValue}
-                      </Text>
-                    </Row>
-                  </Padding>
-                </Container>
-              </ListRow>
-            )}
-
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              padding={{ top: 'small', bottom: 'small' }}
-            >
-              <Container padding={{ bottom: 'small' }}>
-                <ds-divider />
-              </Container>
-            </Row>
-
-            <Row padding={{ bottom: 'medium' }}>
-              <Text weight="bold" color="gray0">
-                {t('label.sending_options', 'Sending Options')}
-              </Text>
-            </Row>
-            <ListRow padding={{ all: 'small' }}>
-              <Container>
-                <Select
-                  items={grantTypeOptions}
-                  background="gray5"
-                  label={t(
-                    'label.who_can_send_mails_to_this_list',
-                    'Who can send mails TO this list?',
-                  )}
-                  showCheckbox={false}
-                  onChange={onGrantTypeChange}
-                  selection={grantType}
-                />
-              </Container>
-            </ListRow>
-
-            {grantType?.value === EMAIL && (
-              <Container
-                padding={{ left: 'large', right: 'large', bottom: 'large' }}
-                height={'auto'}
-              >
-                <ListRow padding={{ all: 'small' }}>
-                  <Container
-                    orientation="vertical"
-                    mainAlignment="space-around"
-                    background="gray6"
-                    height="58px"
-                  >
-                    <ListRow>
-                      <Container
-                        mainAlignment="flex-start"
-                        crossAlignment="flex-start"
-                        orientation="horizontal"
-                        padding={{ top: 'large', right: 'small' }}
-                        width="100%"
-                      >
-                        <Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
-                          <DropDownInput
-                            items={grantItems}
-                            inputLabel={t(
-                              'account_details.start_typing_account',
-                              'Start typing an Account / Group to add it to the rights',
-                            )}
-                            size="medium"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                              setGrantEmailItem(e.target.value);
-                            }}
-                            inputValue={grantEmailItem}
-                            isCustomIcon={false}
-                            inputDisabled={grantType?.value !== EMAIL}
-                          />
-                        </Row>
-                        <Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
-                          <Padding left="large" right="large">
-                            <Button
-                              type="outlined"
-                              key="add-button"
-                              label={t('label.add', 'Add')}
-                              color="primary"
-                              iconPlacement="right"
-                              onClick={onAddGrantEmail}
-                              size="extralarge"
-                              disabled={grantEmailItem === ''}
-                            />
-                          </Padding>
-                        </Row>
-                      </Container>
-                    </ListRow>
-                  </Container>
-                </ListRow>
-
-                <ListRow padding={{ all: 'small' }}>
-                  <Container padding={{ bottom: 'large', top: 'large' }}>
-                    {grantEmailTableRows.length > 0 && (
-                      <>
-                        <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
-                          value={filterGrantEmail}
-                          backgroundColor="gray5"
-                          onChange={handleInputChangeGrantEmail}
-                          CustomIcon={(): any => (
-                            <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                          )}
-                        />
-                        <Container padding={{ bottom: 'small' }}>
-                          <ds-divider />
-                        </Container>
-                      </>
-                    )}
-                    <Table
-                      rows={filterGrantEmail ? filteredGrantEmailRows : grantEmailTableRows}
-                      headers={grantEmailHeaders}
-                      showCheckbox={false}
-                      selectedRows={selectedGrantEmail}
-                      RowFactory={HoverableRowFactory}
-                      HeaderFactory={CustomHeaderFactory}
-                    />
-                  </Container>
-                </ListRow>
-
-                {grantEmailTableRows.length === 0 && (
-                  <ListRow padding={{ all: 'small' }}>
-                    <Container
-                      background="gray6"
-                      height="fit-content"
-                      mainAlignment="center"
-                      crossAlignment="center"
-                    >
-                      <Padding value="57px 0 0 0" width="100%">
-                        <Row mainAlignment="center" width="100%">
-                          <img src={helmetLogo} alt="logo" />
-                        </Row>
-                      </Padding>
-                      <Padding vertical="extralarge" width="100%">
-                        <Row mainAlignment="center" width="100%">
-                          <Text size="large" color="secondary" weight="regular">
-                            {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                          </Text>
-                        </Row>
-                        <Row mainAlignment="center" width="100%">
-                          <Text size="large" color="secondary" weight="regular">
-                            {searchUserLabelValue}
-                          </Text>
-                        </Row>
-                      </Padding>
-                    </Container>
-                  </ListRow>
-                )}
-              </Container>
-            )}
-          </Container>
+        {selectedTab === 'owners' && (
+          <OwnersTab
+            ownersList={ownersList}
+            setOwnersList={setOwnersList}
+            setPreviousDetail={setPreviousDetail}
+            selectedMailingList={selectedMailingList}
+            isRequestInProgress={isRequestInProgress}
+            setIsRequestInProgress={setIsRequestInProgress}
+            searchUserLabelValue={searchUserLabelValue}
+          />
         )}
 
-        {selectedTab === 'delegates' && (
-          <Container
-            padding={{ left: 'large', right: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            height="calc(100vh - 3.6rem)"
-            background="white"
-            width={'58.75rem'}
-            style={{ overflow: 'auto' }}
-          >
-            <Row padding={{ bottom: 'medium', top: 'medium' }}>
-              <Text size="medium" color="gray0" weight="bold">
-                {t(`label.delegate's_general_send_settings`, `Delegate's general Send Settings`)}
-              </Text>
-            </Row>
-            <Container padding={{ left: 'large', right: 'large', bottom: 'large' }} height={'auto'}>
-              <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-                <DropDownInput
-                  items={sendItems}
-                  inputLabel={t(
-                    'account_details.start_typing_account',
-                    'Start typing an Account / Group to add it to the rights',
-                  )}
-                  size="medium"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setSendEmailItem(e.target.value);
-                  }}
-                  inputValue={sendEmailItem}
-                  isCustomIcon={false}
-                  inputDisabled={selectedMailingList?.dynamic}
-                />
-              </Row>
-              <Container mainAlignment="flex-start">
-                <Row width="100%" padding={{ top: 'extralarge' }} mainAlignment="flex-start">
-                  <Text size="small" color="gray0" weight="bold">
-                    {t('label.sending_options', 'Send options')}
-                  </Text>
-                </Row>
-                <Row width="50%" padding={{ top: 'small' }} mainAlignment="flex-start">
-                  <Row width="50%" mainAlignment="flex-start">
-                    <Checkbox
-                      iconColor="primary"
-                      value={sendRightCheck}
-                      onClick={(): void => {
-                        if (!sendRightCheck) {
-                          setSendBehalfRightCheck(false);
-                        }
-                        setSendRightCheck(!sendRightCheck);
-                      }}
-                      label={t('account_details.send_check', 'Send')}
-                    />
-                  </Row>
-                  <Row width="50%" mainAlignment="flex-start">
-                    <Checkbox
-                      iconColor="primary"
-                      value={sendBehalfRightCheck}
-                      onClick={(): void => {
-                        if (!sendBehalfRightCheck) {
-                          setSendRightCheck(false);
-                        }
-                        setSendBehalfRightCheck(!sendBehalfRightCheck);
-                      }}
-                      label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
-                    />
-                  </Row>
-                </Row>
-              </Container>
-              <Container mainAlignment="flex-start">
-                <Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
-                  <Button
-                    label={t(
-                      'account_details.add_the_account_group_with_selected_rights',
-                      'ADD THE ACCOUNT / GROUP WITH SELECTED RIGHTS',
-                    )}
-                    onClick={(): void => onAddSendEmail()}
-                    width="fill"
-                    type="outlined"
-                    disabled={!(sendRightCheck || sendBehalfRightCheck) || !sendEmailItem?.length}
-                  />
-                </Row>
-              </Container>
-              <Row width="100%" padding={{ top: 'medium' }}>
-                <ds-divider color="gray2" />
-              </Row>
-
-              <ListRow padding={{ all: 'small' }}>
-                <Container padding={{ bottom: 'large', top: 'large' }}>
-                  {sendEmailTableRows.length > 0 && (
-                    <ListRow>
-                      <Row width="100%" mainAlignment="flex-start" padding={{ top: 'medium' }}>
-                        <Input
-                          label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
-                          value={filterSendEmail}
-                          backgroundColor="gray5"
-                          onChange={handleInputChangeSendEmail}
-                          CustomIcon={(): any => (
-                            <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                          )}
-                        />
-                        <Container padding={{ bottom: 'small' }}>
-                          <ds-divider />
-                        </Container>
-                      </Row>
-                    </ListRow>
-                  )}
-                  <Table
-                    rows={filterSendEmail ? filteredSendEmailRows : sendEmailTableRows}
-                    headers={sendEmailHeaders}
-                    showCheckbox={false}
-                    selectedRows={selectedSendEmail}
-                    RowFactory={HoverableRowFactory}
-                    HeaderFactory={CustomHeaderFactory}
-                  />
-                </Container>
-              </ListRow>
-
-              {sendEmailTableRows.length === 0 && (
-                <ListRow padding={{ all: 'small' }}>
-                  <Container
-                    background="gray6"
-                    height="fit-content"
-                    mainAlignment="center"
-                    crossAlignment="center"
-                  >
-                    <Padding value="57px 0 0 0" width="100%">
-                      <Row mainAlignment="center" width="100%">
-                        <img src={helmetLogo} alt="logo" />
-                      </Row>
-                    </Padding>
-                    <Padding vertical="extralarge" width="100%">
-                      <Row mainAlignment="center" width="100%">
-                        <Text size="large" color="secondary" weight="regular">
-                          {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                        </Text>
-                      </Row>
-                      <Row mainAlignment="center" width="100%">
-                        <Text size="large" color="secondary" weight="regular">
-                          {searchUserLabelValue}
-                        </Text>
-                      </Row>
-                    </Padding>
-                  </Container>
-                </ListRow>
-              )}
-            </Container>
-          </Container>
+        {selectedTab === 'sendas' && (
+          <SendAsTab
+            sendEmailsList={sendEmailsList}
+            setSendEmailsList={setSendEmailsList}
+            setSendEmails={setSendEmails}
+            setPreviousDetail={setPreviousDetail}
+            selectedMailingList={selectedMailingList}
+            isRequestInProgress={isRequestInProgress}
+            setIsRequestInProgress={setIsRequestInProgress}
+            searchUserLabelValue={searchUserLabelValue}
+          />
         )}
 
-        <Modal
-          title={
-            <Trans
-              i18nKey="label.would_you_like_to_add_ml"
-              defaults="<bold>Who would you like to add to the Distribution List?</bold>"
-              components={{ bold: <strong /> }}
-            />
-          }
-          open={openAddMailingListDialog}
-          showCloseIcon
-          onClose={(): void => {
-            setOpenAddMailingListDialog(false);
-          }}
-          size="medium"
-          customFooter={
-            <Container orientation="horizontal" mainAlignment="space-between">
-              <Button
-                label={t('label.help', 'Help')}
-                type="outlined"
-                color="primary"
-                onClick={(): null => null}
-              />
+        {selectedTab === 'sendto' && (
+          <SendToTab
+            grantTypeOptions={grantTypeOptions}
+            grantType={grantType}
+            onGrantTypeChange={onGrantTypeChange}
+            grantEmailsList={grantEmailsList}
+            setGrantEmailsList={setGrantEmailsList}
+            setGrantEmails={setGrantEmails}
+            setIsDirty={setIsDirty}
+            searchUserLabelValue={searchUserLabelValue}
+            isShowSenderToError={isShowSenderToError}
+            setIsShowSenderToError={setIsShowSenderToError}
+          />
+        )}
+
+        {isOpenUnsavedDialog && (
+          <Modal
+            size="small"
+            title={t('domain.distributionList.unsavedChanges', 'Unsaved Changes')}
+            open={isOpenUnsavedDialog}
+            customFooter={
               <Container orientation="horizontal" mainAlignment="flex-end">
-                <Padding all="small">
+                <Row style={{ gap: '1rem' }}>
                   <Button
-                    label={t('label.go_back', 'Go Back')}
-                    color="secondary"
-                    size="medium"
+                    label={t('domain.distributionList.exitWithoutSave', 'Exit without Save')}
+                    color="gray0"
+                    type="outlined"
                     onClick={(): void => {
-                      setOpenAddMailingListDialog(false);
+                      onUndo();
+                      if (pendingTab) {
+                        setSelectedTab(pendingTab);
+                      }
+                      setPendingTab(null);
+                      setIsOpenUnsavedDialog(false);
                     }}
                   />
-                </Padding>
-                <Button
-                  label={t('label.add_to_the_list', 'Add to the list')}
-                  color="primary"
-                  onClick={onAddToList}
-                  disabled={isRequstInProgress}
-                />
+                  <Button
+                    label={t('domain.distributionList.saveAndExit', 'Save & Exit')}
+                    color="primary"
+                    onClick={(): void => {
+                      onSave();
+                      if (pendingTab) {
+                        setSelectedTab(pendingTab);
+                      }
+                      setPendingTab(null);
+                      setIsOpenUnsavedDialog(false);
+                    }}
+                  />
+                </Row>
               </Container>
-            </Container>
-          }
-        >
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ all: 'medium' }}
+            }
+            showCloseIcon
+            onClose={(): void => {
+              setPendingTab(null);
+              setIsOpenUnsavedDialog(false);
+            }}
           >
-            <Text overflow="break-word" weight="regular">
-              {t(
-                'label.add_in_distribution_list_or_both',
-                'You add another Distribution List or a User. Both of them can be a Owner of the list.',
-              )}
-            </Text>
-
             <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              width="fill"
-              padding={{ top: 'medium' }}
+              padding={{ top: 'extralarge', bottom: 'extralarge' }}
+              mainAlignment='flex-start'
             >
-              <Input
-                value={searchMailingListOrUser}
-                backgroundColor="gray5"
-                onChange={(e: any): void => {
-                  setSearchMailingListOrUser(e.target.value);
-                }}
-                hasError={isShowError}
-                label={t('label.distribution_list_user', 'Distribution List / User')}
-              />
-            </Container>
-            {isShowError && (
-              <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                <Padding top="small">
-                  <Text size="extrasmall" weight="regular" color="error">
-                    {ownerErrorMessage}
-                  </Text>
-                </Padding>
-              </Container>
-            )}
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small' }}
-            >
-              <Switch
-                value={isAddToOwnerList}
-                label={t(
-                  'label.this_account_owner_of_the_list',
-                  'this account will be a Owner of the list',
+              <Text size="large" overflow="break-word">
+                {t(
+                  'domain.distributionList.unsavedChangesMessage',
+                  'Are you sure you want to leave this page without saving?',
                 )}
-                onClick={(): void => {
-                  setIsAddToOwnerList(!isAddToOwnerList);
-                }}
-                disabled={selectedMailingList?.dynamic}
-                iconColor="primary"
-              />
+              </Text>
             </Container>
-          </Container>
-        </Modal>
+          </Modal>
+        )}
+
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
           <Text>
             {t(
@@ -3400,7 +1471,7 @@ const EditMailingListView: FC<any> = ({
                 <Row style={{ gap: '1rem' }}>
                   <Button
                     label={t('label.cancel', 'Cancel')}
-                    color="secondary"
+                    color="gray0"
                     type="outlined"
                     onClick={closeHandler}
                     disabled={isRequestInProgress}
@@ -3418,19 +1489,19 @@ const EditMailingListView: FC<any> = ({
             onClose={closeHandler}
           >
             <Container
-              padding={{ top: 'extralarge', bottom: 'extralarge' }}
-              style={{ textAlign: 'center' }}
+              padding={{ top: 'large', bottom: 'extralarge' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
             >
-              <Padding bottom="small">
+              <Padding bottom="large">
                 {totalGrantRights !== 0 && (
-                  <Container padding={{ bottom: 'extralarge' }}>
-                    <Text size={'extralarge'} overflow="break-word">
+                  <Container >
+                    <Text size={'large'} overflow="break-word">
                       <Trans
                         i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
-                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
                         components={{
-                          bold: <strong />,
-                          br: <br />,
+                          bold: <strong />
                         }}
                         values={{
                           totalAccRights: totalGrantRights,
@@ -3439,7 +1510,7 @@ const EditMailingListView: FC<any> = ({
                     </Text>
                   </Container>
                 )}
-                <Text size={'extralarge'} overflow="break-word">
+                <Text size={'large'} overflow="break-word">
                   <Trans
                     i18nKey="label.are_you_sure_delete_distribution_list"
                     defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"

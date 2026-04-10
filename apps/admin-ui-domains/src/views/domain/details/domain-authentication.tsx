@@ -679,6 +679,7 @@ const DomainAuthentication: FC = () => {
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
+                    isRequired
                     label={t('label.url', 'URL')}
                     value={zimbraAuthLdapURL}
                     backgroundColor="gray5"

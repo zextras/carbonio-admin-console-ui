@@ -60,35 +60,28 @@ const App: FC = () => {
     [t],
   );
 
-  const cosTooltipItems = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.class_of_service_lbl"
-              defaults="<bold>Class of Service</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.cos_primarybar_tooltip"
-              defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const CosTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={cosTooltipItems} />,
-    [cosTooltipItems],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.class_of_service_lbl"
+            defaults="<bold>Class of Service</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.cos_primarybar_tooltip"
+            defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

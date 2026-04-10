@@ -27,6 +27,7 @@ type DateTimePickerProps = Omit<DatePickerProps, 'onChange' | 'placeholderText'>
   /** Date format  */
   dateFormat?: string;
   disabled?: boolean;
+  width?: ContainerProps['width'];
 };
 
 type DateTimePickerInputProps = Omit<InputProps, 'onChange'> & {
@@ -101,6 +102,7 @@ export const DateTimePicker = ({
   onChange,
   defaultValue = null,
   disabled,
+  width,
   ...datePickerProps
 }: DateTimePickerProps) => {
   const dateTimeRef = useRef<Date | null>(defaultValue);
@@ -156,13 +158,13 @@ export const DateTimePicker = ({
       <DateTimePickerInput
         backgroundColor={INPUT_BACKGROUND_COLOR}
         description={undefined}
-        width={'15.625rem'}
+        width={width ?? '15.625rem'}
         label={label}
         onClear={onClear}
         isClearable={isClearable}
       />
     );
-  }, [isClearable, label, onClear]);
+  }, [isClearable, label, onClear, width]);
 
   const updateDateTime = useCallback<NonNullable<DatePickerProps['onCalendarClose']>>(() => {
     setDateTime({ type: 'UPDATE' });
@@ -175,7 +177,7 @@ export const DateTimePicker = ({
       mainAlignment="flex-start"
       className={styles.styler}
     >
-      {/* @ts-expect-error - needs a fix // error is on unused property */}
+      {/* @ts-expect-error - datePickerProps spread may include selectsMultiple as boolean */}
       <DatePicker
         showPopperArrow={false}
         selected={dateTime}

@@ -4,18 +4,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Displayer, Input, ListRow, Row, Select, Text, useSnackbar } from "@zextras/ui-components";
-import {  useStickyBarStore  } from "@zextras/ui-shared";
-import {  format  } from "date-fns";
-import {  FC, useCallback, useEffect, useMemo, useState  } from "react";
-import {  useTranslation  } from "react-i18next";
+import {
+  Button,
+  Container,
+  Displayer,
+  LabeledValue,
+  ListRow,
+  Row,
+  Select,
+  Text,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useStickyBarStore } from '@zextras/ui-shared';
+import { format } from 'date-fns';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {   RESET_DEVICE,  SUSPEND_DEVICE,  WIPE_DEVICE,  ZX_MOBILE } from "../../../../constants";
-import {  getMobileDeviceDetail  } from "../../../../services/get-mobile-device-detail";
-import {  resetDevice  } from "../../../../services/reset-device";
-import {  suspendDevice  } from "../../../../services/suspend-device";
-import {  wipeDevice  } from "../../../../services/wipe-device";
-import ActiveDeviceConfirmation from "./active-device-confirmation";
+import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
+import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-detail';
+import { resetDevice } from '../../../../services/reset-device';
+import { suspendDevice } from '../../../../services/suspend-device';
+import { wipeDevice } from '../../../../services/wipe-device';
+import ActiveDeviceConfirmation from './active-device-confirmation';
 
 type MobileDeviceDetail = {
   accountEmail: string;
@@ -49,37 +59,29 @@ const ActiveDeviceDetail: FC<{
   setIsShowDeviceDetail: any;
   selectedMobileDeviceDetail: any;
   setRefreshDeviceList: any;
-}> = ({
-  setIsShowDeviceDetail,
-  selectedMobileDeviceDetail,
-  setRefreshDeviceList,
-}) => {
+}> = ({ setIsShowDeviceDetail, selectedMobileDeviceDetail, setRefreshDeviceList }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [mobileDeviceDetail, setMobileDeviceDetail] =
-    useState<MobileDeviceDetail>();
+  const [mobileDeviceDetail, setMobileDeviceDetail] = useState<MobileDeviceDetail>();
   const [isShowConfirmBox, setIsShowConfirmBox] = useState<boolean>(false);
-  const [operationType, setOperationType] = useState<string>("");
-  const [isDetailRequestInProgess, setIsDetailRequestInProgess] =
-    useState<boolean>(false);
-  const [isOperationRequestInProgress, setIsOperationRequestInProgress] =
-    useState<boolean>(false);
-  const [wipeDeviceConfirmation, setWipeDeviceConfirmation] =
-    useState<boolean>(false);
+  const [operationType, setOperationType] = useState<string>('');
+  const [isDetailRequestInProgess, setIsDetailRequestInProgess] = useState<boolean>(false);
+  const [isOperationRequestInProgress, setIsOperationRequestInProgress] = useState<boolean>(false);
+  const [wipeDeviceConfirmation, setWipeDeviceConfirmation] = useState<boolean>(false);
   const { isSticky, setIsSticky } = useStickyBarStore();
 
   const abqStatusOptions: any[] = useMemo(
     () => [
       {
-        label: t("label.allowed", "Allowed"),
+        label: t('label.allowed', 'Allowed'),
         value: 1,
       },
       {
-        label: t("label.blocked", "Blocked"),
+        label: t('label.blocked', 'Blocked'),
         value: 2,
       },
       {
-        label: t("label.quarantined", "Quarantined"),
+        label: t('label.quarantined', 'Quarantined'),
         value: 3,
       },
     ],
@@ -89,11 +91,11 @@ const ActiveDeviceDetail: FC<{
   const statusOptions: any[] = useMemo(
     () => [
       {
-        label: t("label.can_receive", "Can receive"),
+        label: t('label.can_receive', 'Can receive'),
         value: 1,
       },
       {
-        label: t("label.can_not_receiver", "Can`t receiver"),
+        label: t('label.can_not_receiver', 'Can`t receiver'),
         value: 0,
       },
     ],
@@ -128,14 +130,11 @@ const ActiveDeviceDetail: FC<{
         .catch((error: any) => {
           setIsDetailRequestInProgess(false);
           createSnackbar({
-            key: "error",
-            severity: "error",
+            key: 'error',
+            severity: 'error',
             label: error
               ? error?.error
-              : t(
-                  "label.something_wrong_error_msg",
-                  "Something went wrong. Please try again.",
-                ),
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -161,8 +160,8 @@ const ActiveDeviceDetail: FC<{
   const resetDeviceOperation = useCallback(() => {
     resetDevice(
       ZX_MOBILE,
-      mobileDeviceDetail?.accountName || "",
-      mobileDeviceDetail?.deviceId || "",
+      mobileDeviceDetail?.accountName || '',
+      mobileDeviceDetail?.deviceId || '',
     )
       .then((res: any) => {
         setIsOperationRequestInProgress(false);
@@ -171,13 +170,10 @@ const ActiveDeviceDetail: FC<{
           const content: any = JSON.parse(res?.Body?.response?.content);
           if (content?.response && content?.ok) {
             createSnackbar({
-              key: "success",
-              severity: "success",
+              key: 'success',
+              severity: 'success',
 
-              label: t(
-                "label.change_save_success_msg",
-                "The change has been saved successfully",
-              ),
+              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
@@ -189,14 +185,11 @@ const ActiveDeviceDetail: FC<{
       .catch((error: any) => {
         setIsOperationRequestInProgress(false);
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error
             ? error?.error
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -207,8 +200,8 @@ const ActiveDeviceDetail: FC<{
   const suspendDeviceOperation = useCallback(() => {
     suspendDevice(
       ZX_MOBILE,
-      mobileDeviceDetail?.accountName || "",
-      mobileDeviceDetail?.deviceId || "",
+      mobileDeviceDetail?.accountName || '',
+      mobileDeviceDetail?.deviceId || '',
     )
       .then((res: any) => {
         setIsOperationRequestInProgress(false);
@@ -217,12 +210,9 @@ const ActiveDeviceDetail: FC<{
           const content: any = JSON.parse(res?.Body?.response?.content);
           if (content?.ok) {
             createSnackbar({
-              key: "success",
-              severity: "success",
-              label: t(
-                "label.change_save_success_msg",
-                "The change has been saved successfully",
-              ),
+              key: 'success',
+              severity: 'success',
+              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
@@ -234,14 +224,11 @@ const ActiveDeviceDetail: FC<{
       .catch((error: any) => {
         setIsOperationRequestInProgress(false);
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error
             ? error?.error
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -252,8 +239,8 @@ const ActiveDeviceDetail: FC<{
   const wipeDeviceOperation = useCallback(() => {
     wipeDevice(
       ZX_MOBILE,
-      mobileDeviceDetail?.accountName || "",
-      mobileDeviceDetail?.deviceId || "",
+      mobileDeviceDetail?.accountName || '',
+      mobileDeviceDetail?.deviceId || '',
       wipeDeviceConfirmation,
     )
       .then((res: any) => {
@@ -263,12 +250,9 @@ const ActiveDeviceDetail: FC<{
           const content: any = JSON.parse(res?.Body?.response?.content);
           if (content?.ok) {
             createSnackbar({
-              key: "success",
-              severity: "success",
-              label: t(
-                "label.change_save_success_msg",
-                "The change has been saved successfully",
-              ),
+              key: 'success',
+              severity: 'success',
+              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
@@ -280,14 +264,11 @@ const ActiveDeviceDetail: FC<{
       .catch((error: any) => {
         setIsOperationRequestInProgress(false);
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error
             ? error?.error
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -304,20 +285,15 @@ const ActiveDeviceDetail: FC<{
     } else if (operationType === WIPE_DEVICE) {
       wipeDeviceOperation();
     }
-  }, [
-    operationType,
-    resetDeviceOperation,
-    suspendDeviceOperation,
-    wipeDeviceOperation,
-  ]);
+  }, [operationType, resetDeviceOperation, suspendDeviceOperation, wipeDeviceOperation]);
 
   const buttons = [
     {
-      align: "right" as const,
-      label: t("label.wipe_device", "Wipe Device"),
+      align: 'right' as const,
+      label: t('label.wipe_device', 'Wipe Device'),
       tooltiplabel: t(
-        "label.wipe_device_factory_settings",
-        "Wipe the device to the factory settings",
+        'label.wipe_device_factory_settings',
+        'Wipe the device to the factory settings',
       ),
       loading: isDetailRequestInProgess,
       disable: isDetailRequestInProgess,
@@ -327,13 +303,10 @@ const ActiveDeviceDetail: FC<{
       },
     },
     {
-      align: "right" as const,
-      label: t("label.reset_device", "Reset Device"),
-      tooltiplabel: t(
-        "label.logoff_from_every_device",
-        "Log off from every device",
-      ),
-      color: "primary",
+      align: 'right' as const,
+      label: t('label.reset_device', 'Reset Device'),
+      tooltiplabel: t('label.logoff_from_every_device', 'Log off from every device'),
+      color: 'primary',
       onClick: (): void => {
         setOperationType(RESET_DEVICE);
         setIsShowConfirmBox(true);
@@ -342,13 +315,10 @@ const ActiveDeviceDetail: FC<{
       disable: isDetailRequestInProgess,
     },
     {
-      align: "right" as const,
-      color: "primary",
-      label: t("label.suspend", "Suspend"),
-      tooltiplabel: t(
-        "label.active_sync_active_paused",
-        "The activesync is active / paused",
-      ),
+      align: 'right' as const,
+      color: 'primary',
+      label: t('label.suspend', 'Suspend'),
+      tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
       onClick: (): void => {
         setIsOperationRequestInProgress(true);
         setOperationType(SUSPEND_DEVICE);
@@ -358,8 +328,8 @@ const ActiveDeviceDetail: FC<{
       disable: isDetailRequestInProgess || isOperationRequestInProgress,
     },
     {
-      align: "left" as const,
-      icon: isSticky ? "Pin3Outline" : "Unpin3Outline",
+      align: 'left' as const,
+      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
       },
@@ -371,18 +341,18 @@ const ActiveDeviceDetail: FC<{
       background="gray6"
       mainAlignment="flex-start"
       style={{
-        zIndex: "10",
-        position: "absolute",
-        top: "2.688rem",
-        right: "0",
-        bottom: "0",
-        left: `${"max(calc(100% - 42.5rem), 0.75rem)"}`,
-        transition: "left 0.2s ease-in-out",
-        height: "auto",
-        width: "auto",
-        maxHeight: "100%",
-        overflow: "hidden",
-        boxShadow: "-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)",
+        zIndex: '10',
+        position: 'absolute',
+        top: '2.688rem',
+        right: '0',
+        bottom: '0',
+        left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
+        transition: 'left 0.2s ease-in-out',
+        height: 'auto',
+        width: 'auto',
+        maxHeight: '100%',
+        overflow: 'hidden',
+        boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
       }}
     >
       <Row
@@ -393,14 +363,14 @@ const ActiveDeviceDetail: FC<{
         width="fill"
         height="3.5rem"
       >
-        <Row padding={{ horizontal: "small" }}></Row>
+        <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
           {selectedMobileDeviceDetail?.accountName}
         </Row>
-        <Row padding={{ right: "extrasmall" }}>
+        <Row padding={{ right: 'extrasmall' }}>
           <Button
             type="ghost"
-            color={"text"}
+            color={'text'}
             size="medium"
             icon="CloseOutline"
             onClick={(): void => setIsShowDeviceDetail(false)}
@@ -411,31 +381,25 @@ const ActiveDeviceDetail: FC<{
       <ListRow>
         <Displayer buttons={buttons} pinIcon={isSticky} />
       </ListRow>
-      <Container
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        padding={{ all: "large" }}
-      >
+      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
         <ListRow>
-          <Row padding={{ top: "large" }}>
+          <Row padding={{ top: 'large' }}>
             <Text size="medium" weight="bold" color="gray0">
-              {t("label.status_lbl", "Status")}
+              {t('label.status_lbl', 'Status')}
             </Text>
           </Row>
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
+          <Container padding={{ top: 'large' }}>
             <Select
               items={abqStatusOptions}
               background="gray5"
-              label={t("label.abq_status", "ABQ Status")}
+              label={t('label.abq_status', 'ABQ Status')}
               showCheckbox={false}
               selection={abqStatus}
               onChange={(ev: any): void => {
-                const dataItem = abqStatusOptions.find(
-                  (item) => item?.value === ev,
-                );
+                const dataItem = abqStatusOptions.find((item) => item?.value === ev);
                 if (dataItem) {
                   setAbqStatus(dataItem);
                 }
@@ -445,24 +409,24 @@ const ActiveDeviceDetail: FC<{
         </ListRow>
 
         <ListRow>
-          <Row padding={{ top: "large" }}>
+          <Row padding={{ top: 'large' }}>
             <Text size="medium" weight="bold" color="gray0">
-              {t("label.account", "Account")}
+              {t('label.account', 'Account')}
             </Text>
           </Row>
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
-            <Input
-              label={t("label.server", "Server")}
+          <Container padding={{ top: 'large' }}>
+            <LabeledValue
+              label={t('label.server', 'Server')}
               backgroundColor="gray5"
               value={mobileDeviceDetail?.accountServer}
             />
           </Container>
-          <Container padding={{ top: "large", left: "extralarge" }}>
-            <Input
-              label={t("label.e_mail", "E-mail")}
+          <Container padding={{ top: 'large', left: 'extralarge' }}>
+            <LabeledValue
+              label={t('label.e_mail', 'E-mail')}
               backgroundColor="gray5"
               value={mobileDeviceDetail?.accountEmail}
             />
@@ -470,47 +434,45 @@ const ActiveDeviceDetail: FC<{
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
+          <Container padding={{ top: 'large' }}>
             <Select
               items={statusOptions}
               background="gray5"
-              label={t("label.status_lbl", "Status")}
+              label={t('label.status_lbl', 'Status')}
               showCheckbox={false}
               selection={status}
               onChange={(ev: any): void => {
-                const dataItem = statusOptions.find(
-                  (item) => item?.value === ev,
-                );
+                const dataItem = statusOptions.find((item) => item?.value === ev);
                 if (dataItem) {
                   setStatus(dataItem);
                 }
               }}
             />
           </Container>
-          <Container padding={{ top: "large", left: "extralarge" }}>
-            <Input
-              label={t("label.mobile_password", "Mobile Password")}
+          <Container padding={{ top: 'large', left: 'extralarge' }}>
+            <LabeledValue
+              label={t('label.mobile_password', 'Mobile Password')}
               backgroundColor="gray5"
               value={
                 mobileDeviceDetail?.hasMobilePassword
-                  ? t("label.true", "True")
-                  : t("label.false", "False")
+                  ? t('label.true', 'True')
+                  : t('label.false', 'False')
               }
             />
           </Container>
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
-            <Input
-              label={t("label.device_id", "Device ID")}
+          <Container padding={{ top: 'large' }}>
+            <LabeledValue
+              label={t('label.device_id', 'Device ID')}
               backgroundColor="gray5"
               value={mobileDeviceDetail?.deviceId}
             />
           </Container>
-          <Container padding={{ top: "large", left: "extralarge" }}>
-            <Input
-              label={t("label.device", "Device")}
+          <Container padding={{ top: 'large', left: 'extralarge' }}>
+            <LabeledValue
+              label={t('label.device', 'Device')}
               backgroundColor="gray5"
               value={mobileDeviceDetail?.deviceType}
             />
@@ -518,41 +480,34 @@ const ActiveDeviceDetail: FC<{
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
-            <Input
-              label={t("label.user_agent", "User Agent")}
+          <Container padding={{ top: 'large' }}>
+            <LabeledValue
+              label={t('label.user_agent', 'User Agent')}
               backgroundColor="gray5"
               value={mobileDeviceDetail?.userAgent}
             />
           </Container>
-          <Container padding={{ top: "large", left: "extralarge" }}>
-            <Input
-              label={t("label.eas", "EAS")}
-              backgroundColor="gray5"
-              value={""}
-            />
+          <Container padding={{ top: 'large', left: 'extralarge' }}>
+            <LabeledValue label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} />
           </Container>
         </ListRow>
 
         <ListRow>
-          <Container padding={{ top: "large" }}>
-            <Input
-              label={t("label.registration", "Registration")}
+          <Container padding={{ top: 'large' }}>
+            <LabeledValue
+              label={t('label.registration', 'Registration')}
               backgroundColor="gray5"
-              value={""}
+              value={''}
             />
           </Container>
-          <Container padding={{ top: "large", left: "extralarge" }}>
-            <Input
-              label={t("label.last_access", "Last Access")}
+          <Container padding={{ top: 'large', left: 'extralarge' }}>
+            <LabeledValue
+              label={t('label.last_access', 'Last Access')}
               backgroundColor="gray5"
               value={
                 mobileDeviceDetail?.lastSeen
-                  ? format(
-                      new Date(mobileDeviceDetail?.lastSeen),
-                      "yy/MM/dd | hh:mm:ss a",
-                    )
-                  : ""
+                  ? format(new Date(mobileDeviceDetail?.lastSeen), 'yy/MM/dd | hh:mm:ss a')
+                  : ''
               }
             />
           </Container>

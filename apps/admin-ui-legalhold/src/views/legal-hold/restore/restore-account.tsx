@@ -12,6 +12,7 @@ import {
   DropDownInput,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   Padding,
   Row,
   Switch,
@@ -582,11 +583,10 @@ const RestoreAccountView: FC<{
             </Container>
 
             <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-              <Input
+              <LabeledValue
                 label={t('label.account', 'Account')}
                 backgroundColor="gray5"
                 value={account}
-                disabled
               />
             </Container>
           </Container>

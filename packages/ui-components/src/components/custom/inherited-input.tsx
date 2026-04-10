@@ -32,9 +32,11 @@ interface InheritedInputProps {
   description?: any;
   focus?: boolean;
   highlighted?: boolean;
+  isRequired?: boolean;
 }
 
 export const InheritedInput: FC<InheritedInputProps> = ({
+  isRequired = false,
   label,
   subValue,
   inheritedValue,
@@ -89,6 +91,7 @@ export const InheritedInput: FC<InheritedInputProps> = ({
   return (
     <Input
       className={highlighted ? styles.highlighted : ''}
+      isRequired={isRequired}
       data-testid={`inherited-${inputName}`}
       label={label}
       value={subValue === undefined ? inheritedValue || '' : subValue}

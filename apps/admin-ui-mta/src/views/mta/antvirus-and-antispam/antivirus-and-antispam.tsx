@@ -827,6 +827,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t(
                 'mta.add_this_prefix_to_spam_mail_subject',
                 'Add this prefix to the Spam mail subject',
@@ -1097,6 +1098,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
             <Input
+              isRequired
               label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
               backgroundColor="gray5"
               value={updateFrequncy}

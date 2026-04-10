@@ -37,7 +37,7 @@ export const WscSettings: FC<{
   const [t] = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-    const userSetting = useUserSettings();
+  const userSetting = useUserSettings();
 
   const isGlobalAdmin = useMemo(
     () => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
@@ -312,6 +312,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupMembers',
                   'Maximum number of group members',
@@ -333,6 +334,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupPicture',
                   'Maximum group picture size in MB',
@@ -462,6 +464,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.attachmentSize',
                   'Maximum attachment size in MB',

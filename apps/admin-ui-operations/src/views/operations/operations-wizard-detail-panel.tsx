@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, ListRow, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, LabeledValue, ListRow, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -141,21 +141,21 @@ const OperationsWizardDetailPanel: FC<{
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.operation_type', 'Operation Type')}
                   value={selectedData?.module || ''}
                 />
               </Container>
               <Container padding={{ right: 'small', left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.who_started_it', 'Who started it?')}
                   value={selectedData?.parameters?.requesterAddress || ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.status', 'Status')}
                   value={(selectedData?.type ? selectedData?.type : status) || ''}
@@ -166,14 +166,14 @@ const OperationsWizardDetailPanel: FC<{
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.submitted_at', 'Submitted at')}
                   value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.started_at', 'Started at')}
                   value={selectedData?.humanStartTime ? selectedData?.humanStartTime : ''}
@@ -190,7 +190,7 @@ const OperationsWizardDetailPanel: FC<{
             {t('operations.other', 'Other')}
           </Text>
           <Row width="100%" padding={{ top: 'large' }}>
-            <Input
+            <LabeledValue
               backgroundColor="gray6"
               label={t('operations.label.notifications', 'Notifications')}
               value={
@@ -203,14 +203,14 @@ const OperationsWizardDetailPanel: FC<{
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
                   value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.Deep', 'Deep')}
                   value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}

@@ -327,6 +327,7 @@ export const LoadAndVerifyCert: FC<{
         <Text weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</Text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
           backgroundColor="gray5"
           value={objDomainCertificate.content || ''}
@@ -365,6 +366,7 @@ export const LoadAndVerifyCert: FC<{
         </Text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t(
             'label.upload_paste_certificate_ca_chain',
             'Upload or paste your Certificate CA Chain',
@@ -404,6 +406,7 @@ export const LoadAndVerifyCert: FC<{
         <Text weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</Text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
           backgroundColor="gray5"
           value={objDomainCertificatePrivateKey.content || ''}

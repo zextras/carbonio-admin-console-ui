@@ -10,7 +10,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LabeledValue,
   ListRow,
   Modal,
   ModalOverlay,
@@ -1108,7 +1108,7 @@ const QuarantineList: FC = () => {
                   <>
                     <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
                       <Row width="100%" mainAlignment="space-between">
-                        <Input
+                        <LabeledValue
                           label={t('quarantine.quarantine_account', 'Quarantine Account')}
                           value={quarantineAccountName}
                         />
@@ -1159,7 +1159,7 @@ const QuarantineList: FC = () => {
                         padding={{ right: 'small', bottom: 'small' }}
                         width="79%"
                       >
-                        <Input
+                        <LabeledValue
                           label={t('label.retention_period', 'Retention Period (value)')}
                           backgroundColor="gray5"
                           value={zimbraMailMessageLifetimeNum}
@@ -1172,7 +1172,7 @@ const QuarantineList: FC = () => {
                         orientation="horizontal"
                         width="20%"
                       >
-                        <Input
+                        <LabeledValue
                           label={t('label.interval', 'Interval')}
                           backgroundColor="gray5"
                           value={
@@ -1182,7 +1182,6 @@ const QuarantineList: FC = () => {
                                   (item: any) => item.value === zimbraMailMessageLifetimeType,
                                 ).label
                           }
-                          style={{ pointerEvents: 'none' }}
                         />
                       </Container>
                     </ListRow>

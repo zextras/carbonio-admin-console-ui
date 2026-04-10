@@ -1,3 +1,45 @@
+## [0.13.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.12...v0.13.0-devel.13) (2026-04-09)
+
+### Features
+
+* test on adminUI legalhold ([#1138](https://github.com/zextras/carbonio-admin-console-ui/issues/1138)) ([b655145](https://github.com/zextras/carbonio-admin-console-ui/commit/b655145b9b887c621e3efdae0d5f8a47c030e6b8))
+
+## [0.13.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.11...v0.13.0-devel.12) (2026-04-08)
+
+### Bug Fixes
+
+* fetch server version dynamically ([#1137](https://github.com/zextras/carbonio-admin-console-ui/issues/1137)) ([061c895](https://github.com/zextras/carbonio-admin-console-ui/commit/061c89534585bd3c6b9c8bac5d8a41276c064b8c))
+
+## [0.13.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.10...v0.13.0-devel.11) (2026-04-06)
+
+### Features
+
+* enforce on untrusted networks ([#1121](https://github.com/zextras/carbonio-admin-console-ui/issues/1121)) ([d9363b1](https://github.com/zextras/carbonio-admin-console-ui/commit/d9363b1391e628e3ec49b1028241adbdd84e09f9))
+
+## [0.13.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.9...v0.13.0-devel.10) (2026-04-02)
+
+### Features
+
+* tests on adminUI operations ([#1130](https://github.com/zextras/carbonio-admin-console-ui/issues/1130)) ([39ab55e](https://github.com/zextras/carbonio-admin-console-ui/commit/39ab55e4abeac044d3b159d33c3c950d1c4df5d0))
+
+## [0.13.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.8...v0.13.0-devel.9) (2026-04-02)
+
+### Bug Fixes
+
+* error when create a new distribution list ([#1128](https://github.com/zextras/carbonio-admin-console-ui/issues/1128)) ([11e4070](https://github.com/zextras/carbonio-admin-console-ui/commit/11e4070c398ab7f808ed052db61676f86c5e1571))
+
+## [0.13.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.7...v0.13.0-devel.8) (2026-03-30)
+
+### Features
+
+* tests o adminUI notifications ([#1125](https://github.com/zextras/carbonio-admin-console-ui/issues/1125)) ([83edff5](https://github.com/zextras/carbonio-admin-console-ui/commit/83edff575bfb175e9d751d20599413b3986b7b1f))
+
+## [0.13.0-devel.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.6...v0.13.0-devel.7) (2026-03-27)
+
+### Features
+
+* tests on MTA ([cdc5f48](https://github.com/zextras/carbonio-admin-console-ui/commit/cdc5f4810baec200d5ce1e3eddb9b860af3e0de9))
+
 ## [0.13.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.5...v0.13.0-devel.6) (2026-03-20)
 
 ### Bug Fixes

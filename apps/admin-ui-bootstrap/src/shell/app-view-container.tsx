@@ -10,8 +10,6 @@ import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
-import AppContextProvider from '../boot/app/app-context-provider';
-
 const FirstAppRedirect = () => {
   const apps = useAppList();
   const routes = useAppRoutes();
@@ -28,15 +26,7 @@ export default function AppViewContainer() {
   const routes = useMemo(
     () => [
       ...map(appViews, (view) => (
-        <Route
-          key={view.id}
-          path={`/${view.route}/*`}
-          element={
-            <AppContextProvider key={view.app} pkg={view.app}>
-              <view.component />
-            </AppContextProvider>
-          }
-        />
+        <Route key={view.id} path={`/${view.route}/*`} element={<view.component />} />
       )),
     ],
     [appViews],

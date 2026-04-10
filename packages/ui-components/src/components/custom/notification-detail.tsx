@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
 import { Text } from '../basic/text/Text';
-import { Input } from '../inputs/Input';
+import { LabeledValue } from '../inputs/labeled-value';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 import { Displayer, type DisplayerButton } from './displayer';
@@ -123,14 +123,14 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
       </Row>
       <ListRow>
         <Container padding={{ bottom: 'large', right: 'small', left: 'extralarge' }}>
-          <Input
+          <LabeledValue
             label={t('label.date', 'Date') ?? 'Date'}
             value={format(notification?.date, 'dd-MM-yyyy - HH:mm a')}
             backgroundColor="gray6"
           />
         </Container>
         <Container padding={{ bottom: 'large', left: 'small', right: 'extralarge' }}>
-          <Input
+          <LabeledValue
             label={t('label.type', 'Type') ?? 'Type'}
             value={notification?.level}
             backgroundColor="gray6"
@@ -141,7 +141,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
         <Container
           padding={{ top: 'small', bottom: 'small', right: 'extralarge', left: 'extralarge' }}
         >
-          <Input
+          <LabeledValue
             label={t('label.what_inside', "What's inside?") ?? "What's inside?"}
             value={notification?.subject}
             backgroundColor="gray6"

@@ -8,6 +8,7 @@ import {
   Container,
   type IconName,
   Input,
+  LabeledValue,
   Padding,
   PasswordInput,
   Row,
@@ -386,7 +387,7 @@ const Connection: FC<{
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
       {bucketType !== '' ? (
         <Row padding={{ top: 'extralarge' }} width="100%">
-          <Input
+          <LabeledValue
             label={t('label.bucket_type', 'Bucket Type')}
             backgroundColor="gray5"
             value={bucketTypeData}
@@ -542,7 +543,7 @@ const Connection: FC<{
       </Row>
       {verifyCheck === SUCCESS && (
         <Row width="100%" padding={{ top: 'large' }}>
-          <Input label={t('label.uuid', 'uuid')} value={BucketUid} />
+          <LabeledValue label={t('label.uuid', 'uuid')} value={BucketUid} />
         </Row>
       )}
       {verifyCheck === ERROR && (

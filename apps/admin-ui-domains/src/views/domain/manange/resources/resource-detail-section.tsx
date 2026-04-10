@@ -7,6 +7,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Row,
   Select,
@@ -276,6 +277,7 @@ const ResourceDetailSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Input
+              isRequired
               label={t('label.resource_name', 'ResourceName')}
               backgroundColor="gray5"
               value={resourceDetail?.displayName}
@@ -293,6 +295,7 @@ const ResourceDetailSection: FC = () => {
           >
             <Row width="45%">
               <Input
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceDetail?.name}
@@ -304,12 +307,10 @@ const ResourceDetailSection: FC = () => {
               <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
-              <Input
+              <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray5"
                 value={resourceDetail?.domain}
-                inputName="domain"
-                disabled
               />
             </Row>
           </Container>
