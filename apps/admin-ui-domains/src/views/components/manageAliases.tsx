@@ -73,13 +73,13 @@ const ManageAliases: FC<{
             label={t('account_details.aliases', 'Aliases')}
             value={(listAliases?.length || 1) - 1}
             CustomIcon={() => (
-              <icon-wc
+              <ds-icon
                 icon="EditAsNewOutline"
                 onClick={(): void => setShowManageAliesModal(true)}
                 style={{ cursor: 'pointer' }}
                 size="large"
                 onChange={noop}
-              ></icon-wc>
+              ></ds-icon>
             )}
           />
         )}
@@ -123,7 +123,7 @@ const ManageAliases: FC<{
               />
             </Container>
             <Container padding={{ top: 'large', left: 'small', right: 'small' }} width="10%">
-              <icon-wc icon="AtOutline" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Container>
             <Container
               mainAlignment="flex-start"

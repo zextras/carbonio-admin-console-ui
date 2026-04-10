@@ -57,11 +57,11 @@ const AccountOtpSection: FC<{
           >
             <Row mainAlignment="center" width="100%">
               <Padding horizontal="small">
-                <icon-wc
+                <ds-icon
                   icon="InfoOutline"
                   color="success"
                   style={{ width: '20px', height: '20px' }}
-                ></icon-wc>
+                ></ds-icon>
               </Padding>
               <Text overflow="break-word">
                 {t(

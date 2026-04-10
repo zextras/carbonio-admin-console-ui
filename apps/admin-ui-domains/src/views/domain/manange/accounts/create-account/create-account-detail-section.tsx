@@ -247,7 +247,7 @@ const CreateAccountDetailSection: FC = () => {
               width="10%"
               padding={{ top: 'small' }}
             >
-              <icon-wc icon="AtOutline" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Row>
             <Row width="90%" mainAlignment="flex-start" crossAlignment="flex-start">
               <Input

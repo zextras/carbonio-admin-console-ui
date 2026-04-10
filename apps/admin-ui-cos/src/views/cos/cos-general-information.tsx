@@ -529,7 +529,7 @@ const CosGeneralInformation: FC = () => {
                           {t('label.default_cos', 'Default COS')}
                         </Text>
                       </Padding>
-                      <icon-wc icon="Star" color="primary"></icon-wc>
+                      <ds-icon icon="Star" color="primary"></ds-icon>
                     </Row>
                   )}
                 </Container>,
@@ -706,7 +706,7 @@ const CosGeneralInformation: FC = () => {
                 setSearchDomainString(e.target.value);
               }}
               CustomIcon={(): any => (
-                <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
               )}
             />
           </Container>
@@ -818,7 +818,7 @@ const CosGeneralInformation: FC = () => {
                 setSearchAccountString(e.target.value);
               }}
               CustomIcon={(): any => (
-                <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
               )}
             />
           </Container>

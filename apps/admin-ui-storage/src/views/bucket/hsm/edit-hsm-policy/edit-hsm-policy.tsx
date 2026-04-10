@@ -93,11 +93,11 @@ const EditHsmPolicy: FC<{
     >
       <Row padding="small">
         <Padding horizontal="small">
-          <icon-wc
+          <ds-icon
             size="medium"
             color={selected ? 'primary' : 'gray'}
             icon={item.icon}
-          ></icon-wc>
+          ></ds-icon>
         </Padding>
         <Text size="small" color={selected ? 'primary' : 'gray'}>
           {item.label}

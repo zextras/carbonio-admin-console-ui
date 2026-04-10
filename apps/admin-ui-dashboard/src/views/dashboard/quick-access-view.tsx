@@ -51,7 +51,7 @@ const QuickAccess: FC<{
       >
         <ListRow>
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <icon-wc size="large" icon="FlashOutline"></icon-wc>
+            <ds-icon size="large" icon="FlashOutline"></ds-icon>
           </Container>
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
             <Text color="gray0" overflow="break-word" weight="bold" size="medium">
@@ -98,7 +98,7 @@ const QuickAccess: FC<{
                   </Container>
                 </Container>
                 <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <icon-wc color="gray6" icon={item?.operationIcon} size="large"></icon-wc>
+                  <ds-icon color="gray6" icon={item?.operationIcon} size="large"></ds-icon>
                 </Container>
               </ListRow>
               <ListRow>
@@ -129,7 +129,7 @@ const QuickAccess: FC<{
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <icon-wc icon={item?.bottomIcon} size="medium" color="gray6"></icon-wc>
+                  <ds-icon icon={item?.bottomIcon} size="medium" color="gray6"></ds-icon>
                 </Container>
               </ListRow>
             </Container>

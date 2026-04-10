@@ -438,11 +438,11 @@ const DomainSaml: FC = () => {
                 >
                   <Row width="5%" mainAlignment="flex-start">
                     <Padding horizontal="small">
-                      <icon-wc
+                      <ds-icon
                         icon="CheckmarkCircle2Outline"
                         style={{ width: '1.25rem', height: '1.25rem' }}
                         color="#2196D3"
-                      ></icon-wc>
+                      ></ds-icon>
                     </Padding>
                   </Row>
                   <Row
@@ -720,11 +720,11 @@ const DomainSaml: FC = () => {
                     CustomIcon={(): any =>
                       samlAttrKey && (
                         <Container onClick={() => setSamlAttrKey('')} style={{ cursor: 'pointer' }}>
-                          <icon-wc
+                          <ds-icon
                             icon="CloseOutline"
                             size="large"
                             color="secondary"
-                          ></icon-wc>
+                          ></ds-icon>
                         </Container>
                       )
                     }
@@ -758,11 +758,11 @@ const DomainSaml: FC = () => {
                           onClick={() => setSamlAttrValue('')}
                           style={{ cursor: 'pointer' }}
                         >
-                          <icon-wc
+                          <ds-icon
                             icon="CloseOutline"
                             size="large"
                             color="secondary"
-                          ></icon-wc>
+                          ></ds-icon>
                         </Container>
                       )
                     }

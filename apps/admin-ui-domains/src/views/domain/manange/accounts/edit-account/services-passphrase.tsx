@@ -343,7 +343,7 @@ export const ServicesPassphrase: FC = () => {
               backgroundColor="gray5"
               value={createCredentialResponse.text_data?.password}
               CustomIcon={(): any => (
-                <icon-wc
+                <ds-icon
                   icon="CopyOutline"
                   size="large"
                   color="Gray0"
@@ -355,7 +355,7 @@ export const ServicesPassphrase: FC = () => {
                     );
                   }}
                   style={{ cursor: 'pointer' }}
-                ></icon-wc>
+                ></ds-icon>
               )}
               disabled
               textColor={'gray1'}

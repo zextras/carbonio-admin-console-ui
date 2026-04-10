@@ -487,10 +487,10 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc
+                    <ds-icon
                       style={{ width: '1.25rem', height: '1.25rem' }}
                       icon="InfoOutline"
-                    ></icon-wc>
+                    ></ds-icon>
                   </Padding>
                 </Row>
                 <Row

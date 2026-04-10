@@ -13,7 +13,7 @@ declare global {
       interface IntrinsicElements {
         'spinner-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'ds-divider': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-        'icon-wc': React.DetailedHTMLProps<
+        'ds-icon': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {
             icon?: IconName;
             color?: string;

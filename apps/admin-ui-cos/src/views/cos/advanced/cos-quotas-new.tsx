@@ -150,7 +150,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
         />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
-            <icon-wc icon={icon} size="large" />
+            <ds-icon icon={icon} size="large" />
           </Tooltip>
         )}
       </Container>

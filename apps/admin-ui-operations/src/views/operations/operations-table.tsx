@@ -69,13 +69,13 @@ export const OperationsTable: FC<{
             }}
           >
             {v?.type === EXCEPTION && (
-              <icon-wc icon="StopCircleOutline" size="medium" color="secondary"></icon-wc>
+              <ds-icon icon="StopCircleOutline" size="medium" color="secondary"></ds-icon>
             )}
             {v?.type === FINISHED && (
-              <icon-wc icon="CloseCircleOutline" size="medium" color="error"></icon-wc>
+              <ds-icon icon="CloseCircleOutline" size="medium" color="error"></ds-icon>
             )}
             {v?.type === STARTED && (
-              <icon-wc icon="CheckmarkCircleOutline" size="medium" color="success"></icon-wc>
+              <ds-icon icon="CheckmarkCircleOutline" size="medium" color="success"></ds-icon>
             )}
           </Row>,
           <Row

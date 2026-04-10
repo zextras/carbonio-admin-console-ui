@@ -703,11 +703,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setLdapUrlOpen(true)}
                         onMouseLeave={(): void => setLdapUrlOpen(false)}
                       >
-                        <icon-wc
+                        <ds-icon
                           icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
-                        ></icon-wc>
+                        ></ds-icon>
                       </Container>
                     )}
                   />
@@ -753,11 +753,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setFilterOpen(true)}
                         onMouseLeave={(): void => setFilterOpen(false)}
                       >
-                        <icon-wc
+                        <ds-icon
                           icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
-                        ></icon-wc>
+                        ></ds-icon>
                       </Container>
                     )}
                   />

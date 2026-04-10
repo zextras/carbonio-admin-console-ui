@@ -555,12 +555,12 @@ const Connection: FC<{
           style={{ marginTop: '1rem' }}
         >
           <Row width="10%" mainAlignment="flex-start">
-            <icon-wc
+            <ds-icon
               icon="AlertTriangleOutline"
               color="gray6"
               size="large"
               style={{ height: '2rem', width: '2rem' }}
-            ></icon-wc>
+            ></ds-icon>
           </Row>
           <Row width="86%" mainAlignment="flex-end">
             <Text overflow="break-word" color="gray6">

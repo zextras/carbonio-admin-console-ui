@@ -24,7 +24,7 @@ const ScrollContainer: FC<ScrollContainerProps> = ({ isVisible = false }) => {
   return isVisible ? (
     <Container style={containerStyle}>
       <Container orientation="horizontal" padding={{ top: 'large' }} width="100%">
-        <icon-wc color="gray" icon="ArrowheadDown" size="large"></icon-wc>
+        <ds-icon color="gray" icon="ArrowheadDown" size="large"></ds-icon>
         <Padding left="small">
           <Text size="large" weight="light" color="gray">
             {t('label.scroll_down_to_view_other_items', 'Scroll down to view other items')}

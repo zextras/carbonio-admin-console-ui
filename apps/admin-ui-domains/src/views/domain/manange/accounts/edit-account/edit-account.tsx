@@ -1256,11 +1256,11 @@ const EditAccount: FC<{
               </Text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <icon-wc
+              <ds-icon
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              ></icon-wc>
+              ></ds-icon>
             </Row>
           </Container>
         </Modal>

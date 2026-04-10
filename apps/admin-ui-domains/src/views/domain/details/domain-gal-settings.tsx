@@ -1303,11 +1303,11 @@ const DomainGalSettings: FC = () => {
                             label={EXTERNAL_SERVER_EXAMPLE}
                           >
                             <Text>
-                              <icon-wc
+                              <ds-icon
                                 icon="InfoOutline"
                                 size="large"
                                 color={hasFocus ? 'primary' : 'text'}
-                              ></icon-wc>
+                              ></ds-icon>
                             </Text>
                           </Tooltip>
                         )}
@@ -1348,11 +1348,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_FILTER_LABEL}
                         >
                           <Text>
-                            <icon-wc
+                            <ds-icon
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            ></icon-wc>
+                            ></ds-icon>
                           </Text>
                         </Tooltip>
                       )}
@@ -1378,11 +1378,11 @@ const DomainGalSettings: FC = () => {
                           label={LDAP_SEARCH_BASE_LABEL}
                         >
                           <Text>
-                            <icon-wc
+                            <ds-icon
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
-                            ></icon-wc>
+                            ></ds-icon>
                           </Text>
                         </Tooltip>
                       )}
@@ -1451,11 +1451,11 @@ const DomainGalSettings: FC = () => {
                         label={LDAP_BIND_DN_LABLE}
                       >
                         <Text>
-                          <icon-wc
+                          <ds-icon
                             icon="InfoOutline"
                             size="large"
                             color={hasFocus ? 'primary' : 'text'}
-                          ></icon-wc>
+                          ></ds-icon>
                         </Text>
                       </Tooltip>
                     )}

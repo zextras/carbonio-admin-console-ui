@@ -1382,14 +1382,14 @@ const QuarantineList: FC = () => {
                 </Text>
                 <Tooltip placement="top" label={message.reason}>
                   <Text style={{ paddingLeft: '0.25rem' }}>
-                    <icon-wc
+                    <ds-icon
                       color={
                         // @ts-expect-error - needs a fix
                         message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
                       }
                       size="large"
                       icon={'QuestionMarkCircleOutline'}
-                    ></icon-wc>
+                    ></ds-icon>
                   </Text>
                 </Tooltip>
               </Row>

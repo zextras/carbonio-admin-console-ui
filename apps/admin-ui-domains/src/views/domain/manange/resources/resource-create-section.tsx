@@ -65,7 +65,7 @@ const ResourceCreateSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
               <Input

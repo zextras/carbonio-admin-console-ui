@@ -228,7 +228,7 @@ export const CosListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc icon="InfoOutline" style={{ width: '20px', height: '20px' }}></icon-wc>
+                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
                   </Padding>
                 </Row>
                 <Row

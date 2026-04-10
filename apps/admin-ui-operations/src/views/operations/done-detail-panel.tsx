@@ -152,7 +152,7 @@ const DoneDetailPanel: FC = () => {
                   setSearchOperation(e.target.value);
                 }}
                 CustomIcon={(): React.ReactElement => (
-                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                 )}
               />
             </Container>

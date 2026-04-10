@@ -52,12 +52,12 @@ export const DefaultHeaderFactory = ({
             {label}
           </Text>
         </Row>
-        <icon-wc
+        <ds-icon
           size="medium"
           icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
           color={open || focus ? 'primary' : 'text'}
           style={{ alignSelf: 'center' }}
-        ></icon-wc>
+        ></ds-icon>
       </Container>
     ),
     [],

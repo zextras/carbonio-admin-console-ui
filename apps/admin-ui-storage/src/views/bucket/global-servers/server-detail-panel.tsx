@@ -357,7 +357,7 @@ const ServerDetailPanel: FC = () => {
                     label={t('label.search_for_a_Server', `Search for a Server`)}
                     backgroundColor="gray5"
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                     value={searchServer}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void => {

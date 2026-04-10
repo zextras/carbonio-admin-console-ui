@@ -41,7 +41,7 @@ const BackupDetailPanel: FC = () => {
       {!Object.keys(globalConfig).length ? (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <icon-wc icon="CloseCircleOutline" size="large" color="white"></icon-wc>
+            <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
             <Padding left="large">
               <Text color="white">
                 {t(

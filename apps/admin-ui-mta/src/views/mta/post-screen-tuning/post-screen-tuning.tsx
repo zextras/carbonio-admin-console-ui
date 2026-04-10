@@ -795,11 +795,11 @@ const MTAPostScreenTuning: FC = () => {
             >
               <Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
                 <Padding horizontal="small">
-                  <icon-wc
+                  <ds-icon
                     icon="InfoOutline"
                     color="#2196D3"
                     style={{ width: '1.25rem', height: '1.25rem' }}
-                  ></icon-wc>
+                  ></ds-icon>
                 </Padding>
               </Container>
               <Container

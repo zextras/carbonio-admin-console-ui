@@ -734,11 +734,11 @@ const EditAccountSecuritySection: FC = () => {
             >
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <icon-wc
+                  <ds-icon
                     icon="InfoOutline"
                     color="primary"
                     style={{ width: '20px', height: '20px' }}
-                  ></icon-wc>
+                  ></ds-icon>
                 </Padding>
               </Row>
               <Row

@@ -264,7 +264,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large', right: 'small' }}
             width="fit"
           >
-            <icon-wc icon="AtOutline" size="large"></icon-wc>
+            <ds-icon icon="AtOutline" size="large"></ds-icon>
           </Container>
           <Container
             mainAlignment="flex-start"
@@ -361,13 +361,13 @@ const MailingListSection: FC<any> = () => {
                   onChange={changeLdapDetail}
                   hasError={!isValidQuery}
                   CustomIcon={(): any => (
-                    <icon-wc
+                    <ds-icon
                       icon="CheckmarkOutline"
                       size="large"
                       color="grey"
                       onClick={getMemberFromLdapQuery}
                       style={{ cursor: 'pointer' }}
-                    ></icon-wc>
+                    ></ds-icon>
                   )}
                 />
               </Container>
@@ -407,7 +407,7 @@ const MailingListSection: FC<any> = () => {
                       backgroundColor="gray5"
                       onChange={handleInputChangeMember}
                       CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
                     <Container padding={{ bottom: 'small' }}>

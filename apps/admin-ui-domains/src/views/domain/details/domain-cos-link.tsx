@@ -478,7 +478,7 @@ const DomainCosLink: FC<{
                         {t('label.default_cos', 'Default COS')}
                       </Text>
                     </Padding>
-                    <icon-wc icon="Star" color="primary"></icon-wc>
+                    <ds-icon icon="Star" color="primary"></ds-icon>
                   </Row>
                 )}
               </Container>,
@@ -491,23 +491,23 @@ const DomainCosLink: FC<{
                       <Text>{t('label.set_as_default', 'Set as Default')}</Text>
                     </Padding>
                     <Padding right="small">
-                      <icon-wc
+                      <ds-icon
                         icon="StarOutline"
                         color="primary"
                         onClick={(event: { stopPropagation: () => void }): void => {
                           event.stopPropagation();
                           markAsDefaultCosToDomain(item?.id);
                         }}
-                      ></icon-wc>
+                      ></ds-icon>
                     </Padding>
-                    <icon-wc
+                    <ds-icon
                       icon="Close"
                       color="primary"
                       onClick={(event: { stopPropagation: () => void }): void => {
                         event.stopPropagation();
                         removeCosLinkRows(item);
                       }}
-                    ></icon-wc>
+                    ></ds-icon>
                   </Row>
                 </Container>
               ) : (
@@ -562,10 +562,10 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc
+                    <ds-icon
                       icon="InfoOutline"
                       style={{ width: '1.25rem', height: '1.25rem' }}
-                    ></icon-wc>
+                    ></ds-icon>
                   </Padding>
                 </Row>
                 <Row

@@ -313,7 +313,7 @@ export const LoadAndVerifyCert: FC<{
         width="fill"
       >
         <Container padding={{ right: '0.25rem' }} width="fit">
-          <icon-wc icon="InfoOutline" color="secondary"></icon-wc>
+          <ds-icon icon="InfoOutline" color="secondary"></ds-icon>
         </Container>
         <Text color="secondary">
           {t(

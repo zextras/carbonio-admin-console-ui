@@ -60,12 +60,12 @@ export const CustomHeaderFactory: FC<any> = ({
     (column: THeader) => {
       if (column.id === sortedColumn) {
         return sortOrder === ASC ? (
-          <icon-wc icon="ChevronSortUpOutline" size="large"></icon-wc>
+          <ds-icon icon="ChevronSortUpOutline" size="large"></ds-icon>
         ) : (
-          <icon-wc icon="ChevronSortDownOutline" size="large"></icon-wc>
+          <ds-icon icon="ChevronSortDownOutline" size="large"></ds-icon>
         );
       }
-      return <icon-wc icon="ChevronSortEmptyOutline" size="large"></icon-wc>;
+      return <ds-icon icon="ChevronSortEmptyOutline" size="large"></ds-icon>;
     },
     [sortedColumn, sortOrder],
   );
@@ -97,12 +97,12 @@ export const CustomHeaderFactory: FC<any> = ({
           </Text>
         </Row>
         <Container>
-          <icon-wc
+          <ds-icon
             size="medium"
             icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
             color={open || focus ? 'primary' : 'text'}
             style={{ alignSelf: 'center' }}
-          ></icon-wc>
+          ></ds-icon>
         </Container>
       </Container>
     ),

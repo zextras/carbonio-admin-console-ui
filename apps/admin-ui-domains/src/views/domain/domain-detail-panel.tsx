@@ -58,7 +58,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
       {isDomainClosed && showDomainClose ? (
         <Row background="warning" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <icon-wc icon="CloseCircleOutline" size="large" color="white"></icon-wc>
+            <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
             <Padding left="large">
               <Trans
                 i18nKey="label.this_domain_is_closed"
@@ -88,7 +88,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
                 }}
               />
             </Padding>
-            <icon-wc
+            <ds-icon
               icon="Close"
               size="large"
               color="white"
@@ -97,7 +97,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
                 setShowDomainClose(false);
                 setCloseDomainNameBanner(domain?.name || '');
               }}
-            ></icon-wc>
+            ></ds-icon>
           </Row>
         </Row>
       ) : (

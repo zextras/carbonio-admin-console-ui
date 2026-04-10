@@ -547,7 +547,7 @@ const AttachmentsBlock: FC<{
                     {`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
                   </Text>
                 </Padding>
-                <icon-wc icon="ArrowIosUpward" color="primary"></icon-wc>
+                <ds-icon icon="ArrowIosUpward" color="primary"></ds-icon>
               </Row>
             ) : (
               <Row
@@ -563,7 +563,7 @@ const AttachmentsBlock: FC<{
                     )}`}
                   </Text>
                 </Padding>
-                <icon-wc icon="ArrowIosDownward" color="primary"></icon-wc>
+                <ds-icon icon="ArrowIosDownward" color="primary"></ds-icon>
               </Row>
             ))}{' '}
         </Padding>

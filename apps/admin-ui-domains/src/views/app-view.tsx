@@ -76,7 +76,7 @@ const AppView: FC = () => {
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
         >
-          <icon-wc icon="Plus" size="large" color="primary"></icon-wc>
+          <ds-icon icon="Plus" size="large" color="primary"></ds-icon>
         </Text>
       </Padding>
     </Container>

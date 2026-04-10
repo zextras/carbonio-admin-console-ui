@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import React, { useCallback, useRef, useState } from 'react';
 
@@ -42,12 +42,12 @@ const PasswordInput = (props: InputProps) => {
           !disabled && onShowClick(ev);
         }}
       >
-        <icon-wc
+        <ds-icon
           icon={showRef.current ? 'EyeOutline' : 'EyeOffOutline'}
           size="large"
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
           disabled={disabled}
-        ></icon-wc>
+        ></ds-icon>
       </Container>
     ),
     [onShowClick],

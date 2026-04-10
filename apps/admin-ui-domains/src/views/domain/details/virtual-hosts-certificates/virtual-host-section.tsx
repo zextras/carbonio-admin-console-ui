@@ -158,13 +158,13 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
       >
         <Row mainAlignment="flex-start" takeAvailableSpace>
           {hoveredRow === 'header' || selectedRows.length > 0 ? (
-            <icon-wc
+            <ds-icon
               icon={
                 selectedRows.length === items.length && items.length > 0
                   ? 'CheckmarkSquareOutline'
                   : 'SquareOutline'
               }
-            ></icon-wc>
+            ></ds-icon>
           ) : (
             <Container width="1rem" height="1rem" />
           )}
@@ -210,13 +210,13 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
                         crossAlignment="center"
                       >
                         {hoveredRow === item.id || selectedRows.includes(item.id) ? (
-                          <icon-wc
+                          <ds-icon
                             icon={
                               selectedRows.includes(item.id)
                                 ? 'CheckmarkSquareOutline'
                                 : 'SquareOutline'
                             }
-                          ></icon-wc>
+                          ></ds-icon>
                         ) : (
                           <Text>{id + 1}</Text>
                         )}

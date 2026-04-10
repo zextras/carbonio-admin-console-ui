@@ -474,7 +474,7 @@ const CosServerPools: FC = () => {
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
                         CustomIcon={(): any => (
-                          <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                          <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                         )}
                         onChange={(e: any): any => {
                           setSearchServer(e.target.value);

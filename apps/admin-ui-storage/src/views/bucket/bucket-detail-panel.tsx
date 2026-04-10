@@ -380,7 +380,7 @@ const BucketDetailPanel: FC = () => {
             backgroundColor="gray5"
             label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
             CustomIcon={(): React.ReactElement => (
-              <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+              <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
             )}
             onChange={filterBucketList}
           />

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -157,7 +157,7 @@ const DefaultLabelFactory = <T,>({
           </div>
         </Row>
         <div className={styles.iconWrapper}>
-          <icon-wc size="medium" icon={open ? 'ArrowUp' : 'ArrowDown'} color={iconColor}></icon-wc>
+          <ds-icon size="medium" icon={open ? 'ArrowUp' : 'ArrowDown'} color={iconColor}></ds-icon>
         </div>
       </Container>
       <ds-divider color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></ds-divider>

@@ -327,7 +327,7 @@ export const SignatureDetail: FC<any> = ({
                 backgroundColor="gray5"
                 value={searchSignatureName}
                 CustomIcon={(): any => (
-                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                 )}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
