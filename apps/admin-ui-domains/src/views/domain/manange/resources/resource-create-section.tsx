@@ -151,7 +151,7 @@ const ResourceCreateSection: FC = () => {
           </Container>
         </ListRow>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <SendInviteAccounts
           isEditable={false}
@@ -160,7 +160,7 @@ const ResourceCreateSection: FC = () => {
           hideSearchBar
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }}>
           <Text size="small" weight="bold">

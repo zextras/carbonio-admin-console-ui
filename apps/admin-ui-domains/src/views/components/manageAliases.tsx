@@ -54,7 +54,7 @@ const ManageAliases: FC<{
                       ),
                   )}
                   <Row width="100%" padding={{ top: 'medium' }}>
-                    <divider-wc></divider-wc>
+                    <ds-divider></ds-divider>
                   </Row>
                 </Container>
               </Row>
@@ -230,7 +230,7 @@ const ManageAliases: FC<{
                     ),
                 )}
                 <Row width="100%" padding={{ top: 'medium' }}>
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Row>
               </Container>
             </Row>

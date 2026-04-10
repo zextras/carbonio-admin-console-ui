@@ -653,7 +653,7 @@ const HSMsettingPanel: FC = () => {
       </Row>
 
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         crossAlignment="flex-start"

@@ -345,7 +345,7 @@ export const ThemeConfigs: FC<{
             />
           </Row>
           <Row width="100%">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container crossAlignment="flex-start" padding={{ all: '0px' }}>
             {change === 'end_user' && (
@@ -374,7 +374,7 @@ export const ThemeConfigs: FC<{
             )}
           </Container>
           <Container padding={{ top: 'small' }}>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Container>
           <ListRow>
             <Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>

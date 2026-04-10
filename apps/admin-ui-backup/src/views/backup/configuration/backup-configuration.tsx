@@ -985,7 +985,7 @@ const BackupConfiguration: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             mainAlignment="flex-start"
@@ -1350,7 +1350,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -1419,7 +1419,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 

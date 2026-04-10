@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
@@ -661,7 +661,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           return (
-            (type === 'divider' && <divider-wc key={id}></divider-wc>) ||
+            (type === 'divider' && <ds-divider key={id}></ds-divider>) ||
             (subItems && (
               <NestListItem
                 icon={icon}

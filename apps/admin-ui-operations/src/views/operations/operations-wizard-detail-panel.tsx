@@ -101,7 +101,7 @@ const OperationsWizardDetailPanel: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
         <Row
           mainAlignment="flex-end"
@@ -183,7 +183,7 @@ const OperationsWizardDetailPanel: FC<{
           </Row>
         </Row>
         <Padding vertical="large" />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Padding vertical="large" />
         <Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
           <Text size="medium" color="gray0" weight="bold">

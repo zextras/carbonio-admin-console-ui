@@ -248,7 +248,7 @@ const COSQuotas: FC<QuotaProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
     </Row>
   );
 };

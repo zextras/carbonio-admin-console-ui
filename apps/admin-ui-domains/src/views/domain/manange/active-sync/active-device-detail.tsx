@@ -407,7 +407,7 @@ const ActiveDeviceDetail: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <ListRow>
         <Displayer buttons={buttons} pinIcon={isSticky} />
       </ListRow>

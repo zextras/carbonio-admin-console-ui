@@ -65,7 +65,7 @@ const BackupAdvanced: FC = () => {
                 t={t}
               />
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             orientation="column"

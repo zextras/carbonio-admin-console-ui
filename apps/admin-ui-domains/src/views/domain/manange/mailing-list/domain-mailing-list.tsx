@@ -653,7 +653,7 @@ const DomainMailingList: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc />
+        <ds-divider />
       </Row>
       <Container
         orientation="column"

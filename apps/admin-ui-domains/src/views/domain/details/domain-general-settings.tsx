@@ -887,7 +887,7 @@ const DomainGeneralSettings: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
 
       <Container
@@ -1003,7 +1003,7 @@ const DomainGeneralSettings: FC = () => {
               mainAlignment="space-between"
               style={{ margin: '8px' }}
             >
-              <divider-wc></divider-wc>
+              <ds-divider></ds-divider>
             </Container>
             <ListRow>
               <Container padding={{ all: 'small' }}>

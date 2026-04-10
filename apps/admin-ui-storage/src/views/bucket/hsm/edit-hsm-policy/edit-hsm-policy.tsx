@@ -212,7 +212,7 @@ const EditHsmPolicy: FC<{
         </Row>
       </Row>
       <Row>
-        <divider-wc color="gray3"></divider-wc>
+        <ds-divider color="gray3"></ds-divider>
       </Row>
 
       <Container
@@ -238,7 +238,7 @@ const EditHsmPolicy: FC<{
           />
         </Row>
         <Row width="100%">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
           <Container crossAlignment="flex-start" padding={{ all: '0rem' }}>

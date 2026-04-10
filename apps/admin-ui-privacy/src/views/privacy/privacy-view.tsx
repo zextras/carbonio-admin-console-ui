@@ -117,7 +117,7 @@ const PrivacyView: FC = () => {
                 </div>
               )}
             </header>
-            <divider-wc />
+            <ds-divider />
             <div className={styles.formContainer}>
               <form.Field name="sendFullError">
                 {(field) => (

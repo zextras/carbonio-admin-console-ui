@@ -456,7 +456,7 @@ const MailingListSettingsSection: FC<any> = () => {
         </ListRow>
         <ListRow>
           <Container>
-            <divider-wc />
+            <ds-divider />
           </Container>
         </ListRow>
         <Row padding={{ top: 'large' }}>
@@ -566,7 +566,7 @@ const MailingListSettingsSection: FC<any> = () => {
 
         <ListRow>
           <Container>
-            <divider-wc />
+            <ds-divider />
           </Container>
         </ListRow>
         <Row padding={{ top: 'large' }}>

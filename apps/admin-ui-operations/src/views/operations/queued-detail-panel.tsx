@@ -105,7 +105,7 @@ const QuededDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
             {t('operations.queued_panel_heading', 'Queued Operations')}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"

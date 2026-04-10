@@ -83,7 +83,7 @@ export const Features: FC<{
             </Row>
           )}
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       {cosLevelFeatures && (
         <Row
@@ -125,7 +125,7 @@ export const Features: FC<{
               </Row>
             </Padding>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
       )}
       <Row
@@ -184,7 +184,7 @@ export const Features: FC<{
             />
           </Row>
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row
         mainAlignment="flex-start"
@@ -240,7 +240,7 @@ export const Features: FC<{
             />
           </Row>
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row
         mainAlignment="flex-start"

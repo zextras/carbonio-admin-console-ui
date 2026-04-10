@@ -328,7 +328,7 @@ const EditAccountUserPrefrencesSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row mainAlignment="flex-start" width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -413,7 +413,7 @@ const EditAccountUserPrefrencesSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -478,7 +478,7 @@ const EditAccountUserPrefrencesSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -510,7 +510,7 @@ const EditAccountUserPrefrencesSection: FC<{
         accountId={accountDetail?.zimbraId}
       />
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -546,7 +546,7 @@ const EditAccountUserPrefrencesSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">

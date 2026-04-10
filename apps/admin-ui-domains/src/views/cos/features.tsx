@@ -168,7 +168,7 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				<divider-wc></divider-wc>
+				<ds-divider></ds-divider>
 			</Row>
 			<Row
 				mainAlignment="flex-start"
@@ -224,7 +224,7 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				<divider-wc></divider-wc>
+				<ds-divider></ds-divider>
 			</Row>
 			<Row
 				mainAlignment="flex-start"

@@ -103,7 +103,7 @@ const QuickAccess: FC<{
               </ListRow>
               <ListRow>
                 <Container padding={{ left: 'large', right: 'large' }}>
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Container>
               </ListRow>
               <ListRow>

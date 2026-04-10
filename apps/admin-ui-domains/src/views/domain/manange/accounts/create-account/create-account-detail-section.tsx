@@ -305,7 +305,7 @@ const CreateAccountDetailSection: FC = () => {
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       {extLdapAuth && (
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">

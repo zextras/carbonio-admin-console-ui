@@ -620,7 +620,7 @@ const DomainAuthentication: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"
@@ -817,7 +817,7 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Padding>
               </ListRow>
               <ListRow>
@@ -871,7 +871,7 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Padding>
               </ListRow>
               <Padding horizontal="small" width="90%"></Padding>

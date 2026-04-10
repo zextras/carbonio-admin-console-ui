@@ -228,7 +228,7 @@ const EditAccountConfigurationSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
           <Text size="small" color="gray0" weight="bold">
@@ -259,7 +259,7 @@ const EditAccountConfigurationSection: FC = () => {
           />
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
           <Text size="small" color="gray0" weight="bold">
@@ -274,7 +274,7 @@ const EditAccountConfigurationSection: FC = () => {
           setEmptyValue={setEmptyValue}
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
           <Text size="small" color="gray0" weight="bold">

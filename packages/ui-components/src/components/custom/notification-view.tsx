@@ -461,7 +461,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
         </Container>
       </ListRow>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <ListRow>
         <Container

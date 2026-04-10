@@ -198,13 +198,13 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
                           {view?.section?.label}
                         </Padding>
                       </Text>
-                      <divider-wc></divider-wc>
+                      <ds-divider></ds-divider>
                     </Row>
                   </>
                 )}
                 {view?.section && !isOpen && view?.children && (
                   <Container height="auto" padding={{ left: 'medium', right: 'medium' }}>
-                    <divider-wc></divider-wc>
+                    <ds-divider></ds-divider>
                   </Container>
                 )}
                 {view?.children &&

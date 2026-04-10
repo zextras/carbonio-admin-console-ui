@@ -994,7 +994,7 @@ const ManageDelegates: FC = () => {
               </Row>
             </Row>
             <Row orientation="horizontal" width="100%" background="gray6">
-              <divider-wc></divider-wc>
+              <ds-divider></ds-divider>
             </Row>
             {isGlobalAdmin && (
               <>
@@ -1011,7 +1011,7 @@ const ManageDelegates: FC = () => {
                   />
                 </ListRow>
                 <Row orientation="horizontal" width="100%" background="gray6">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Row>
               </>
             )}

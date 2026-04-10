@@ -60,7 +60,7 @@ const BackupServerConfig: FC = () => {
             t={t}
           />
           <Row orientation="horizontal" width="100%" background="gray6">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             orientation="column"
@@ -109,7 +109,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'large', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -159,7 +159,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -189,7 +189,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -221,7 +221,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>

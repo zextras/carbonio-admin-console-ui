@@ -43,7 +43,7 @@ const ListPanelItem: FC<{
 				</Padding>
 			</Row>
 		</Container>
-		<divider-wc color="gray3"></divider-wc>
+		<ds-divider color="gray3"></ds-divider>
 	</>
 );
 

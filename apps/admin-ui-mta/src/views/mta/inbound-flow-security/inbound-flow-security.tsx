@@ -583,7 +583,7 @@ const MTAInboundFlowSecurity: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container
@@ -610,7 +610,7 @@ const MTAInboundFlowSecurity: FC = () => {
           </Text>
         </Container>
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -719,7 +719,7 @@ const MTAInboundFlowSecurity: FC = () => {
           </Container>
         </Container>
         <ListRow>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </ListRow>
 
         <Container
@@ -809,7 +809,7 @@ const MTAInboundFlowSecurity: FC = () => {
           </Container>
         </Container>
         <ListRow>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </ListRow>
 
         <Container

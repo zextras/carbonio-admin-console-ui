@@ -388,7 +388,7 @@ const CreateDomain: FC = () => {
                 {t('label.new_domain', 'New Domain')}
               </Text>
             </Padding>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Container>
         <Container
@@ -486,7 +486,7 @@ const CreateDomain: FC = () => {
             mainAlignment="flex-start"
             padding={{ vertical: 'large', horizontal: 'small' }}
           >
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Row mainAlignment="flex-start" width="100%">
             <Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -559,7 +559,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -596,7 +596,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -629,7 +629,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"

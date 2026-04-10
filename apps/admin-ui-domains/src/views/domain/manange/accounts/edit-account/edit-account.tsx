@@ -1083,7 +1083,7 @@ const EditAccount: FC<{
           </Row>
         </Row>
         <Row>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <Container
           padding={{ all: 'small' }}
@@ -1100,7 +1100,7 @@ const EditAccount: FC<{
             width="100%"
             background="gray6"
           />
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
         <Container
           padding={{ left: 'large', right: 'large' }}

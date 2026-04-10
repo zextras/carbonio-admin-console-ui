@@ -606,7 +606,7 @@ const HSMpolicySettings: FC<any> = () => {
         </Container>
       )}
       <Container padding={{ top: 'extralarge', bottom: 'extralarge' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
 
       <Container mainAlignment="flex-start" crossAlignment="flex-start" background="white">

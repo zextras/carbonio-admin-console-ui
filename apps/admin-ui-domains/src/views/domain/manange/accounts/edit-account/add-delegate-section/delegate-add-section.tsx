@@ -59,7 +59,7 @@ const DelegateAddSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: "medium" }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
           <Row

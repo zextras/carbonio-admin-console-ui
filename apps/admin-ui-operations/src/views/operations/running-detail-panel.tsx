@@ -111,7 +111,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
             {t('operations.running_panel_heading', 'Running Operations')}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"

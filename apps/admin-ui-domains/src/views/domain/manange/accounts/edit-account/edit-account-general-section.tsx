@@ -954,7 +954,7 @@ export const EditAccountGeneralSection: FC<{
       {extLdapAuth && (
         <>
           <Row width="100%">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
             <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -985,7 +985,7 @@ export const EditAccountGeneralSection: FC<{
         </>
       )}
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
@@ -1064,7 +1064,7 @@ export const EditAccountGeneralSection: FC<{
         ></Row>
       </Row>
       <Row width="100%" padding={{ top: 'large' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
         <Text size="small" color="gray0" weight="bold">
@@ -1104,7 +1104,7 @@ export const EditAccountGeneralSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
@@ -1139,7 +1139,7 @@ export const EditAccountGeneralSection: FC<{
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row
         mainAlignment="flex-start"

@@ -169,7 +169,7 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<divider-wc></divider-wc>
+			<ds-divider></ds-divider>
 		</Row>
 	);
 };

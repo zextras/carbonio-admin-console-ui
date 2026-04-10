@@ -1074,7 +1074,7 @@ const DomainGalSettings: FC = () => {
           </Row>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
 
       {/* new layout based on internal external mode */}
       <Container
@@ -1393,7 +1393,7 @@ const DomainGalSettings: FC = () => {
             </Container>
 
             <Container height="fit" padding={{ all: 'small' }}>
-              <divider-wc></divider-wc>
+              <ds-divider></ds-divider>
             </Container>
 
             <Container

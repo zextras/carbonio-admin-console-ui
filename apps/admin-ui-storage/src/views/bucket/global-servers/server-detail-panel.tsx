@@ -333,7 +333,7 @@ const ServerDetailPanel: FC = () => {
             {t('buckets.servers_list', 'Servers List')}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"

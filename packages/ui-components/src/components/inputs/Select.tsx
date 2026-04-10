@@ -160,7 +160,7 @@ const DefaultLabelFactory = <T,>({
           <icon-wc size="medium" icon={open ? 'ArrowUp' : 'ArrowDown'} color={iconColor}></icon-wc>
         </div>
       </Container>
-      <divider-wc color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></divider-wc>
+      <ds-divider color={open || focus ? 'primary' : INPUT_DIVIDER_COLOR}></ds-divider>
     </>
   );
 };

@@ -177,7 +177,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
     </Row>
   );
 };

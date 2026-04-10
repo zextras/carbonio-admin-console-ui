@@ -807,7 +807,7 @@ const ResourceEditDetailView: FC<any> = ({
         </Row>
       </Row>
       <Row>
-        <divider-wc color="gray3"></divider-wc>
+        <ds-divider color="gray3"></ds-divider>
       </Row>
 
       <Container
@@ -1047,7 +1047,7 @@ const ResourceEditDetailView: FC<any> = ({
 
         <>
           <Row width="100%" padding={{ top: 'medium' }}>
-            <divider-wc color="gray3"></divider-wc>
+            <ds-divider color="gray3"></ds-divider>
           </Row>
           <Row padding={{ top: 'extralarge' }}>
             <Text size="small" weight="bold">
@@ -1101,7 +1101,7 @@ const ResourceEditDetailView: FC<any> = ({
         </>
 
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <SendInviteAccounts
           isEditable
@@ -1109,7 +1109,7 @@ const ResourceEditDetailView: FC<any> = ({
           setSendInviteList={setSendInviteList}
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
 
         <Row padding={{ top: 'extralarge' }} width="100%">

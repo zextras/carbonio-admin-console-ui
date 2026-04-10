@@ -319,7 +319,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 
             <ListRow>
               <Container padding={{ top: 'large', bottom: 'small' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>

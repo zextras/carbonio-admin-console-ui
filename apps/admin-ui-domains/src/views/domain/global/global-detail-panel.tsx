@@ -323,7 +323,7 @@ const GlobalDetailPanel: FC = () => {
           </Row>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container
         orientation="column"
         crossAlignment="flex-start"

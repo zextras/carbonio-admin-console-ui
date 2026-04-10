@@ -744,7 +744,7 @@ const VolumesDetailPanel: FC = () => {
             })}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"

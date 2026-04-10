@@ -144,7 +144,7 @@ const HSMcreatePolicy: FC<any> = () => {
       </ListRow>
       <ListRow>
         <Container padding={{ top: 'small' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
       </ListRow>
       <ListRow>

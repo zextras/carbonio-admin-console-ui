@@ -465,7 +465,7 @@ const RestoreAccountView: FC<{
           </Row>
         </Row>
         <Row>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           padding={{ all: 'extralarge' }}

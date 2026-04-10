@@ -291,7 +291,7 @@ const GlobalTheme: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <ThemeConfigs
             isGlobalTheme

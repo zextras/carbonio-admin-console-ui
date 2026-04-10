@@ -40,7 +40,7 @@ export const PageLayout: FC<{
         </Row>
         <Row>{headerButtons}</Row>
       </Container>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container
         mainAlignment="flex-start"
         crossAlignment="flex-start"

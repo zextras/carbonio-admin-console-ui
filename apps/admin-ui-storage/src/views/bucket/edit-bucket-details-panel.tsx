@@ -431,7 +431,7 @@ const EditBucketDetailPanel: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Displayer buttons={buttons} pinIcon={false} />
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
         <Row padding={{ top: 'small' }} width="100%">
@@ -560,7 +560,7 @@ const EditBucketDetailPanel: FC<{
             disabled={toggleBtn}
           />
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
 
         {checkError !== '' && (
           <Container

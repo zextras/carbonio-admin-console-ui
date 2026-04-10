@@ -538,7 +538,7 @@ const MTAAdvanced: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container

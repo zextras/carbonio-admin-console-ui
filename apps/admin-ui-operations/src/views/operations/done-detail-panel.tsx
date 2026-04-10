@@ -126,7 +126,7 @@ const DoneDetailPanel: FC = () => {
             {t('operations.done_panel_heading', 'Done Operations')}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"
@@ -178,7 +178,7 @@ const DoneDetailPanel: FC = () => {
             width="fill"
             padding={{ top: 'large' }}
           >
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           {filteredOperationData.length !== 0 && (
             <Container

@@ -319,7 +319,7 @@ const MailingListSection: FC<any> = () => {
               padding={{ top: 'small', bottom: 'small' }}
             >
               <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
+                <ds-divider />
               </Container>
             </Row>
             <ListRow>
@@ -411,7 +411,7 @@ const MailingListSection: FC<any> = () => {
                       )}
                     />
                     <Container padding={{ bottom: 'small' }}>
-                      <divider-wc />
+                      <ds-divider />
                     </Container>
                   </>
                 )}

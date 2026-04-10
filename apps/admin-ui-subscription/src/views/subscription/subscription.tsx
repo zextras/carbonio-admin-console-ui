@@ -218,7 +218,7 @@ export const Subscription = (): React.JSX.Element => {
 			</Container>
 
 			<Row orientation="horizontal" width="100%" background="gray6">
-				<divider-wc></divider-wc>
+				<ds-divider></ds-divider>
 			</Row>
 			<Container
 				mainAlignment="flex-start"
@@ -543,7 +543,7 @@ export const Subscription = (): React.JSX.Element => {
 						</>
 					))}
 				</Container>
-				<divider-wc style={{ marginBlockStart: '2rem' }}></divider-wc>
+				<ds-divider style={{ marginBlockStart: '2rem' }}></ds-divider>
 			</Container>
 			<Modal
 				title={t('core.subscription.modal.label', 'Deactivate Token')}

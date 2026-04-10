@@ -346,7 +346,7 @@ const BucketDetailPanel: FC = () => {
             {t('buckets.bucket_list', 'Buckets List')}
           </Text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Padding vertical="small" />
         <Row
           width="100%"

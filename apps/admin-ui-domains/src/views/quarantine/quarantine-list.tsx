@@ -1068,7 +1068,7 @@ const QuarantineList: FC = () => {
       </Row>
 
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -1142,7 +1142,7 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <divider-wc></divider-wc>
+                      <ds-divider></ds-divider>
                     </Row>
                     <Row orientation="horizontal" width="100%" padding={{ vertical: 'large' }}>
                       <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
@@ -1192,7 +1192,7 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <divider-wc></divider-wc>
+                      <ds-divider></ds-divider>
                     </Row>
                     <Row
                       orientation="horizontal"
@@ -1466,7 +1466,7 @@ const QuarantineList: FC = () => {
                     </Row>
                   </Row>
                   <Row width="100%" padding={{ top: 'medium' }}>
-                    <divider-wc></divider-wc>
+                    <ds-divider></ds-divider>
                   </Row>
                   <Row
                     width="100%"

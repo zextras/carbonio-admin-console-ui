@@ -502,7 +502,7 @@ const MTAOutBoundFlow: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}

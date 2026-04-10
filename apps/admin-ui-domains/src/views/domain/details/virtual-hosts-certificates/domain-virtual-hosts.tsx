@@ -378,7 +378,7 @@ export const DomainVirtualHosts: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"
@@ -394,7 +394,7 @@ export const DomainVirtualHosts: FC = () => {
           </Container>
           {alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
           <Row width="100%" padding={{ horizontal: 'large' }}>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <CertificateView
             domainCertiDetails={domainCertiDetails}

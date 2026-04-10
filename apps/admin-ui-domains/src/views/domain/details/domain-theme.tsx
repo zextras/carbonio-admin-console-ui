@@ -272,7 +272,7 @@ const DomainTheme: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <ThemeConfigs
             themeConfig={domainTheme}

@@ -122,7 +122,7 @@ const CreateCos: FC = () => {
                 {t('label.new_cos', 'New COS')}
               </Text>
             </Padding>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Container>
         <Container

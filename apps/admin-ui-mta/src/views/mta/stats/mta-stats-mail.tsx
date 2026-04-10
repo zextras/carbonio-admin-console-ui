@@ -514,7 +514,7 @@ const MTAStatsMail: FC<{
         </Row>
       </Row>
       <Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <Container
         padding={{ all: 'extralarge' }}

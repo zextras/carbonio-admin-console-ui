@@ -2391,7 +2391,7 @@ const EditMailingListView: FC<any> = ({
           </Row>
         </Row>
         <Row>
-          <divider-wc color="gray3" />
+          <ds-divider color="gray3" />
         </Row>
 
         <Container
@@ -2410,7 +2410,7 @@ const EditMailingListView: FC<any> = ({
             width="100%"
             background="gray6"
           />
-          <divider-wc color="gray2" />
+          <ds-divider color="gray2" />
         </Container>
 
         {selectedTab === 'general' && (
@@ -2618,7 +2618,7 @@ const EditMailingListView: FC<any> = ({
               padding={{ top: 'small', bottom: 'small' }}
             >
               <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
+                <ds-divider />
               </Container>
             </Row>
           </Container>
@@ -2656,7 +2656,7 @@ const EditMailingListView: FC<any> = ({
                     </Container>
                   </Container>
                 </ListRow>
-                <divider-wc />
+                <ds-divider />
                 <Row padding={{ bottom: 'medium', top: 'medium' }}>
                   <Text size="medium" weight="bold" color="gray0">
                     {t('label.members', 'Members')}
@@ -2761,7 +2761,7 @@ const EditMailingListView: FC<any> = ({
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
+                          <ds-divider />
                         </Container>
                       </>
                     )}
@@ -2841,7 +2841,7 @@ const EditMailingListView: FC<any> = ({
               padding={{ top: 'small', bottom: 'small' }}
             >
               <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
+                <ds-divider />
               </Container>
             </Row>
           </Container>
@@ -2988,7 +2988,7 @@ const EditMailingListView: FC<any> = ({
               padding={{ top: 'small', bottom: 'small' }}
             >
               <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
+                <ds-divider />
               </Container>
             </Row>
 
@@ -3082,7 +3082,7 @@ const EditMailingListView: FC<any> = ({
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
+                          <ds-divider />
                         </Container>
                       </>
                     )}
@@ -3212,7 +3212,7 @@ const EditMailingListView: FC<any> = ({
                 </Row>
               </Container>
               <Row width="100%" padding={{ top: 'medium' }}>
-                <divider-wc color="gray2" />
+                <ds-divider color="gray2" />
               </Row>
 
               <ListRow padding={{ all: 'small' }}>
@@ -3230,7 +3230,7 @@ const EditMailingListView: FC<any> = ({
                           )}
                         />
                         <Container padding={{ bottom: 'small' }}>
-                          <divider-wc />
+                          <ds-divider />
                         </Container>
                       </Row>
                     </ListRow>

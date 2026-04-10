@@ -741,7 +741,7 @@ const ModifyVolume: FC<{
             />
           </Row>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Displayer buttons={buttons} pinIcon={isSticky} />
         {Object.keys(externalVolDetail)?.length === 0 ? (
           <Container

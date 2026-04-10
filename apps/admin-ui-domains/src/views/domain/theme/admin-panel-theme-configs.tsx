@@ -132,7 +132,7 @@ const AdminPanelThemeConfig: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
@@ -332,7 +332,7 @@ const AdminPanelThemeConfig: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
@@ -386,7 +386,7 @@ const AdminPanelThemeConfig: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
@@ -498,7 +498,7 @@ const AdminPanelThemeConfig: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Container
@@ -592,7 +592,7 @@ const AdminPanelThemeConfig: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding top="large" bottom="small" horizontal="small" width="100%">

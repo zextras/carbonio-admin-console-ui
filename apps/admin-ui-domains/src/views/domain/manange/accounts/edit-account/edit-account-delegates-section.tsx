@@ -854,7 +854,7 @@ const EditAccountDelegatesSection: FC = () => {
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
 
       {isSimplified && (
@@ -1021,7 +1021,7 @@ const EditAccountDelegatesSection: FC = () => {
             </Row>
           </Container>
           <Row width="100%" padding={{ top: 'medium' }}>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container mainAlignment="flex-start" height="auto" padding={{ bottom: '3rem' }}>
             <Container

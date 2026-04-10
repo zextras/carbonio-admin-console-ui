@@ -387,7 +387,7 @@ const ActiveSync: FC = () => {
           </Container>
         </Row>
         <Row orientation="horizontal" width="100%" background="gray6">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"

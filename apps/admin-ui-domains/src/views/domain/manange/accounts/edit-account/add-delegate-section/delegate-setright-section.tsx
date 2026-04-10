@@ -65,7 +65,7 @@ const DelegateSetRightsSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         {!(
           deligateDetail?.delegeteRights === SEND_MAILS_ONLY ||
