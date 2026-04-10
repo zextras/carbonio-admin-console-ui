@@ -21,15 +21,15 @@ const CarbonioVersionInformation: FC<{
       crossAlignment="flex-start"
       padding={{ all: 'extralarge' }}
     >
-      <Text
+      <ds-text
         color="secondary"
         overflow="break-word"
         weight="light"
-        size="large"
-        style={{ fontSize: '2.25rem' }}
+        size="extralarge"
+        as="h1"
       >
         {t('welcome', 'Welcome')}
-      </Text>
+      </ds-text>
       <Text
         color="secondary"
         overflow="break-word"

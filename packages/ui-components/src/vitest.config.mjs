@@ -1,5 +1,6 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
-import baseConfig from '../../vitest.config.base.js';
+import baseConfig from '../../vitest.config.base';
+import plugin from 'eslint-plugin-react';
 
 export default mergeConfig(
   baseConfig,
@@ -7,5 +8,5 @@ export default mergeConfig(
     test: {
       exclude: ['packages/template/*'],
     },
-  }),
+  }) 
 );

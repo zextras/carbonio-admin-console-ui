@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
 import type { IconName } from './icon-registry';
 
 declare global {
@@ -20,6 +21,20 @@ declare global {
             size?: string;
             disabled?: boolean;
             clickHandler?: (e: Event) => void;
+          },
+          HTMLElement
+        >;
+        'ds-text': React.DetailedHTMLProps<
+          React.HTMLAttributes<HTMLElement> & {
+            color?: string,
+            size?: TextSize,
+            weight?: TextWeight,
+            overflow?: TextOverflow,
+            disabled?:boolean,
+            italic?:boolean,
+            textAlign?: string,
+            lineHeight?: number,
+            as?: TextTag,
           },
           HTMLElement
         >;

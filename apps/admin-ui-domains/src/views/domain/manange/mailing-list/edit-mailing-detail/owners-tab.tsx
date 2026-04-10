@@ -507,7 +507,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             </Row>
           </Container>
         </ListRow>
-        <divider-wc />
+        <ds-divider />
         <ListRow>
           <Container
             padding={{

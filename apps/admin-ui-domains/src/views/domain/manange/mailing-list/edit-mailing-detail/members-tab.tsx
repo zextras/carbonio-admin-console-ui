@@ -554,7 +554,7 @@ export const MembersTab: FC<MembersTabProps> = ({
             </ListRow>
           </>
         )}
-        <divider-wc />
+        <ds-divider />
         <ListRow>
           <Container
             padding={{

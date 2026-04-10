@@ -335,7 +335,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             </Container>
           </ListRow>
           <Row width="100%">
-            <divider-wc color="gray2" />
+            <ds-divider color="gray2" />
           </Row>
           <ListRow>
             <Container padding={{ bottom: 'large', top: 'large' }}>

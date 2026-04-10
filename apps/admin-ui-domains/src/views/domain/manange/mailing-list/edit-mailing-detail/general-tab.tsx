@@ -272,7 +272,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       )}
       <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small', bottom: 'small' }}>
         <Container padding={{ bottom: 'small' }}>
-          <divider-wc />
+          <ds-divider />
         </Container>
       </Row>
     </Container>
