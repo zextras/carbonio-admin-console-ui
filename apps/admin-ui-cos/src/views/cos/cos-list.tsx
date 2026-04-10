@@ -351,7 +351,7 @@ const CosList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {cosList.length === 0 && !isRequestInProgress && (

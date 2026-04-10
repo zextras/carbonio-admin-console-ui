@@ -631,7 +631,7 @@ const MTAStatsMail: FC<{
               style={{ position: 'absolute' }}
               padding={{ top: 'medium' }}
             >
-              <spinner-wc></spinner-wc>
+              <ds-spinner></ds-spinner>
             </Container>
           )}
         </Container>

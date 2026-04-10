@@ -994,7 +994,7 @@ const EditAccount: FC<{
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && <spinner-wc></spinner-wc>}
+      {(!accountDetail?.name || isLoading) && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"

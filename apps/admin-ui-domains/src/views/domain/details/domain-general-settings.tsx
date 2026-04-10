@@ -855,7 +855,7 @@ const DomainGeneralSettings: FC = () => {
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Row mainAlignment="flex-start" width="100%">
         <Container
           orientation="vertical"

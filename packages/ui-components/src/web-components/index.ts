@@ -10,4 +10,4 @@ import '../theme/theme.css';
 // Import and export the web components to ensure they are bundled and registered
 export { DividerElement } from './ds-divider';
 export { DsIcon } from './ds-icon';
-export { SpinnerWC } from './spinner-wc';
+export { DsSpinner } from './ds-spinner';

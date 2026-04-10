@@ -311,7 +311,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
                     height="fit"
                     padding={{ top: 'medium' }}
                   >
-                    <spinner-wc></spinner-wc>
+                    <ds-spinner></ds-spinner>
                   </Container>
                 )}
               </Row>

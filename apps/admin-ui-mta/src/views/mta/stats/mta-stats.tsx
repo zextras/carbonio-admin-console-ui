@@ -480,7 +480,7 @@ const MTAStats: FC = () => {
               height="auto"
               padding={{ top: 'large' }}
             >
-              <spinner-wc></spinner-wc>
+              <ds-spinner></ds-spinner>
             </Container>
           )}
           {mtaServerList.length === 0 && !requestInprogress && (

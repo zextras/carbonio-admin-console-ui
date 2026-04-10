@@ -110,7 +110,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <spinner-wc></spinner-wc>
+          <ds-spinner></ds-spinner>
         </Container>
       ),
     },
@@ -724,7 +724,7 @@ const LegalHoldPanel: FC = () => {
                     padding={{ top: 'medium' }}
                     style={absoluteContainerItemStyle}
                   >
-                    <spinner-wc></spinner-wc>
+                    <ds-spinner></ds-spinner>
                   </Container>
                 )}
 

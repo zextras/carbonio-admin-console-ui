@@ -125,7 +125,7 @@ const NewVolume: FC<{
 
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
 
       <HorizontalWizard
         steps={wizardSteps}

@@ -351,7 +351,7 @@ const DomainList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {domainList.length === 0 && !isRequestInProgress && (

@@ -12,7 +12,7 @@ import Dashboard from './dashboard/dashboard-view';
 
 const DashboardComponent = () => (
   <Container orientation="horizontal" mainAlignment="flex-start" background="gray5" height="auto">
-    <Suspense fallback={<spinner-wc />}>
+    <Suspense fallback={<ds-spinner />}>
       <Dashboard />
     </Suspense>
   </Container>

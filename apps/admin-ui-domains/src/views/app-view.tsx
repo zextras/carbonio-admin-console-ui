@@ -87,13 +87,13 @@ const AppView: FC = () => {
       <Breadcrumb />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
-          <Suspense fallback={<spinner-wc />}>
+          <Suspense fallback={<ds-spinner />}>
             <DomainListPanel />
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
           <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-            <Suspense fallback={<spinner-wc />}>
+            <Suspense fallback={<ds-spinner />}>
               <Routes>
                 <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
                 <Route path={`${GLOBAL_ROUTE}/${WHITELABEL_SETTINGS}`} element={<GlobalTheme />} />

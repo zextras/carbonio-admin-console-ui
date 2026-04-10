@@ -11,7 +11,7 @@ declare global {
   namespace React {
     namespace JSX {
       interface IntrinsicElements {
-        'spinner-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+        'ds-spinner': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'ds-divider': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
         'ds-icon': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {

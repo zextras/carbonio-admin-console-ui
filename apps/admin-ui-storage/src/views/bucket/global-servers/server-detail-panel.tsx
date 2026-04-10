@@ -171,7 +171,7 @@ const ServersListTable: FC<{
           height="fit"
           padding={{ top: 'medium' }}
         >
-          <spinner-wc></spinner-wc>
+          <ds-spinner></ds-spinner>
         </Container>
       )}
       {(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (

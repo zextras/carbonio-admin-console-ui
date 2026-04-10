@@ -114,7 +114,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <spinner-wc></spinner-wc>
+          <ds-spinner></ds-spinner>
         </Container>
       ),
     },

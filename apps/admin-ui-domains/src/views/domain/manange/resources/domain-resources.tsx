@@ -570,7 +570,7 @@ const DomainResources: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (

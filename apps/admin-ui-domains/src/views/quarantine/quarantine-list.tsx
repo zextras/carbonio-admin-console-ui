@@ -275,7 +275,7 @@ const MessageListTable: FC<{
               height="auto"
               padding={{ top: 'large' }}
             >
-              <spinner-wc></spinner-wc>
+              <ds-spinner></ds-spinner>
             </Container>
           )}
           {tableRows.length === 0 && !requestInprogress && (
@@ -1241,7 +1241,7 @@ const QuarantineList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               </>
             )}
@@ -1330,7 +1330,7 @@ const QuarantineList: FC = () => {
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <spinner-wc></spinner-wc>}
+          {messageViewLoading && <ds-spinner></ds-spinner>}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"

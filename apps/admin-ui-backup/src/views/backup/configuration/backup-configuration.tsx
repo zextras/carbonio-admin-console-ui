@@ -935,7 +935,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <spinner-wc></spinner-wc>}
+      {isSaveRequestInProgress && <ds-spinner></ds-spinner>}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"

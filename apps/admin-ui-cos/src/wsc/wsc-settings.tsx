@@ -133,7 +133,7 @@ export const WscSettings: FC<{
   if (requiresLicenseCheck && isLoading) {
     return (
       <Container height="fit" padding="large" style={{ userSelect: 'none' }}>
-        <spinner-wc />
+        <ds-spinner />
       </Container>
     );
   }

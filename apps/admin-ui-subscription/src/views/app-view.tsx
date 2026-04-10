@@ -29,7 +29,7 @@ const AppView: FC = () => {
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<spinner-wc />}>
+                  <Suspense fallback={<ds-spinner />}>
                     <Subscription />
                   </Suspense>
                 </Container>

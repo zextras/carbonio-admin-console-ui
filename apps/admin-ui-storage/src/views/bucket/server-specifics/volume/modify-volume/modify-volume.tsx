@@ -704,7 +704,7 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container
         background="gray6"
         mainAlignment="flex-start"
