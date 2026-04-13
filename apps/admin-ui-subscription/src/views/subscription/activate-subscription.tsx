@@ -36,7 +36,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
     <div className={styles.outer}>
       <LicenseBanner />
       <div className={styles.header}>
-        <Text size="medium" weight="bold" color="gray0">
+        <Text weight="bold" color="gray0">
           {t('label.subscriptions', 'Subscriptions')}
         </Text>
       </div>
@@ -60,12 +60,12 @@ export const ActivateSubscription = (): React.JSX.Element => {
           </div>
         </div>
         <img src={subscription_logo} alt="logo" className={styles.logo} />
-        <p className={styles.text}>
+        <Text color="gray0" style={{ ...styles.text }}>
           {t(
             'core.subscription.disclaimer',
             "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",
           )}
-        </p>
+        </Text>
       </div>
     </div>
   );
