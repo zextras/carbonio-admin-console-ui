@@ -3,7 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, Modal, Row, Select, Text } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  Input,
+  LabeledValue,
+  Modal,
+  Row,
+  Select,
+  Text,
+} from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';
 import React, { FC, useState } from 'react';
@@ -69,7 +78,7 @@ const ManageAliases: FC<{
             </Row>
           </>
         ) : (
-          <Input
+          <LabeledValue
             label={t('account_details.aliases', 'Aliases')}
             value={(listAliases?.length || 1) - 1}
             CustomIcon={() => (

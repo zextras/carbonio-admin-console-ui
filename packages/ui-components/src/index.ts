@@ -38,6 +38,7 @@ export {
 export * from './components/inputs/DateTimePicker';
 export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
+export * from './components/inputs/labeled-value';
 export * from './components/inputs/PasswordInput';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
@@ -102,7 +103,6 @@ export * from './components/feedback/snackbar/Snackbar';
 
 /** Utilities components */
 export * from './components/custom/hwizard';
-export * from './components/utilities/Catcher';
 export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';

@@ -25,35 +25,28 @@ const App: FC = () => {
     [t],
   );
 
-  const notificationTooltipItems = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.notification_lbl"
-              defaults="<bold>Notifications</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.notification_primarybar_tooltip"
-              defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const NotificationTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={notificationTooltipItems} />,
-    [notificationTooltipItems],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.notification_lbl"
+            defaults="<bold>Notifications</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.notification_primarybar_tooltip"
+            defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

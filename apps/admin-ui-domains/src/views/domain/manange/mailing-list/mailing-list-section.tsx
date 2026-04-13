@@ -9,6 +9,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Paging,
@@ -233,6 +234,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large' }}
           >
             <Input
+              isRequired
               label={t('label.display_name', 'Display Name')}
               backgroundColor="gray5"
               value={mailingListDetail?.displayName}
@@ -250,6 +252,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large', right: 'small' }}
           >
             <Input
+              isRequired
               label={t('label.list_name', 'List Name')}
               backgroundColor="gray5"
               value={mailingListDetail?.prefixName}
@@ -272,7 +275,7 @@ const MailingListSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', left: 'small' }}
           >
-            <Input
+            <LabeledValue
               label={t('domain.type_here_a_domain', 'Type here a domain')}
               value={mailingListDetail?.suffixName}
               backgroundColor="gray5"
@@ -354,6 +357,7 @@ const MailingListSection: FC<any> = () => {
                 padding={{ top: 'small', bottom: 'medium' }}
               >
                 <Input
+                  isRequired
                   label={t('label.distribution_list_url', "Distribution List's URL")}
                   backgroundColor="gray5"
                   value={mailingListDetail?.memberURL}

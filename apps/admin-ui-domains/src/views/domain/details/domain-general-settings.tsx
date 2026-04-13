@@ -11,6 +11,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Modal,
   Padding,
@@ -913,19 +914,17 @@ const DomainGeneralSettings: FC = () => {
           >
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.name', 'Name')}
                   value={domainName}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-name'}
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.id', 'Id')}
                   value={domainData.zimbraId}
                   backgroundColor="gray6"
-                  data-testid={'input-domain-id'}
                 />
               </Container>
             </ListRow>
@@ -946,7 +945,7 @@ const DomainGeneralSettings: FC = () => {
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.creation_date', 'Creation Date')}
                   value={domainCreationDate}
                   backgroundColor="gray6"
@@ -969,6 +968,7 @@ const DomainGeneralSettings: FC = () => {
               </Container>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   label={t('label.public_service_hostname', 'Public Service Host Name')}
                   value={publicServiceHostName}
                   backgroundColor="gray5"
@@ -1142,6 +1142,7 @@ const DomainGeneralSettings: FC = () => {
                 padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
               >
                 <Input
+                  isRequired
                   label={t('label.notification_sender', 'Notification Sender')}
                   backgroundColor="gray5"
                   value={carbonioNotificationFrom}
@@ -1164,6 +1165,7 @@ const DomainGeneralSettings: FC = () => {
                 padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
               >
                 <ChipInput
+                  isRequired
                   placeholder={t('label.send_notifications_to', 'Send notifications to...')}
                   background="gray5"
                   defaultValue={carbonioNotificationRecipients}

@@ -8,6 +8,7 @@ import {
   Container,
   CustomTextArea,
   Input,
+  LabeledValue,
   ListRow,
   Row,
   Select,
@@ -91,6 +92,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ right: 'small', bottom: 'small' }}>
         <Container padding={{ top: 'small' }}>
           <Input
+            isRequired
             label={t('label.display_name', 'Display Name')}
             value={displayName}
             backgroundColor="gray5"
@@ -101,6 +103,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         </Container>
         <Container padding={{ left: 'large', top: 'small' }}>
           <Input
+            isRequired
             label={t('label.address', 'Address')}
             value={distributionName}
             backgroundColor="gray5"
@@ -143,7 +146,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
               value={zimbraDistributionListSendShareMessageToNewMembers}
               label={t(
                 'label.send_new_members_notification_for_share_assigned_to_this_group',
-                'Send new members a notification for the share/delegation assigned to this group',
+                'Send to new members a notification for the share/delegation assigned to this group',
               )}
               onClick={(): void => {
                 setIsDirty(true);
@@ -172,21 +175,19 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ all: 'small' }}>
         <Container orientation="horizontal">
           <Container padding={{ right: 'large' }}>
-            <Input
+            <LabeledValue
               label={t('label.members', 'Members')}
               value={dlmCount}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
           <Container>
-            <Input
+            <LabeledValue
               label={t('label.alias_in_the_list', 'Alias in the List')}
               value={zimbraMailAlias.length}
               backgroundColor="gray5"
               textColor={'black'}
-              disabled
             />
           </Container>
         </Container>
@@ -195,20 +196,18 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'small' }} orientation="horizontal">
           <Container padding={{ right: 'large' }}>
-            <Input
+            <LabeledValue
               label={t('label.id_lbl', 'ID')}
               value={dlId}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
           <Container>
-            <Input
+            <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               value={dlCreateDate}
               backgroundColor="gray5"
-              disabled
               textColor={'black'}
             />
           </Container>
@@ -261,7 +260,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
           </Row>
           <ListRow padding={{ all: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.distribution_lists', 'Distribution Lists')}
                 value={dlMembershipListNames}
                 backgroundColor="gray5"

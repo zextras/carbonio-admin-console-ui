@@ -3,22 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 
-type PrimaryBarTooltipItem = {
-  header: string | React.ReactNode;
-  options: Array<{ label: string }>;
-};
+interface PrimaryBarTooltipProps {
+  children: ReactNode;
+}
 
-type PrimaryBarTooltipProps = {
-  items: Array<PrimaryBarTooltipItem>;
-};
-
-export const PrimaryBarTooltip: FC<PrimaryBarTooltipProps> = ({ items }) => (
+export const PrimaryBarTooltip = ({ children }: PrimaryBarTooltipProps) => (
   <Container
     orientation="horizontal"
     mainAlignment="flex-start"
@@ -28,18 +23,11 @@ export const PrimaryBarTooltip: FC<PrimaryBarTooltipProps> = ({ items }) => (
     crossAlignment="flex-start"
   >
     <Padding left="small" right="small">
-      {items.map((item, index) => (
-        <Padding bottom="small" key={index} all="small">
-          <Text size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
-            {item.header}
-          </Text>
-          {item.options.map((v) => (
-            <Text size="extrasmall" color="text" key={v.label}>
-              {v.label}
-            </Text>
-          ))}
-        </Padding>
-      ))}
+      <Padding bottom="small" all="small">
+        <Text size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
+          {children}
+        </Text>
+      </Padding>
     </Padding>
   </Container>
 );

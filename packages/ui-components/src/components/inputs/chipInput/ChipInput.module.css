@@ -70,6 +70,10 @@
   user-select: none;
 }
 
+.adjustWidthInputContainer:has(.inputEl:required) ~ .label::after {
+  content: '*';
+}
+
 /* HiddenSpan */
 .hiddenSpan {
   position: absolute;

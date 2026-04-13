@@ -26,35 +26,28 @@ const App: FC = () => {
     [t],
   );
 
-  const backupTooltipItems = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.backup_lbl"
-              defaults="<bold>Backup</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.backup_primarybar_tooltip"
-              defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const BackupTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={backupTooltipItems} />,
-    [backupTooltipItems],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.backup_lbl"
+            defaults="<bold>Backup</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.backup_primarybar_tooltip"
+            defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

@@ -25,35 +25,28 @@ const App: FC = () => {
     [t],
   );
 
-  const operationTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.operation_lbl"
-              defaults="<bold>Operations</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.operation_primarybar_tooltip"
-              defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const OperationTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={operationTooltipItem} />,
-    [operationTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.operation_lbl"
+            defaults="<bold>Operations</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.operation_primarybar_tooltip"
+            defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

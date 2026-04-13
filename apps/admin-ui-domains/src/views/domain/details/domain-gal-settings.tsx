@@ -12,6 +12,7 @@ import {
   DropdownItem,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Row,
@@ -1180,7 +1181,7 @@ const DomainGalSettings: FC = () => {
                     </Dropdown>
                   </Container>
                   <Padding left="small" width="100%">
-                    <Input
+                    <LabeledValue
                       label={t('label.gal_mode', 'GAL Mode')}
                       value={zimbraGalMode}
                       backgroundColor="gray6"
@@ -1190,10 +1191,11 @@ const DomainGalSettings: FC = () => {
               </ListRow>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   type="number"
                   label={t(
                     'label.limit_search_results_from_address_book_list_to',
-                    'Max number of results given by search in the Address Book list',
+                    'Limit search results from Address Book List to',
                   )}
                   value={zimbraGalMaxResults}
                   backgroundColor="gray5"
@@ -1202,6 +1204,7 @@ const DomainGalSettings: FC = () => {
               </Container>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   type="number"
                   label={t('domain.page_size', 'Page Size')}
                   value={zimbraGalLdapPageSize}

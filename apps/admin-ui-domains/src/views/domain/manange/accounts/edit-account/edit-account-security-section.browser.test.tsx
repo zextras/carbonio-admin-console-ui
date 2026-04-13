@@ -582,7 +582,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
+      await expect.element(page.getByText('Two-Factor authenticator', { exact: true })).toBeVisible();
       await expect.element(page.getByText('This list is empty.')).toBeVisible();
     });
 
@@ -605,7 +605,7 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
+      await expect.element(page.getByText('Two-Factor authenticator', { exact: true })).toBeVisible();
     });
 
     it('should render NEW OTP and DELETE buttons', async () => {

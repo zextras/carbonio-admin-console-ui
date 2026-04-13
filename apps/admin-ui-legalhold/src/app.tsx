@@ -27,26 +27,18 @@ const App: FC = () => {
     [t],
   );
 
-  const leagalHoldTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <Trans
-            i18nKey="label.legal_hold_lbl"
-            defaults="<bold>Legal Hold</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const LegalHoldTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
-    [leagalHoldTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <Trans
+          i18nKey="label.legal_hold_lbl"
+          defaults="<bold>Legal Hold</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

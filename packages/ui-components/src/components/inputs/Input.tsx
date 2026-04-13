@@ -24,13 +24,14 @@ type InputProps = ContainerProps & {
   textColor?: AnyColor;
   borderColor?: AnyColor;
   label?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef?: React.RefObject<HTMLInputElement> | null;
   value?: string | number;
   defaultValue?: string | number;
   hasError?: boolean;
   autoFocus?: boolean;
   autoComplete?: string;
+  isRequired?: boolean;
   inputName?: string;
   CustomIcon?: React.ComponentType<{ hasError: boolean; hasFocus: boolean; disabled: boolean }>;
   type?: string;
@@ -50,6 +51,7 @@ const Input = ({
   borderColor = INPUT_DIVIDER_COLOR,
   backgroundColor = INPUT_BACKGROUND_COLOR,
   defaultValue,
+  isRequired = false,
   disabled = false,
   textColor = 'text',
   label,
@@ -160,6 +162,8 @@ const Input = ({
             ref={innerRef}
             type={type}
             onFocus={onInputFocus}
+            required={isRequired}
+            aria-required={isRequired}
             onBlur={onInputBlur}
             id={id}
             name={inputName ?? label}
