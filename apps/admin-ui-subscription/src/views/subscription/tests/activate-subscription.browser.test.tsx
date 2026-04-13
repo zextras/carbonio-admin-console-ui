@@ -67,6 +67,25 @@ describe('ActivateSubscription', () => {
       const input = page.getByRole('textbox');
       await expect.element(input).toHaveValue('');
     });
+
+    it('should trim whitespace from pasted text', async () => {
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await expect.element(input).toBeVisible();
+      const element = input.element() as HTMLInputElement;
+
+      const clipboardData = new DataTransfer();
+      clipboardData.setData('text', '  MY-PASTED-TOKEN  ');
+      const pasteEvent = new ClipboardEvent('paste', {
+        bubbles: true,
+        cancelable: true,
+        clipboardData,
+      });
+      element.dispatchEvent(pasteEvent);
+
+      await expect.element(input).toHaveValue('MY-PASTED-TOKEN');
+    });
   });
 
   describe('Activate subscription action', () => {

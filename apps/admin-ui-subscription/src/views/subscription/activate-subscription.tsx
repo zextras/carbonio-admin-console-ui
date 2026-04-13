@@ -46,6 +46,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
             <Input
               label={t('core.subscription.insert_token', 'Insert here the activation token')}
               autoFocus
+              trimOnPaste
               backgroundColor="gray5"
               value={licenseKey}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => setLicenseKey(e.target.value)}
