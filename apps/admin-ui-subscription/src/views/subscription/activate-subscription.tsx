@@ -45,6 +45,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
           <div className={styles.inputField}>
             <Input
               label={t('core.subscription.insert_token', 'Insert here the activation token')}
+              autoFocus
               backgroundColor="gray5"
               value={licenseKey}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => setLicenseKey(e.target.value)}
