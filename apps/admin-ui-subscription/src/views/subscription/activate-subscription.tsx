@@ -9,7 +9,6 @@ import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
-import { LicenseBanner } from '../dashboard/license-banner';
 import styles from './activate-subscription.module.css';
 
 type Module = {
@@ -34,7 +33,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
 
   return (
     <div className={styles.outer}>
-      <LicenseBanner />
       <div className={styles.header}>
         <Text weight="bold" color="gray0">
           {t('label.subscriptions', 'Subscriptions')}
