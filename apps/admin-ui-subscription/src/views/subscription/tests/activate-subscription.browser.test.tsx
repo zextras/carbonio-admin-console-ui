@@ -6,6 +6,7 @@
 
 import {
   createBrowserZextrasActionInterceptor,
+  delayedSoapApiForBrowser,
   getQueryClient,
   grantUserConfigRights,
   setupBrowserTest,
@@ -85,6 +86,27 @@ describe('ActivateSubscription', () => {
       element.dispatchEvent(pasteEvent);
 
       await expect.element(input).toHaveValue('MY-PASTED-TOKEN');
+    });
+  });
+
+  describe('Activation popup', () => {
+    it.only('should show activation popup with title and description when activate button is clicked', async () => {
+      const mockDelayMs = 500;
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      delayedSoapApiForBrowser('activate-license', 500);
+      await expect.element(page.getByText('Activating subscription')).toBeVisible();
+      await expect
+        .element(page.getByText('Please wait while we verify and set up your workspace'))
+        .toBeVisible();
+
+      await new Promise((resolve) => setTimeout(resolve, mockDelayMs + 50));
     });
   });
 

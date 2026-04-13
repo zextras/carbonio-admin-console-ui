@@ -57,3 +57,38 @@
 .text {
   margin: 0 auto;
 }
+
+.popover {
+  inset: 0;
+  margin: auto;
+  padding: 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--color-gray6-regular, white);
+  width: 400px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.popover::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.popoverDescription {
+  margin-top: 0.5rem;
+}
+
+.progressBarTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-gray3-regular, #e0e0e0);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ebf4ff -34.98%, #2b73d2 100%);
+  transition: width 200ms ease-out;
+}
