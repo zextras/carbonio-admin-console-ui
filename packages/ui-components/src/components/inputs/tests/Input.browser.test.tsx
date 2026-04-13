@@ -12,12 +12,26 @@ import { Input } from '../Input';
 
 const TrimOnPasteInput = ({ trimOnPaste }: { trimOnPaste: boolean }): React.JSX.Element => {
   const [value, setValue] = useState('');
-  return <Input label="Test" value={value} onChange={(e) => setValue(e.target.value)} trimOnPaste={trimOnPaste} />;
+  return (
+    <Input
+      label="Test"
+      value={value}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
+      trimOnPaste={trimOnPaste}
+    />
+  );
 };
 
 const PrefilledTrimOnPasteInput = (): React.JSX.Element => {
-  const [value, setValue] = useState('prefix-');
-  return <Input label="Test" value={value} onChange={(e) => setValue(e.target.value)} trimOnPaste />;
+  const [value, setValue] = useState('some pre-existing value');
+  return (
+    <Input
+      label="Test"
+      value={value}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
+      trimOnPaste
+    />
+  );
 };
 
 function dispatchPaste(element: HTMLElement, text: string): void {
