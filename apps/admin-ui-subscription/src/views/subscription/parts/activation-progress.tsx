@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Text } from '@zextras/ui-components';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './activation-progress.module.css';
@@ -31,25 +31,11 @@ export const ActivationProgress = ({
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const cleanup = useCallback((): void => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => cleanup, [cleanup]);
-
   useEffect(() => {
     if (isPending && !prevIsPending.current) {
       setProgress(0);
       popoverRef.current?.showPopover();
       openedAtRef.current = Date.now();
-
       let current = 0;
       intervalRef.current = setInterval(() => {
         current += 1;
@@ -64,10 +50,8 @@ export const ActivationProgress = ({
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-
       const elapsed = Date.now() - openedAtRef.current;
       const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
-
       timeoutRef.current = setTimeout(() => {
         setProgress(100);
         timeoutRef.current = setTimeout(() => {
@@ -77,13 +61,22 @@ export const ActivationProgress = ({
         }, COMPLETE_DELAY_MS);
       }, remaining);
     }
-
     prevIsPending.current = isPending;
-    return cleanup;
-  }, [cleanup, isPending]);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, [isPending]);
 
   return (
-    <div popover={'manual'} ref={popoverRef} className={styles.popover}>
+    <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.spinnerContainer}>
         <div className={styles.spinnerCircle}>
           <div className={styles.spinner} />
