@@ -86,7 +86,7 @@ export const ActivationProgress = ({
         {t('subscription.activate.activation_progress.title', 'Activating subscription')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light" lineHeight={1.5}>
+        <Text color="gray0" weight="light">
           {t(
             'subscription.activate.activation_progress.description',
             'Please wait while we verify and set up your workspace',
