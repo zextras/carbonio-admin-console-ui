@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Text } from '@zextras/ui-components';
+import { Button, Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
       popoverRef.current?.showPopover();
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
-      }, 3000);
+      }, 3_000_000);
     }
     return () => {
       if (timeoutRef.current) {
@@ -33,19 +33,26 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
     };
   }, [isError]);
 
+  const onClick = () => popoverRef.current?.hidePopover();
+  const buttonLabel = t('label.back', 'back');
+
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
+      <div className={styles.imageCircle}>
+        <icon-wc icon="AlertTriangleOutline" color="error" size="60px"></icon-wc>
+      </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_error.title', 'Something went wrong')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0">
+        <Text color="gray0" weight="light" overflow="break-word">
           {t(
             'subscription.activate.activation_error.description',
-            'Please verify that you have inserted the correct token.\nIf the error persists contact your provider or try again later.',
+            'Please verify that you have inserted the correct token.\n\nIf the error persists contact your provider or try again later.',
           )}
         </Text>
       </div>
+      <Button color="gray0" label={buttonLabel} type="outlined" width="fill" onClick={onClick} />
     </div>
   );
 };
