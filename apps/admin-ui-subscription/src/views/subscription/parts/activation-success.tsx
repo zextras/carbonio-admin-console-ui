@@ -31,7 +31,7 @@ export const ActivationSuccess = ({
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
         onCompleteRef.current?.();
-      }, 3_000_000);
+      }, 3_000);
     }
     return () => {
       if (timeoutRef.current) {
