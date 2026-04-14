@@ -39,7 +39,7 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
           return prev + Math.floor(Math.random() * 5) + 1;
         });
       }, 300);
-    } else if (progress > 0) {
+    } else {
       clearProgressInterval();
       setProgress(100);
       const timeout = setTimeout(() => {
@@ -49,7 +49,7 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
       return () => clearTimeout(timeout);
     }
     return clearProgressInterval;
-  }, [clearProgressInterval, isPending, progress]);
+  }, [clearProgressInterval, isPending]);
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
