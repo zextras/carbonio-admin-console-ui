@@ -5,6 +5,7 @@
  */
 import { Text } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './activation-progress.module.css';
 
@@ -13,6 +14,7 @@ type ActivationProgressProps = {
 };
 
 export const ActivationProgress = ({ isPending }: ActivationProgressProps): React.JSX.Element => {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const popoverRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -52,10 +54,15 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <Text weight="bold" size="large">
-        Activating subscription
+        {t('subscription.activate.activation_progress.title', ' Activating subscription')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0">Please wait while we verify and set up your workspace</Text>
+        <Text color="gray0">
+          {t(
+            'subscription.activate.activation_progress.description',
+            'Please wait while we verify and set up your workspace',
+          )}
+        </Text>
       </div>
       <div className={styles.progressBarTrack}>
         <div className={styles.progressBarFill} style={{ width: `${progress}%` }} />

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
 import styles from './activate-subscription.module.css';
+import { ActivationError } from './parts/activation-error';
 import { ActivationProgress } from './parts/activation-progress';
 import { ActivationSuccess } from './parts/activation-success';
 
@@ -42,11 +43,11 @@ export const ActivateSubscription = (): React.JSX.Element => {
       </div>
       <divider-wc></divider-wc>
       <div className={styles.content}>
-        <Text weight="bold">{t('core.subscription.activation_token', 'Activation token')}</Text>
+        <Text weight="bold">{t('subscription.activate.activation_token', 'Activation token')}</Text>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
             <Input
-              label={t('core.subscription.insert_token', 'Insert here the activation token')}
+              label={t('subscription.activate.insert_token', 'Insert here the activation token')}
               autoFocus
               trimOnPaste
               backgroundColor="gray5"
@@ -56,7 +57,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
           </div>
           <div className={styles.buttonWrap}>
             <Button
-              label={t('core.subscription.activate_subscription', 'Activate subscription')}
+              label={t('subscription.activate.activate', 'Activate subscription')}
               onClick={(): void => activateLicence()}
             />
           </div>
@@ -65,7 +66,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
         <div className={styles.text}>
           <Text color="gray0">
             {t(
-              'core.subscription.disclaimer',
+              'subscription.activate.disclaimer',
               "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",
             )}
           </Text>
@@ -73,6 +74,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
       </div>
       <ActivationProgress isPending={activateLicenseMutation.isPending} />
       <ActivationSuccess isSuccess={activateLicenseMutation.isSuccess} />
+      <ActivationError isError={activateLicenseMutation.isError} />
     </div>
   );
 };

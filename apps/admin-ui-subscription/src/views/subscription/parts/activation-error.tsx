@@ -7,19 +7,19 @@ import { Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './activation-success.module.css';
+import styles from './activation-error.module.css';
 
-type ActivationSuccessProps = {
-  isSuccess: boolean;
+type ActivationErrorProps = {
+  isError: boolean;
 };
 
-export const ActivationSuccess = ({ isSuccess }: ActivationSuccessProps): React.JSX.Element => {
+export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isError) {
       popoverRef.current?.showPopover();
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
@@ -31,18 +31,18 @@ export const ActivationSuccess = ({ isSuccess }: ActivationSuccessProps): React.
         timeoutRef.current = null;
       }
     };
-  }, [isSuccess]);
+  }, [isError]);
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <Text weight="bold" size="large">
-        {t('subscription.activate.activation_success.title', 'Subscription activated')}
+        {t('subscription.activate.activation_error.title', 'Something went wrong')}
       </Text>
       <div className={styles.description}>
         <Text color="gray0">
           {t(
-            'subscription.activate.activation_success.description',
-            'Everything is validated, your license is now active',
+            'subscription.activate.activation_error.description',
+            'Please verify that you have inserted the correct token.\nIf the error persists contact your provider or try again later.',
           )}
         </Text>
       </div>

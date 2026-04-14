@@ -142,6 +142,27 @@ describe('ActivateSubscription', () => {
         .element(page.getByText('Everything is validated, your license is now active'))
         .toBeVisible();
     });
+
+    it('should show error popover when activation fails', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () => HttpResponse.error());
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Something went wrong', { exact: true })).toBeVisible();
+      await expect
+        .element(
+          page.getByText(
+            'Please verify that you insert the correct token. If the error persists contact your provider or try again later.',
+          ),
+        )
+        .toBeVisible();
+    });
   });
 
   describe('Activate subscription action', () => {
