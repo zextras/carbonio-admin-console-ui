@@ -5,10 +5,12 @@
  */
 import { Button, Input, Text } from '@zextras/ui-components';
 import { useActivateLicense } from '@zextras/ui-shared';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
+import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import styles from './activate-subscription.module.css';
 import { ActivationError } from './parts/activation-error';
 import { ActivationProgress } from './parts/activation-progress';
@@ -27,12 +29,23 @@ export type AllModuleConfig = {
 
 export const ActivateSubscription = (): React.JSX.Element => {
   const [licenseKey, setLicenseKey] = useState('');
+  const [showResult, setShowResult] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const activateLicenseMutation = useActivateLicense();
 
   const activateLicence = (): void => {
+    setShowResult(false);
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
   };
+
+  const handleProgressComplete = useCallback((): void => {
+    setShowResult(true);
+  }, []);
+
+  const handleSuccessComplete = useCallback((): void => {
+    navigate(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`, { replace: true });
+  }, [navigate]);
 
   return (
     <div className={styles.outer}>
@@ -72,9 +85,15 @@ export const ActivateSubscription = (): React.JSX.Element => {
           </Text>
         </div>
       </div>
-      <ActivationProgress isPending={activateLicenseMutation.isPending} />
-      <ActivationSuccess isSuccess={activateLicenseMutation.isSuccess} />
-      <ActivationError isError={activateLicenseMutation.isError} />
+      <ActivationProgress
+        isPending={activateLicenseMutation.isPending}
+        onComplete={handleProgressComplete}
+      />
+      <ActivationSuccess
+        isSuccess={showResult && activateLicenseMutation.isSuccess}
+        onComplete={handleSuccessComplete}
+      />
+      <ActivationError isError={showResult && activateLicenseMutation.isError} />
     </div>
   );
 };

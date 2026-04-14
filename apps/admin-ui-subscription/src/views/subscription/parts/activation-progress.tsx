@@ -4,46 +4,83 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Text } from '@zextras/ui-components';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './activation-progress.module.css';
 
+const MIN_DISPLAY_MS = 5000;
+const COMPLETE_DELAY_MS = 600;
+
 type ActivationProgressProps = {
   isPending: boolean;
+  onComplete?: () => void;
 };
 
-export const ActivationProgress = ({ isPending }: ActivationProgressProps): React.JSX.Element => {
+export const ActivationProgress = ({
+  isPending,
+  onComplete,
+}: ActivationProgressProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const openedAtRef = useRef<number>(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevIsPending = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  const cleanup = useCallback((): void => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => cleanup, [cleanup]);
 
   useEffect(() => {
-    if (!isPending) return;
-    popoverRef.current?.showPopover();
-    setProgress(0);
-
-    let current = 0;
-    const id = setInterval(() => {
-      current += 1;
-      setProgress(current);
-      if (current >= 90) clearInterval(id);
-    }, 90);
-
-    return () => clearInterval(id);
-  }, [isPending]);
-
-  useEffect(() => {
-    if (isPending) return;
-
-    setProgress(100);
-    const id = setTimeout(() => {
-      popoverRef.current?.hidePopover();
+    if (isPending && !prevIsPending.current) {
       setProgress(0);
-    }, 600);
+      popoverRef.current?.showPopover();
+      openedAtRef.current = Date.now();
 
-    return () => clearTimeout(id);
-  }, [isPending]);
+      let current = 0;
+      intervalRef.current = setInterval(() => {
+        current += 1;
+        setProgress(current);
+        if (current >= 90 && intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }, 90);
+    } else if (!isPending && prevIsPending.current) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      const elapsed = Date.now() - openedAtRef.current;
+      const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
+
+      timeoutRef.current = setTimeout(() => {
+        setProgress(100);
+        timeoutRef.current = setTimeout(() => {
+          popoverRef.current?.hidePopover();
+          setProgress(0);
+          onCompleteRef.current?.();
+        }, COMPLETE_DELAY_MS);
+      }, remaining);
+    }
+
+    prevIsPending.current = isPending;
+    return cleanup;
+  }, [cleanup, isPending]);
 
   return (
     <div popover={'manual'} ref={popoverRef} className={styles.popover}>

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { useLicenseInfo, usePrimaryBarState } from '@zextras/ui-shared';
+import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
@@ -22,21 +22,32 @@ function getContainerStyle(isPrimaryBarExpanded: boolean) {
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
 
-  const { data: licenseData } = useLicenseInfo();
-
   return (
     <Container height={'fit'}>
       <Breadcrumb />
       <Routes>
         <Route
-          path={'/'}
+          path="/"
           element={
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
                   <Suspense fallback={<spinner-wc />}>
-                    {!licenseData && <ActivateSubscription />}
-                    {licenseData && <Subscription />}
+                    <Subscription />
+                  </Suspense>
+                </Container>
+              </Container>
+            </Container>
+          }
+        />
+        <Route
+          path="/activate"
+          element={
+            <Container orientation="horizontal" mainAlignment="flex-start">
+              <Container style={{ maxWidth: '100%' }}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                  <Suspense fallback={<spinner-wc />}>
+                    <ActivateSubscription />
                   </Suspense>
                 </Container>
               </Container>

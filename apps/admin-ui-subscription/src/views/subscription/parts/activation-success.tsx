@@ -11,18 +11,25 @@ import styles from './activation-success.module.css';
 
 type ActivationSuccessProps = {
   isSuccess: boolean;
+  onComplete?: () => void;
 };
 
-export const ActivationSuccess = ({ isSuccess }: ActivationSuccessProps): React.JSX.Element => {
+export const ActivationSuccess = ({
+  isSuccess,
+  onComplete,
+}: ActivationSuccessProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     if (isSuccess) {
       popoverRef.current?.showPopover();
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
+        onCompleteRef.current?.();
       }, 3000);
     }
     return () => {
