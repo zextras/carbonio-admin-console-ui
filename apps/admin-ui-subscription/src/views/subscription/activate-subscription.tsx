@@ -66,6 +66,9 @@ export const ActivateSubscription = (): React.JSX.Element => {
               backgroundColor="gray5"
               value={licenseKey}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => setLicenseKey(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => {
+                if (e.key === 'Enter') activateLicence();
+              }}
             />
           </div>
           <div className={styles.buttonWrap}>
