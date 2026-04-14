@@ -46,7 +46,7 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
   }, [isPending]);
 
   return (
-    <div popover={'manual'} ref={popoverRef} className={styles.popover} data-testid="activation-progress-popover">
+    <div popover={'manual'} ref={popoverRef} className={styles.popover}>
       <div className={styles.spinnerContainer}>
         <div className={styles.spinnerCircle}>
           <div className={styles.spinner} />

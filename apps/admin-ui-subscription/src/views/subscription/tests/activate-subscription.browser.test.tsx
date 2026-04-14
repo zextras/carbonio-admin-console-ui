@@ -89,7 +89,7 @@ describe('ActivateSubscription', () => {
     });
   });
 
-  describe.only('Activation popup', () => {
+  describe('Activation popup', () => {
     it('should show activation popup with title and description when activate button is clicked', async () => {
       const mockDelayMs = 500;
       setupActivateSubscriptionTest(<ActivateSubscription />);
