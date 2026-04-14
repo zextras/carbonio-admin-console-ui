@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Text } from '@zextras/ui-components';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './activation-progress.module.css';
@@ -17,44 +17,38 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const popoverRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const clearProgressInterval = useCallback((): void => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
 
   useEffect(() => {
-    if (isPending) {
+    if (!isPending) return;
+    popoverRef.current?.showPopover();
+    setProgress(0);
+
+    let current = 0;
+    const id = setInterval(() => {
+      current += 1;
+      setProgress(current);
+      if (current >= 90) clearInterval(id);
+    }, 90);
+
+    return () => clearInterval(id);
+  }, [isPending]);
+
+  useEffect(() => {
+    if (isPending) return;
+
+    setProgress(100);
+    const id = setTimeout(() => {
+      popoverRef.current?.hidePopover();
       setProgress(0);
-      popoverRef.current?.showPopover();
-      intervalRef.current = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearProgressInterval();
-            return prev;
-          }
-          return prev + Math.floor(Math.random() * 5) + 1;
-        });
-      }, 300);
-    } else {
-      clearProgressInterval();
-      setProgress(100);
-      const timeout = setTimeout(() => {
-        popoverRef.current?.hidePopover();
-        setProgress(0);
-      }, 300);
-      return () => clearTimeout(timeout);
-    }
-    return clearProgressInterval;
-  }, [clearProgressInterval, isPending]);
+    }, 600);
+
+    return () => clearTimeout(id);
+  }, [isPending]);
 
   return (
-    <div popover="manual" ref={popoverRef} className={styles.popover}>
+    <div popover={'manual' as never} ref={popoverRef} className={styles.popover}>
       <Text weight="bold" size="large">
-        {t('subscription.activate.activation_progress.title', ' Activating subscription')}
+        {t('subscription.activate.activation_progress.title', 'Activating subscription')}
       </Text>
       <div className={styles.description}>
         <Text color="gray0">
