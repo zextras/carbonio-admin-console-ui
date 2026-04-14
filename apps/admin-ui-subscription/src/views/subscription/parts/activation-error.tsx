@@ -45,10 +45,10 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
         {t('subscription.activate.activation_error.title', 'Something went wrong')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light" overflow="break-word">
+        <Text color="gray0" weight="light" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
           {t(
             'subscription.activate.activation_error.description',
-            'Please verify that you have inserted the correct token.\n\nIf the error persists contact your provider or try again later.',
+            'Please verify that you have inserted the correct token.\nIf the error persists contact your provider or try again later.',
           )}
         </Text>
       </div>
