@@ -5,11 +5,12 @@
  */
 import { Button, Input, Text } from '@zextras/ui-components';
 import { useActivateLicense } from '@zextras/ui-shared';
-import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
 import styles from './activate-subscription.module.css';
+import { ActivationProgress } from './parts/activation-progress';
 
 type Module = {
   value: string;
@@ -24,43 +25,8 @@ export type AllModuleConfig = {
 
 export const ActivateSubscription = (): React.JSX.Element => {
   const [licenseKey, setLicenseKey] = useState('');
-  const [progress, setProgress] = useState(0);
   const { t } = useTranslation();
   const activateLicenseMutation = useActivateLicense();
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const clearProgressInterval = useCallback((): void => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activateLicenseMutation.isPending) {
-      setProgress(0);
-      popoverRef.current?.showPopover();
-      intervalRef.current = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            clearProgressInterval();
-            return prev;
-          }
-          return prev + Math.floor(Math.random() * 5) + 1;
-        });
-      }, 300);
-    } else if (progress > 0) {
-      clearProgressInterval();
-      setProgress(100);
-      const timeout = setTimeout(() => {
-        popoverRef.current?.hidePopover();
-        setProgress(0);
-      }, 300);
-      return () => clearTimeout(timeout);
-    }
-    return clearProgressInterval;
-  }, [activateLicenseMutation.isPending, clearProgressInterval, progress]);
 
   const activateLicence = (): void => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
@@ -94,7 +60,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
             />
           </div>
         </div>
-        <img src={subscription_logo} alt="logo" className={styles.logo} />
+        <img src={subscription_logo} alt="subscription logo" className={styles.logo} />
         <div className={styles.text}>
           <Text color="gray0">
             {t(
@@ -104,22 +70,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
           </Text>
         </div>
       </div>
-      <div popover="manual" ref={popoverRef} className={styles.popover}>
-        <Text weight="bold" size="large">
-          {t('core.subscription.activating_subscription', 'Activating subscription')}
-        </Text>
-        <div className={styles.popoverDescription}>
-          <Text color="gray0">
-            {t(
-              'core.subscription.activating_description',
-              'Please wait while we verify and set up your workspace',
-            )}
-          </Text>
-        </div>
-        <div className={styles.progressBarTrack}>
-          <div className={styles.progressBarFill} style={{ width: `${progress}%` }} />
-        </div>
-      </div>
+      <ActivationProgress isPending={activateLicenseMutation.isPending} />
     </div>
   );
 };
