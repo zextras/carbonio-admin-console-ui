@@ -7,6 +7,7 @@ import { Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import activation_success from '../../../assets/activate-subscription-success.svg';
 import styles from './activation-success.module.css';
 
 type ActivationSuccessProps = {
@@ -30,7 +31,7 @@ export const ActivationSuccess = ({
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
         onCompleteRef.current?.();
-      }, 3000);
+      }, 3_000_000);
     }
     return () => {
       if (timeoutRef.current) {
@@ -42,11 +43,14 @@ export const ActivationSuccess = ({
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
+      <div className={styles.imageCircle}>
+        <img src={activation_success} className={styles.image} alt="activation_success" />
+      </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_success.title', 'Subscription activated')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0">
+        <Text color="gray0" weight="light" lineHeight={1.5}>
           {t(
             'subscription.activate.activation_success.description',
             'Everything is validated, your license is now active',
