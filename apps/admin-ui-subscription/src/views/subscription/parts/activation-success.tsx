@@ -7,7 +7,6 @@ import { Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import activation_success from '../../../assets/activate-subscription-success.svg';
 import styles from './activation-success.module.css';
 
 type ActivationSuccessProps = {
@@ -44,7 +43,7 @@ export const ActivationSuccess = ({
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
-        <img src={activation_success} className={styles.image} alt="activation_success" />
+        <icon-wc icon="CheckmarkCircle" color="success" size="60px"></icon-wc>
       </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_success.title', 'Subscription activated')}
