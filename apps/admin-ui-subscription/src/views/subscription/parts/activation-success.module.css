@@ -1,0 +1,24 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.popover {
+  inset: 0;
+  margin: auto;
+  padding: 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--color-gray6-regular, white);
+  width: 400px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.popover::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.description {
+  margin-top: 0.5rem;
+}

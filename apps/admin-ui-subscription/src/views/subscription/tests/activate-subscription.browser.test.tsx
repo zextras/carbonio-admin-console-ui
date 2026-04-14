@@ -89,8 +89,8 @@ describe('ActivateSubscription', () => {
     });
   });
 
-  describe('Activation popup', () => {
-    it.only('should show activation popup with title and description when activate button is clicked', async () => {
+  describe.only('Activation popup', () => {
+    it('should show activation popup with title and description when activate button is clicked', async () => {
       const mockDelayMs = 500;
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
@@ -107,6 +107,40 @@ describe('ActivateSubscription', () => {
         .toBeVisible();
 
       await new Promise((resolve) => setTimeout(resolve, mockDelayMs + 50));
+    });
+
+    it('should show success popover after successful activation', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                message: 'License activated successfully',
+                response: {
+                  type: 'Purchased',
+                  subType: 'PERPETUAL',
+                  expired: false,
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Subscription activated')).toBeVisible();
+      await expect
+        .element(page.getByText('Everything is validated, your license is now active'))
+        .toBeVisible();
     });
   });
 

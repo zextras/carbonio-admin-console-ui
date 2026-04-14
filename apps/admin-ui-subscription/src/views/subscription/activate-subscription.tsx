@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import subscription_logo from '../../assets/subscription_empty.svg';
 import styles from './activate-subscription.module.css';
 import { ActivationProgress } from './parts/activation-progress';
+import { ActivationSuccess } from './parts/activation-success';
 
 type Module = {
   value: string;
@@ -71,6 +72,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
         </div>
       </div>
       <ActivationProgress isPending={activateLicenseMutation.isPending} />
+      <ActivationSuccess isSuccess={activateLicenseMutation.isSuccess} />
     </div>
   );
 };
