@@ -158,7 +158,74 @@ describe('ActivateSubscription', () => {
       await expect
         .element(
           page.getByText(
-            'Please verify that you insert the correct token. If the error persists contact your provider or try again later.',
+            'Please verify that you have inserted the correct token. If the error persists contact your provider or try again later.',
+          ),
+        )
+        .toBeVisible();
+    });
+
+    it('should show error popover when API returns ok:true with type None', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'None',
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Something went wrong', { exact: true })).toBeVisible();
+      await expect
+        .element(
+          page.getByText(
+            'Please verify that you have inserted the correct token. If the error persists contact your provider or try again later.',
+          ),
+        )
+        .toBeVisible();
+    });
+
+    it('should show error popover when API returns ok:false', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: false,
+                message: 'Invalid token',
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'BAD-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Something went wrong', { exact: true })).toBeVisible();
+      await expect
+        .element(
+          page.getByText(
+            'Please verify that you have inserted the correct token. If the error persists contact your provider or try again later.',
           ),
         )
         .toBeVisible();
