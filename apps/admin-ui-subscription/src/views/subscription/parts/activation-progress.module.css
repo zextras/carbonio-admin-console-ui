@@ -10,13 +10,51 @@
   padding: 1.5rem;
   border: none;
   border-radius: 0.5rem;
+  align-items: center;
   background: var(--color-gray6-regular, white);
-  width: 400px;
+  padding: 2rem;
+  width: calc(500px - 4rem);
+  height: calc(260px - 4rem);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
 }
 
 .popover::backdrop {
   background: rgba(0, 0, 0, 0.5);
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.spinnerCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 1000px;
+  border: 1px solid var(--color-primary-regular);
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--color-primary-regular);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .description {
@@ -29,12 +67,12 @@
   border-radius: 4px;
   background: var(--color-gray3-regular, #e0e0e0);
   overflow: hidden;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .progressBarFill {
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(90deg, #ebf4ff -34.98%, #2b73d2 100%);
+  background: linear-gradient(90deg, #ebf4ff -34.98%, var(--color-primary-regular) 100%);
   transition: width 200ms ease-out;
 }

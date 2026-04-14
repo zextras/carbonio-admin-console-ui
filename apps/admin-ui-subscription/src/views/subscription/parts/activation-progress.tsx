@@ -46,7 +46,12 @@ export const ActivationProgress = ({ isPending }: ActivationProgressProps): Reac
   }, [isPending]);
 
   return (
-    <div popover={'manual'} ref={popoverRef} className={styles.popover}>
+    <div popover={'manual'} ref={popoverRef} className={styles.popover} data-testid="activation-progress-popover">
+      <div className={styles.spinnerContainer}>
+        <div className={styles.spinnerCircle}>
+          <div className={styles.spinner} />
+        </div>
+      </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_progress.title', 'Activating subscription')}
       </Text>
