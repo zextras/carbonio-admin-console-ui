@@ -24,6 +24,7 @@ import {
   useDomainStore,
   useGlobalCarbonioSendAnalytics,
   useIsAdvanced,
+  useTotalQuotaActive,
 } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -94,6 +95,7 @@ const DomainListPanel: FC = () => {
   const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 
   const isAdvanced = useIsAdvanced();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const { data: backupData } = useBackupServers({
     enabled: isAdvanced,
   });
@@ -403,16 +405,23 @@ const DomainListPanel: FC = () => {
 
   const detailItems = useMemo(
     () =>
-      !isAdvanced
-        ? detailOptions.filter(
-            (item: ListItemType) =>
-              item?.id !== WHITELABEL_SETTINGS &&
-              item?.id !== SAML &&
-              item?.id !== TWO_FACTOR_AUTHENTICATION,
-          )
-        : detailOptions,
+      detailOptions.filter((item: ListItemType) => {
+        if (!isAdvanced) {
+          if (
+            item?.id === WHITELABEL_SETTINGS ||
+            item?.id === SAML ||
+            item?.id === TWO_FACTOR_AUTHENTICATION
+          ) {
+            return false;
+          }
+        }
+        if (isTotalQuotaActive && item?.id === MAILBOX_QUOTA) {
+          return false;
+        }
+        return true;
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detailOptions, isAdvanced, is2FAAvailable],
+    [detailOptions, isAdvanced, is2FAAvailable, isTotalQuotaActive],
   );
 
   const globalOptionsItems = useMemo(

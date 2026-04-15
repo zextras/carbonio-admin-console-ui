@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useTotalQuotaActive } from '@zextras/ui-shared';
 import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
-import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
 import { AccountDetail, CosDetail } from '../../account-context';
 import { EditAccountQuotaInputsLegacy } from './edit-account-quota-inputs-legacy';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
