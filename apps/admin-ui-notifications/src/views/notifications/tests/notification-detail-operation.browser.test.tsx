@@ -10,8 +10,8 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import NotificationDetailOperation from '../notification-detail-operation';
 import { type Notification, type ZextrasRequestBody } from '../../../types/notifications';
+import NotificationDetailOperation from '../notification-detail-operation';
 
 function setupGetAllNotificationsInterceptor(
 	notifications: Array<Notification> = [],

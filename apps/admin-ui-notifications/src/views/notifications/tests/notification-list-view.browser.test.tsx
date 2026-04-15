@@ -9,8 +9,8 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import NotificationListView from '../notification-list-view';
 import { type Notification, type ZextrasRequestBody } from '../../../types/notifications';
+import NotificationListView from '../notification-list-view';
 
 const MOCK_NOTIFICATIONS: Array<Notification> = [
 	{
