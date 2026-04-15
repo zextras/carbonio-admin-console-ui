@@ -9,11 +9,13 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserConfigRights,
+  LocationDisplay,
+  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { ActivateSubscription } from '../activate-subscription';
@@ -28,6 +30,10 @@ function setupActivateSubscriptionTest(
 describe('ActivateSubscription', () => {
   beforeEach(async () => {
     await grantUserConfigRights();
+  });
+
+  afterEach(() => {
+    resetMockWorker();
   });
 
   describe('Rendering', () => {
@@ -267,6 +273,235 @@ describe('ActivateSubscription', () => {
       expect(body!.Body.zextras.token).toBe('TEST-TOKEN-ABC');
       expect(body!.Body.zextras.module).toBe('ZxCore');
       expect(body!.Body.zextras).not.toHaveProperty('renewal');
+    });
+  });
+
+  describe('Validation', () => {
+    it('should show validation error when activating with empty input', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: { type: 'Purchased', features: [] },
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect
+        .element(page.getByText('Please enter your activation token'))
+        .toBeVisible();
+    });
+
+    it('should show validation error when activating with whitespace-only input', async () => {
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, '   ');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect
+        .element(page.getByText('Please enter your activation token'))
+        .toBeVisible();
+    });
+
+    it('should clear validation error when user starts typing', async () => {
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await expect.element(input).toBeVisible();
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect
+        .element(page.getByText('Please enter your activation token'))
+        .toBeVisible();
+
+      await userEvent.type(input, 'A');
+
+      const errorElements = page.getByText('Please enter your activation token').elements();
+      expect(errorElements).toHaveLength(0);
+    });
+
+    it('should not show validation error on blur with valid content', async () => {
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'VALID-TOKEN');
+
+      await userEvent.click(document.body);
+
+      const errorElements = page.getByText('Please enter your activation token').elements();
+      expect(errorElements).toHaveLength(0);
+    });
+  });
+
+  describe('Keyboard interaction', () => {
+    it('should trigger activation when Enter key is pressed in input', async () => {
+      const interceptor = createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                message: 'License activated successfully',
+                response: {
+                  type: 'Purchased',
+                  subType: 'PERPETUAL',
+                  expired: false,
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TOKEN-VIA-ENTER');
+
+      await userEvent.keyboard('{Enter}');
+
+      await expect.poll(() => interceptor.getCalledTimes()).toBe(1);
+
+      const body = interceptor.getLastRequestBody<Record<string, any>>();
+      expect(body!.Body.zextras.token).toBe('TOKEN-VIA-ENTER');
+    });
+  });
+
+  describe('Re-activation flow', () => {
+    it(
+      'should allow retrying after a failed activation',
+      async () => {
+        let shouldFail = true;
+        const interceptor = createBrowserZextrasActionInterceptor('activate-license', () => {
+          if (shouldFail) {
+            return HttpResponse.error();
+          }
+          return HttpResponse.json({
+            Body: {
+              response: {
+                content: JSON.stringify({
+                  ok: true,
+                  message: 'License activated successfully',
+                  response: {
+                    type: 'Purchased',
+                    subType: 'PERPETUAL',
+                    expired: false,
+                    features: [],
+                  },
+                }),
+              },
+            },
+          });
+        });
+
+        setupActivateSubscriptionTest(<ActivateSubscription />);
+
+        const input = page.getByRole('textbox');
+        await userEvent.type(input, 'FIRST-TOKEN');
+
+        const activateButton = page.getByText('Activate subscription');
+        await activateButton.click();
+
+        await expect
+          .element(page.getByText('Something went wrong', { exact: true }))
+          .toBeVisible();
+
+        shouldFail = false;
+        await userEvent.clear(input);
+        await userEvent.type(input, 'SECOND-TOKEN');
+        await activateButton.click();
+
+        await expect.element(page.getByText('Subscription activated')).toBeVisible();
+        await expect.poll(() => interceptor.getCalledTimes()).toBeGreaterThanOrEqual(2);
+
+        const body = interceptor.getLastRequestBody<Record<string, any>>();
+        expect(body!.Body.zextras.token).toBe('SECOND-TOKEN');
+      },
+      30_000,
+    );
+  });
+
+  describe('Navigation', () => {
+    it('should navigate to subscriptions page after success popup completes', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                message: 'License activated successfully',
+                response: {
+                  type: 'Purchased',
+                  subType: 'PERPETUAL',
+                  expired: false,
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      const queryClient = getQueryClient();
+      setupBrowserTest(
+        <>
+          <ActivateSubscription />
+          <LocationDisplay />
+        </>,
+        { queryClient },
+      );
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Subscription activated')).toBeVisible();
+
+      const goButton = page.getByText('go to my subscription');
+      await goButton.click();
+
+      const location = page.getByTestId('location');
+      await expect.element(location).toHaveTextContent('/manage/subscriptions');
+    });
+  });
+
+  describe('Error popover interaction', () => {
+    it('should hide error popover when back button is clicked', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () => HttpResponse.error());
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'BAD-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Something went wrong', { exact: true })).toBeVisible();
+
+      const backButton = page.getByText('back');
+      await backButton.click();
+
+      await expect
+        .element(page.getByText('Something went wrong', { exact: true }))
+        .not.toBeVisible();
     });
   });
 });
