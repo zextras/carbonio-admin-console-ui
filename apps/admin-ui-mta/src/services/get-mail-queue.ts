@@ -6,13 +6,25 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { MtaMailQueue } from '../../types';
+
+type GetMailQueueRequest = {
+	_jsns: string;
+	server: {
+		name: string;
+		queue: { name: string; scan: number; query: { offset: number; limit: number } };
+	};
+};
+
+type GetMailQueueResponse = { server: Array<{ queue: Array<MtaMailQueue> }> };
+
 export const getMailQueue = async (
 	serverName: string,
 	queueName?: string,
 	offset?: number,
-	limit?: number
-): Promise<any> => {
-	const request: any = {
+	limit?: number,
+): Promise<GetMailQueueResponse> => {
+	const request: GetMailQueueRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		server: {
 			name: serverName,
@@ -21,13 +33,11 @@ export const getMailQueue = async (
 				scan: 1,
 				query: {
 					offset: offset || 0,
-					limit: limit || 25
-				}
-			}
-		}
+					limit: limit || 25,
+				},
+			},
+		},
 	};
 
-	return soapFetch(`GetMailQueue`, {
-		...request
-	});
+	return soapFetch(`GetMailQueue`, { ...request });
 };

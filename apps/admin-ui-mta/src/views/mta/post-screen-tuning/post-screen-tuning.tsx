@@ -63,13 +63,13 @@ const MTAPostScreenTuning: FC = () => {
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaPostTuningInitialDetail((prev: any) => ({
+    setMtaPostTuningInitialDetail((prev) => ({
       ...prev,
       [key]: value,
-    }));
+    } as MtaPostTuning));
   }, []);
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaPostTuningDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaPostTuningDetail((prev) => ({ ...prev, [key]: value } as MtaPostTuning));
   }, []);
 
   const setInitialAndCurrentValue = useCallback(
