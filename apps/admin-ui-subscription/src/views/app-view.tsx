@@ -20,6 +20,7 @@ const baseStyle = {
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
+    width: '100%',
     maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
     transition: 'width 300ms',
   };
