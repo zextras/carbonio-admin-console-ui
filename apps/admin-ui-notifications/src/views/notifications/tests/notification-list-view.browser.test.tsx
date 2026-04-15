@@ -10,8 +10,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import NotificationListView from '../notification-list-view';
+import { type Notification, type ZextrasRequestBody } from '../../../types/notifications';
 
-const MOCK_NOTIFICATIONS = [
+const MOCK_NOTIFICATIONS: Array<Notification> = [
 	{
 		id: 'notif-1',
 		server: 'mailstore1.test.com',
@@ -48,11 +49,11 @@ const MOCK_NOTIFICATIONS = [
 ];
 
 function setupGetAllNotificationsInterceptor(
-	notifications: typeof MOCK_NOTIFICATIONS = MOCK_NOTIFICATIONS,
+	notifications: Array<Notification> = MOCK_NOTIFICATIONS,
 ): void {
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
-			const body = (await request.json()) as any;
+			const body = (await request.json()) as ZextrasRequestBody;
 			const zextrasBody = body?.Body?.zextras;
 
 			if (zextrasBody?.action === 'getAllNotifications') {
