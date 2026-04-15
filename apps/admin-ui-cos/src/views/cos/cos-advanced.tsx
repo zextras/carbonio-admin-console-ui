@@ -5,7 +5,7 @@
  */
 
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
-import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
+import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import {
   ChangeEvent,
@@ -48,7 +48,7 @@ import COSGeneralOptions from './advanced/cos-general-options';
 import COSPassword from './advanced/cos-password';
 import COSQuotas from './advanced/cos-quotas';
 import COSTimeoutPolicy from './advanced/cos-timeout-policy';
-import { useTotalQuotaActive } from './hooks/useTotalQuotaActive';
+
 
 type AdvancedBackupAttributes = {
   [BACKUP_ENABLED]: boolean | undefined;

@@ -30,3 +30,4 @@ export const getRoutes = vi.fn(() => []);
 export const useRoutes = vi.fn(() => []);
 export const useContextBridge = vi.fn();
 export const queryClient = vi.fn();
+export const useTotalQuotaActive = vi.fn(() => false);
