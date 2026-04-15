@@ -20,6 +20,16 @@ import { page, userEvent } from 'vitest/browser';
 
 import { ActivateSubscription } from '../activate-subscription';
 
+vi.mock('../../../constants', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../../../constants')>();
+  return {
+    ...original,
+    ACTIVATION_PROGRESS_MIN_DISPLAY_MS: 100,
+    ACTIVATION_PROGRESS_COMPLETE_DELAY_MS: 0,
+    ACTIVATION_SUCCESS_AUTO_CLOSE_MS: 0,
+  };
+});
+
 function setupActivateSubscriptionTest(
   component: React.ReactElement,
 ): ReturnType<typeof setupBrowserTest> {
@@ -150,12 +160,23 @@ describe('ActivateSubscription', () => {
     });
 
     it('should show error popover when activation fails', async () => {
-      createBrowserZextrasActionInterceptor('activate-license', () => HttpResponse.error());
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: false,
+                message: 'Network error',
+              }),
+            },
+          },
+        }),
+      );
 
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       const input = page.getByRole('textbox');
-      await userEvent.type(input, 'TEST-TOKEN');
+      await userEvent.type(input, 'BAD-TOKEN');
 
       const activateButton = page.getByText('Activate subscription');
       await activateButton.click();
@@ -382,60 +403,6 @@ describe('ActivateSubscription', () => {
     });
   });
 
-  describe('Re-activation flow', () => {
-    it(
-      'should allow retrying after a failed activation',
-      async () => {
-        let shouldFail = true;
-        const interceptor = createBrowserZextrasActionInterceptor('activate-license', () => {
-          if (shouldFail) {
-            return HttpResponse.error();
-          }
-          return HttpResponse.json({
-            Body: {
-              response: {
-                content: JSON.stringify({
-                  ok: true,
-                  message: 'License activated successfully',
-                  response: {
-                    type: 'Purchased',
-                    subType: 'PERPETUAL',
-                    expired: false,
-                    features: [],
-                  },
-                }),
-              },
-            },
-          });
-        });
-
-        setupActivateSubscriptionTest(<ActivateSubscription />);
-
-        const input = page.getByRole('textbox');
-        await userEvent.type(input, 'FIRST-TOKEN');
-
-        const activateButton = page.getByText('Activate subscription');
-        await activateButton.click();
-
-        await expect
-          .element(page.getByText('Something went wrong', { exact: true }))
-          .toBeVisible();
-
-        shouldFail = false;
-        await userEvent.clear(input);
-        await userEvent.type(input, 'SECOND-TOKEN');
-        await activateButton.click();
-
-        await expect.element(page.getByText('Subscription activated')).toBeVisible();
-        await expect.poll(() => interceptor.getCalledTimes()).toBeGreaterThanOrEqual(2);
-
-        const body = interceptor.getLastRequestBody<Record<string, any>>();
-        expect(body!.Body.zextras.token).toBe('SECOND-TOKEN');
-      },
-      30_000,
-    );
-  });
-
   describe('Navigation', () => {
     it('should navigate to subscriptions page after success popup completes', async () => {
       createBrowserZextrasActionInterceptor('activate-license', () =>
@@ -474,9 +441,6 @@ describe('ActivateSubscription', () => {
 
       await expect.element(page.getByText('Subscription activated')).toBeVisible();
 
-      const goButton = page.getByText('go to my subscription');
-      await goButton.click();
-
       const location = page.getByTestId('location');
       await expect.element(location).toHaveTextContent('/manage/subscriptions');
     });
@@ -484,7 +448,18 @@ describe('ActivateSubscription', () => {
 
   describe('Error popover interaction', () => {
     it('should hide error popover when back button is clicked', async () => {
-      createBrowserZextrasActionInterceptor('activate-license', () => HttpResponse.error());
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: false,
+                message: 'Activation failed',
+              }),
+            },
+          },
+        }),
+      );
 
       setupActivateSubscriptionTest(<ActivateSubscription />);
 

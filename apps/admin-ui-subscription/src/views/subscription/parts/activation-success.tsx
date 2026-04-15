@@ -7,6 +7,7 @@ import { Button, Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ACTIVATION_SUCCESS_AUTO_CLOSE_MS } from '../../../constants';
 import styles from './activation-success.module.css';
 
 type ActivationSuccessProps = {
@@ -30,7 +31,7 @@ export const ActivationSuccess = ({
       timeoutRef.current = setTimeout(() => {
         popoverRef.current?.hidePopover();
         onCompleteRef.current?.();
-      }, 3_000);
+      }, ACTIVATION_SUCCESS_AUTO_CLOSE_MS);
     }
     return () => {
       if (timeoutRef.current) {

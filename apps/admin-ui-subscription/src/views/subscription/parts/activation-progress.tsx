@@ -7,10 +7,11 @@ import { Text } from '@zextras/ui-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  ACTIVATION_PROGRESS_COMPLETE_DELAY_MS,
+  ACTIVATION_PROGRESS_MIN_DISPLAY_MS,
+} from '../../../constants';
 import styles from './activation-progress.module.css';
-
-const MIN_DISPLAY_MS = 5000;
-const COMPLETE_DELAY_MS = 600;
 
 type ActivationProgressProps = {
   isPending: boolean;
@@ -51,14 +52,14 @@ export const ActivationProgress = ({
         intervalRef.current = null;
       }
       const elapsed = Date.now() - openedAtRef.current;
-      const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
+      const remaining = Math.max(0, ACTIVATION_PROGRESS_MIN_DISPLAY_MS - elapsed);
       timeoutRef.current = setTimeout(() => {
         setProgress(100);
         timeoutRef.current = setTimeout(() => {
           popoverRef.current?.hidePopover();
           setProgress(0);
           onCompleteRef.current?.();
-        }, COMPLETE_DELAY_MS);
+        }, ACTIVATION_PROGRESS_COMPLETE_DELAY_MS);
       }, remaining);
     }
     prevIsPending.current = isPending;
