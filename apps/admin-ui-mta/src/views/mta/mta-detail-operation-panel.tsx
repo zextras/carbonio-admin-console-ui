@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { FC } from 'react';
+import { FC, ReactElement } from 'react';
 import { useParams } from 'react-router';
 
 import {
@@ -27,7 +27,7 @@ const MTADetailOperationPanel: FC = () => {
   const { operation } = useParams();
   return (
     <>
-      {((): any => {
+      {((): ReactElement | null => {
         switch (operation) {
           case GENERAL:
             return <MTAInboundFlowSecurity />;

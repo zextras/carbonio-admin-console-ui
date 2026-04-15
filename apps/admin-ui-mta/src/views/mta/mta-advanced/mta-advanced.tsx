@@ -57,11 +57,11 @@ const MTAAdvanced: FC = () => {
   );
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAdvancedInitialDetail((prev) => ({ ...prev, [key]: value } as MtaAdvanced));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaAdvancedDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAdvancedDetail((prev) => ({ ...prev, [key]: value } as MtaAdvanced));
   }, []);
 
   const [limitMaxMessageSize, setLimitMaxMessageSize] = useState<boolean>(false);
@@ -304,8 +304,8 @@ const MTAAdvanced: FC = () => {
   }, [mtaAdvancedDetail, mtaAdvancedInitialDetail]);
 
   const onAmavisLogLevelChange = useCallback(
-    (v: any) => {
-      setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
+    (v: string | null) => {
+      if (v !== null) setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
     },
     [setValue],
   );

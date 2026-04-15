@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const mailQueueFlushByServer = async (serverName: string): Promise<any> =>
+export const mailQueueFlushByServer = async (serverName: string): Promise<Record<string, unknown>> =>
 	soapFetch(`MailQueueFlush`, {
 		_jsns: 'urn:zimbraAdmin',
 		server: {
