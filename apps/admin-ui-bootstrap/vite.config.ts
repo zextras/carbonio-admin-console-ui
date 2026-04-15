@@ -40,7 +40,7 @@ function withLocationRewrite(config: {
         if (req.headers['referer']) {
           proxyReq.setHeader(
             'Referer',
-            req.headers['referer'].replace('http://localhost:3000', targetUrl.origin),
+            req.headers['referer'].replace('http://localhost:3001', targetUrl.origin),
           );
         }
       });
@@ -62,7 +62,7 @@ function withLocationRewrite(config: {
         if (location) {
           proxyRes.headers['location'] = location.replace(
             /https:\/\/[^/]+/,
-            'http://localhost:3000',
+            'http://localhost:3001',
           );
         }
 
@@ -85,7 +85,7 @@ function withLocationRewrite(config: {
           res.end = (chunk?: any, ..._args: any[]): any => {
             if (chunk != null) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
             const body = Buffer.concat(chunks).toString('utf8');
-            const modified = body.replaceAll(config.target, 'http://localhost:3000');
+            const modified = body.replaceAll(config.target, 'http://localhost:3001');
             res.write = originalWrite;
             res.end = originalEnd;
             return originalEnd(modified);
@@ -168,7 +168,7 @@ export default defineConfig(({ command, mode }) => {
     ...(isDev
       ? {
           server: {
-            port: 3000,
+            port: 3001,
             strictPort: false,
             proxy: {
               '/carbonioAdmin/static': {
