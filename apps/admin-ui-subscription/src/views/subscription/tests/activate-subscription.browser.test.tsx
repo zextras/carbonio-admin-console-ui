@@ -26,7 +26,7 @@ vi.mock('../../../constants', async (importOriginal) => {
     ...original,
     ACTIVATION_PROGRESS_MIN_DISPLAY_MS: 100,
     ACTIVATION_PROGRESS_COMPLETE_DELAY_MS: 0,
-    ACTIVATION_SUCCESS_AUTO_CLOSE_MS: 0,
+    ACTIVATION_SUCCESS_AUTO_CLOSE_MS: 500,
   };
 });
 
