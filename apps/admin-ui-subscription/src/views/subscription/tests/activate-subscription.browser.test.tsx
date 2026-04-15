@@ -139,7 +139,7 @@ describe('ActivateSubscription', () => {
 
       await expect.element(page.getByText('Subscription activated')).toBeVisible();
       await expect
-        .element(page.getByText('Everything is validated, your license is now active'))
+        .element(page.getByText(/You will be redirected to the subscription page/))
         .toBeVisible();
     });
 
