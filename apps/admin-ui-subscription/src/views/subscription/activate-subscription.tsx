@@ -8,6 +8,7 @@ import { useActivateLicense } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { z } from 'zod';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
@@ -30,11 +31,31 @@ export type AllModuleConfig = {
 export const ActivateSubscription = (): React.JSX.Element => {
   const [licenseKey, setLicenseKey] = useState('');
   const [showResult, setShowResult] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const activateLicenseMutation = useActivateLicense();
 
+  const activationTokenSchema = z
+    .string()
+    .trim()
+    .min(1, t('subscription.activate.error.empty', 'Please enter your activation token'));
+
+  const validate = useCallback(
+    (value: string): boolean => {
+      const result = activationTokenSchema.safeParse(value);
+      if (!result.success) {
+        setValidationError(result.error.issues[0]?.message);
+        return false;
+      }
+      setValidationError(null);
+      return true;
+    },
+    [activationTokenSchema],
+  );
+
   const activateLicence = (): void => {
+    if (!validate(licenseKey)) return;
     setShowResult(false);
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
   };
@@ -64,12 +85,24 @@ export const ActivateSubscription = (): React.JSX.Element => {
               autoFocus
               trimOnPaste
               backgroundColor="gray5"
+              hasError={validationError !== null}
               value={licenseKey}
-              onChange={(e: ChangeEvent<HTMLInputElement>): void => setLicenseKey(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                setLicenseKey(e.target.value);
+                if (validationError !== null) setValidationError(null);
+              }}
+              onBlur={(): void => {
+                if (licenseKey.length > 0) validate(licenseKey);
+              }}
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => {
                 if (e.key === 'Enter') activateLicence();
               }}
             />
+            {validationError !== null && (
+              <Text color="error" size="small">
+                {validationError}
+              </Text>
+            )}
           </div>
           <div className={styles.buttonWrap}>
             <Button
