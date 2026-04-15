@@ -10,6 +10,7 @@ import {
   CustomTextArea,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Modal,
   Padding,
@@ -600,6 +601,7 @@ const CosGeneralInformation: FC = () => {
             <ListRow>
               <Container padding={{ all: 'small' }}>
                 <Input
+                  isRequired
                   label={t('label.name', 'Name')}
                   backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
                   value={cosName}
@@ -636,22 +638,20 @@ const CosGeneralInformation: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
                   backgroundColor="gray6"
                   value={totalAccount}
-                  disabled
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <LabeledValue
                   label={t(
                     'label.domains_that_use_this_cos_as_default',
                     'Domains that use this CoS as default',
                   )}
                   value={totalDomain}
                   backgroundColor="gray6"
-                  disabled
                 />
               </Container>
             </ListRow>
