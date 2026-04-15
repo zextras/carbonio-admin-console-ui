@@ -99,7 +99,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
               }}
             />
             {validationError !== null && (
-              <Text color="error" size="small">
+              <Text color="error" size="small" className={styles.errorMessage}>
                 {validationError}
               </Text>
             )}

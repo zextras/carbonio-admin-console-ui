@@ -42,6 +42,14 @@
   width: 74%;
   padding-right: var(--padding-size-medium);
   box-sizing: border-box;
+  position: relative;
+}
+
+.errorMessage {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 4px;
 }
 
 .buttonWrap {
