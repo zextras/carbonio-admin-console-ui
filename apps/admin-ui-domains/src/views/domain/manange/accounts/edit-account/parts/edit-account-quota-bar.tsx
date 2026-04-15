@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { useContext, useMemo } from 'react';
 
-import { useTotalQuotaActive } from '../../../../../app/hooks/useTotalQuotaActive';
 import { AccountContext } from '../../account-context';
 import { EditAccountQuotaBarLegacy } from './edit-account-quota-bar-legacy';
 import { EditAccountQuotaBarNew } from './edit-account-quota-bar-new';
