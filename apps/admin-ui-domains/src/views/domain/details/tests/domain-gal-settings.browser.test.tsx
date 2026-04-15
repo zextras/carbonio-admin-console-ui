@@ -147,7 +147,7 @@ describe('DomainGalSettings (browser)', () => {
 
     it('should render the GAL Mode input as Internal for zimbra mode', async () => {
       await setupAndRender();
-      await expect.element(page.getByLabelText('GAL Mode')).toBeInTheDocument();
+      await expect.element(page.getByText('GAL Mode')).toBeInTheDocument();
     });
 
     it('should render the CHANGE TO button', async () => {

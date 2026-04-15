@@ -9,6 +9,7 @@ import {
   Container,
   Displayer,
   Input,
+  LabeledValue,
   Link,
   ListRow,
   Modal,
@@ -713,7 +714,7 @@ const ModifyVolume: FC<{
       >
         <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
           <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-            <Text  weight="bold">
+            <Text weight="bold">
               {t('label.volume_detail_page_title', '{{message}} Details', {
                 message: volumeDetail?.name,
               })}
@@ -904,8 +905,7 @@ const ModifyVolume: FC<{
             crossAlignment="flex-start"
           >
             <Row padding={{ top: 'small' }} width="100%">
-              <Input
-                inputName="server"
+              <LabeledValue
                 label={t('label.volume_server_name', 'Server')}
                 value={selectedServerName}
                 backgroundColor="gray5"
@@ -964,7 +964,7 @@ const ModifyVolume: FC<{
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <Input
+                <LabeledValue
                   label={t('label.bucket_name', 'Bucket Name')}
                   backgroundColor="gray6"
                   value={bucketName}
@@ -975,14 +975,18 @@ const ModifyVolume: FC<{
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <Input label={t('label.type', 'Type')} backgroundColor="gray6" value={storeType} />
+                <LabeledValue
+                  label={t('label.type', 'Type')}
+                  backgroundColor="gray6"
+                  value={storeType}
+                />
               </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large' }}
               >
-                <Input
+                <LabeledValue
                   label={t('label.ID', 'ID')}
                   backgroundColor="gray6"
                   value={bucketConfigurationId}

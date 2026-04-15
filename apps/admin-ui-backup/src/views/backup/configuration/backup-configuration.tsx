@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Row,
@@ -1141,8 +1142,7 @@ const BackupConfiguration: FC = () => {
               <Container>
                 <ListRow>
                   <Container padding={{ top: 'large' }}>
-                    <Input
-                      isRequired
+                    <LabeledValue
                       label={t('backup.external_volume', 'External Volume')}
                       value={manageExternalVolumeType}
                       backgroundColor="gray5"
@@ -1151,8 +1151,7 @@ const BackupConfiguration: FC = () => {
                 </ListRow>
                 <ListRow>
                   <Container padding={{ top: 'large', bottom: 'large' }}>
-                    <Input
-                      isRequired
+                    <LabeledValue
                       label={t('backup.bucket_configuration', 'Bucket Configuration')}
                       value={
                         manageExternalVolumeType.startsWith('LOCAL')
@@ -1510,10 +1509,9 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large', right: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
               <Container
@@ -1551,11 +1549,10 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   backgroundColor="gray5"
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
             </ListRow>

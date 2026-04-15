@@ -12,6 +12,7 @@ import {
   DropdownItem,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Row,
@@ -1180,7 +1181,7 @@ const DomainGalSettings: FC = () => {
                     </Dropdown>
                   </Container>
                   <Padding left="small" width="100%">
-                    <Input
+                    <LabeledValue
                       label={t('label.gal_mode', 'GAL Mode')}
                       value={zimbraGalMode}
                       backgroundColor="gray6"

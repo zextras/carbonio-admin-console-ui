@@ -11,6 +11,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   Input,
+  LabeledValue,
   ListRow,
   Padding,
   Select,
@@ -457,7 +458,7 @@ const EditHsmPolicyDetailSection: FC<{
     >
       <ListRow>
         <Container padding={{ bottom: 'large' }}>
-          <Input label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
         </Container>
       </ListRow>
       <ListRow>

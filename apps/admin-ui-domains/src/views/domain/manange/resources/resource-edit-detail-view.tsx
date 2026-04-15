@@ -10,6 +10,7 @@ import {
   CustomTextArea,
   Displayer,
   Input,
+  LabeledValue,
   ListRow,
   Modal,
   Padding,
@@ -870,7 +871,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.server', 'Server')}
                 backgroundColor="gray6"
                 value={resourceDetailData?.zimbraMailHost}
@@ -1013,7 +1014,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.id_lbl', 'ID')}
                 backgroundColor="gray6"
                 value={selectedResourceList?.id}
@@ -1027,7 +1028,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ left: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.creation_date', 'Creation Date')}
                 backgroundColor="gray6"
                 value={
