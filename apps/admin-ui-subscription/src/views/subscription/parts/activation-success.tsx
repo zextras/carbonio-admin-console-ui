@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Text } from '@zextras/ui-components';
+import { Button, Text } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +40,9 @@ export const ActivationSuccess = ({
     };
   }, [isSuccess]);
 
+  const buttonLabel = t('subscription.activate.button.redirect', 'go to my subscription');
+
+  const onClick = () => onCompleteRef.current?.();
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
@@ -49,13 +52,14 @@ export const ActivationSuccess = ({
         {t('subscription.activate.activation_success.title', 'Subscription activated')}
       </Text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light">
+        <Text color="gray0" weight="light" style={{ whiteSpace: 'pre-line' }}>
           {t(
             'subscription.activate.activation_success.description',
-            'Everything is validated, your license is now active',
+            'License activated.\nYou will be redirected to the subscription page.',
           )}
         </Text>
       </div>
+      <Button label={buttonLabel} width="fill" onClick={onClick} />
     </div>
   );
 };

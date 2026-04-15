@@ -13,7 +13,7 @@
   background: var(--color-gray6-regular, white);
   padding: 2rem;
   width: calc(500px - 4rem);
-  height: calc(260px - 4rem);
+  height: calc(312px - 4rem);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   text-align: center;
 }
@@ -40,4 +40,5 @@
 
 .description {
   margin-top: 0.5rem;
+  margin-bottom: 2rem;
 }
