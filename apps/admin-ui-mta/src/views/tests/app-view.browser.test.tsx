@@ -69,7 +69,7 @@ describe('AppView', () => {
       queryClient,
     });
 
-    await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
+    await expect.element(page.getByText('Home').nth(0)).toBeVisible();
   });
 
   it('should render the MTA list panel with all mail transfer agent options', async () => {
@@ -83,9 +83,7 @@ describe('AppView', () => {
     await expect
       .element(page.getByText('Mail Transfer Agent (MTA)', { exact: true }))
       .toBeVisible();
-    await expect
-      .element(page.getByText('Inbound Flow & Security', { exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByText('Inbound Flow & Security', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Postscreen Tuning', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Outbound Flow', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Antivirus & Antispam', { exact: true })).toBeVisible();
@@ -113,9 +111,7 @@ describe('AppView', () => {
       queryClient,
     });
 
-    await expect
-      .element(page.getByText('Inbound Flow & Security', { exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByText('Inbound Flow & Security', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
   });
 }, 20_000);
