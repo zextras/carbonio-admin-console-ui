@@ -17,6 +17,7 @@ export type LoginConfigStore = {
 	carbonioWebUiDarkPrimaryColor?: string;
 	carbonioAdminUiLogoutURL?: string;
 	carbonioWebUiFavicon?: string;
+	featureFlags?: { totalQuota?: boolean };
 };
 
 // extra currying as suggested in https://github.com/pmndrs/zustand/blob/main/docs/guides/typescript.md#basic-usage

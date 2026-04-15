@@ -6,15 +6,19 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const getMailqueueInformation = async (serverName: string): Promise<any> => {
-	const request: any = {
+import type { MailQueueInfo } from '../../types';
+
+type GetMailQueueInfoRequest = { _jsns: string; server: { name: string } };
+
+type GetMailQueueInfoResponse = { server: Array<{ queue: Array<MailQueueInfo> }> };
+
+export const getMailqueueInformation = async (
+	serverName: string,
+): Promise<GetMailQueueInfoResponse> => {
+	const request: GetMailQueueInfoRequest = {
 		_jsns: 'urn:zimbraAdmin',
-		server: {
-			name: serverName
-		}
+		server: { name: serverName },
 	};
 
-	return soapFetch(`GetMailQueueInfo`, {
-		...request
-	});
+	return soapFetch(`GetMailQueueInfo`, { ...request });
 };
