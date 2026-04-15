@@ -16,21 +16,11 @@ type ActivationErrorProps = {
 export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (isError) {
       popoverRef.current?.showPopover();
-      timeoutRef.current = setTimeout(() => {
-        popoverRef.current?.hidePopover();
-      }, 3_000_000);
     }
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
   }, [isError]);
 
   const onClick = () => popoverRef.current?.hidePopover();
