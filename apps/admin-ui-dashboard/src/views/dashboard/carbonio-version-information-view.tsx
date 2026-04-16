@@ -21,7 +21,14 @@ const CarbonioVersionInformation: FC<{
       crossAlignment="flex-start"
       padding={{ all: 'extralarge' }}
     >
-      <ds-text color="secondary" overflow="break-word" weight="light" size="extralarge" as="h1">
+      <ds-text
+        color="secondary"
+        overflow="break-word"
+        weight="light"
+        size="extralarge"
+        style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
+        as="h1"
+      >
         {t('welcome', 'Welcome')}
       </ds-text>
       <ds-text
