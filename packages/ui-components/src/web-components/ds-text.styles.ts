@@ -5,6 +5,7 @@
  */
 
 import { css, unsafeCSS } from 'lit';
+
 import { theme } from '../theme/theme';
 
 export const dsTextVars = {
@@ -12,7 +13,6 @@ export const dsTextVars = {
   color: '--ds-text-color',
   weight: '--ds-text-font-weight',
   lineHeight: '--ds-text-line-height',
-  fontStyle: '--ds-text-font-style',
 } as const;
 
 export const textStyles = css`
@@ -35,8 +35,6 @@ export const textStyles = css`
     );
     line-height: var(${unsafeCSS(dsTextVars.lineHeight)});
     font-family: var(--text-font-family, var(--font-family));
-    text-align: var(--ds-text-align);
-    font-style: var(${unsafeCSS(dsTextVars.fontStyle)}, 'initial');
   }
 
   :host([size='extrasmall']) > * {
@@ -71,10 +69,6 @@ export const textStyles = css`
     --ds-text-theme-weight: ${unsafeCSS(theme.font.weight.bold)};
   }
 
-  :host([italic]) > * {
-    --ds-text-font-style: 'italic'
-  }
-
   :host([overflow='ellipsis']) > * {
     white-space: nowrap;
     overflow: hidden;
@@ -84,5 +78,25 @@ export const textStyles = css`
   :host([overflow='break-word']) > * {
     overflow-wrap: break-word;
     word-wrap: break-word;
+  }
+
+  :host([italic]) > * {
+    font-style: italic;
+  }
+
+  :host([text-align='left']) > * {
+    text-align: left;
+  }
+
+  :host([text-align='center']) > * {
+    text-align: center;
+  }
+
+  :host([text-align='right']) > * {
+    text-align: right;
+  }
+
+  :host([text-align='justify']) > * {
+    text-align: justify;
   }
 `;

@@ -220,11 +220,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
-        } else if (
-          sendEmailsList.find(
-            (s: any) => s?.name === sendEmailItem,
-          )
-        ) {
+        } else if (sendEmailsList.find((s: any) => s?.name === sendEmailItem)) {
           setIsShowSendEmailError(true);
           setSendEmailErrorMessage(
             t(
@@ -244,10 +240,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           });
           const sortedList = sortedUniq(allEmails);
           const newSenders = sortedList.filter(
-            (item: any) =>
-              !sendEmailsList.find(
-                (s: any) => s?.name === item?.name,
-              ),
+            (item: any) => !sendEmailsList.find((s: any) => s?.name === item?.name),
           );
           if (newSenders.length === 0) return;
           setIsRequestInProgress(true);
@@ -309,10 +302,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 severity: 'error',
                 label: error?.message
                   ? error?.message
-                  : t(
-                      'label.something_wrong_error_msg',
-                      'Something went wrong. Please try again.',
-                    ),
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,
@@ -332,13 +322,21 @@ export const SendAsTab: FC<SendAsTabProps> = ({
     } else {
       setIsShowSendEmailError(true);
       setSendEmailErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [sendEmailItem, createSnackbar, t, sendEmailsList, radioPermisionValue, selectedMailingList?.id, setSendEmailsList, setSendEmails, setPreviousDetail, setIsRequestInProgress]);
+  }, [
+    sendEmailItem,
+    createSnackbar,
+    t,
+    sendEmailsList,
+    radioPermisionValue,
+    selectedMailingList?.id,
+    setSendEmailsList,
+    setSendEmails,
+    setPreviousDetail,
+    setIsRequestInProgress,
+  ]);
 
   const closeDeleteSendEmailHandler = useCallback(() => {
     setIsOpenDeleteSendEmailDialog(false);
@@ -410,10 +408,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                'label.something_wrong_error_msg',
-                'Something went wrong. Please try again.',
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -458,12 +453,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           <Text size="medium" color="gray0" weight="bold">
             {t(`domain.distributionList.managePermission`, `Manage permissions`)}
           </Text>
-          <Text
-            size="small"
-            color="gray0"
-            style={{ marginTop: '0.5rem' }}
-            overflow="break-word"
-          >
+          <Text size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
             {t(
               'domain.distributionList.sendAs.managePermissionDescriptionMsg',
               'Allow others to send emails as this distribution list',
@@ -539,10 +529,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 </Text>
                 <Radio
                   key="sendOnBehalfOf"
-                  label={t(
-                    'domain.distributionList.sendAs.sendOnBehalfOf',
-                    'Send on behalf of',
-                  )}
+                  label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
                   value="sendOnBehalfOf"
                   iconColor="primary"
                 />
@@ -602,15 +589,12 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 <ListRow>
                   <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
                     <Input
-                      label={t(
-                        'domain.distributionList.sendAs.searchSenders',
-                        'Search senders',
-                      )}
+                      label={t('domain.distributionList.sendAs.searchSenders', 'Search senders')}
                       value={filterSendEmail}
                       backgroundColor="gray5"
                       onChange={handleInputChangeSendEmail}
                       CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
                   </Row>
@@ -660,10 +644,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       {isOpenEditPermissionDialog && (
         <Modal
           size="small"
-          title={t(
-            'domain.distributionList.sendAs.editPermissionLevel',
-            'Edit permission level',
-          )}
+          title={t('domain.distributionList.sendAs.editPermissionLevel', 'Edit permission level')}
           open={isOpenEditPermissionDialog}
           customFooter={
             <Container orientation="horizontal" mainAlignment="flex-end">
@@ -678,10 +659,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 />
                 <Button
                   key={'modal-save-button'}
-                  label={t(
-                    'domain.distributionList.sendAs.saveChanges',
-                    'SAVE CHANGES',
-                  )}
+                  label={t('domain.distributionList.sendAs.saveChanges', 'SAVE CHANGES')}
                   color="primary"
                   onClick={(): void => {
                     if (editingEmailItem) {
@@ -696,8 +674,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                       }
                       if (
                         sendEmailsList.find(
-                          (s: any) =>
-                            s?.name === editingEmailItem?.name && s?.sendAcl === newAcl,
+                          (s: any) => s?.name === editingEmailItem?.name && s?.sendAcl === newAcl,
                         )
                       ) {
                         createSnackbar({
@@ -805,7 +782,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             onChange={(value: string | undefined): void => {
               if (value) setEditPermissionValue(value);
             }}
-            style={{marginTop:'1rem', marginBottom:'0.5rem'}}
+            style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
           >
             <Radio
               key={'send-as-option'}
@@ -826,7 +803,10 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       {isOpenDeleteSendEmailDialog && (
         <Modal
           size="small"
-          title={t('domain.distributionList.sendAs.removeAuthorizedSender', 'Remove authorized sender')}
+          title={t(
+            'domain.distributionList.sendAs.removeAuthorizedSender',
+            'Remove authorized sender',
+          )}
           open={isOpenDeleteSendEmailDialog}
           customFooter={
             <Container orientation="horizontal" mainAlignment="flex-end">
@@ -861,9 +841,10 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 components={{ bold: <strong /> }}
                 values={{
                   name: sendEmailToDelete?.name,
-                  permission: sendEmailToDelete?.sendAcl === 'sendAsDistList'
-                    ? t('domain.distributionList.sendAs.sendAs', 'Send As')
-                    : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of'),
+                  permission:
+                    sendEmailToDelete?.sendAcl === 'sendAsDistList'
+                      ? t('domain.distributionList.sendAs.sendAs', 'Send As')
+                      : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of'),
                 }}
               />
             </Text>

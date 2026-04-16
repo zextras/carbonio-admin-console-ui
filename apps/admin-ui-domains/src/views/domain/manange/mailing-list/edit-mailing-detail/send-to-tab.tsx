@@ -174,13 +174,19 @@ export const SendToTab: FC<SendToTabProps> = ({
     } else {
       setIsShowSenderToError(true);
       setSenderToErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [grantEmailsList, createSnackbar, grantEmailItem, t, setGrantEmailsList, setGrantEmails, setIsDirty, setIsShowSenderToError]);
+  }, [
+    grantEmailsList,
+    createSnackbar,
+    grantEmailItem,
+    t,
+    setGrantEmailsList,
+    setGrantEmails,
+    setIsDirty,
+    setIsShowSenderToError,
+  ]);
 
   useMemo(() => {
     if (grantEmailsList && grantEmailsList.length > 0) {
@@ -241,12 +247,7 @@ export const SendToTab: FC<SendToTabProps> = ({
         <Text size="medium" color="gray0" weight="bold">
           {t(`domain.distributionList.managePermission`, `Manage permissions`)}
         </Text>
-        <Text
-          size="small"
-          color="gray0"
-          style={{ marginTop: '0.5rem' }}
-          overflow="break-word"
-        >
+        <Text size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
           {t(
             'domain.distributionList.sendTo.managePermissionDescriptionMsg',
             'Control who can send emails to this distribution list',
@@ -259,10 +260,7 @@ export const SendToTab: FC<SendToTabProps> = ({
           <Select
             items={grantTypeOptions}
             background="gray5"
-            label={t(
-              'domain.distributionList.sendTo.acceptMessageFrom',
-              'Accept message from',
-            )}
+            label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
             showCheckbox={false}
             onChange={onGrantTypeChange}
             selection={grantType}
@@ -304,11 +302,7 @@ export const SendToTab: FC<SendToTabProps> = ({
                   width="100%"
                   padding={{ top: 'small' }}
                 >
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    width="fill"
-                  >
+                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                     <Padding right={'0'}>
                       <Text size="extrasmall" weight="regular" color="error">
                         {senderToErrorMessage}
@@ -356,15 +350,12 @@ export const SendToTab: FC<SendToTabProps> = ({
                 <ListRow>
                   <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
                     <Input
-                      label={t(
-                        'domain.distributionList.sendTo.searchSenders',
-                        'Search senders',
-                      )}
+                      label={t('domain.distributionList.sendTo.searchSenders', 'Search senders')}
                       value={filterGrantEmail}
                       backgroundColor="gray5"
                       onChange={handleInputChangeGrantEmail}
                       CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
                   </Row>
