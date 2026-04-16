@@ -15,7 +15,6 @@ import {
   PasswordInput,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { find, get } from 'lodash-es';
@@ -406,7 +405,7 @@ const EditBucketDetailPanel: FC<{
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text weight="bold">{title}</Text>
+          <ds-text as="h2" weight="bold">{title}</ds-text>
         </Row>
         <Row
           padding={{ all: 'small' }}
@@ -577,9 +576,9 @@ const EditBucketDetailPanel: FC<{
               ></ds-icon>
             </Row>
             <Row width="86%" mainAlignment="flex-end">
-              <Text overflow="break-word" color="gray6">
+              <ds-text as="p" overflow="break-word" color="gray6">
                 {checkError}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         )}

@@ -10,7 +10,6 @@ import {
   HoverableRowFactory,
   Row,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,9 +36,9 @@ const IndexerVolumeTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.id}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -48,9 +47,9 @@ const IndexerVolumeTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.name}
-            </Text>
+            </ds-text>
           </Row>,
           isAdvanced && (
             <Row
@@ -60,11 +59,11 @@ const IndexerVolumeTable: FC<{
               }}
               style={{ textAlign: 'left', justifyContent: FLEX_START }}
             >
-              <Text size="small" weight="light">
+              <ds-text as="span" size="small" weight="light">
                 {v?.storeType === LOCAL_VALUE
                   ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
                   : t('volume.volume_allocation_list.object_storage', 'Object Storage')}
-              </Text>
+              </ds-text>
             </Row>
           ),
           <Row
@@ -74,9 +73,9 @@ const IndexerVolumeTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -85,9 +84,9 @@ const IndexerVolumeTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: 'flex-start' }}
           >
-            <Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
+            <ds-text as="span" color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
               {v?.isCurrent ? YES : NO}
-            </Text>
+            </ds-text>
           </Row>,
         ];
 
@@ -114,7 +113,7 @@ const IndexerVolumeTable: FC<{
       />
       {tableRows?.length === 0 && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text>{t('label.empty_table', 'Empty Table')}</Text>
+          <ds-text as="p">{t('label.empty_table', 'Empty Table')}</ds-text>
         </Row>
       )}
     </Container>

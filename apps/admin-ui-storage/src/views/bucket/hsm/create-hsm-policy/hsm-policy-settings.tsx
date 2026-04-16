@@ -18,7 +18,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -194,23 +193,24 @@ const HSMpolicySettings: FC<any> = () => {
       const allRows = volumeList.map((item: any) => ({
         id: item?.id,
         columns: [
-          <Text size="small" weight="regular" key={item}>
+          <ds-text as="span" size="small" weight="regular" key={item}>
             {item?.name}
-          </Text>,
-          <Text size="small" weight="light" key={item}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={item}>
             {''}
-          </Text>,
-          <Text size="small" weight="light" key={item}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={item}>
             {getVoumeType(item?.type)}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             weight="light"
             key={item}
             color={item?.isCurrent ? 'gray0' : '#D74942'}
           >
             {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setVolumeRows(allRows);
@@ -301,7 +301,8 @@ const HSMpolicySettings: FC<any> = () => {
         return {
           id: index,
           columns: [
-            <Text
+            <ds-text
+              as="span"
               size="small"
               weight="regular"
               key={index}
@@ -310,7 +311,7 @@ const HSMpolicySettings: FC<any> = () => {
               }}
             >
               {displayPolicy}
-            </Text>,
+            </ds-text>,
           ],
         };
       });
@@ -378,9 +379,9 @@ const HSMpolicySettings: FC<any> = () => {
       </ListRow>
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.items" defaults="Items" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -458,9 +459,9 @@ const HSMpolicySettings: FC<any> = () => {
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.criteria" defaults="Criteria" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -575,9 +576,9 @@ const HSMpolicySettings: FC<any> = () => {
             crossAlignment="center"
             style={{ textAlign: 'center' }}
           >
-            <Text weight="light" color="#828282" size="large" overflow="break-word">
+            <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
               {t('label.this_list_is_empty', 'This list is empty.')}
-            </Text>
+            </ds-text>
           </Row>
           <Row
             orientation="vertical"
@@ -586,12 +587,12 @@ const HSMpolicySettings: FC<any> = () => {
             padding={{ top: 'small' }}
             width="53%"
           >
-            <Text weight="light" color="#828282" size="large" overflow="break-word">
+            <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
               <Trans
                 i18nKey="label.do_you_need_more_information"
                 defaults="Do you need more information?"
               />
-            </Text>
+            </ds-text>
           </Row>
           <Row
             orientation="vertical"
@@ -600,9 +601,9 @@ const HSMpolicySettings: FC<any> = () => {
             padding={{ top: 'small', bottom: 'small' }}
             width="53%"
           >
-            <Text weight="light" color="primary">
+            <ds-text as="span" weight="light" color="primary">
               {t('label.click_here', 'Click here')}
-            </Text>
+            </ds-text>
           </Row>
         </Container>
       )}
@@ -613,19 +614,19 @@ const HSMpolicySettings: FC<any> = () => {
       <Container mainAlignment="flex-start" crossAlignment="flex-start" background="white">
         <ListRow>
           <Padding bottom="large">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h3" size="medium" weight="bold" color="gray0">
               {<Trans i18nKey="hsm.source_volume" defaults="Source Volume" />}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>
           <Padding bottom="large">
-            <Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
+            <ds-text as="p" size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
               {t(
                 'hsm.all_primary_volume_used_source_msg',
                 'All primary volumes will be used as source by default. Or select manually other volumes.',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>
@@ -676,19 +677,19 @@ const HSMpolicySettings: FC<any> = () => {
 
         <ListRow>
           <Padding bottom="large">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h3" size="medium" weight="bold" color="gray0">
               {<Trans i18nKey="hsm.destination_volume" defaults="Destination Volume" />}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>
           <Padding bottom="large">
-            <Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
+            <ds-text as="p" size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
               {t(
                 'hsm.all_secondary_volume_used_source_msg',
                 'The current secondary volume will be used as a destination. Or select manually other volumes.',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>

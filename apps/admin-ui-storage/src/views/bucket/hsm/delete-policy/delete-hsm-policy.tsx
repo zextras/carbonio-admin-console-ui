@@ -10,7 +10,6 @@ import {
   Modal,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, useCallback } from 'react';
@@ -114,22 +113,22 @@ const DeleteHsmPolicy: FC<{
       <Container padding={{ all: 'extralarge' }}>
         <Container padding={{ top: 'small' }}>
           <Padding bottom="medium">
-            <Text size={'extralarge'} overflow="break-word">
+            <ds-text as="p" size={'extralarge'} overflow="break-word">
               <Trans
                 i18nKey="hsm.delete_hsm_policy_confirm_msg_1"
                 defaults="If you delete this HSM policy you won`t be able to restore it. Do you want to delete HSM Policy?"
               />
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
 
         <Container padding={{ top: 'small', bottom: 'small' }} mainAlignment="flex-start">
-          <Text size="small">
+          <ds-text as="p" size="small">
             <Trans
               i18nKey="hsm.copy_hsm_policy_from_clipboard_msg"
               defaults="If you`re unsure you can copy the policy string to the clipboard to restore it later."
             />
-          </Text>
+          </ds-text>
         </Container>
 
         <Container padding={{ top: 'small', bottom: 'small' }}>

@@ -13,7 +13,6 @@ import {
   PasswordInput,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -507,12 +506,12 @@ const Connection: FC<{
           />
           {!prefixConfirm && (
             <Padding top="extrasmall">
-              <Text color="error" overflow="break-word" size="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                 {t(
                   'buckets.invalid_prefix',
                   'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           )}
         </Row>
@@ -564,9 +563,9 @@ const Connection: FC<{
             ></ds-icon>
           </Row>
           <Row width="86%" mainAlignment="flex-end">
-            <Text overflow="break-word" color="gray6">
+            <ds-text as="p" overflow="break-word" color="gray6">
               {verifyFailErr}
-            </Text>
+            </ds-text>
           </Row>
         </Container>
       )}

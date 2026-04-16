@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, LabeledValue, Padding, Row, Select, Text } from '@zextras/ui-components';
+import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -182,9 +182,9 @@ const AdvancedMailstoresDefinition: FC<{
           />
           {!errName && (
             <Padding top="extrasmall">
-              <Text color="error" overflow="break-word" size="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                 {t('buckets.invalid_volume_name', 'Volume name is required.')}
-              </Text>
+              </ds-text>
             </Padding>
           )}
         </Row>

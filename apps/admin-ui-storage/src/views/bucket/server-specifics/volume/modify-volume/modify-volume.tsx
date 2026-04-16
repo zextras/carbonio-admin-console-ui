@@ -18,7 +18,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -714,11 +713,11 @@ const ModifyVolume: FC<{
       >
         <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
           <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-            <Text weight="bold">
+            <ds-text as="h2" weight="bold">
               {t('label.volume_detail_page_title', '{{message}} Details', {
                 message: volumeDetail?.name,
               })}
-            </Text>
+            </ds-text>
           </Row>
           <Row
             padding={{ all: 'small' }}
@@ -790,13 +789,13 @@ const ModifyVolume: FC<{
               />
             </Row>
             <Padding top="extrasmall">
-              <Text color="secondary" overflow="break-word" size="extrasmall">
+              <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
                 {t(
                   'the_change_will_not_move_the_data',
 
                   'The change will not move the data',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
             <Row
               padding={{ top: 'large' }}
@@ -841,12 +840,12 @@ const ModifyVolume: FC<{
                       iconColor="primary"
                     />
                     <Padding top="extrasmall">
-                      <Text color="secondary" overflow="break-word" size="extrasmall">
+                      <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
                         {t(
                           'this_will_not_affect_data_already_stored',
                           'This will not affect data already stored',
                         )}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Row>
                   <Padding horizontal="small" />
@@ -888,12 +887,12 @@ const ModifyVolume: FC<{
                   />
                 </Row>
                 <Padding top="extrasmall">
-                  <Text color="secondary" overflow="break-word" size="extrasmall">
+                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
                     {t(
                       'this_will_not_affect_data_already_stored',
                       'This will not affect data already stored',
                     )}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </>
             )}
@@ -952,9 +951,9 @@ const ModifyVolume: FC<{
                   />
                 </Row>
                 <Padding top="extrasmall">
-                  <Text color="secondary" overflow="break-word" size="extrasmall">
+                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
                     {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </>
             )}
@@ -1038,9 +1037,9 @@ const ModifyVolume: FC<{
               />
             </Row>
             <Padding top="extrasmall">
-              <Text color="secondary" overflow="break-word" size="extrasmall">
+              <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
                 {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-              </Text>
+              </ds-text>
             </Padding>
             {bucketS3 && (
               <>
@@ -1130,12 +1129,12 @@ const ModifyVolume: FC<{
               </Tooltip>
             </Row>
             <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-              <Text color="secondary">
+              <ds-text as="p" color="secondary">
                 {t(
                   'label.enable_current_helptext',
                   'Enabling this option will disable the current active volume.',
                 )}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         )}
@@ -1159,7 +1158,7 @@ const ModifyVolume: FC<{
           showCloseIcon
         >
           <Padding vertical="small">
-            <Text>
+            <ds-text as="p">
               <Trans
                 i18nKey="modal.iscurrent_confirm.body_message"
                 defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
@@ -1170,7 +1169,7 @@ const ModifyVolume: FC<{
                   name,
                 }}
               />
-            </Text>
+            </ds-text>
           </Padding>
         </Modal>
       </Container>

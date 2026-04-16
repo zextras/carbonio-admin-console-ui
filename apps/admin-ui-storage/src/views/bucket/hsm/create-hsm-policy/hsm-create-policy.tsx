@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, LabeledValue, ListRow, Padding, Text, Tooltip } from '@zextras/ui-components';
+import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -121,24 +121,24 @@ const HSMcreatePolicy: FC<any> = () => {
     >
       <ListRow>
         <Padding bottom="large">
-          <Text size="large" weight="bold">
+          <ds-text as="h2" size="large" weight="bold">
             {t('hsm.new_policy_summary', 'New Policy Summary')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
         <Padding left="large">
-          <Text size="small" weight="regular" color="secondry">
+          <ds-text as="span" size="small" weight="regular" color="secondry">
             {t('hsm.parameters', 'Parameters')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
         <Padding top="extrasmall" left="large">
           <Tooltip placement="bottom" label={hsmQuery} maxWidth="auto">
-            <Text size="medium" weight="regular" color="gray0">
+            <ds-text as="p" size="medium" weight="regular" color="gray0">
               {hsmQuery}
-            </Text>
+            </ds-text>
           </Tooltip>
         </Padding>
       </ListRow>
