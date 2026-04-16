@@ -64,9 +64,9 @@ export const MembersTab: FC<MembersTabProps> = ({
   const limit = 15;
   const [dlmTableRows, setDlmTableRows] = useState<Array<any>>([]);
   const [DLMPagedRows, setDLMPagedRows] = useState<Array<any>>([]);
-  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<
-    Array<any>
-  >([]);
+  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
+    [],
+  );
   const [searchMember, setSearchMember] = useState('');
   const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
   const [isShowMemberError, setIsShowMemberError] = useState(false);
@@ -247,7 +247,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           setMemberErrorMessage(
             t(
               'domain.distributionList.invalidEmailErrorMsg',
-              'The account does not exist. Please check the spelling and try again.'
+              'The account does not exist. Please check the spelling and try again.',
             ),
           );
         } else if (dlm.find((item: any) => item === searchMember)) {
@@ -316,10 +316,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                 severity: 'error',
                 label: error?.message
                   ? error?.message
-                  : t(
-                      'label.something_wrong_error_msg',
-                      'Something went wrong. Please try again.',
-                    ),
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,
@@ -331,7 +328,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         setMemberErrorMessage(
           t(
             'domain.distributionList.invalidEmailErrorMsg',
-            'The account does not exist. Please check the spelling and try again.'
+            'The account does not exist. Please check the spelling and try again.',
           ),
         );
         setIsShowMemberError(true);
@@ -339,13 +336,19 @@ export const MembersTab: FC<MembersTabProps> = ({
     } else {
       setIsShowMemberError(true);
       setMemberErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [searchMember, t, dlm, selectedMailingList?.id, createSnackbar, setDlm, setPreviousDetail, setIsRequestInProgress]);
+  }, [
+    searchMember,
+    t,
+    dlm,
+    selectedMailingList?.id,
+    createSnackbar,
+    setDlm,
+    setPreviousDetail,
+    setIsRequestInProgress,
+  ]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
@@ -430,10 +433,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                'label.something_wrong_error_msg',
-                'Something went wrong. Please try again.',
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -498,10 +498,11 @@ export const MembersTab: FC<MembersTabProps> = ({
             </Row>
             <ListRow>
               <Container orientation="vertical" mainAlignment="flex-start" background="gray6">
-                <Row mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    width="100%"
-                    padding={{ top: 'large' }}
+                <Row
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  width="100%"
+                  padding={{ top: 'large' }}
                 >
                   <DropDownInput
                     width="100%"
@@ -535,7 +536,8 @@ export const MembersTab: FC<MembersTabProps> = ({
                   </Row>
                 )}
 
-                <Row mainAlignment="flex-start"
+                <Row
+                  mainAlignment="flex-start"
                   crossAlignment="flex-start"
                   width="100%"
                   padding={{ top: 'large', bottom: 'large' }}
@@ -582,7 +584,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                     backgroundColor="gray5"
                     onChange={handleInputChange}
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />
                 </Row>
@@ -685,7 +687,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         >
           <Container
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
-              mainAlignment="flex-start"
+            mainAlignment="flex-start"
           >
             <Text size={'large'} overflow="break-word">
               <Trans

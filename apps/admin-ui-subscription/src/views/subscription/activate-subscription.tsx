@@ -75,7 +75,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
           {t('label.subscriptions', 'Subscriptions')}
         </Text>
       </div>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <div className={styles.content}>
         <Text weight="bold">{t('subscription.activate.activation_token', 'Activation token')}</Text>
         <div className={styles.inputRow}>

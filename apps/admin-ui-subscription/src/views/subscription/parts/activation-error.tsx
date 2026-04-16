@@ -29,7 +29,7 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
-        <icon-wc icon="AlertTriangleOutline" color="error" size="60px"></icon-wc>
+        <ds-icon icon="AlertTriangleOutline" color="error" size="60px"></ds-icon>
       </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_error.title', 'Something went wrong')}

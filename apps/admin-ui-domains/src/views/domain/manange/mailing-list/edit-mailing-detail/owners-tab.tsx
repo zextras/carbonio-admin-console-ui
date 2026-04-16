@@ -231,7 +231,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           setOwnerErrorMessage(
             t(
               'domain.distributionList.invalidEmailErrorMsg',
-              'The account does not exist. Please check the spelling and try again.'
+              'The account does not exist. Please check the spelling and try again.',
             ),
           );
         } else if (ownersList.find((item: any) => item?.name === searchOwner)) {
@@ -302,10 +302,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                 severity: 'error',
                 label: error?.message
                   ? error?.message
-                  : t(
-                      'label.something_wrong_error_msg',
-                      'Something went wrong. Please try again.',
-                    ),
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,
@@ -325,13 +322,20 @@ export const OwnersTab: FC<OwnersTabProps> = ({
     } else {
       setIsShowOwnerError(true);
       setOwnerErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [searchOwner, t, ownersList, selectedMailingList?.id, getOwnerType, createSnackbar, setOwnersList, setPreviousDetail, setIsRequestInProgress]);
+  }, [
+    searchOwner,
+    t,
+    ownersList,
+    selectedMailingList?.id,
+    getOwnerType,
+    createSnackbar,
+    setOwnersList,
+    setPreviousDetail,
+    setIsRequestInProgress,
+  ]);
 
   const closeDeleteOwnerHandler = useCallback(() => {
     setIsOpenDeleteOwnerDialog(false);
@@ -395,10 +399,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                'label.something_wrong_error_msg',
-                'Something went wrong. Please try again.',
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -436,12 +437,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           </Text>
         </Row>
         <ListRow padding={{ top: 'small' }}>
-          <Text
-            size="small"
-            color="gray0"
-            style={{ whiteSpace: 'normal' }}
-            overflow="break-word"
-          >
+          <Text size="small" color="gray0" style={{ whiteSpace: 'normal' }} overflow="break-word">
             {t(
               'label.owners_description_msg_1',
               'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.',
@@ -535,7 +531,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                     backgroundColor="gray5"
                     onChange={handleInputChangeOwner}
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />
                 </Row>

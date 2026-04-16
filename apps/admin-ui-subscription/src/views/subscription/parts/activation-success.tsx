@@ -47,7 +47,7 @@ export const ActivationSuccess = ({
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
-        <icon-wc icon="CheckmarkCircle" color="success" size="60px"></icon-wc>
+        <ds-icon icon="CheckmarkCircle" color="success" size="60px"></ds-icon>
       </div>
       <Text weight="bold" size="large">
         {t('subscription.activate.activation_success.title', 'Subscription activated')}

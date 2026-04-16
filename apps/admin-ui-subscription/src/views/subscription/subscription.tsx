@@ -211,7 +211,7 @@ export const Subscription = (): React.JSX.Element => {
   };
 
   if (isFetching) {
-    return <spinner-wc />;
+    return <ds-spinner></ds-spinner>;
   }
 
   if (!licenseData) {
